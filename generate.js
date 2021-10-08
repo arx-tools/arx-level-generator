@@ -498,8 +498,8 @@ const wallZ = (
 
 // --------------------------------------
 
-const width = 50;
-const length = 70;
+const width = 10;
+const length = 16;
 const originX = 5300;
 const originY = 350;
 const originZ = 10900;
