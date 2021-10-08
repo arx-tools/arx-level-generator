@@ -146,13 +146,6 @@ const textures = {
       fic: "GRAPH\\OBJ3D\\TEXTURES\\[STONE]_HUMAN_WALL9A.BMP",
     },
   },
-  dust: {
-    fireDust: {
-      tc: 47794832,
-      temp: 0,
-      fic: "GRAPH\\OBJ3D\\TEXTURES\\[DUST]_FIRE_DUST.BMP",
-    },
-  },
   wood: {
     various1: {
       tc: 47785808,
@@ -214,9 +207,49 @@ const textures = {
       fic: "GRAPH\\OBJ3D\\TEXTURES\\(FABRIC)_GOBELIN_BED.BMP",
     },
   },
+  gravel: {
+    ground1: {
+      tc: 1,
+      temp: 0,
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\L5_CAVES_[GRAVEL]_GROUND05",
+    },
+    fireDust: {
+      tc: 47794832,
+      temp: 0,
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\[DUST]_FIRE_DUST.BMP",
+    },
+  },
+  glass: {
+    vitrail2: {
+      tc: 2,
+      temp: 0,
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\L5_HUMAN_[GLASS]_VITRAIL02",
+    },
+  },
+  misc: {
+    sky: {
+      tc: 3,
+      temp: 0,
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\[STONE]_HUMAN_SKY",
+    },
+    moss1: {
+      tc: 4,
+      temp: 0,
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\L1_MOSS01",
+      flags: POLY_QUAD | POLY_NO_SHADOW | POLY_STONE,
+    },
+  },
 };
 
-const floor = (x, y, z, texture, quad = 0, textureRotation = 0) => {
+const floor = (
+  x,
+  y,
+  z,
+  texture,
+  direction = "right",
+  quad = 0,
+  textureRotation = 0
+) => {
   let texU;
   let texV;
 
@@ -288,17 +321,17 @@ const floor = (x, y, z, texture, quad = 0, textureRotation = 0) => {
       },
     ],
     tex: texture.tc,
-    norm: { x: 0, y: -1, z: 0 },
-    norm2: { x: 0, y: -1, z: 0 },
+    norm: { x: 0, y: direction === "top" ? 1 : -1, z: 0 },
+    norm2: { x: 0, y: direction === "top" ? 1 : -1, z: 0 },
     normals: [
-      { x: 0, y: -1, z: 0 },
-      { x: 0, y: -1, z: 0 },
-      { x: 0, y: -1, z: 0 },
-      { x: 0, y: -1, z: 0 },
+      { x: 0, y: direction === "top" ? 1 : -1, z: 0 },
+      { x: 0, y: direction === "top" ? 1 : -1, z: 0 },
+      { x: 0, y: direction === "top" ? 1 : -1, z: 0 },
+      { x: 0, y: direction === "top" ? 1 : -1, z: 0 },
     ],
     transval: 0,
     area: 10000,
-    type: POLY_QUAD | POLY_NO_SHADOW,
+    type: texture.flags || POLY_QUAD | POLY_NO_SHADOW,
     room: 1,
     paddy: 0,
   };
@@ -394,7 +427,7 @@ const wallX = (
     ],
     transval: 0,
     area: 10000,
-    type: POLY_QUAD | POLY_NO_SHADOW,
+    type: texture.flags || POLY_QUAD | POLY_NO_SHADOW,
     room: 1,
     paddy: 0,
   };
@@ -490,7 +523,7 @@ const wallZ = (
     ],
     transval: 0,
     area: 10000,
-    type: POLY_QUAD | POLY_NO_SHADOW,
+    type: texture.flags || POLY_QUAD | POLY_NO_SHADOW,
     room: 1,
     paddy: 0,
   };
@@ -498,125 +531,167 @@ const wallZ = (
 
 // --------------------------------------
 
-const width = 10;
-const length = 16;
+const width = 8;
+const length = 7;
+const height = 4;
 const originX = 5300;
 const originY = 350;
 const originZ = 10900;
 
 // --------------------------------------
 
+dlf.interactiveObjects = [];
+
 fts.polygons = [];
 for (let x = 0; x < width; x++) {
   for (let z = 0; z < length; z++) {
+    const isSecondaryTexture = Math.random() * 100 < 15;
     fts.polygons.push(
       floor(
         originX - width * 50 + x * 100,
         originY,
         originZ - length * 50 + z * 100,
-        Math.random() * 10 >= 4
-          ? textures.stone.castleGround
-          : textures.wood.floor1,
-        Math.floor(Math.random() * 4),
-        Math.floor(Math.random() * 4) * 90
+        isSecondaryTexture ? textures.wood.table : textures.gravel.ground1,
+        "bottom",
+        isSecondaryTexture ? 2 : Math.floor(Math.random() * 4),
+        isSecondaryTexture ? 0 : Math.floor(Math.random() * 4) * 90
       )
     );
   }
 }
 
 for (let z = 0; z < length; z++) {
-  fts.polygons.push(
-    wallX(
-      originX - width * 50,
-      originY - 50,
-      originZ - length * 50 + z * 100,
-      textures.stone.wall8,
-      "right",
-      2 + (z % 2)
-    )
-  );
-  fts.polygons.push(
-    wallX(
-      originX - width * 50,
-      originY - 50 - 1 * 100,
-      originZ - length * 50 + z * 100,
-      textures.stone.wall8,
-      "right",
-      z % 2
-    )
-  );
+  for (let h = 0; h < height; h++) {
+    fts.polygons.push(
+      wallX(
+        originX - width * 50,
+        originY - 50 - h * 100,
+        originZ - length * 50 + z * 100,
+        h == 2 ? textures.stone.roof : textures.stone.wall8,
+        "right",
+        h == 2 ? 1 : (h % 2 ? 0 : 2) + (z % 2)
+      )
+    );
 
-  fts.polygons.push(
-    wallX(
-      originX - width * 50 + width * 100,
-      originY - 50,
-      originZ - length * 50 + z * 100,
-      textures.stone.wall8,
-      "left",
-      2 + (z % 2)
-    )
-  );
-  fts.polygons.push(
-    wallX(
-      originX - width * 50 + width * 100,
-      originY - 50 - 1 * 100,
-      originZ - length * 50 + z * 100,
-      textures.stone.wall8,
-      "left",
-      z % 2
-    )
-  );
+    fts.polygons.push(
+      wallX(
+        originX - width * 50 + width * 100,
+        originY - 50 - h * 100,
+        originZ - length * 50 + z * 100,
+        h == 2 ? textures.stone.roof : textures.stone.wall8,
+        "left",
+        h == 2 ? 1 : (h % 2 ? 0 : 2) + (z % 2)
+      )
+    );
+  }
 }
 
 for (let x = 0; x < width; x++) {
-  fts.polygons.push(
-    wallZ(
-      originX - width * 50 + x * 100,
-      originY - 50,
-      originZ + length * 50,
-      textures.stone.wall8,
-      "back",
-      2 + (x % 2)
-    )
-  );
-  fts.polygons.push(
-    wallZ(
-      originX - width * 50 + x * 100,
-      originY - 50 - 1 * 100,
-      originZ + length * 50,
-      textures.stone.wall8,
-      "back",
-      x % 2
-    )
-  );
+  for (let h = 0; h < height; h++) {
+    fts.polygons.push(
+      wallZ(
+        originX - width * 50 + x * 100,
+        originY - 50 - h * 100,
+        originZ + length * 50,
+        h == 2 ? textures.stone.roof : textures.stone.wall8,
+        "back",
+        h == 2 ? 1 : (h % 2 ? 0 : 2) + (x % 2)
+      )
+    );
 
-  fts.polygons.push(
-    wallZ(
-      originX - width * 50 + x * 100,
-      originY - 50,
-      originZ + length * 50 - length * 100,
-      textures.stone.wall8,
-      "front",
-      2 + (x % 2)
-    )
-  );
-  fts.polygons.push(
-    wallZ(
-      originX - width * 50 + x * 100,
-      originY - 50 - 1 * 100,
-      originZ + length * 50 - length * 100,
-      textures.stone.wall8,
-      "front",
-      x % 2
-    )
-  );
+    if ((h === 0 || h === 1) && x === Math.floor(width / 2)) {
+      if (h === 0) {
+        dlf.interactiveObjects.push({
+          name: "C:\\ARX\\GRAPH\\OBJ3D\\INTERACTIVE\\FIX_INTER\\LIGHT_DOOR\\LIGHT_DOOR.teo",
+          pos: {
+            x: dlf.header.posEdit.x - 60,
+            y: dlf.header.posEdit.y + 130,
+            z: dlf.header.posEdit.z - 211,
+            // x: -2084,
+            // y: -80,
+            // z: 7444,
+          },
+          angle: {
+            a: 0,
+            b: 90,
+            g: 0,
+          },
+          identifier: 1,
+          flags: 0,
+        });
+        // console.log(dlf.interactiveObjects[0].pos);
+      }
+
+      continue;
+    }
+    fts.polygons.push(
+      wallZ(
+        originX - width * 50 + x * 100,
+        originY - 50 - h * 100,
+        originZ + length * 50 - length * 100,
+        h == 2 ? textures.stone.roof : textures.stone.wall8,
+        "front",
+        h == 2 ? 1 : (h % 2 ? 0 : 2) + (x % 2)
+      )
+    );
+  }
 }
+
+const skySize = 1500;
+const skyDistance = 600;
+
+fts.polygons.push({
+  vertices: [
+    {
+      posY: originY - skyDistance,
+      posX: originX - skySize,
+      posZ: originZ - skySize,
+      texU: 0,
+      texV: 0,
+    },
+    {
+      posY: originY - skyDistance,
+      posX: originX + skySize,
+      posZ: originZ - skySize,
+      texU: 0,
+      texV: 1,
+    },
+    {
+      posY: originY - skyDistance,
+      posX: originX - skySize,
+      posZ: originZ + skySize,
+      texU: 1,
+      texV: 0,
+    },
+    {
+      posY: originY - skyDistance,
+      posX: originX + skySize,
+      posZ: originZ + skySize,
+      texU: 1,
+      texV: 1,
+    },
+  ],
+  tex: textures.misc.sky.tc,
+  norm: { x: 0, y: 1, z: 0 },
+  norm2: { x: 0, y: 1, z: 0 },
+  normals: [
+    { x: 0, y: 1, z: 0 },
+    { x: 0, y: 1, z: 0 },
+    { x: 0, y: 1, z: 0 },
+    { x: 0, y: 1, z: 0 },
+  ],
+  transval: 0,
+  area: skySize * 2 * skySize * 2,
+  type: POLY_QUAD | POLY_NO_SHADOW,
+  room: 1,
+  paddy: 0,
+});
 
 // --------------------------------------
 
 fts.sceneHeader.playerPosition = {
   x: 11050,
-  y: 350 - 1,
+  y: 350 - 30,
   z: 4650,
 };
 
@@ -634,11 +709,12 @@ dlf.header.posEdit = {
 
 dlf.header.numberOfBackgroundPolygons = fts.polygons.length;
 llf.colors = fts.polygons.map(() => ({
-  b: 250,
-  g: 250,
   r: 250,
+  g: 250,
+  b: 250,
   a: 255,
 }));
+llf.colors[llf.colors.length - 1] = { r: 255, g: 255, b: 255, a: 255 };
 
 fts.textureContainers = Object.values(textures).reduce(
   (a, x) => a.concat(Object.values(x)),
