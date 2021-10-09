@@ -44,15 +44,6 @@ const POLY_LATE_MIP = 0x8000000;
 
 // ----------------------
 
-/*
-llf.colors = llf.colors.map((color) => {
-  color.r = 23;
-  color.g = 23;
-  color.b = 23;
-  return color;
-});
-*/
-
 const textures = {
   stone: {
     castleWall1: {
@@ -239,44 +230,49 @@ const textures = {
       fic: "GRAPH\\OBJ3D\\TEXTURES\\L1_MOSS01",
       flags: POLY_QUAD | POLY_NO_SHADOW | POLY_STONE,
     },
-    skyTop: {
+  },
+  skybox: {
+    top: {
       tc: 5,
       temp: 0,
-      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_0004.JPG",
-      flags: POLY_QUAD | POLY_NO_SHADOW /* | POLY_LAVA | POLY_FALL*/,
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_top.JPG",
+      flags: POLY_QUAD | POLY_NO_SHADOW /*| POLY_LAVA | POLY_FALL*/,
     },
-    skyLeft: {
+    left: {
       tc: 6,
       temp: 0,
-      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_0000.JPG",
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_left.JPG",
       flags: POLY_QUAD | POLY_NO_SHADOW /* | POLY_LAVA | POLY_FALL*/,
     },
-    skyRight: {
+    right: {
       tc: 7,
       temp: 0,
-      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_0001.JPG",
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_right.JPG",
       flags: POLY_QUAD | POLY_NO_SHADOW /* | POLY_LAVA | POLY_FALL*/,
     },
-    skyFront: {
+    front: {
       tc: 8,
       temp: 0,
-      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_0002.JPG",
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_front.JPG",
       flags: POLY_QUAD | POLY_NO_SHADOW /* | POLY_LAVA | POLY_FALL*/,
     },
-    skyBack: {
+    back: {
       tc: 9,
       temp: 0,
-      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_0003.JPG",
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_back.JPG",
       flags: POLY_QUAD | POLY_NO_SHADOW /* | POLY_LAVA | POLY_FALL*/,
     },
-    skyBottom: {
+    bottom: {
       tc: 10,
       temp: 0,
-      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_0005.JPG",
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_bottom.JPG",
       flags: POLY_QUAD | POLY_NO_SHADOW /*| POLY_WATER | POLY_FALL*/,
     },
   },
 };
+
+const HFLIP = 0x100;
+const VFLIP = 0x200;
 
 const floor = (
   x,
@@ -286,7 +282,8 @@ const floor = (
   direction = "right",
   quad = 0,
   textureRotation = 0,
-  size = 100
+  size = 100,
+  flags = 0
 ) => {
   let texU = 0;
   let texV = 0;
@@ -334,32 +331,40 @@ const floor = (
       uv = [d, b, c, a]; // 270
   }
 
+  if (flags & HFLIP) {
+    uv = [uv[2], uv[3], uv[0], uv[1]];
+  }
+
+  if (flags & VFLIP) {
+    uv = [uv[1], uv[0], uv[3], uv[2]];
+  }
+
   return {
     vertices: [
       {
-        posY: y,
         posX: x - size / 2,
+        posY: y,
         posZ: z - size / 2,
         texU: texU + uv[0].u,
         texV: texV + uv[0].v,
       },
       {
-        posY: y,
         posX: x + size / 2,
+        posY: y,
         posZ: z - size / 2,
         texU: texU + uv[1].u,
         texV: texV + uv[1].v,
       },
       {
-        posY: y,
         posX: x - size / 2,
+        posY: y,
         posZ: z + size / 2,
         texU: texU + uv[2].u,
         texV: texV + uv[2].v,
       },
       {
-        posY: y,
         posX: x + size / 2,
+        posY: y,
         posZ: z + size / 2,
         texU: texU + uv[3].u,
         texV: texV + uv[3].v,
@@ -375,7 +380,7 @@ const floor = (
       { x: 0, y: direction === "top" ? 1 : -1, z: 0 },
     ],
     transval: 0,
-    area: 10000,
+    area: size * size,
     type: texture.flags ?? POLY_QUAD | POLY_NO_SHADOW,
     room: 1,
     paddy: 0,
@@ -390,7 +395,8 @@ const wallX = (
   direction = "right",
   quad = 0,
   textureRotation = 0,
-  size = 100
+  size = 100,
+  flags = 0
 ) => {
   let texU = 0;
   let texV = 0;
@@ -415,12 +421,12 @@ const wallX = (
         texU = 0.5;
         texV = 0;
         break;
-      case 3:
-        texU = 0;
-        texV = 0.5;
-        break;
       case 2:
         texU = 0.5;
+        texV = 0.5;
+        break;
+      case 3:
+        texU = 0;
         texV = 0.5;
         break;
     }
@@ -438,32 +444,40 @@ const wallX = (
       uv = [d, b, c, a]; // 270
   }
 
+  if (flags & HFLIP) {
+    uv = [uv[2], uv[3], uv[0], uv[1]];
+  }
+
+  if (flags & VFLIP) {
+    uv = [uv[1], uv[0], uv[3], uv[2]];
+  }
+
   return {
     vertices: [
       {
-        posY: y - size / 2,
         posX: x - size / 2,
+        posY: y - size / 2,
         posZ: z - size / 2,
         texU: texU + uv[0].u,
         texV: texV + uv[0].v,
       },
       {
-        posY: y + size / 2,
         posX: x - size / 2,
+        posY: y + size / 2,
         posZ: z - size / 2,
         texU: texU + uv[1].u,
         texV: texV + uv[1].v,
       },
       {
-        posY: y - size / 2,
         posX: x - size / 2,
+        posY: y - size / 2,
         posZ: z + size / 2,
         texU: texU + uv[2].u,
         texV: texV + uv[2].v,
       },
       {
-        posY: y + size / 2,
         posX: x - size / 2,
+        posY: y + size / 2,
         posZ: z + size / 2,
         texU: texU + uv[3].u,
         texV: texV + uv[3].v,
@@ -494,7 +508,8 @@ const wallZ = (
   direction = "front",
   quad = 0,
   textureRotation = 0,
-  size = 100
+  size = 100,
+  flags = 0
 ) => {
   let texU = 0;
   let texV = 0;
@@ -519,12 +534,12 @@ const wallZ = (
         texU = 0.5;
         texV = 0;
         break;
-      case 3:
-        texU = 0;
-        texV = 0.5;
-        break;
       case 2:
         texU = 0.5;
+        texV = 0.5;
+        break;
+      case 3:
+        texU = 0;
         texV = 0.5;
         break;
     }
@@ -542,32 +557,40 @@ const wallZ = (
       uv = [d, b, c, a]; // 270
   }
 
+  if (flags & HFLIP) {
+    uv = [uv[2], uv[3], uv[0], uv[1]];
+  }
+
+  if (flags & VFLIP) {
+    uv = [uv[1], uv[0], uv[3], uv[2]];
+  }
+
   return {
     vertices: [
       {
-        posY: y - size / 2,
         posX: x - size / 2,
+        posY: y - size / 2,
         posZ: z - size / 2,
         texU: texU + uv[0].u,
         texV: texV + uv[0].v,
       },
       {
-        posY: y + size / 2,
         posX: x - size / 2,
+        posY: y + size / 2,
         posZ: z - size / 2,
         texU: texU + uv[1].u,
         texV: texV + uv[1].v,
       },
       {
-        posY: y - size / 2,
         posX: x + size / 2,
+        posY: y - size / 2,
         posZ: z - size / 2,
         texU: texU + uv[2].u,
         texV: texV + uv[2].v,
       },
       {
-        posY: y + size / 2,
         posX: x + size / 2,
+        posY: y + size / 2,
         posZ: z - size / 2,
         texU: texU + uv[3].u,
         texV: texV + uv[3].v,
@@ -592,6 +615,28 @@ const wallZ = (
 
 // --------------------------------------
 
+const skybox = (x, y, z, size) => {
+  fts.polygons.push(
+    floor(x, y - size / 2, z, textures.skybox.top, "top", null, 0, size),
+    floor(x, y + size / 2, z, textures.skybox.bottom, "bottom", null, 2, size),
+    wallX(x + size, y, z, textures.skybox.left, "left", null, 0, size, HFLIP),
+    wallX(x, y, z, textures.skybox.right, "right", null, 0, size),
+    wallZ(x, y, z, textures.skybox.front, "front", null, 0, size, HFLIP),
+    wallZ(x, y, z + size, textures.skybox.back, "back", null, 0, size)
+  );
+
+  llf.colors.push(
+    { r: 255, g: 255, b: 255, a: 255 },
+    { r: 255, g: 255, b: 255, a: 255 },
+    { r: 255, g: 255, b: 255, a: 255 },
+    { r: 255, g: 255, b: 255, a: 255 },
+    { r: 255, g: 255, b: 255, a: 255 },
+    { r: 255, g: 255, b: 255, a: 255 }
+  );
+};
+
+// --------------------------------------
+
 const width = 8;
 const length = 7;
 const height = 4;
@@ -602,8 +647,9 @@ const originZ = 10900;
 // --------------------------------------
 
 dlf.interactiveObjects = [];
-
 fts.polygons = [];
+llf.colors = [];
+
 for (let x = 0; x < width; x++) {
   for (let z = 0; z < length; z++) {
     const isSecondaryTexture = Math.random() * 100 < 15;
@@ -621,8 +667,13 @@ for (let x = 0; x < width; x++) {
   }
 }
 
+const windowPercent = 0;
+
 for (let z = 0; z < length; z++) {
   for (let h = 0; h < height; h++) {
+    if (Math.random() > windowPercent) {
+      continue;
+    }
     fts.polygons.push(
       wallX(
         originX - width * 50,
@@ -633,7 +684,14 @@ for (let z = 0; z < length; z++) {
         h == 2 ? 1 : (h % 2 ? 0 : 2) + (z % 2)
       )
     );
+  }
+}
 
+for (let z = 0; z < length; z++) {
+  for (let h = 0; h < height; h++) {
+    if (Math.random() > windowPercent) {
+      continue;
+    }
     fts.polygons.push(
       wallX(
         originX - width * 50 + width * 100,
@@ -649,6 +707,9 @@ for (let z = 0; z < length; z++) {
 
 for (let x = 0; x < width; x++) {
   for (let h = 0; h < height; h++) {
+    if (Math.random() > windowPercent) {
+      continue;
+    }
     fts.polygons.push(
       wallZ(
         originX - width * 50 + x * 100,
@@ -660,6 +721,7 @@ for (let x = 0; x < width; x++) {
       )
     );
 
+    /*
     if ((h === 0 || h === 1) && x === Math.floor(width / 2)) {
       if (h === 0) {
         dlf.interactiveObjects.push({
@@ -680,11 +742,20 @@ for (let x = 0; x < width; x++) {
           identifier: 1,
           flags: 0,
         });
-        // console.log(dlf.interactiveObjects[0].pos);
       }
 
       continue;
     }
+    */
+  }
+}
+
+for (let x = 0; x < width; x++) {
+  for (let h = 0; h < height; h++) {
+    if (Math.random() > windowPercent) {
+      continue;
+    }
+
     fts.polygons.push(
       wallZ(
         originX - width * 50 + x * 100,
@@ -698,83 +769,14 @@ for (let x = 0; x < width; x++) {
   }
 }
 
-const skySize = 1500;
-const skyDistance = 1000;
+llf.colors = fts.polygons.map(() => ({
+  r: 250,
+  g: 250,
+  b: 250,
+  a: 255,
+}));
 
-fts.polygons.push(
-  floor(
-    originX,
-    originY - skyDistance,
-    originZ,
-    textures.misc.skyTop,
-    "top",
-    null,
-    0,
-    skySize * 2
-  )
-);
-fts.polygons.push(
-  floor(
-    originX,
-    originY + skyDistance,
-    originZ,
-    textures.misc.skyBottom,
-    "bottom",
-    null,
-    0,
-    skySize * 2
-  )
-);
-
-fts.polygons.push(
-  wallX(
-    originX + skySize * 2,
-    originY + skyDistance / 2,
-    originZ,
-    textures.misc.skyLeft,
-    "left",
-    null,
-    0,
-    skySize * 2
-  )
-);
-fts.polygons.push(
-  wallX(
-    originX,
-    originY + skyDistance / 2,
-    originZ,
-    textures.misc.skyRight,
-    "right",
-    null,
-    0,
-    skySize * 2
-  )
-);
-
-fts.polygons.push(
-  wallZ(
-    originX,
-    originY + skyDistance / 2,
-    originZ,
-    textures.misc.skyFront,
-    "front",
-    null,
-    0,
-    skySize * 2
-  )
-);
-fts.polygons.push(
-  wallZ(
-    originX,
-    originY + skyDistance / 2,
-    originZ + skySize * 2,
-    textures.misc.skyBack,
-    "back",
-    null,
-    0,
-    skySize * 2
-  )
-);
+skybox(originX, originY, originZ, 4000);
 
 // --------------------------------------
 
@@ -797,18 +799,6 @@ dlf.header.posEdit = {
 };
 
 dlf.header.numberOfBackgroundPolygons = fts.polygons.length;
-llf.colors = fts.polygons.map(() => ({
-  r: 250,
-  g: 250,
-  b: 250,
-  a: 255,
-}));
-llf.colors[llf.colors.length - 1] = { r: 255, g: 255, b: 255, a: 255 };
-llf.colors[llf.colors.length - 2] = { r: 255, g: 255, b: 255, a: 255 };
-llf.colors[llf.colors.length - 3] = { r: 255, g: 255, b: 255, a: 255 };
-llf.colors[llf.colors.length - 4] = { r: 255, g: 255, b: 255, a: 255 };
-llf.colors[llf.colors.length - 5] = { r: 255, g: 255, b: 255, a: 255 };
-llf.colors[llf.colors.length - 6] = { r: 255, g: 255, b: 255, a: 255 };
 
 fts.textureContainers = Object.values(textures).reduce(
   (a, x) => a.concat(Object.values(x)),
