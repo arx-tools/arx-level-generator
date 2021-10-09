@@ -231,12 +231,49 @@ const textures = {
       tc: 3,
       temp: 0,
       fic: "GRAPH\\OBJ3D\\TEXTURES\\[STONE]_HUMAN_SKY",
+      flags: POLY_QUAD | POLY_NO_SHADOW | POLY_LAVA | POLY_FALL,
     },
     moss1: {
       tc: 4,
       temp: 0,
       fic: "GRAPH\\OBJ3D\\TEXTURES\\L1_MOSS01",
       flags: POLY_QUAD | POLY_NO_SHADOW | POLY_STONE,
+    },
+    skyTop: {
+      tc: 5,
+      temp: 0,
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_0004.JPG",
+      flags: POLY_QUAD | POLY_NO_SHADOW /* | POLY_LAVA | POLY_FALL*/,
+    },
+    skyLeft: {
+      tc: 6,
+      temp: 0,
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_0000.JPG",
+      flags: POLY_QUAD | POLY_NO_SHADOW /* | POLY_LAVA | POLY_FALL*/,
+    },
+    skyRight: {
+      tc: 7,
+      temp: 0,
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_0001.JPG",
+      flags: POLY_QUAD | POLY_NO_SHADOW /* | POLY_LAVA | POLY_FALL*/,
+    },
+    skyFront: {
+      tc: 8,
+      temp: 0,
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_0002.JPG",
+      flags: POLY_QUAD | POLY_NO_SHADOW /* | POLY_LAVA | POLY_FALL*/,
+    },
+    skyBack: {
+      tc: 9,
+      temp: 0,
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_0003.JPG",
+      flags: POLY_QUAD | POLY_NO_SHADOW /* | POLY_LAVA | POLY_FALL*/,
+    },
+    skyBottom: {
+      tc: 10,
+      temp: 0,
+      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_0005.JPG",
+      flags: POLY_QUAD | POLY_NO_SHADOW /*| POLY_WATER | POLY_FALL*/,
     },
   },
 };
@@ -248,34 +285,42 @@ const floor = (
   texture,
   direction = "right",
   quad = 0,
-  textureRotation = 0
+  textureRotation = 0,
+  size = 100
 ) => {
-  let texU;
-  let texV;
+  let texU = 0;
+  let texV = 0;
 
-  switch (quad) {
-    case 0:
-      texU = 0;
-      texV = 0;
-      break;
-    case 1:
-      texU = 0.5;
-      texV = 0;
-      break;
-    case 2:
-      texU = 0;
-      texV = 0.5;
-      break;
-    case 3:
-      texU = 0.5;
-      texV = 0.5;
-      break;
+  let a = { u: 0.5, v: 0 };
+  let b = { u: 0.5, v: 0.5 };
+  let c = { u: 0, v: 0 };
+  let d = { u: 0, v: 0.5 };
+
+  if (quad === null) {
+    a = { u: 1, v: 0 };
+    b = { u: 1, v: 1 };
+    c = { u: 0, v: 0 };
+    d = { u: 0, v: 1 };
+  } else {
+    switch (quad) {
+      case 0:
+        texU = 0;
+        texV = 0;
+        break;
+      case 1:
+        texU = 0.5;
+        texV = 0;
+        break;
+      case 2:
+        texU = 0;
+        texV = 0.5;
+        break;
+      case 3:
+        texU = 0.5;
+        texV = 0.5;
+        break;
+    }
   }
-
-  const a = { u: 0.5, v: 0 };
-  const b = { u: 0.5, v: 0.5 };
-  const c = { u: 0, v: 0 };
-  const d = { u: 0, v: 0.5 };
 
   let uv = [c, d, a, b]; // 0
   switch (textureRotation) {
@@ -293,29 +338,29 @@ const floor = (
     vertices: [
       {
         posY: y,
-        posX: x - 50,
-        posZ: z - 50,
+        posX: x - size / 2,
+        posZ: z - size / 2,
         texU: texU + uv[0].u,
         texV: texV + uv[0].v,
       },
       {
         posY: y,
-        posX: x + 50,
-        posZ: z - 50,
+        posX: x + size / 2,
+        posZ: z - size / 2,
         texU: texU + uv[1].u,
         texV: texV + uv[1].v,
       },
       {
         posY: y,
-        posX: x - 50,
-        posZ: z + 50,
+        posX: x - size / 2,
+        posZ: z + size / 2,
         texU: texU + uv[2].u,
         texV: texV + uv[2].v,
       },
       {
         posY: y,
-        posX: x + 50,
-        posZ: z + 50,
+        posX: x + size / 2,
+        posZ: z + size / 2,
         texU: texU + uv[3].u,
         texV: texV + uv[3].v,
       },
@@ -331,7 +376,7 @@ const floor = (
     ],
     transval: 0,
     area: 10000,
-    type: texture.flags || POLY_QUAD | POLY_NO_SHADOW,
+    type: texture.flags ?? POLY_QUAD | POLY_NO_SHADOW,
     room: 1,
     paddy: 0,
   };
@@ -344,34 +389,42 @@ const wallX = (
   texture,
   direction = "right",
   quad = 0,
-  textureRotation = 0
+  textureRotation = 0,
+  size = 100
 ) => {
-  let texU;
-  let texV;
+  let texU = 0;
+  let texV = 0;
 
-  switch (quad) {
-    case 0:
-      texU = 0;
-      texV = 0;
-      break;
-    case 1:
-      texU = 0.5;
-      texV = 0;
-      break;
-    case 3:
-      texU = 0;
-      texV = 0.5;
-      break;
-    case 2:
-      texU = 0.5;
-      texV = 0.5;
-      break;
+  let a = { u: 0.5, v: 0 };
+  let b = { u: 0.5, v: 0.5 };
+  let c = { u: 0, v: 0 };
+  let d = { u: 0, v: 0.5 };
+
+  if (quad === null) {
+    a = { u: 1, v: 0 };
+    b = { u: 1, v: 1 };
+    c = { u: 0, v: 0 };
+    d = { u: 0, v: 1 };
+  } else {
+    switch (quad) {
+      case 0:
+        texU = 0;
+        texV = 0;
+        break;
+      case 1:
+        texU = 0.5;
+        texV = 0;
+        break;
+      case 3:
+        texU = 0;
+        texV = 0.5;
+        break;
+      case 2:
+        texU = 0.5;
+        texV = 0.5;
+        break;
+    }
   }
-
-  const a = { u: 0.5, v: 0 };
-  const b = { u: 0.5, v: 0.5 };
-  const c = { u: 0, v: 0 };
-  const d = { u: 0, v: 0.5 };
 
   let uv = [c, d, a, b]; // 0
   switch (textureRotation) {
@@ -388,30 +441,30 @@ const wallX = (
   return {
     vertices: [
       {
-        posY: y - 50,
-        posX: x - 50,
-        posZ: z - 50,
+        posY: y - size / 2,
+        posX: x - size / 2,
+        posZ: z - size / 2,
         texU: texU + uv[0].u,
         texV: texV + uv[0].v,
       },
       {
-        posY: y + 50,
-        posX: x - 50,
-        posZ: z - 50,
+        posY: y + size / 2,
+        posX: x - size / 2,
+        posZ: z - size / 2,
         texU: texU + uv[1].u,
         texV: texV + uv[1].v,
       },
       {
-        posY: y - 50,
-        posX: x - 50,
-        posZ: z + 50,
+        posY: y - size / 2,
+        posX: x - size / 2,
+        posZ: z + size / 2,
         texU: texU + uv[2].u,
         texV: texV + uv[2].v,
       },
       {
-        posY: y + 50,
-        posX: x - 50,
-        posZ: z + 50,
+        posY: y + size / 2,
+        posX: x - size / 2,
+        posZ: z + size / 2,
         texU: texU + uv[3].u,
         texV: texV + uv[3].v,
       },
@@ -440,34 +493,42 @@ const wallZ = (
   texture,
   direction = "front",
   quad = 0,
-  textureRotation = 0
+  textureRotation = 0,
+  size = 100
 ) => {
-  let texU;
-  let texV;
+  let texU = 0;
+  let texV = 0;
 
-  switch (quad) {
-    case 0:
-      texU = 0;
-      texV = 0;
-      break;
-    case 1:
-      texU = 0.5;
-      texV = 0;
-      break;
-    case 3:
-      texU = 0;
-      texV = 0.5;
-      break;
-    case 2:
-      texU = 0.5;
-      texV = 0.5;
-      break;
+  let a = { u: 0.5, v: 0 };
+  let b = { u: 0.5, v: 0.5 };
+  let c = { u: 0, v: 0 };
+  let d = { u: 0, v: 0.5 };
+
+  if (quad === null) {
+    a = { u: 1, v: 0 };
+    b = { u: 1, v: 1 };
+    c = { u: 0, v: 0 };
+    d = { u: 0, v: 1 };
+  } else {
+    switch (quad) {
+      case 0:
+        texU = 0;
+        texV = 0;
+        break;
+      case 1:
+        texU = 0.5;
+        texV = 0;
+        break;
+      case 3:
+        texU = 0;
+        texV = 0.5;
+        break;
+      case 2:
+        texU = 0.5;
+        texV = 0.5;
+        break;
+    }
   }
-
-  const a = { u: 0.5, v: 0 };
-  const b = { u: 0.5, v: 0.5 };
-  const c = { u: 0, v: 0 };
-  const d = { u: 0, v: 0.5 };
 
   let uv = [c, d, a, b]; // 0
   switch (textureRotation) {
@@ -484,30 +545,30 @@ const wallZ = (
   return {
     vertices: [
       {
-        posY: y - 50,
-        posX: x - 50,
-        posZ: z - 50,
+        posY: y - size / 2,
+        posX: x - size / 2,
+        posZ: z - size / 2,
         texU: texU + uv[0].u,
         texV: texV + uv[0].v,
       },
       {
-        posY: y + 50,
-        posX: x - 50,
-        posZ: z - 50,
+        posY: y + size / 2,
+        posX: x - size / 2,
+        posZ: z - size / 2,
         texU: texU + uv[1].u,
         texV: texV + uv[1].v,
       },
       {
-        posY: y - 50,
-        posX: x + 50,
-        posZ: z - 50,
+        posY: y - size / 2,
+        posX: x + size / 2,
+        posZ: z - size / 2,
         texU: texU + uv[2].u,
         texV: texV + uv[2].v,
       },
       {
-        posY: y + 50,
-        posX: x + 50,
-        posZ: z - 50,
+        posY: y + size / 2,
+        posX: x + size / 2,
+        posZ: z - size / 2,
         texU: texU + uv[3].u,
         texV: texV + uv[3].v,
       },
@@ -638,54 +699,82 @@ for (let x = 0; x < width; x++) {
 }
 
 const skySize = 1500;
-const skyDistance = 600;
+const skyDistance = 1000;
 
-fts.polygons.push({
-  vertices: [
-    {
-      posY: originY - skyDistance,
-      posX: originX - skySize,
-      posZ: originZ - skySize,
-      texU: 0,
-      texV: 0,
-    },
-    {
-      posY: originY - skyDistance,
-      posX: originX + skySize,
-      posZ: originZ - skySize,
-      texU: 0,
-      texV: 1,
-    },
-    {
-      posY: originY - skyDistance,
-      posX: originX - skySize,
-      posZ: originZ + skySize,
-      texU: 1,
-      texV: 0,
-    },
-    {
-      posY: originY - skyDistance,
-      posX: originX + skySize,
-      posZ: originZ + skySize,
-      texU: 1,
-      texV: 1,
-    },
-  ],
-  tex: textures.misc.sky.tc,
-  norm: { x: 0, y: 1, z: 0 },
-  norm2: { x: 0, y: 1, z: 0 },
-  normals: [
-    { x: 0, y: 1, z: 0 },
-    { x: 0, y: 1, z: 0 },
-    { x: 0, y: 1, z: 0 },
-    { x: 0, y: 1, z: 0 },
-  ],
-  transval: 0,
-  area: skySize * 2 * skySize * 2,
-  type: POLY_QUAD | POLY_NO_SHADOW,
-  room: 1,
-  paddy: 0,
-});
+fts.polygons.push(
+  floor(
+    originX,
+    originY - skyDistance,
+    originZ,
+    textures.misc.skyTop,
+    "top",
+    null,
+    0,
+    skySize * 2
+  )
+);
+fts.polygons.push(
+  floor(
+    originX,
+    originY + skyDistance,
+    originZ,
+    textures.misc.skyBottom,
+    "bottom",
+    null,
+    0,
+    skySize * 2
+  )
+);
+
+fts.polygons.push(
+  wallX(
+    originX + skySize * 2,
+    originY + skyDistance / 2,
+    originZ,
+    textures.misc.skyLeft,
+    "left",
+    null,
+    0,
+    skySize * 2
+  )
+);
+fts.polygons.push(
+  wallX(
+    originX,
+    originY + skyDistance / 2,
+    originZ,
+    textures.misc.skyRight,
+    "right",
+    null,
+    0,
+    skySize * 2
+  )
+);
+
+fts.polygons.push(
+  wallZ(
+    originX,
+    originY + skyDistance / 2,
+    originZ,
+    textures.misc.skyFront,
+    "front",
+    null,
+    0,
+    skySize * 2
+  )
+);
+fts.polygons.push(
+  wallZ(
+    originX,
+    originY + skyDistance / 2,
+    originZ + skySize * 2,
+    textures.misc.skyBack,
+    "back",
+    null,
+    0,
+    skySize * 2
+  )
+);
 
 // --------------------------------------
 
@@ -715,6 +804,11 @@ llf.colors = fts.polygons.map(() => ({
   a: 255,
 }));
 llf.colors[llf.colors.length - 1] = { r: 255, g: 255, b: 255, a: 255 };
+llf.colors[llf.colors.length - 2] = { r: 255, g: 255, b: 255, a: 255 };
+llf.colors[llf.colors.length - 3] = { r: 255, g: 255, b: 255, a: 255 };
+llf.colors[llf.colors.length - 4] = { r: 255, g: 255, b: 255, a: 255 };
+llf.colors[llf.colors.length - 5] = { r: 255, g: 255, b: 255, a: 255 };
+llf.colors[llf.colors.length - 6] = { r: 255, g: 255, b: 255, a: 255 };
 
 fts.textureContainers = Object.values(textures).reduce(
   (a, x) => a.concat(Object.values(x)),
