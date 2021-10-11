@@ -5,7 +5,7 @@ const floor = (
   y,
   z,
   texture,
-  direction = "right",
+  direction = "bottom",
   quad = 0,
   textureRotation = 0,
   size = 100,

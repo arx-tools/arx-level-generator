@@ -1,18 +1,25 @@
 const fs = require("fs");
 const textures = require("./src/textures.js");
-const { skybox, floor, wallX, wallZ } = require("./src/prefabs");
+const { skybox, floor, wallX, wallZ } = require("./src/prefabs/");
+const { generateBlankMapData } = require("./src/blankMap.js");
 
 const level = 1;
-const files = {
-  fts: `C:/Program Files/Arx Libertatis/game/graph/levels/level${level}/fast.fts.json`,
-  dlf: `C:/Program Files/Arx Libertatis/graph/levels/level${level}/level${level}.dlf.json`,
-  llf: `C:/Program Files/Arx Libertatis/graph/levels/level${level}/level${level}.llf.json`,
-};
 
-const fts = require(files.fts);
-const dlf = require(files.dlf);
-const llf = require(files.llf);
+const { fts, dlf, llf } = generateBlankMapData(level);
 
+// TODO: make sure that vertices' coordinates/100 don't end up outside the sizeX/sizeZ grid
+fts.polygons.push(
+  floor(50, 0, 50, textures.gravel.ground1, "floor", null, 0, 100)
+);
+llf.colors.push({ r: 245, g: 255, b: 200, a: 255 });
+
+fts.textureContainers.push(textures.gravel.ground1);
+dlf.header.numberOfBackgroundPolygons = fts.polygons.length;
+llf.header.numberOfBackgroundPolygons = fts.polygons.length;
+
+fts.sceneHeader.mScenePosition = { x: 50, y: -140, z: 50 };
+
+/*
 // --------------------------------------
 
 const width = 8;
@@ -23,10 +30,6 @@ const originY = 350;
 const originZ = 10900;
 
 // --------------------------------------
-
-dlf.interactiveObjects = [];
-fts.polygons = [];
-llf.colors = [];
 
 for (let x = 0; x < width; x++) {
   for (let z = 0; z < length; z++) {
@@ -155,11 +158,18 @@ fts.textureContainers = Object.values(textures).reduce(
   (a, x) => a.concat(Object.values(x)),
   []
 );
+*/
 
 // ----------------------
 
-fs.writeFileSync(files.fts, JSON.stringify(fts, null, 2));
+const files = {
+  fts: `C:/Program Files/Arx Libertatis/game/graph/levels/level${level}/fast.fts.json`,
+  dlf: `C:/Program Files/Arx Libertatis/graph/levels/level${level}/level${level}.dlf.json`,
+  llf: `C:/Program Files/Arx Libertatis/graph/levels/level${level}/level${level}.llf.json`,
+};
+
 fs.writeFileSync(files.dlf, JSON.stringify(dlf, null, 2));
+fs.writeFileSync(files.fts, JSON.stringify(fts, null, 2));
 fs.writeFileSync(files.llf, JSON.stringify(llf, null, 2));
 
 console.log("done");

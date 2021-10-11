@@ -5,7 +5,7 @@ cd /c/Program\ Files/Arx\ Libertatis/game/graph/levels/level1
 echo "FTS"
 
 cat fast.fts.json | from-json --ext=fts > fast.fts.repacked
-cat fast.fts.repacked | implode -b -l --offset=1816 --debug --output=fast.fts
+cat fast.fts.repacked | implode -b -l --offset=$(arx-header-size fast.fts.repacked --ext=fts) --debug --output=fast.fts
 
 cd ../../../../graph/levels/level1
 
