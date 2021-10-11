@@ -2,7 +2,7 @@ const floor = require("./floor.js");
 const wallX = require("./wallX.js");
 const wallZ = require("./wallZ.js");
 const { HFLIP, COLOR_WHITE } = require("../constants.js");
-const textures = require("../textures.js");
+const { textures } = require("../textures.js");
 
 const skybox = (x, y, z, size, { fts, llf }) => {
   fts.polygons.push(

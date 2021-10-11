@@ -6,6 +6,9 @@ const {
   POLY_STONE,
 } = require("./constants.js");
 
+const { includes, indexOf, addIndex, map } = require("./lib/ramda.min.js");
+
+/*
 const textures = {
   stone: {
     castleWall1: {
@@ -198,39 +201,68 @@ const textures = {
       tc: 5,
       temp: 0,
       fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_top.JPG",
-      flags: POLY_QUAD | POLY_NO_SHADOW /*| POLY_LAVA | POLY_FALL*/,
+      flags: POLY_QUAD | POLY_NO_SHADOW,
     },
     left: {
       tc: 6,
       temp: 0,
       fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_left.JPG",
-      flags: POLY_QUAD | POLY_NO_SHADOW /* | POLY_LAVA | POLY_FALL*/,
+      flags: POLY_QUAD | POLY_NO_SHADOW,
     },
     right: {
       tc: 7,
       temp: 0,
       fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_right.JPG",
-      flags: POLY_QUAD | POLY_NO_SHADOW /* | POLY_LAVA | POLY_FALL*/,
+      flags: POLY_QUAD | POLY_NO_SHADOW,
     },
     front: {
       tc: 8,
       temp: 0,
       fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_front.JPG",
-      flags: POLY_QUAD | POLY_NO_SHADOW /* | POLY_LAVA | POLY_FALL*/,
+      flags: POLY_QUAD | POLY_NO_SHADOW,
     },
     back: {
       tc: 9,
       temp: 0,
       fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_back.JPG",
-      flags: POLY_QUAD | POLY_NO_SHADOW /* | POLY_LAVA | POLY_FALL*/,
+      flags: POLY_QUAD | POLY_NO_SHADOW,
     },
     bottom: {
       tc: 10,
       temp: 0,
       fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_bottom.JPG",
-      flags: POLY_QUAD | POLY_NO_SHADOW /*| POLY_WATER | POLY_FALL*/,
+      flags: POLY_QUAD | POLY_NO_SHADOW,
+    },
+  },
+};
+*/
+
+const textures = {
+  gravel: {
+    ground1: {
+      src: "GRAPH\\OBJ3D\\TEXTURES\\L5_CAVES_[GRAVEL]_GROUND05",
     },
   },
 };
 
-module.exports = textures;
+const usedTextures = [];
+const useTexture = (texture) => {
+  if (!includes(texture.src, usedTextures)) {
+    usedTextures.push(texture.src);
+  }
+
+  return indexOf(texture.src, usedTextures) + 1;
+};
+
+const exportUsedTextures = (mapData) => {
+  mapData.fts.textureContainers = addIndex(map)((texture, idx) => {
+    return {
+      tc: idx + 1,
+      temp: 0,
+      fic: texture,
+    };
+  }, usedTextures);
+  return mapData;
+};
+
+module.exports = { textures, useTexture, exportUsedTextures };

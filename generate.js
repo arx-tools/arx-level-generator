@@ -1,23 +1,29 @@
 const fs = require("fs");
-const textures = require("./src/textures.js");
+const { textures, exportUsedTextures } = require("./src/textures.js");
 const { skybox, floor, wallX, wallZ } = require("./src/prefabs/");
 const { generateBlankMapData } = require("./src/blankMap.js");
+const { compose } = require("./src/lib/ramda.min.js");
 
-const level = 1;
+const movePlayerTo = (x, y, z) => (mapData) => {
+  mapData.fts.sceneHeader.mScenePosition = { x, y: y - 140, z };
+  return mapData;
+};
 
-const { fts, dlf, llf } = generateBlankMapData(level);
+const finalize = (mapData) => {
+  mapData.dlf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
+  mapData.llf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
+  exportUsedTextures(mapData);
+  return mapData;
+};
 
-// TODO: make sure that vertices' coordinates/100 don't end up outside the sizeX/sizeZ grid
-fts.polygons.push(
-  floor(50, 0, 50, textures.gravel.ground1, "floor", null, 0, 100)
-);
-llf.colors.push({ r: 245, g: 255, b: 200, a: 255 });
+const levelIdx = 1;
 
-fts.textureContainers.push(textures.gravel.ground1);
-dlf.header.numberOfBackgroundPolygons = fts.polygons.length;
-llf.header.numberOfBackgroundPolygons = fts.polygons.length;
-
-fts.sceneHeader.mScenePosition = { x: 50, y: -140, z: 50 };
+const mapData = compose(
+  finalize,
+  floor(50, 0, 50, textures.gravel.ground1, "floor", null, 0, 100),
+  movePlayerTo(50, 0, 50),
+  generateBlankMapData
+)(levelIdx);
 
 /*
 // --------------------------------------
@@ -163,13 +169,13 @@ fts.textureContainers = Object.values(textures).reduce(
 // ----------------------
 
 const files = {
-  fts: `C:/Program Files/Arx Libertatis/game/graph/levels/level${level}/fast.fts.json`,
-  dlf: `C:/Program Files/Arx Libertatis/graph/levels/level${level}/level${level}.dlf.json`,
-  llf: `C:/Program Files/Arx Libertatis/graph/levels/level${level}/level${level}.llf.json`,
+  fts: `C:/Program Files/Arx Libertatis/game/graph/levels/level${levelIdx}/fast.fts.json`,
+  dlf: `C:/Program Files/Arx Libertatis/graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`,
+  llf: `C:/Program Files/Arx Libertatis/graph/levels/level${levelIdx}/level${levelIdx}.llf.json`,
 };
 
-fs.writeFileSync(files.dlf, JSON.stringify(dlf, null, 2));
-fs.writeFileSync(files.fts, JSON.stringify(fts, null, 2));
-fs.writeFileSync(files.llf, JSON.stringify(llf, null, 2));
+fs.writeFileSync(files.dlf, JSON.stringify(mapData.dlf, null, 2));
+fs.writeFileSync(files.fts, JSON.stringify(mapData.fts, null, 2));
+fs.writeFileSync(files.llf, JSON.stringify(mapData.llf, null, 2));
 
 console.log("done");

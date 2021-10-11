@@ -16,3 +16,7 @@ step 2: `sh compile.sh`
 
 - arx-level-json-converter
 - node-pkware
+
+## used 3rd party tools in the repo
+
+Ramda: https://cdnjs.cloudflare.com/ajax/libs/ramda/0.27.1/ramda.min.js
