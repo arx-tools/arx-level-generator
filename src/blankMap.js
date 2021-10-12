@@ -1,4 +1,9 @@
-const { MAP_WIDTH, MAP_LENGTH } = require("./constants.js");
+const {
+  MAP_MAX_WIDTH,
+  MAP_MAX_HEIGHT,
+  MAP_WIDTH,
+  MAP_HEIGHT,
+} = require("./constants.js");
 
 const createDlfData = (level, now) => ({
   meta: {
@@ -6,7 +11,7 @@ const createDlfData = (level, now) => ({
     numberOfLeftoverBytes: 0,
   },
   header: {
-    version: 1.440000057220459,
+    version: 1.44,
     identifier: "DANAE_FILE",
     lastUser: "generator",
     time: now,
@@ -51,13 +56,13 @@ const createFtsData = (level) => {
     },
     header: {
       path: `C:\\ARX\\Game\\Graph\\Levels\\level${level}\\`,
-      version: 0.14100000262260437,
+      version: 0.141,
     },
     uniqueHeaders: [],
     sceneHeader: {
-      version: 0.14100000262260437,
-      sizeX: MAP_WIDTH,
-      sizeZ: MAP_LENGTH,
+      version: 0.141,
+      sizeX: MAP_MAX_WIDTH,
+      sizeZ: MAP_MAX_HEIGHT,
       // player position doesn't seem to do anything - if you want to move the player
       // set mScenePosition
       playerPosition: {
@@ -71,9 +76,9 @@ const createFtsData = (level) => {
         z: 0,
       },
     },
+    polygons: [],
     textureContainers: [],
     cells: [],
-    polygons: [],
     anchors: [],
     portals: [],
     roomDistances: [
@@ -132,7 +137,7 @@ const createFtsData = (level) => {
     ],
   };
 
-  for (let i = 0; i < MAP_WIDTH * MAP_LENGTH; i++) {
+  for (let i = 0; i < MAP_MAX_WIDTH * MAP_MAX_HEIGHT; i++) {
     fts.cells.push({ anchors: [] });
   }
 
@@ -145,7 +150,7 @@ const createLlfData = (now) => ({
     numberOfLeftoverBytes: 0,
   },
   header: {
-    version: 1.440000057220459,
+    version: 1.44,
     identifier: "DANAE_LLH_FILE",
     lastUser: "generator",
     time: now,
@@ -157,7 +162,7 @@ const createLlfData = (now) => ({
   colors: [],
 });
 
-const generateBlankMapData = (level) => {
+const generateBlankMapData = (config) => (level) => {
   const now = Math.floor(Date.now() / 1000);
 
   return {

@@ -30,8 +30,18 @@ const POLY_LATE_MIP = 0x8000000;
 const HFLIP = 0x100;
 const VFLIP = 0x200;
 
-const MAP_WIDTH = 160;
-const MAP_LENGTH = 160;
+const MAP_MAX_WIDTH = 160;
+const MAP_MAX_HEIGHT = 160;
+
+// in the quest book's map view the coordinates 0/0 and 16000/16000 end up forming a 472x472 square, which is too big
+// based on what fits on one page and taking in account the fact, that 0/0 is positioned from the edge of the book
+// with a left padding of 20 pixels and a top padding of 98 pixels: if we crop the same amount from the bottom and
+// the middle of the book we are left with a 377x337 rectangle. This rectangle is able to display the player anywhere
+// within a 12780/11424 size map:
+// width = 16000 * 377 / 472 = 12779.661016949
+// height = 16000 * 337 / 472 = 11423.728813559
+const MAP_WIDTH = 127.8;
+const MAP_HEIGHT = 114.24;
 
 module.exports = {
   POLY_NO_SHADOW,
@@ -66,6 +76,9 @@ module.exports = {
   HFLIP,
   VFLIP,
 
+  MAP_MAX_WIDTH,
+  MAP_MAX_HEIGHT,
+
   MAP_WIDTH,
-  MAP_LENGTH,
+  MAP_HEIGHT,
 };

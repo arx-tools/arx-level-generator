@@ -23,7 +23,7 @@ const mapData = compose(
   skybox(200, 0, 200, 400),
   floor(200, 0, 200, textures.gravel.ground1, "floor", null, 0, 100),
   movePlayerTo(200, 0, 200),
-  generateBlankMapData
+  generateBlankMapData({})
 )(levelIdx);
 
 /*
