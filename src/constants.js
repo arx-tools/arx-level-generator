@@ -30,7 +30,8 @@ const POLY_LATE_MIP = 0x8000000;
 const HFLIP = 0x100;
 const VFLIP = 0x200;
 
-const COLOR_WHITE = { r: 255, g: 255, b: 255, a: 255 };
+const MAP_WIDTH = 160;
+const MAP_LENGTH = 160;
 
 module.exports = {
   POLY_NO_SHADOW,
@@ -65,5 +66,6 @@ module.exports = {
   HFLIP,
   VFLIP,
 
-  COLOR_WHITE,
+  MAP_WIDTH,
+  MAP_LENGTH,
 };

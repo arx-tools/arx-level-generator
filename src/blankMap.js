@@ -1,3 +1,5 @@
+const { MAP_WIDTH, MAP_LENGTH } = require("./constants.js");
+
 const createDlfData = (level, now) => ({
   meta: {
     type: "dlf",
@@ -54,8 +56,8 @@ const createFtsData = (level) => {
     uniqueHeaders: [],
     sceneHeader: {
       version: 0.14100000262260437,
-      sizeX: 160, // sizeX is hardcoded to be 160 in the source code
-      sizeZ: 160, // sizeZ is hardcoded to be 160 in the source code
+      sizeX: MAP_WIDTH,
+      sizeZ: MAP_LENGTH,
       // player position doesn't seem to do anything - if you want to move the player
       // set mScenePosition
       playerPosition: {
@@ -130,7 +132,7 @@ const createFtsData = (level) => {
     ],
   };
 
-  for (let i = 0; i < 160 * 160; i++) {
+  for (let i = 0; i < MAP_WIDTH * MAP_LENGTH; i++) {
     fts.cells.push({ anchors: [] });
   }
 
