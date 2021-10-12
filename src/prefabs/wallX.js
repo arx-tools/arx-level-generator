@@ -1,5 +1,6 @@
 const { POLY_QUAD, POLY_NO_SHADOW, HFLIP, VFLIP } = require("../constants.js");
 const { useTexture } = require("../textures.js");
+const { toRgba } = require("../helpers.js");
 
 const wallX =
   (
@@ -114,7 +115,7 @@ const wallX =
       room: 1,
       paddy: 0,
     });
-    mapData.llf.colors.push({ r: 245, g: 255, b: 200, a: 255 });
+    mapData.llf.colors.push(toRgba("#ffffdd"));
 
     return mapData;
   };
