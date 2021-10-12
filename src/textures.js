@@ -6,7 +6,7 @@ const {
   POLY_STONE,
 } = require("./constants.js");
 
-const { includes, indexOf, addIndex, map } = require("./lib/ramda.min.js");
+const { includes, indexOf, addIndex, map } = require("ramda");
 
 /*
 const textures = {

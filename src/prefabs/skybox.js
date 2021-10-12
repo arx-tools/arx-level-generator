@@ -3,7 +3,7 @@ const wallX = require("./wallX.js");
 const wallZ = require("./wallZ.js");
 const { HFLIP } = require("../constants.js");
 const { textures } = require("../textures.js");
-const { compose } = require("../lib/ramda.min.js");
+const { compose } = require("ramda");
 
 const skybox = (x, y, z, size) => {
   return compose(

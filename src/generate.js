@@ -1,8 +1,8 @@
 const fs = require("fs");
-const { textures, exportUsedTextures } = require("./src/textures.js");
-const { skybox, floor, wallX, wallZ } = require("./src/prefabs/");
-const { generateBlankMapData } = require("./src/blankMap.js");
-const { compose } = require("./src/lib/ramda.min.js");
+const { textures, exportUsedTextures } = require("./textures.js");
+const { skybox, floor, wallX, wallZ } = require("./prefabs");
+const { generateBlankMapData } = require("./blankMap.js");
+const { compose } = require("ramda");
 
 const movePlayerTo = (x, y, z) => (mapData) => {
   mapData.fts.sceneHeader.mScenePosition = { x, y: y - 140, z };
