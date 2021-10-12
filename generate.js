@@ -20,8 +20,9 @@ const levelIdx = 1;
 
 const mapData = compose(
   finalize,
-  floor(50, 0, 50, textures.gravel.ground1, "floor", null, 0, 100),
-  movePlayerTo(50, 0, 50),
+  skybox(200, 0, 200, 400),
+  floor(200, 0, 200, textures.gravel.ground1, "floor", null, 0, 100),
+  movePlayerTo(200, 0, 200),
   generateBlankMapData
 )(levelIdx);
 

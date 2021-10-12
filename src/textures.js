@@ -196,44 +196,6 @@ const textures = {
       flags: POLY_QUAD | POLY_NO_SHADOW | POLY_STONE,
     },
   },
-  skybox: {
-    top: {
-      tc: 5,
-      temp: 0,
-      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_top.JPG",
-      flags: POLY_QUAD | POLY_NO_SHADOW,
-    },
-    left: {
-      tc: 6,
-      temp: 0,
-      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_left.JPG",
-      flags: POLY_QUAD | POLY_NO_SHADOW,
-    },
-    right: {
-      tc: 7,
-      temp: 0,
-      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_right.JPG",
-      flags: POLY_QUAD | POLY_NO_SHADOW,
-    },
-    front: {
-      tc: 8,
-      temp: 0,
-      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_front.JPG",
-      flags: POLY_QUAD | POLY_NO_SHADOW,
-    },
-    back: {
-      tc: 9,
-      temp: 0,
-      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_back.JPG",
-      flags: POLY_QUAD | POLY_NO_SHADOW,
-    },
-    bottom: {
-      tc: 10,
-      temp: 0,
-      fic: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_bottom.JPG",
-      flags: POLY_QUAD | POLY_NO_SHADOW,
-    },
-  },
 };
 */
 
@@ -241,6 +203,26 @@ const textures = {
   gravel: {
     ground1: {
       src: "GRAPH\\OBJ3D\\TEXTURES\\L5_CAVES_[GRAVEL]_GROUND05",
+    },
+  },
+  skybox: {
+    top: {
+      src: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_top.JPG",
+    },
+    left: {
+      src: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_left.JPG",
+    },
+    right: {
+      src: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_right.JPG",
+    },
+    front: {
+      src: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_front.JPG",
+    },
+    back: {
+      src: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_back.JPG",
+    },
+    bottom: {
+      src: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_bottom.JPG",
     },
   },
 };

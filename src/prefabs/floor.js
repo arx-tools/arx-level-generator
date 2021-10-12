@@ -7,7 +7,7 @@ const floor =
     y,
     z,
     texture,
-    direction = "floor",
+    direction = "floor", // floor|ceiling
     quad = 0,
     textureRotation = 0,
     size = 100,
