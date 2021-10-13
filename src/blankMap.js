@@ -162,16 +162,8 @@ const createLlfData = (now) => ({
   colors: [],
 });
 
-const generateBlankMapData = (config) => (level) => {
-  const now = Math.floor(Date.now() / 1000);
-
-  return {
-    dlf: createDlfData(level, now),
-    fts: createFtsData(level),
-    llf: createLlfData(now),
-  };
-};
-
 module.exports = {
-  generateBlankMapData,
+  createDlfData,
+  createFtsData,
+  createLlfData,
 };

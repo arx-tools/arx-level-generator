@@ -69,6 +69,9 @@ const floor =
       uv = [uv[1], uv[0], uv[3], uv[2]];
     }
 
+    const textureFlags = texture.flags ?? POLY_QUAD | POLY_NO_SHADOW;
+    const isQuad = (textureFlags & POLY_QUAD) > 0;
+
     mapData.fts.polygons.push({
       vertices: [
         {
@@ -111,11 +114,28 @@ const floor =
       ],
       transval: 0,
       area: size * size,
-      type: texture.flags ?? POLY_QUAD | POLY_NO_SHADOW,
+      type: textureFlags,
       room: 1,
       paddy: 0,
     });
-    mapData.llf.colors.push(toRgba("#ffffdd"));
+
+    if (mapData.state.lightColor === null) {
+      // TODO: calculate light
+      mapData.llf.colors.push(toRgba("white"));
+      mapData.llf.colors.push(toRgba("white"));
+      mapData.llf.colors.push(toRgba("white"));
+      if (isQuad) {
+        mapData.llf.colors.push(toRgba("white"));
+      }
+    } else {
+      // TODO: make sure, that the light stays this for this polygon
+      mapData.llf.colors.push(toRgba(mapData.state.lightColor));
+      mapData.llf.colors.push(toRgba(mapData.state.lightColor));
+      mapData.llf.colors.push(toRgba(mapData.state.lightColor));
+      if (isQuad) {
+        mapData.llf.colors.push(toRgba(mapData.state.lightColor));
+      }
+    }
 
     return mapData;
   };
