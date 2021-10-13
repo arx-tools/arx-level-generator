@@ -1,11 +1,13 @@
 const fs = require("fs");
 const rgba = require("color-rgba");
-const { exportUsedTextures } = require("./textures.js");
+const { exportUsedTextures, useTexture, textures } = require("./textures.js");
 const {
   createDlfData,
   createFtsData,
   createLlfData,
 } = require("./blankMap.js");
+const { compose } = require("ramda");
+const { POLY_QUAD, POLY_NO_SHADOW } = require("./constants.js");
 
 const toRgba = (colorDefinition) => {
   const [r, g, b, a] = rgba(colorDefinition);
@@ -30,10 +32,66 @@ const finalize = (mapData) => {
   return mapData;
 };
 
+const addOriginPolygon = (mapData) => {
+  mapData.fts.polygons.push({
+    vertices: [
+      {
+        posX: 0,
+        posY: 0,
+        posZ: 0,
+        texU: 0,
+        texV: 0,
+      },
+      {
+        posX: 1,
+        posY: 0,
+        posZ: 0,
+        texU: 0,
+        texV: 1,
+      },
+      {
+        posX: 0,
+        posY: 0,
+        posZ: 1,
+        texU: 1,
+        texV: 0,
+      },
+      {
+        posX: 1,
+        posY: 0,
+        posZ: 1,
+        texU: 1,
+        texV: 1,
+      },
+    ],
+    tex: useTexture(textures.gravel.ground1),
+    norm: { x: 0, y: -1, z: 0 },
+    norm2: { x: 0, y: -1, z: 0 },
+    normals: [
+      { x: 0, y: -1, z: 0 },
+      { x: 0, y: -1, z: 0 },
+      { x: 0, y: -1, z: 0 },
+      { x: 0, y: -1, z: 0 },
+    ],
+    transval: 0,
+    area: 1,
+    type: POLY_QUAD | POLY_NO_SHADOW,
+    room: 1,
+    paddy: 0,
+  });
+
+  mapData.llf.colors.push(toRgba("black"));
+  mapData.llf.colors.push(toRgba("black"));
+  mapData.llf.colors.push(toRgba("black"));
+  mapData.llf.colors.push(toRgba("black"));
+
+  return mapData;
+};
+
 const generateBlankMapData = (config) => {
   const now = Math.floor(Date.now() / 1000);
 
-  return {
+  const mapData = {
     config: {
       ...config,
       now,
@@ -46,6 +104,8 @@ const generateBlankMapData = (config) => {
     fts: createFtsData(config.levelIdx),
     llf: createLlfData(now),
   };
+
+  return compose(addOriginPolygon)(mapData);
 };
 
 const saveToDisk = (mapData) => {
