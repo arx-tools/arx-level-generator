@@ -1,6 +1,5 @@
 const { POLY_QUAD, POLY_NO_SHADOW, HFLIP, VFLIP } = require("../constants.js");
 const { useTexture } = require("../textures.js");
-const { toRgba } = require("../helpers.js");
 
 const wallZ =
   (
@@ -8,7 +7,7 @@ const wallZ =
     y,
     z,
     texture,
-    direction = "front",
+    direction = "front", // front|back
     quad = 0,
     textureRotation = 0,
     size = 100,
@@ -70,9 +69,14 @@ const wallZ =
     }
 
     const textureFlags = texture.flags ?? POLY_QUAD | POLY_NO_SHADOW;
-    const isQuad = (textureFlags & POLY_QUAD) > 0;
 
     mapData.fts.polygons.push({
+      config: {
+        color: mapData.state.lightColor,
+        isQuad: (textureFlags & POLY_QUAD) > 0,
+        minX: x - size / 2,
+        minZ: z - size / 2,
+      },
       vertices: [
         {
           posX: x - size / 2,
@@ -118,24 +122,6 @@ const wallZ =
       room: 1,
       paddy: 0,
     });
-
-    if (mapData.state.lightColor === null) {
-      // TODO: calculate light
-      mapData.llf.colors.push(toRgba("white"));
-      mapData.llf.colors.push(toRgba("white"));
-      mapData.llf.colors.push(toRgba("white"));
-      if (isQuad) {
-        mapData.llf.colors.push(toRgba("white"));
-      }
-    } else {
-      // TODO: make sure, that the light stays this for this polygon
-      mapData.llf.colors.push(toRgba(mapData.state.lightColor));
-      mapData.llf.colors.push(toRgba(mapData.state.lightColor));
-      mapData.llf.colors.push(toRgba(mapData.state.lightColor));
-      if (isQuad) {
-        mapData.llf.colors.push(toRgba(mapData.state.lightColor));
-      }
-    }
 
     return mapData;
   };

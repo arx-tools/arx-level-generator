@@ -7,7 +7,12 @@ const {
   createLlfData,
 } = require("./blankMap.js");
 const { compose } = require("ramda");
-const { POLY_QUAD, POLY_NO_SHADOW } = require("./constants.js");
+const {
+  POLY_QUAD,
+  POLY_NO_SHADOW,
+  MAP_MAX_HEIGHT,
+  MAP_MAX_WIDTH,
+} = require("./constants.js");
 
 const toRgba = (colorDefinition) => {
   const [r, g, b, a] = rgba(colorDefinition);
@@ -25,15 +30,75 @@ const movePlayerTo = (x, y, z) => (mapData) => {
   return mapData;
 };
 
+const isBetween = (min, max, value) => {
+  return value >= min && value < max;
+};
+
+const isInCell = (polygonX, polygonZ, cellX, cellZ) => {
+  return (
+    isBetween(cellX * 100, (cellX + 1) * 100, polygonX) &&
+    isBetween(cellZ * 100, (cellZ + 1) * 100, polygonZ)
+  );
+};
+
+const generateLights = (mapData) => {
+  const { polygons } = mapData.fts;
+
+  let colorIdx = 0;
+
+  for (let z = 0; z < MAP_MAX_HEIGHT; z++) {
+    for (let x = 0; x < MAP_MAX_WIDTH; x++) {
+      const polygonsInCell = polygons.filter(({ config }) => {
+        return isInCell(config.minX, config.minZ, x, z);
+      });
+
+      polygonsInCell.forEach(({ config, vertices }) => {
+        const { color, isQuad } = config;
+
+        if (color === null) {
+          mapData.llf.colors.push(toRgba("white"));
+          vertices[0].llfColorIdx = colorIdx++;
+          mapData.llf.colors.push(toRgba("white"));
+          vertices[1].llfColorIdx = colorIdx++;
+          mapData.llf.colors.push(toRgba("white"));
+          vertices[2].llfColorIdx = colorIdx++;
+          if (isQuad) {
+            mapData.llf.colors.push(toRgba("white"));
+            vertices[3].llfColorIdx = colorIdx++;
+          }
+        } else {
+          mapData.llf.colors.push(color);
+          vertices[0].llfColorIdx = colorIdx++;
+          mapData.llf.colors.push(color);
+          vertices[1].llfColorIdx = colorIdx++;
+          mapData.llf.colors.push(color);
+          vertices[2].llfColorIdx = colorIdx++;
+          if (isQuad) {
+            mapData.llf.colors.push(color);
+            vertices[3].llfColorIdx = colorIdx++;
+          }
+        }
+      });
+    }
+  }
+
+  return mapData;
+};
+
 const finalize = (mapData) => {
   mapData.dlf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
   mapData.llf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
-  exportUsedTextures(mapData);
-  return mapData;
+  return compose(generateLights, exportUsedTextures)(mapData);
 };
 
 const addOriginPolygon = (mapData) => {
   mapData.fts.polygons.push({
+    config: {
+      color: toRgba("black"),
+      isQuad: true,
+      minX: 0,
+      minZ: 0,
+    },
     vertices: [
       {
         posX: 0,
@@ -80,11 +145,6 @@ const addOriginPolygon = (mapData) => {
     paddy: 0,
   });
 
-  mapData.llf.colors.push(toRgba("black"));
-  mapData.llf.colors.push(toRgba("black"));
-  mapData.llf.colors.push(toRgba("black"));
-  mapData.llf.colors.push(toRgba("black"));
-
   return mapData;
 };
 
@@ -123,7 +183,7 @@ const saveToDisk = (mapData) => {
 };
 
 const setLightColor = (color) => (mapData) => {
-  mapData.state.lightColor = color;
+  mapData.state.lightColor = toRgba(color);
   return mapData;
 };
 
