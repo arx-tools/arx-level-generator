@@ -9,7 +9,6 @@ const {
   setLightColor,
   unsetLightColor,
 } = require("./helpers.js");
-const { MAP_WIDTH } = require("./constants.js");
 
 const generate = pipe(
   generateBlankMapData,
