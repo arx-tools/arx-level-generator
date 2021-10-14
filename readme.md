@@ -8,11 +8,6 @@ Creates procedurally generated levels
 
 ## How to run
 
-step 1: `node generate.js`
+step 1: `npm run generate`
 
-step 2: `sh compile.sh`
-
-## Required tools
-
-- arx-level-json-converter
-- node-pkware
+step 2: `npm run compile`
