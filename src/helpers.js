@@ -12,6 +12,7 @@ const {
   POLY_NO_SHADOW,
   MAP_MAX_HEIGHT,
   MAP_MAX_WIDTH,
+  POLY_NODRAW,
 } = require("./constants.js");
 
 const toRgba = (colorDefinition) => {
@@ -129,7 +130,7 @@ const addOriginPolygon = (mapData) => {
         texV: 1,
       },
     ],
-    tex: useTexture(textures.gravel.ground1),
+    tex: 0, // no texture at all!
     norm: { x: 0, y: -1, z: 0 },
     norm2: { x: 0, y: -1, z: 0 },
     normals: [
@@ -140,7 +141,7 @@ const addOriginPolygon = (mapData) => {
     ],
     transval: 0,
     area: 1,
-    type: POLY_QUAD | POLY_NO_SHADOW,
+    type: POLY_QUAD | POLY_NODRAW,
     room: 1,
     paddy: 0,
   });
