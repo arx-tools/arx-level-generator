@@ -1,9 +1,32 @@
 const {
-  POLY_QUAD,
   POLY_NO_SHADOW,
-  POLY_LAVA,
-  POLY_FALL,
+  POLY_DOUBLESIDED,
+  POLY_TRANS,
+  POLY_WATER,
+  POLY_GLOW,
+  POLY_IGNORE,
+  POLY_QUAD,
+  POLY_TILED,
+  POLY_METAL,
+  POLY_HIDE,
   POLY_STONE,
+  POLY_WOOD,
+  POLY_GRAVEL,
+  POLY_EARTH,
+  POLY_NOCOL,
+  POLY_LAVA,
+  POLY_CLIMB,
+  POLY_FALL,
+  POLY_NOPATH,
+  POLY_NODRAW,
+  POLY_PRECISE_PATH,
+  POLY_NO_CLIMB,
+  POLY_ANGULAR,
+  POLY_ANGULAR_IDX0,
+  POLY_ANGULAR_IDX1,
+  POLY_ANGULAR_IDX2,
+  POLY_ANGULAR_IDX3,
+  POLY_LATE_MIP,
 } = require("./constants.js");
 
 const { includes, indexOf, addIndex, map } = require("ramda");
@@ -208,21 +231,27 @@ const textures = {
   skybox: {
     top: {
       src: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_top.JPG",
+      flags: POLY_QUAD | POLY_NO_SHADOW,
     },
     left: {
       src: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_left.JPG",
+      flags: POLY_QUAD | POLY_NO_SHADOW,
     },
     right: {
       src: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_right.JPG",
+      flags: POLY_QUAD | POLY_NO_SHADOW,
     },
     front: {
       src: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_front.JPG",
+      flags: POLY_QUAD | POLY_NO_SHADOW,
     },
     back: {
       src: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_back.JPG",
+      flags: POLY_QUAD | POLY_NO_SHADOW,
     },
     bottom: {
       src: "GRAPH\\OBJ3D\\TEXTURES\\skybox_01_bottom.JPG",
+      flags: POLY_QUAD | POLY_NO_SHADOW,
     },
   },
 };
