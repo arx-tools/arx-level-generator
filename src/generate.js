@@ -1,6 +1,6 @@
 const { pipe } = require("ramda");
 const { textures } = require("./textures.js");
-const { skybox, floor } = require("./prefabs");
+const { skybox, floor, doorframe } = require("./prefabs");
 const {
   generateBlankMapData,
   movePlayerTo,
