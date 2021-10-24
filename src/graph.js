@@ -1,12 +1,12 @@
-const subtractVectors = compose(map(apply(flip(subtract))), zip);
+const subtractVec3 = compose(map(apply(flip(subtract))), zip);
 
-const pairArrays = compose(aperture(2), converge(append, [head, identity]));
+const pairVec3s = compose(aperture(2), converge(append, [head, identity]));
 
-const toVectors = compose(map(apply(subtractVectors)), pairArrays);
+const toVectors = compose(map(apply(subtractVec3)), pairVec3s);
 
 const isZeroVertex = all(equals(0));
 
-const isQuad = complement(has(isZeroVertex));
+const isQuad = both(compose(equals(4), length), none(isZeroVertex));
 
 const withoutZeroVertex = reject(isZeroVertex);
 
@@ -27,70 +27,62 @@ const normalize = (v) => {
 };
 
 const area = (vertices) => {
-  return "?";
+  if (isQuad(vertices)) {
+    const [a, b, c, d] = vertices;
+    return area([a, b, c]) + area([c, b, d]);
+  } else {
+    const [a, b, c] = withoutZeroVertex(vertices);
+    return magnitude(cross(subtractVec3(a, b), subtractVec3(a, c))) / 2;
+  }
 };
 
 // --------------------
 
+// 1st polygon of level8/fast.fts
+// vertices are laid down in a russian i shape (И):
+// 02
+// 13
 const vertices = [
-  [5350.00048828125, 335.0000915527344, 10550.005859375],
-  [5260.00048828125, 335.0000915527344, 10550.005859375],
-  [5260.00048828125, 270.0000915527344, 10550.005859375],
-  [0, 0, 0],
+  [5190.00048828125, 335.0000915527344, 10550.005859375],
+  [5200.00048828125, 340.0000915527344, 10560.005859375],
+  [5190.00048828125, 335.0000915527344, 10650.005859375],
+  [5200.00048828125, 340.0000915527344, 10650.005859375],
 ];
 
-area(vertices);
+// area(vertices); // expected: 4503.2490234375, result: 1062.1322893124002
 
+// quad with clockwise winding
+const clockwise = [
+  subtractVec3(vertices[0], vertices[2]),
+  subtractVec3(vertices[2], vertices[3]),
+  subtractVec3(vertices[3], vertices[1]),
+  subtractVec3(vertices[1], vertices[0]),
+];
 /*
-;[
-  normalize(cross(
-    subtractVectors(vertices[1], vertices[0]),
-    subtractVectors(vertices[2], vertices[0])
-  )),
+=
+[
+  [0, 0, 100],
+  [10, 5, 0],
+  [0, 0, -90],
+  [-10, -5, -10]
 ]
 */
 
-// ------------------
+// ---------------------
 
+// quad with counter-clockwise winding
+const counterClockwise = [
+  subtractVec3(vertices[0], vertices[1]),
+  subtractVec3(vertices[1], vertices[3]),
+  subtractVec3(vertices[3], vertices[2]),
+  subtractVec3(vertices[2], vertices[0]),
+];
 /*
-
-expected results:
-
-normals: [
-  {
-    "x": 0,
-    "y": -0.37828773260116577,
-    "z": 0.7352360486984253
-  },
-  {
-    "x": 0,
-    "y": -0.44193923473358154,
-    "z": 0.7101149559020996
-  },
-  {
-    "x": 0,
-    "y": 0,
-    "z": 0.9762266874313354
-  },
-  {
-    "x": 0,
-    "y": 0,
-    "z": 0
-  }
+=
+[
+  [10, 5, 10],
+  [0, 0, 90],
+  [-10, -5, 0],
+  [0, 0, -100]
 ]
-
-
-"norm": {
-  "x": 0,
-  "y": 0,
-  "z": 0.9458710551261902
-},
-
-"norm2": {
-  "x": 0,
-  "y": 0,
-  "z": 0
-}
-
-"area": 3850.702392578125,
 */
