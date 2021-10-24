@@ -1,38 +1,68 @@
-const { area, subtractVec3 } = require("./functions.js");
+const {
+  area,
+  subtractVec3,
+  isQuad,
+  fromPolygonData,
+} = require("./functions.js");
 const fs = require("fs");
 
 const fts = require("./level8/fast.fts.json");
 
 const output = [];
 
-for (let n = 0; n < 10; n++) {
-  const vertices = fts.polygons[n].vertices.map(({ posX, posY, posZ }) => [
-    posX,
-    posY,
-    posZ,
-  ]);
+const polygons = fts.polygons
+  .map(fromPolygonData)
+  .filter(({ vertices }) => !isQuad(vertices));
+
+for (let n = 0; n < 234; n++) {
+  const vertices = polygons[n].vertices;
+
+  let clockwise;
+  if (isQuad(vertices)) {
+    clockwise = [
+      subtractVec3(vertices[0], vertices[2]),
+      subtractVec3(vertices[2], vertices[3]),
+      subtractVec3(vertices[3], vertices[1]),
+      subtractVec3(vertices[1], vertices[0]),
+    ];
+    counterClockwise = [
+      subtractVec3(vertices[0], vertices[1]),
+      subtractVec3(vertices[1], vertices[3]),
+      subtractVec3(vertices[3], vertices[2]),
+      subtractVec3(vertices[2], vertices[0]),
+    ];
+  } else {
+    clockwise = [
+      subtractVec3(vertices[0], vertices[2]),
+      subtractVec3(vertices[2], vertices[1]),
+      subtractVec3(vertices[1], vertices[0]),
+    ];
+    counterClockwise = [
+      subtractVec3(vertices[0], vertices[1]),
+      subtractVec3(vertices[1], vertices[2]),
+      subtractVec3(vertices[2], vertices[0]),
+    ];
+  }
 
   const result = {
     vertices,
     vectors: {
-      clockwise: [
-        subtractVec3(vertices[0], vertices[2]),
-        subtractVec3(vertices[2], vertices[3]),
-        subtractVec3(vertices[3], vertices[1]),
-        subtractVec3(vertices[1], vertices[0]),
-      ],
-      counterClockwise: [
-        subtractVec3(vertices[0], vertices[1]),
-        subtractVec3(vertices[1], vertices[3]),
-        subtractVec3(vertices[3], vertices[2]),
-        subtractVec3(vertices[2], vertices[0]),
-      ],
+      clockwise,
+      counterClockwise,
     },
     area: {
-      expected: fts.polygons[n].area,
+      expected: polygons[n].area,
       got: area(vertices),
     },
   };
+
+  clockwise = result.vectors.clockwise
+    .map((vector) => `        [ ${vector.join(", ")} ]`)
+    .join(",\n");
+
+  counterClockwise = result.vectors.counterClockwise
+    .map((vector) => `        [ ${vector.join(", ")} ]`)
+    .join(",\n");
 
   output.push(`  {
     "vertices": [
@@ -43,21 +73,16 @@ for (let n = 0; n < 10; n++) {
     ],
     "vectors": {
       "clockwise": [
-        [ ${result.vectors.clockwise[0].join(", ")} ],
-        [ ${result.vectors.clockwise[1].join(", ")} ],
-        [ ${result.vectors.clockwise[2].join(", ")} ],
-        [ ${result.vectors.clockwise[3].join(", ")} ],
+${clockwise}
       ],
       "counterClockwise": [
-        [ ${result.vectors.counterClockwise[0].join(", ")} ],
-        [ ${result.vectors.counterClockwise[1].join(", ")} ],
-        [ ${result.vectors.counterClockwise[2].join(", ")} ],
-        [ ${result.vectors.counterClockwise[3].join(", ")} ],
+${counterClockwise}
       ]
     },
     "area": {
       "expected": ${result.area.expected},
-      "got": ${result.area.got}
+      "got": ${result.area.got},
+      "percent": ${result.area.got / result.area.expected}
     }
   }`);
 }

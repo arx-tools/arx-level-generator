@@ -48,7 +48,14 @@ const normalize = (v) => {
   return map(apply(divide), zip(v, repeat(magnitude(v), 3)));
 };
 
+// const distance3D = compose(magnitude, subtractVec3);
+const distance3D = ([x0, y0, z0], [x1, y1, z1]) =>
+  Math.sqrt(
+    (x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0) + (z1 - z0) * (z1 - z0)
+  );
+
 const area = (vertices) => {
+  /*
   if (isQuad(vertices)) {
     const [a, b, c, d] = vertices;
     return area([a, b, c]) + area([c, b, d]);
@@ -56,6 +63,52 @@ const area = (vertices) => {
     const [a, b, c] = withoutZeroVertex(vertices);
     return magnitude(cross(subtractVec3(a, b), subtractVec3(a, c))) / 2;
   }
+  */
+
+  // https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/EERIE/EERIEPoly.cpp#L3134
+  const a = distance3D(
+    [
+      (vertices[0][0] + vertices[1][0]) / 2,
+      (vertices[0][1] + vertices[1][1]) / 2,
+      (vertices[0][2] + vertices[1][2]) / 2,
+    ],
+    vertices[2]
+  );
+  const b = distance3D(vertices[0], vertices[1]);
+
+  let area = a * b * 0.5;
+
+  // https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/EERIE/EERIEDraw.cpp#L267
+  /*
+  if (isQuad(vertices)) {
+    const c = distance3D(
+      [
+        (vertices[1][0] + vertices[2][0]) / 2,
+        (vertices[1][1] + vertices[2][1]) / 2,
+        (vertices[1][2] + vertices[2][2]) / 2,
+      ],
+      vertices[3]
+    );
+
+    const d = distance3D(vertices[3], vertices[1]);
+
+    area += c * (d / 2);
+  }
+  */
+  area += 0;
+
+  return area;
+};
+
+const fromPolygonData = (polygon) => {
+  return {
+    ...polygon,
+    vertices: polygon.vertices.map(({ posX, posY, posZ }) => [
+      Math.round(posX * 10 ** 4) / 10 ** 4,
+      Math.round(posY * 10 ** 4) / 10 ** 4,
+      Math.round(posZ * 10 ** 4) / 10 ** 4,
+    ]),
+  };
 };
 
 module.exports = {
@@ -68,5 +121,7 @@ module.exports = {
   cross,
   magnitude,
   normalize,
+  distance3D,
   area,
+  fromPolygonData,
 };
