@@ -81,8 +81,7 @@ ${counterClockwise}
     },
     "area": {
       "expected": ${result.area.expected},
-      "got": ${result.area.got},
-      "percent": ${result.area.got / result.area.expected}
+      "got": ${result.area.got}
     }
   }`);
 }

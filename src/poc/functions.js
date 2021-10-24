@@ -49,10 +49,10 @@ const normalize = (v) => {
 };
 
 // const distance3D = compose(magnitude, subtractVec3);
-const distance3D = ([x0, y0, z0], [x1, y1, z1]) =>
-  Math.sqrt(
-    (x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0) + (z1 - z0) * (z1 - z0)
-  );
+// https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/Include/EERIEmath.h#L557
+const distance3D = ([x0, y0, z0], [x1, y1, z1]) => {
+  return Math.sqrt((x1 - x0) ** 2 + (y1 - y0) ** 2 + (z1 - z0) ** 2);
+};
 
 const area = (vertices) => {
   /*
@@ -76,7 +76,7 @@ const area = (vertices) => {
   );
   const b = distance3D(vertices[0], vertices[1]);
 
-  let area = a * b * 0.5;
+  let area = (a * b) / 2;
 
   // https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/EERIE/EERIEDraw.cpp#L267
   /*
