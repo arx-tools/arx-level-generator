@@ -6,7 +6,9 @@
   "scripts": {
     "generate:watch": "nodemon src/generate.js",
     "generate": "node src/generate.js",
-    "compile": "sh scripts/compile.sh"
+    "compile": "sh scripts/compile.sh",
+    "poc": "node src/poc/index.js",
+    "poc:watch": "nodemon src/poc/index.js"
   },
   "repository": {
     "type": "git",

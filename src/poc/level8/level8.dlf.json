@@ -1,0 +1,441 @@
+{
+	"meta": {
+		"type": "dlf",
+		"numberOfLeftoverBytes": 0
+	},
+	"header": {
+		"version": 1.440000057220459,
+		"identifier": "DANAE_FILE",
+		"lastUser": "moulinator",
+		"time": 1022759025,
+		"posEdit": {
+			"x": -2229.64990234375,
+			"y": -62.612579345703125,
+			"z": 7163.8037109375
+		},
+		"angleEdit": {
+			"a": 0,
+			"b": 180,
+			"g": 0
+		},
+		"numberOfNodes": 0,
+		"numberOfNodeLinks": 12,
+		"numberOfZones": 0,
+		"lighting": 0,
+		"numberOfBackgroundPolygons": 1277,
+		"numberOfIgnoredPolygons": 0,
+		"numberOfChildPolygons": 0,
+		"offset": {
+			"x": 0,
+			"y": 0,
+			"z": 0
+		}
+	},
+	"scene": {
+		"name": "Graph\\Levels\\level8\\"
+	},
+	"interactiveObjects": [
+		{
+			"name": "C:\\ARX\\Graph\\Obj3D\\Interactive\\System\\Camera\\Camera.teo",
+			"pos": {
+				"x": -2063.7265625,
+				"y": -159.99978637695312,
+				"z": 7520.2890625
+			},
+			"angle": {
+				"a": 0,
+				"b": -90,
+				"g": 0
+			},
+			"identifier": 27,
+			"flags": 0
+		},
+		{
+			"name": "C:\\ARX\\Graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo",
+			"pos": {
+				"x": -2161,
+				"y": -15.999786376953125,
+				"z": 7310
+			},
+			"angle": {
+				"a": 0,
+				"b": -90,
+				"g": 0
+			},
+			"identifier": 118,
+			"flags": 0
+		},
+		{
+			"name": "C:\\ARX\\Graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo",
+			"pos": {
+				"x": -2189.85791015625,
+				"y": -10.999786376953125,
+				"z": 7384.142578125
+			},
+			"angle": {
+				"a": 0,
+				"b": -90,
+				"g": 0
+			},
+			"identifier": 119,
+			"flags": 0
+		},
+		{
+			"name": "C:\\ARX\\Graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo",
+			"pos": {
+				"x": -2160,
+				"y": -14.999786376953125,
+				"z": 7466
+			},
+			"angle": {
+				"a": 0,
+				"b": -90,
+				"g": 0
+			},
+			"identifier": 120,
+			"flags": 0
+		},
+		{
+			"name": "C:\\ARX\\Graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo",
+			"pos": {
+				"x": -2070,
+				"y": -12.999786376953125,
+				"z": 7270
+			},
+			"angle": {
+				"a": 0,
+				"b": 360,
+				"g": 0
+			},
+			"identifier": 121,
+			"flags": 0
+		},
+		{
+			"name": "C:\\ARX\\Graph\\Obj3D\\Interactive\\NPC\\human_base\\human_base.teo",
+			"pos": {
+				"x": -1991.85791015625,
+				"y": -7.999786376953125,
+				"z": 7447.998046875
+			},
+			"angle": {
+				"a": 0,
+				"b": 90,
+				"g": 0
+			},
+			"identifier": 122,
+			"flags": 0
+		},
+		{
+			"name": "C:\\ARX\\Graph\\Obj3D\\Interactive\\NPC\\snake_woman_base\\snake_woman_base.teo",
+			"pos": {
+				"x": -1973,
+				"y": 60.000213623046875,
+				"z": 7349
+			},
+			"angle": {
+				"a": 0,
+				"b": 90,
+				"g": 0
+			},
+			"identifier": 10,
+			"flags": 0
+		},
+		{
+			"name": "C:\\ARX\\Graph\\Obj3D\\Interactive\\System\\Camera\\Camera.teo",
+			"pos": {
+				"x": -2070,
+				"y": -119.99954223632812,
+				"z": 7370
+			},
+			"angle": {
+				"a": 0,
+				"b": 90,
+				"g": 0
+			},
+			"identifier": 73,
+			"flags": 0
+		},
+		{
+			"name": "C:\\ARX\\Graph\\Obj3D\\Interactive\\System\\Marker\\Marker.teo",
+			"pos": {
+				"x": -2076,
+				"y": -14.999786376953125,
+				"z": 7519
+			},
+			"angle": {
+				"a": 0,
+				"b": 0,
+				"g": 0
+			},
+			"identifier": 298,
+			"flags": 0
+		},
+		{
+			"name": "C:\\ARX\\GRAPH\\OBJ3D\\INTERACTIVE\\ITEMS\\QUEST_ITEM\\KOLTK_SAMPLE\\KOLTK_SAMPLE.teo",
+			"pos": {
+				"x": -2084.14208984375,
+				"y": -79.99954223632812,
+				"z": 7444.142578125
+			},
+			"angle": {
+				"a": 0,
+				"b": 0,
+				"g": 0
+			},
+			"identifier": 3,
+			"flags": 0
+		},
+		{
+			"name": "C:\\ARX\\Graph\\Obj3D\\Interactive\\System\\Marker\\Marker.teo",
+			"pos": {
+				"x": -2070,
+				"y": -159.99954223632812,
+				"z": 7370
+			},
+			"angle": {
+				"a": 0,
+				"b": 0,
+				"g": 0
+			},
+			"identifier": 441,
+			"flags": 0
+		},
+		{
+			"name": "C:\\ARX\\Graph\\Obj3D\\Interactive\\System\\Camera\\Camera.teo",
+			"pos": {
+				"x": -2059,
+				"y": -339.9995422363281,
+				"z": 7410
+			},
+			"angle": {
+				"a": 0,
+				"b": -90,
+				"g": 0
+			},
+			"identifier": 83,
+			"flags": 0
+		},
+		{
+			"name": "C:\\ARX\\GRAPH\\OBJ3D\\INTERACTIVE\\ITEMS\\QUEST_ITEM\\NOTE\\NOTE.teo",
+			"pos": {
+				"x": -2035.53515625,
+				"y": -77.999755859375,
+				"z": 7445.46484375
+			},
+			"angle": {
+				"a": 0,
+				"b": 0,
+				"g": -90
+			},
+			"identifier": 34,
+			"flags": 0
+		}
+	],
+	"colors": null,
+	"lights": [],
+	"fogs": [],
+	"paths": [
+		{
+			"header": {
+				"name": "PATH1",
+				"idx": 0,
+				"flags": 1,
+				"initPos": {
+					"x": -2058.2529296875,
+					"y": -119.99978637695312,
+					"z": 7626.6494140625
+				},
+				"pos": {
+					"x": -2058.2529296875,
+					"y": -119.99978637695312,
+					"z": 7626.6494140625
+				},
+				"rgb": {
+					"r": 0,
+					"g": 0,
+					"b": 0
+				},
+				"farClip": 2800,
+				"reverb": 0,
+				"ambianceMaxVolume": 100,
+				"height": 0,
+				"ambiance": "NONE"
+			},
+			"pathways": [
+				{
+					"rpos": {
+						"x": 0,
+						"y": 0,
+						"z": 0
+					},
+					"flag": 1,
+					"time": 0
+				},
+				{
+					"rpos": {
+						"x": -932.6159057617188,
+						"y": -10,
+						"z": -400.5881652832031
+					},
+					"flag": 0,
+					"time": 2000
+				},
+				{
+					"rpos": {
+						"x": -18.064830780029297,
+						"y": 10,
+						"z": -446.07464599609375
+					},
+					"flag": 1,
+					"time": 36000
+				},
+				{
+					"rpos": {
+						"x": 900.30419921875,
+						"y": -120,
+						"z": -153.35589599609375
+					},
+					"flag": 0,
+					"time": 2000
+				},
+				{
+					"rpos": {
+						"x": 6.934767246246338,
+						"y": 0,
+						"z": 2.3148345947265625
+					},
+					"flag": 1,
+					"time": 36000
+				},
+				{
+					"rpos": {
+						"x": -99.47284698486328,
+						"y": -30,
+						"z": 128.6477813720703
+					},
+					"flag": 0,
+					"time": 2000
+				},
+				{
+					"rpos": {
+						"x": 126.26661682128906,
+						"y": -10,
+						"z": -127.48757934570312
+					},
+					"flag": 0,
+					"time": 15000
+				},
+				{
+					"rpos": {
+						"x": 143.91864013671875,
+						"y": -10,
+						"z": -370.6815490722656
+					},
+					"flag": 1,
+					"time": 20000
+				},
+				{
+					"rpos": {
+						"x": -37.31756591796875,
+						"y": -10,
+						"z": -501.3275451660156
+					},
+					"flag": 0,
+					"time": 2000
+				},
+				{
+					"rpos": {
+						"x": -166.1215362548828,
+						"y": 0,
+						"z": -359.2117004394531
+					},
+					"flag": 0,
+					"time": 15000
+				},
+				{
+					"rpos": {
+						"x": -142.06600952148438,
+						"y": 0,
+						"z": -111.29336547851562
+					},
+					"flag": 0,
+					"time": 20000
+				}
+			]
+		},
+		{
+			"header": {
+				"name": "TOP",
+				"idx": 0,
+				"flags": 0,
+				"initPos": {
+					"x": -2082.7783203125,
+					"y": -309.9997863769531,
+					"z": 7350.12109375
+				},
+				"pos": {
+					"x": -2082.7783203125,
+					"y": -309.9997863769531,
+					"z": 7350.12109375
+				},
+				"rgb": {
+					"r": 0,
+					"g": 0,
+					"b": 0
+				},
+				"farClip": 2800,
+				"reverb": 0,
+				"ambianceMaxVolume": 100,
+				"height": 0,
+				"ambiance": "NONE"
+			},
+			"pathways": [
+				{
+					"rpos": {
+						"x": 0,
+						"y": 0,
+						"z": 0
+					},
+					"flag": 1,
+					"time": 0
+				},
+				{
+					"rpos": {
+						"x": 23.999832153320312,
+						"y": 430,
+						"z": -377.35296630859375
+					},
+					"flag": 0,
+					"time": 2000
+				},
+				{
+					"rpos": {
+						"x": 7.089907646179199,
+						"y": 200,
+						"z": 118.77491760253906
+					},
+					"flag": 1,
+					"time": 7000
+				},
+				{
+					"rpos": {
+						"x": 6.55283260345459,
+						"y": 190,
+						"z": 137.93362426757812
+					},
+					"flag": 0,
+					"time": 10000
+				},
+				{
+					"rpos": {
+						"x": 6.552641868591309,
+						"y": 190,
+						"z": 137.93382263183594
+					},
+					"flag": 0,
+					"time": 2000
+				}
+			]
+		}
+	]
+}
