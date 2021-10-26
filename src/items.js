@@ -5,6 +5,10 @@ const items = {
       id: 0,
     },
   },
+  torch: {
+    src: "Items\\Provisions\\Torch\\Torch.teo",
+    id: 0,
+  },
 };
 
 module.exports = { items };

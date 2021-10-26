@@ -1,15 +1,28 @@
 const fs = require("fs");
 const rgba = require("color-rgba");
-const { exportUsedTextures, useTexture, textures } = require("./textures.js");
+const { exportUsedTextures } = require("./textures.js");
 const {
   createDlfData,
   createFtsData,
   createLlfData,
 } = require("./blankMap.js");
-const { compose } = require("ramda");
+const {
+  pluck,
+  compose,
+  pick,
+  map,
+  unnest,
+  countBy,
+  toPairs,
+  partition,
+  nth,
+  equals,
+  adjust,
+  split,
+  unary,
+} = require("ramda");
 const {
   POLY_QUAD,
-  POLY_NO_SHADOW,
   MAP_MAX_HEIGHT,
   MAP_MAX_WIDTH,
   POLY_NODRAW,
@@ -193,6 +206,67 @@ const unsetLightColor = (mapData) => {
   return mapData;
 };
 
+const unpackCoords = map(
+  compose(
+    ([posX, posY, posZ]) => ({ posX, posY, posZ }),
+    map(unary(parseInt)),
+    split("-"),
+    nth(0)
+  )
+);
+
+const categorizeVertices = compose(
+  ([corner, [edge, middle]]) => ({
+    corners: unpackCoords(corner),
+    edges: unpackCoords(edge),
+    middles: unpackCoords(middle),
+  }),
+  adjust(1, partition(compose(equals(2), nth(1)))),
+  partition(compose(equals(1), nth(1))),
+  toPairs,
+  countBy(({ posX, posY, posZ }) => `${posX}-${posY}-${posZ}`),
+  map(pick(["posX", "posY", "posZ"])),
+  unnest,
+  pluck("vertices")
+);
+
+const adjustVertexBy = (ref, magnitude, polygons) => {
+  return polygons.map((polygon) => {
+    polygon.vertices = polygon.vertices.map((vertex) => {
+      if (
+        vertex.posX === ref.posX &&
+        vertex.posY === ref.posY &&
+        vertex.posZ === ref.posZ &&
+        !vertex.modified
+      ) {
+        vertex.posY -= magnitude;
+        vertex.modified = true;
+      }
+      return vertex;
+    });
+
+    return polygon;
+  });
+};
+
+const randomBetween = (min, max) => {
+  return Math.random() * (max - min) + min;
+};
+
+const pickRandoms = (n, set) => {
+  if (set.length <= n) {
+    return set;
+  } else {
+    let remaining = set.slice();
+    let matches = [];
+    for (let i = 0; i < n; i++) {
+      let idx = randomBetween(0, remaining.length);
+      matches = matches.concat(remaining.splice(idx, 1));
+    }
+    return matches;
+  }
+};
+
 module.exports = {
   toRgba,
   movePlayerTo,
@@ -201,4 +275,8 @@ module.exports = {
   saveToDisk,
   setLightColor,
   unsetLightColor,
+  categorizeVertices,
+  adjustVertexBy,
+  randomBetween,
+  pickRandoms,
 };

@@ -149,6 +149,7 @@ const generate = compose(
 
   addZone(...origin, "ambient_noden"),
   addItem(...origin, items.plants.fern),
+  addItem(origin[0] - 70, origin[1] - 20, origin[2] + 90, items.torch),
   room(...origin, 12, "n"),
 
   pillars(...origin, 30, 12 * 100),
