@@ -11,6 +11,11 @@ const textures = {
       src: "L5_CAVES_[GRAVEL]_GROUND05",
     },
   },
+  stone: {
+    whiteBricks: {
+      src: "[STONE]_HUMAN_STONE_WALL1.jpg",
+    },
+  },
   skybox: {
     top: {
       src: "skybox_01_top.JPG",

@@ -11,11 +11,23 @@ const wallZ =
     quad = 0,
     textureRotation = 0,
     size = 100,
-    flags = 0
+    flags = 0,
+    _uv = {
+      a: { u: 1, v: 0 },
+      b: { u: 1, v: 1 },
+      c: { u: 0, v: 0 },
+      d: { u: 0, v: 1 },
+    }
   ) =>
   (mapData) => {
     let texU = 0;
     let texV = 0;
+    let sizeX = size;
+    let sizeY = size;
+    let sizeZ = size;
+    if (Array.isArray(size)) {
+      [sizeX, sizeY, sizeZ] = size;
+    }
 
     let a = { u: 0.5, v: 0 };
     let b = { u: 0.5, v: 0.5 };
@@ -23,10 +35,10 @@ const wallZ =
     let d = { u: 0, v: 0.5 };
 
     if (quad === null) {
-      a = { u: 1, v: 0 };
-      b = { u: 1, v: 1 };
-      c = { u: 0, v: 0 };
-      d = { u: 0, v: 1 };
+      a = _uv.a;
+      b = _uv.b;
+      c = _uv.c;
+      d = _uv.d;
     } else {
       switch (quad) {
         case 0:
@@ -74,35 +86,35 @@ const wallZ =
       config: {
         color: mapData.state.lightColor,
         isQuad: (textureFlags & POLY_QUAD) > 0,
-        minX: x - size / 2,
-        minZ: z - size / 2,
+        minX: x - sizeX / 2,
+        minZ: z - sizeZ / 2,
       },
       vertices: [
         {
-          posX: x - size / 2,
-          posY: y - size / 2,
-          posZ: z - size / 2,
+          posX: x - sizeX / 2,
+          posY: y - sizeY / 2,
+          posZ: z - sizeZ / 2,
           texU: texU + uv[0].u,
           texV: texV + uv[0].v,
         },
         {
-          posX: x - size / 2,
-          posY: y + size / 2,
-          posZ: z - size / 2,
+          posX: x - sizeX / 2,
+          posY: y + sizeY / 2,
+          posZ: z - sizeZ / 2,
           texU: texU + uv[1].u,
           texV: texV + uv[1].v,
         },
         {
-          posX: x + size / 2,
-          posY: y - size / 2,
-          posZ: z - size / 2,
+          posX: x + sizeX / 2,
+          posY: y - sizeY / 2,
+          posZ: z - sizeZ / 2,
           texU: texU + uv[2].u,
           texV: texV + uv[2].v,
         },
         {
-          posX: x + size / 2,
-          posY: y + size / 2,
-          posZ: z - size / 2,
+          posX: x + sizeX / 2,
+          posY: y + sizeY / 2,
+          posZ: z - sizeZ / 2,
           texU: texU + uv[3].u,
           texV: texV + uv[3].v,
         },
