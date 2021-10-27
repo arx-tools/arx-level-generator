@@ -23,9 +23,8 @@
   "dependencies": {
     "arx-level-json-converter": "^1.0.1",
     "node-pkware": "^1.0.0-beta.3",
-    "ramda": "^0.27.1"
-  },
-  "devDependencies": {
+    "ramda": "^0.27.1",
+    "ramda-adjunct": "^2.34.0",
     "color-rgba": "^2.3.0",
     "nodemon": "^2.0.13"
   }

@@ -24,6 +24,7 @@ const {
   dropLast,
   join,
   replace,
+  keys,
 } = require("ramda");
 const {
   POLY_QUAD,
@@ -31,6 +32,7 @@ const {
   MAP_MAX_WIDTH,
   POLY_NODRAW,
 } = require("./constants.js");
+const { exportUsedItems, exportScripts } = require("./items.js");
 
 const toRgba = (colorDefinition) => {
   const [r, g, b, a] = rgba(colorDefinition);
@@ -106,7 +108,7 @@ const generateLights = (mapData) => {
 const finalize = (mapData) => {
   mapData.dlf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
   mapData.llf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
-  return compose(generateLights, exportUsedTextures)(mapData);
+  return compose(generateLights, exportUsedItems, exportUsedTextures)(mapData);
 };
 
 const addOriginPolygon = (mapData) => {
@@ -196,25 +198,41 @@ const saveToDisk = async (mapData) => {
     await fs.promises.rmdir("dist", { recursive: true });
   } catch (e) {}
 
+  let scripts = exportScripts(outputDir);
+
   const files = {
     fts: `${outputDir}game/graph/levels/level${levelIdx}/fast.fts.json`,
     dlf: `${outputDir}graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`,
     llf: `${outputDir}graph/levels/level${levelIdx}/level${levelIdx}.llf.json`,
   };
 
-  const manifest = [...values(files)];
+  const manifest = [...values(files), ...keys(scripts)];
 
-  await compose(
-    (promises) => Promise.all(promises),
+  // TODO: create folders in sequence
+  const tasks = compose(
     map(
       compose(
-        (path) => fs.promises.mkdir(path, { recursive: true }),
+        (path) => async () => {
+          await fs.promises.mkdir(path, { recursive: true });
+        },
         join("/"),
         dropLast(1),
         split("/")
       )
     )
   )(manifest);
+
+  for (let task of tasks) {
+    await task();
+  }
+
+  // ------------
+
+  scripts = toPairs(scripts);
+
+  for (let [filename, script] of scripts) {
+    await fs.promises.writeFile(filename, script);
+  }
 
   await fs.promises.writeFile(files.dlf, JSON.stringify(mapData.dlf, null, 2));
   await fs.promises.writeFile(files.fts, JSON.stringify(mapData.fts, null, 2));

@@ -1,4 +1,4 @@
-const { compose, times, identity, reduce, __ } = require("ramda");
+const { compose, times, identity, reduce, __, trim } = require("ramda");
 const { room, pillar } = require("./prefabs");
 const {
   generateBlankMapData,
@@ -7,7 +7,7 @@ const {
   saveToDisk,
   setLightColor,
 } = require("./helpers.js");
-const { items } = require("./items.js");
+const { items, useItems } = require("./items.js");
 const fs = require("fs");
 
 const pillars = (originalX, originalY, originalZ, n, excludeRadius = 100) =>
@@ -102,30 +102,12 @@ const addZone =
     return mapData;
   };
 
-const addItem = (x, y, z, item) => (mapData) => {
-  x -= 5000;
-  z -= 5000;
-
-  const itemData = {
-    name: "C:\\ARX\\Graph\\Obj3D\\Interactive\\" + item.src,
-    pos: {
-      x: x,
-      y: y + 150,
-      z: z,
-    },
-    angle: {
-      a: 0,
-      b: 0,
-      g: 0,
-    },
-    identifier: item.id,
-    flags: 0,
+const addItem =
+  (x, y, z, item, script = "") =>
+  (mapData) => {
+    useItems(x - 5000, y + 150, z - 5000, item, trim(script));
+    return mapData;
   };
-
-  mapData.dlf.interactiveObjects.push(itemData);
-
-  return mapData;
-};
 
 const origin = [5000, 0, 5000];
 
@@ -149,7 +131,15 @@ const generate = compose(
   ),
 
   addZone(...origin, "ambient_noden"),
-  addItem(...origin, items.plants.fern),
+  addItem(
+    ...origin,
+    items.plants.fern,
+    `
+ON INIT {
+  SETNAME "Smelly Flower"
+}
+  `
+  ),
   addItem(origin[0] - 70, origin[1] - 20, origin[2] + 90, items.torch),
   room(...origin, 12, "n"),
 

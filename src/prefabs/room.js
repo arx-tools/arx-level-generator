@@ -48,18 +48,18 @@ const room =
     corners.forEach((corner) => {
       polygons = adjustVertexBy(
         corner,
-        randomBetween(-magnitude / 2, magnitude / 2) + 20,
+        randomBetween(-magnitude / 2, magnitude / 2) - 80,
         polygons
       );
     });
     edges.forEach((edge) => {
       polygons = adjustVertexBy(
         edge,
-        randomBetween(-magnitude / 2, magnitude / 2) + 10,
+        randomBetween(-magnitude / 2, magnitude / 2) - 40,
         polygons
       );
     });
-    pickRandoms(7, middles).forEach((middle) => {
+    pickRandoms(10, middles).forEach((middle) => {
       const magnitude = 30;
       polygons = adjustVertexBy(
         middle,
