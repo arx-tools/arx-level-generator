@@ -1,13 +1,18 @@
-const { POLY_QUAD, POLY_NO_SHADOW, HFLIP, VFLIP } = require("../constants.js");
-const { useTexture } = require("../textures.js");
+const {
+  POLY_QUAD,
+  POLY_NO_SHADOW,
+  HFLIP,
+  VFLIP,
+} = require("../../constants.js");
+const { useTexture } = require("../../textures.js");
 
-const wallX =
+const wallZ =
   (
     x,
     y,
     z,
     texture,
-    direction = "left", // left|right
+    direction = "front", // front|back
     quad = 0,
     textureRotation = 0,
     size = 100,
@@ -105,28 +110,28 @@ const wallX =
           texV: texV + uv[1].v,
         },
         {
-          posX: x - sizeX / 2,
+          posX: x + sizeX / 2,
           posY: y - sizeY / 2,
-          posZ: z + sizeZ / 2,
+          posZ: z - sizeZ / 2,
           texU: texU + uv[2].u,
           texV: texV + uv[2].v,
         },
         {
-          posX: x - sizeX / 2,
+          posX: x + sizeX / 2,
           posY: y + sizeY / 2,
-          posZ: z + sizeZ / 2,
+          posZ: z - sizeZ / 2,
           texU: texU + uv[3].u,
           texV: texV + uv[3].v,
         },
       ],
       tex: useTexture(texture),
-      norm: { x: direction === "right" ? 1 : -1, y: 0, z: 0 },
-      norm2: { x: direction === "right" ? 1 : -1, y: 0, z: 0 },
+      norm: { x: 0, y: 0, z: direction === "front" ? 1 : -1 },
+      norm2: { x: 0, y: 0, z: direction === "front" ? 1 : -1 },
       normals: [
-        { x: direction === "right" ? 1 : -1, y: 0, z: 0 },
-        { x: direction === "right" ? 1 : -1, y: 0, z: 0 },
-        { x: direction === "right" ? 1 : -1, y: 0, z: 0 },
-        { x: direction === "right" ? 1 : -1, y: 0, z: 0 },
+        { x: 0, y: 0, z: direction === "front" ? 1 : -1 },
+        { x: 0, y: 0, z: direction === "front" ? 1 : -1 },
+        { x: 0, y: 0, z: direction === "front" ? 1 : -1 },
+        { x: 0, y: 0, z: direction === "front" ? 1 : -1 },
       ],
       transval: 0,
       area: 10000,
@@ -138,4 +143,4 @@ const wallX =
     return mapData;
   };
 
-module.exports = wallX;
+module.exports = wallZ;

@@ -1,6 +1,6 @@
-const floor = require("./floor.js");
-const wallX = require("./wallX.js");
-const wallZ = require("./wallZ.js");
+const floor = require("./base/floor.js");
+const wallX = require("./base/wallX.js");
+const wallZ = require("./base/wallZ.js");
 const { HFLIP } = require("../constants.js");
 const { textures } = require("../textures.js");
 const { compose } = require("ramda");

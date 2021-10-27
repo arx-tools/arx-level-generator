@@ -1,5 +1,10 @@
-const { POLY_QUAD, POLY_NO_SHADOW, HFLIP, VFLIP } = require("../constants.js");
-const { useTexture } = require("../textures.js");
+const {
+  POLY_QUAD,
+  POLY_NO_SHADOW,
+  HFLIP,
+  VFLIP,
+} = require("../../constants.js");
+const { useTexture } = require("../../textures.js");
 
 const floor =
   (

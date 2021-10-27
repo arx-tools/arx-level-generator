@@ -1,4 +1,4 @@
-const floor = require("./floor.js");
+const floor = require("./base/floor.js");
 const { textures } = require("../textures.js");
 const {
   categorizeVertices,
