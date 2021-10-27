@@ -20,6 +20,9 @@ const {
   adjust,
   split,
   unary,
+  values,
+  dropLast,
+  join,
 } = require("ramda");
 const {
   POLY_QUAD,
@@ -182,18 +185,37 @@ const generateBlankMapData = (config) => {
   return compose(addOriginPolygon)(mapData);
 };
 
-const saveToDisk = (mapData) => {
-  const { levelIdx, outputDir } = mapData.config;
+const saveToDisk = async (mapData) => {
+  const { levelIdx } = mapData.config;
+
+  const outputDir = "./dist/";
+
+  try {
+    await fs.promises.rmdir("dist", { recursive: true });
+  } catch (e) {}
 
   const files = {
-    fts: `${outputDir}/game/graph/levels/level${levelIdx}/fast.fts.json`,
-    dlf: `${outputDir}/graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`,
-    llf: `${outputDir}/graph/levels/level${levelIdx}/level${levelIdx}.llf.json`,
+    fts: `${outputDir}game/graph/levels/level${levelIdx}/fast.fts.json`,
+    dlf: `${outputDir}graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`,
+    llf: `${outputDir}graph/levels/level${levelIdx}/level${levelIdx}.llf.json`,
   };
 
-  fs.writeFileSync(files.dlf, JSON.stringify(mapData.dlf, null, 2));
-  fs.writeFileSync(files.fts, JSON.stringify(mapData.fts, null, 2));
-  fs.writeFileSync(files.llf, JSON.stringify(mapData.llf, null, 2));
+  await compose(
+    (promises) => Promise.all(promises),
+    map(
+      compose(
+        (path) => fs.promises.mkdir(path, { recursive: true }),
+        join("/"),
+        dropLast(1),
+        split("/")
+      )
+    ),
+    values
+  )(files);
+
+  await fs.promises.writeFile(files.dlf, JSON.stringify(mapData.dlf, null, 2));
+  await fs.promises.writeFile(files.fts, JSON.stringify(mapData.fts, null, 2));
+  await fs.promises.writeFile(files.llf, JSON.stringify(mapData.llf, null, 2));
 };
 
 const setLightColor = (color) => (mapData) => {

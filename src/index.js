@@ -8,6 +8,7 @@ const {
   setLightColor,
 } = require("./helpers.js");
 const { items } = require("./items.js");
+const fs = require("fs");
 
 const pillars = (originalX, originalY, originalZ, n, excludeRadius = 100) =>
   reduce(
@@ -159,9 +160,10 @@ const generate = compose(
   generateBlankMapData
 );
 
-generate({
-  levelIdx: 1,
-  outputDir: "C:/Program Files/Arx Libertatis",
-});
+(async () => {
+  await generate({
+    levelIdx: 1,
+  });
 
-console.log("done");
+  console.log("done");
+})();

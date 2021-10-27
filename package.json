@@ -4,11 +4,11 @@
   "description": "A tool to generate random Arx Fatalis maps",
   "main": "src/index.js",
   "scripts": {
-    "generate:watch": "nodemon src/index.js",
     "generate": "node src/index.js",
+    "generate:watch": "nodemon src/index.js --ignore dist",
     "compile": "sh scripts/compile.sh",
     "poc": "node src/poc/index.js",
-    "poc:watch": "nodemon src/poc/index.js"
+    "poc:watch": "nodemon src/poc/index.js --ignore dist"
   },
   "repository": {
     "type": "git",

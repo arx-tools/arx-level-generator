@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /c/Program\ Files/Arx\ Libertatis/game/graph/levels/level1
+cd ./dist/game/graph/levels/level1
 
 echo "FTS"
 
