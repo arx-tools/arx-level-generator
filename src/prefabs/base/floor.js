@@ -21,6 +21,12 @@ const floor =
   (mapData) => {
     let texU = 0;
     let texV = 0;
+    let sizeX = size;
+    let sizeY = size;
+    let sizeZ = size;
+    if (Array.isArray(size)) {
+      [sizeX, sizeY, sizeZ] = size;
+    }
 
     let a = { u: 0.5, v: 0 };
     let b = { u: 0.5, v: 0.5 };
@@ -79,35 +85,35 @@ const floor =
       config: {
         color: mapData.state.lightColor,
         isQuad: (textureFlags & POLY_QUAD) > 0,
-        minX: x - size / 2,
-        minZ: z - size / 2,
+        minX: x - sizeX / 2,
+        minZ: z - sizeZ / 2,
       },
       vertices: [
         {
-          posX: x - size / 2,
+          posX: x - sizeX / 2,
           posY: y,
-          posZ: z - size / 2,
+          posZ: z - sizeZ / 2,
           texU: texU + uv[0].u,
           texV: texV + uv[0].v,
         },
         {
-          posX: x + size / 2,
+          posX: x + sizeX / 2,
           posY: y,
-          posZ: z - size / 2,
+          posZ: z - sizeZ / 2,
           texU: texU + uv[1].u,
           texV: texV + uv[1].v,
         },
         {
-          posX: x - size / 2,
+          posX: x - sizeX / 2,
           posY: y,
-          posZ: z + size / 2,
+          posZ: z + sizeZ / 2,
           texU: texU + uv[2].u,
           texV: texV + uv[2].v,
         },
         {
-          posX: x + size / 2,
+          posX: x + sizeX / 2,
           posY: y,
-          posZ: z + size / 2,
+          posZ: z + sizeZ / 2,
           texU: texU + uv[3].u,
           texV: texV + uv[3].v,
         },
@@ -122,7 +128,7 @@ const floor =
         { x: 0, y: direction === "ceiling" ? 1 : -1, z: 0 },
       ],
       transval: 0,
-      area: size * size,
+      area: sizeX * sizeZ,
       type: textureFlags,
       room: 1,
       paddy: 0,

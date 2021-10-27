@@ -134,7 +134,7 @@ const wallZ =
         { x: 0, y: 0, z: direction === "front" ? 1 : -1 },
       ],
       transval: 0,
-      area: 10000,
+      area: sizeY * sizeZ,
       type: textureFlags,
       room: 1,
       paddy: 0,

@@ -134,7 +134,7 @@ const wallX =
         { x: direction === "right" ? 1 : -1, y: 0, z: 0 },
       ],
       transval: 0,
-      area: 10000,
+      area: sizeX * sizeY,
       type: textureFlags,
       room: 1,
       paddy: 0,
