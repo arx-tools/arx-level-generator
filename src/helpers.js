@@ -23,6 +23,7 @@ const {
   values,
   dropLast,
   join,
+  replace,
 } = require("ramda");
 const {
   POLY_QUAD,
@@ -177,6 +178,7 @@ const generateBlankMapData = (config) => {
       lightColor: null,
       vertexCounter: 0,
     },
+    items: [],
     dlf: createDlfData(config.levelIdx, now),
     fts: createFtsData(config.levelIdx),
     llf: createLlfData(now),
@@ -200,6 +202,8 @@ const saveToDisk = async (mapData) => {
     llf: `${outputDir}graph/levels/level${levelIdx}/level${levelIdx}.llf.json`,
   };
 
+  const manifest = [...values(files)];
+
   await compose(
     (promises) => Promise.all(promises),
     map(
@@ -209,13 +213,18 @@ const saveToDisk = async (mapData) => {
         dropLast(1),
         split("/")
       )
-    ),
-    values
-  )(files);
+    )
+  )(manifest);
 
   await fs.promises.writeFile(files.dlf, JSON.stringify(mapData.dlf, null, 2));
   await fs.promises.writeFile(files.fts, JSON.stringify(mapData.fts, null, 2));
   await fs.promises.writeFile(files.llf, JSON.stringify(mapData.llf, null, 2));
+
+  // TODO: this does not contain the compiled files!
+  await fs.promises.writeFile(
+    `${outputDir}manifest.json`,
+    JSON.stringify(map(replace(/^\.\/dist\//, ""), manifest), null, 2)
+  );
 };
 
 const setLightColor = (color) => (mapData) => {
