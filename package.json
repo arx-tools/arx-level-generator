@@ -2,10 +2,10 @@
   "name": "arx-level-generator",
   "version": "0.0.1",
   "description": "A tool to generate random Arx Fatalis maps",
-  "main": "generate.js",
+  "main": "src/index.js",
   "scripts": {
-    "generate:watch": "nodemon src/generate.js",
-    "generate": "node src/generate.js",
+    "generate:watch": "nodemon src/index.js",
+    "generate": "node src/index.js",
     "compile": "sh scripts/compile.sh",
     "poc": "node src/poc/index.js",
     "poc:watch": "nodemon src/poc/index.js"
