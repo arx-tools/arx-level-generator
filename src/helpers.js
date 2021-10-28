@@ -25,6 +25,7 @@ const {
   join,
   replace,
   keys,
+  curry,
 } = require("ramda");
 const {
   POLY_QUAD,
@@ -34,6 +35,10 @@ const {
 } = require("./constants.js");
 const { exportUsedItems, exportScripts } = require("./assets/items.js");
 const { exportAmbiences } = require("./assets/ambiences.js");
+
+const move = curry((x, y, z, vector) => {
+  return [vector[0] + x, vector[1] + y, vector[2] + z];
+});
 
 const toRgba = (colorDefinition) => {
   const [r, g, b, a] = rgba(colorDefinition);
@@ -330,6 +335,7 @@ const pickRandoms = (n, set) => {
 };
 
 module.exports = {
+  move,
   toRgba,
   movePlayerTo,
   finalize,

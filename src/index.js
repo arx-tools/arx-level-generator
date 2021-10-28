@@ -6,10 +6,10 @@ const {
   finalize,
   saveToDisk,
   setLightColor,
+  move,
 } = require("./helpers.js");
 const { items, useItems } = require("./assets/items.js");
-const fs = require("fs");
-const { ambiences, useAmbience } = require("./assets/ambiences");
+const { ambiences, useAmbience } = require("./assets/ambiences.js");
 
 const pillars = (originalX, originalY, originalZ, n, excludeRadius = 100) =>
   reduce(
@@ -119,20 +119,8 @@ const generate = compose(
   saveToDisk,
   finalize,
 
-  room(
-    origin[0],
-    origin[1],
-    origin[2] + (12 * 100) / 2 + (50 * 100) / 2,
-    [3, 50],
-    "ns"
-  ),
-  pillars(
-    origin[0],
-    origin[1],
-    origin[2] + (12 * 100) / 2 + (50 * 100) / 2,
-    10,
-    3 * 100
-  ),
+  room(...move(0, 0, (12 * 100) / 2 + (50 * 100) / 2, origin), [3, 50], "ns"),
+  pillars(...move(0, 0, (12 * 100) / 2 + (50 * 100) / 2, origin), 10, 3 * 100),
 
   addZone(...origin, "zone1", ambiences.sirs),
   addItem(
@@ -145,7 +133,7 @@ ON INIT {
 }
   `
   ),
-  addItem(origin[0] - 70, origin[1] - 20, origin[2] + 90, items.torch),
+  addItem(...move(-70, -20, +90, origin), items.torch),
   room(...origin, 12, "n"),
 
   pillars(...origin, 30, 12 * 100),
