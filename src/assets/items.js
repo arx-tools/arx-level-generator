@@ -48,7 +48,7 @@ const items = {
 };
 
 const usedItems = {};
-const useItems = (x, y, z, item, script = "") => {
+const useItems = ([x, y, z], [a, b, g], item, script = "") => {
   usedItems[item.src] = usedItems[item.src] || [];
 
   usedItems[item.src].push({
@@ -60,9 +60,9 @@ const useItems = (x, y, z, item, script = "") => {
       z,
     },
     angle: {
-      a: 0,
-      b: 0,
-      g: 0,
+      a,
+      b,
+      g,
     },
     script,
     flags: 0,

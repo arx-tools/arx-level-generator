@@ -63,7 +63,7 @@ const room =
       const magnitude = 30;
       polygons = adjustVertexBy(
         middle,
-        randomBetween(-magnitude / 2, magnitude / 2),
+        randomBetween(-magnitude / 2, magnitude / 2) - 30,
         polygons
       );
     });

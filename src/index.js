@@ -107,9 +107,9 @@ const addZone =
   };
 
 const addItem =
-  (x, y, z, item, script = "") =>
+  (pos, angle, item, script = "") =>
   (mapData) => {
-    useItems(x - 5000, y + 150, z - 5000, item, trim(script));
+    useItems(move(-5000, 150, -5000, pos), angle, item, trim(script));
     return mapData;
   };
 
@@ -119,12 +119,150 @@ const generate = compose(
   saveToDisk,
   finalize,
 
-  room(...move(0, 0, (12 * 100) / 2 + (50 * 100) / 2, origin), [3, 50], "ns"),
+  room(
+    ...move(0, 0, (12 * 100) / 2 + (50 * 100) / 2 - 100, origin),
+    [3, 50],
+    "ns"
+  ),
   pillars(...move(0, 0, (12 * 100) / 2 + (50 * 100) / 2, origin), 10, 3 * 100),
+
+  addItem(
+    move(0, 0, (12 * 100) / 2, origin),
+    [0, 90, 0],
+    items.doors.portcullis,
+    `
+ON INIT {
+  SET §OK1 0
+  SET §OK2 0
+  ACCEPT
+}
+
+ON LOAD {
+  USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
+  ACCEPT
+}
+
+ON GAME_READY {
+  ANCHOR_BLOCK ON
+  ACCEPT
+}
+
+ON CLOSE {
+  IF (§open == 0) ACCEPT
+  SET §open 0
+  PLAYANIM -e ACTION2 COLLISION ON
+  VIEWBLOCK ON
+  PLAY ~£closesfx~
+  REFUSE
+}
+
+ON OPEN {
+  IF (§open == 1) ACCEPT
+  SET §open 1
+  PLAYANIM -e ACTION1 COLLISION OFF
+  PLAY ~£opensfx~
+  VIEWBLOCK OFF
+  ANCHOR_BLOCK OFF
+  REFUSE
+}
+
+ON CUSTOM {
+  IF (^$PARAM1 == "PAD1_UP" ) {
+   SET §OK1 0
+   GOTO CHECK
+   ACCEPT
+  }
+  IF (^$PARAM1 == "PAD1_DOWN" ) {
+   SET §OK1 1
+   GOTO CHECK
+   ACCEPT
+  }
+  IF (^$PARAM1 == "PAD2_UP" ) {
+   SET §OK2 0
+   GOTO CHECK
+   ACCEPT
+  }
+  IF (^$PARAM1 == "PAD2_DOWN" ) {
+   SET §OK2 1
+   GOTO CHECK
+   ACCEPT
+  }
+ ACCEPT
+}
+
+>>CHECK
+  IF (§OK1 == 1) {
+    IF (§OK2 == 1) {
+      SENDEVENT OPEN SELF ""
+      ACCEPT
+    }
+    SENDEVENT CLOSE SELF ""
+    ACCEPT
+  }
+
+  SENDEVENT CLOSE SELF ""
+  ACCEPT
+`
+  ),
+  addItem(
+    move(-(12 * 100) / 4, -25, (12 * 100) / 4, origin),
+    [0, 0, 0],
+    items.mechanisms.pressurePlate,
+    `
+ON INITEND {
+  TIMERontop -im 0 500 GOTO TOP
+  ACCEPT
+}
+
+>>TOP
+  IF ( ^$OBJONTOP == "NONE" ) {
+    IF ( §onme == 1 ) {
+      SET §onme 0
+      PLAYANIM ACTION2
+      SENDEVENT CUSTOM porticullis_0001 "PAD1_UP"
+    }
+    ACCEPT
+  }
+  IF ( §onme == 0 ) {
+    SET §onme 1
+    PLAYANIM ACTION1
+    SENDEVENT CUSTOM porticullis_0001 "PAD1_DOWN"
+  }
+  ACCEPT
+`
+  ),
+  addItem(
+    move((12 * 100) / 4, -25, (12 * 100) / 4, origin),
+    [0, 0, 0],
+    items.mechanisms.pressurePlate,
+    `
+ON INITEND {
+  TIMERontop -im 0 500 GOTO TOP
+  ACCEPT
+}
+
+>>TOP
+  IF ( ^$OBJONTOP == "NONE" ) {
+    IF ( §onme == 1 ) {
+      SET §onme 0
+      PLAYANIM ACTION2
+      SENDEVENT CUSTOM porticullis_0001 "PAD2_UP"
+    }
+    ACCEPT
+  }
+  IF ( §onme == 0 ) {
+    SET §onme 1
+    PLAYANIM ACTION1
+    SENDEVENT CUSTOM porticullis_0001 "PAD2_DOWN"
+  }
+  ACCEPT
+`
+  ),
 
   addZone(...origin, "zone1", ambiences.sirs),
   addItem(
-    ...origin,
+    origin,
+    [0, 0, 0],
     items.plants.fern,
     `
 ON INIT {
@@ -133,7 +271,7 @@ ON INIT {
 }
   `
   ),
-  addItem(...move(-70, -20, +90, origin), items.torch),
+  addItem(move(-70, -20, +90, origin), [0, 0, 0], items.torch),
   room(...origin, 12, "n"),
 
   pillars(...origin, 30, 12 * 100),
