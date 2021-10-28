@@ -13,3 +13,7 @@ step 1: `npm run generate`
 step 2: `npm run compile`
 
 step 3: copy contents of dist folder into Arx Fatalis/Arx Libertatis game folder
+
+## Resources
+
+https://wiki.arx-libertatis.org/Script:Variables
