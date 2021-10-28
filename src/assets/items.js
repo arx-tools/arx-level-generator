@@ -20,10 +20,30 @@ const items = {
   plants: {
     fern: {
       src: "items/magic/fern/fern.teo",
+      native: true,
     },
   },
   torch: {
     src: "items/provisions/torch/torch.teo",
+    native: true,
+  },
+  mechanisms: {
+    pressurePlate: {
+      src: "fix_inter/pressurepad_gob/pressurepad_gob.teo",
+      native: true,
+    },
+  },
+  signs: {
+    stone: {
+      src: "fix_inter/public_notice/public_notice.teo",
+      native: true,
+    },
+  },
+  doors: {
+    portcullis: {
+      src: "fix_inter/porticullis/porticullis.teo",
+      native: true,
+    },
   },
 };
 
@@ -76,15 +96,13 @@ const exportUsedItems = (mapData) => {
 
 const exportScripts = (outputDir) => {
   return compose(
-    reduce((files, { filename, identifier, script }) => {
-      const { dir, name } = path.parse(filename);
-      files[
-        `${outputDir}graph/obj3d/interactive/${dir}/${name}_${padCharsStart(
-          "0",
-          4,
-          toString(identifier)
-        )}/${name}.asl`
-      ] = script;
+    reduce((files, item) => {
+      const { dir, name } = path.parse(item.filename);
+
+      const id = padCharsStart("0", 4, toString(item.identifier));
+      const filename = `${outputDir}graph/obj3d/interactive/${dir}/${name}_${id}/${name}.asl`;
+
+      files[filename] = item.script;
       return files;
     }, {}),
     unnest,

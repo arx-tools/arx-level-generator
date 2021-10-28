@@ -4,36 +4,45 @@ const textures = {
   wall: {
     white: {
       src: "[WOOD]_ALICIAROOM_MUR02.jpg",
+      native: true,
     },
   },
   gravel: {
     ground1: {
       src: "L5_CAVES_[GRAVEL]_GROUND05",
+      native: true,
     },
   },
   stone: {
     whiteBricks: {
       src: "[STONE]_HUMAN_STONE_WALL1.jpg",
+      native: true,
     },
   },
   skybox: {
     top: {
       src: "skybox_01_top.JPG",
+      native: false,
     },
     left: {
       src: "skybox_01_left.JPG",
+      native: false,
     },
     right: {
       src: "skybox_01_right.JPG",
+      native: false,
     },
     front: {
       src: "skybox_01_front.JPG",
+      native: false,
     },
     back: {
       src: "skybox_01_back.JPG",
+      native: false,
     },
     bottom: {
       src: "skybox_01_bottom.JPG",
+      native: false,
     },
   },
 };

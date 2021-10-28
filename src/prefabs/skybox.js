@@ -2,7 +2,7 @@ const floor = require("./base/floor.js");
 const wallX = require("./base/wallX.js");
 const wallZ = require("./base/wallZ.js");
 const { HFLIP } = require("../constants.js");
-const { textures } = require("../textures.js");
+const { textures } = require("../assets/textures.js");
 const { compose } = require("ramda");
 
 const skybox = (x, y, z, size) => {

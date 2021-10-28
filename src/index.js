@@ -7,8 +7,9 @@ const {
   saveToDisk,
   setLightColor,
 } = require("./helpers.js");
-const { items, useItems } = require("./items.js");
+const { items, useItems } = require("./assets/items.js");
 const fs = require("fs");
+const { ambiences, useAmbience } = require("./assets/ambiences");
 
 const pillars = (originalX, originalY, originalZ, n, excludeRadius = 100) =>
   reduce(
@@ -32,13 +33,16 @@ const pillars = (originalX, originalY, originalZ, n, excludeRadius = 100) =>
   );
 
 const addZone =
-  (x, y, z, ambiance = "NONE") =>
+  (x, y, z, name, ambience = ambiences.none) =>
   (mapData) => {
     x -= 5000;
     z -= 5000;
+
+    useAmbience(ambience);
+
     const zoneData = {
       header: {
-        name: "HELLO",
+        name,
         idx: 0,
         flags: 6,
         initPos: {
@@ -56,7 +60,7 @@ const addZone =
         reverb: 0,
         ambianceMaxVolume: 100,
         height: -1,
-        ambiance,
+        ambiance: ambience.name,
       },
       pathways: [
         {
@@ -130,13 +134,14 @@ const generate = compose(
     3 * 100
   ),
 
-  addZone(...origin, "ambient_noden"),
+  addZone(...origin, "zone1", ambiences.sirs),
   addItem(
     ...origin,
     items.plants.fern,
     `
 ON INIT {
   SETNAME "Smelly Flower"
+  ACCEPT
 }
   `
   ),

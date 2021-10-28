@@ -1,6 +1,6 @@
 const fs = require("fs");
 const rgba = require("color-rgba");
-const { exportUsedTextures } = require("./textures.js");
+const { exportUsedTextures } = require("./assets/textures.js");
 const {
   createDlfData,
   createFtsData,
@@ -32,7 +32,8 @@ const {
   MAP_MAX_WIDTH,
   POLY_NODRAW,
 } = require("./constants.js");
-const { exportUsedItems, exportScripts } = require("./items.js");
+const { exportUsedItems, exportScripts } = require("./assets/items.js");
+const { exportAmbiences } = require("./assets/ambiences.js");
 
 const toRgba = (colorDefinition) => {
   const [r, g, b, a] = rgba(colorDefinition);
@@ -200,13 +201,15 @@ const saveToDisk = async (mapData) => {
 
   let scripts = exportScripts(outputDir);
 
+  let ambiences = exportAmbiences(outputDir);
+
   const files = {
     fts: `${outputDir}game/graph/levels/level${levelIdx}/fast.fts.json`,
     dlf: `${outputDir}graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`,
     llf: `${outputDir}graph/levels/level${levelIdx}/level${levelIdx}.llf.json`,
   };
 
-  const manifest = [...values(files), ...keys(scripts)];
+  const manifest = [...values(files), ...keys(scripts), ...keys(ambiences)];
 
   // TODO: create folders in sequence
   const tasks = compose(
@@ -231,8 +234,18 @@ const saveToDisk = async (mapData) => {
   scripts = toPairs(scripts);
 
   for (let [filename, script] of scripts) {
-    await fs.promises.writeFile(filename, script);
+    await fs.promises.writeFile(filename, script, "latin1");
   }
+
+  // ------------
+
+  ambiences = toPairs(ambiences);
+
+  for (let [target, source] of ambiences) {
+    await fs.promises.copyFile(source, target);
+  }
+
+  // ------------
 
   await fs.promises.writeFile(files.dlf, JSON.stringify(mapData.dlf, null, 2));
   await fs.promises.writeFile(files.fts, JSON.stringify(mapData.fts, null, 2));

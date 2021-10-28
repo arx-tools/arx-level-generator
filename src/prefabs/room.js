@@ -1,5 +1,5 @@
 const floor = require("./base/floor.js");
-const { textures } = require("../textures.js");
+const { textures } = require("../assets/textures.js");
 const {
   categorizeVertices,
   adjustVertexBy,

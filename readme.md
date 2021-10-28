@@ -17,3 +17,13 @@ step 3: copy contents of dist folder into Arx Fatalis/Arx Libertatis game folder
 ## Resources
 
 https://wiki.arx-libertatis.org/Script:Variables
+
+## Credits for Assets
+
+### Sirs (Sergey Vershinin)
+
+`sfx/ambiance/loop_sirs.wav`
+
+### Interval
+
+`graph/obj3d/textures/skybox_01_*.jpg`

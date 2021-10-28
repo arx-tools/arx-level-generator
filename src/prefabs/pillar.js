@@ -1,6 +1,6 @@
 const wallX = require("./base/wallX.js");
 const wallZ = require("./base/wallZ.js");
-const { textures } = require("../textures.js");
+const { textures } = require("../assets/textures.js");
 
 const segment = (x, y, z, size) => (mapData) => {
   const height = 500;

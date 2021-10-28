@@ -4,7 +4,7 @@ const {
   HFLIP,
   VFLIP,
 } = require("../../constants.js");
-const { useTexture } = require("../../textures.js");
+const { useTexture } = require("../../assets/textures.js");
 
 const wallX =
   (
