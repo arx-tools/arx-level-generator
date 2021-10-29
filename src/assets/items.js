@@ -13,6 +13,7 @@ const {
   tail,
   reduce,
   toString,
+  trim,
 } = require("ramda");
 const { padCharsStart } = require("ramda-adjunct");
 
@@ -52,25 +53,46 @@ const items = {
 };
 
 const usedItems = {};
-const useItems = ([x, y, z], [a, b, g], item, script = "") => {
+
+const createItem = (item) => {
   usedItems[item.src] = usedItems[item.src] || [];
+
+  const id = usedItems[item.src].length;
 
   usedItems[item.src].push({
     filename: item.src,
-    identifier: usedItems[item.src].length + 1,
+    identifier: id + 1,
     pos: {
-      x,
-      y,
-      z,
+      x: 0,
+      y: 0,
+      z: 0,
     },
     angle: {
-      a,
-      b,
-      g,
+      a: 0,
+      b: 0,
+      g: 0,
     },
-    script,
+    script: "",
     flags: 0,
   });
+
+  const { name } = path.parse(item.src);
+  const numericId = padCharsStart("0", 4, toString(id + 1));
+
+  return { src: item.src, id, state: {}, ref: `${name}_${numericId}` };
+};
+
+const addScript = (script, itemRef) => {
+  const { src, id } = itemRef;
+  usedItems[src][id].script = trim(script);
+  return itemRef;
+};
+
+const moveTo = ([x, y, z], [a, b, g], itemRef) => {
+  const { src, id } = itemRef;
+  usedItems[src][id].pos = { x, y, z };
+  usedItems[src][id].angle = { a, b, g };
+  return itemRef;
 };
 
 // source: https://stackoverflow.com/a/40011873/1806628
@@ -115,4 +137,11 @@ const exportScripts = (outputDir) => {
   )(usedItems);
 };
 
-module.exports = { items, useItems, exportUsedItems, exportScripts };
+module.exports = {
+  items,
+  createItem,
+  addScript,
+  moveTo,
+  exportUsedItems,
+  exportScripts,
+};

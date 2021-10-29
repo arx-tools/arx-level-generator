@@ -1,4 +1,4 @@
-const { compose, times, identity, reduce, __, trim } = require("ramda");
+const { compose, times, identity, reduce, __, map } = require("ramda");
 const { room, pillar } = require("./prefabs");
 const {
   generateBlankMapData,
@@ -7,18 +7,30 @@ const {
   saveToDisk,
   setLightColor,
   move,
+  isPointInPolygon,
 } = require("./helpers.js");
-const { items, useItems } = require("./assets/items.js");
+const { items, moveTo, createItem, addScript } = require("./assets/items.js");
 const { ambiences, useAmbience } = require("./assets/ambiences.js");
+const { color, declare } = require("./scripting.js");
 
-const pillars = (originalX, originalY, originalZ, n, excludeRadius = 100) =>
+const origin = [5000, 0, 5000];
+
+const pillars = (
+  originalX,
+  originalY,
+  originalZ,
+  n,
+  excludeRadius = 100,
+  excludeBand = 100
+) =>
   reduce(
     (mapData) => {
       // TODO: generate them more evenly spaced out
+      // TODO: implement excludeBand -> ╬ leave out excludeBand area on both axis
 
       do {
-        x = originalX + Math.random() * 5000 - 2500;
-        z = originalZ + Math.random() * 5000 - 2500;
+        x = originalX + Math.random() * origin[0] - origin[0] / 2;
+        z = originalZ + Math.random() * origin[2] - origin[2] / 2;
       } while (
         x >= originalX - excludeRadius &&
         x <= originalX + excludeRadius &&
@@ -33,10 +45,9 @@ const pillars = (originalX, originalY, originalZ, n, excludeRadius = 100) =>
   );
 
 const addZone =
-  (x, y, z, name, ambience = ambiences.none) =>
+  (pos, name, ambience = ambiences.none) =>
   (mapData) => {
-    x -= 5000;
-    z -= 5000;
+    let [x, y, z] = move(-origin[0], 100, -origin[2], pos);
 
     useAmbience(ambience);
 
@@ -45,16 +56,8 @@ const addZone =
         name,
         idx: 0,
         flags: 6,
-        initPos: {
-          x: x,
-          y: y + 100,
-          z: z,
-        },
-        pos: {
-          x: x,
-          y: y + 100,
-          z: z,
-        },
+        initPos: { x, y, z },
+        pos: { x, y, z },
         rgb: mapData.state.lightColor,
         farClip: 2800,
         reverb: 0,
@@ -106,34 +109,25 @@ const addZone =
     return mapData;
   };
 
-const addItem =
-  (pos, angle, item, script = "") =>
-  (mapData) => {
-    useItems(move(-5000, 150, -5000, pos), angle, item, trim(script));
-    return mapData;
-  };
+const addItem = (pos, angle, itemRef) => (mapData) => {
+  moveTo(move(-origin[0], origin[1] + 150, -origin[2], pos), angle, itemRef);
+  return mapData;
+};
 
-const origin = [5000, 0, 5000];
+// -------------------------------------------------
 
-const generate = compose(
-  saveToDisk,
-  finalize,
+const portcullis = compose(
+  declare("int", "ok1"),
+  declare("int", "ok2"),
+  declare("int", "open"),
+  createItem
+)(items.doors.portcullis);
 
-  room(
-    ...move(0, 0, (12 * 100) / 2 + (50 * 100) / 2 - 100, origin),
-    [3, 50],
-    "ns"
-  ),
-  pillars(...move(0, 0, (12 * 100) / 2 + (50 * 100) / 2, origin), 10, 3 * 100),
-
-  addItem(
-    move(0, 0, (12 * 100) / 2, origin),
-    [0, 90, 0],
-    items.doors.portcullis,
-    `
+addScript(
+  `
 ON INIT {
-  SET §OK1 0
-  SET §OK2 0
+  SET ${portcullis.state.ok1} 0
+  SET ${portcullis.state.ok2} 0
   ACCEPT
 }
 
@@ -148,8 +142,10 @@ ON GAME_READY {
 }
 
 ON CLOSE {
-  IF (§open == 0) ACCEPT
-  SET §open 0
+  IF (${portcullis.state.open} == 0) {
+    ACCEPT
+  }
+  SET ${portcullis.state.open} 0
   PLAYANIM -e ACTION2 COLLISION ON
   VIEWBLOCK ON
   PLAY ~£closesfx~
@@ -157,8 +153,10 @@ ON CLOSE {
 }
 
 ON OPEN {
-  IF (§open == 1) ACCEPT
-  SET §open 1
+  IF (${portcullis.state.open} == 1) {
+    ACCEPT
+  }
+  SET ${portcullis.state.open} 1
   PLAYANIM -e ACTION1 COLLISION OFF
   PLAY ~£opensfx~
   VIEWBLOCK OFF
@@ -168,22 +166,22 @@ ON OPEN {
 
 ON CUSTOM {
   IF (^$PARAM1 == "PAD1_UP" ) {
-   SET §OK1 0
+   SET ${portcullis.state.ok1} 0
    GOTO CHECK
    ACCEPT
   }
   IF (^$PARAM1 == "PAD1_DOWN" ) {
-   SET §OK1 1
+   SET ${portcullis.state.ok1} 1
    GOTO CHECK
    ACCEPT
   }
   IF (^$PARAM1 == "PAD2_UP" ) {
-   SET §OK2 0
+   SET ${portcullis.state.ok2} 0
    GOTO CHECK
    ACCEPT
   }
   IF (^$PARAM1 == "PAD2_DOWN" ) {
-   SET §OK2 1
+   SET ${portcullis.state.ok2} 1
    GOTO CHECK
    ACCEPT
   }
@@ -191,8 +189,8 @@ ON CUSTOM {
 }
 
 >>CHECK
-  IF (§OK1 == 1) {
-    IF (§OK2 == 1) {
+  IF (${portcullis.state.ok1} == 1) {
+    IF (${portcullis.state.ok2} == 1) {
       SENDEVENT OPEN SELF ""
       ACCEPT
     }
@@ -202,13 +200,22 @@ ON CUSTOM {
 
   SENDEVENT CLOSE SELF ""
   ACCEPT
-`
-  ),
-  addItem(
-    move(-(12 * 100) / 4, -25, (12 * 100) / 4, origin),
-    [0, 0, 0],
-    items.mechanisms.pressurePlate,
-    `
+`,
+  portcullis
+);
+
+const pressurePlate1 = compose(
+  declare("int", "onme"),
+  createItem
+)(items.mechanisms.pressurePlate);
+
+addScript(
+  `
+ON INIT {
+  SETSCALE 101
+  ACCEPT
+}
+
 ON INITEND {
   TIMERontop -im 0 500 GOTO TOP
   ACCEPT
@@ -216,26 +223,35 @@ ON INITEND {
 
 >>TOP
   IF ( ^$OBJONTOP == "NONE" ) {
-    IF ( §onme == 1 ) {
-      SET §onme 0
+    IF ( ${pressurePlate1.state.onme} == 1 ) {
+      SET ${pressurePlate1.state.onme} 0
       PLAYANIM ACTION2
-      SENDEVENT CUSTOM porticullis_0001 "PAD1_UP"
+      SENDEVENT CUSTOM ${portcullis.ref} "PAD1_UP"
     }
     ACCEPT
   }
-  IF ( §onme == 0 ) {
-    SET §onme 1
+  IF ( ${pressurePlate1.state.onme} == 0 ) {
+    SET ${pressurePlate1.state.onme} 1
     PLAYANIM ACTION1
-    SENDEVENT CUSTOM porticullis_0001 "PAD1_DOWN"
+    SENDEVENT CUSTOM ${portcullis.ref} "PAD1_DOWN"
   }
   ACCEPT
-`
-  ),
-  addItem(
-    move((12 * 100) / 4, -25, (12 * 100) / 4, origin),
-    [0, 0, 0],
-    items.mechanisms.pressurePlate,
-    `
+`,
+  pressurePlate1
+);
+
+const pressurePlate2 = compose(
+  declare("int", "onme"),
+  createItem
+)(items.mechanisms.pressurePlate);
+
+addScript(
+  `
+ON INIT {
+  SETSCALE 101
+  ACCEPT
+}
+
 ON INITEND {
   TIMERontop -im 0 500 GOTO TOP
   ACCEPT
@@ -243,65 +259,112 @@ ON INITEND {
 
 >>TOP
   IF ( ^$OBJONTOP == "NONE" ) {
-    IF ( §onme == 1 ) {
-      SET §onme 0
+    IF ( ${pressurePlate2.state.onme} == 1 ) {
+      SET ${pressurePlate2.state.onme} 0
       PLAYANIM ACTION2
-      SENDEVENT CUSTOM porticullis_0001 "PAD2_UP"
+      SENDEVENT CUSTOM ${portcullis.ref} "PAD2_UP"
     }
     ACCEPT
   }
-  IF ( §onme == 0 ) {
-    SET §onme 1
+  IF ( ${pressurePlate2.state.onme} == 0 ) {
+    SET ${pressurePlate2.state.onme} 1
     PLAYANIM ACTION1
-    SENDEVENT CUSTOM porticullis_0001 "PAD2_DOWN"
+    SENDEVENT CUSTOM ${portcullis.ref} "PAD2_DOWN"
   }
   ACCEPT
-`
-  ),
+`,
+  pressurePlate2
+);
 
-  addItem(
-    move(0, -300, 0, origin),
-    [0, 0, 0],
-    items.marker,
-    `
+const welcomeMarker = createItem(items.marker);
+addScript(
+  `
 ON INIT {
   SETCONTROLLEDZONE welcome
-  worldfade OUT 0 255 255 255
+  cinemascope on
+  worldfade OUT 0 ${color("white")}
   SETPLAYERCONTROLS OFF
   ACCEPT
 }
 
 ON CONTROLLEDZONE_ENTER {
+  UNSET_CONTROLLED_ZONE welcome
   TIMERfade 1 2 worldfade IN 2000
   SPEAK -a [alia_nightmare2] GOTO READY
-  UNSET_CONTROLLED_ZONE welcome
   ACCEPT
 }
 
 >>READY
+  cinemascope off
   SETPLAYERCONTROLS ON
   ACCEPT
-`
-  ),
-  addZone(...origin, "welcome", ambiences.sirs),
-  addItem(
-    origin,
-    [0, 0, 0],
-    items.plants.fern,
-    `
+`,
+  welcomeMarker
+);
+
+const smellyFlower = createItem(items.plants.fern);
+addScript(
+  `
 ON INIT {
   SETNAME "Smelly Flower"
   ACCEPT
 }
-  `
+`,
+  smellyFlower
+);
+
+// -------------------------------------------------
+
+const generate = compose(
+  saveToDisk,
+  finalize,
+
+  room(...move(0, 0, (12 * 100) / 2 + (50 * 100) / 2 - 100, origin), [3, 50]),
+  pillars(...move(0, 0, (12 * 100) / 2 + (50 * 100) / 2, origin), 10, 3 * 100),
+
+  addItem(move(0, 0, (12 * 100) / 2, origin), [0, 90, 0], portcullis),
+  addItem(
+    move(-(12 * 100) / 4, -16, (12 * 100) / 4, origin),
+    [0, 0, 0],
+    pressurePlate1
   ),
-  addItem(move(-70, -20, +90, origin), [0, 0, 0], items.torch),
-  room(...origin, 12, "n"),
+  addItem(
+    move((12 * 100) / 4, -16, (12 * 100) / 4, origin),
+    [0, 0, 0],
+    pressurePlate2
+  ),
+  addItem(move(0, -300, 0, origin), [0, 0, 0], welcomeMarker),
+  addZone(origin, "welcome", ambiences.sirs),
+  addItem(origin, [0, 0, 0], smellyFlower),
+  addItem(move(-70, -20, +90, origin), [0, 0, 0], createItem(items.torch)),
+  room(...origin, 12, (polygons) => {
+    const spawn = origin;
+    const pressurePlate1 = move(-(12 * 100) / 4, 0, (12 * 100) / 4, origin);
+    const pressurePlate2 = move((12 * 100) / 4, 0, (12 * 100) / 4, origin);
+
+    return compose(
+      map((polygon) => {
+        if (isPointInPolygon(spawn, polygon)) {
+          polygon.bumpable = false;
+        }
+
+        if (
+          isPointInPolygon(pressurePlate1, polygon) ||
+          isPointInPolygon(pressurePlate2, polygon)
+        ) {
+          polygon.tex = 0;
+          polygon.bumpable = false;
+        }
+
+        return polygon;
+      })
+    )(polygons);
+  }),
 
   pillars(...origin, 30, 12 * 100),
   setLightColor("#575757"),
 
-  movePlayerTo(...origin),
+  movePlayerTo(origin),
   generateBlankMapData
 );
 

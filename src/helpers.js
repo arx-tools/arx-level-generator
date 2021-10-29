@@ -26,6 +26,13 @@ const {
   replace,
   keys,
   curry,
+  apply,
+  flip,
+  subtract,
+  zip,
+  propEq,
+  filter,
+  includes,
 } = require("ramda");
 const {
   POLY_QUAD,
@@ -51,13 +58,18 @@ const toRgba = (colorDefinition) => {
   };
 };
 
-const movePlayerTo = (x, y, z) => (mapData) => {
-  mapData.fts.sceneHeader.mScenePosition = { x, y: y - 140, z };
+const movePlayerTo = curry((pos, mapData) => {
+  const [x, y, z] = move(0, -140, 0, pos);
+  mapData.fts.sceneHeader.mScenePosition = { x, y, z };
   return mapData;
-};
+});
 
 const isBetween = (min, max, value) => {
   return value >= min && value < max;
+};
+
+const isBetweenInclusive = (min, max, value) => {
+  return value >= min && value <= max;
 };
 
 const isInCell = (polygonX, polygonZ, cellX, cellZ) => {
@@ -282,6 +294,16 @@ const unpackCoords = map(
   )
 );
 
+const isPartOfNonBumpablePolygon = curry((polygons, vertex) => {
+  return compose(
+    includes(vertex),
+    map(pick(["posX", "posY", "posZ"])),
+    unnest,
+    pluck("vertices"),
+    filter(propEq("bumpable", false))
+  )(polygons);
+});
+
 const categorizeVertices = compose(
   ([corner, [edge, middle]]) => ({
     corners: unpackCoords(corner),
@@ -334,6 +356,55 @@ const pickRandoms = (n, set) => {
   }
 };
 
+const cross = (u, v) => {
+  return [
+    u[1] * v[2] - u[2] * v[1],
+    u[2] * v[0] - u[0] * v[2],
+    u[0] * v[1] - u[1] * v[0],
+  ];
+};
+
+const subtractVec3 = (a, b) => compose(map(apply(flip(subtract))), zip)(a, b);
+
+const magnitude = ([x, y, z]) => {
+  return Math.sqrt(x ** 2 + y ** 2 + z ** 2);
+};
+
+const triangleArea = (a, b, c) => {
+  return magnitude(cross(subtractVec3(a, b), subtractVec3(a, c))) / 2;
+};
+
+// source: https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/barycentric-coordinates
+const isPointInTriangle = curry((p, a, b, c) => {
+  const area = triangleArea(a, b, c);
+
+  const u = triangleArea(c, a, p) / area;
+  const v = triangleArea(a, b, p) / area;
+  const w = triangleArea(b, c, p) / area;
+
+  return (
+    isBetweenInclusive(0, 1, u) &&
+    isBetweenInclusive(0, 1, v) &&
+    isBetweenInclusive(0, 1, w) &&
+    u + v + w === 1
+  );
+});
+
+const isPointInPolygon = curry((point, polygon) => {
+  const [a, b, c, d] = polygon.vertices.map(({ posX, posY, posZ }) => [
+    posX,
+    posY,
+    posZ,
+  ]);
+  if (polygon.config.isQuad) {
+    return (
+      isPointInTriangle(point, a, b, c) || isPointInTriangle(point, b, c, d)
+    );
+  } else {
+    return isPointInTriangle(point, a, b, c);
+  }
+});
+
 module.exports = {
   move,
   toRgba,
@@ -343,8 +414,10 @@ module.exports = {
   saveToDisk,
   setLightColor,
   unsetLightColor,
+  isPartOfNonBumpablePolygon,
   categorizeVertices,
   adjustVertexBy,
   randomBetween,
   pickRandoms,
+  isPointInPolygon,
 };

@@ -5,10 +5,12 @@ const {
   adjustVertexBy,
   randomBetween,
   pickRandoms,
+  isPartOfNonBumpablePolygon,
 } = require("../helpers.js");
+const { identity, assoc, map, compose, reject } = require("ramda");
 
 const room =
-  (x, y, z, size, entrance = "") =>
+  (x, y, z, size, onBeforeBumping = identity) =>
   (mapData) => {
     let sizeX = size;
     let sizeZ = size;
@@ -41,10 +43,18 @@ const room =
       }
     }
 
-    let polygons = tmp.fts.polygons;
+    let polygons = compose(
+      onBeforeBumping,
+      map(assoc("bumpable", true))
+    )(tmp.fts.polygons);
 
     const magnitude = 10;
-    const { corners, edges, middles } = categorizeVertices(polygons);
+    let { corners, edges, middles } = categorizeVertices(polygons);
+
+    corners = reject(isPartOfNonBumpablePolygon(polygons), corners);
+    edges = reject(isPartOfNonBumpablePolygon(polygons), edges);
+    middles = reject(isPartOfNonBumpablePolygon(polygons), middles);
+
     corners.forEach((corner) => {
       polygons = adjustVertexBy(
         corner,
