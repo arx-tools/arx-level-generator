@@ -259,7 +259,25 @@ ON INITEND {
 `
   ),
 
-  addZone(...origin, "zone1", ambiences.sirs),
+  addItem(
+    move(0, -300, 0, origin),
+    [0, 0, 0],
+    items.marker,
+    `
+ON INIT {
+  SETCONTROLLEDZONE welcome
+  ACCEPT
+}
+
+ON CONTROLLEDZONE_ENTER {
+  SETSPEED 0.2
+  SPEAK -a [sylib_briefing_1] NOP
+  UNSET_CONTROLLED_ZONE welcome
+  ACCEPT
+}
+`
+  ),
+  addZone(...origin, "welcome", ambiences.sirs),
   addItem(
     origin,
     [0, 0, 0],

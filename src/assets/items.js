@@ -17,6 +17,10 @@ const {
 const { padCharsStart } = require("ramda-adjunct");
 
 const items = {
+  marker: {
+    src: "system/marker/marker.teo",
+    native: true,
+  },
   plants: {
     fern: {
       src: "items/magic/fern/fern.teo",
