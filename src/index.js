@@ -266,15 +266,21 @@ ON INITEND {
     `
 ON INIT {
   SETCONTROLLEDZONE welcome
+  worldfade OUT 0 255 255 255
+  SETPLAYERCONTROLS OFF
   ACCEPT
 }
 
 ON CONTROLLEDZONE_ENTER {
-  SETSPEED 0.2
-  SPEAK -a [sylib_briefing_1] NOP
+  TIMERfade 1 2 worldfade IN 2000
+  SPEAK -a [alia_nightmare2] GOTO READY
   UNSET_CONTROLLED_ZONE welcome
   ACCEPT
 }
+
+>>READY
+  SETPLAYERCONTROLS ON
+  ACCEPT
 `
   ),
   addZone(...origin, "welcome", ambiences.sirs),
