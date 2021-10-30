@@ -405,6 +405,11 @@ const isPointInPolygon = curry((point, polygon) => {
   }
 });
 
+const toFloatRgb = (color) => {
+  const { r, g, b } = color;
+  return { r: r / 256, g: g / 256, b: b / 256 };
+};
+
 module.exports = {
   move,
   toRgba,
@@ -420,4 +425,7 @@ module.exports = {
   randomBetween,
   pickRandoms,
   isPointInPolygon,
+  isBetween,
+  isBetweenInclusive,
+  toFloatRgb,
 };

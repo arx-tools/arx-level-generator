@@ -1,6 +1,13 @@
 const wallX = require("./base/wallX.js");
 const wallZ = require("./base/wallZ.js");
 const { textures } = require("../assets/textures.js");
+const {
+  POLY_QUAD,
+  POLY_NO_SHADOW,
+  POLY_WATER,
+  POLY_FALL,
+} = require("../constants.js");
+const { assoc } = require("ramda");
 
 const segment = (x, y, z, size) => (mapData) => {
   const height = 500;
@@ -12,11 +19,17 @@ const segment = (x, y, z, size) => (mapData) => {
     d: { u: 0.48, v: 1 },
   };
 
+  const texture = assoc(
+    "flags",
+    POLY_QUAD | POLY_NO_SHADOW,
+    textures.wall.white
+  );
+
   mapData = wallX(
     x - size / 2,
     y,
     z - size / 2,
-    textures.wall.white,
+    texture,
     "left",
     null,
     0,
@@ -29,7 +42,7 @@ const segment = (x, y, z, size) => (mapData) => {
     x + size / 2,
     y,
     z - size / 2,
-    textures.wall.white,
+    texture,
     "right",
     null,
     0,
@@ -42,7 +55,7 @@ const segment = (x, y, z, size) => (mapData) => {
     x - size / 2,
     y,
     z - size / 2,
-    textures.wall.white,
+    texture,
     "back",
     null,
     0,
@@ -55,7 +68,7 @@ const segment = (x, y, z, size) => (mapData) => {
     x - size / 2,
     y,
     z + size / 2,
-    textures.wall.white,
+    texture,
     "front",
     null,
     0,
@@ -67,9 +80,9 @@ const segment = (x, y, z, size) => (mapData) => {
   return mapData;
 };
 
-const pillar = (x, y, z, size) => (mapData) => {
+const pillar = (x, y, z, diameter) => (mapData) => {
   for (let i = -10; i < 10; i++) {
-    mapData = segment(x, y + i * 500, z, size)(mapData);
+    mapData = segment(x, y + i * 500, z, diameter)(mapData);
   }
 
   return mapData;

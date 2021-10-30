@@ -1,8 +1,13 @@
 const rgba = require("color-rgba");
-const { compose, dropLast, join, curry } = require("ramda");
+const { compose, dropLast, join, curry, map, divide, __ } = require("ramda");
 
 const color = (colorDefinition) => {
-  return compose(join(" "), dropLast(1), rgba)(colorDefinition);
+  return compose(
+    join(" "),
+    map(divide(__, 256)),
+    dropLast(1),
+    rgba
+  )(colorDefinition);
 };
 
 const globalScope = {};

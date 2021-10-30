@@ -69,11 +69,11 @@ const room =
         polygons
       );
     });
-    pickRandoms(10, middles).forEach((middle) => {
-      const magnitude = 30;
+    pickRandoms(15, middles).forEach((middle) => {
+      const magnitude = 100;
       polygons = adjustVertexBy(
         middle,
-        randomBetween(-magnitude / 2, magnitude / 2) - 30,
+        randomBetween(-magnitude / 2, magnitude / 2),
         polygons
       );
     });

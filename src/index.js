@@ -8,6 +8,9 @@ const {
   setLightColor,
   move,
   isPointInPolygon,
+  isBetweenInclusive,
+  toRgba,
+  toFloatRgb,
 } = require("./helpers.js");
 const { items, moveTo, createItem, addScript } = require("./assets/items.js");
 const { ambiences, useAmbience } = require("./assets/ambiences.js");
@@ -16,26 +19,80 @@ const { color, declare } = require("./scripting.js");
 const origin = [5000, 0, 5000];
 
 const pillars = (
-  originalX,
-  originalY,
-  originalZ,
+  [originalX, originalY, originalZ],
   n,
   excludeRadius = 100,
-  excludeBand = 100
+  borderGap = [0, 0, 0, 0] // [top, right, bottom, left], clockwise order, like in CSS
 ) =>
   reduce(
     (mapData) => {
       // TODO: generate them more evenly spaced out
-      // TODO: implement excludeBand -> ╬ leave out excludeBand area on both axis
+
+      const isInExcludeRadius = (x, z) => {
+        return (
+          isBetweenInclusive(
+            originalX - excludeRadius,
+            originalX + excludeRadius,
+            x
+          ) &&
+          isBetweenInclusive(
+            originalZ - excludeRadius,
+            originalZ + excludeRadius,
+            z
+          )
+        );
+      };
+
+      const isInBorderGap = (x, z) => {
+        const [top, right, bottom, left] = borderGap;
+
+        if (
+          top > 0 &&
+          z > 0 &&
+          isBetweenInclusive(originalX - top, originalX + top, x)
+        ) {
+          return true;
+        }
+
+        if (
+          bottom > 0 &&
+          z < 0 &&
+          isBetweenInclusive(originalX - bottom, originalX + bottom, x)
+        ) {
+          return true;
+        }
+
+        if (
+          left > 0 &&
+          x < 0 &&
+          isBetweenInclusive(originalZ - left, originalZ + left, z)
+        ) {
+          return true;
+        }
+
+        if (
+          right > 0 &&
+          x > 0 &&
+          isBetweenInclusive(originalZ - right, originalZ + right, z)
+        ) {
+          return true;
+        }
+
+        return false;
+      };
+
+      const tooCloseToOtherPillars = (x, z) => {
+        // TODO
+        return false;
+      };
 
       do {
         x = originalX + Math.random() * origin[0] - origin[0] / 2;
         z = originalZ + Math.random() * origin[2] - origin[2] / 2;
       } while (
-        x >= originalX - excludeRadius &&
-        x <= originalX + excludeRadius &&
-        z >= originalZ - excludeRadius &&
-        z <= originalZ + excludeRadius
+        isInExcludeRadius(x, z) ||
+        isInBorderGap(x, z) ||
+        tooCloseToOtherPillars(x, z)
       );
 
       return pillar(x, originalY, z, 20)(mapData);
@@ -58,7 +115,7 @@ const addZone =
         flags: 6,
         initPos: { x, y, z },
         pos: { x, y, z },
-        rgb: mapData.state.lightColor,
+        rgb: toFloatRgb(mapData.state.lightColor),
         farClip: 2800,
         reverb: 0,
         ambianceMaxVolume: 100,
@@ -111,6 +168,31 @@ const addZone =
 
 const addItem = (pos, angle, itemRef) => (mapData) => {
   moveTo(move(-origin[0], origin[1] + 150, -origin[2], pos), angle, itemRef);
+  return mapData;
+};
+
+const addLight = (pos, color) => (mapData) => {
+  let [x, y, z] = move(-origin[0], 0, -origin[2], pos);
+  mapData.llf.lights.push({
+    pos: { x, y, z },
+    rgb: color,
+    fallstart: 50,
+    fallend: 200,
+    intensity: 1.5,
+    i: 0,
+    exFlicker: {
+      r: 0,
+      g: 0,
+      b: 0,
+    },
+    exRadius: 0,
+    exFrequency: 0.01,
+    exSize: 0.1,
+    exSpeed: 0,
+    exFlareSize: 0,
+    extras: 0,
+  });
+
   return mapData;
 };
 
@@ -277,26 +359,31 @@ ON INITEND {
 );
 
 const welcomeMarker = createItem(items.marker);
+declare("int", "hadIntro", welcomeMarker);
 addScript(
   `
 ON INIT {
-  SETCONTROLLEDZONE welcome
   cinemascope on
-  worldfade OUT 0 ${color("white")}
+  SETCONTROLLEDZONE welcome
+  worldfade OUT 0 ${color("#110202")}
   SETPLAYERCONTROLS OFF
+  SET ${welcomeMarker.state.hadIntro} 0
   ACCEPT
 }
 
 ON CONTROLLEDZONE_ENTER {
-  UNSET_CONTROLLED_ZONE welcome
-  TIMERfade 1 2 worldfade IN 2000
-  SPEAK -a [alia_nightmare2] GOTO READY
+  if (${welcomeMarker.state.hadIntro} == 0) {
+    TIMERfade 1 2 worldfade IN 2000
+    SPEAK -a [alia_nightmare2] GOTO READY
+  }
+  
   ACCEPT
 }
 
 >>READY
   cinemascope off
   SETPLAYERCONTROLS ON
+  SET ${welcomeMarker.state.hadIntro} 1
   ACCEPT
 `,
   welcomeMarker
@@ -319,22 +406,47 @@ const generate = compose(
   saveToDisk,
   finalize,
 
+  addZone(move(0, 0, (12 * 100) / 2 + 100, origin), "brighten", ambiences.sirs),
+  setLightColor("#321212"),
+
   room(...move(0, 0, (12 * 100) / 2 + (50 * 100) / 2 - 100, origin), [3, 50]),
-  pillars(...move(0, 0, (12 * 100) / 2 + (50 * 100) / 2, origin), 10, 3 * 100),
+  setLightColor("#0a0a0a"),
+  pillars(
+    move(0, 0, (12 * 100) / 2 + (50 * 100) / 2, origin),
+    5, // 20 pillars
+    3 * 100,
+    [400, 0, 400, 0]
+  ),
+  setLightColor("#160505"),
+
+  addZone(origin, "welcome", ambiences.sirs),
+  // setLightColor("#d6a7a7"),
+  setLightColor("#160505"),
 
   addItem(move(0, 0, (12 * 100) / 2, origin), [0, 90, 0], portcullis),
+
+  addLight(
+    move(-(12 * 100) / 4, -10, (12 * 100) / 4, origin),
+    toRgba("#050000")
+  ),
   addItem(
     move(-(12 * 100) / 4, -16, (12 * 100) / 4, origin),
     [0, 0, 0],
     pressurePlate1
+  ),
+
+  addLight(
+    move((12 * 100) / 4, -10, (12 * 100) / 4, origin),
+    toRgba("#050000")
   ),
   addItem(
     move((12 * 100) / 4, -16, (12 * 100) / 4, origin),
     [0, 0, 0],
     pressurePlate2
   ),
+
   addItem(move(0, -300, 0, origin), [0, 0, 0], welcomeMarker),
-  addZone(origin, "welcome", ambiences.sirs),
+
   addItem(origin, [0, 0, 0], smellyFlower),
   addItem(move(-70, -20, +90, origin), [0, 0, 0], createItem(items.torch)),
   room(...origin, 12, (polygons) => {
@@ -360,9 +472,10 @@ const generate = compose(
       })
     )(polygons);
   }),
+  setLightColor("#0a0a0a"),
 
-  pillars(...origin, 30, 12 * 100),
-  setLightColor("#575757"),
+  pillars(origin, 5, 12 * 100, [400, 0, 0, 0]), // 30 pillars
+  setLightColor("grey"),
 
   movePlayerTo(origin),
   generateBlankMapData
