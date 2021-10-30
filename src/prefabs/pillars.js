@@ -78,7 +78,7 @@ const pillars = (
   reduce(
     (mapData) => {
       const { origin } = mapData.config;
-      const [originalX, originalY, originalZ] = move(...origin, pos);
+      const [originalX, originalY, originalZ] = pos;
       let radiusX = radius;
       let radiusZ = radius;
       if (Array.isArray(radius)) {
@@ -94,7 +94,7 @@ const pillars = (
         tooCloseToOtherPillars(x, z)
       );
 
-      return pillar(x, originalY, z, 20)(mapData);
+      return pillar(...move(x, originalY, z, origin), 20)(mapData);
     },
     __,
     times(identity, n)

@@ -346,12 +346,16 @@ const generate = compose(
 
   addItem(origin, [0, 0, 0], smellyFlower),
   addItem(move(-70, -20, +90, origin), [0, 0, 0], createItem(items.torch)),
-  plain(...origin, 12, (polygons, mapData) => {
-    const { origin } = mapData.config
-    const spawn = move(0, -140, 0, move(...origin, mapData.state.spawn));
+  */
 
+  // TODO: plain should be relative too to the origin
+  plain(...origin, 12, (polygons, mapData) => {
+    const { origin } = mapData.config;
+    const spawn = move(0, -140, 0, move(...origin, mapData.state.spawn));
     const pressurePlate1 = move(-(12 * 100) / 4, 0, (12 * 100) / 4, origin);
     const pressurePlate2 = move((12 * 100) / 4, 0, (12 * 100) / 4, origin);
+
+    // TODO: bump protection for spawn is not working
 
     return compose(
       map((polygon) => {
@@ -372,7 +376,6 @@ const generate = compose(
     )(polygons);
   }),
   setColor(colors.terrain),
-  */
 
   pillars([0, 0, 0], 30, 3000, 1200, [400, 0, 0, 0]),
   setColor(colors.pillars),
