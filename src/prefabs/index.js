@@ -4,6 +4,7 @@ const wallZ = require("./base/wallZ.js");
 const skybox = require("./skybox.js");
 const plain = require("./plain.js");
 const pillar = require("./pillar.js");
+const pillars = require("./pillars.js");
 
 module.exports = {
   floor,
@@ -12,4 +13,5 @@ module.exports = {
   skybox,
   plain,
   pillar,
+  pillars,
 };

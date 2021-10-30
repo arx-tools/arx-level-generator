@@ -59,8 +59,7 @@ const toRgba = (colorDefinition) => {
 };
 
 const movePlayerTo = curry((pos, mapData) => {
-  const [x, y, z] = move(0, -140, 0, pos);
-  mapData.fts.sceneHeader.mScenePosition = { x, y, z };
+  mapData.state.spawn = pos;
   return mapData;
 });
 
@@ -126,6 +125,15 @@ const generateLights = (mapData) => {
 const finalize = (mapData) => {
   mapData.dlf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
   mapData.llf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
+
+  const [x, y, z] = move(
+    0,
+    -140,
+    0,
+    move(...mapData.config.origin, mapData.state.spawn)
+  );
+  mapData.fts.sceneHeader.mScenePosition = { x, y, z };
+
   return compose(generateLights, exportUsedItems, exportUsedTextures)(mapData);
 };
 
@@ -196,6 +204,7 @@ const generateBlankMapData = (config) => {
     },
     state: {
       color: null,
+      spawn: [0, 0, 0],
       vertexCounter: 0,
     },
     items: [],

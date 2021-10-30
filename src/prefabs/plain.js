@@ -7,7 +7,7 @@ const {
   pickRandoms,
   isPartOfNonBumpablePolygon,
 } = require("../helpers.js");
-const { identity, assoc, map, compose, reject } = require("ramda");
+const { identity, assoc, map, compose, reject, __ } = require("ramda");
 
 const plain =
   (x, y, z, size, onBeforeBumping = identity) =>
@@ -44,7 +44,7 @@ const plain =
     }
 
     let polygons = compose(
-      onBeforeBumping,
+      (polygons) => onBeforeBumping(polygons, mapData),
       map(assoc("bumpable", true))
     )(tmp.fts.polygons);
 

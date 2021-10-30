@@ -1,5 +1,5 @@
 const { compose, times, identity, reduce, __, map } = require("ramda");
-const { plain, pillar } = require("./prefabs");
+const { plain, pillars } = require("./prefabs");
 const {
   generateBlankMapData,
   movePlayerTo,
@@ -26,89 +26,6 @@ const colors = {
 };
 
 // --------------------------------------
-
-const pillars = (
-  [originalX, originalY, originalZ],
-  n,
-  excludeRadius = 100,
-  borderGap = [0, 0, 0, 0]
-) =>
-  reduce(
-    (mapData) => {
-      // TODO: generate them more evenly spaced out
-
-      const isInExcludeRadius = (x, z) => {
-        return (
-          isBetweenInclusive(
-            originalX - excludeRadius,
-            originalX + excludeRadius,
-            x
-          ) &&
-          isBetweenInclusive(
-            originalZ - excludeRadius,
-            originalZ + excludeRadius,
-            z
-          )
-        );
-      };
-
-      const isInBorderGap = (x, z) => {
-        const [top, right, bottom, left] = borderGap; // clockwise order, like in CSS
-
-        if (
-          top > 0 &&
-          z > 0 &&
-          isBetweenInclusive(originalX - top, originalX + top, x)
-        ) {
-          return true;
-        }
-
-        if (
-          bottom > 0 &&
-          z < 0 &&
-          isBetweenInclusive(originalX - bottom, originalX + bottom, x)
-        ) {
-          return true;
-        }
-
-        if (
-          left > 0 &&
-          x < 0 &&
-          isBetweenInclusive(originalZ - left, originalZ + left, z)
-        ) {
-          return true;
-        }
-
-        if (
-          right > 0 &&
-          x > 0 &&
-          isBetweenInclusive(originalZ - right, originalZ + right, z)
-        ) {
-          return true;
-        }
-
-        return false;
-      };
-
-      const tooCloseToOtherPillars = (x, z) => {
-        // TODO
-        return false;
-      };
-
-      do {
-        x = originalX + Math.random() * origin[0] - origin[0] / 2;
-        z = originalZ + Math.random() * origin[2] - origin[2] / 2;
-      } while (
-        isInExcludeRadius(x, z) ||
-        isInBorderGap(x, z) ||
-        tooCloseToOtherPillars(x, z)
-      );
-
-      return pillar(x, originalY, z, 20)(mapData);
-    },
-    __,
-    times(identity, n)
-  );
 
 const addZone =
   (pos, name, ambience = ambiences.none) =>
@@ -175,6 +92,7 @@ const addLight = (pos) => (mapData) => {
 
 // -------------------------------------------------
 
+/*
 const portcullis = compose(
   declare("int", "ok1"),
   declare("int", "ok2"),
@@ -377,6 +295,7 @@ ON INIT {
 `,
   smellyFlower
 );
+*/
 
 // -------------------------------------------------
 
@@ -396,6 +315,7 @@ const generate = compose(
   setColor(colors.pillars),
   */
 
+  /*
   addZone(origin, "welcome", ambiences.sirs),
   setColor(colors.ambience),
 
@@ -425,8 +345,10 @@ const generate = compose(
 
   addItem(origin, [0, 0, 0], smellyFlower),
   addItem(move(-70, -20, +90, origin), [0, 0, 0], createItem(items.torch)),
-  plain(...origin, 12, (polygons) => {
-    const spawn = origin;
+  plain(...origin, 12, (polygons, mapData) => {
+    const { origin } = mapData.config
+    const spawn = move(0, -140, 0, move(...origin, mapData.state.spawn));
+
     const pressurePlate1 = move(-(12 * 100) / 4, 0, (12 * 100) / 4, origin);
     const pressurePlate2 = move((12 * 100) / 4, 0, (12 * 100) / 4, origin);
 
@@ -449,16 +371,20 @@ const generate = compose(
     )(polygons);
   }),
   setColor(colors.terrain),
+  */
 
-  pillars(origin, 30, 12 * 100, [400, 0, 0, 0]),
+  pillars([0, 0, 0], 30, 12 * 100, [400, 0, 0, 0]),
   setColor(colors.pillars),
 
-  movePlayerTo(origin),
+  // ---------------
+
+  movePlayerTo([0, 0, 0]),
   generateBlankMapData
 );
 
 (async () => {
   await generate({
+    origin: [5000, 0, 5000],
     levelIdx: 1,
   });
 
