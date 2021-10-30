@@ -304,7 +304,7 @@ const generate = compose(
   finalize,
 
   /*
-  plain(...move(0, 0, (12 * 100) / 2 + (50 * 100) / 2 - 100, origin), [3, 50]),
+  plain(move(0, 0, (12 * 100) / 2 + (50 * 100) / 2 - 100, origin), [3, 50]),
   setColor(colors.terrain),
   pillars(
     move(0, 0, (12 * 100) / 2 + (50 * 100) / 2, origin),
@@ -349,13 +349,12 @@ const generate = compose(
   */
 
   // TODO: plain should be relative too to the origin
-  plain(...origin, 12, (polygons, mapData) => {
-    const { origin } = mapData.config;
-    const spawn = move(0, -140, 0, move(...origin, mapData.state.spawn));
+  plain([0, 0, 0], 12, (polygons, mapData) => {
+    const roomCoords = [0, 0, 0];
+    const origin = move(...roomCoords, mapData.config.origin);
+    const spawn = move(...origin, mapData.state.spawn);
     const pressurePlate1 = move(-(12 * 100) / 4, 0, (12 * 100) / 4, origin);
     const pressurePlate2 = move((12 * 100) / 4, 0, (12 * 100) / 4, origin);
-
-    // TODO: bump protection for spawn is not working
 
     return compose(
       map((polygon) => {
@@ -377,7 +376,7 @@ const generate = compose(
   }),
   setColor(colors.terrain),
 
-  pillars([0, 0, 0], 30, 3000, 1200, [400, 0, 0, 0]),
+  pillars([0, 0, 0], 30, 3000, 1250, [350, 0, 0, 0]),
   setColor(colors.pillars),
 
   // ---------------

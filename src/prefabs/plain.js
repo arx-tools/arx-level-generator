@@ -6,12 +6,17 @@ const {
   randomBetween,
   pickRandoms,
   isPartOfNonBumpablePolygon,
+  move,
 } = require("../helpers.js");
 const { identity, assoc, map, compose, reject, __ } = require("ramda");
 
 const plain =
-  (x, y, z, size, onBeforeBumping = identity) =>
+  (pos, size, onBeforeBumping = identity) =>
   (mapData) => {
+    const { origin } = mapData.config;
+
+    const [x, y, z] = move(...pos, origin);
+
     let sizeX = size;
     let sizeZ = size;
 

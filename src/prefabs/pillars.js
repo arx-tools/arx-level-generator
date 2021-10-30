@@ -10,6 +10,10 @@ const isInExcludeRadius = (pos, excludeRadius, x, z) => {
     [excludeRadiusX, excludeRadiusZ] = excludeRadius;
   }
 
+  if (excludeRadiusX === 0 && excludeRadiusZ === 0) {
+    return false;
+  }
+
   return (
     isBetweenInclusive(
       originalX - excludeRadiusX / 2,
@@ -31,7 +35,7 @@ const isInBorderGap = (pos, borderGap, x, z) => {
   if (
     top > 0 &&
     z > 0 &&
-    isBetweenInclusive(originalX - top, originalX + top, x)
+    isBetweenInclusive(originalX - top / 2, originalX + top / 2, x)
   ) {
     return true;
   }
@@ -39,7 +43,7 @@ const isInBorderGap = (pos, borderGap, x, z) => {
   if (
     bottom > 0 &&
     z < 0 &&
-    isBetweenInclusive(originalX - bottom, originalX + bottom, x)
+    isBetweenInclusive(originalX - bottom / 2, originalX + bottom / 2, x)
   ) {
     return true;
   }
@@ -47,7 +51,7 @@ const isInBorderGap = (pos, borderGap, x, z) => {
   if (
     left > 0 &&
     x < 0 &&
-    isBetweenInclusive(originalZ - left, originalZ + left, z)
+    isBetweenInclusive(originalZ - left / 2, originalZ + left / 2, z)
   ) {
     return true;
   }
@@ -55,7 +59,7 @@ const isInBorderGap = (pos, borderGap, x, z) => {
   if (
     right > 0 &&
     x > 0 &&
-    isBetweenInclusive(originalZ - right, originalZ + right, z)
+    isBetweenInclusive(originalZ - right / 2, originalZ + right / 2, z)
   ) {
     return true;
   }
