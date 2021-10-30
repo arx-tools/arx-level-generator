@@ -9,7 +9,7 @@ const {
 } = require("../helpers.js");
 const { identity, assoc, map, compose, reject } = require("ramda");
 
-const room =
+const plain =
   (x, y, z, size, onBeforeBumping = identity) =>
   (mapData) => {
     let sizeX = size;
@@ -83,4 +83,4 @@ const room =
     return mapData;
   };
 
-module.exports = room;
+module.exports = plain;

@@ -1,5 +1,5 @@
 const { compose, times, identity, reduce, __, map } = require("ramda");
-const { room, pillar } = require("./prefabs");
+const { plain, pillar } = require("./prefabs");
 const {
   generateBlankMapData,
   movePlayerTo,
@@ -384,15 +384,17 @@ const generate = compose(
   saveToDisk,
   finalize,
 
-  room(...move(0, 0, (12 * 100) / 2 + (50 * 100) / 2 - 100, origin), [3, 50]),
+  /*
+  plain(...move(0, 0, (12 * 100) / 2 + (50 * 100) / 2 - 100, origin), [3, 50]),
   setColor(colors.terrain),
   pillars(
     move(0, 0, (12 * 100) / 2 + (50 * 100) / 2, origin),
-    5, // 20 pillars
+    20, // 20 pillars
     3 * 100,
     [400, 0, 400, 0]
   ),
   setColor(colors.pillars),
+  */
 
   addZone(origin, "welcome", ambiences.sirs),
   setColor(colors.ambience),
@@ -423,7 +425,7 @@ const generate = compose(
 
   addItem(origin, [0, 0, 0], smellyFlower),
   addItem(move(-70, -20, +90, origin), [0, 0, 0], createItem(items.torch)),
-  room(...origin, 12, (polygons) => {
+  plain(...origin, 12, (polygons) => {
     const spawn = origin;
     const pressurePlate1 = move(-(12 * 100) / 4, 0, (12 * 100) / 4, origin);
     const pressurePlate2 = move((12 * 100) / 4, 0, (12 * 100) / 4, origin);
@@ -448,7 +450,7 @@ const generate = compose(
   }),
   setColor(colors.terrain),
 
-  pillars(origin, 5, 12 * 100, [400, 0, 0, 0]), // 30 pillars
+  pillars(origin, 30, 12 * 100, [400, 0, 0, 0]),
   setColor(colors.pillars),
 
   movePlayerTo(origin),
