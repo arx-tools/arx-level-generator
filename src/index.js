@@ -308,8 +308,9 @@ const generate = compose(
   setColor(colors.terrain),
   pillars(
     move(0, 0, (12 * 100) / 2 + (50 * 100) / 2, origin),
-    20, // 20 pillars
-    3 * 100,
+    20,
+    [1000, 3000],
+    [300, 5000],
     [400, 0, 400, 0]
   ),
   setColor(colors.pillars),
@@ -373,7 +374,7 @@ const generate = compose(
   setColor(colors.terrain),
   */
 
-  pillars([0, 0, 0], 30, 12 * 100, [400, 0, 0, 0]),
+  pillars([0, 0, 0], 30, 3000, 1200, [400, 0, 0, 0]),
   setColor(colors.pillars),
 
   // ---------------

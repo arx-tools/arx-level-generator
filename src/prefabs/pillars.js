@@ -2,17 +2,25 @@ const { reduce, times, identity, __ } = require("ramda");
 const { isBetweenInclusive, randomBetween, move } = require("../helpers.js");
 const pillar = require("./pillar.js");
 
-// --------------------
-
 const isInExcludeRadius = (pos, excludeRadius, x, z) => {
   const [originalX, originalY, originalZ] = pos;
+  let excludeRadiusX = excludeRadius;
+  let excludeRadiusZ = excludeRadius;
+  if (Array.isArray(excludeRadius)) {
+    [excludeRadiusX, excludeRadiusZ] = excludeRadius;
+  }
+
   return (
     isBetweenInclusive(
-      originalX - excludeRadius,
-      originalX + excludeRadius,
+      originalX - excludeRadiusX / 2,
+      originalX + excludeRadiusX / 2,
       x
     ) &&
-    isBetweenInclusive(originalZ - excludeRadius, originalZ + excludeRadius, z)
+    isBetweenInclusive(
+      originalZ - excludeRadiusZ / 2,
+      originalZ + excludeRadiusZ / 2,
+      z
+    )
   );
 };
 
@@ -60,17 +68,26 @@ const tooCloseToOtherPillars = (x, z) => {
   return false;
 };
 
-// --------------------
-
-const pillars = (pos, n, excludeRadius = 100, borderGap = [0, 0, 0, 0]) =>
+const pillars = (
+  pos,
+  n,
+  radius,
+  excludeRadius = 100,
+  borderGap = [0, 0, 0, 0]
+) =>
   reduce(
     (mapData) => {
       const { origin } = mapData.config;
       const [originalX, originalY, originalZ] = move(...origin, pos);
+      let radiusX = radius;
+      let radiusZ = radius;
+      if (Array.isArray(radius)) {
+        [radiusX, radiusZ] = radius;
+      }
 
       do {
-        x = originalX + randomBetween(-origin[0] / 2, origin[0] / 2);
-        z = originalZ + randomBetween(-origin[2] / 2, origin[2] / 2);
+        x = originalX + randomBetween(-radiusX / 2, radiusX / 2);
+        z = originalZ + randomBetween(-radiusZ / 2, radiusZ / 2);
       } while (
         isInExcludeRadius(pos, excludeRadius, x, z) ||
         isInBorderGap(pos, borderGap, x, z) ||
