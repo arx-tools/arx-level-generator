@@ -34,7 +34,7 @@ const room =
           x + 100 * i - (100 * sizeX) / 2 + 100 / 2,
           y,
           z + 100 * j - (100 * sizeZ) / 2 + 100 / 2,
-          textures.stone.whiteBricks,
+          textures.stone.humanWall1,
           "floor",
           null,
           90,

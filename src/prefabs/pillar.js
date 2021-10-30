@@ -1,29 +1,19 @@
 const wallX = require("./base/wallX.js");
 const wallZ = require("./base/wallZ.js");
 const { textures } = require("../assets/textures.js");
-const {
-  POLY_QUAD,
-  POLY_NO_SHADOW,
-  POLY_WATER,
-  POLY_FALL,
-} = require("../constants.js");
-const { assoc } = require("ramda");
+const { HFLIP } = require("../constants.js");
 
 const segment = (x, y, z, size) => (mapData) => {
   const height = 500;
 
   const uv = {
-    a: { u: 0.52, v: 0 },
-    b: { u: 0.52, v: 1 },
-    c: { u: 0.48, v: 0 },
-    d: { u: 0.48, v: 1 },
+    a: { u: 0.51, v: 0 },
+    b: { u: 0.51, v: 1 },
+    c: { u: 0.49, v: 0 },
+    d: { u: 0.49, v: 1 },
   };
 
-  const texture = assoc(
-    "flags",
-    POLY_QUAD | POLY_NO_SHADOW,
-    textures.wall.white
-  );
+  const texture = textures.stone.humanPriest4;
 
   mapData = wallX(
     x - size / 2,
@@ -47,7 +37,7 @@ const segment = (x, y, z, size) => (mapData) => {
     null,
     0,
     [size, height, size],
-    0,
+    HFLIP,
     uv
   )(mapData);
 
@@ -60,7 +50,7 @@ const segment = (x, y, z, size) => (mapData) => {
     null,
     0,
     [size, height, size],
-    0,
+    HFLIP,
     uv
   )(mapData);
 

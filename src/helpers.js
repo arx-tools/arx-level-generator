@@ -195,7 +195,7 @@ const generateBlankMapData = (config) => {
       now,
     },
     state: {
-      lightColor: null,
+      color: null,
       vertexCounter: 0,
     },
     items: [],
@@ -275,13 +275,13 @@ const saveToDisk = async (mapData) => {
   );
 };
 
-const setLightColor = (color) => (mapData) => {
-  mapData.state.lightColor = toRgba(color);
+const setColor = (color) => (mapData) => {
+  mapData.state.color = toRgba(color);
   return mapData;
 };
 
-const unsetLightColor = (mapData) => {
-  mapData.state.lightColor = null;
+const unsetColor = (mapData) => {
+  mapData.state.color = null;
   return mapData;
 };
 
@@ -417,8 +417,8 @@ module.exports = {
   finalize,
   generateBlankMapData,
   saveToDisk,
-  setLightColor,
-  unsetLightColor,
+  setColor,
+  unsetColor,
   isPartOfNonBumpablePolygon,
   categorizeVertices,
   adjustVertexBy,

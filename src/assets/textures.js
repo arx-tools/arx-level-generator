@@ -1,21 +1,29 @@
 const { includes, indexOf, addIndex, map } = require("ramda");
 
 const textures = {
-  wall: {
-    white: {
-      src: "[WOOD]_ALICIAROOM_MUR02.jpg",
-      native: true,
-    },
-  },
   gravel: {
     ground1: {
       src: "L5_CAVES_[GRAVEL]_GROUND05",
       native: true,
     },
   },
+  wood: {
+    aliciaRoomMur02: {
+      src: "[WOOD]_ALICIAROOM_MUR02.jpg",
+      native: true,
+    },
+  },
   stone: {
-    whiteBricks: {
+    humanWall1: {
       src: "[STONE]_HUMAN_STONE_WALL1.jpg",
+      native: true,
+    },
+    akbaa4f: {
+      src: "[STONE]_HUMAN_AKBAA4_F.jpg",
+      native: true,
+    },
+    humanPriest4: {
+      src: "[STONE]_HUMAN_PRIEST4.jpg",
       native: true,
     },
   },

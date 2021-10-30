@@ -5,24 +5,33 @@ const {
   movePlayerTo,
   finalize,
   saveToDisk,
-  setLightColor,
+  setColor,
   move,
   isPointInPolygon,
   isBetweenInclusive,
-  toRgba,
   toFloatRgb,
 } = require("./helpers.js");
 const { items, moveTo, createItem, addScript } = require("./assets/items.js");
 const { ambiences, useAmbience } = require("./assets/ambiences.js");
 const { color, declare } = require("./scripting.js");
 
+// --------------------------------------
+
 const origin = [5000, 0, 5000];
+const colors = {
+  pillars: "#1a351c",
+  ambience: "#200707",
+  lights: "#75d300",
+  terrain: "#0a0a0a",
+};
+
+// --------------------------------------
 
 const pillars = (
   [originalX, originalY, originalZ],
   n,
   excludeRadius = 100,
-  borderGap = [0, 0, 0, 0] // [top, right, bottom, left], clockwise order, like in CSS
+  borderGap = [0, 0, 0, 0]
 ) =>
   reduce(
     (mapData) => {
@@ -44,7 +53,7 @@ const pillars = (
       };
 
       const isInBorderGap = (x, z) => {
-        const [top, right, bottom, left] = borderGap;
+        const [top, right, bottom, left] = borderGap; // clockwise order, like in CSS
 
         if (
           top > 0 &&
@@ -115,7 +124,7 @@ const addZone =
         flags: 6,
         initPos: { x, y, z },
         pos: { x, y, z },
-        rgb: toFloatRgb(mapData.state.lightColor),
+        rgb: toFloatRgb(mapData.state.color),
         farClip: 2800,
         reverb: 0,
         ambianceMaxVolume: 100,
@@ -123,42 +132,10 @@ const addZone =
         ambiance: ambience.name,
       },
       pathways: [
-        {
-          rpos: {
-            x: -100,
-            y: 0,
-            z: 100,
-          },
-          flag: 0,
-          time: 0,
-        },
-        {
-          rpos: {
-            x: -100,
-            y: 0,
-            z: -100,
-          },
-          flag: 0,
-          time: 2000,
-        },
-        {
-          rpos: {
-            x: 100,
-            y: 0,
-            z: -100,
-          },
-          flag: 0,
-          time: 2000,
-        },
-        {
-          rpos: {
-            x: 100,
-            y: 0,
-            z: 100,
-          },
-          flag: 0,
-          time: 0,
-        },
+        { rpos: { x: -100, y: 0, z: 100 }, flag: 0, time: 0 },
+        { rpos: { x: -100, y: 0, z: -100 }, flag: 0, time: 2000 },
+        { rpos: { x: 100, y: 0, z: -100 }, flag: 0, time: 2000 },
+        { rpos: { x: 100, y: 0, z: 100 }, flag: 0, time: 0 },
       ],
     };
 
@@ -171,14 +148,14 @@ const addItem = (pos, angle, itemRef) => (mapData) => {
   return mapData;
 };
 
-const addLight = (pos, color) => (mapData) => {
+const addLight = (pos) => (mapData) => {
   let [x, y, z] = move(-origin[0], 0, -origin[2], pos);
   mapData.llf.lights.push({
     pos: { x, y, z },
-    rgb: color,
+    rgb: toFloatRgb(mapData.state.color),
     fallstart: 50,
-    fallend: 200,
-    intensity: 1.5,
+    fallend: 180,
+    intensity: 0.7,
     i: 0,
     exFlicker: {
       r: 0,
@@ -363,27 +340,28 @@ declare("int", "hadIntro", welcomeMarker);
 addScript(
   `
 ON INIT {
-  cinemascope on
   SETCONTROLLEDZONE welcome
-  worldfade OUT 0 ${color("#110202")}
-  SETPLAYERCONTROLS OFF
   SET ${welcomeMarker.state.hadIntro} 0
+  CINEMASCOPE ON
+  WORLDFADE OUT 0 ${color(colors.ambience)}
   ACCEPT
 }
 
 ON CONTROLLEDZONE_ENTER {
   if (${welcomeMarker.state.hadIntro} == 0) {
+    SET ${welcomeMarker.state.hadIntro} 1
+    SETPLAYERCONTROLS OFF
     TIMERfade 1 2 worldfade IN 2000
     SPEAK -a [alia_nightmare2] GOTO READY
+    ACCEPT
   }
-  
+
   ACCEPT
 }
 
 >>READY
-  cinemascope off
+  CINEMASCOPE -s OFF
   SETPLAYERCONTROLS ON
-  SET ${welcomeMarker.state.hadIntro} 1
   ACCEPT
 `,
   welcomeMarker
@@ -406,39 +384,35 @@ const generate = compose(
   saveToDisk,
   finalize,
 
-  addZone(move(0, 0, (12 * 100) / 2 + 100, origin), "brighten", ambiences.sirs),
-  setLightColor("#321212"),
-
   room(...move(0, 0, (12 * 100) / 2 + (50 * 100) / 2 - 100, origin), [3, 50]),
-  setLightColor("#0a0a0a"),
+  setColor(colors.terrain),
   pillars(
     move(0, 0, (12 * 100) / 2 + (50 * 100) / 2, origin),
     5, // 20 pillars
     3 * 100,
     [400, 0, 400, 0]
   ),
-  setLightColor("#160505"),
+  setColor(colors.pillars),
 
   addZone(origin, "welcome", ambiences.sirs),
-  // setLightColor("#d6a7a7"),
-  setLightColor("#160505"),
+  setColor(colors.ambience),
 
   addItem(move(0, 0, (12 * 100) / 2, origin), [0, 90, 0], portcullis),
+  setColor(colors.terrain),
 
-  addLight(
-    move(-(12 * 100) / 4, -10, (12 * 100) / 4, origin),
-    toRgba("#050000")
-  ),
+  addLight(move(-(12 * 100) / 4, -10, (12 * 100) / 4, origin)),
+  setColor(colors.lights),
+
   addItem(
     move(-(12 * 100) / 4, -16, (12 * 100) / 4, origin),
     [0, 0, 0],
     pressurePlate1
   ),
+  setColor(colors.terrain),
 
-  addLight(
-    move((12 * 100) / 4, -10, (12 * 100) / 4, origin),
-    toRgba("#050000")
-  ),
+  addLight(move((12 * 100) / 4, -10, (12 * 100) / 4, origin)),
+  setColor(colors.lights),
+
   addItem(
     move((12 * 100) / 4, -16, (12 * 100) / 4, origin),
     [0, 0, 0],
@@ -472,10 +446,10 @@ const generate = compose(
       })
     )(polygons);
   }),
-  setLightColor("#0a0a0a"),
+  setColor(colors.terrain),
 
   pillars(origin, 5, 12 * 100, [400, 0, 0, 0]), // 30 pillars
-  setLightColor("grey"),
+  setColor(colors.pillars),
 
   movePlayerTo(origin),
   generateBlankMapData
