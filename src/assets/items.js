@@ -87,11 +87,11 @@ const createItem = (item) => {
   return { src: item.src, id, state: {}, ref: `${name}_${numericId}` };
 };
 
-const addScript = (script, itemRef) => {
+const addScript = curry((script, itemRef) => {
   const { src, id } = itemRef;
   usedItems[src][id].script = trim(script);
   return itemRef;
-};
+});
 
 const moveTo = curry(([x, y, z], [a, b, g], itemRef) => {
   const { src, id } = itemRef;

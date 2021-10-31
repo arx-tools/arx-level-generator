@@ -10,6 +10,7 @@ const {
   addScript,
   markAsUsed,
 } = require("../../assets/items.js");
+const { isNotEmpty } = require("ramda-adjunct");
 
 // PP = pressure plate
 
@@ -46,9 +47,168 @@ const getPPIndices = (exits) => {
   }
 };
 
+const createPressurePlates = (eventBus) => {
+  const pp0 = compose(
+    declare("int", "onme"),
+    createItem
+  )(items.mechanisms.pressurePlate);
+  addScript(
+    `
+  ON INIT {
+    SETSCALE 101
+    ACCEPT
+  }
+
+  ON INITEND {
+    TIMERontop -im 0 500 GOTO TOP
+    ACCEPT
+  }
+
+  >>TOP
+    IF ( ^$OBJONTOP == "NONE" ) {
+      IF ( ${pp0.state.onme} == 1 ) {
+        SET ${pp0.state.onme} 0
+        PLAYANIM ACTION2
+        HEROSAY "pp0 released"
+        SENDEVENT CUSTOM ${eventBus.ref} "PP0_RELEASED"
+      }
+      ACCEPT
+    }
+    IF ( ${pp0.state.onme} == 0 ) {
+      SET ${pp0.state.onme} 1
+      PLAYANIM ACTION1
+      SENDEVENT CUSTOM ${eventBus.ref} "PP0_PRESSED"
+    }
+    ACCEPT
+  `,
+    pp0
+  );
+
+  const pp1 = compose(
+    declare("int", "onme"),
+    createItem
+  )(items.mechanisms.pressurePlate);
+  addScript(
+    `
+  ON INIT {
+    SETSCALE 101
+    ACCEPT
+  }
+
+  ON INITEND {
+    TIMERontop -im 0 500 GOTO TOP
+    ACCEPT
+  }
+
+  >>TOP
+    IF ( ^$OBJONTOP == "NONE" ) {
+      IF ( ${pp1.state.onme} == 1 ) {
+        SET ${pp1.state.onme} 0
+        PLAYANIM ACTION2
+        SENDEVENT CUSTOM ${eventBus.ref} "PP1_RELEASED"
+      }
+      ACCEPT
+    }
+    IF ( ${pp1.state.onme} == 0 ) {
+      SET ${pp1.state.onme} 1
+      PLAYANIM ACTION1
+      SENDEVENT CUSTOM ${eventBus.ref} "PP1_PRESSED"
+    }
+    ACCEPT
+  `,
+    pp1
+  );
+
+  const pp2 = compose(
+    declare("int", "onme"),
+    createItem
+  )(items.mechanisms.pressurePlate);
+  addScript(
+    `
+  ON INIT {
+    SETSCALE 101
+    ACCEPT
+  }
+
+  ON INITEND {
+    TIMERontop -im 0 500 GOTO TOP
+    ACCEPT
+  }
+
+  >>TOP
+    IF ( ^$OBJONTOP == "NONE" ) {
+      IF ( ${pp2.state.onme} == 1 ) {
+        SET ${pp2.state.onme} 0
+        PLAYANIM ACTION2
+        SENDEVENT CUSTOM ${eventBus.ref} "PP2_RELEASED"
+      }
+      ACCEPT
+    }
+    IF ( ${pp2.state.onme} == 0 ) {
+      SET ${pp2.state.onme} 1
+      PLAYANIM ACTION1
+      SENDEVENT CUSTOM ${eventBus.ref} "PP2_PRESSED"
+    }
+    ACCEPT
+  `,
+    pp2
+  );
+
+  const pp3 = compose(
+    declare("int", "onme"),
+    createItem
+  )(items.mechanisms.pressurePlate);
+  addScript(
+    `
+  ON INIT {
+    SETSCALE 101
+    ACCEPT
+  }
+
+  ON INITEND {
+    TIMERontop -im 0 500 GOTO TOP
+    ACCEPT
+  }
+
+  >>TOP
+    IF ( ^$OBJONTOP == "NONE" ) {
+      IF ( ${pp3.state.onme} == 1 ) {
+        SET ${pp3.state.onme} 0
+        PLAYANIM ACTION2
+        SENDEVENT CUSTOM ${eventBus.ref} "PP3_RELEASED"
+      }
+      ACCEPT
+    }
+    IF ( ${pp3.state.onme} == 0 ) {
+      SET ${pp3.state.onme} 1
+      PLAYANIM ACTION1
+      SENDEVENT CUSTOM ${eventBus.ref} "PP3_PRESSED"
+    }
+    ACCEPT
+  `,
+    pp3
+  );
+
+  return [pp0, pp1, pp2, pp3];
+};
+
+const createEventBus = () => {
+  const eventBus = compose(
+    addScript(
+      `
+ON CUSTOM {
+  HEROSAY ^$PARAM1 // THIS IS NOT WORKING
+}
+    `
+    ),
+    createItem
+  )(items.marker);
+
+  return eventBus;
+};
+
 const island = (config) => (mapData) => {
   const { pos, exits } = config;
-  // const absolutePos = move(...pos, mapData.config.origin);
   const spawn = move(...mapData.config.origin, mapData.state.spawn);
   const radius = 12;
   const quarth = (radius * 100) / 4;
@@ -58,76 +218,29 @@ const island = (config) => (mapData) => {
     move(-quarth, -6, -quarth, pos),
     move(quarth, -6, -quarth, pos),
   ];
+  const ppIndices = getPPIndices(exits);
 
-  const pp0 = compose(
-    declare("int", "onme"),
-    moveTo(ppCoords[0], [0, 0, 0]),
-    createItem
-  )(items.mechanisms.pressurePlate);
-  addScript(
-    `
-  ON INIT {
-    SETSCALE 101
-    ACCEPT
-  }
-  `,
-    pp0
-  );
+  const eventBus = createEventBus();
+  const pps = createPressurePlates(eventBus);
 
-  const pp1 = compose(
-    declare("int", "onme"),
-    moveTo(ppCoords[1], [0, 0, 0]),
-    createItem
-  )(items.mechanisms.pressurePlate);
-  addScript(
-    `
-  ON INIT {
-    SETSCALE 101
-    ACCEPT
-  }
-  `,
-    pp1
-  );
+  moveTo(ppCoords[0], [0, 0, 0], pps[0]);
+  moveTo(ppCoords[1], [0, 0, 0], pps[1]);
+  moveTo(ppCoords[2], [0, 0, 0], pps[2]);
+  moveTo(ppCoords[3], [0, 0, 0], pps[3]);
 
-  const pp2 = compose(
-    declare("int", "onme"),
-    moveTo(ppCoords[2], [0, 0, 0]),
-    createItem
-  )(items.mechanisms.pressurePlate);
-  addScript(
-    `
-  ON INIT {
-    SETSCALE 101
-    ACCEPT
-  }
-  `,
-    pp2
-  );
-
-  const pp3 = compose(
-    declare("int", "onme"),
-    moveTo(ppCoords[3], [0, 0, 0]),
-    createItem
-  )(items.mechanisms.pressurePlate);
-  addScript(
-    `
-  ON INIT {
-    SETSCALE 101
-    ACCEPT
-  }
-  `,
-    pp3
-  );
-
-  props(getPPIndices(exits), [pp0, pp1, pp2, pp3]).forEach((pp) => {
+  props(ppIndices, pps).forEach((pp) => {
     markAsUsed(pp);
   });
+
+  if (isNotEmpty(ppIndices)) {
+    markAsUsed(eventBus);
+  }
 
   return compose(
     plain(pos, radius, (polygons) => {
       const ppAbsoluteCoords = map(
         move(...mapData.config.origin),
-        props(getPPIndices(exits), ppCoords)
+        props(ppIndices, ppCoords)
       );
 
       return map((polygon) => {
