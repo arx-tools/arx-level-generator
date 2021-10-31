@@ -14,8 +14,12 @@ const {
   reduce,
   toString,
   trim,
+  propEq,
+  filter,
+  curry,
 } = require("ramda");
 const { padCharsStart } = require("ramda-adjunct");
+const { PLAYER_HEIGHT_ADJUSTMENT } = require("../constants");
 
 const items = {
   marker: {
@@ -61,6 +65,7 @@ const createItem = (item) => {
 
   usedItems[item.src].push({
     filename: item.src,
+    used: false,
     identifier: id + 1,
     pos: {
       x: 0,
@@ -88,10 +93,16 @@ const addScript = (script, itemRef) => {
   return itemRef;
 };
 
-const moveTo = ([x, y, z], [a, b, g], itemRef) => {
+const moveTo = curry(([x, y, z], [a, b, g], itemRef) => {
   const { src, id } = itemRef;
   usedItems[src][id].pos = { x, y, z };
   usedItems[src][id].angle = { a, b, g };
+  return itemRef;
+});
+
+const markAsUsed = (itemRef) => {
+  const { src, id } = itemRef;
+  usedItems[src][id].used = true;
   return itemRef;
 };
 
@@ -104,14 +115,23 @@ const arxifyFilename = (filename) => {
 };
 
 const exportUsedItems = (mapData) => {
+  const { spawn } = mapData.state;
+
   mapData.dlf.interactiveObjects = compose(
     map((item) => {
       item.name =
         "C:\\ARX\\Graph\\Obj3D\\Interactive\\" + arxifyFilename(item.filename);
       delete item.filename;
       delete item.script;
+      const { x, y, z } = item.pos;
+      item.pos = {
+        x: x - spawn[0],
+        y: y - spawn[1] - PLAYER_HEIGHT_ADJUSTMENT,
+        z: z - spawn[2],
+      };
       return item;
     }),
+    filter(propEq("used", true)),
     unnest,
     values,
     clone
@@ -131,6 +151,7 @@ const exportScripts = (outputDir) => {
       files[filename] = item.script;
       return files;
     }, {}),
+    filter(propEq("used", true)),
     unnest,
     values,
     clone
@@ -142,6 +163,7 @@ module.exports = {
   createItem,
   addScript,
   moveTo,
+  markAsUsed,
   exportUsedItems,
   exportScripts,
 };

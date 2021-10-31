@@ -39,6 +39,7 @@ const {
   MAP_MAX_HEIGHT,
   MAP_MAX_WIDTH,
   POLY_NODRAW,
+  PLAYER_HEIGHT_ADJUSTMENT,
 } = require("./constants.js");
 const { exportUsedItems, exportScripts } = require("./assets/items.js");
 const { exportAmbiences } = require("./assets/ambiences.js");
@@ -128,7 +129,7 @@ const finalize = (mapData) => {
 
   const [x, y, z] = move(
     0,
-    -140,
+    PLAYER_HEIGHT_ADJUSTMENT,
     0,
     move(...mapData.config.origin, mapData.state.spawn)
   );

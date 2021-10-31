@@ -58,6 +58,8 @@ const MAP_MAX_HEIGHT = 160;
 const MAP_WIDTH = 127.8;
 const MAP_HEIGHT = 114.24;
 
+const PLAYER_HEIGHT_ADJUSTMENT = -140;
+
 module.exports = {
   POLY_NO_SHADOW,
   POLY_DOUBLESIDED,
@@ -109,4 +111,6 @@ module.exports = {
 
   MAP_WIDTH,
   MAP_HEIGHT,
+
+  PLAYER_HEIGHT_ADJUSTMENT,
 };

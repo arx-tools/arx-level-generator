@@ -1,94 +1,94 @@
-const { compose, times, identity, reduce, __, map } = require("ramda");
-const { plain, pillars } = require("./prefabs");
-const {
-  generateBlankMapData,
-  movePlayerTo,
-  finalize,
-  saveToDisk,
-  setColor,
-  move,
-  isPointInPolygon,
-  isBetweenInclusive,
-  toFloatRgb,
-} = require("./helpers.js");
-const { items, moveTo, createItem, addScript } = require("./assets/items.js");
-const { ambiences, useAmbience } = require("./assets/ambiences.js");
-const { color, declare } = require("./scripting.js");
+// const { compose, times, identity, reduce, __, map } = require("ramda");
+// const { plain, pillars } = require("./prefabs");
+// const {
+//   generateBlankMapData,
+//   movePlayerTo,
+//   finalize,
+//   saveToDisk,
+//   setColor,
+//   move,
+//   isPointInPolygon,
+//   isBetweenInclusive,
+//   toFloatRgb,
+// } = require("./helpers.js");
+// const { items, moveTo, createItem, addScript } = require("./assets/items.js");
+// const { ambiences, useAmbience } = require("./assets/ambiences.js");
+// const { color, declare } = require("./scripting.js");
 
 // --------------------------------------
 
-const origin = [5000, 0, 5000];
-const colors = {
-  pillars: "#1a351c",
-  ambience: "#200707",
-  lights: "#75d300",
-  terrain: "#0a0a0a",
-};
+// const origin = [5000, 0, 5000];
+// const colors = {
+//   pillars: "#1a351c",
+//   ambience: "#200707",
+//   lights: "#75d300",
+//   terrain: "#0a0a0a",
+// };
 
 // --------------------------------------
 
-const addZone =
-  (pos, name, ambience = ambiences.none) =>
-  (mapData) => {
-    let [x, y, z] = move(-origin[0], 100, -origin[2], pos);
+// const addZone =
+//   (pos, name, ambience = ambiences.none) =>
+//   (mapData) => {
+//     let [x, y, z] = move(-origin[0], 100, -origin[2], pos);
 
-    useAmbience(ambience);
+//     useAmbience(ambience);
 
-    const zoneData = {
-      header: {
-        name,
-        idx: 0,
-        flags: 6,
-        initPos: { x, y, z },
-        pos: { x, y, z },
-        rgb: toFloatRgb(mapData.state.color),
-        farClip: 2800,
-        reverb: 0,
-        ambianceMaxVolume: 100,
-        height: -1,
-        ambiance: ambience.name,
-      },
-      pathways: [
-        { rpos: { x: -100, y: 0, z: 100 }, flag: 0, time: 0 },
-        { rpos: { x: -100, y: 0, z: -100 }, flag: 0, time: 2000 },
-        { rpos: { x: 100, y: 0, z: -100 }, flag: 0, time: 2000 },
-        { rpos: { x: 100, y: 0, z: 100 }, flag: 0, time: 0 },
-      ],
-    };
+//     const zoneData = {
+//       header: {
+//         name,
+//         idx: 0,
+//         flags: 6,
+//         initPos: { x, y, z },
+//         pos: { x, y, z },
+//         rgb: toFloatRgb(mapData.state.color),
+//         farClip: 2800,
+//         reverb: 0,
+//         ambianceMaxVolume: 100,
+//         height: -1,
+//         ambiance: ambience.name,
+//       },
+//       pathways: [
+//         { rpos: { x: -100, y: 0, z: 100 }, flag: 0, time: 0 },
+//         { rpos: { x: -100, y: 0, z: -100 }, flag: 0, time: 2000 },
+//         { rpos: { x: 100, y: 0, z: -100 }, flag: 0, time: 2000 },
+//         { rpos: { x: 100, y: 0, z: 100 }, flag: 0, time: 0 },
+//       ],
+//     };
 
-    mapData.dlf.paths.push(zoneData);
-    return mapData;
-  };
+//     mapData.dlf.paths.push(zoneData);
+//     return mapData;
+//   };
 
-const addItem = (pos, angle, itemRef) => (mapData) => {
-  moveTo(move(-origin[0], origin[1] + 150, -origin[2], pos), angle, itemRef);
-  return mapData;
-};
+// const addItem = (pos, angle, itemRef) => (mapData) => {
+//   moveTo(move(-origin[0], origin[1] + 150, -origin[2], pos), angle, itemRef);
+//   return mapData;
+// };
 
-const addLight = (pos) => (mapData) => {
-  let [x, y, z] = move(-origin[0], 0, -origin[2], pos);
-  mapData.llf.lights.push({
-    pos: { x, y, z },
-    rgb: toFloatRgb(mapData.state.color),
-    fallstart: 50,
-    fallend: 180,
-    intensity: 0.7,
-    i: 0,
-    exFlicker: {
-      r: 0,
-      g: 0,
-      b: 0,
-    },
-    exRadius: 0,
-    exFrequency: 0.01,
-    exSize: 0.1,
-    exSpeed: 0,
-    exFlareSize: 0,
-    extras: 0,
-  });
+// const addLight = (pos) => (mapData) => {
+//   let [x, y, z] = move(-origin[0], 0, -origin[2], pos);
+//   mapData.llf.lights.push({
+//     pos: { x, y, z },
+//     rgb: toFloatRgb(mapData.state.color),
+//     fallstart: 50,
+//     fallend: 180,
+//     intensity: 0.7,
+//     i: 0,
+//     exFlicker: {
+//       r: 0,
+//       g: 0,
+//       b: 0,
+//     },
+//     exRadius: 0,
+//     exFrequency: 0.01,
+//     exSize: 0.1,
+//     exSpeed: 0,
+//     exFlareSize: 0,
+//     extras: 0,
+//   });
 
-  return mapData;
-};
+//   return mapData;
+// };
 
 // -------------------------------------------------
 
@@ -299,97 +299,60 @@ ON INIT {
 
 // -------------------------------------------------
 
-const generate = compose(
-  saveToDisk,
-  finalize,
+//   // plain(move(0, 0, (12 * 100) / 2 + (50 * 100) / 2 - 100, origin), [3, 50]),
+//   // setColor(colors.terrain),
+//   // pillars(
+//   //   move(0, 0, (12 * 100) / 2 + (50 * 100) / 2, origin),
+//   //   20,
+//   //   [1000, 3000],
+//   //   [300, 5000],
+//   //   [400, 0, 400, 0]
+//   // ),
+//   // setColor(colors.pillars),
 
-  /*
-  plain(move(0, 0, (12 * 100) / 2 + (50 * 100) / 2 - 100, origin), [3, 50]),
-  setColor(colors.terrain),
-  pillars(
-    move(0, 0, (12 * 100) / 2 + (50 * 100) / 2, origin),
-    20,
-    [1000, 3000],
-    [300, 5000],
-    [400, 0, 400, 0]
-  ),
-  setColor(colors.pillars),
-  */
+//   // -------------
 
-  /*
-  addZone(origin, "welcome", ambiences.sirs),
-  setColor(colors.ambience),
+//   // addZone(origin, "welcome", ambiences.sirs),
+//   // setColor(colors.ambience),
 
-  addItem(move(0, 0, (12 * 100) / 2, origin), [0, 90, 0], portcullis),
-  setColor(colors.terrain),
+//   // addItem(move(0, 0, (12 * 100) / 2, origin), [0, 90, 0], portcullis),
+//   // setColor(colors.terrain),
 
-  addLight(move(-(12 * 100) / 4, -10, (12 * 100) / 4, origin)),
-  setColor(colors.lights),
+//   // addLight(move(-(12 * 100) / 4, -10, (12 * 100) / 4, origin)),
+//   // setColor(colors.lights),
 
-  addItem(
-    move(-(12 * 100) / 4, -16, (12 * 100) / 4, origin),
-    [0, 0, 0],
-    pressurePlate1
-  ),
-  setColor(colors.terrain),
+//   // addItem(
+//   //   move(-(12 * 100) / 4, -16, (12 * 100) / 4, origin),
+//   //   [0, 0, 0],
+//   //   pressurePlate1
+//   // ),
+//   // setColor(colors.terrain),
 
-  addLight(move((12 * 100) / 4, -10, (12 * 100) / 4, origin)),
-  setColor(colors.lights),
+//   // addLight(move((12 * 100) / 4, -10, (12 * 100) / 4, origin)),
+//   // setColor(colors.lights),
 
-  addItem(
-    move((12 * 100) / 4, -16, (12 * 100) / 4, origin),
-    [0, 0, 0],
-    pressurePlate2
-  ),
+//   // addItem(
+//   //   move((12 * 100) / 4, -16, (12 * 100) / 4, origin),
+//   //   [0, 0, 0],
+//   //   pressurePlate2
+//   // ),
 
-  addItem(move(0, -300, 0, origin), [0, 0, 0], welcomeMarker),
+//   // addItem(move(0, -300, 0, origin), [0, 0, 0], welcomeMarker),
 
-  addItem(origin, [0, 0, 0], smellyFlower),
-  addItem(move(-70, -20, +90, origin), [0, 0, 0], createItem(items.torch)),
-  */
+//   // addItem(origin, [0, 0, 0], smellyFlower),
+//   // addItem(move(-70, -20, +90, origin), [0, 0, 0], createItem(items.torch)),
 
-  // TODO: plain should be relative too to the origin
-  plain([0, 0, 0], 12, (polygons, mapData) => {
-    const roomCoords = [0, 0, 0];
-    const origin = move(...roomCoords, mapData.config.origin);
-    const spawn = move(...origin, mapData.state.spawn);
-    const pressurePlate1 = move(-(12 * 100) / 4, 0, (12 * 100) / 4, origin);
-    const pressurePlate2 = move((12 * 100) / 4, 0, (12 * 100) / 4, origin);
+//   // -------------
 
-    return compose(
-      map((polygon) => {
-        if (isPointInPolygon(spawn, polygon)) {
-          polygon.bumpable = false;
-        }
+// -------------------------------------------------
+// -------------------------------------------------
 
-        if (
-          isPointInPolygon(pressurePlate1, polygon) ||
-          isPointInPolygon(pressurePlate2, polygon)
-        ) {
-          polygon.tex = 0;
-          polygon.bumpable = false;
-        }
-
-        return polygon;
-      })
-    )(polygons);
-  }),
-  setColor(colors.terrain),
-
-  pillars([0, 0, 0], 30, 3000, 1250, [350, 0, 0, 0]),
-  setColor(colors.pillars),
-
-  // ---------------
-
-  movePlayerTo([0, 0, 0]),
-  generateBlankMapData
-);
+const aliasNightmare = require("./projects/alias-nightmare/index.js");
 
 (async () => {
-  await generate({
-    origin: [5000, 0, 5000],
+  await aliasNightmare({
+    origin: [6000, 0, 6000],
     levelIdx: 1,
   });
-
   console.log("done");
 })();
