@@ -84,7 +84,13 @@ const createItem = (item) => {
   const { name } = path.parse(item.src);
   const numericId = padCharsStart("0", 4, toString(id + 1));
 
-  return { src: item.src, id, state: {}, ref: `${name}_${numericId}` };
+  return {
+    src: item.src,
+    id,
+    state: {},
+    injections: {},
+    ref: `${name}_${numericId}`,
+  };
 };
 
 const addScript = curry((script, itemRef) => {

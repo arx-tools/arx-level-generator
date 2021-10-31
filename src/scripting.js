@@ -12,7 +12,7 @@ const color = (colorDefinition) => {
 
 const globalScope = {};
 
-const declare = curry((type, name, scope) => {
+const declare = curry((type, name, initialValue, scope) => {
   if (scope === "global") {
     switch (type) {
       case "int":
@@ -26,6 +26,7 @@ const declare = curry((type, name, scope) => {
         break;
     }
   } else {
+    let value = initialValue;
     switch (type) {
       case "int":
         scope.state[name] = `§${name}`;
@@ -35,15 +36,26 @@ const declare = curry((type, name, scope) => {
         break;
       case "string":
         scope.state[name] = `£${name}`;
+        initialValue = `"${initialValue}"`;
         break;
+    }
+
+    if (initialValue !== null) {
+      scope.injections.init = scope.injections.init || [];
+      scope.injections.init.push(`SET ${scope.state[name]} ${value}`);
     }
   }
 
   return scope;
 });
 
+const getInjections = (eventName, scope) => {
+  return (scope.injections[eventName] || []).join("\n  ");
+};
+
 module.exports = {
   globalScope,
   color,
   declare,
+  getInjections,
 };
