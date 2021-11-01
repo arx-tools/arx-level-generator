@@ -478,7 +478,7 @@ const addLight = curry((pos, mapData) => {
 });
 
 const addZone =
-  (pos, name, ambience = ambiences.none) =>
+  (pos, size, name, ambience = ambiences.none) =>
   (mapData) => {
     let [x, y, z] = pos;
 
@@ -495,14 +495,22 @@ const addZone =
         farClip: 2800,
         reverb: 0,
         ambianceMaxVolume: 100,
-        height: -1,
+        height: size[1] === 0 ? -1 : size[1],
         ambiance: ambience.name,
       },
       pathways: [
-        { rpos: { x: -100, y: 0, z: 100 }, flag: 0, time: 0 },
-        { rpos: { x: -100, y: 0, z: -100 }, flag: 0, time: 2000 },
-        { rpos: { x: 100, y: 0, z: -100 }, flag: 0, time: 2000 },
-        { rpos: { x: 100, y: 0, z: 100 }, flag: 0, time: 0 },
+        { rpos: { x: -size[0] / 2, y: 0, z: size[2] / 2 }, flag: 0, time: 0 },
+        {
+          rpos: { x: -size[0] / 2, y: 0, z: -size[2] / 2 },
+          flag: 0,
+          time: 2000,
+        },
+        {
+          rpos: { x: size[0] / 2, y: 0, z: -size[2] / 2 },
+          flag: 0,
+          time: 2000,
+        },
+        { rpos: { x: size[0] / 2, y: 0, z: size[2] / 2 }, flag: 0, time: 0 },
       ],
     };
 

@@ -1,6 +1,7 @@
 const { includes, indexOf, addIndex, map } = require("ramda");
 
 const textures = {
+  none: null,
   gravel: {
     ground1: {
       src: "L5_CAVES_[GRAVEL]_GROUND05",
@@ -57,6 +58,10 @@ const textures = {
 
 const usedTextures = [];
 const useTexture = (texture) => {
+  if (texture === textures.none) {
+    return 0;
+  }
+
   if (!includes(texture.src, usedTextures)) {
     usedTextures.push(texture.src);
   }

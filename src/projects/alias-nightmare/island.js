@@ -1,4 +1,4 @@
-const { compose, map, props, any, __, curry } = require("ramda");
+const { compose, map, props, any, __, when } = require("ramda");
 const {
   setColor,
   move,
@@ -353,9 +353,6 @@ const createGates = () => {
 // component island:gates.north
 ON INIT {
   ${getInjections("init", north)}
-  ACCEPT
-}
-ON LOAD {
   USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
   ACCEPT
 }
@@ -393,9 +390,6 @@ ON OPEN {
 // component island:gates.south
 ON INIT {
   ${getInjections("init", south)}
-  ACCEPT
-}
-ON LOAD {
   USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
   ACCEPT
 }
@@ -433,9 +427,6 @@ ON OPEN {
 // component island:gates.east
 ON INIT {
   ${getInjections("init", east)}
-  ACCEPT
-}
-ON LOAD {
   USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
   ACCEPT
 }
@@ -473,9 +464,6 @@ ON OPEN {
 // component island:gates.west
 ON INIT {
   ${getInjections("init", west)}
-  ACCEPT
-}
-ON LOAD {
   USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
   ACCEPT
 }
@@ -539,19 +527,23 @@ const island = (config) => (mapData) => {
   // TODO: moveTo the used gates + add small bridge segments
   if (exits & NORTH) {
     markAsUsed(gates.north);
-    moveTo(move(0, 0, (radius * 100) / 2 - 50, pos), [0, 90, 0], gates.north);
+    moveTo(move(0, 0, (radius * 100) / 2 + 300, pos), [0, 90, 0], gates.north);
   }
   if (exits & SOUTH) {
     markAsUsed(gates.south);
-    moveTo(move(0, 0, -(radius * 100) / 2 + 50, pos), [0, 270, 0], gates.south);
+    moveTo(
+      move(0, 0, -(radius * 100) / 2 - 300, pos),
+      [0, 270, 0],
+      gates.south
+    );
   }
   if (exits & EAST) {
     markAsUsed(gates.east);
-    moveTo(move((radius * 100) / 2 - 50, 0, 0, pos), [0, 0, 0], gates.east);
+    moveTo(move((radius * 100) / 2 + 300, 0, 0, pos), [0, 0, 0], gates.east);
   }
   if (exits & WEST) {
     markAsUsed(gates.west);
-    moveTo(move(-(radius * 100) / 2 + 50, 0, 0, pos), [0, 180, 0], gates.west);
+    moveTo(move(-(radius * 100) / 2 - 300, 0, 0, pos), [0, 180, 0], gates.west);
   }
 
   compose(markAsUsed, moveTo(pos, [0, 97, 0]), createItem)(items.torch);
@@ -570,6 +562,23 @@ const island = (config) => (mapData) => {
       return mapData;
     },
     setColor(colors.lights),
+
+    when(
+      () => exits & NORTH,
+      plain(move(0, 0, (radius * 100) / 2 + 150, pos), [2, 5])
+    ),
+    when(
+      () => exits & SOUTH,
+      plain(move(0, 0, -((radius * 100) / 2 + 150), pos), [2, 5])
+    ),
+    when(
+      () => exits & EAST,
+      plain(move((radius * 100) / 2 + 150, 0, 0, pos), [5, 2])
+    ),
+    when(
+      () => exits & WEST,
+      plain(move(-((radius * 100) / 2 + 150), 0, 0, pos), [5, 2])
+    ),
 
     plain(pos, radius, (polygons) => {
       const ppAbsoluteCoords = map(

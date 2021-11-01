@@ -79,7 +79,7 @@ const floor =
       uv = [uv[1], uv[0], uv[3], uv[2]];
     }
 
-    const textureFlags = texture.flags ?? POLY_QUAD | POLY_NO_SHADOW;
+    const textureFlags = texture?.flags ?? POLY_QUAD | POLY_NO_SHADOW;
 
     mapData.fts.polygons.push({
       config: {
