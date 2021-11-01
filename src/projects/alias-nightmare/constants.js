@@ -16,6 +16,7 @@ const NORTH = 0x1;
 const EAST = 0x2;
 const SOUTH = 0x4;
 const WEST = 0x8;
+const ALL = NORTH | SOUTH | EAST | WEST;
 
 module.exports = {
   colors,
@@ -24,4 +25,5 @@ module.exports = {
   EAST,
   SOUTH,
   WEST,
+  ALL,
 };

@@ -6,9 +6,10 @@ const {
   saveToDisk,
   setColor,
   addZone,
+  randomBetween,
 } = require("../../helpers");
 const island = require("./island.js");
-const { NORTH, WEST, SOUTH, EAST, colors } = require("./constants.js");
+const { colors, NONE, ALL } = require("./constants.js");
 const { ambiences } = require("../../assets/ambiences");
 const {
   items,
@@ -59,13 +60,17 @@ ON CONTROLLEDZONE_ENTER {
 const generate = async (config) => {
   createWelcomeMarker([0, 0, 0]);
 
+  const mainIslandExits =
+    Math.round(randomBetween(NONE, ALL)) ||
+    1 << Math.round(randomBetween(0, 3));
+
   return compose(
     saveToDisk,
     finalize,
 
     island({
       pos: [0, 0, 0],
-      exits: NORTH | WEST | EAST | SOUTH,
+      exits: mainIslandExits,
     }),
 
     addZone([-600, 0, -1000], [100, 0, 100], "palette4", ambiences.sirs),
