@@ -59,6 +59,7 @@ const createPressurePlates = (eventBus) => {
   )(items.mechanisms.pressurePlate);
   addScript(
     `
+// component: island.pp0
   ON INIT {
     SETSCALE 101
     ${getInjections("init", pp0)}
@@ -95,6 +96,7 @@ const createPressurePlates = (eventBus) => {
   )(items.mechanisms.pressurePlate);
   addScript(
     `
+// component: island.pp1
   ON INIT {
     SETSCALE 101
     ${getInjections("init", pp1)}
@@ -131,6 +133,7 @@ const createPressurePlates = (eventBus) => {
   )(items.mechanisms.pressurePlate);
   addScript(
     `
+// component: island.pp2
   ON INIT {
     SETSCALE 101
     ${getInjections("init", pp2)}
@@ -167,6 +170,7 @@ const createPressurePlates = (eventBus) => {
   )(items.mechanisms.pressurePlate);
   addScript(
     `
+// component: island.pp3
   ON INIT {
     SETSCALE 101
     ${getInjections("init", pp3)}
@@ -215,6 +219,7 @@ const createEventBus = (gates) => {
 
   addScript(
     `
+// component: island.eventBus
 ON INIT {
   ${getInjections("init", eventBus)}
   ACCEPT
@@ -345,6 +350,7 @@ const createGates = () => {
   )(items.doors.portcullis);
   addScript(
     `
+// component island:gates.north
 ON INIT {
   ${getInjections("init", north)}
   ACCEPT
@@ -384,6 +390,7 @@ ON OPEN {
   )(items.doors.portcullis);
   addScript(
     `
+// component island:gates.south
 ON INIT {
   ${getInjections("init", south)}
   ACCEPT
@@ -423,6 +430,7 @@ ON OPEN {
   )(items.doors.portcullis);
   addScript(
     `
+// component island:gates.east
 ON INIT {
   ${getInjections("init", east)}
   ACCEPT
@@ -462,6 +470,7 @@ ON OPEN {
   )(items.doors.portcullis);
   addScript(
     `
+// component island:gates.west
 ON INIT {
   ${getInjections("init", west)}
   ACCEPT
@@ -545,15 +554,11 @@ const island = (config) => (mapData) => {
     moveTo(move(-(radius * 100) / 2 + 50, 0, 0, pos), [0, 180, 0], gates.west);
   }
 
-  const torch = compose(
-    markAsUsed,
-    moveTo(pos, [0, 0, 0]),
-    createItem
-  )(items.torch);
+  compose(markAsUsed, moveTo(pos, [0, 97, 0]), createItem)(items.torch);
 
-  const torch2 = compose(
+  compose(
     markAsUsed,
-    moveTo(move(-30, 0, 0, pos), [0, 0, 0]),
+    moveTo(move(-30, 0, 0, pos), [0, 70, 0]),
     createItem
   )(items.torch);
 
@@ -593,7 +598,7 @@ const island = (config) => (mapData) => {
 
     setColor(colors.terrain),
 
-    pillars(pos, 30, 3000, radius * 100 + 50, [
+    pillars(pos, 30, 4000, radius * 100 + 50, [
       exits & NORTH ? 350 : 0,
       exits & EAST ? 350 : 0,
       exits & SOUTH ? 350 : 0,

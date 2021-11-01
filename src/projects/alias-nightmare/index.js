@@ -23,9 +23,10 @@ const { declare, color, getInjections } = require("../../scripting");
 const createWelcomeMarker = (pos) => {
   compose(
     markAsUsed,
-    moveTo([0, -300, 0], [0, 0, 0]),
+    moveTo(pos, [0, 0, 0]),
     addScript((self) => {
       return `
+// component: welcomeMarker
 ON INIT {
   ${getInjections("init", self)}
   SETCONTROLLEDZONE welcome
@@ -57,7 +58,7 @@ ON CONTROLLEDZONE_ENTER {
 };
 
 const generate = async (config) => {
-  createWelcomeMarker([0, 0, 0]);
+  createWelcomeMarker([0, -300, 0]);
 
   return compose(
     saveToDisk,
