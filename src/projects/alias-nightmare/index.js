@@ -1,4 +1,4 @@
-const { compose, map, F, evolve } = require("ramda");
+const { compose } = require("ramda");
 const {
   generateBlankMapData,
   movePlayerTo,
@@ -8,7 +8,6 @@ const {
   addZone,
 } = require("../../helpers");
 const island = require("./island.js");
-// const bridge = require("./bridge.js");
 const { NORTH, WEST, SOUTH, EAST, colors } = require("./constants.js");
 const { ambiences } = require("../../assets/ambiences");
 const {
@@ -19,8 +18,6 @@ const {
   addScript,
 } = require("../../assets/items");
 const { declare, color, getInjections } = require("../../scripting");
-const { plain } = require("../../prefabs");
-const { useTexture, textures } = require("../../assets/textures");
 
 const createWelcomeMarker = (pos) => {
   return compose(
@@ -31,7 +28,7 @@ const createWelcomeMarker = (pos) => {
 // component: welcomeMarker
 ON INIT {
   ${getInjections("init", self)}
-  SETCONTROLLEDZONE welcome
+  SETCONTROLLEDZONE palette0
   CINEMASCOPE ON
   WORLDFADE OUT 0 ${color(colors.ambience[0])}
   ACCEPT
@@ -59,59 +56,28 @@ ON CONTROLLEDZONE_ENTER {
   )(items.marker);
 };
 
-// const createKillzoneMarker = (pos) => {
-//   return compose(
-//     markAsUsed,
-//     moveTo(pos, [0, 0, 0]),
-//     addScript((self) => {
-//       return `
-// // component: killzoneMarker
-// ON INIT {
-//   ${getInjections("init", self)}
-//   SETCONTROLLEDZONE killzone
-//   ACCEPT
-// }
-// ON CONTROLLEDZONE_ENTER {
-//   WORLDFADE OUT 3000 ${color("black")}
-//   TIMERfade 1 3 GOTO KILL ^$PARAM1
-//   ACCEPT
-// }
-// >>KILL {
-//   HEROSAY ^$PARAM1
-//   ACCEPT
-// }
-//       `;
-//     }),
-//     createItem
-//   )(items.marker);
-// };
-
 const generate = async (config) => {
   createWelcomeMarker([0, 0, 0]);
-  // createKillzoneMarker([0, 200, 0]);
 
   return compose(
     saveToDisk,
     finalize,
 
-    // bridge({
-    //   length: 33,
-    // }),
     island({
       pos: [0, 0, 0],
       exits: NORTH | WEST | EAST | SOUTH,
     }),
 
-    addZone([-1000, 0, -1000], [200, 0, 200], "welcome", ambiences.sirs),
+    addZone([-600, 0, -1000], [100, 0, 100], "palette4", ambiences.sirs),
+    setColor(colors.ambience[4]),
+    addZone([-700, 0, -1000], [100, 0, 100], "palette3", ambiences.sirs),
+    setColor(colors.ambience[3]),
+    addZone([-800, 0, -1000], [100, 0, 100], "palette2", ambiences.sirs),
+    setColor(colors.ambience[2]),
+    addZone([-900, 0, -1000], [100, 0, 100], "palette1", ambiences.sirs),
+    setColor(colors.ambience[1]),
+    addZone([-1000, 0, -1000], [100, 0, 100], "palette0", ambiences.sirs),
     setColor(colors.ambience[0]),
-
-    // addZone(
-    //   [0, 500, 0],
-    //   [config.origin[0] * 2, 20, config.origin[2] * 2],
-    //   "killzone",
-    //   ambiences.none
-    // ),
-    // setColor(colors.ambience[0]),
 
     movePlayerTo([-1000, 0, -1000]),
     generateBlankMapData

@@ -1,6 +1,12 @@
 const colors = {
   pillars: "#1a351c",
-  ambience: ["#200707"],
+  ambience: [
+    "hsla(0, 64%, 8%, 1)",
+    "hsla(0, 64%, 16%, 1)",
+    "hsla(0, 64%, 32%, 1)",
+    "hsla(0, 64%, 64%, 1)",
+    "hsla(0, 64%, 98%, 1)",
+  ],
   lights: "#85a300",
   terrain: "#0a0a0a",
 };
