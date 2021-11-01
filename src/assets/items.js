@@ -18,7 +18,7 @@ const {
   filter,
   curry,
 } = require("ramda");
-const { padCharsStart } = require("ramda-adjunct");
+const { padCharsStart, isFunction } = require("ramda-adjunct");
 const { PLAYER_HEIGHT_ADJUSTMENT } = require("../constants");
 
 const items = {
@@ -58,7 +58,7 @@ const items = {
 
 const usedItems = {};
 
-const createItem = (item) => {
+const createItem = curry((item) => {
   usedItems[item.src] = usedItems[item.src] || [];
 
   const id = usedItems[item.src].length;
@@ -91,11 +91,13 @@ const createItem = (item) => {
     injections: {},
     ref: `${name}_${numericId}`,
   };
-};
+});
 
 const addScript = curry((script, itemRef) => {
   const { src, id } = itemRef;
-  usedItems[src][id].script = trim(script);
+  usedItems[src][id].script = trim(
+    isFunction(script) ? script(itemRef) : script
+  );
   return itemRef;
 });
 

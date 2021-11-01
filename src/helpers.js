@@ -42,7 +42,7 @@ const {
   PLAYER_HEIGHT_ADJUSTMENT,
 } = require("./constants.js");
 const { exportUsedItems, exportScripts } = require("./assets/items.js");
-const { exportAmbiences } = require("./assets/ambiences.js");
+const { exportAmbiences, useAmbience } = require("./assets/ambiences.js");
 
 const move = curry((x, y, z, vector) => {
   return [vector[0] + x, vector[1] + y, vector[2] + z];
@@ -127,15 +127,16 @@ const finalize = (mapData) => {
   mapData.dlf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
   mapData.llf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
 
+  const { spawn } = mapData.state;
+
   const [x, y, z] = move(
     0,
     PLAYER_HEIGHT_ADJUSTMENT,
     0,
-    move(...mapData.config.origin, mapData.state.spawn)
+    move(...mapData.config.origin, spawn)
   );
   mapData.fts.sceneHeader.mScenePosition = { x, y, z };
 
-  const { spawn } = mapData.state;
   mapData.llf.lights = map((light) => {
     const { x, y, z } = light.pos;
 
@@ -147,6 +148,23 @@ const finalize = (mapData) => {
 
     return light;
   }, mapData.llf.lights);
+
+  mapData.dlf.paths = map((zone) => {
+    const { pos, initPos } = zone.header;
+    zone.header.initPos = {
+      x: initPos.x - spawn[0],
+      y: initPos.y - spawn[1] - PLAYER_HEIGHT_ADJUSTMENT,
+      z: initPos.z - spawn[2],
+    };
+
+    zone.header.pos = {
+      x: pos.x - spawn[0],
+      y: pos.y - spawn[1] - PLAYER_HEIGHT_ADJUSTMENT,
+      z: pos.z - spawn[2],
+    };
+
+    return zone;
+  }, mapData.dlf.paths);
 
   return compose(generateLights, exportUsedItems, exportUsedTextures)(mapData);
 };
@@ -459,6 +477,39 @@ const addLight = curry((pos, mapData) => {
   return mapData;
 });
 
+const addZone =
+  (pos, name, ambience = ambiences.none) =>
+  (mapData) => {
+    let [x, y, z] = pos;
+
+    useAmbience(ambience);
+
+    const zoneData = {
+      header: {
+        name,
+        idx: 0,
+        flags: 6,
+        initPos: { x, y, z },
+        pos: { x, y, z },
+        rgb: toFloatRgb(mapData.state.color),
+        farClip: 2800,
+        reverb: 0,
+        ambianceMaxVolume: 100,
+        height: -1,
+        ambiance: ambience.name,
+      },
+      pathways: [
+        { rpos: { x: -100, y: 0, z: 100 }, flag: 0, time: 0 },
+        { rpos: { x: -100, y: 0, z: -100 }, flag: 0, time: 2000 },
+        { rpos: { x: 100, y: 0, z: -100 }, flag: 0, time: 2000 },
+        { rpos: { x: 100, y: 0, z: 100 }, flag: 0, time: 0 },
+      ],
+    };
+
+    mapData.dlf.paths.push(zoneData);
+    return mapData;
+  };
+
 module.exports = {
   move,
   toRgba,
@@ -478,4 +529,5 @@ module.exports = {
   isBetweenInclusive,
   toFloatRgb,
   addLight,
+  addZone,
 };

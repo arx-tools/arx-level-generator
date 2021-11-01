@@ -593,7 +593,12 @@ const island = (config) => (mapData) => {
 
     setColor(colors.terrain),
 
-    pillars(pos, 30, 3000, 1250, [350, 350, 350, 350]),
+    pillars(pos, 30, 3000, radius * 100 + 50, [
+      exits & NORTH ? 350 : 0,
+      exits & EAST ? 350 : 0,
+      exits & SOUTH ? 350 : 0,
+      exits & WEST ? 350 : 0,
+    ]),
     setColor(colors.pillars)
   )(mapData);
 };
