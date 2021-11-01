@@ -253,23 +253,21 @@ ON CUSTOM {
     }
   }
 
-  // -------------------------
-
   if (${eventBus.state.pp0pressed} == 1) {
     if (${eventBus.state.pp1pressed} == 1) {
       if (${eventBus.state.northGateOpened} == 0) {
-        HEROSAY "north gate opening"
+        SENDEVENT OPEN ${gates.north.ref} ""
         SET ${eventBus.state.northGateOpened} 1
       }
     } else {
       if (${eventBus.state.northGateOpened} == 1) {
-        HEROSAY "north gate closing"
+        SENDEVENT CLOSE ${gates.north.ref} ""
         SET ${eventBus.state.northGateOpened} 0
       }
     }
   } else {
     if (${eventBus.state.northGateOpened} == 1) {
-      HEROSAY "north gate closing"
+      SENDEVENT CLOSE ${gates.north.ref} ""
       SET ${eventBus.state.northGateOpened} 0
     }
   }
@@ -277,18 +275,18 @@ ON CUSTOM {
   if (${eventBus.state.pp2pressed} == 1) {
     if (${eventBus.state.pp3pressed} == 1) {
       if (${eventBus.state.southGateOpened} == 0) {
-        HEROSAY "south gate opening"
+        SENDEVENT OPEN ${gates.south.ref} ""
         SET ${eventBus.state.southGateOpened} 1
       }
     } else {
       if (${eventBus.state.southGateOpened} == 1) {
-        HEROSAY "south gate closing"
+        SENDEVENT CLOSE ${gates.south.ref} ""
         SET ${eventBus.state.southGateOpened} 0
       }
     }
   } else {
     if (${eventBus.state.southGateOpened} == 1) {
-      HEROSAY "south gate closing"
+      SENDEVENT CLOSE ${gates.south.ref} ""
       SET ${eventBus.state.southGateOpened} 0
     }
   }
@@ -296,18 +294,18 @@ ON CUSTOM {
   if (${eventBus.state.pp1pressed} == 1) {
     if (${eventBus.state.pp3pressed} == 1) {
       if (${eventBus.state.eastGateOpened} == 0) {
-        HEROSAY "east gate opening"
+        SENDEVENT OPEN ${gates.east.ref} ""
         SET ${eventBus.state.eastGateOpened} 1
       }
     } else {
       if (${eventBus.state.eastGateOpened} == 1) {
-        HEROSAY "east gate closing"
+        SENDEVENT CLOSE ${gates.east.ref} ""
         SET ${eventBus.state.eastGateOpened} 0
       }
     }
   } else {
     if (${eventBus.state.eastGateOpened} == 1) {
-      HEROSAY "east gate closing"
+      SENDEVENT CLOSE ${gates.east.ref} ""
       SET ${eventBus.state.eastGateOpened} 0
     }
   }
@@ -315,18 +313,18 @@ ON CUSTOM {
   if (${eventBus.state.pp0pressed} == 1) {
     if (${eventBus.state.pp2pressed} == 1) {
       if (${eventBus.state.westGateOpened} == 0) {
-        HEROSAY "west gate opening"
+        SENDEVENT OPEN ${gates.west.ref} ""
         SET ${eventBus.state.westGateOpened} 1
       }
     } else {
       if (${eventBus.state.westGateOpened} == 1) {
-        HEROSAY "west gate closing"
+        SENDEVENT CLOSE ${gates.west.ref} ""
         SET ${eventBus.state.westGateOpened} 0
       }
     }
   } else {
     if (${eventBus.state.westGateOpened} == 1) {
-      HEROSAY "west gate closing"
+      SENDEVENT CLOSE ${gates.west.ref} ""
       SET ${eventBus.state.westGateOpened} 0
     }
   }
@@ -341,7 +339,163 @@ ON CUSTOM {
 };
 
 const createGates = () => {
-  return [];
+  const north = compose(
+    declare("int", "open", 0),
+    createItem
+  )(items.doors.portcullis);
+  addScript(
+    `
+ON INIT {
+  ${getInjections("init", north)}
+  ACCEPT
+}
+ON LOAD {
+  USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
+  ACCEPT
+}
+ON CLOSE {
+  IF (${north.state.open} == 0) {
+    ACCEPT
+  }
+  SET ${north.state.open} 0
+  PLAYANIM -e ACTION2 COLLISION ON
+  VIEWBLOCK ON
+  PLAY ~£closesfx~
+  REFUSE
+}
+ON OPEN {
+  IF (${north.state.open} == 1) {
+    ACCEPT
+  }
+  SET ${north.state.open} 1
+  PLAYANIM -e ACTION1 COLLISION OFF
+  PLAY ~£opensfx~
+  VIEWBLOCK OFF
+  ANCHOR_BLOCK OFF
+  REFUSE
+}
+  `,
+    north
+  );
+
+  const south = compose(
+    declare("int", "open", 0),
+    createItem
+  )(items.doors.portcullis);
+  addScript(
+    `
+ON INIT {
+  ${getInjections("init", south)}
+  ACCEPT
+}
+ON LOAD {
+  USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
+  ACCEPT
+}
+ON CLOSE {
+  IF (${south.state.open} == 0) {
+    ACCEPT
+  }
+  SET ${south.state.open} 0
+  PLAYANIM -e ACTION2 COLLISION ON
+  VIEWBLOCK ON
+  PLAY ~£closesfx~
+  REFUSE
+}
+ON OPEN {
+  IF (${south.state.open} == 1) {
+    ACCEPT
+  }
+  SET ${south.state.open} 1
+  PLAYANIM -e ACTION1 COLLISION OFF
+  PLAY ~£opensfx~
+  VIEWBLOCK OFF
+  ANCHOR_BLOCK OFF
+  REFUSE
+}
+  `,
+    south
+  );
+
+  const east = compose(
+    declare("int", "open", 0),
+    createItem
+  )(items.doors.portcullis);
+  addScript(
+    `
+ON INIT {
+  ${getInjections("init", east)}
+  ACCEPT
+}
+ON LOAD {
+  USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
+  ACCEPT
+}
+ON CLOSE {
+  IF (${east.state.open} == 0) {
+    ACCEPT
+  }
+  SET ${east.state.open} 0
+  PLAYANIM -e ACTION2 COLLISION ON
+  VIEWBLOCK ON
+  PLAY ~£closesfx~
+  REFUSE
+}
+ON OPEN {
+  IF (${east.state.open} == 1) {
+    ACCEPT
+  }
+  SET ${east.state.open} 1
+  PLAYANIM -e ACTION1 COLLISION OFF
+  PLAY ~£opensfx~
+  VIEWBLOCK OFF
+  ANCHOR_BLOCK OFF
+  REFUSE
+}
+  `,
+    east
+  );
+
+  const west = compose(
+    declare("int", "open", 0),
+    createItem
+  )(items.doors.portcullis);
+  addScript(
+    `
+ON INIT {
+  ${getInjections("init", west)}
+  ACCEPT
+}
+ON LOAD {
+  USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
+  ACCEPT
+}
+ON CLOSE {
+  IF (${west.state.open} == 0) {
+    ACCEPT
+  }
+  SET ${west.state.open} 0
+  PLAYANIM -e ACTION2 COLLISION ON
+  VIEWBLOCK ON
+  PLAY ~£closesfx~
+  REFUSE
+}
+ON OPEN {
+  IF (${west.state.open} == 1) {
+    ACCEPT
+  }
+  SET ${west.state.open} 1
+  PLAYANIM -e ACTION1 COLLISION OFF
+  PLAY ~£opensfx~
+  VIEWBLOCK OFF
+  ANCHOR_BLOCK OFF
+  REFUSE
+}
+  `,
+    west
+  );
+
+  return { north, south, east, west };
 };
 
 const island = (config) => (mapData) => {
@@ -361,10 +515,9 @@ const island = (config) => (mapData) => {
   const eventBus = createEventBus(gates);
   const pps = createPressurePlates(eventBus);
 
-  moveTo(ppCoords[0], [0, 0, 0], pps[0]);
-  moveTo(ppCoords[1], [0, 0, 0], pps[1]);
-  moveTo(ppCoords[2], [0, 0, 0], pps[2]);
-  moveTo(ppCoords[3], [0, 0, 0], pps[3]);
+  for (let i = 0; i < 4; i++) {
+    moveTo(ppCoords[i], [0, 0, 0], pps[i]);
+  }
 
   props(ppIndices, pps).forEach((pp) => {
     markAsUsed(pp);
@@ -373,6 +526,36 @@ const island = (config) => (mapData) => {
   if (isNotEmpty(ppIndices)) {
     markAsUsed(eventBus);
   }
+
+  // TODO: moveTo the used gates + add small bridge segments
+  if (exits & NORTH) {
+    markAsUsed(gates.north);
+    moveTo(move(0, 0, (radius * 100) / 2 - 50, pos), [0, 90, 0], gates.north);
+  }
+  if (exits & SOUTH) {
+    markAsUsed(gates.south);
+    moveTo(move(0, 0, -(radius * 100) / 2 + 50, pos), [0, 0, 0], gates.south);
+  }
+  if (exits & EAST) {
+    markAsUsed(gates.east);
+    moveTo(move((radius * 100) / 2 - 50, 0, 0, pos), [0, 0, 0], gates.east);
+  }
+  if (exits & WEST) {
+    markAsUsed(gates.west);
+    moveTo(move(-(radius * 100) / 2 + 50, 0, 0, pos), [0, 0, 0], gates.west);
+  }
+
+  const torch = compose(
+    markAsUsed,
+    moveTo(pos, [0, 0, 0]),
+    createItem
+  )(items.torch);
+
+  const torch2 = compose(
+    markAsUsed,
+    moveTo(move(-30, 0, 0, pos), [0, 0, 0]),
+    createItem
+  )(items.torch);
 
   return compose(
     (mapData) => {

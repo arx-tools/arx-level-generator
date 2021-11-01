@@ -300,28 +300,6 @@ ON INIT {
 //   // addZone(origin, "welcome", ambiences.sirs),
 //   // setColor(colors.ambience),
 
-//   // addItem(move(0, 0, (12 * 100) / 2, origin), [0, 90, 0], portcullis),
-//   // setColor(colors.terrain),
-
-//   // addLight(move(-(12 * 100) / 4, -10, (12 * 100) / 4, origin)),
-//   // setColor(colors.lights),
-
-//   // addItem(
-//   //   move(-(12 * 100) / 4, -16, (12 * 100) / 4, origin),
-//   //   [0, 0, 0],
-//   //   pressurePlate1
-//   // ),
-//   // setColor(colors.terrain),
-
-//   // addLight(move((12 * 100) / 4, -10, (12 * 100) / 4, origin)),
-//   // setColor(colors.lights),
-
-//   // addItem(
-//   //   move((12 * 100) / 4, -16, (12 * 100) / 4, origin),
-//   //   [0, 0, 0],
-//   //   pressurePlate2
-//   // ),
-
 //   // addItem(move(0, -300, 0, origin), [0, 0, 0], welcomeMarker),
 
 //   // addItem(origin, [0, 0, 0], smellyFlower),
