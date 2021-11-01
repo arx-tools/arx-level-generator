@@ -1,7 +1,7 @@
 const colors = {
   pillars: "#1a351c",
   ambience: "#200707",
-  lights: "#75d300",
+  lights: "#85a300",
   terrain: "#0a0a0a",
 };
 

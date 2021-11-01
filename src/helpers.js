@@ -135,6 +135,19 @@ const finalize = (mapData) => {
   );
   mapData.fts.sceneHeader.mScenePosition = { x, y, z };
 
+  const { spawn } = mapData.state;
+  mapData.llf.lights = map((light) => {
+    const { x, y, z } = light.pos;
+
+    light.pos = {
+      x: x - spawn[0],
+      y: y - spawn[1] - PLAYER_HEIGHT_ADJUSTMENT,
+      z: z - spawn[2],
+    };
+
+    return light;
+  }, mapData.llf.lights);
+
   return compose(generateLights, exportUsedItems, exportUsedTextures)(mapData);
 };
 
@@ -285,10 +298,10 @@ const saveToDisk = async (mapData) => {
   );
 };
 
-const setColor = (color) => (mapData) => {
+const setColor = curry((color, mapData) => {
   mapData.state.color = toRgba(color);
   return mapData;
-};
+});
 
 const unsetColor = (mapData) => {
   mapData.state.color = null;
@@ -420,6 +433,32 @@ const toFloatRgb = (color) => {
   return { r: r / 256, g: g / 256, b: b / 256 };
 };
 
+const addLight = curry((pos, mapData) => {
+  let [x, y, z] = pos;
+
+  mapData.llf.lights.push({
+    pos: { x, y, z },
+    rgb: toFloatRgb(mapData.state.color),
+    fallstart: 50,
+    fallend: 180,
+    intensity: 0.7,
+    i: 0,
+    exFlicker: {
+      r: 0,
+      g: 0,
+      b: 0,
+    },
+    exRadius: 0,
+    exFrequency: 0.01,
+    exSize: 0.1,
+    exSpeed: 0,
+    exFlareSize: 0,
+    extras: 0,
+  });
+
+  return mapData;
+});
+
 module.exports = {
   move,
   toRgba,
@@ -438,4 +477,5 @@ module.exports = {
   isBetween,
   isBetweenInclusive,
   toFloatRgb,
+  addLight,
 };

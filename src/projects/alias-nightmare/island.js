@@ -1,5 +1,10 @@
-const { compose, map, props, any, __ } = require("ramda");
-const { setColor, move, isPointInPolygon } = require("../../helpers.js");
+const { compose, map, props, any, __, curry } = require("ramda");
+const {
+  setColor,
+  move,
+  isPointInPolygon,
+  addLight,
+} = require("../../helpers.js");
 const { colors, NORTH, SOUTH, WEST, EAST } = require("./constants.js");
 const { plain, pillars } = require("../../prefabs");
 const { declare, getInjections } = require("../../scripting.js");
@@ -335,7 +340,9 @@ ON CUSTOM {
   return eventBus;
 };
 
-const createGates = () => {};
+const createGates = () => {
+  return [];
+};
 
 const island = (config) => (mapData) => {
   const { pos, exits } = config;
@@ -368,6 +375,14 @@ const island = (config) => (mapData) => {
   }
 
   return compose(
+    (mapData) => {
+      props(ppIndices, ppCoords).forEach((ppCoord) => {
+        mapData = addLight(move(0, -10, 0, ppCoord), mapData);
+      });
+      return mapData;
+    },
+    setColor(colors.lights),
+
     plain(pos, radius, (polygons) => {
       const ppAbsoluteCoords = map(
         move(...mapData.config.origin),

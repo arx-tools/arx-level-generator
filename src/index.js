@@ -17,16 +17,6 @@
 
 // --------------------------------------
 
-// const origin = [5000, 0, 5000];
-// const colors = {
-//   pillars: "#1a351c",
-//   ambience: "#200707",
-//   lights: "#75d300",
-//   terrain: "#0a0a0a",
-// };
-
-// --------------------------------------
-
 // const addZone =
 //   (pos, name, ambience = ambiences.none) =>
 //   (mapData) => {
@@ -59,11 +49,6 @@
 //     mapData.dlf.paths.push(zoneData);
 //     return mapData;
 //   };
-
-// const addItem = (pos, angle, itemRef) => (mapData) => {
-//   moveTo(move(-origin[0], origin[1] + 150, -origin[2], pos), angle, itemRef);
-//   return mapData;
-// };
 
 // const addLight = (pos) => (mapData) => {
 //   let [x, y, z] = move(-origin[0], 0, -origin[2], pos);
