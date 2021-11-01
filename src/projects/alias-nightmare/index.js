@@ -57,12 +57,14 @@ ON CONTROLLEDZONE_ENTER {
   )(items.marker);
 };
 
+const generateAtLeastOneExit = () => {
+  return (
+    Math.round(randomBetween(NONE, ALL)) || 1 << Math.round(randomBetween(0, 3))
+  );
+};
+
 const generate = async (config) => {
   createWelcomeMarker([0, 0, 0]);
-
-  const mainIslandExits =
-    Math.round(randomBetween(NONE, ALL)) ||
-    1 << Math.round(randomBetween(0, 3));
 
   return compose(
     saveToDisk,
@@ -70,7 +72,7 @@ const generate = async (config) => {
 
     island({
       pos: [0, 0, 0],
-      exits: mainIslandExits,
+      exits: generateAtLeastOneExit(),
     }),
 
     addZone([-600, 0, -1000], [100, 0, 100], "palette4", ambiences.sirs),
