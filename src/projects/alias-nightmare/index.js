@@ -19,7 +19,7 @@ const generate = async (config) => {
     // }),
     island({
       pos: [0, 0, 0],
-      exits: NORTH | WEST,
+      exits: NORTH | WEST | SOUTH | EAST,
     }),
 
     movePlayerTo([-300, 0, 0]),

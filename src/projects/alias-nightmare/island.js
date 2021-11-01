@@ -534,7 +534,7 @@ const island = (config) => (mapData) => {
   }
   if (exits & SOUTH) {
     markAsUsed(gates.south);
-    moveTo(move(0, 0, -(radius * 100) / 2 + 50, pos), [0, 0, 0], gates.south);
+    moveTo(move(0, 0, -(radius * 100) / 2 + 50, pos), [0, 270, 0], gates.south);
   }
   if (exits & EAST) {
     markAsUsed(gates.east);
@@ -542,7 +542,7 @@ const island = (config) => (mapData) => {
   }
   if (exits & WEST) {
     markAsUsed(gates.west);
-    moveTo(move(-(radius * 100) / 2 + 50, 0, 0, pos), [0, 0, 0], gates.west);
+    moveTo(move(-(radius * 100) / 2 + 50, 0, 0, pos), [0, 180, 0], gates.west);
   }
 
   const torch = compose(
