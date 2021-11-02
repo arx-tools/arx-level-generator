@@ -40,7 +40,7 @@ ON CONTROLLEDZONE_ENTER {
     SET ${self.state.hadIntro} 1
     SETPLAYERCONTROLS OFF
     TIMERfade 1 2 worldfade IN 2000
-    SPEAK -p [alia_nightmare2] GOTO READY
+    TIMERmove -m 1 10 SPEAK -p [alia_nightmare2] GOTO READY
     ACCEPT
   }
   ACCEPT
@@ -64,6 +64,7 @@ const generateAtLeastOneExit = () => {
 };
 
 const generate = async (config) => {
+  const { origin } = config;
   createWelcomeMarker([0, 0, 0]);
 
   return compose(
@@ -73,20 +74,19 @@ const generate = async (config) => {
     island({
       pos: [0, 0, 0],
       exits: generateAtLeastOneExit(),
+      width: 14,
+      height: 9,
     }),
 
-    addZone([-600, 0, -1000], [100, 0, 100], "palette4", ambiences.sirs),
-    setColor(colors.ambience[4]),
-    addZone([-700, 0, -1000], [100, 0, 100], "palette3", ambiences.sirs),
-    setColor(colors.ambience[3]),
-    addZone([-800, 0, -1000], [100, 0, 100], "palette2", ambiences.sirs),
-    setColor(colors.ambience[2]),
-    addZone([-900, 0, -1000], [100, 0, 100], "palette1", ambiences.sirs),
-    setColor(colors.ambience[1]),
-    addZone([-1000, 0, -1000], [100, 0, 100], "palette0", ambiences.sirs),
+    addZone(
+      [-origin[0], 0, -origin[2]],
+      [100, 0, 100],
+      "palette0",
+      ambiences.sirs
+    ),
     setColor(colors.ambience[0]),
 
-    movePlayerTo([-1000, 0, -1000]),
+    movePlayerTo([-origin[0], 0, -origin[2]]),
     generateBlankMapData
   )(config);
 };

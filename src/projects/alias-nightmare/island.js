@@ -496,15 +496,17 @@ ON OPEN {
 };
 
 const island = (config) => (mapData) => {
-  const { pos, exits } = config;
+  const { pos, exits, width, height } = config;
   const spawn = move(...mapData.config.origin, mapData.state.spawn);
-  const radius = 12;
-  const quarth = (radius * 100) / 4;
+
+  const quartX = width * 50 - 300;
+  const quartZ = height * 50 - 300;
+
   const ppCoords = [
-    move(-quarth, -6, quarth, pos),
-    move(quarth, -6, quarth, pos),
-    move(-quarth, -6, -quarth, pos),
-    move(quarth, -6, -quarth, pos),
+    move(-quartX, -6, quartZ, pos),
+    move(quartX, -6, quartZ, pos),
+    move(-quartX, -6, -quartZ, pos),
+    move(quartX, -6, -quartZ, pos),
   ];
   const ppIndices = getPPIndices(exits);
 
@@ -527,23 +529,23 @@ const island = (config) => (mapData) => {
   // TODO: moveTo the used gates + add small bridge segments
   if (exits & NORTH) {
     markAsUsed(gates.north);
-    moveTo(move(0, 0, (radius * 100) / 2 + 300, pos), [0, 90, 0], gates.north);
+    moveTo(move(0, 0, (height * 100) / 2 + 300, pos), [0, 90, 0], gates.north);
   }
   if (exits & SOUTH) {
     markAsUsed(gates.south);
     moveTo(
-      move(0, 0, -(radius * 100) / 2 - 300, pos),
+      move(0, 0, -(height * 100) / 2 - 300, pos),
       [0, 270, 0],
       gates.south
     );
   }
   if (exits & EAST) {
     markAsUsed(gates.east);
-    moveTo(move((radius * 100) / 2 + 300, 0, 0, pos), [0, 0, 0], gates.east);
+    moveTo(move((width * 100) / 2 + 300, 0, 0, pos), [0, 0, 0], gates.east);
   }
   if (exits & WEST) {
     markAsUsed(gates.west);
-    moveTo(move(-(radius * 100) / 2 - 300, 0, 0, pos), [0, 180, 0], gates.west);
+    moveTo(move(-(width * 100) / 2 - 300, 0, 0, pos), [0, 180, 0], gates.west);
   }
 
   compose(markAsUsed, moveTo(pos, [0, 97, 0]), createItem)(items.torch);
@@ -565,28 +567,32 @@ const island = (config) => (mapData) => {
 
     when(
       () => exits & NORTH,
-      plain(move(0, 0, (radius * 100) / 2 + 150, pos), [2, 5])
+      plain(move(0, 0, (height * 100) / 2 + 150, pos), [2, 5])
     ),
     when(
       () => exits & SOUTH,
-      plain(move(0, 0, -((radius * 100) / 2 + 150), pos), [2, 5])
+      plain(move(0, 0, -((height * 100) / 2 + 150), pos), [2, 5])
     ),
     when(
       () => exits & EAST,
-      plain(move((radius * 100) / 2 + 150, 0, 0, pos), [5, 2])
+      plain(move((width * 100) / 2 + 150, 0, 0, pos), [5, 2])
     ),
     when(
       () => exits & WEST,
-      plain(move(-((radius * 100) / 2 + 150), 0, 0, pos), [5, 2])
+      plain(move(-((width * 100) / 2 + 150), 0, 0, pos), [5, 2])
     ),
 
-    plain(pos, radius, (polygons) => {
+    plain(pos, [width, height], (polygons) => {
       const ppAbsoluteCoords = map(
         move(...mapData.config.origin),
         props(ppIndices, ppCoords)
       );
 
       return map((polygon) => {
+        if (isPointInPolygon(pos, polygon)) {
+          polygon.bumpable = false;
+        }
+
         if (isPointInPolygon(spawn, polygon)) {
           polygon.bumpable = false;
         }
@@ -607,12 +613,18 @@ const island = (config) => (mapData) => {
 
     setColor(colors.terrain),
 
-    pillars(pos, 30, 4000, radius * 100 + 50, [
-      exits & NORTH ? 350 : 0,
-      exits & EAST ? 350 : 0,
-      exits & SOUTH ? 350 : 0,
-      exits & WEST ? 350 : 0,
-    ]),
+    pillars(
+      pos,
+      30,
+      [width * 100 * 3, height * 100 * 3],
+      [width * 100 + 50, height * 100 + 50],
+      [
+        exits & NORTH ? 350 : 0,
+        exits & EAST ? 350 : 0,
+        exits & SOUTH ? 350 : 0,
+        exits & WEST ? 350 : 0,
+      ]
+    ),
     setColor(colors.pillars)
   )(mapData);
 };
