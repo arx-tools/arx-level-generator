@@ -8,9 +8,7 @@ const { useTexture } = require("../../assets/textures.js");
 
 const wallX =
   (
-    x,
-    y,
-    z,
+    [x, y, z],
     texture,
     direction = "left", // left|right
     quad = 0,

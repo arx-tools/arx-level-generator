@@ -36,9 +36,11 @@ const plain =
     for (let j = 0; j < sizeZ; j++) {
       for (let i = 0; i < sizeX; i++) {
         tmp = floor(
-          x + 100 * i - (100 * sizeX) / 2 + 100 / 2,
-          y,
-          z + 100 * j - (100 * sizeZ) / 2 + 100 / 2,
+          [
+            x + 100 * i - (sizeX * 100) / 2 + 100 / 2,
+            y,
+            z + 100 * j - (sizeZ * 100) / 2 + 100 / 2,
+          ],
           textures.stone.humanWall1,
           "floor",
           null,

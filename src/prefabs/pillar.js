@@ -16,9 +16,7 @@ const segment = (x, y, z, size) => (mapData) => {
   const texture = textures.stone.humanPriest4;
 
   mapData = wallX(
-    x - size / 2,
-    y,
-    z - size / 2,
+    [x - size / 2, y, z - size / 2],
     texture,
     "left",
     null,
@@ -29,9 +27,7 @@ const segment = (x, y, z, size) => (mapData) => {
   )(mapData);
 
   mapData = wallX(
-    x + size / 2,
-    y,
-    z - size / 2,
+    [x + size / 2, y, z - size / 2],
     texture,
     "right",
     null,
@@ -42,9 +38,7 @@ const segment = (x, y, z, size) => (mapData) => {
   )(mapData);
 
   mapData = wallZ(
-    x - size / 2,
-    y,
-    z - size / 2,
+    [x - size / 2, y, z - size / 2],
     texture,
     "back",
     null,
@@ -55,9 +49,7 @@ const segment = (x, y, z, size) => (mapData) => {
   )(mapData);
 
   mapData = wallZ(
-    x - size / 2,
-    y,
-    z + size / 2,
+    [x - size / 2, y, z + size / 2],
     texture,
     "front",
     null,

@@ -8,9 +8,7 @@ const { useTexture } = require("../../assets/textures.js");
 
 const floor =
   (
-    x,
-    y,
-    z,
+    [x, y, z],
     texture,
     direction = "floor", // floor|ceiling
     quad = 0,
