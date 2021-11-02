@@ -3,8 +3,7 @@ const { randomBetween } = require("./helpers.js");
 const aliasNightmare = require("./projects/alias-nightmare/index.js");
 
 (async () => {
-  // const seed = Math.floor(Math.random() * 1e20);
-  const seed = 95913733459063200000;
+  const seed = Math.floor(Math.random() * 1e20);
   seedrandom(seed, { global: true });
 
   console.log(`seed: ${seed}`);
