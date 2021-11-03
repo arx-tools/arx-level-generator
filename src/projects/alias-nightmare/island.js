@@ -496,7 +496,7 @@ ON OPEN {
 };
 
 const island = (config) => (mapData) => {
-  const { pos, exits, width, height } = config;
+  const { pos, entrances, exits, width, height } = config;
   const spawn = move(...mapData.config.origin, mapData.state.spawn);
 
   const quartX = width * 50 - 300;
@@ -566,19 +566,19 @@ const island = (config) => (mapData) => {
     setColor(colors.lights),
 
     when(
-      () => exits & NORTH,
+      () => (exits | entrances) & NORTH,
       plain(move(0, 0, (height * 100) / 2 + 150, pos), [2, 5])
     ),
     when(
-      () => exits & SOUTH,
+      () => (exits | entrances) & SOUTH,
       plain(move(0, 0, -((height * 100) / 2 + 150), pos), [2, 5])
     ),
     when(
-      () => exits & EAST,
+      () => (exits | entrances) & EAST,
       plain(move((width * 100) / 2 + 150, 0, 0, pos), [5, 2])
     ),
     when(
-      () => exits & WEST,
+      () => (exits | entrances) & WEST,
       plain(move(-((width * 100) / 2 + 150), 0, 0, pos), [5, 2])
     ),
 
@@ -619,10 +619,10 @@ const island = (config) => (mapData) => {
       [width * 100 * 3, height * 100 * 3],
       [width * 100 + 50, height * 100 + 50],
       [
-        exits & NORTH ? 350 : 0,
-        exits & EAST ? 350 : 0,
-        exits & SOUTH ? 350 : 0,
-        exits & WEST ? 350 : 0,
+        (exits | entrances) & NORTH ? 350 : 0,
+        (exits | entrances) & EAST ? 350 : 0,
+        (exits | entrances) & SOUTH ? 350 : 0,
+        (exits | entrances) & WEST ? 350 : 0,
       ]
     ),
     setColor(colors.pillars)

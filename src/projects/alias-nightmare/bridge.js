@@ -4,12 +4,24 @@ const { plain } = require("../../prefabs");
 const { colors } = require("./constants.js");
 
 const bridge = (config) => (mapData) => {
-  const { pos, length } = config;
-  const origin = move(...pos, mapData.config.origin);
+  const { from, to, width = 0, height = 0 } = config;
+
+  const center = move(...from, [
+    (to[0] - from[0]) / 2,
+    (to[1] - from[1]) / 2,
+    (to[2] - from[2]) / 2,
+  ]);
+
+  console.log(from, to, center, [
+    Math.ceil(center[0] / 100) + width,
+    Math.ceil(center[2] / 100) + height,
+  ]);
 
   return compose(
-    // TODO
-    plain(move(0, 0, (12 * 100) / 2 + (length * 100) / 2, origin), [3, length]),
+    plain(center, [
+      Math.ceil(center[0] / 100) + width,
+      Math.ceil(center[2] / 100) + height,
+    ]),
     setColor(colors.terrain)
   )(mapData);
 };

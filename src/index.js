@@ -1,5 +1,4 @@
 const seedrandom = require("seedrandom");
-const { randomBetween } = require("./helpers.js");
 const aliasNightmare = require("./projects/alias-nightmare/index.js");
 
 (async () => {
