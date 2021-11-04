@@ -5,7 +5,7 @@ const {
   isPointInPolygon,
   addLight,
 } = require("../../helpers.js");
-const { colors, NORTH, SOUTH, WEST, EAST } = require("./constants.js");
+const { colors, NORTH, SOUTH, WEST, EAST, NONE } = require("./constants.js");
 const { plain, pillars } = require("../../prefabs");
 const { declare, getInjections } = require("../../scripting.js");
 const {
@@ -353,6 +353,9 @@ const createGates = () => {
 // component island:gates.north
 ON INIT {
   ${getInjections("init", north)}
+  ACCEPT
+}
+ON LOAD {
   USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
   ACCEPT
 }
@@ -390,6 +393,9 @@ ON OPEN {
 // component island:gates.south
 ON INIT {
   ${getInjections("init", south)}
+  ACCEPT
+}
+ON LOAD {
   USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
   ACCEPT
 }
@@ -427,6 +433,9 @@ ON OPEN {
 // component island:gates.east
 ON INIT {
   ${getInjections("init", east)}
+  ACCEPT
+}
+ON LOAD {
   USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
   ACCEPT
 }
@@ -464,6 +473,9 @@ ON OPEN {
 // component island:gates.west
 ON INIT {
   ${getInjections("init", west)}
+  ACCEPT
+}
+ON LOAD {
   USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
   ACCEPT
 }
@@ -496,7 +508,9 @@ ON OPEN {
 };
 
 const island = (config) => (mapData) => {
-  const { pos, entrances, exits, width, height } = config;
+  const { pos, entrances = NONE, width, height } = config;
+  let { exits = NONE } = config;
+  exits = exits & ~entrances;
   const spawn = move(...mapData.config.origin, mapData.state.spawn);
 
   const quartX = width * 50 - 300;
