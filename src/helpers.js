@@ -272,11 +272,8 @@ const saveToDisk = async (mapData) => {
 
   const manifest = [...values(files), ...keys(scripts), ...keys(ambiences)];
 
-  manifest.push(files.fts.replace(".fts.json", ".fts.repacked"));
   manifest.push(files.fts.replace(".fts.json", ".fts"));
-  manifest.push(files.dlf.replace(".dlf.json", ".dlf.repacked"));
   manifest.push(files.dlf.replace(".dlf.json", ".dlf"));
-  manifest.push(files.llf.replace(".llf.json", ".llf.unpacked"));
   manifest.push(files.llf.replace(".llf.json", ".llf"));
 
   // TODO: create folders in sequence
