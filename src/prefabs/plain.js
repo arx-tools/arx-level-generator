@@ -11,7 +11,7 @@ const {
 const { identity, assoc, map, compose, reject, __ } = require("ramda");
 
 const plain =
-  (pos, size, onBeforeBumping = identity) =>
+  (pos, size, facing = "floor", onBeforeBumping = identity) =>
   (mapData) => {
     const { origin } = mapData.config;
 
@@ -42,7 +42,7 @@ const plain =
             z + 100 * j - (sizeZ * 100) / 2 + 100 / 2,
           ],
           textures.stone.humanWall1,
-          "floor",
+          facing,
           null,
           90,
           100
@@ -55,7 +55,6 @@ const plain =
       map(assoc("bumpable", true))
     )(tmp.fts.polygons);
 
-    const magnitude = 10;
     let { corners, edges, middles } = categorizeVertices(polygons);
 
     corners = reject(isPartOfNonBumpablePolygon(polygons), corners);
@@ -63,24 +62,26 @@ const plain =
     middles = reject(isPartOfNonBumpablePolygon(polygons), middles);
 
     corners.forEach((corner) => {
+      const magnitude = 10;
       polygons = adjustVertexBy(
         corner,
-        randomBetween(-magnitude / 2, magnitude / 2) - 80,
+        randomBetween(-magnitude, magnitude) + (facing === "floor" ? -80 : 80),
         polygons
       );
     });
     edges.forEach((edge) => {
+      const magnitude = 10;
       polygons = adjustVertexBy(
         edge,
-        randomBetween(-magnitude / 2, magnitude / 2) - 40,
+        randomBetween(-magnitude, magnitude) + (facing === "floor" ? -40 : 40),
         polygons
       );
     });
     pickRandoms(15, middles).forEach((middle) => {
-      const magnitude = 100;
+      const magnitude = 50;
       polygons = adjustVertexBy(
         middle,
-        randomBetween(-magnitude / 2, magnitude / 2),
+        randomBetween(-magnitude, magnitude),
         polygons
       );
     });

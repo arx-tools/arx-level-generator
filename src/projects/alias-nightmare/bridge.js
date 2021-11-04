@@ -12,16 +12,12 @@ const bridge = (config) => (mapData) => {
     (to[2] - from[2]) / 2,
   ]);
 
-  console.log(from, to, center, [
-    Math.ceil(center[0] / 100) + width,
-    Math.ceil(center[2] / 100) + height,
-  ]);
-
   return compose(
-    plain(center, [
-      Math.ceil(center[0] / 100) + width,
-      Math.ceil(center[2] / 100) + height,
-    ]),
+    plain(
+      center,
+      [Math.ceil(center[0] / 100) + width, Math.ceil(center[2] / 100) + height],
+      "floor"
+    ),
     setColor(colors.terrain)
   )(mapData);
 };
