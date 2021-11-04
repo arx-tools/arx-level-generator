@@ -124,7 +124,8 @@ const generate = async (config) => {
       [-origin[0], 0, -origin[2]],
       [100, 0, 100],
       "palette0",
-      ambiences.sirs
+      ambiences.sirs,
+      5000
     ),
     setColor(colors.ambience[0]),
 

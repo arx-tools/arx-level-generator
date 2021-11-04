@@ -42,6 +42,11 @@ const EXTRAS_FIREPLACE = 0x200;
 const EXTRAS_NO_IGNIT = 0x400;
 const EXTRAS_FLARE = 0x800;
 
+// zone.flags
+const PATH_AMBIANCE = 0x02;
+const PATH_RGB = 0x04;
+const PATH_FARCLIP = 0x08;
+
 const HFLIP = 0x100;
 const VFLIP = 0x200;
 
@@ -102,6 +107,10 @@ module.exports = {
   EXTRAS_FIREPLACE,
   EXTRAS_NO_IGNIT,
   EXTRAS_FLARE,
+
+  PATH_AMBIANCE,
+  PATH_RGB,
+  PATH_FARCLIP,
 
   HFLIP,
   VFLIP,

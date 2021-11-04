@@ -40,6 +40,9 @@ const {
   MAP_MAX_WIDTH,
   POLY_NODRAW,
   PLAYER_HEIGHT_ADJUSTMENT,
+  PATH_RGB,
+  PATH_AMBIANCE,
+  PATH_FARCLIP,
 } = require("./constants.js");
 const { exportUsedItems, exportScripts } = require("./assets/items.js");
 const { exportAmbiences, useAmbience } = require("./assets/ambiences.js");
@@ -485,7 +488,7 @@ const addLight = curry((pos, mapData) => {
 });
 
 const addZone =
-  (pos, size, name, ambience = ambiences.none) =>
+  (pos, size, name, ambience = ambiences.none, drawDistance = 2000) =>
   (mapData) => {
     let [x, y, z] = pos;
 
@@ -495,11 +498,11 @@ const addZone =
       header: {
         name,
         idx: 0,
-        flags: 6,
+        flags: PATH_RGB | PATH_AMBIANCE | PATH_FARCLIP,
         initPos: { x, y, z },
         pos: { x, y, z },
         rgb: toFloatRgb(mapData.state.color),
-        farClip: 2800,
+        farClip: drawDistance,
         reverb: 0,
         ambianceMaxVolume: 100,
         height: size[1] === 0 ? -1 : size[1],
