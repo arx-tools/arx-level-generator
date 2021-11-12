@@ -78,7 +78,7 @@ const isBetweenInclusive = (min, max, value) => {
 const isInCell = (polygonX, polygonZ, cellX, cellZ) => {
   return (
     isBetween(cellX * 100, (cellX + 1) * 100, polygonX) &&
-    isBetween(cellZ * 100, (cellZ + 1) * 100, polygonZ)
+    isBetween(cellZ * 100, (cellZ + 1) * 100, polygonZ + 1)
   );
 };
 
