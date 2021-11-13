@@ -47,6 +47,10 @@ const {
 const { exportUsedItems, exportScripts } = require("./assets/items.js");
 const { exportAmbiences, useAmbience } = require("./assets/ambiences.js");
 
+const normalize = (v) => {
+  return map(apply(divide), zip(v, repeat(magnitude(v), 3)));
+};
+
 const move = curry((x, y, z, vector) => {
   return [vector[0] + x, vector[1] + y, vector[2] + z];
 });
@@ -126,6 +130,55 @@ const generateLights = (mapData) => {
   return mapData;
 };
 
+const vertexToVector = ({ posX, posY, posZ }) => [
+  Math.round(posX * 10 ** 4) / 10 ** 4,
+  Math.round(posY * 10 ** 4) / 10 ** 4,
+  Math.round(posZ * 10 ** 4) / 10 ** 4,
+];
+
+const calculateNormals = (mapData) => {
+  mapData.fts.polygons.forEach((polygon) => {
+    const { vertices, config } = polygon;
+
+    const points = vertices.map(vertexToVector);
+
+    let clockwise, counterClockwise;
+
+    if (config.isQuad) {
+      clockwise = [
+        subtractVec3(points[0], points[2]),
+        subtractVec3(points[2], points[3]),
+        subtractVec3(points[3], points[1]),
+        subtractVec3(points[1], points[0]),
+      ];
+      counterClockwise = [
+        subtractVec3(points[0], points[1]),
+        subtractVec3(points[1], points[3]),
+        subtractVec3(points[3], points[2]),
+        subtractVec3(points[2], points[0]),
+      ];
+    } else {
+      clockwise = [
+        subtractVec3(points[0], points[2]),
+        subtractVec3(points[2], points[1]),
+        subtractVec3(points[1], points[0]),
+      ];
+      counterClockwise = [
+        subtractVec3(points[0], points[1]),
+        subtractVec3(points[1], points[2]),
+        subtractVec3(points[2], points[0]),
+      ];
+    }
+
+    // TODO:
+    // polygon.normals = ...
+    // polygon.norm = ...
+    // polygon.norm2 = ...
+  });
+
+  return mapData;
+};
+
 const finalize = (mapData) => {
   mapData.dlf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
   mapData.llf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
@@ -169,7 +222,12 @@ const finalize = (mapData) => {
     return zone;
   }, mapData.dlf.paths);
 
-  return compose(generateLights, exportUsedItems, exportUsedTextures)(mapData);
+  return compose(
+    generateLights,
+    calculateNormals,
+    exportUsedItems,
+    exportUsedTextures
+  )(mapData);
 };
 
 const addOriginPolygon = (mapData) => {
@@ -526,6 +584,9 @@ const addZone =
   };
 
 module.exports = {
+  subtractVec3,
+  magnitude,
+  normalize,
   move,
   toRgba,
   movePlayerTo,
@@ -545,4 +606,5 @@ module.exports = {
   toFloatRgb,
   addLight,
   addZone,
+  vertexToVector,
 };
