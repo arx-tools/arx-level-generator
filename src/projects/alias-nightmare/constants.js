@@ -8,7 +8,8 @@ const colors = {
     "hsla(0, 64%, 98%, 1)",
   ],
   lights: "#85a300",
-  terrain: "#0a0a0a",
+  // terrain: "#0a0a0a",
+  terrain: "#ddd",
 };
 
 const NONE = 0x0;
