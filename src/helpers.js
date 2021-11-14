@@ -139,19 +139,19 @@ const vertexToVector = ({ posX, posY, posZ }) => [
   Math.round(posZ * 10 ** 4) / 10 ** 4,
 ];
 
-const dotProduct = (u, v) => {
-  // TODO
-};
+// const dotProduct = (u, v) => {
+//   // TODO
+// };
 
 const vectorToXYZ = ([x, y, z]) => ({ x, y, z });
 
-const averageVectors = (...vectors) => {
-  return [
-    sum(pluck(0, vectors)) / vectors.length,
-    sum(pluck(1, vectors)) / vectors.length,
-    sum(pluck(2, vectors)) / vectors.length,
-  ];
-};
+// const averageVectors = (...vectors) => {
+//   return [
+//     sum(pluck(0, vectors)) / vectors.length,
+//     sum(pluck(1, vectors)) / vectors.length,
+//     sum(pluck(2, vectors)) / vectors.length,
+//   ];
+// };
 
 const calculateNormals = (mapData) => {
   // https://computergraphics.stackexchange.com/questions/4031/programmatically-generating-vertex-normals
@@ -164,33 +164,19 @@ const calculateNormals = (mapData) => {
     // vertices are laid down in a russian i shape (И):
     // a c
     // b d
+    const [a, b, c, d] = points;
+
     if (config.isQuad) {
-      const [a, b, c, d] = points;
-      polygon.normals = [
-        normalize(cross(subtractVec3(b, a), subtractVec3(c, a))),
-        normalize(cross(subtractVec3(d, b), subtractVec3(a, b))),
-        normalize(cross(subtractVec3(a, c), subtractVec3(d, c))),
-        normalize(cross(subtractVec3(c, d), subtractVec3(b, d))),
-      ];
+      polygon.norm2 = vectorToXYZ(
+        normalize(cross(subtractVec3(c, d), subtractVec3(b, d)))
+      );
     } else {
-      const [a, b, c] = points;
-      polygon.normals = [
-        normalize(cross(subtractVec3(b, a), subtractVec3(c, a))),
-        normalize(cross(subtractVec3(d, b), subtractVec3(a, b))),
-        normalize(cross(subtractVec3(a, c), subtractVec3(d, c))),
-        [0, 0, 0],
-      ];
+      polygon.norm2 = vectorToXYZ([0, 0, 0]);
     }
 
     polygon.norm = vectorToXYZ(
-      averageVectors(polygon.normals[0], polygon.normals[1], polygon.normals[2])
+      normalize(cross(subtractVec3(b, a), subtractVec3(c, a)))
     );
-
-    polygon.norm2 = vectorToXYZ(
-      averageVectors(polygon.normals[1], polygon.normals[2], polygon.normals[3])
-    );
-
-    polygon.normals = polygon.normals.map((normal) => vectorToXYZ(normal));
   });
 
   return mapData;
