@@ -5,6 +5,7 @@ const {
   VFLIP,
 } = require("../../constants.js");
 const { useTexture } = require("../../assets/textures.js");
+const { flipPolygon } = require("../../helpers.js");
 
 const wallX =
   (
@@ -85,6 +86,41 @@ const wallX =
 
     const textureFlags = texture.flags ?? POLY_QUAD | POLY_NO_SHADOW;
 
+    let vertices = [
+      {
+        posX: x - sizeX / 2,
+        posY: y - sizeY / 2,
+        posZ: z - sizeZ / 2,
+        texU: texU + uv[0].u,
+        texV: texV + uv[0].v,
+      },
+      {
+        posX: x - sizeX / 2,
+        posY: y + sizeY / 2,
+        posZ: z - sizeZ / 2,
+        texU: texU + uv[1].u,
+        texV: texV + uv[1].v,
+      },
+      {
+        posX: x - sizeX / 2,
+        posY: y - sizeY / 2,
+        posZ: z + sizeZ / 2,
+        texU: texU + uv[2].u,
+        texV: texV + uv[2].v,
+      },
+      {
+        posX: x - sizeX / 2,
+        posY: y + sizeY / 2,
+        posZ: z + sizeZ / 2,
+        texU: texU + uv[3].u,
+        texV: texV + uv[3].v,
+      },
+    ];
+
+    if (direction === "left") {
+      vertices = flipPolygon(vertices);
+    }
+
     mapData.fts.polygons.push({
       config: {
         color: mapData.state.color,
@@ -92,39 +128,8 @@ const wallX =
         minX: x - sizeX / 2,
         minZ: z - sizeZ / 2,
       },
-      vertices: [
-        {
-          posX: x - sizeX / 2,
-          posY: y - sizeY / 2,
-          posZ: z - sizeZ / 2,
-          texU: texU + uv[0].u,
-          texV: texV + uv[0].v,
-        },
-        {
-          posX: x - sizeX / 2,
-          posY: y + sizeY / 2,
-          posZ: z - sizeZ / 2,
-          texU: texU + uv[1].u,
-          texV: texV + uv[1].v,
-        },
-        {
-          posX: x - sizeX / 2,
-          posY: y - sizeY / 2,
-          posZ: z + sizeZ / 2,
-          texU: texU + uv[2].u,
-          texV: texV + uv[2].v,
-        },
-        {
-          posX: x - sizeX / 2,
-          posY: y + sizeY / 2,
-          posZ: z + sizeZ / 2,
-          texU: texU + uv[3].u,
-          texV: texV + uv[3].v,
-        },
-      ],
+      vertices,
       tex: useTexture(texture),
-      norm: { x: direction === "right" ? 1 : -1, y: 0, z: 0 },
-      norm2: { x: direction === "right" ? 1 : -1, y: 0, z: 0 },
       normals: [
         { x: direction === "right" ? 1 : -1, y: 0, z: 0 },
         { x: direction === "right" ? 1 : -1, y: 0, z: 0 },

@@ -586,6 +586,15 @@ const addZone =
     return mapData;
   };
 
+const flipPolygon = (vertices) => {
+  const [a, b, c, d] = vertices;
+  // vertices are laid down in a russian i shape (И):
+  // a c
+  // b d
+  // to flip both triangles I'm flipping the middle 2 vertices
+  return [a, c, b, d];
+};
+
 module.exports = {
   subtractVec3,
   magnitude,
@@ -610,4 +619,5 @@ module.exports = {
   addLight,
   addZone,
   vertexToVector,
+  flipPolygon,
 };
