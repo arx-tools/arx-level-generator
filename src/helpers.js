@@ -177,6 +177,8 @@ const calculateNormals = (mapData) => {
     polygon.norm = vectorToXYZ(
       normalize(cross(subtractVec3(b, a), subtractVec3(c, a)))
     );
+
+    polygon.normals = [polygon.norm, polygon.norm, polygon.norm, polygon.norm2];
   });
 
   return mapData;
