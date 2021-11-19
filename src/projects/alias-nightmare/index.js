@@ -81,7 +81,6 @@ const generate = async (config) => {
     saveToDisk,
     finalize,
 
-    /*
     island({
       pos: [3000, 0, 3000],
       entrances: WEST,
@@ -90,12 +89,14 @@ const generate = async (config) => {
       height: 14,
     }),
 
+    /*
     // calculations are not working here
     // bridge({
     //   height: 2,
     //   to: move(-(14 / 2) * 100, 0, 0, [3000, 0, 3000]),
     //   from: move((10 / 2) * 100, 0, 0, [0, 0, 3000]),
     // }),
+    */
 
     island({
       pos: [0, 0, 3000],
@@ -105,6 +106,7 @@ const generate = async (config) => {
       height: 10,
     }),
 
+    /*
     bridge({
       to: move(0, 0, -(10 / 2) * 100, [0, 0, 3000]),
       from: move(0, 0, (9 / 2) * 100, [0, 0, 0]),
