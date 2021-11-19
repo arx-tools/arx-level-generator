@@ -35,7 +35,7 @@ const {
   includes,
   divide,
   repeat,
-  sum,
+  either,
 } = require("ramda");
 const {
   POLY_QUAD,
@@ -422,7 +422,7 @@ const categorizeVertices = compose(
     middles: unpackCoords(middle),
   }),
   adjust(1, partition(compose(equals(2), nth(1)))),
-  partition(compose(equals(1), nth(1))),
+  partition(compose(either(equals(1), equals(3)), nth(1))),
   toPairs,
   countBy(({ posX, posY, posZ }) => `${posX}-${posY}-${posZ}`),
   map(pick(["posX", "posY", "posZ"])),
@@ -430,18 +430,26 @@ const categorizeVertices = compose(
   pluck("vertices")
 );
 
-const adjustVertexBy = (ref, magnitude, polygons) => {
+const bumpByMagnitude = (magnitude) => (vertex) => {
+  if (!vertex.modified) {
+    vertex.posY -= magnitude;
+    vertex.modified = true;
+  }
+
+  return vertex;
+};
+
+const adjustVertexBy = (ref, fn, polygons) => {
   return polygons.map((polygon) => {
     polygon.vertices = polygon.vertices.map((vertex) => {
       if (
         vertex.posX === ref.posX &&
         vertex.posY === ref.posY &&
-        vertex.posZ === ref.posZ &&
-        !vertex.modified
+        vertex.posZ === ref.posZ
       ) {
-        vertex.posY -= magnitude;
-        vertex.modified = true;
+        return fn(vertex);
       }
+
       return vertex;
     });
 
@@ -483,6 +491,10 @@ const magnitude = ([x, y, z]) => {
 
 const triangleArea = (a, b, c) => {
   return magnitude(cross(subtractVec3(a, b), subtractVec3(a, c))) / 2;
+};
+
+const distance = (a, b) => {
+  return Math.abs(magnitude(subtractVec3(a, b)));
 };
 
 // source: https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/barycentric-coordinates
@@ -597,6 +609,21 @@ const flipPolygon = (vertices) => {
   return [a, c, b, d];
 };
 
+const sortByDistance = (vertex) => (a, b) => {
+  const distanceA = distance(vertex, a);
+  const distanceB = distance(vertex, b);
+
+  if (distanceA < distanceB) {
+    return -1;
+  }
+
+  if (distanceA > distanceB) {
+    return 1;
+  }
+
+  return 0;
+};
+
 module.exports = {
   subtractVec3,
   magnitude,
@@ -611,6 +638,7 @@ module.exports = {
   unsetColor,
   isPartOfNonBumpablePolygon,
   categorizeVertices,
+  bumpByMagnitude,
   adjustVertexBy,
   randomBetween,
   pickRandoms,
@@ -622,4 +650,6 @@ module.exports = {
   addZone,
   vertexToVector,
   flipPolygon,
+  distance,
+  sortByDistance,
 };

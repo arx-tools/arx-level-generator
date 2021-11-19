@@ -1,9 +1,24 @@
-const { compose, map, props, any, __, when } = require("ramda");
+const {
+  compose,
+  map,
+  props,
+  any,
+  __,
+  when,
+  unnest,
+  pluck,
+  uniqBy,
+} = require("ramda");
 const {
   setColor,
   move,
   isPointInPolygon,
   addLight,
+  categorizeVertices,
+  adjustVertexBy,
+  vertexToVector,
+  distance,
+  sortByDistance,
 } = require("../../helpers.js");
 const { colors, NORTH, SOUTH, WEST, EAST, NONE } = require("./constants.js");
 const { plain, pillars } = require("../../prefabs");
@@ -507,6 +522,39 @@ ON OPEN {
   return { north, south, east, west };
 };
 
+const connectToNearPolygons = (polygons, mapData) => {
+  let { corners, edges } = categorizeVertices(polygons);
+
+  const allVertices = compose(
+    uniqBy(([x, y, z]) => `${x}|${y}|${z}`),
+    map(vertexToVector),
+    unnest,
+    pluck("vertices")
+  )(mapData.fts.polygons);
+
+  [...corners, ...edges].forEach((corner) => {
+    polygons = adjustVertexBy(
+      corner,
+      (vertex) => {
+        const closestVertex = allVertices.sort(
+          sortByDistance(vertexToVector(vertex))
+        )[0];
+
+        if (distance(vertexToVector(vertex), closestVertex) < 100) {
+          vertex.posX = closestVertex[0];
+          vertex.posY = closestVertex[1];
+          vertex.posZ = closestVertex[2];
+        }
+
+        return vertex;
+      },
+      polygons
+    );
+  });
+
+  return polygons;
+};
+
 const island = (config) => (mapData) => {
   const { pos, entrances = NONE, width, height } = config;
   let { exits = NONE } = config;
@@ -581,22 +629,59 @@ const island = (config) => (mapData) => {
 
     when(
       () => (exits | entrances) & NORTH,
-      plain(move(0, 0, (height * 100) / 2 + 150, pos), [2, 5], "floor")
+      compose(
+        plain(move(0, 0, (height * 100) / 2 + 150, pos), [2, 5], "floor"),
+        plain(
+          move(0, 100, (height * 100) / 2 + 150, pos),
+          [2, 5],
+          "ceiling",
+          connectToNearPolygons
+        )
+      )
     ),
     when(
       () => (exits | entrances) & SOUTH,
-      plain(move(0, 0, -((height * 100) / 2 + 150), pos), [2, 5], "floor")
+      compose(
+        plain(move(0, 0, -((height * 100) / 2 + 150), pos), [2, 5], "floor"),
+        plain(
+          move(0, 100, -((height * 100) / 2 + 150), pos),
+          [2, 5],
+          "ceiling",
+          connectToNearPolygons
+        )
+      )
     ),
     when(
       () => (exits | entrances) & EAST,
-      plain(move((width * 100) / 2 + 150, 0, 0, pos), [5, 2], "floor")
+      compose(
+        plain(move((width * 100) / 2 + 150, 0, 0, pos), [5, 2], "floor"),
+        plain(
+          move((width * 100) / 2 + 150, 100, 0, pos),
+          [5, 2],
+          "ceiling",
+          connectToNearPolygons
+        )
+      )
     ),
     when(
       () => (exits | entrances) & WEST,
-      plain(move(-((width * 100) / 2 + 150), 0, 0, pos), [5, 2], "floor")
+      compose(
+        plain(move(-((width * 100) / 2 + 150), 0, 0, pos), [5, 2], "floor"),
+        plain(
+          move(-((width * 100) / 2 + 150), 100, 0, pos),
+          [5, 2],
+          "ceiling",
+          connectToNearPolygons
+        )
+      )
     ),
 
-    plain(move(0, 100, 0, pos), [width, height], "ceiling"),
+    plain(
+      move(0, 100, 0, pos),
+      [width, height],
+      "ceiling",
+      connectToNearPolygons
+    ),
 
     plain(pos, [width, height], "floor", (polygons) => {
       const ppAbsoluteCoords = map(

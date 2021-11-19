@@ -2,6 +2,7 @@ const floor = require("./base/floor.js");
 const { textures } = require("../assets/textures.js");
 const {
   categorizeVertices,
+  bumpByMagnitude,
   adjustVertexBy,
   randomBetween,
   pickRandoms,
@@ -65,7 +66,9 @@ const plain =
       const magnitude = 10;
       polygons = adjustVertexBy(
         corner,
-        randomBetween(-magnitude, magnitude) + (facing === "floor" ? -80 : 80),
+        bumpByMagnitude(
+          randomBetween(-magnitude, magnitude) + (facing === "floor" ? -80 : 80)
+        ),
         polygons
       );
     });
@@ -73,7 +76,9 @@ const plain =
       const magnitude = 10;
       polygons = adjustVertexBy(
         edge,
-        randomBetween(-magnitude, magnitude) + (facing === "floor" ? -40 : 40),
+        bumpByMagnitude(
+          randomBetween(-magnitude, magnitude) + (facing === "floor" ? -40 : 40)
+        ),
         polygons
       );
     });
@@ -81,7 +86,7 @@ const plain =
       const magnitude = 50;
       polygons = adjustVertexBy(
         middle,
-        randomBetween(-magnitude, magnitude),
+        bumpByMagnitude(randomBetween(-magnitude, magnitude)),
         polygons
       );
     });
