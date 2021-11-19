@@ -1,14 +1,4 @@
-const {
-  compose,
-  map,
-  props,
-  any,
-  __,
-  when,
-  unnest,
-  pluck,
-  uniqBy,
-} = require("ramda");
+const { compose, map, props, any, __, when } = require("ramda");
 const {
   setColor,
   move,
@@ -20,6 +10,7 @@ const {
   distance,
   sortByDistance,
   setTexture,
+  subtractVec3,
 } = require("../../helpers.js");
 const { colors, NORTH, SOUTH, WEST, EAST, NONE } = require("./constants.js");
 const { plain, pillars } = require("../../prefabs");
@@ -31,7 +22,7 @@ const {
   addScript,
   markAsUsed,
 } = require("../../assets/items.js");
-const { isNotEmpty } = require("ramda-adjunct");
+const { isNotEmpty, isEmptyArray } = require("ramda-adjunct");
 const { textures } = require("../../assets/textures.js");
 
 // PP = pressure plate
@@ -525,14 +516,16 @@ ON OPEN {
 };
 
 const connectToNearPolygons = (polygons, mapData) => {
-  let { corners, edges } = categorizeVertices(polygons);
+  const { corners, edges } = categorizeVertices(polygons);
 
-  const allVertices = compose(
-    uniqBy(([x, y, z]) => `${x}|${y}|${z}`),
-    map(vertexToVector),
-    unnest,
-    pluck("vertices")
-  )(mapData.fts.polygons);
+  const target = categorizeVertices(mapData.fts.polygons);
+  const allVertices = map(vertexToVector, [...target.corners, ...target.edges]);
+
+  if (isEmptyArray(allVertices)) {
+    return polygons;
+  }
+
+  const distanceThreshold = 100;
 
   [...corners, ...edges].forEach((corner) => {
     polygons = adjustVertexBy(
@@ -542,7 +535,9 @@ const connectToNearPolygons = (polygons, mapData) => {
           sortByDistance(vertexToVector(vertex))
         )[0];
 
-        if (distance(vertexToVector(vertex), closestVertex) < 100) {
+        if (
+          distance(vertexToVector(vertex), closestVertex) < distanceThreshold
+        ) {
           vertex.posX = closestVertex[0];
           vertex.posY = closestVertex[1];
           vertex.posZ = closestVertex[2];
@@ -552,6 +547,9 @@ const connectToNearPolygons = (polygons, mapData) => {
       },
       polygons
     );
+    polygons.forEach((polygon) => {
+      polygon.bumpable = false;
+    });
   });
 
   return polygons;
@@ -633,48 +631,56 @@ const island = (config) => (mapData) => {
       () => (exits | entrances) & NORTH,
       compose(
         plain(move(0, 0, (height * 100) / 2 + 150, pos), [2, 5], "floor"),
+        setTexture(textures.stone.humanWall1),
         plain(
           move(0, 100, (height * 100) / 2 + 150, pos),
           [2, 5],
           "ceiling",
           connectToNearPolygons
-        )
+        ),
+        setTexture(textures.gravel.ground1)
       )
     ),
     when(
       () => (exits | entrances) & SOUTH,
       compose(
         plain(move(0, 0, -((height * 100) / 2 + 150), pos), [2, 5], "floor"),
+        setTexture(textures.stone.humanWall1),
         plain(
           move(0, 100, -((height * 100) / 2 + 150), pos),
           [2, 5],
           "ceiling",
           connectToNearPolygons
-        )
+        ),
+        setTexture(textures.gravel.ground1)
       )
     ),
     when(
       () => (exits | entrances) & EAST,
       compose(
         plain(move((width * 100) / 2 + 150, 0, 0, pos), [5, 2], "floor"),
+        setTexture(textures.stone.humanWall1),
         plain(
           move((width * 100) / 2 + 150, 100, 0, pos),
           [5, 2],
           "ceiling",
           connectToNearPolygons
-        )
+        ),
+        setTexture(textures.gravel.ground1)
       )
     ),
     when(
       () => (exits | entrances) & WEST,
       compose(
         plain(move(-((width * 100) / 2 + 150), 0, 0, pos), [5, 2], "floor"),
+        setTexture(textures.stone.humanWall1),
         plain(
           move(-((width * 100) / 2 + 150), 100, 0, pos),
           [5, 2],
           "ceiling",
           connectToNearPolygons
-        )
+        ),
+        setTexture(textures.gravel.ground1)
       )
     ),
 
@@ -684,6 +690,8 @@ const island = (config) => (mapData) => {
       "ceiling",
       connectToNearPolygons
     ),
+
+    setTexture(textures.gravel.ground1),
 
     plain(pos, [width, height], "floor", (polygons) => {
       const ppAbsoluteCoords = map(
