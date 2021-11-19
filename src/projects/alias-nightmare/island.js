@@ -630,57 +630,57 @@ const island = (config) => (mapData) => {
     when(
       () => (exits | entrances) & NORTH,
       compose(
-        plain(move(0, 0, (height * 100) / 2 + 150, pos), [2, 5], "floor"),
-        setTexture(textures.stone.humanWall1),
         plain(
           move(0, 100, (height * 100) / 2 + 150, pos),
           [2, 5],
           "ceiling",
           connectToNearPolygons
         ),
-        setTexture(textures.gravel.ground1)
+        setTexture(textures.gravel.ground1),
+        plain(move(0, 0, (height * 100) / 2 + 150, pos), [2, 5], "floor"),
+        setTexture(textures.stone.humanWall1)
       )
     ),
     when(
       () => (exits | entrances) & SOUTH,
       compose(
-        plain(move(0, 0, -((height * 100) / 2 + 150), pos), [2, 5], "floor"),
-        setTexture(textures.stone.humanWall1),
         plain(
           move(0, 100, -((height * 100) / 2 + 150), pos),
           [2, 5],
           "ceiling",
           connectToNearPolygons
         ),
-        setTexture(textures.gravel.ground1)
+        setTexture(textures.gravel.ground1),
+        plain(move(0, 0, -((height * 100) / 2 + 150), pos), [2, 5], "floor"),
+        setTexture(textures.stone.humanWall1)
       )
     ),
     when(
       () => (exits | entrances) & EAST,
       compose(
-        plain(move((width * 100) / 2 + 150, 0, 0, pos), [5, 2], "floor"),
-        setTexture(textures.stone.humanWall1),
         plain(
           move((width * 100) / 2 + 150, 100, 0, pos),
           [5, 2],
           "ceiling",
           connectToNearPolygons
         ),
-        setTexture(textures.gravel.ground1)
+        setTexture(textures.gravel.ground1),
+        plain(move((width * 100) / 2 + 150, 0, 0, pos), [5, 2], "floor"),
+        setTexture(textures.stone.humanWall1)
       )
     ),
     when(
       () => (exits | entrances) & WEST,
       compose(
-        plain(move(-((width * 100) / 2 + 150), 0, 0, pos), [5, 2], "floor"),
-        setTexture(textures.stone.humanWall1),
         plain(
           move(-((width * 100) / 2 + 150), 100, 0, pos),
           [5, 2],
           "ceiling",
           connectToNearPolygons
         ),
-        setTexture(textures.gravel.ground1)
+        setTexture(textures.gravel.ground1),
+        plain(move(-((width * 100) / 2 + 150), 0, 0, pos), [5, 2], "floor"),
+        setTexture(textures.stone.humanWall1)
       )
     ),
 
