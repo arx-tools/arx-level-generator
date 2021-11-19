@@ -1,6 +1,6 @@
 const fs = require("fs");
 const rgba = require("color-rgba");
-const { exportUsedTextures } = require("./assets/textures.js");
+const { exportUsedTextures, textures } = require("./assets/textures.js");
 const {
   createDlfData,
   createFtsData,
@@ -36,6 +36,7 @@ const {
   divide,
   repeat,
   either,
+  clone,
 } = require("ramda");
 const {
   POLY_QUAD,
@@ -302,6 +303,7 @@ const generateBlankMapData = (config) => {
     },
     state: {
       color: null,
+      texture: textures.none,
       spawn: [0, 0, 0],
       vertexCounter: 0,
     },
@@ -391,10 +393,10 @@ const setColor = curry((color, mapData) => {
   return mapData;
 });
 
-const unsetColor = (mapData) => {
-  mapData.state.color = null;
+const setTexture = curry((texture, mapData) => {
+  mapData.state.texture = clone(texture);
   return mapData;
-};
+});
 
 const unpackCoords = map(
   compose(
@@ -635,7 +637,7 @@ module.exports = {
   generateBlankMapData,
   saveToDisk,
   setColor,
-  unsetColor,
+  setTexture,
   isPartOfNonBumpablePolygon,
   categorizeVertices,
   bumpByMagnitude,

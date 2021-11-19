@@ -19,6 +19,7 @@ const {
   vertexToVector,
   distance,
   sortByDistance,
+  setTexture,
 } = require("../../helpers.js");
 const { colors, NORTH, SOUTH, WEST, EAST, NONE } = require("./constants.js");
 const { plain, pillars } = require("../../prefabs");
@@ -31,6 +32,7 @@ const {
   markAsUsed,
 } = require("../../assets/items.js");
 const { isNotEmpty } = require("ramda-adjunct");
+const { textures } = require("../../assets/textures.js");
 
 // PP = pressure plate
 
@@ -712,6 +714,7 @@ const island = (config) => (mapData) => {
       }, polygons);
     }),
 
+    setTexture(textures.stone.humanWall1),
     setColor(colors.terrain),
 
     pillars(
@@ -726,6 +729,7 @@ const island = (config) => (mapData) => {
         (exits | entrances) & WEST ? 350 : 0,
       ]
     ),
+    setTexture(textures.stone.humanPriest4),
     setColor(colors.pillars)
   )(mapData);
 };

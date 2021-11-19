@@ -1,5 +1,4 @@
 const floor = require("./base/floor.js");
-const { textures } = require("../assets/textures.js");
 const {
   categorizeVertices,
   bumpByMagnitude,
@@ -42,7 +41,6 @@ const plain =
             y,
             z + 100 * j - (sizeZ * 100) / 2 + 100 / 2,
           ],
-          textures.stone.humanWall1,
           facing,
           null,
           90,

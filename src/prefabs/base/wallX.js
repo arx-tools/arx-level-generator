@@ -10,7 +10,6 @@ const { flipPolygon } = require("../../helpers.js");
 const wallX =
   (
     [x, y, z],
-    texture,
     direction = "left", // left|right
     quad = 0,
     textureRotation = 0,
@@ -24,6 +23,7 @@ const wallX =
     }
   ) =>
   (mapData) => {
+    const { texture } = mapData.state;
     let texU = 0;
     let texV = 0;
     let sizeX = size;

@@ -10,7 +10,6 @@ const { flipPolygon } = require("../../helpers.js");
 const floor =
   (
     [x, y, z],
-    texture,
     direction = "floor", // floor|ceiling
     quad = 0,
     textureRotation = 0,
@@ -18,6 +17,7 @@ const floor =
     flags = 0
   ) =>
   (mapData) => {
+    const { texture } = mapData.state;
     let texU = 0;
     let texV = 0;
     let sizeX = size;
