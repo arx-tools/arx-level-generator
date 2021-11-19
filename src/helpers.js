@@ -275,14 +275,6 @@ const addOriginPolygon = (mapData) => {
       },
     ],
     tex: 0, // no texture at all!
-    norm: { x: 0, y: -1, z: 0 },
-    norm2: { x: 0, y: -1, z: 0 },
-    normals: [
-      { x: 0, y: -1, z: 0 },
-      { x: 0, y: -1, z: 0 },
-      { x: 0, y: -1, z: 0 },
-      { x: 0, y: -1, z: 0 },
-    ],
     transval: 0,
     area: 1,
     type: POLY_QUAD | POLY_NODRAW,
@@ -402,7 +394,7 @@ const unpackCoords = map(
   compose(
     ([posX, posY, posZ]) => ({ posX, posY, posZ }),
     map(unary(parseInt)),
-    split("-"),
+    split("|"),
     nth(0)
   )
 );
@@ -426,7 +418,7 @@ const categorizeVertices = compose(
   adjust(1, partition(compose(equals(2), nth(1)))),
   partition(compose(either(equals(1), equals(3)), nth(1))),
   toPairs,
-  countBy(({ posX, posY, posZ }) => `${posX}-${posY}-${posZ}`),
+  countBy(({ posX, posY, posZ }) => `${posX}|${posY}|${posZ}`),
   map(pick(["posX", "posY", "posZ"])),
   unnest,
   pluck("vertices")
