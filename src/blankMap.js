@@ -76,7 +76,9 @@ const createFtsData = (level) => {
         z: 0,
       },
     },
-    polygons: [],
+    polygons: {
+      global: [],
+    },
     textureContainers: [],
     cells: [],
     anchors: [],

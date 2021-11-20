@@ -521,11 +521,7 @@ ON OPEN {
 const connectToNearPolygons = (targetGroup) => (polygons, mapData) => {
   const { corners, edges } = categorizeVertices(polygons);
 
-  const target = categorizeVertices(
-    mapData.fts.polygons.filter(
-      (polygon) => polygon.config.polygonGroup === targetGroup
-    )
-  );
+  const target = categorizeVertices(mapData.fts.polygons[targetGroup] || []);
   const allVertices = map(vertexToVector, [...target.corners, ...target.edges]);
 
   if (isEmptyArray(allVertices)) {

@@ -115,14 +115,16 @@ const floor =
       vertices = flipPolygon(vertices);
     }
 
-    mapData.fts.polygons.push({
+    mapData.fts.polygons[mapData.state.polygonGroup] =
+      mapData.fts.polygons[mapData.state.polygonGroup] || [];
+
+    mapData.fts.polygons[mapData.state.polygonGroup].push({
       config: {
         color: mapData.state.color,
         isQuad: (textureFlags & POLY_QUAD) > 0,
         minX: x - sizeX / 2,
         minZ: z - sizeZ / 2,
         bumpable: true,
-        polygonGroup: mapData.state.polygonGroup,
       },
       vertices,
       tex: useTexture(texture),

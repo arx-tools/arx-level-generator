@@ -29,7 +29,9 @@ const plain =
       config: mapData.config,
       state: mapData.state,
       fts: {
-        polygons: [],
+        polygons: {
+          [mapData.state.polygonGroup]: [],
+        },
       },
     };
 
@@ -52,7 +54,7 @@ const plain =
     let polygons = compose(
       (polygons) => onBeforeBumping(polygons, mapData),
       map(assoc("bumpable", true))
-    )(tmp.fts.polygons);
+    )(tmp.fts.polygons[mapData.state.polygonGroup]);
 
     let { corners, edges, middles } = categorizeVertices(polygons);
 
@@ -89,7 +91,13 @@ const plain =
       );
     });
 
-    mapData.fts.polygons = [...mapData.fts.polygons, ...polygons];
+    mapData.fts.polygons[mapData.state.polygonGroup] =
+      mapData.fts.polygons[mapData.state.polygonGroup] || [];
+
+    mapData.fts.polygons[mapData.state.polygonGroup] = [
+      ...mapData.fts.polygons[mapData.state.polygonGroup],
+      ...polygons,
+    ];
 
     return mapData;
   };

@@ -186,6 +186,7 @@ const calculateNormals = (mapData) => {
 };
 
 const finalize = (mapData) => {
+  mapData.fts.polygons = compose(unnest, values)(mapData.fts.polygons);
   mapData.dlf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
   mapData.llf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
 
@@ -237,13 +238,12 @@ const finalize = (mapData) => {
 };
 
 const addOriginPolygon = (mapData) => {
-  mapData.fts.polygons.push({
+  mapData.fts.polygons.global.push({
     config: {
       color: toRgba("black"),
       isQuad: true,
       minX: 0,
       minZ: 0,
-      polygonGroup: "global",
       bumpable: false,
     },
     vertices: [
