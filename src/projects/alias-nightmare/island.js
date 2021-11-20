@@ -11,6 +11,8 @@ const {
   sortByDistance,
   setTexture,
   subtractVec3,
+  setPolygonGroup,
+  unsetPolygonGroup,
 } = require("../../helpers.js");
 const { colors, NORTH, SOUTH, WEST, EAST, NONE } = require("./constants.js");
 const { plain, pillars } = require("../../prefabs");
@@ -24,6 +26,7 @@ const {
 } = require("../../assets/items.js");
 const { isNotEmpty, isEmptyArray } = require("ramda-adjunct");
 const { textures } = require("../../assets/textures.js");
+const { nanoid } = require("nanoid");
 
 // PP = pressure plate
 
@@ -515,10 +518,14 @@ ON OPEN {
   return { north, south, east, west };
 };
 
-const connectToNearPolygons = (polygons, mapData) => {
+const connectToNearPolygons = (targetGroup) => (polygons, mapData) => {
   const { corners, edges } = categorizeVertices(polygons);
 
-  const target = categorizeVertices(mapData.fts.polygons);
+  const target = categorizeVertices(
+    mapData.fts.polygons.filter(
+      (polygon) => polygon.config.polygonGroup === targetGroup
+    )
+  );
   const allVertices = map(vertexToVector, [...target.corners, ...target.edges]);
 
   if (isEmptyArray(allVertices)) {
@@ -556,6 +563,7 @@ const connectToNearPolygons = (polygons, mapData) => {
 };
 
 const island = (config) => (mapData) => {
+  const id = nanoid(6);
   const { pos, entrances = NONE, width, height } = config;
   let { exits = NONE } = config;
   exits = exits & ~entrances;
@@ -619,6 +627,8 @@ const island = (config) => (mapData) => {
   )(items.torch);
 
   return compose(
+    unsetPolygonGroup,
+
     (mapData) => {
       props(ppIndices, ppCoords).forEach((ppCoord) => {
         mapData = addLight(move(0, -10, 0, ppCoord), mapData);
@@ -634,10 +644,12 @@ const island = (config) => (mapData) => {
           move(0, 100, (height * 100) / 2 + 150, pos),
           [2, 5],
           "ceiling",
-          connectToNearPolygons
+          connectToNearPolygons(`${id}-north-island-joint-top`)
         ),
+        setPolygonGroup(`${id}-north-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
         plain(move(0, 0, (height * 100) / 2 + 150, pos), [2, 5], "floor"),
+        setPolygonGroup(`${id}-north-island-joint-top`),
         setTexture(textures.stone.humanWall1)
       )
     ),
@@ -648,10 +660,12 @@ const island = (config) => (mapData) => {
           move(0, 100, -((height * 100) / 2 + 150), pos),
           [2, 5],
           "ceiling",
-          connectToNearPolygons
+          connectToNearPolygons(`${id}-south-island-joint-top`)
         ),
+        setPolygonGroup(`${id}-south-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
         plain(move(0, 0, -((height * 100) / 2 + 150), pos), [2, 5], "floor"),
+        setPolygonGroup(`${id}-south-island-joint-top`),
         setTexture(textures.stone.humanWall1)
       )
     ),
@@ -662,10 +676,12 @@ const island = (config) => (mapData) => {
           move((width * 100) / 2 + 150, 100, 0, pos),
           [5, 2],
           "ceiling",
-          connectToNearPolygons
+          connectToNearPolygons(`${id}-east-island-joint-top`)
         ),
+        setPolygonGroup(`${id}-east-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
         plain(move((width * 100) / 2 + 150, 0, 0, pos), [5, 2], "floor"),
+        setPolygonGroup(`${id}-east-island-joint-top`),
         setTexture(textures.stone.humanWall1)
       )
     ),
@@ -676,10 +692,12 @@ const island = (config) => (mapData) => {
           move(-((width * 100) / 2 + 150), 100, 0, pos),
           [5, 2],
           "ceiling",
-          connectToNearPolygons
+          connectToNearPolygons(`${id}-west-island-joint-top`)
         ),
+        setPolygonGroup(`${id}-west-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
         plain(move(-((width * 100) / 2 + 150), 0, 0, pos), [5, 2], "floor"),
+        setPolygonGroup(`${id}-west-island-joint-top`),
         setTexture(textures.stone.humanWall1)
       )
     ),
@@ -688,9 +706,9 @@ const island = (config) => (mapData) => {
       move(0, 100, 0, pos),
       [width, height],
       "ceiling",
-      connectToNearPolygons
+      connectToNearPolygons(`${id}-island-top`)
     ),
-
+    setPolygonGroup(`${id}-island-bottom`),
     setTexture(textures.gravel.ground1),
 
     plain(pos, [width, height], "floor", (polygons) => {
@@ -721,7 +739,7 @@ const island = (config) => (mapData) => {
         return polygon;
       }, polygons);
     }),
-
+    setPolygonGroup(`${id}-island-top`),
     setTexture(textures.stone.humanWall1),
     setColor(colors.terrain),
 
@@ -737,6 +755,7 @@ const island = (config) => (mapData) => {
         (exits | entrances) & WEST ? 350 : 0,
       ]
     ),
+    setPolygonGroup(`${id}-pillars`),
     setTexture(textures.stone.humanPriest4),
     setColor(colors.pillars)
   )(mapData);

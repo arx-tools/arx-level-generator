@@ -243,36 +243,14 @@ const addOriginPolygon = (mapData) => {
       isQuad: true,
       minX: 0,
       minZ: 0,
+      polygonGroup: "global",
+      bumpable: false,
     },
     vertices: [
-      {
-        posX: 0,
-        posY: 0,
-        posZ: 0,
-        texU: 0,
-        texV: 0,
-      },
-      {
-        posX: 1,
-        posY: 0,
-        posZ: 0,
-        texU: 0,
-        texV: 1,
-      },
-      {
-        posX: 0,
-        posY: 0,
-        posZ: 1,
-        texU: 1,
-        texV: 0,
-      },
-      {
-        posX: 1,
-        posY: 0,
-        posZ: 1,
-        texU: 1,
-        texV: 1,
-      },
+      { posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 },
+      { posX: 1, posY: 0, posZ: 0, texU: 0, texV: 1 },
+      { posX: 0, posY: 0, posZ: 1, texU: 1, texV: 0 },
+      { posX: 1, posY: 0, posZ: 1, texU: 1, texV: 1 },
     ],
     tex: 0, // no texture at all!
     transval: 0,
@@ -298,6 +276,7 @@ const generateBlankMapData = (config) => {
       texture: textures.none,
       spawn: [0, 0, 0],
       vertexCounter: 0,
+      polygonGroup: "global",
     },
     items: [],
     dlf: createDlfData(config.levelIdx, now),
@@ -389,6 +368,16 @@ const setTexture = curry((texture, mapData) => {
   mapData.state.texture = clone(texture);
   return mapData;
 });
+
+const setPolygonGroup = curry((group, mapData) => {
+  mapData.state.polygonGroup = group;
+  return mapData;
+});
+
+const unsetPolygonGroup = (mapData) => {
+  mapData.state.polygonGroup = "global";
+  return mapData;
+};
 
 const unpackCoords = map(
   compose(
@@ -646,4 +635,6 @@ module.exports = {
   flipPolygon,
   distance,
   sortByDistance,
+  setPolygonGroup,
+  unsetPolygonGroup,
 };

@@ -121,6 +121,8 @@ const floor =
         isQuad: (textureFlags & POLY_QUAD) > 0,
         minX: x - sizeX / 2,
         minZ: z - sizeZ / 2,
+        bumpable: true,
+        polygonGroup: mapData.state.polygonGroup,
       },
       vertices,
       tex: useTexture(texture),
