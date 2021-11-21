@@ -89,6 +89,11 @@ const generate = async (config) => {
       height: 14,
     }),
 
+    (x) => {
+      colors.pillars = "yellow";
+      return x;
+    },
+
     /*
     // calculations are not working here
     // bridge({

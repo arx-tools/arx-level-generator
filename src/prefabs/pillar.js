@@ -56,9 +56,10 @@ const segment = (x, y, z, size) => (mapData) => {
 };
 
 const pillar = (x, y, z, diameter) => (mapData) => {
-  for (let i = -10; i < 10; i++) {
-    mapData = segment(x, y + i * 500, z, diameter)(mapData);
-  }
+  // for (let i = -10; i < 10; i++) {
+  let i = 0;
+  mapData = segment(x, y + i * 500, z, diameter)(mapData);
+  // }
 
   return mapData;
 };
