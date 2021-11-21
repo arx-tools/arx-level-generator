@@ -4,9 +4,6 @@ cd ./dist/game/graph/levels/level1
 
 echo "FTS"
 
-# cat fast.fts.json | from-json --ext=fts > fast.fts.repacked
-# cat fast.fts.repacked | implode -b -l --offset=$(arx-header-size fast.fts.repacked --ext=fts) --debug --output=fast.fts
-
 cat fast.fts.json | from-json --ext=fts | implode -b -l --offset=280 --debug --output=fast.fts
 
 cd ../../../../graph/levels/level1
