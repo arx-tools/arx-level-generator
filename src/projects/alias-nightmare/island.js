@@ -551,7 +551,7 @@ const connectToNearPolygons = (targetGroup) => (polygons, mapData) => {
       polygons
     );
     polygons.forEach((polygon) => {
-      polygon.bumpable = false;
+      polygon.config.bumpable = false;
     });
   });
 
@@ -715,11 +715,11 @@ const island = (config) => (mapData) => {
 
       return map((polygon) => {
         if (isPointInPolygon(pos, polygon)) {
-          polygon.bumpable = false;
+          polygon.config.bumpable = false;
         }
 
         if (isPointInPolygon(spawn, polygon)) {
-          polygon.bumpable = false;
+          polygon.config.bumpable = false;
         }
 
         if (
@@ -729,7 +729,7 @@ const island = (config) => (mapData) => {
           )
         ) {
           polygon.tex = 0;
-          polygon.bumpable = false;
+          polygon.config.bumpable = false;
         }
 
         return polygon;

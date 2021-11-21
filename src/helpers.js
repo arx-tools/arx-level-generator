@@ -394,7 +394,7 @@ const isPartOfNonBumpablePolygon = curry((polygons, vertex) => {
     map(pick(["posX", "posY", "posZ"])),
     unnest,
     pluck("vertices"),
-    filter(propEq("bumpable", false))
+    filter((polygon) => polygon.config.bumpable === false)
   )(polygons);
 });
 
