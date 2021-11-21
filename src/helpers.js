@@ -50,6 +50,7 @@ const {
 } = require("./constants.js");
 const { exportUsedItems, exportScripts } = require("./assets/items.js");
 const { exportAmbiences, useAmbience } = require("./assets/ambiences.js");
+const { dirname } = require("path");
 
 const normalize = (v) => {
   return map(apply(divide), zip(v, repeat(magnitude(v), 3)));
@@ -312,22 +313,13 @@ const saveToDisk = async (mapData) => {
   manifest.push(files.dlf.replace(".dlf.json", ".dlf"));
   manifest.push(files.llf.replace(".llf.json", ".llf"));
 
-  // TODO: create folders in sequence
-  const tasks = compose(
-    map(
-      compose(
-        (path) => async () => {
-          await fs.promises.mkdir(path, { recursive: true });
-        },
-        join("/"),
-        dropLast(1),
-        split("/")
-      )
-    )
-  )(manifest);
+  const tasks = map(
+    (path) => fs.promises.mkdir(dirname(path), { recursive: true }),
+    manifest
+  );
 
   for (let task of tasks) {
-    await task();
+    await task;
   }
 
   // ------------
