@@ -718,7 +718,7 @@ const island = (config) => (mapData) => {
           polygon.config.bumpable = false;
         }
 
-        if (isPointInPolygon(spawn, polygon)) {
+        if (isPointInPolygon(move(...mapData.config.origin, spawn), polygon)) {
           polygon.config.bumpable = false;
         }
 

@@ -51,13 +51,10 @@ const plain =
       }
     }
 
-    let polygons = compose(
-      (polygons) => onBeforeBumping(polygons, mapData),
-      map((polygon) => {
-        polygon.config.bumpable = true;
-        return polygon;
-      })
-    )(tmp.fts.polygons[mapData.state.polygonGroup]);
+    let polygons = onBeforeBumping(
+      tmp.fts.polygons[mapData.state.polygonGroup],
+      mapData
+    );
 
     let { corners, edges, middles } = categorizeVertices(polygons);
 
