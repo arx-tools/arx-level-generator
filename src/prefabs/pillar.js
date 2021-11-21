@@ -38,7 +38,7 @@ const segment = (x, y, z, size) => (mapData) => {
     null,
     0,
     [size, height, size],
-    HFLIP,
+    0,
     uv
   )(mapData);
 
@@ -48,7 +48,7 @@ const segment = (x, y, z, size) => (mapData) => {
     null,
     0,
     [size, height, size],
-    0,
+    HFLIP,
     uv
   )(mapData);
 

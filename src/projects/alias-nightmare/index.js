@@ -114,6 +114,11 @@ const generate = async (config) => {
     }),
     */
 
+    (x) => {
+      colors.pillars = "red";
+      return x;
+    },
+
     island({
       pos: [0, 0, 0],
       entrances: NONE,

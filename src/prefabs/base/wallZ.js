@@ -134,12 +134,6 @@ const wallZ =
       },
       vertices,
       tex: useTexture(texture),
-      normals: [
-        { x: 0, y: 0, z: direction === "front" ? 1 : -1 },
-        { x: 0, y: 0, z: direction === "front" ? 1 : -1 },
-        { x: 0, y: 0, z: direction === "front" ? 1 : -1 },
-        { x: 0, y: 0, z: direction === "front" ? 1 : -1 },
-      ],
       transval: 0,
       area: sizeY * sizeZ,
       type: textureFlags,

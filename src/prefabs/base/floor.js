@@ -128,12 +128,6 @@ const floor =
       },
       vertices,
       tex: useTexture(texture),
-      normals: [
-        { x: 0, y: direction === "ceiling" ? 1 : -1, z: 0 },
-        { x: 0, y: direction === "ceiling" ? 1 : -1, z: 0 },
-        { x: 0, y: direction === "ceiling" ? 1 : -1, z: 0 },
-        { x: 0, y: direction === "ceiling" ? 1 : -1, z: 0 },
-      ],
       transval: 0,
       area: sizeX * sizeZ,
       type: textureFlags,
