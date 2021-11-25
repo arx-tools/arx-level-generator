@@ -67,6 +67,32 @@ ON CONTROLLEDZONE_ENTER {
   )(items.marker);
 };
 
+const createHangingCorpse = (pos, angle = [0, 0, 0]) => {
+  return compose(
+    markAsUsed,
+    moveTo(pos, angle),
+    addScript((self) => {
+      return `
+// component: hangingCorpse
+ON INIT {
+  ${getInjections("init", self)}
+  SET_NPC_STAT life 0
+  SETNAME [public_falan_tomb]
+  INVENTORY CREATE
+  INVENTORY SKIN "ingame_inventory_corpse"
+  INVENTORY ADD "jewelry\\gold_coin\\gold_coin"
+  ACCEPT
+}
+
+ON DIE {
+  REFUSE
+}
+      `;
+    }),
+    createItem
+  )(items.corpse.hanging);
+};
+
 const generateAtLeastOneExit = () => {
   return (
     Math.round(randomBetween(NONE, ALL)) || 1 << Math.round(randomBetween(0, 3))
@@ -76,6 +102,7 @@ const generateAtLeastOneExit = () => {
 const generate = async (config) => {
   const { origin } = config;
   createWelcomeMarker([0, 0, 0]);
+  createHangingCorpse([-300, -150, -200], [0, 145, 0]);
 
   return compose(
     saveToDisk,
@@ -88,11 +115,6 @@ const generate = async (config) => {
       width: 10,
       height: 14,
     }),
-
-    (x) => {
-      colors.pillars = "yellow";
-      return x;
-    },
 
     /*
     // calculations are not working here
@@ -118,11 +140,6 @@ const generate = async (config) => {
       width: 2,
     }),
     */
-
-    (x) => {
-      colors.pillars = "red";
-      return x;
-    },
 
     island({
       pos: [0, 0, 0],

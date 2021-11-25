@@ -741,7 +741,7 @@ const island = (config) => (mapData) => {
 
     pillars(
       pos,
-      50,
+      30,
       [width * 100 * 3, height * 100 * 3],
       [width * 100 + 50, height * 100 + 50],
       [

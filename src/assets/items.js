@@ -54,6 +54,12 @@ const items = {
       native: true,
     },
   },
+  corpse: {
+    hanging: {
+      src: "npc/tortured_corpse/tortured_corpse.teo",
+      native: true,
+    },
+  },
 };
 
 const usedItems = {};
