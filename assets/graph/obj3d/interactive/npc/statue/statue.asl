@@ -1,10 +1,13 @@
 ON INIT {
  SETNAME [description_statue]
- SETSPEED 0.5
+ SETSPEED 3
  SET_MATERIAL STONE
- SETDETECT 40
+ SETDETECT 500
  
  PHYSICAL RADIUS 30
+ 
+ SET 告dle 1
+ SET 告dleSoundIdx 0
  
  SET_NPC_STAT RESISTMAGIC 100
  SET_NPC_STAT RESISTPOISON 100
@@ -12,33 +15,88 @@ ON INIT {
  
  SET_NPC_STAT life 1000
  
- LOADANIM POINT "statue_wait_4"
- LOADANIM ROTATE "Statue_rotate" 
+ LOADANIM ACTION1 "statue_wait_4"
+ // LOADANIM ACTION2 "Statue_rotate" 
  LOADANIM WAIT "Statue_wait"
  LOADANIM WALK "snake_woman_normal_walk"
- LOADANIM RUN "human_normal_run"
+ LOADANIM RUN "snake_woman_normal_run"
  
  BEHAVIOR NONE
  SETTARGET NONE
  
+ TWEAK SKIN "FIXINTER_STATUE01" "DEMON_STATUE"
+ 
  PLAYANIM WAIT
+ 
+ SET #TMP 7
+ TIMERmisc_reflection -i 0 ~#TMP~ SENDEVENT IDLE SELF ""
+
+ SENDEVENT IDLE SELF ""
 
  ACCEPT
 }
 
+ON IDLE {
+  INC 告dleSoundIdx 1
+  IF (告dleSoundIdx == 4) {
+    SET 告dleSoundIdx 1
+  }
+  
+  IF (告dle == 0) {
+	ACCEPT
+  }
+  
+  IF (告dleSoundIdx == 1) {
+	PLAY -p "statue_idle1"
+  }
+
+  IF (告dleSoundIdx == 2) {
+    PLAY -p "statue_idle2"
+  }
+  
+  IF (告dleSoundIdx == 3) {
+    PLAY -p "statue_idle3"
+  }
+
+  ACCEPT
+}
 
 ON HEAR {
-  HEROSAY "I hear you!"
+  // HEROSAY "I hear you!"
 
   BEHAVIOR MOVE_TO
   SETTARGET -n ^SENDER
   SETMOVEMODE WALK
+  
+  IF (告dle == 1) {
+    SET 告dle 0
+	
+	IF (告dleSoundIdx == 1) {
+		PLAY -p "statue_jumpscare1"
+	  }
+	  IF (告dleSoundIdx == 2) {
+		PLAY -p "statue_jumpscare2"
+	  }
+	  IF (告dleSoundIdx == 3) {
+		PLAY -p "statue_jumpscare1"
+	  }
+  }
   
   ACCEPT
 }
 
 ON DETECTPLAYER {
   >>PLAYER_DETECTED
+  
+  IF (告dleSoundIdx == 1) {
+	PLAY -p "statue_jumpscare1"
+  }
+  IF (告dleSoundIdx == 2) {
+	PLAY -p "statue_jumpscare2"
+  }
+  IF (告dleSoundIdx == 3) {
+	PLAY -p "statue_jumpscare1"
+  }
   
   GOTO ATTACK_PLAYER
   
@@ -51,7 +109,7 @@ ON ATTACK_PLAYER {
 }
 
 >>ATTACK_PLAYER {
-  HEROSAY "Attack player!"
+  // HEROSAY "Attack player!"
   
   WEAPON ON
   SET_EVENT HEAR OFF
@@ -62,11 +120,19 @@ ON ATTACK_PLAYER {
   ACCEPT
 }
 
+ON REACHEDTARGET 
+{
+ IF (^TARGET == PLAYER) 
+ {
+   DO_DAMAGE ~^SENDER~ 1000
+ }
+ ACCEPT
+}
+
 ON MOVE {
   SETMOVEMODE WALK
   ACCEPT
 }
-
 
 ON LOSTTARGET {
   GOTO LOOK_FOR
@@ -84,7 +150,7 @@ ON UNDETECTPLAYER {
 }
 
 >>LOOK_FOR {
-  HEROSAY "Looking for ya!"
+  // HEROSAY "Looking for ya!"
   
   IF (^DIST_PLAYER < 500) GOTO PLAYER_DETECTED
  
@@ -93,21 +159,39 @@ ON UNDETECTPLAYER {
   SETMOVEMODE WALK
 
   SET_EVENT HEAR ON
+  
+  TIMERhome 1 18 GOTO GO_HOME
 
   ACCEPT
 }
 
-ON DIE {
-  FORCEANIM DIE
+>>GO_HOME {
+  BEHAVIOR NONE
+  SETTARGET NONE
+
+  SET 告dle 1
+
   ACCEPT
 }
 
-ON REACHEDTARGET {
-  GOTO PLAYER_DETECTED
+ON COLLIDE_NPC {
+  IF (^SENDER == PLAYER) {
+    DO_DAMAGE ~^SENDER~ 1000
+  }
   ACCEPT
 }
 
-ON OUCH {
-  SPELLCAST -sf 5 POISON_PROJECTILE PLAYER
-  ACCEPT
-}
+// ON DIE {
+  // FORCEANIM DIE
+  // ACCEPT
+// }
+
+// ON REACHEDTARGET {
+  // GOTO PLAYER_DETECTED
+  // ACCEPT
+// }
+
+// ON OUCH {
+  
+  // ACCEPT
+// }
