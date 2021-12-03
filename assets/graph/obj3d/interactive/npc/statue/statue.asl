@@ -2,11 +2,11 @@ ON INIT {
  SETNAME [description_statue]
  SETSPEED 3
  SET_MATERIAL STONE
- SETDETECT 500
+ SETDETECT 2000
  
  PHYSICAL RADIUS 30
  
- SET 告dle 1
+ SET 告dle 6
  SET 告dleSoundIdx 0
  
  SET_NPC_STAT RESISTMAGIC 100
@@ -22,7 +22,7 @@ ON INIT {
  LOADANIM RUN "snake_woman_normal_run"
  
  BEHAVIOR NONE
- SETTARGET NONE
+ SETTARGET PLAYER
  
  TWEAK SKIN "FIXINTER_STATUE01" "DEMON_STATUE"
  
@@ -32,13 +32,14 @@ ON INIT {
  TIMERmisc_reflection -i 0 ~#TMP~ SENDEVENT IDLE SELF ""
 
  SENDEVENT IDLE SELF ""
+ SET_EVENT HEAR ON
 
  ACCEPT
 }
 
 ON IDLE {
   INC 告dleSoundIdx 1
-  IF (告dleSoundIdx == 4) {
+  IF (告dleSoundIdx == 5) {
     SET 告dleSoundIdx 1
   }
   
@@ -52,6 +53,10 @@ ON IDLE {
 
   IF (告dleSoundIdx == 2) {
     PLAY -p "statue_idle2"
+  }
+  
+  IF (告dleSoundIdx == 3) {
+    PLAY -p "statue_idle1"
   }
   
   IF (告dleSoundIdx == 3) {
@@ -80,6 +85,9 @@ ON HEAR {
 	  IF (告dleSoundIdx == 3) {
 		PLAY -p "statue_jumpscare1"
 	  }
+	  IF (告dleSoundIdx == 4) {
+	    PLAY -p "statue_jumpscare2"
+	  }
   }
   
   ACCEPT
@@ -96,6 +104,9 @@ ON DETECTPLAYER {
   }
   IF (告dleSoundIdx == 3) {
 	PLAY -p "statue_jumpscare1"
+  }
+  IF (告dleSoundIdx == 4) {
+	PLAY -p "statue_jumpscare2"
   }
   
   GOTO ATTACK_PLAYER
@@ -167,7 +178,7 @@ ON UNDETECTPLAYER {
 
 >>GO_HOME {
   BEHAVIOR NONE
-  SETTARGET NONE
+  SETTARGET PLAYER
 
   SET 告dle 1
 
