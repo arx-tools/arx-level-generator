@@ -599,6 +599,51 @@ const sortByDistance = (vertex) => (a, b) => {
   return 0;
 };
 
+// [ a, b, c  [ x      [ ax + by + cz
+//   d, e, f    y    =   dx + ey + fz
+//   g, h, i ]  z ]      gx + hy + iz ]
+const matrix3MulVec3 = ([a, b, c, d, e, f, g, h, i], [x, y, z]) => {
+  return [a * x + b * y + c * z, d * x + e * y + f * z, g * x + h * y + i * z];
+};
+
+const degToRad = (deg) => (deg * Math.PI) / 180;
+
+const rotateVec3 = (point, [a, b, g]) => {
+  a = degToRad(a);
+  b = degToRad(b);
+  g = degToRad(g);
+
+  const { sin, cos } = Math;
+
+  const rotation = [
+    cos(a) * cos(b),
+    cos(a) * sin(b) * sin(g) - sin(a) * cos(g),
+    cos(a) * sin(b) * cos(g) + sin(a) * sin(g),
+    sin(a) * cos(b),
+    sin(a) * sin(b) * sin(g) + cos(a) * cos(g),
+    sin(a) * sin(b) * cos(g) - cos(a) * sin(g),
+    -sin(b),
+    cos(b) * sin(g),
+    cos(b) * cos(g),
+  ];
+
+  return matrix3MulVec3(rotation, point);
+};
+
+const circleOfVectors = (center, radius, division) => {
+  const angle = 360 / division;
+
+  const vectors = [];
+
+  for (let i = 0; i < division; i++) {
+    vectors.push(
+      move(...rotateVec3([0, 0, 1 * radius], [0, angle * i, 0]), center)
+    );
+  }
+
+  return vectors;
+};
+
 module.exports = {
   subtractVec3,
   magnitude,
@@ -629,4 +674,8 @@ module.exports = {
   sortByDistance,
   setPolygonGroup,
   unsetPolygonGroup,
+  matrix3MulVec3,
+  degToRad,
+  rotateVec3,
+  circleOfVectors,
 };

@@ -7,7 +7,7 @@ const {
   setColor,
   addZone,
   randomBetween,
-  move,
+  circleOfVectors,
 } = require("../../helpers");
 const island = require("./island.js");
 const {
@@ -120,11 +120,10 @@ const generate = async (config) => {
   const { origin } = config;
   createWelcomeMarker([0, 0, 0]);
   createHangingCorpse([-300, -150, -200], [0, 145, 0]);
-  createSmellyFlower([300, 0, -300]);
-  createSmellyFlower([330, 0, -330], [7, 70, 10]);
-  createSmellyFlower([280, 0, -290], [2, 24, 0]);
-  createSmellyFlower([290, 0, -310]);
-  createSmellyFlower([300, 0, -330]);
+
+  circleOfVectors([300, 0, -200], 120, 9).forEach((pos) => {
+    createSmellyFlower(pos);
+  });
 
   return compose(
     saveToDisk,
