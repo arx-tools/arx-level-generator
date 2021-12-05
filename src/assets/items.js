@@ -17,6 +17,7 @@ const {
   propEq,
   filter,
   curry,
+  isEmpty,
 } = require("ramda");
 const { padCharsStart, isFunction } = require("ramda-adjunct");
 const { PLAYER_HEIGHT_ADJUSTMENT } = require("../constants");
@@ -66,6 +67,12 @@ const items = {
       native: true,
     },
   },
+  npc: {
+    statue: {
+      src: "npc/statue/statue.teo",
+      native: false,
+    },
+  },
 };
 
 const usedItems = {};
@@ -76,10 +83,18 @@ const propsToInjections = (props) => {
   if (props.name) {
     init.push(`SETNAME "${props.name}"`);
   }
+  if (props.speed) {
+    init.push(`SETSPEED ${props.speed}`);
+  }
+  if (props.hp) {
+    init.push(`SET_NPC_STAT life ${props.hp}`);
+  }
 
-  return {
-    init,
-  };
+  if (isEmpty(init)) {
+    return {};
+  } else {
+    return { init };
+  }
 };
 
 const createItem = (item, props = {}) => {

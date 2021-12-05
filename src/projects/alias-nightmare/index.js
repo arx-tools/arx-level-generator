@@ -29,6 +29,9 @@ const {
 } = require("../../assets/items");
 const { declare, color, getInjections } = require("../../scripting");
 const bridge = require("./bridge");
+const { createSmellyFlower } = require("./items/smellyFlower");
+const { createHangingCorpse } = require("./items/hangingCorpse");
+const { createStatue } = require("./items/statue");
 
 const createWelcomeMarker = (pos) => {
   return compose(
@@ -67,65 +70,23 @@ ON CONTROLLEDZONE_ENTER {
   )(items.marker);
 };
 
-const createHangingCorpse = (pos, angle = [0, 0, 0]) => {
-  return compose(
-    markAsUsed,
-    moveTo(pos, angle),
-    addScript((self) => {
-      return `
-// component: hangingCorpse
-ON INIT {
-  ${getInjections("init", self)}
-  SET_NPC_STAT life 0
-  SETNAME [public_falan_tomb]
-  INVENTORY CREATE
-  INVENTORY SKIN "ingame_inventory_corpse"
-  INVENTORY ADD "jewelry\\gold_coin\\gold_coin"
-  ACCEPT
-}
-
-ON DIE {
-  REFUSE
-}
-      `;
-    }),
-    createItem
-  )(items.corpse.hanging);
-};
-
 const generateAtLeastOneExit = () => {
   return (
     Math.round(randomBetween(NONE, ALL)) || 1 << Math.round(randomBetween(0, 3))
   );
 };
 
-const createSmellyFlower = (pos, angle = [0, 0, 0]) => {
-  return compose(
-    markAsUsed,
-    moveTo(pos, angle),
-    addScript((self) => {
-      return `
-// component: smellyFlower
-ON INIT {
-  ${getInjections("init", self)}
-  ACCEPT
-}
-      `;
-    }),
-    createItem
-  )(items.plants.fern, {
-    name: "Smelly flower",
-  });
-};
-
 const generate = async (config) => {
   const { origin } = config;
   createWelcomeMarker([0, 0, 0]);
-  createHangingCorpse([-300, -150, -200], [0, 145, 0]);
+  createHangingCorpse([-300, -150, -200], [0, 145, 0], {
+    name: "[public_falan_tomb]",
+  });
 
-  circleOfVectors([300, 0, -200], 120, 9).forEach((pos) => {
+  circleOfVectors([3000, 0, 3000], 200, 9).forEach((pos) => {
     createSmellyFlower(pos);
   });
+  createStatue([3000, 0, 3000]);
 
   return compose(
     saveToDisk,

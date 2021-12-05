@@ -10,7 +10,6 @@ const {
   distance,
   sortByDistance,
   setTexture,
-  subtractVec3,
   setPolygonGroup,
   unsetPolygonGroup,
 } = require("../../helpers.js");
@@ -614,6 +613,7 @@ const island = (config) => (mapData) => {
     moveTo(move(-(width * 100) / 2 - 300, 0, 0, pos), [0, 180, 0], gates.west);
   }
 
+  /*
   compose(markAsUsed, moveTo(pos, [0, 97, 0]), createItem)(items.torch);
 
   compose(
@@ -621,6 +621,7 @@ const island = (config) => (mapData) => {
     moveTo(move(-30, 0, 0, pos), [0, 70, 0]),
     createItem
   )(items.torch);
+  */
 
   return compose(
     unsetPolygonGroup,
