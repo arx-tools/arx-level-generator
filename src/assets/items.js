@@ -60,11 +60,29 @@ const items = {
       native: true,
     },
   },
+  questItems: {
+    mirror: {
+      src: "items/quest_item/mirror.teo",
+      native: true,
+    },
+  },
 };
 
 const usedItems = {};
 
-const createItem = curry((item) => {
+const propsToInjections = (props) => {
+  const init = [];
+
+  if (props.name) {
+    init.push(`SETNAME "${props.name}"`);
+  }
+
+  return {
+    init,
+  };
+};
+
+const createItem = (item, props = {}) => {
   usedItems[item.src] = usedItems[item.src] || [];
 
   const id = usedItems[item.src].length;
@@ -93,11 +111,11 @@ const createItem = curry((item) => {
   return {
     src: item.src,
     id,
-    state: {},
-    injections: {},
+    state: {}, // container for script variables
+    injections: propsToInjections({ ...item.props, ...props }),
     ref: `${name}_${numericId}`,
   };
-});
+};
 
 const addScript = curry((script, itemRef) => {
   const { src, id } = itemRef;

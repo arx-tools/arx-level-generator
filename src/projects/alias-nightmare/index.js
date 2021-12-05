@@ -107,13 +107,15 @@ const createSmellyFlower = (pos, angle = [0, 0, 0]) => {
       return `
 // component: smellyFlower
 ON INIT {
-  SETNAME "Smelly flower"
+  ${getInjections("init", self)}
   ACCEPT
 }
       `;
     }),
     createItem
-  )(items.plants.fern);
+  )(items.plants.fern, {
+    name: "Smelly flower",
+  });
 };
 
 const generate = async (config) => {
