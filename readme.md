@@ -28,3 +28,7 @@ https://wiki.arx-libertatis.org/Script:Variables
 ### Interval
 
 `graph/obj3d/textures/skybox_01_*.jpg`
+
+### Michel
+
+`graph/obj3d/textures/npc_human_base_lali_head.bmp`
