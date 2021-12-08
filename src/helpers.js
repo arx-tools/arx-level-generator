@@ -48,7 +48,11 @@ const {
   PATH_AMBIANCE,
   PATH_FARCLIP,
 } = require("./constants.js");
-const { exportUsedItems, exportScripts } = require("./assets/items.js");
+const {
+  exportUsedItems,
+  exportScripts,
+  exportDependencies,
+} = require("./assets/items.js");
 const { exportAmbiences, useAmbience } = require("./assets/ambiences.js");
 const { dirname } = require("path");
 
@@ -301,17 +305,23 @@ const saveToDisk = async (mapData) => {
 
   let ambiences = exportAmbiences(outputDir);
 
+  let dependencies = exportDependencies(outputDir);
+
   const files = {
     fts: `${outputDir}game/graph/levels/level${levelIdx}/fast.fts.json`,
     dlf: `${outputDir}graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`,
     llf: `${outputDir}graph/levels/level${levelIdx}/level${levelIdx}.llf.json`,
   };
 
-  const manifest = [...values(files), ...keys(scripts), ...keys(ambiences)];
-
-  manifest.push(files.fts.replace(".fts.json", ".fts"));
-  manifest.push(files.dlf.replace(".dlf.json", ".dlf"));
-  manifest.push(files.llf.replace(".llf.json", ".llf"));
+  const manifest = [
+    ...values(files),
+    ...keys(scripts),
+    ...keys(ambiences),
+    ...keys(dependencies),
+    files.fts.replace(".fts.json", ".fts"),
+    files.dlf.replace(".dlf.json", ".dlf"),
+    files.llf.replace(".llf.json", ".llf"),
+  ].sort();
 
   const tasks = map(
     (path) => fs.promises.mkdir(dirname(path), { recursive: true }),
@@ -333,8 +343,9 @@ const saveToDisk = async (mapData) => {
   // ------------
 
   ambiences = toPairs(ambiences);
+  dependencies = toPairs(dependencies);
 
-  for (let [target, source] of ambiences) {
+  for (let [target, source] of [...ambiences, ...dependencies]) {
     await fs.promises.copyFile(source, target);
   }
 

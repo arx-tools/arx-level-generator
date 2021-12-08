@@ -18,6 +18,10 @@ const {
   filter,
   curry,
   isEmpty,
+  reject,
+  pluck,
+  isNil,
+  uniq,
 } = require("ramda");
 const { padCharsStart, isFunction } = require("ramda-adjunct");
 const { PLAYER_HEIGHT_ADJUSTMENT } = require("../constants");
@@ -71,6 +75,16 @@ const items = {
     statue: {
       src: "npc/statue/statue.teo",
       native: false,
+      dependencies: [
+        "game/graph/obj3d/interactive/npc/statue/statue.ftl",
+        "graph/obj3d/anims/npc/statue_rotate.tea",
+        "graph/obj3d/anims/npc/statue_wait_1.tea",
+        "graph/obj3d/anims/npc/statue_wait_2.tea",
+        "graph/obj3d/anims/npc/statue_wait_3.tea",
+        "graph/obj3d/anims/npc/statue_wait_4.tea",
+        "graph/obj3d/anims/npc/statue_wait.tea",
+        "graph/obj3d/textures/demon_statue.jpg",
+      ],
     },
   },
 };
@@ -106,16 +120,8 @@ const createItem = (item, props = {}) => {
     filename: item.src,
     used: false,
     identifier: id + 1,
-    pos: {
-      x: 0,
-      y: 0,
-      z: 0,
-    },
-    angle: {
-      a: 0,
-      b: 0,
-      g: 0,
-    },
+    pos: { x: 0, y: 0, z: 0 },
+    angle: { a: 0, b: 0, g: 0 },
     script: "",
     flags: 0,
   });
@@ -129,6 +135,28 @@ const createItem = (item, props = {}) => {
     state: {}, // container for script variables
     injections: propsToInjections({ ...item.props, ...props }),
     ref: `${name}_${numericId}`,
+  };
+};
+
+const createRootItem = (item, props = {}) => {
+  usedItems[item.src] = usedItems[item.src] || [];
+
+  usedItems[item.src].root = {
+    filename: item.src,
+    used: false,
+    identifier: "root",
+    script: "",
+    dependencies: item.dependencies || [],
+  };
+
+  const { name } = path.parse(item.src);
+
+  return {
+    src: item.src,
+    id: "root",
+    state: {}, // container for script variables
+    injections: propsToInjections({ ...item.props, ...props }),
+    ref: `${name}_root`,
   };
 };
 
@@ -150,6 +178,9 @@ const moveTo = curry(([x, y, z], [a, b, g], itemRef) => {
 const markAsUsed = (itemRef) => {
   const { src, id } = itemRef;
   usedItems[src][id].used = true;
+  if (usedItems[src].root) {
+    usedItems[src].root.used = true;
+  }
   return itemRef;
 };
 
@@ -179,7 +210,9 @@ const exportUsedItems = (mapData) => {
       return item;
     }),
     filter(propEq("used", true)),
+    reject(propEq("identifier", "root")),
     unnest,
+    map(values),
     values,
     clone
   )(usedItems);
@@ -192,14 +225,43 @@ const exportScripts = (outputDir) => {
     reduce((files, item) => {
       const { dir, name } = path.parse(item.filename);
 
-      const id = padCharsStart("0", 4, toString(item.identifier));
-      const filename = `${outputDir}graph/obj3d/interactive/${dir}/${name}_${id}/${name}.asl`;
-
+      let filename;
+      if (item.identifier === "root") {
+        filename = `${outputDir}graph/obj3d/interactive/${dir}/${name}.asl`;
+      } else {
+        const id = padCharsStart("0", 4, toString(item.identifier));
+        filename = `${outputDir}graph/obj3d/interactive/${dir}/${name}_${id}/${name}.asl`;
+      }
       files[filename] = item.script;
+
       return files;
     }, {}),
     filter(propEq("used", true)),
     unnest,
+    map(values),
+    values,
+    clone
+  )(usedItems);
+};
+
+const exportDependencies = (outputDir) => {
+  return compose(
+    reduce((files, filename) => {
+      const { dir, name, ext } = path.parse(filename);
+
+      files[
+        `${outputDir}${dir}/${name}${ext}`
+      ] = `./assets/${dir}/${name}${ext}`;
+
+      return files;
+    }, {}),
+    uniq,
+    unnest,
+    reject(isNil),
+    pluck("dependencies"),
+    filter(propEq("used", true)),
+    unnest,
+    map(values),
     values,
     clone
   )(usedItems);
@@ -208,9 +270,11 @@ const exportScripts = (outputDir) => {
 module.exports = {
   items,
   createItem,
+  createRootItem,
   addScript,
   moveTo,
   markAsUsed,
   exportUsedItems,
   exportScripts,
+  exportDependencies,
 };

@@ -31,7 +31,7 @@ const { declare, color, getInjections } = require("../../scripting");
 const bridge = require("./bridge");
 const { createSmellyFlower } = require("./items/smellyFlower");
 const { createHangingCorpse } = require("./items/hangingCorpse");
-const { createStatue } = require("./items/statue");
+const { createStatue, defineStatue } = require("./items/statue");
 
 const createWelcomeMarker = (pos) => {
   return compose(
@@ -78,6 +78,7 @@ const generateAtLeastOneExit = () => {
 
 const generate = async (config) => {
   const { origin } = config;
+
   createWelcomeMarker([0, 0, 0]);
   createHangingCorpse([-300, -150, -200], [0, 145, 0], {
     name: "[public_falan_tomb]",
@@ -86,6 +87,8 @@ const generate = async (config) => {
   circleOfVectors([3000, 0, 3000], 200, 9).forEach((pos) => {
     createSmellyFlower(pos);
   });
+
+  defineStatue();
   createStatue([3000, 0, 3000]);
 
   return compose(
@@ -100,14 +103,12 @@ const generate = async (config) => {
       height: 14,
     }),
 
-    /*
     // calculations are not working here
     // bridge({
     //   height: 2,
     //   to: move(-(14 / 2) * 100, 0, 0, [3000, 0, 3000]),
     //   from: move((10 / 2) * 100, 0, 0, [0, 0, 3000]),
     // }),
-    */
 
     island({
       pos: [0, 0, 3000],
@@ -117,13 +118,11 @@ const generate = async (config) => {
       height: 10,
     }),
 
-    /*
-    bridge({
-      to: move(0, 0, -(10 / 2) * 100, [0, 0, 3000]),
-      from: move(0, 0, (9 / 2) * 100, [0, 0, 0]),
-      width: 2,
-    }),
-    */
+    // bridge({
+    //   to: move(0, 0, -(10 / 2) * 100, [0, 0, 3000]),
+    //   from: move(0, 0, (9 / 2) * 100, [0, 0, 0]),
+    //   width: 2,
+    // }),
 
     island({
       pos: [0, 0, 0],
