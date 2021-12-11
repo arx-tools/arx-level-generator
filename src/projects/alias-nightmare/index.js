@@ -8,6 +8,7 @@ const {
   addZone,
   randomBetween,
   circleOfVectors,
+  move,
 } = require("../../helpers");
 const island = require("./island.js");
 const {
@@ -91,46 +92,40 @@ const generate = async (config) => {
   defineStatue();
   createStatue([3000, 0, 3000]);
 
-  return compose(
-    saveToDisk,
-    finalize,
-
-    island({
-      pos: [3000, -200, 3000],
-      entrances: WEST,
-      exits: NONE,
-      width: 10,
-      height: 14,
-    }),
-
-    // calculations are not working here
-    // bridge({
-    //   height: 2,
-    //   to: move(-(14 / 2) * 100, 0, 0, [3000, 0, 3000]),
-    //   from: move((10 / 2) * 100, 0, 0, [0, 0, 3000]),
-    // }),
-
-    island({
-      pos: [0, -500, 3000],
-      entrances: SOUTH,
-      exits: EAST,
-      width: 10,
-      height: 10,
-    }),
-
-    // bridge({
-    //   to: move(0, 0, -(10 / 2) * 100, [0, 0, 3000]),
-    //   from: move(0, 0, (9 / 2) * 100, [0, 0, 0]),
-    //   width: 2,
-    // }),
-
-    island({
+  // TODO: other coordinates in this generate function should be derived from these island coordinates
+  const islands = [
+    {
       pos: [0, 0, 0],
       entrances: NONE,
       exits: NORTH,
       width: 14,
       height: 10,
-    }),
+    },
+    {
+      pos: [0, -500, 3000],
+      entrances: SOUTH,
+      exits: EAST,
+      width: 10,
+      height: 10,
+    },
+    {
+      pos: [3000, -200, 3000],
+      entrances: WEST,
+      exits: NONE,
+      width: 10,
+      height: 14,
+    },
+  ];
+
+  return compose(
+    saveToDisk,
+    finalize,
+
+    // island(islands[2]),
+    // bridge(islands[1], islands[2]),
+    island(islands[1]),
+    bridge(islands[0], islands[1]),
+    island(islands[0]),
 
     addZone(
       [-origin[0], 0, -origin[2]],

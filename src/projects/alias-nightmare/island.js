@@ -560,6 +560,7 @@ const connectToNearPolygons = (targetGroup) => (polygons, mapData) => {
 const island = (config) => (mapData) => {
   const id = nanoid(6);
   const { pos, entrances = NONE, width, height } = config;
+  // exits are locked connection points, entrances are not
   let { exits = NONE } = config;
   exits = exits & ~entrances;
   const spawn = move(...mapData.config.origin, mapData.state.spawn);

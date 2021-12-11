@@ -7,6 +7,8 @@ const {
 const { useTexture } = require("../../assets/textures.js");
 const { flipPolygon } = require("../../helpers.js");
 
+// [x, y, z] are absolute coordinates,
+// not relative to origin
 const floor =
   (
     [x, y, z],

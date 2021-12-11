@@ -10,6 +10,7 @@ const {
 } = require("../helpers.js");
 const { identity, assoc, map, compose, reject, __ } = require("ramda");
 
+// pos is relative to origin
 const plain =
   (pos, size, facing = "floor", onBeforeBumping = identity) =>
   (mapData) => {
