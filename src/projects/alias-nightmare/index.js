@@ -1,4 +1,4 @@
-const { compose } = require("ramda");
+const { compose, reduce, __ } = require("ramda");
 const {
   generateBlankMapData,
   movePlayerTo,
@@ -8,7 +8,6 @@ const {
   addZone,
   randomBetween,
   circleOfVectors,
-  move,
 } = require("../../helpers");
 const island = require("./island.js");
 const {
@@ -29,7 +28,7 @@ const {
   addScript,
 } = require("../../assets/items");
 const { declare, color, getInjections } = require("../../scripting");
-const bridge = require("./bridge");
+const bridges = require("./bridges");
 const { createSmellyFlower } = require("./items/smellyFlower");
 const { createHangingCorpse } = require("./items/hangingCorpse");
 const { createStatue, defineStatue } = require("./items/statue");
@@ -96,14 +95,14 @@ const generate = async (config) => {
   const islands = [
     {
       pos: [0, 0, 0],
-      entrances: NONE,
+      entrances: EAST,
       exits: NORTH,
       width: 14,
       height: 10,
     },
     {
-      pos: [0, -500, 3000],
-      entrances: SOUTH,
+      pos: [100, -500, 3000],
+      entrances: SOUTH | WEST,
       exits: EAST,
       width: 10,
       height: 10,
@@ -115,17 +114,21 @@ const generate = async (config) => {
       width: 10,
       height: 14,
     },
+    {
+      pos: [0, 100, 4000],
+      entrances: SOUTH,
+      exits: NONE,
+      width: 6,
+      height: 6,
+    },
   ];
 
   return compose(
     saveToDisk,
     finalize,
 
-    // island(islands[2]),
-    // bridge(islands[1], islands[2]),
-    island(islands[1]),
-    bridge(islands[0], islands[1]),
-    island(islands[0]),
+    bridges(islands),
+    reduce((mapData, config) => island(config)(mapData), __, islands),
 
     addZone(
       [-origin[0], 0, -origin[2]],

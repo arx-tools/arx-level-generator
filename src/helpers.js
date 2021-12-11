@@ -21,16 +21,11 @@ const {
   split,
   unary,
   values,
-  dropLast,
-  join,
   replace,
   keys,
   curry,
   apply,
-  flip,
-  subtract,
   zip,
-  propEq,
   filter,
   includes,
   divide,
@@ -469,7 +464,9 @@ const cross = (u, v) => {
   ];
 };
 
-const subtractVec3 = (a, b) => compose(map(apply(flip(subtract))), zip)(a, b);
+const subtractVec3 = (a, b) => {
+  return [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
+};
 
 const magnitude = ([x, y, z]) => {
   return Math.sqrt(x ** 2 + y ** 2 + z ** 2);
@@ -618,6 +615,7 @@ const matrix3MulVec3 = ([a, b, c, d, e, f, g, h, i], [x, y, z]) => {
 };
 
 const degToRad = (deg) => (deg * Math.PI) / 180;
+const radToDeg = (rad) => rad * (180 / Math.PI);
 
 const rotateVec3 = (point, [a, b, g]) => {
   a = degToRad(a);
@@ -687,6 +685,7 @@ module.exports = {
   unsetPolygonGroup,
   matrix3MulVec3,
   degToRad,
+  radToDeg,
   rotateVec3,
   circleOfVectors,
 };
