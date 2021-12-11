@@ -96,7 +96,7 @@ const generate = async (config) => {
     finalize,
 
     island({
-      pos: [3000, 0, 3000],
+      pos: [3000, -200, 3000],
       entrances: WEST,
       exits: NONE,
       width: 10,
@@ -111,7 +111,7 @@ const generate = async (config) => {
     // }),
 
     island({
-      pos: [0, 0, 3000],
+      pos: [0, -500, 3000],
       entrances: SOUTH,
       exits: EAST,
       width: 10,
