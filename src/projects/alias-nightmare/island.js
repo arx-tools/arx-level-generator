@@ -760,18 +760,18 @@ const island = (config) => (mapData) => {
     setTexture(textures.stone.humanWall1),
     setColor(colors.terrain),
 
-    pillars(
-      pos,
-      30,
-      [width * 100 * 3, height * 100 * 3],
-      [width * 100 + 50, height * 100 + 50],
-      [
-        (exits | entrances) & NORTH ? 350 : 0,
-        (exits | entrances) & EAST ? 350 : 0,
-        (exits | entrances) & SOUTH ? 350 : 0,
-        (exits | entrances) & WEST ? 350 : 0,
-      ]
-    ),
+    // pillars(
+    //   pos,
+    //   30,
+    //   [width * 100 * 3, height * 100 * 3],
+    //   [width * 100 + 50, height * 100 + 50],
+    //   [
+    //     (exits | entrances) & NORTH ? 350 : 0,
+    //     (exits | entrances) & EAST ? 350 : 0,
+    //     (exits | entrances) & SOUTH ? 350 : 0,
+    //     (exits | entrances) & WEST ? 350 : 0,
+    //   ]
+    // ),
     setPolygonGroup(`${id}-pillars`),
     setTexture(textures.stone.humanPriest4),
     setColor(colors.pillars)

@@ -5,6 +5,7 @@ const skybox = require("./skybox.js");
 const plain = require("./plain.js");
 const pillar = require("./pillar.js");
 const pillars = require("./pillars.js");
+const stairs = require("./stairs.js");
 
 module.exports = {
   floor,
@@ -14,4 +15,5 @@ module.exports = {
   plain,
   pillar,
   pillars,
+  stairs,
 };

@@ -8,7 +8,7 @@ const {
   radToDeg,
   isBetweenInclusive,
 } = require("../../helpers");
-const { floor } = require("../../prefabs");
+const { floor, plain } = require("../../prefabs");
 const { ISLAND_JOINT_LENGTH } = require("../../constants");
 
 const jointOffset = (ISLAND_JOINT_LENGTH * 100) / 2 - 100;
@@ -157,11 +157,8 @@ const bridges = (islands) => (mapData) => {
   return compose(
     addIndex(reduce)(
       (mapData, [a, b], idx) => {
-        return compose(
-          floor(move(...b, origin)),
-          floor(move(...a, origin)),
-          setColor(["blue", "green", "yellow", "red", "orange"][idx])
-        )(mapData);
+        // TODO
+        return mapData;
       },
       __,
       pairs

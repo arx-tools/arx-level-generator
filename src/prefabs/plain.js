@@ -8,7 +8,7 @@ const {
   isPartOfNonBumpablePolygon,
   move,
 } = require("../helpers.js");
-const { identity, assoc, map, compose, reject, __ } = require("ramda");
+const { identity, reject, __ } = require("ramda");
 
 // pos is relative to origin
 const plain =

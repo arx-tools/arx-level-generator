@@ -16,7 +16,13 @@ const floor =
     quad = 0,
     textureRotation = 0,
     size = 100,
-    flags = 0
+    flags = 0,
+    _uv = {
+      a: { u: 1, v: 0 },
+      b: { u: 1, v: 1 },
+      c: { u: 0, v: 0 },
+      d: { u: 0, v: 1 },
+    }
   ) =>
   (mapData) => {
     const { texture } = mapData.state;
@@ -35,10 +41,10 @@ const floor =
     let d = { u: 0, v: 0.5 };
 
     if (quad === null) {
-      a = { u: 1, v: 0 };
-      b = { u: 1, v: 1 };
-      c = { u: 0, v: 0 };
-      d = { u: 0, v: 1 };
+      a = _uv.a;
+      b = _uv.b;
+      c = _uv.c;
+      d = _uv.d;
     } else {
       switch (quad) {
         case 0:
