@@ -27,6 +27,10 @@ const textures = {
       src: "[STONE]_HUMAN_PRIEST4.jpg",
       native: true,
     },
+    stairs: {
+      src: "[STONE]_HUMAN_STONE_ORNAMENT.jpg",
+      native: true,
+    },
   },
   skybox: {
     top: {

@@ -26,6 +26,7 @@ const {
 const { isNotEmpty, isEmptyArray } = require("ramda-adjunct");
 const { textures } = require("../../assets/textures.js");
 const { nanoid } = require("nanoid");
+const { ISLAND_JOINT_LENGTH } = require("../../constants.js");
 
 // PP = pressure plate
 
@@ -624,6 +625,8 @@ const island = (config) => (mapData) => {
   )(items.torch);
   */
 
+  const jointOffset = (ISLAND_JOINT_LENGTH * 100) / 2 - 100;
+
   return compose(
     unsetPolygonGroup,
 
@@ -639,14 +642,18 @@ const island = (config) => (mapData) => {
       () => (exits | entrances) & NORTH,
       compose(
         plain(
-          move(0, 100, (height * 100) / 2 + 150, pos),
-          [2, 5],
+          move(0, 100, (height * 100) / 2 + jointOffset, pos),
+          [2, ISLAND_JOINT_LENGTH],
           "ceiling",
           connectToNearPolygons(`${id}-north-island-joint-top`)
         ),
         setPolygonGroup(`${id}-north-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
-        plain(move(0, 0, (height * 100) / 2 + 150, pos), [2, 5], "floor"),
+        plain(
+          move(0, 0, (height * 100) / 2 + jointOffset, pos),
+          [2, ISLAND_JOINT_LENGTH],
+          "floor"
+        ),
         setPolygonGroup(`${id}-north-island-joint-top`),
         setTexture(textures.stone.humanWall1)
       )
@@ -655,14 +662,18 @@ const island = (config) => (mapData) => {
       () => (exits | entrances) & SOUTH,
       compose(
         plain(
-          move(0, 100, -((height * 100) / 2 + 150), pos),
-          [2, 5],
+          move(0, 100, -((height * 100) / 2 + jointOffset), pos),
+          [2, ISLAND_JOINT_LENGTH],
           "ceiling",
           connectToNearPolygons(`${id}-south-island-joint-top`)
         ),
         setPolygonGroup(`${id}-south-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
-        plain(move(0, 0, -((height * 100) / 2 + 150), pos), [2, 5], "floor"),
+        plain(
+          move(0, 0, -((height * 100) / 2 + jointOffset), pos),
+          [2, ISLAND_JOINT_LENGTH],
+          "floor"
+        ),
         setPolygonGroup(`${id}-south-island-joint-top`),
         setTexture(textures.stone.humanWall1)
       )
@@ -671,14 +682,18 @@ const island = (config) => (mapData) => {
       () => (exits | entrances) & EAST,
       compose(
         plain(
-          move((width * 100) / 2 + 150, 100, 0, pos),
-          [5, 2],
+          move((width * 100) / 2 + jointOffset, 100, 0, pos),
+          [ISLAND_JOINT_LENGTH, 2],
           "ceiling",
           connectToNearPolygons(`${id}-east-island-joint-top`)
         ),
         setPolygonGroup(`${id}-east-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
-        plain(move((width * 100) / 2 + 150, 0, 0, pos), [5, 2], "floor"),
+        plain(
+          move((width * 100) / 2 + jointOffset, 0, 0, pos),
+          [ISLAND_JOINT_LENGTH, 2],
+          "floor"
+        ),
         setPolygonGroup(`${id}-east-island-joint-top`),
         setTexture(textures.stone.humanWall1)
       )
@@ -687,14 +702,18 @@ const island = (config) => (mapData) => {
       () => (exits | entrances) & WEST,
       compose(
         plain(
-          move(-((width * 100) / 2 + 150), 100, 0, pos),
-          [5, 2],
+          move(-((width * 100) / 2 + jointOffset), 100, 0, pos),
+          [ISLAND_JOINT_LENGTH, 2],
           "ceiling",
           connectToNearPolygons(`${id}-west-island-joint-top`)
         ),
         setPolygonGroup(`${id}-west-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
-        plain(move(-((width * 100) / 2 + 150), 0, 0, pos), [5, 2], "floor"),
+        plain(
+          move(-((width * 100) / 2 + jointOffset), 0, 0, pos),
+          [ISLAND_JOINT_LENGTH, 2],
+          "floor"
+        ),
         setPolygonGroup(`${id}-west-island-joint-top`),
         setTexture(textures.stone.humanWall1)
       )

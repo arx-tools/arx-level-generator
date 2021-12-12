@@ -1,12 +1,4 @@
-const {
-  compose,
-  reduce,
-  __,
-  isEmpty,
-  addIndex,
-  without,
-  includes,
-} = require("ramda");
+const { compose, reduce, __, addIndex, without } = require("ramda");
 const { NORTH, SOUTH, EAST, WEST } = require("./constants");
 const {
   move,
@@ -17,17 +9,18 @@ const {
   isBetweenInclusive,
 } = require("../../helpers");
 const { floor } = require("../../prefabs");
+const { ISLAND_JOINT_LENGTH } = require("../../constants");
+
+const jointOffset = (ISLAND_JOINT_LENGTH * 100) / 2 - 100;
 
 const getJoints = ({ pos, entrances, exits, width, height }) => {
   const joints = {};
-
-  const jointLength = 5;
 
   if ((exits | entrances) & NORTH) {
     joints.north = move(
       0,
       0,
-      (height * 100) / 2 + 150 + (jointLength * 100) / 2,
+      (height * 100) / 2 + jointOffset + (ISLAND_JOINT_LENGTH * 100) / 2,
       pos
     );
   }
@@ -36,14 +29,14 @@ const getJoints = ({ pos, entrances, exits, width, height }) => {
     joints.south = move(
       0,
       0,
-      -((height * 100) / 2 + 150 + (jointLength * 100) / 2),
+      -((height * 100) / 2 + jointOffset + (ISLAND_JOINT_LENGTH * 100) / 2),
       pos
     );
   }
 
   if ((exits | entrances) & EAST) {
     joints.east = move(
-      (width * 100) / 2 + 150 + (jointLength * 100) / 2,
+      (width * 100) / 2 + jointOffset + (ISLAND_JOINT_LENGTH * 100) / 2,
       0,
       0,
       pos
@@ -52,7 +45,7 @@ const getJoints = ({ pos, entrances, exits, width, height }) => {
 
   if ((exits | entrances) & WEST) {
     joints.west = move(
-      -((width * 100) / 2 + 150 + (jointLength * 100) / 2),
+      -((width * 100) / 2 + jointOffset + (ISLAND_JOINT_LENGTH * 100) / 2),
       0,
       0,
       pos
