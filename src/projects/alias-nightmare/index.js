@@ -79,49 +79,48 @@ const generateAtLeastOneExit = () => {
 const generate = async (config) => {
   const { origin } = config;
 
-  createWelcomeMarker([0, 0, 0]);
-  createHangingCorpse([-300, -150, -200], [0, 145, 0], {
-    name: "[public_falan_tomb]",
-  });
-
-  circleOfVectors([3000, 0, 3000], 200, 9).forEach((pos) => {
-    createSmellyFlower(pos);
-  });
-
-  defineStatue();
-  createStatue([3000, 0, 3000]);
-
-  // TODO: other coordinates in this generate function should be derived from these island coordinates
   const islands = [
     {
       pos: [0, 0, 0],
       entrances: EAST,
       exits: NORTH,
-      width: 14,
+      width: 12,
       height: 10,
     },
     {
-      pos: [100, -500, 3000],
-      entrances: SOUTH | WEST,
+      pos: [0, -200, 2500],
+      entrances: SOUTH | NORTH,
       exits: EAST,
       width: 10,
       height: 10,
     },
     {
-      pos: [3000, -200, 3000],
+      pos: [3000, -100, 2400],
       entrances: WEST,
       exits: NONE,
       width: 10,
-      height: 14,
+      height: 8,
     },
     {
-      pos: [0, 100, 4000],
+      pos: [0, -500, 4500],
       entrances: SOUTH,
       exits: NONE,
       width: 6,
       height: 6,
     },
   ];
+
+  createWelcomeMarker(islands[0].pos);
+  createHangingCorpse([-300, -150, -200], [0, 145, 0], {
+    name: "[public_falan_tomb]",
+  });
+
+  circleOfVectors(islands[2].pos, 200, 9).forEach((pos) => {
+    createSmellyFlower(pos);
+  });
+
+  defineStatue();
+  createStatue(islands[2].pos);
 
   return compose(
     saveToDisk,

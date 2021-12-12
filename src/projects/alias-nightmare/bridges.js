@@ -1,4 +1,12 @@
-const { compose, reduce, __, isEmpty, addIndex, without } = require("ramda");
+const {
+  compose,
+  reduce,
+  __,
+  isEmpty,
+  addIndex,
+  without,
+  includes,
+} = require("ramda");
 const { NORTH, SOUTH, EAST, WEST } = require("./constants");
 const {
   move,
@@ -66,7 +74,7 @@ const findClosestJoint = (a, bx) => {
 const bridges = (islands) => (mapData) => {
   const { origin } = mapData.config;
 
-  const joints = islands
+  const pairs = islands
     .map(getJoints)
     .reduce((candidates, island, idx, islands) => {
       const otherIslands = without([island], islands);
@@ -79,7 +87,7 @@ const bridges = (islands) => (mapData) => {
           .map((island) => island.south)
           .filter((south) => {
             const [x, y, z] = subtractVec3(island.north, south);
-            const angle = radToDeg(Math.atan(x / z));
+            const angle = radToDeg(Math.atan2(x, z));
             return isBetweenInclusive(-viewAngle, viewAngle, angle);
           });
         if (souths.length) {
@@ -95,7 +103,7 @@ const bridges = (islands) => (mapData) => {
           .map((island) => island.north)
           .filter((north) => {
             const [x, y, z] = subtractVec3(island.south, north);
-            const angle = radToDeg(Math.atan(x / z));
+            const angle = (radToDeg(Math.atan2(x, z)) + 180) % 360;
             return isBetweenInclusive(-viewAngle, viewAngle, angle);
           });
         if (norths.length) {
@@ -111,7 +119,7 @@ const bridges = (islands) => (mapData) => {
           .map((island) => island.west)
           .filter((west) => {
             const [x, y, z] = subtractVec3(island.east, west);
-            const angle = radToDeg(Math.atan(x / z)) - 90;
+            const angle = radToDeg(Math.atan2(x, z)) - 90;
             return isBetweenInclusive(-viewAngle, viewAngle, angle);
           });
         if (wests.length) {
@@ -124,7 +132,7 @@ const bridges = (islands) => (mapData) => {
           .map((island) => island.east)
           .filter((east) => {
             const [x, y, z] = subtractVec3(island.west, east);
-            const angle = radToDeg(Math.atan(x / z)) + 90;
+            const angle = radToDeg(Math.atan2(x, z)) + 90;
             return isBetweenInclusive(-viewAngle, viewAngle, angle);
           });
         if (easts.length) {
@@ -133,13 +141,26 @@ const bridges = (islands) => (mapData) => {
       }
 
       return candidates;
+    }, [])
+    .filter((pair, idx, pairs) => {
+      // filter out pairs, which have no pair
+      return pairs
+        .map(JSON.stringify)
+        .includes(JSON.stringify([pair[1], pair[0]]));
+    })
+    .reduce((acc, pair) => {
+      // duplicates can now be safely reduce into single pairs
+      const accStr = acc.map(JSON.stringify);
+      if (
+        accStr.includes(JSON.stringify(pair)) ||
+        accStr.includes(JSON.stringify([pair[1], pair[0]]))
+      ) {
+        return acc;
+      }
+      acc.push(pair);
+      return acc;
     }, []);
 
-  joints.forEach((joint) => {
-    console.log(joint);
-  });
-
-  /*
   return compose(
     addIndex(reduce)(
       (mapData, [a, b], idx) => {
@@ -153,8 +174,6 @@ const bridges = (islands) => (mapData) => {
       pairs
     )
   )(mapData);
-  */
-  return mapData;
 };
 
 module.exports = bridges;
