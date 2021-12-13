@@ -14,7 +14,7 @@ const {
   unsetPolygonGroup,
 } = require("../../helpers.js");
 const { colors, NORTH, SOUTH, WEST, EAST, NONE } = require("./constants.js");
-const { plain, pillars } = require("../../prefabs");
+const { plain } = require("../../prefabs");
 const { declare, getInjections } = require("../../scripting.js");
 const {
   items,
@@ -577,6 +577,8 @@ const island = (config) => (mapData) => {
   ];
   const ppIndices = getPPIndices(exits);
 
+  const jointOffset = (ISLAND_JOINT_LENGTH * 100) / 2 - 100;
+
   const gates = createGates();
   const eventBus = createEventBus(gates);
   const pps = createPressurePlates(eventBus);
@@ -596,23 +598,35 @@ const island = (config) => (mapData) => {
   // TODO: moveTo the used gates + add small bridge segments
   if (exits & NORTH) {
     markAsUsed(gates.north);
-    moveTo(move(0, 0, (height * 100) / 2 + 300, pos), [0, 90, 0], gates.north);
+    moveTo(
+      move(0, 0, (height * 100) / 2 + ISLAND_JOINT_LENGTH * 100 - 200, pos),
+      [0, 90, 0],
+      gates.north
+    );
   }
   if (exits & SOUTH) {
     markAsUsed(gates.south);
     moveTo(
-      move(0, 0, -(height * 100) / 2 - 300, pos),
+      move(0, 0, -(height * 100) / 2 - ISLAND_JOINT_LENGTH * 100 - 200, pos),
       [0, 270, 0],
       gates.south
     );
   }
   if (exits & EAST) {
     markAsUsed(gates.east);
-    moveTo(move((width * 100) / 2 + 300, 0, 0, pos), [0, 0, 0], gates.east);
+    moveTo(
+      move((width * 100) / 2 + ISLAND_JOINT_LENGTH * 100 - 200, 0, 0, pos),
+      [0, 0, 0],
+      gates.east
+    );
   }
   if (exits & WEST) {
     markAsUsed(gates.west);
-    moveTo(move(-(width * 100) / 2 - 300, 0, 0, pos), [0, 180, 0], gates.west);
+    moveTo(
+      move(-(width * 100) / 2 - ISLAND_JOINT_LENGTH * 100 - 200, 0, 0, pos),
+      [0, 180, 0],
+      gates.west
+    );
   }
 
   /*
@@ -624,8 +638,6 @@ const island = (config) => (mapData) => {
     createItem
   )(items.torch);
   */
-
-  const jointOffset = (ISLAND_JOINT_LENGTH * 100) / 2 - 100;
 
   return compose(
     unsetPolygonGroup,
@@ -758,23 +770,7 @@ const island = (config) => (mapData) => {
     }),
     setPolygonGroup(`${id}-island-top`),
     setTexture(textures.stone.humanWall1),
-    setColor(colors.terrain),
-
-    // pillars(
-    //   pos,
-    //   30,
-    //   [width * 100 * 3, height * 100 * 3],
-    //   [width * 100 + 50, height * 100 + 50],
-    //   [
-    //     (exits | entrances) & NORTH ? 350 : 0,
-    //     (exits | entrances) & EAST ? 350 : 0,
-    //     (exits | entrances) & SOUTH ? 350 : 0,
-    //     (exits | entrances) & WEST ? 350 : 0,
-    //   ]
-    // ),
-    setPolygonGroup(`${id}-pillars`),
-    setTexture(textures.stone.humanPriest4),
-    setColor(colors.pillars)
+    setColor(colors.terrain)
   )(mapData);
 };
 

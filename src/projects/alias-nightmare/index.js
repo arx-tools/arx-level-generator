@@ -133,8 +133,25 @@ const generate = async (config) => {
     bridges(islands),
     reduce((mapData, config) => island(config)(mapData), __, islands),
 
-    stairs([300, -50, 600]),
+    // stairs([300, -50, 600]),
     setColor(colors.terrain),
+
+    // TODO: pillars for every island is a bit too expensive
+    // pillars(
+    //   pos,
+    //   30,
+    //   [width * 100 * 3, height * 100 * 3],
+    //   [width * 100 + 50, height * 100 + 50],
+    //   [
+    //     (exits | entrances) & NORTH ? 350 : 0,
+    //     (exits | entrances) & EAST ? 350 : 0,
+    //     (exits | entrances) & SOUTH ? 350 : 0,
+    //     (exits | entrances) & WEST ? 350 : 0,
+    //   ]
+    // ),
+    // setPolygonGroup(`${id}-pillars`),
+    // setTexture(textures.stone.humanPriest4),
+    // setColor(colors.pillars)
 
     addZone(
       [-origin[0], 0, -origin[2]],
