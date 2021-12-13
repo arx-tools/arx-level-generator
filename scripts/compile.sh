@@ -17,3 +17,5 @@ echo "DLF"
 cat level1.dlf.json | from-json --ext=dlf | implode -b -l --offset=8520 --debug --output=level1.dlf
 
 echo "done"
+
+tput bel
