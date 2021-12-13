@@ -133,7 +133,7 @@ const generate = async (config) => {
     bridges(islands),
     reduce((mapData, config) => island(config)(mapData), __, islands),
 
-    // stairs([300, -50, 600]),
+    stairs([300, -50, 600]),
     setColor(colors.terrain),
 
     // TODO: pillars for every island is a bit too expensive

@@ -30,6 +30,8 @@ const textures = {
     stairs: {
       src: "[STONE]_HUMAN_STONE_ORNAMENT.jpg",
       native: true,
+      width: 256,
+      height: 256,
     },
   },
   skybox: {
