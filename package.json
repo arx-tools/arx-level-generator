@@ -6,7 +6,8 @@
   "scripts": {
     "generate": "node src/index.js",
     "generate:watch": "nodemon src/index.js --ignore dist",
-    "compile": "sh scripts/compile.sh"
+    "compile": "sh scripts/compile.sh",
+    "compile:gamedir": "set OUTPUTDIR=/c/Program Files/Arx Libertatis&&sh scripts/compile.sh"
   },
   "repository": {
     "type": "git",
