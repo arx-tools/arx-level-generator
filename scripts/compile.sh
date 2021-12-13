@@ -1,14 +1,16 @@
 #!/bin/bash
 
+OUTPUTDIR=$(pwd)/dist
+
 LEVEL=1
 
-cd ./dist/game/graph/levels/level$LEVEL
+cd $OUTPUTDIR/game/graph/levels/level$LEVEL
 
 echo "FTS"
 
 cat fast.fts.json | from-json --ext=fts | implode -b -l --offset=280 --debug --output=fast.fts
 
-cd ../../../../graph/levels/level$LEVEL
+cd $OUTPUTDIR/graph/levels/level$LEVEL
 
 echo "LLF"
 
