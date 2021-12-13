@@ -290,11 +290,23 @@ const generateBlankMapData = (config) => {
 const saveToDisk = async (mapData) => {
   const { levelIdx } = mapData.config;
 
-  const outputDir = "./dist/";
+  let outputDir = "./dist";
 
-  try {
-    await fs.promises.rmdir("dist", { recursive: true });
-  } catch (e) {}
+  if (process.env.OUTPUTDIR) {
+    outputDir = process.env.OUTPUTDIR;
+    try {
+      const manifest = require(`${outputDir}/manifest.json`);
+      for (let filename of manifest) {
+        try {
+          await fs.promises.rm(`${outputDir}/${filename}`);
+        } catch (f) {}
+      }
+    } catch (e) {}
+  } else {
+    try {
+      await fs.promises.rmdir("dist", { recursive: true });
+    } catch (e) {}
+  }
 
   let scripts = exportScripts(outputDir);
 
@@ -303,9 +315,9 @@ const saveToDisk = async (mapData) => {
   let dependencies = exportDependencies(outputDir);
 
   const files = {
-    fts: `${outputDir}game/graph/levels/level${levelIdx}/fast.fts.json`,
-    dlf: `${outputDir}graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`,
-    llf: `${outputDir}graph/levels/level${levelIdx}/level${levelIdx}.llf.json`,
+    fts: `${outputDir}/game/graph/levels/level${levelIdx}/fast.fts.json`,
+    dlf: `${outputDir}/graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`,
+    llf: `${outputDir}/graph/levels/level${levelIdx}/level${levelIdx}.llf.json`,
   };
 
   const manifest = [
@@ -350,9 +362,8 @@ const saveToDisk = async (mapData) => {
   await fs.promises.writeFile(files.fts, JSON.stringify(mapData.fts, null, 2));
   await fs.promises.writeFile(files.llf, JSON.stringify(mapData.llf, null, 2));
 
-  // TODO: this does not contain the compiled files!
   await fs.promises.writeFile(
-    `${outputDir}manifest.json`,
+    `${outputDir}/manifest.json`,
     JSON.stringify(map(replace(/^\.\/dist\//, ""), manifest.sort()), null, 2)
   );
 };

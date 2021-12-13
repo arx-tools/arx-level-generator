@@ -227,10 +227,10 @@ const exportScripts = (outputDir) => {
 
       let filename;
       if (item.identifier === "root") {
-        filename = `${outputDir}graph/obj3d/interactive/${dir}/${name}.asl`;
+        filename = `${outputDir}/graph/obj3d/interactive/${dir}/${name}.asl`;
       } else {
         const id = padCharsStart("0", 4, toString(item.identifier));
-        filename = `${outputDir}graph/obj3d/interactive/${dir}/${name}_${id}/${name}.asl`;
+        filename = `${outputDir}/graph/obj3d/interactive/${dir}/${name}_${id}/${name}.asl`;
       }
       files[filename] = item.script;
 
@@ -250,7 +250,7 @@ const exportDependencies = (outputDir) => {
       const { dir, name, ext } = path.parse(filename);
 
       files[
-        `${outputDir}${dir}/${name}${ext}`
+        `${outputDir}/${dir}/${name}${ext}`
       ] = `./assets/${dir}/${name}${ext}`;
 
       return files;

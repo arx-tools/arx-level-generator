@@ -24,13 +24,13 @@ const useAmbience = (ambience) => {
 const exportAmbiences = (outputDir) => {
   return compose(
     reduce((files, ambience) => {
-      const filename = `${outputDir}sfx/ambiance/${ambience.name}.amb`;
+      const filename = `${outputDir}/sfx/ambiance/${ambience.name}.amb`;
 
       files[filename] = `./assets/sfx/ambiance/${ambience.name}.amb`;
 
       const tracks = ambience.tracks || [];
       tracks.forEach((track) => {
-        files[`${outputDir}${track}`] = `./assets/${track}`;
+        files[`${outputDir}/${track}`] = `./assets/${track}`;
       });
 
       return files;
