@@ -629,16 +629,6 @@ const island = (config) => (mapData) => {
     );
   }
 
-  /*
-  compose(markAsUsed, moveTo(pos, [0, 97, 0]), createItem)(items.torch);
-
-  compose(
-    markAsUsed,
-    moveTo(move(-30, 0, 0, pos), [0, 70, 0]),
-    createItem
-  )(items.torch);
-  */
-
   return compose(
     unsetPolygonGroup,
 
