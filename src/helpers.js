@@ -304,7 +304,7 @@ const saveToDisk = async (mapData) => {
     } catch (e) {}
   } else {
     try {
-      await fs.promises.rmdir("dist", { recursive: true });
+      await fs.promises.rm("dist", { recursive: true });
     } catch (e) {}
   }
 

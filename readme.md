@@ -7,6 +7,10 @@ Creates procedurally generated levels
 ![screenshot](photos/demo.png?raw=true "dummy map")
 ![screenshot](photos/statue.png?raw=true "statue npc")
 
+## Requirements
+
+nodejs 14.14.0+ (because of https://nodejs.org/api/fs.html#fspromisesrmpath-options)
+
 ## How to run
 
 step 1: `npm run generate`
@@ -32,3 +36,7 @@ https://wiki.arx-libertatis.org/Script:Variables
 ### Michel
 
 `graph/obj3d/textures/npc_human_base_lali_head.bmp`
+
+## Contributing notes
+
+make sure that all assets are lowercase
