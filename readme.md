@@ -40,3 +40,7 @@ https://wiki.arx-libertatis.org/Script:Variables
 ## Contributing notes
 
 make sure that all assets are lowercase
+
+jpg files should not be saved with progressive option
+
+bmp files should only contain 3x8bit channels, alpha channel should be removed

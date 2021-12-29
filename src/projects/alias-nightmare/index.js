@@ -8,6 +8,7 @@ const {
   addZone,
   randomBetween,
   circleOfVectors,
+  move,
 } = require("../../helpers");
 const island = require("./island.js");
 const {
@@ -33,6 +34,10 @@ const { createSmellyFlower } = require("./items/smellyFlower");
 const { createHangingCorpse } = require("./items/hangingCorpse");
 const { createStatue, defineStatue } = require("./items/statue");
 const { stairs } = require("../../prefabs");
+const {
+  defineCeilingLamp,
+  createCeilingLamp,
+} = require("../backrooms/items/ceilingLamp");
 
 const createWelcomeMarker = (pos) => {
   return compose(
@@ -126,6 +131,9 @@ const generate = async (config) => {
   defineStatue();
   createStatue(islands[2].pos);
 
+  defineCeilingLamp();
+  createCeilingLamp(move(0, -200, 0, islands[0].pos));
+
   return compose(
     saveToDisk,
     finalize,
@@ -151,7 +159,7 @@ const generate = async (config) => {
     // ),
     // setPolygonGroup(`${id}-pillars`),
     // setTexture(textures.stone.humanPriest4),
-    // setColor(colors.pillars)
+    // setColor(colors.pillars)afternoon gellert spa
 
     addZone(
       [-origin[0], 0, -origin[2]],

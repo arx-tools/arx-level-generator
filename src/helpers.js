@@ -1,6 +1,10 @@
 const fs = require("fs");
 const rgba = require("color-rgba");
-const { exportUsedTextures, textures } = require("./assets/textures.js");
+const {
+  createTextureContainers,
+  textures,
+  exportTextures,
+} = require("./assets/textures.js");
 const {
   createDlfData,
   createFtsData,
@@ -233,7 +237,7 @@ const finalize = (mapData) => {
     generateLights,
     calculateNormals,
     exportUsedItems,
-    exportUsedTextures
+    createTextureContainers
   )(mapData);
 };
 
@@ -310,6 +314,8 @@ const saveToDisk = async (mapData) => {
 
   let scripts = exportScripts(outputDir);
 
+  let textures = exportTextures(outputDir);
+
   let ambiences = exportAmbiences(outputDir);
 
   let dependencies = exportDependencies(outputDir);
@@ -325,6 +331,7 @@ const saveToDisk = async (mapData) => {
     ...keys(scripts),
     ...keys(ambiences),
     ...keys(dependencies),
+    ...keys(textures),
     files.fts.replace(".fts.json", ".fts"),
     files.dlf.replace(".dlf.json", ".dlf"),
     files.llf.replace(".llf.json", ".llf"),
@@ -351,8 +358,9 @@ const saveToDisk = async (mapData) => {
 
   ambiences = toPairs(ambiences);
   dependencies = toPairs(dependencies);
+  textures = toPairs(textures);
 
-  for (let [target, source] of [...ambiences, ...dependencies]) {
+  for (let [target, source] of [...ambiences, ...dependencies, ...textures]) {
     await fs.promises.copyFile(source, target);
   }
 

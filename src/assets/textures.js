@@ -1,4 +1,15 @@
-const { includes, indexOf, addIndex, map } = require("ramda");
+const {
+  includes,
+  indexOf,
+  addIndex,
+  map,
+  compose,
+  clone,
+  filter,
+  propEq,
+  reduce,
+  uniq,
+} = require("ramda");
 
 const textures = {
   none: null,
@@ -36,27 +47,57 @@ const textures = {
   },
   skybox: {
     top: {
-      src: "skybox_01_top.JPG",
+      src: "skybox_01_top.jpg",
       native: false,
     },
     left: {
-      src: "skybox_01_left.JPG",
+      src: "skybox_01_left.jpg",
       native: false,
     },
     right: {
-      src: "skybox_01_right.JPG",
+      src: "skybox_01_right.jpg",
       native: false,
     },
     front: {
-      src: "skybox_01_front.JPG",
+      src: "skybox_01_front.jpg",
       native: false,
     },
     back: {
-      src: "skybox_01_back.JPG",
+      src: "skybox_01_back.jpg",
       native: false,
     },
     bottom: {
-      src: "skybox_01_bottom.JPG",
+      src: "skybox_01_bottom.jpg",
+      native: false,
+    },
+  },
+  backrooms: {
+    wall: {
+      src: "backrooms-[stone]-wall.jpg",
+      native: false,
+    },
+    floor: {
+      src: "backrooms-[fabric]-carpet.jpg",
+      native: false,
+    },
+    floor2: {
+      src: "backrooms-[fabric]-carpet2.jpg",
+      native: false,
+    },
+    ceiling: {
+      src: "backrooms-[stone]-ceiling-tile.jpg",
+      native: false,
+    },
+    ceilingDiffuser: {
+      src: "backrooms-[metal]-ceiling-air-diffuser.jpg",
+      native: false,
+    },
+    ceilingLampOn: {
+      src: "backrooms-[metal]-light-on.jpg",
+      native: false,
+    },
+    ceilingLampOff: {
+      src: "backrooms-[metal]-light-off.jpg",
       native: false,
     },
   },
@@ -68,22 +109,40 @@ const useTexture = (texture) => {
     return 0;
   }
 
-  if (!includes(texture.src, usedTextures)) {
-    usedTextures.push(texture.src);
+  if (!includes(texture, usedTextures)) {
+    usedTextures.push(texture);
   }
 
-  return indexOf(texture.src, usedTextures) + 1;
+  return indexOf(texture, usedTextures) + 1;
 };
 
-const exportUsedTextures = (mapData) => {
+const createTextureContainers = (mapData) => {
   mapData.fts.textureContainers = addIndex(map)((texture, idx) => {
     return {
       tc: idx + 1,
       temp: 0,
-      fic: `GRAPH\\OBJ3D\\TEXTURES\\${texture}`,
+      fic: `GRAPH\\OBJ3D\\TEXTURES\\${texture.src}`,
     };
   }, usedTextures);
   return mapData;
 };
 
-module.exports = { textures, useTexture, exportUsedTextures };
+const exportTextures = (outputDir) => {
+  return compose(
+    reduce((files, texture) => {
+      const filename = `${outputDir}/graph/obj3d/textures/${texture.src}`;
+      files[filename] = `./assets/graph/obj3d/textures/${texture.src}`;
+      return files;
+    }, {}),
+    uniq,
+    filter(propEq("native", false)),
+    clone
+  )(usedTextures);
+};
+
+module.exports = {
+  textures,
+  useTexture,
+  createTextureContainers,
+  exportTextures,
+};

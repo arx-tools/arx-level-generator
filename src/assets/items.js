@@ -87,6 +87,12 @@ const items = {
       ],
     },
   },
+  shape: {
+    cube: {
+      src: "fix_inter/polytrans/polytrans.teo",
+      native: true,
+    },
+  },
 };
 
 const usedItems = {};
@@ -102,6 +108,12 @@ const propsToInjections = (props) => {
   }
   if (props.hp) {
     init.push(`SET_NPC_STAT life ${props.hp}`);
+  }
+  if (typeof props.interactive !== "undefined") {
+    init.push(`SET_INTERACTIVITY ${props.interactive ? "ON" : "NONE"}`);
+  }
+  if (typeof props.collision !== "undefined") {
+    init.push(`COLLISION ${props.collision ? "ON" : "OFF"}`);
   }
 
   if (isEmpty(init)) {
@@ -267,6 +279,17 @@ const exportDependencies = (outputDir) => {
   )(usedItems);
 };
 
+const saveAs = curry((filename, itemRef) => {
+  const { src, id } = itemRef;
+
+  // TODO: add possibility to set where the file should land
+  // could be combined with the USEMESH command to use the source item
+
+  // USEMESH "polytrans\\polytrans.teo"
+
+  return itemRef;
+});
+
 module.exports = {
   items,
   createItem,
@@ -277,4 +300,5 @@ module.exports = {
   exportUsedItems,
   exportScripts,
   exportDependencies,
+  saveAs,
 };
