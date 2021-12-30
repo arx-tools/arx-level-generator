@@ -76,6 +76,7 @@ const items = {
       src: "npc/statue/statue.teo",
       native: false,
       dependencies: [
+        // Only root items can have dependencies
         "game/graph/obj3d/interactive/npc/statue/statue.ftl",
         "graph/obj3d/anims/npc/statue_rotate.tea",
         "graph/obj3d/anims/npc/statue_wait_1.tea",
@@ -171,6 +172,14 @@ const createRootItem = (item, props = {}) => {
     ref: `${name}_root`,
   };
 };
+
+const addDependency = curry((dependency, itemRef) => {
+  const { src, id } = itemRef;
+  if (id === "root") {
+    usedItems[src][id].dependencies.push(dependency);
+  }
+  return itemRef;
+});
 
 const addScript = curry((script, itemRef) => {
   const { src, id } = itemRef;
@@ -295,6 +304,7 @@ module.exports = {
   createItem,
   createRootItem,
   addScript,
+  addDependency,
   moveTo,
   markAsUsed,
   exportUsedItems,

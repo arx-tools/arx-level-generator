@@ -4,17 +4,12 @@ const {
   move,
   isPointInPolygon,
   addLight,
-  categorizeVertices,
-  adjustVertexBy,
-  vertexToVector,
-  distance,
-  sortByDistance,
   setTexture,
   setPolygonGroup,
   unsetPolygonGroup,
 } = require("../../helpers.js");
 const { colors, NORTH, SOUTH, WEST, EAST, NONE } = require("./constants.js");
-const { plain } = require("../../prefabs");
+const { plain, connectToNearPolygons } = require("../../prefabs/plain.js");
 const { declare, getInjections } = require("../../scripting.js");
 const {
   items,
@@ -23,7 +18,7 @@ const {
   addScript,
   markAsUsed,
 } = require("../../assets/items.js");
-const { isNotEmpty, isEmptyArray } = require("ramda-adjunct");
+const { isNotEmpty } = require("ramda-adjunct");
 const { textures } = require("../../assets/textures.js");
 const { nanoid } = require("nanoid");
 const { ISLAND_JOINT_LENGTH } = require("../../constants.js");
@@ -518,46 +513,6 @@ ON OPEN {
   return { north, south, east, west };
 };
 
-const connectToNearPolygons = (targetGroup) => (polygons, mapData) => {
-  const { corners, edges } = categorizeVertices(polygons);
-
-  const target = categorizeVertices(mapData.fts.polygons[targetGroup] || []);
-  const allVertices = map(vertexToVector, [...target.corners, ...target.edges]);
-
-  if (isEmptyArray(allVertices)) {
-    return polygons;
-  }
-
-  const distanceThreshold = 100;
-
-  [...corners, ...edges].forEach((corner) => {
-    polygons = adjustVertexBy(
-      corner,
-      (vertex) => {
-        const closestVertex = allVertices.sort(
-          sortByDistance(vertexToVector(vertex))
-        )[0];
-
-        if (
-          distance(vertexToVector(vertex), closestVertex) < distanceThreshold
-        ) {
-          vertex.posX = closestVertex[0];
-          vertex.posY = closestVertex[1];
-          vertex.posZ = closestVertex[2];
-        }
-
-        return vertex;
-      },
-      polygons
-    );
-    polygons.forEach((polygon) => {
-      polygon.config.bumpable = false;
-    });
-  });
-
-  return polygons;
-};
-
 const island = (config) => (mapData) => {
   const id = nanoid(6);
   const { pos, entrances = NONE, width, height } = config;
@@ -634,7 +589,7 @@ const island = (config) => (mapData) => {
 
     (mapData) => {
       props(ppIndices, ppCoords).forEach((ppCoord) => {
-        mapData = addLight(move(0, -10, 0, ppCoord), mapData);
+        mapData = addLight(move(0, -10, 0, ppCoord))(mapData);
       });
       return mapData;
     },

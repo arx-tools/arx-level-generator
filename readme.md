@@ -37,10 +37,12 @@ https://wiki.arx-libertatis.org/Script:Variables
 
 `graph/obj3d/textures/npc_human_base_lali_head.bmp`
 
-## Contributing notes
+## notes on formats
 
 make sure that all assets are lowercase
 
 jpg files should not be saved with progressive option
 
-bmp files should only contain 3x8bit channels, alpha channel should be removed
+bmp files should only contain 3x8bit channels, alpha channel should be removed (24 bit, not 32)
+
+audio should be Microsoft ADCPM

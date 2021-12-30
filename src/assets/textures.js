@@ -76,6 +76,10 @@ const textures = {
       src: "backrooms-[stone]-wall.jpg",
       native: false,
     },
+    wall2: {
+      src: "backrooms-[stone]-wall2.jpg",
+      native: false,
+    },
     floor: {
       src: "backrooms-[fabric]-carpet.jpg",
       native: false,

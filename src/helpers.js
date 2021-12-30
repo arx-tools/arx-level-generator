@@ -46,6 +46,19 @@ const {
   PATH_RGB,
   PATH_AMBIANCE,
   PATH_FARCLIP,
+
+  EXTRAS_SEMIDYNAMIC,
+  EXTRAS_EXTINGUISHABLE,
+  EXTRAS_STARTEXTINGUISHED,
+  EXTRAS_SPAWNFIRE,
+  EXTRAS_SPAWNSMOKE,
+  EXTRAS_OFF,
+  EXTRAS_COLORLEGACY,
+  EXTRAS_NOCASTED,
+  EXTRAS_FIXFLARESIZE,
+  EXTRAS_FIREPLACE,
+  EXTRAS_NO_IGNIT,
+  EXTRAS_FLARE,
 } = require("./constants.js");
 const {
   exportUsedItems,
@@ -535,31 +548,32 @@ const toFloatRgb = (color) => {
   return { r: r / 256, g: g / 256, b: b / 256 };
 };
 
-const addLight = curry((pos, mapData) => {
+const addLight = (pos) => (mapData) => {
   let [x, y, z] = pos;
 
   mapData.llf.lights.push({
     pos: { x, y, z },
     rgb: toFloatRgb(mapData.state.color),
     fallstart: 50,
-    fallend: 180,
-    intensity: 0.7,
+    fallend: 100,
+    intensity: 1.5,
     i: 0,
     exFlicker: {
-      r: 0,
+      r: 1,
       g: 0,
       b: 0,
     },
     exRadius: 0,
     exFrequency: 0.01,
-    exSize: 0.1,
-    exSpeed: 0,
+    exSize: 0,
+    exSpeed: 0.5,
     exFlareSize: 0,
-    extras: 0,
+    // extras: 0,
+    extras: EXTRAS_SEMIDYNAMIC | EXTRAS_EXTINGUISHABLE,
   });
 
   return mapData;
-});
+};
 
 const addZone =
   (pos, size, name, ambience = ambiences.none, drawDistance = 2000) =>

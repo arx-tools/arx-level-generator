@@ -34,10 +34,6 @@ const { createSmellyFlower } = require("./items/smellyFlower");
 const { createHangingCorpse } = require("./items/hangingCorpse");
 const { createStatue, defineStatue } = require("./items/statue");
 const { stairs } = require("../../prefabs");
-const {
-  defineCeilingLamp,
-  createCeilingLamp,
-} = require("../backrooms/items/ceilingLamp");
 
 const createWelcomeMarker = (pos) => {
   return compose(
@@ -130,9 +126,6 @@ const generate = async (config) => {
 
   defineStatue();
   createStatue(islands[2].pos);
-
-  defineCeilingLamp();
-  createCeilingLamp(move(0, -200, 0, islands[0].pos));
 
   return compose(
     saveToDisk,

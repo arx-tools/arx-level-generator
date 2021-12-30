@@ -7,8 +7,12 @@ const {
   pickRandoms,
   isPartOfNonBumpablePolygon,
   move,
+  vertexToVector,
+  distance,
+  sortByDistance,
 } = require("../helpers.js");
-const { identity, reject, __ } = require("ramda");
+const { identity, reject, __, map } = require("ramda");
+const { isEmptyArray } = require("ramda-adjunct");
 
 // pos is relative to origin
 const plain =
@@ -103,4 +107,51 @@ const plain =
     return mapData;
   };
 
-module.exports = plain;
+const disableBumping = (polygons) => {
+  return map((polygon) => {
+    polygon.config.bumpable = false;
+    return polygon;
+  })(polygons);
+};
+
+const connectToNearPolygons = (targetGroup) => (polygons, mapData) => {
+  const { corners, edges } = categorizeVertices(polygons);
+
+  const target = categorizeVertices(mapData.fts.polygons[targetGroup] || []);
+  const allVertices = map(vertexToVector, [...target.corners, ...target.edges]);
+
+  if (isEmptyArray(allVertices)) {
+    return polygons;
+  }
+
+  const distanceThreshold = 100;
+
+  [...corners, ...edges].forEach((corner) => {
+    polygons = adjustVertexBy(
+      corner,
+      (vertex) => {
+        const closestVertex = allVertices.sort(
+          sortByDistance(vertexToVector(vertex))
+        )[0];
+
+        if (
+          distance(vertexToVector(vertex), closestVertex) < distanceThreshold
+        ) {
+          vertex.posX = closestVertex[0];
+          vertex.posY = closestVertex[1];
+          vertex.posZ = closestVertex[2];
+        }
+
+        return vertex;
+      },
+      polygons
+    );
+    polygons.forEach((polygon) => {
+      polygon.config.bumpable = false;
+    });
+  });
+
+  return polygons;
+};
+
+module.exports = { plain, disableBumping, connectToNearPolygons };
