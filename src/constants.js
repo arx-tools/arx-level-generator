@@ -39,7 +39,7 @@ const EXTRAS_COLORLEGACY = 0x40;
 const EXTRAS_NOCASTED = 0x80; // unused
 const EXTRAS_FIXFLARESIZE = 0x100;
 const EXTRAS_FIREPLACE = 0x200;
-const EXTRAS_NO_IGNIT = 0x400;
+const EXTRAS_NO_IGNIT = 0x400; // = it will not react to player casting ignite spell. douse will still work!
 const EXTRAS_FLARE = 0x800;
 
 // zone.flags

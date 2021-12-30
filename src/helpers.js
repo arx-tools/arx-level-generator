@@ -548,32 +548,36 @@ const toFloatRgb = (color) => {
   return { r: r / 256, g: g / 256, b: b / 256 };
 };
 
-const addLight = (pos) => (mapData) => {
-  let [x, y, z] = pos;
+const addLight =
+  (pos, props = {}) =>
+  (mapData) => {
+    let [x, y, z] = pos;
 
-  mapData.llf.lights.push({
-    pos: { x, y, z },
-    rgb: toFloatRgb(mapData.state.color),
-    fallstart: 50,
-    fallend: 100,
-    intensity: 1.5,
-    i: 0,
-    exFlicker: {
-      r: 1,
-      g: 0,
-      b: 0,
-    },
-    exRadius: 0,
-    exFrequency: 0.01,
-    exSize: 0,
-    exSpeed: 0.5,
-    exFlareSize: 0,
-    // extras: 0,
-    extras: EXTRAS_SEMIDYNAMIC | EXTRAS_EXTINGUISHABLE,
-  });
+    mapData.llf.lights.push({
+      ...{
+        pos: { x, y, z },
+        rgb: toFloatRgb(mapData.state.color),
+        fallstart: 100,
+        fallend: 180,
+        intensity: 0.7,
+        i: 0,
+        exFlicker: {
+          r: 0,
+          g: 0,
+          b: 0,
+        },
+        exRadius: 0,
+        exFrequency: 0.01,
+        exSize: 0,
+        exSpeed: 0,
+        exFlareSize: 0,
+        extras: 0,
+      },
+      ...props,
+    });
 
-  return mapData;
-};
+    return mapData;
+  };
 
 const addZone =
   (pos, size, name, ambience = ambiences.none, drawDistance = 2000) =>
