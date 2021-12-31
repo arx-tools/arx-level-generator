@@ -94,6 +94,7 @@ const createWelcomeMarker = (pos) => {
 // component: welcomeMarker
 ON INIT {
   ${getInjections("init", self)}
+  ADDXP 2000 // can't cast lightning bolt at level 0
   ACCEPT
 }
       `;
