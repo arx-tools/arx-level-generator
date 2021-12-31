@@ -67,7 +67,13 @@ const items = {
   },
   questItems: {
     mirror: {
-      src: "items/quest_item/mirror.teo",
+      src: "items/quest_item/mirror/mirror.teo",
+      native: true,
+    },
+  },
+  magic: {
+    rune: {
+      src: "items/magic/rune_aam/rune_aam.teo",
       native: true,
     },
   },

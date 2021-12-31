@@ -73,7 +73,7 @@ ON HIT {
     PLAY "fluorescent-lamp-startup"
     PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
     TIMERon -m 1 1500 GOSUB TURN_ON
-    TIMERautooff 1 ~^RND_120~ SENDEVENT OFF SELF ""
+    TIMERautooff 1 ~^RND_300~ SENDEVENT OFF SELF ""
   } else {
     SPELLCAST -smfx 1 DOUSE self
     TIMERoff -m 1 500 GOSUB TURN_OFF

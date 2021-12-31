@@ -22,6 +22,14 @@ const {
   EXTRAS_STARTEXTINGUISHED,
   EXTRAS_NO_IGNIT,
 } = require("../../constants");
+const {
+  markAsUsed,
+  moveTo,
+  addScript,
+  createItem,
+  items,
+} = require("../../assets/items");
+const { getInjections, declare } = require("../../scripting");
 
 const wall = ([x, y, z], face) => {
   return (mapData) => {
@@ -54,20 +62,16 @@ const wall = ([x, y, z], face) => {
   };
 };
 
-const generate = async (config) => {
-  defineCeilingLamp();
-  createCeilingLamp([50, -290, 50]);
+const addLamp = (pos) => (mapData) => {
+  createCeilingLamp(pos);
 
   return compose(
-    saveToDisk,
-    finalize,
-
-    addLight([50, -270, 50], {
+    addLight(move(0, 20, 0, pos), {
       fallstart: 100,
       fallend: 800,
       intensity: 2,
       exFlicker: {
-        r: 0.1,
+        r: 0.2,
         g: 0,
         b: 0,
       },
@@ -77,7 +81,58 @@ const generate = async (config) => {
         EXTRAS_STARTEXTINGUISHED |
         EXTRAS_NO_IGNIT,
     }),
-    setColor("khaki"),
+    setColor("khaki")
+  )(mapData);
+};
+
+const createWelcomeMarker = (pos) => {
+  return compose(
+    markAsUsed,
+    moveTo(pos, [0, 0, 0]),
+    addScript((self) => {
+      return `
+// component: welcomeMarker
+ON INIT {
+  ${getInjections("init", self)}
+  ACCEPT
+}
+      `;
+    }),
+    createItem
+  )(items.marker);
+};
+
+const createRune = (runeName, pos, angle = [0, 0, 0]) => {
+  return compose(
+    markAsUsed,
+    moveTo(pos, angle),
+    addScript((self) => {
+      return `
+// component: rune
+ON INIT {
+  ${getInjections("init", self)}
+  ACCEPT
+}
+      `;
+    }),
+    declare("string", "rune_name", runeName),
+    createItem
+  )(items.magic.rune);
+};
+
+const generate = async (config) => {
+  defineCeilingLamp();
+  createWelcomeMarker([0, 0, 0]);
+
+  createRune("aam", [250, 0, 240], [0, 114, 0]);
+  createRune("folgora", [290, 0, 250], [0, 90, 0]);
+  createRune("taar", [230, 0, 280], [0, 43, 0]);
+
+  return compose(
+    saveToDisk,
+    finalize,
+
+    addLamp([50, -290, 50]),
 
     wall([-500, 0, -500], "right"),
     setTexture(
