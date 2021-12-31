@@ -21,7 +21,6 @@ const {
   EXTRAS_EXTINGUISHABLE,
   EXTRAS_STARTEXTINGUISHED,
   EXTRAS_NO_IGNIT,
-  EXTRAS_SPAWNSMOKE,
 } = require("../../constants");
 
 const wall = ([x, y, z], face) => {
@@ -81,12 +80,24 @@ const generate = async (config) => {
     setColor("khaki"),
 
     wall([-500, 0, -500], "right"),
+    setTexture(
+      Math.random() > 0.5 ? textures.backrooms.wall : textures.backrooms.wall2
+    ),
+
     wall([500, 0, -500], "left"),
-    setTexture(textures.backrooms.wall),
+    setTexture(
+      Math.random() > 0.5 ? textures.backrooms.wall : textures.backrooms.wall2
+    ),
 
     wall([-500, 0, 500], "back"),
+    setTexture(
+      Math.random() > 0.5 ? textures.backrooms.wall : textures.backrooms.wall2
+    ),
+
     wall([-500, 0, -500], "front"),
-    setTexture(textures.backrooms.wall2),
+    setTexture(
+      Math.random() > 0.5 ? textures.backrooms.wall : textures.backrooms.wall2
+    ),
 
     unsetPolygonGroup,
     plain([0, -300, 0], [10, 10], "ceiling", disableBumping),

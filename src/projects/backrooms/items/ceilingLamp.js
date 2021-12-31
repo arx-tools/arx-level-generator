@@ -69,16 +69,16 @@ ON HIT {
   SET ${self.state.oldIsOn} ${self.state.isOn}
 
   if (${self.state.isOn} == 1) {
-    SPELLCAST -smfx 1 IGNIT self
+    SPELLCAST -smfx 1 IGNIT self // [s] = no anim, [m] = no draw, [f] = no mana required, [x] = no sound
     PLAY "fluorescent-lamp-startup"
     PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
     TIMERon -m 1 1500 GOSUB TURN_ON
-    TIMERautooff 1 ~^RND_30~ SENDEVENT OFF SELF ""
+    TIMERautooff 1 ~^RND_120~ SENDEVENT OFF SELF ""
   } else {
     SPELLCAST -smfx 1 DOUSE self
     TIMERoff -m 1 500 GOSUB TURN_OFF
   }
-  
+
   ACCEPT
 }
 
