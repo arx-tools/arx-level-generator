@@ -24,7 +24,7 @@ const {
   addLight,
   move,
 } = require("../../helpers");
-const { wallX, wallZ } = require("../../prefabs");
+const { wallX, wallZ, floor } = require("../../prefabs");
 const { plain, disableBumping } = require("../../prefabs/plain.js");
 const { defineCeilingLamp, createCeilingLamp } = require("./items/ceilingLamp");
 const { nanoid } = require("nanoid");
@@ -44,6 +44,7 @@ const {
   addDependency,
 } = require("../../assets/items");
 const { getInjections, declare } = require("../../scripting");
+const { generateGrid, addRoom, getRadius } = require("./rooms");
 
 const wall = ([x, y, z], face) => {
   return (mapData) => {
@@ -108,7 +109,7 @@ const createWelcomeMarker = (pos, config) => {
 // component: welcomeMarker
 ON INIT {
   ${getInjections("init", self)}
-  ADDXP 2000 // can't cast lightning bolt at level 0
+  // ADDXP 2000 // can't cast lightning bolt at level 0
   ACCEPT
 }
       `;
@@ -145,14 +146,33 @@ const generate = async (config) => {
 
   createWelcomeMarker([0, 0, 0], config);
 
+  /*
   createRune("aam", [250, 0, 240], [0, 114, 0]);
   createRune("folgora", [290, 0, 250], [0, 90, 0]);
   createRune("taar", [230, 0, 280], [0, 43, 0]);
+  */
+
+  const grid = compose(
+    addRoom(3, 3),
+    addRoom(3, 3),
+    addRoom(3, 3),
+    addRoom(3, 3),
+    addRoom(3, 3),
+    addRoom(3, 3),
+    addRoom(3, 3),
+    addRoom(3, 3),
+    addRoom(3, 3),
+    addRoom(3, 3),
+    addRoom(3, 3),
+    addRoom(5, 5),
+    generateGrid
+  )(100);
 
   return compose(
     saveToDisk,
     finalize,
 
+    /*
     addLamp([50, -290, 50]),
 
     wall([-500, 0, -500], "right"),
@@ -179,11 +199,33 @@ const generate = async (config) => {
     plain([0, -300, 0], [10, 10], "ceiling", disableBumping),
     setTexture(textures.backrooms.ceiling),
     setPolygonGroup("ceiling"),
+    */
 
     unsetPolygonGroup,
-    plain([0, 0, 0], [10, 10], "floor", disableBumping),
-    setTexture(textures.backrooms.floor),
+    (mapData) => {
+      const { origin } = mapData.config;
+      const radius = getRadius(grid);
+      const top = -radius * 100 + 50;
+      const left = -radius * 100 + 50;
+
+      for (let y = 0; y < grid.length; y++) {
+        for (let x = 0; x < grid[y].length; x++) {
+          if (grid[y][x] === 1) {
+            floor(
+              move(left + x * 100, 0, -(top + y * 100), origin), // z axis is flipped
+              "floor",
+              null,
+              90,
+              100
+            )(mapData);
+          }
+        }
+      }
+
+      return mapData;
+    },
     setPolygonGroup("floor"),
+    setTexture(textures.backrooms.floor),
 
     setColor("#1e1d11"),
 
