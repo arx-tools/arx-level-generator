@@ -142,6 +142,7 @@ ON INIT {
 
 const generate = async (config) => {
   defineCeilingLamp();
+
   createWelcomeMarker([0, 0, 0], config);
 
   createRune("aam", [250, 0, 240], [0, 114, 0]);
