@@ -71,6 +71,10 @@ ON CONTROLLEDZONE_ENTER {
       `;
     }),
     declare("int", "hadIntro", 0),
+    addDependencyAs(
+      "projects/alias-nightmare/loading.bmp",
+      `graph/levels/level${config.levelIdx}/loading.bmp`
+    ),
     createItem
   )(items.marker);
 };

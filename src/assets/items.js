@@ -23,7 +23,7 @@ const {
   isNil,
   uniq,
 } = require("ramda");
-const { padCharsStart, isFunction } = require("ramda-adjunct");
+const { padCharsStart, isFunction, isObject } = require("ramda-adjunct");
 const { PLAYER_HEIGHT_ADJUSTMENT } = require("../constants");
 
 const items = {
@@ -82,7 +82,6 @@ const items = {
       src: "npc/statue/statue.teo",
       native: false,
       dependencies: [
-        // Only root items can have dependencies
         "game/graph/obj3d/interactive/npc/statue/statue.ftl",
         "graph/obj3d/anims/npc/statue_rotate.tea",
         "graph/obj3d/anims/npc/statue_wait_1.tea",
@@ -143,6 +142,7 @@ const createItem = (item, props = {}) => {
     angle: { a: 0, b: 0, g: 0 },
     script: "",
     flags: 0,
+    dependencies: item.dependencies || [],
   });
 
   const { name } = path.parse(item.src);
@@ -181,9 +181,18 @@ const createRootItem = (item, props = {}) => {
 
 const addDependency = curry((dependency, itemRef) => {
   const { src, id } = itemRef;
-  if (id === "root") {
-    usedItems[src][id].dependencies.push(dependency);
-  }
+  usedItems[src][id].dependencies.push(dependency);
+  return itemRef;
+});
+
+const addDependencyAs = curry((source, target, itemRef) => {
+  const { src, id } = itemRef;
+
+  usedItems[src][id].dependencies.push({
+    source,
+    target,
+  });
+
   return itemRef;
 });
 
@@ -274,17 +283,23 @@ const exportScripts = (outputDir) => {
 const exportDependencies = (outputDir) => {
   return compose(
     reduce((files, filename) => {
-      const { dir, name, ext } = path.parse(filename);
-
-      files[
-        `${outputDir}/${dir}/${name}${ext}`
-      ] = `./assets/${dir}/${name}${ext}`;
+      if (isObject(filename)) {
+        const { source, target } = filename;
+        const { dir: dir1, name: name1, ext: ext1 } = path.parse(target);
+        const { dir: dir2, name: name2, ext: ext2 } = path.parse(source);
+        files[
+          `${outputDir}/${dir1}/${name1}${ext1}`
+        ] = `./assets/${dir2}/${name2}${ext2}`;
+      } else {
+        const { dir, name, ext } = path.parse(filename);
+        const target = `${outputDir}/${dir}/${name}${ext}`;
+        files[target] = `./assets/${dir}/${name}${ext}`;
+      }
 
       return files;
     }, {}),
     uniq,
     unnest,
-    reject(isNil),
     pluck("dependencies"),
     filter(propEq("used", true)),
     unnest,
@@ -311,6 +326,7 @@ module.exports = {
   createRootItem,
   addScript,
   addDependency,
+  addDependencyAs,
   moveTo,
   markAsUsed,
   exportUsedItems,

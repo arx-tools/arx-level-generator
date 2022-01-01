@@ -1,3 +1,15 @@
+/**
+ * The Backrooms
+ *
+ * Issues:
+ *  - https://bugs.arx-libertatis.org/arx/issues/1599
+ *
+ * To be reported:
+ *   -x flag a spellcast-nál nem némítja el a douse-ot, meg az ignite-ot
+ *   a light-oknak lehet extra flag-eknél NO_IGNIT-et megadni, de nincs NO_DOUSE
+ *   nem lehet level 0-nál lightningbolt-ot ellőni: https://github.com/arx/ArxLibertatis/blob/master/src/game/Spells.cpp#L742
+ */
+
 const { compose } = require("ramda");
 const { textures } = require("../../assets/textures");
 const {
@@ -28,6 +40,8 @@ const {
   addScript,
   createItem,
   items,
+  addDependencyAs,
+  addDependency,
 } = require("../../assets/items");
 const { getInjections, declare } = require("../../scripting");
 
@@ -85,7 +99,7 @@ const addLamp = (pos) => (mapData) => {
   )(mapData);
 };
 
-const createWelcomeMarker = (pos) => {
+const createWelcomeMarker = (pos, config) => {
   return compose(
     markAsUsed,
     moveTo(pos, [0, 0, 0]),
@@ -99,6 +113,11 @@ ON INIT {
 }
       `;
     }),
+    addDependency("graph/levels/level1/map.bmp"),
+    addDependencyAs(
+      "projects/backrooms/loading.bmp",
+      `graph/levels/level${config.levelIdx}/loading.bmp`
+    ),
     createItem
   )(items.marker);
 };
@@ -123,7 +142,7 @@ ON INIT {
 
 const generate = async (config) => {
   defineCeilingLamp();
-  createWelcomeMarker([0, 0, 0]);
+  createWelcomeMarker([0, 0, 0], config);
 
   createRune("aam", [250, 0, 240], [0, 114, 0]);
   createRune("folgora", [290, 0, 250], [0, 90, 0]);
