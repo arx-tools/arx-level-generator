@@ -150,4 +150,5 @@ module.exports = {
   getRadius,
   generateGrid,
   addRoom,
+  isOccupied,
 };

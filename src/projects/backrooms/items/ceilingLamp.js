@@ -21,7 +21,19 @@ module.exports.defineCeilingLamp = () => {
 // component: ceilingLamp
 ON INIT {
   ${getInjections("init", self)}
-  GOTO SWITCH
+  ACCEPT
+}
+
+ON INITEND {
+  SET ${self.state.oldIsOn} ${self.state.isOn}
+
+  if (${self.state.isOn} == 1) {
+    TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-on"
+    PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
+  } else {
+    TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-off"
+  }
+
   ACCEPT
 }
 
@@ -73,7 +85,7 @@ ON HIT {
     PLAY "fluorescent-lamp-startup"
     PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
     TIMERon -m 1 1500 GOSUB TURN_ON
-    TIMERautooff 1 ~^RND_300~ SENDEVENT OFF SELF ""
+    // TIMERautooff 1 ~^RND_300~ SENDEVENT OFF SELF ""
   } else {
     SPELLCAST -smfx 1 DOUSE self
     TIMERoff -m 1 500 GOSUB TURN_OFF
@@ -110,7 +122,7 @@ ON HIT {
 
 // TODO: disable ignite/douse sounds
 
-module.exports.createCeilingLamp = (pos, angle = [0, 0, 0], props = {}) => {
+module.exports.createCeilingLamp = (pos, angle = [0, 0, 0], config = {}) => {
   return compose(
     markAsUsed,
     moveTo(pos, angle),
@@ -123,6 +135,7 @@ ON INIT {
 }
       `;
     }),
+    declare("int", "isOn", config.on ?? false ? 1 : 0),
     createItem
-  )(items.shape.cube, props);
+  )(items.shape.cube, {});
 };
