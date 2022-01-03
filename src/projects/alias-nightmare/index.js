@@ -27,6 +27,7 @@ const {
   markAsUsed,
   moveTo,
   addScript,
+  addDependencyAs,
 } = require("../../assets/items");
 const { declare, color, getInjections } = require("../../scripting");
 const bridges = require("./bridges");
@@ -35,7 +36,7 @@ const { createHangingCorpse } = require("./items/hangingCorpse");
 const { createStatue, defineStatue } = require("./items/statue");
 const { stairs } = require("../../prefabs");
 
-const createWelcomeMarker = (pos) => {
+const createWelcomeMarker = (pos) => (config) => {
   return compose(
     markAsUsed,
     moveTo(pos, [0, 0, 0]),
@@ -45,17 +46,17 @@ const createWelcomeMarker = (pos) => {
 ON INIT {
   ${getInjections("init", self)}
   SETCONTROLLEDZONE palette0
-  // CINEMASCOPE ON
-  // WORLDFADE OUT 0 ${color(colors.ambience[0])}
+  CINEMASCOPE ON
+  WORLDFADE OUT 0 ${color(colors.ambience[0])}
   ACCEPT
 }
 ON CONTROLLEDZONE_ENTER {
   if (${self.state.hadIntro} == 0) {
     TELEPORT -p ${self.ref}
     SET ${self.state.hadIntro} 1
-    // SETPLAYERCONTROLS OFF
-    // TIMERfade 1 2 worldfade IN 2000
-    // TIMERmove -m 1 10 SPEAK -p [alia_nightmare2] GOTO READY
+    SETPLAYERCONTROLS OFF
+    TIMERfade 1 2 worldfade IN 2000
+    TIMERmove -m 1 10 SPEAK -p [alia_nightmare2] GOTO READY
 
     GOTO READY
 
@@ -119,7 +120,7 @@ const generate = async (config) => {
     },
   ];
 
-  createWelcomeMarker(islands[0].pos);
+  createWelcomeMarker(islands[0].pos)(config);
   createHangingCorpse([-300, -150, -200], [0, 145, 0], {
     name: "[public_falan_tomb]",
   });

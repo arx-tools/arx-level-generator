@@ -9,13 +9,12 @@ const theBackrooms = require("./projects/backrooms/index.js");
 
   console.log(`seed: ${seed}`);
 
-  /*
-  await aliasNightmare({
-    origin: [6000, 0, 6000],
-    levelIdx: 1,
-    seed,
-  });
-  */
+  // await aliasNightmare({
+  //   origin: [6000, 0, 6000],
+  //   levelIdx: 1,
+  //   seed,
+  // });
+
   await theBackrooms({
     origin: [6000, 0, 6000],
     levelIdx: 1,
