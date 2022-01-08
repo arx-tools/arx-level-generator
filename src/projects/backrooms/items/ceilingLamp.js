@@ -30,6 +30,10 @@ ON INITEND {
   if (${self.state.isOn} == 1) {
     TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-on"
     PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
+
+    SET #BURNOUT_TIMER ~^RND_120~
+    INC #BURNOUT_TIMER 30
+    RANDOM 85 TIMERautooff 1 ~#BURNOUT_TIMER~ SENDEVENT OFF SELF ""
   } else {
     TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-off"
   }
@@ -85,7 +89,10 @@ ON HIT {
     PLAY "fluorescent-lamp-startup"
     PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
     TIMERon -m 1 1500 GOSUB TURN_ON
-    // TIMERautooff 1 ~^RND_300~ SENDEVENT OFF SELF ""
+
+    SET #BURNOUT_TIMER ~^RND_120~
+    INC #BURNOUT_TIMER 30
+    RANDOM 85 TIMERautooff 1 ~#BURNOUT_TIMER~ SENDEVENT OFF SELF ""
   } else {
     SPELLCAST -smfx 1 DOUSE self
     TIMERoff -m 1 500 GOSUB TURN_OFF

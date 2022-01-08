@@ -10,6 +10,9 @@
  *   nem lehet level 0-nál lightningbolt-ot ellőni: https://github.com/arx/ArxLibertatis/blob/master/src/game/Spells.cpp#L742
  *
  * Neon light sound effects: https://www.youtube.com/watch?v=UKoktRXJZLM (Peter Seeba)
+ *
+ * TODOs recommended by the community:
+ *  - maybe a book that tells the player about crouch jumping would be alot easier actually. might teach some players how to do it if they never tried b4
  */
 
 const { compose, reduce } = require("ramda");
@@ -49,6 +52,7 @@ const { generateGrid, addRoom, getRadius, isOccupied } = require("./rooms");
 const { disableBumping } = require("../../prefabs/plain");
 
 const UNIT = 200;
+const HEIGHT = UNIT * 2;
 
 const wall = ([x, y, z], face) => {
   return (mapData) => {
@@ -56,7 +60,7 @@ const wall = ([x, y, z], face) => {
 
     return compose((mapData) => {
       const internalUnit = UNIT / (UNIT / 100);
-      for (let height = 0; height < 3; height++) {
+      for (let height = 0; height < HEIGHT / internalUnit; height++) {
         for (let width = 0; width < UNIT / 100; width++) {
           (face === "left" || face === "right" ? wallX : wallZ)(
             move(
@@ -120,7 +124,7 @@ const createWelcomeMarker = (pos, config) => {
 // component: welcomeMarker
 ON INIT {
   ${getInjections("init", self)}
-  // ADDXP 2000 // can't cast lightning bolt at level 0
+  ADDXP 2000 // can't cast lightning bolt at level 0
   ACCEPT
 }
       `;
@@ -219,6 +223,22 @@ ON INIT {
   )(items.keys.oliverQuest, { name: "fire exit key" });
 };
 
+const createManaPotion = (pos, angle = [0, 0, 0]) => {
+  return compose(
+    markAsUsed,
+    moveTo(pos, angle),
+    addScript((self) => {
+      return `
+ON INIT {
+  ${getInjections("init", self)}
+  ACCEPT
+}
+      `;
+    }),
+    createItem
+  )(items.magic.potion.mana);
+};
+
 const renderGrid = (grid) => {
   return (mapData) => {
     const radius = getRadius(grid);
@@ -257,7 +277,7 @@ const renderGrid = (grid) => {
 
           setTexture(textures.backrooms.ceiling, mapData);
           plain(
-            [left + x * UNIT, -300, -(top + y * UNIT)],
+            [left + x * UNIT, -HEIGHT, -(top + y * UNIT)],
             [UNIT / 100, UNIT / 100],
             "ceiling",
             disableBumping
@@ -354,9 +374,12 @@ const generate = async (config) => {
             floors.push([x, y]);
 
             if (x % 3 === 0 && y % 3 === 0) {
-              addLamp([left + x * UNIT - 50, -290, -(top + y * UNIT) - 50], {
-                on: Math.random() < 0.1,
-              })(mapData);
+              addLamp(
+                [left + x * UNIT - 50, -(HEIGHT - 10), -(top + y * UNIT) - 50],
+                {
+                  on: Math.random() < 0.1,
+                }
+              )(mapData);
             }
 
             if (isOccupied(x - 1, y, grid) !== true) {
@@ -376,13 +399,17 @@ const generate = async (config) => {
       }
 
       const [wallX, wallZ, wallFace] = pickRandoms(1, walls)[0];
-      const [keyX, keyZ] = pickRandoms(1, floors)[0];
+      const [[keyX, keyZ], ...manaSlots] = pickRandoms(30, floors);
 
       const key = createKey([
         left + keyX * UNIT - 50,
         0,
         -(top + keyZ * UNIT) - 50,
       ]);
+
+      manaSlots.forEach(([x, z]) => {
+        createManaPotion([left + x * UNIT - 50, 0, -(top + z * UNIT) - 50]);
+      });
 
       let translate = [0, 0, 0];
       let rotate = [0, 0, 0];

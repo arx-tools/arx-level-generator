@@ -90,6 +90,12 @@ const items = {
       src: "items/magic/rune_aam/rune_aam.teo",
       native: true,
     },
+    potion: {
+      mana: {
+        src: "items/magic/potion_mana/potion_mana.teo",
+        native: true,
+      },
+    },
   },
   npc: {
     statue: {
