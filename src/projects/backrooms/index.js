@@ -225,21 +225,34 @@ ON INIT {
   )(items.keys.oliverQuest, { name: "fire exit key" });
 };
 
-const createManaPotion = (pos, angle = [0, 0, 0]) => {
+const createAlmondWater = (pos, angle = [0, 0, 0]) => {
   return compose(
     markAsUsed,
     moveTo(pos, angle),
     addScript((self) => {
       return `
-// component: manaPotion
+// component: almondWater
 ON INIT {
   ${getInjections("init", self)}
   ACCEPT
 }
+ON INVENTORYUSE {
+  PLAY "potion_mana"
+  SPECIALFX MANA 25
+  SETINTERACTIVITY NONE
+  timerreplace 1 1 DESTROY SELF
+  ACCEPT
+}
       `;
     }),
+    addDependencyAs(
+      "projects/backrooms/almondwater.bmp",
+      "graph/obj3d/interactive/items/magic/potion_mana/potion_mana[icon].bmp"
+    ),
     createItem
-  )(items.magic.potion.mana);
+  )(items.magic.potion.mana, {
+    name: "almond water",
+  });
 };
 
 const renderGrid = (grid) => {
@@ -411,7 +424,7 @@ const generate = async (config) => {
       ]);
 
       manaSlots.forEach(([x, z]) => {
-        createManaPotion([left + x * UNIT - 50, 0, -(top + z * UNIT) - 50]);
+        createAlmondWater([left + x * UNIT - 50, 0, -(top + z * UNIT) - 50]);
       });
 
       let translate = [0, 0, 0];
