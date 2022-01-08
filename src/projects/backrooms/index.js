@@ -162,6 +162,7 @@ const createExit = (pos, angle = [0, 0, 0], key) => {
     moveTo(pos, angle),
     addScript((self) => {
       return `
+// component: exit
 ON INIT {
   ${getInjections("init", self)}
   ACCEPT
@@ -212,6 +213,7 @@ const createKey = (pos, angle = [0, 0, 0]) => {
     moveTo(pos, angle),
     addScript((self) => {
       return `
+// component: key
 ON INIT {
   ${getInjections("init", self)}
   OBJECT_HIDE SELF NO
@@ -229,6 +231,7 @@ const createManaPotion = (pos, angle = [0, 0, 0]) => {
     moveTo(pos, angle),
     addScript((self) => {
       return `
+// component: manaPotion
 ON INIT {
   ${getInjections("init", self)}
   ACCEPT
