@@ -8,6 +8,8 @@
  *   -x flag a spellcast-nál nem némítja el a douse-ot, meg az ignite-ot
  *   a light-oknak lehet extra flag-eknél NO_IGNIT-et megadni, de nincs NO_DOUSE
  *   nem lehet level 0-nál lightningbolt-ot ellőni: https://github.com/arx/ArxLibertatis/blob/master/src/game/Spells.cpp#L742
+ *
+ * Neon light sound effects: https://www.youtube.com/watch?v=UKoktRXJZLM (Peter Seeba)
  */
 
 const { compose, reduce } = require("ramda");
@@ -23,6 +25,7 @@ const {
   move,
   randomBetween,
   circleOfVectors,
+  pickRandoms,
 } = require("../../helpers");
 const { wallX, wallZ, floor, plain } = require("../../prefabs");
 const { defineCeilingLamp, createCeilingLamp } = require("./items/ceilingLamp");
@@ -41,7 +44,7 @@ const {
   addDependencyAs,
   addDependency,
 } = require("../../assets/items");
-const { getInjections, declare } = require("../../scripting");
+const { getInjections, declare, color } = require("../../scripting");
 const { generateGrid, addRoom, getRadius, isOccupied } = require("./rooms");
 const { disableBumping } = require("../../prefabs/plain");
 
@@ -117,7 +120,7 @@ const createWelcomeMarker = (pos, config) => {
 // component: welcomeMarker
 ON INIT {
   ${getInjections("init", self)}
-  ADDXP 2000 // can't cast lightning bolt at level 0
+  // ADDXP 2000 // can't cast lightning bolt at level 0
   ACCEPT
 }
       `;
@@ -147,6 +150,169 @@ ON INIT {
     declare("string", "rune_name", runeName),
     createItem
   )(items.magic.rune);
+};
+
+const createExit = (pos, angle = [0, 0, 0], key) => {
+  return compose(
+    markAsUsed,
+    moveTo(pos, angle),
+    addScript((self) => {
+      return `
+ON INIT {
+  ${getInjections("init", self)}
+  ACCEPT
+}
+ 
+ON LOAD {
+  USE_MESH "DOOR_YLSIDES\\DOOR_YLSIDES.TEO"
+  ACCEPT
+}
+
+ON ACTION {
+  IF (${self.state.unlock} == 0) {
+    ACCEPT
+  }
+
+  IF (${self.state.open} == 1) {
+    ACCEPT
+  }
+
+  GOTO OUTRO
+  ACCEPT
+}
+
+>>OUTRO {
+  PLAYERINTERFACE HIDE
+  SETPLAYERCONTROLS OFF
+  TIMERfadeout -m 1 700 WORLDFADE OUT 300 ${color("khaki")}
+  PLAY -o "backrooms-outro" // [o] = emit from player
+  TIMERfadeout2 -m 1 18180 WORLDFADE OUT 0 ${color("black")}
+  TIMERendgame -m 1 20000 END_GAME
+  ACCEPT
+}
+      `;
+    }),
+    declare("int", "lockpickability", 100),
+    declare("string", "type", "Door_Ylsides"),
+    declare("string", "key", key.ref),
+    declare("int", "open", 0),
+    declare("int", "unlock", 0),
+    addDependency("sfx/backrooms-outro.wav"),
+    createItem
+  )(items.doors.lightDoor, { name: "unmarked fire exit" });
+};
+
+const createKey = (pos, angle = [0, 0, 0]) => {
+  return compose(
+    markAsUsed,
+    moveTo(pos, angle),
+    addScript((self) => {
+      return `
+ON INIT {
+  ${getInjections("init", self)}
+  OBJECT_HIDE SELF NO
+  ACCEPT
+}
+      `;
+    }),
+    createItem
+  )(items.keys.oliverQuest, { name: "fire exit key" });
+};
+
+const renderGrid = (grid) => {
+  return (mapData) => {
+    const radius = getRadius(grid);
+    const top = -radius * UNIT + UNIT / 2;
+    const left = -radius * UNIT + UNIT / 2;
+
+    const wallTextures = {
+      front:
+        Math.random() > 0.3
+          ? textures.backrooms.wall
+          : textures.backrooms.wall2,
+      back:
+        Math.random() > 0.7
+          ? textures.backrooms.wall
+          : textures.backrooms.wall2,
+      left:
+        Math.random() > 0.5
+          ? textures.backrooms.wall
+          : textures.backrooms.wall2,
+      right:
+        Math.random() > 0.5
+          ? textures.backrooms.wall
+          : textures.backrooms.wall2,
+    };
+
+    for (let y = 0; y < grid.length; y++) {
+      for (let x = 0; x < grid[y].length; x++) {
+        if (grid[y][x] === 1) {
+          setTexture(textures.backrooms.floor, mapData);
+          plain(
+            [left + x * UNIT, 0, -(top + y * UNIT)],
+            [UNIT / 100, UNIT / 100],
+            "floor",
+            disableBumping
+          )(mapData);
+
+          setTexture(textures.backrooms.ceiling, mapData);
+          plain(
+            [left + x * UNIT, -300, -(top + y * UNIT)],
+            [UNIT / 100, UNIT / 100],
+            "ceiling",
+            disableBumping
+          )(mapData);
+
+          if (isOccupied(x - 1, y, grid) !== true) {
+            setTexture(wallTextures.right, mapData);
+            wall(
+              [
+                left + x * UNIT - UNIT / 2,
+                0,
+                -(top + (y + 1) * UNIT) - UNIT / 2,
+              ],
+              "right"
+            )(mapData);
+          }
+          if (isOccupied(x + 1, y, grid) !== true) {
+            setTexture(wallTextures.left, mapData);
+            wall(
+              [
+                left + x * UNIT + UNIT / 2,
+                0,
+                -(top + (y + 1) * UNIT) - UNIT / 2,
+              ],
+              "left"
+            )(mapData);
+          }
+          if (isOccupied(x, y + 1, grid) !== true) {
+            setTexture(wallTextures.front, mapData);
+            wall(
+              [
+                left + (x - 1) * UNIT - UNIT / 2,
+                0,
+                -(top + y * UNIT) - UNIT / 2,
+              ],
+              "front"
+            )(mapData);
+          }
+          if (isOccupied(x, y - 1, grid) !== true) {
+            setTexture(wallTextures.back, mapData);
+            wall(
+              [
+                left + (x - 1) * UNIT - UNIT / 2,
+                0,
+                -(top + y * UNIT) + UNIT / 2,
+              ],
+              "back"
+            )(mapData);
+          }
+        }
+      }
+    }
+
+    return mapData;
+  };
 };
 
 const generate = async (config) => {
@@ -179,112 +345,77 @@ const generate = async (config) => {
       const top = -radius * UNIT + UNIT / 2;
       const left = -radius * UNIT + UNIT / 2;
 
-      for (let y = 0; y < grid.length; y++) {
-        for (let x = 0; x < grid[y].length; x++) {
-          if (grid[y][x] === 1 && x % 3 === 0 && y % 3 === 0) {
-            addLamp([left + x * UNIT - 50, -290, -(top + y * UNIT) - 50], {
-              on: Math.random() < 0.1,
-            })(mapData);
-          }
-        }
-      }
-
-      return mapData;
-    },
-
-    (mapData) => {
-      const radius = getRadius(grid);
-      const top = -radius * UNIT + UNIT / 2;
-      const left = -radius * UNIT + UNIT / 2;
-
-      const wallTextures = {
-        front:
-          Math.random() > 0.3
-            ? textures.backrooms.wall
-            : textures.backrooms.wall2,
-        back:
-          Math.random() > 0.7
-            ? textures.backrooms.wall
-            : textures.backrooms.wall2,
-        left:
-          Math.random() > 0.5
-            ? textures.backrooms.wall
-            : textures.backrooms.wall2,
-        right:
-          Math.random() > 0.5
-            ? textures.backrooms.wall
-            : textures.backrooms.wall2,
-      };
+      const walls = [];
+      const floors = [];
 
       for (let y = 0; y < grid.length; y++) {
         for (let x = 0; x < grid[y].length; x++) {
-          if (grid[y][x] === 1) {
-            setTexture(textures.backrooms.floor, mapData);
-            plain(
-              [left + x * UNIT, 0, -(top + y * UNIT)],
-              [UNIT / 100, UNIT / 100],
-              "floor",
-              disableBumping
-            )(mapData);
+          if (isOccupied(x, y, grid)) {
+            floors.push([x, y]);
 
-            setTexture(textures.backrooms.ceiling, mapData);
-            plain(
-              [left + x * UNIT, -300, -(top + y * UNIT)],
-              [UNIT / 100, UNIT / 100],
-              "ceiling",
-              disableBumping
-            )(mapData);
+            if (x % 3 === 0 && y % 3 === 0) {
+              addLamp([left + x * UNIT - 50, -290, -(top + y * UNIT) - 50], {
+                on: Math.random() < 0.1,
+              })(mapData);
+            }
 
             if (isOccupied(x - 1, y, grid) !== true) {
-              setTexture(wallTextures.right, mapData);
-              wall(
-                [
-                  left + x * UNIT - UNIT / 2,
-                  0,
-                  -(top + (y + 1) * UNIT) - UNIT / 2,
-                ],
-                "right"
-              )(mapData);
+              walls.push([x - 1, y, "right"]);
             }
             if (isOccupied(x + 1, y, grid) !== true) {
-              setTexture(wallTextures.left, mapData);
-              wall(
-                [
-                  left + x * UNIT + UNIT / 2,
-                  0,
-                  -(top + (y + 1) * UNIT) - UNIT / 2,
-                ],
-                "left"
-              )(mapData);
+              walls.push([x + 1, y, "left"]);
             }
             if (isOccupied(x, y + 1, grid) !== true) {
-              setTexture(wallTextures.front, mapData);
-              wall(
-                [
-                  left + (x - 1) * UNIT - UNIT / 2,
-                  0,
-                  -(top + y * UNIT) - UNIT / 2,
-                ],
-                "front"
-              )(mapData);
+              walls.push([x, y + 1, "front"]);
             }
             if (isOccupied(x, y - 1, grid) !== true) {
-              setTexture(wallTextures.back, mapData);
-              wall(
-                [
-                  left + (x - 1) * UNIT - UNIT / 2,
-                  0,
-                  -(top + y * UNIT) + UNIT / 2,
-                ],
-                "back"
-              )(mapData);
+              walls.push([x, y - 1, "back"]);
             }
           }
         }
       }
 
+      const [wallX, wallZ, wallFace] = pickRandoms(1, walls)[0];
+      const [keyX, keyZ] = pickRandoms(1, floors)[0];
+
+      const key = createKey([
+        left + keyX * UNIT - 50,
+        0,
+        -(top + keyZ * UNIT) - 50,
+      ]);
+
+      let translate = [0, 0, 0];
+      let rotate = [0, 0, 0];
+
+      switch (wallFace) {
+        case "left":
+          translate = [-80, 0, -75];
+          rotate = [0, 180, 0];
+          break;
+        case "right":
+          translate = [80, 0, 75];
+          rotate = [0, 0, 0];
+          break;
+        case "back":
+          translate = [75, 0, -80];
+          rotate = [0, 270, 0];
+          break;
+        case "front":
+          translate = [-75, 0, 80];
+          rotate = [0, 0, 0];
+          break;
+      }
+
+      createExit(
+        move(...translate, [left + wallX * UNIT, 0, -(top + wallZ * UNIT)]),
+        rotate,
+        key
+      );
+
       return mapData;
     },
+
+    renderGrid(grid),
 
     setColor("#0b0c10"),
 

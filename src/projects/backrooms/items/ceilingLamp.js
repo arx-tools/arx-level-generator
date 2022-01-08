@@ -96,7 +96,7 @@ ON HIT {
 
 >>TURN_ON {
   TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-on"
-  PLAY "fluorescent-lamp-pling"
+  PLAY "fluorescent-lamp-plink"
   RETURN
 }
 
@@ -110,7 +110,7 @@ ON HIT {
     declare("int", "isOn", 0),
     declare("int", "oldIsOn", -1),
     declare("int", "lightningWasCast", 0),
-    addDependency("sfx/fluorescent-lamp-pling.wav"),
+    addDependency("sfx/fluorescent-lamp-plink.wav"),
     addDependency("sfx/fluorescent-lamp-startup.wav"),
     addDependency("sfx/fluorescent-lamp-hum.wav"),
     createRootItem

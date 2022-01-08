@@ -53,9 +53,23 @@ const items = {
       native: true,
     },
   },
+  keys: {
+    oliverQuest: {
+      src: "items/quest_item/key_oliverquest/key_oliverquest.teo",
+      native: true,
+    },
+  },
   doors: {
     portcullis: {
       src: "fix_inter/porticullis/porticullis.teo",
+      native: true,
+    },
+    ylside: {
+      src: "fix_inter/door_ylsides/door_ylsides.teo", // non functional
+      native: true,
+    },
+    lightDoor: {
+      src: "fix_inter/light_door/light_door.teo",
       native: true,
     },
   },
