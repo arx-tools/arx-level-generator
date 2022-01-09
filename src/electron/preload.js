@@ -1,4 +1,6 @@
 const seedrandom = require("seedrandom");
+const aliasNightmare = require("../projects/alias-nightmare/index.js");
+const theBackrooms = require("../projects/backrooms/index.js");
 
 const generateSeed = () => Math.floor(Math.random() * 1e20);
 
@@ -62,7 +64,31 @@ window.addEventListener("DOMContentLoaded", () => {
   generateBtns.forEach((generateBtn) => {
     generateBtn.addEventListener("click", () => {
       seedrandom(seed, { global: true });
-      alert(`generating ${project} with seed ${seed}`);
+
+      const config = {
+        origin: [6000, 0, 6000],
+        levelIdx: 1,
+        seed,
+      };
+
+      // TODO: delete local caching of used items
+      // so that when a new map is generated the items list will be empty
+      (async () => {
+        switch (project) {
+          case "backrooms":
+            await theBackrooms({
+              ...config,
+            });
+            break;
+          case "alias-nightmare":
+            await aliasNightmare({
+              ...config,
+            });
+            break;
+        }
+
+        console.log("done");
+      })();
     });
   });
 });

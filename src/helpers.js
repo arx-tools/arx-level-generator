@@ -294,10 +294,16 @@ const generateBlankMapData = (config) => {
 const saveToDisk = async (mapData) => {
   const { levelIdx } = mapData.config;
 
-  let outputDir = "./dist";
+  const defaultOutputDir = "./dist";
 
-  if (process.env.OUTPUTDIR) {
-    outputDir = process.env.OUTPUTDIR;
+  const outputDir =
+    process.env.OUTPUTDIR ?? mapData.config.outputDir ?? defaultOutputDir;
+
+  if (outputDir === defaultOutputDir) {
+    try {
+      await fs.promises.rm("dist", { recursive: true });
+    } catch (e) {}
+  } else {
     try {
       const manifest = require(`${outputDir}/manifest.json`);
       for (let filename of manifest) {
@@ -305,10 +311,6 @@ const saveToDisk = async (mapData) => {
           await fs.promises.rm(`${outputDir}/${filename}`);
         } catch (f) {}
       }
-    } catch (e) {}
-  } else {
-    try {
-      await fs.promises.rm("dist", { recursive: true });
     } catch (e) {}
   }
 
