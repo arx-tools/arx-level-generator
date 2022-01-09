@@ -4,42 +4,78 @@
     <meta charset="UTF-8" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'"
     />
     <meta
       http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'"
     />
-    <title>Arx Level Generator</title>
+    <link rel="stylesheet" href="style.css" />
+    <title>Arx Fatalis Level Generator</title>
   </head>
   <body>
-    <h1>Arx Level Generator</h1>
+    <aside>
+      <ul>
+        <li>
+          <input
+            type="radio"
+            name="project"
+            value="alias-nightmare"
+            id="project-alias-nightmare"
+          />
+          <label for="project-alias-nightmare">Alia's nightmare</label>
+        </li>
+        <li>
+          <input
+            type="radio"
+            name="project"
+            value="backrooms"
+            id="project-backrooms"
+          />
+          <label for="project-backrooms">The Backrooms</label>
+        </li>
+      </ul>
+    </aside>
+    <main>
+      <section
+        class="page"
+        data-project="alias-nightmare"
+        style="
+          background: url('previews/alias-nightmare.png') no-repeat center
+            center;
+        "
+      >
+        <h1>Alia's nightmare</h1>
 
-    <fieldset>
-      <legend>Map</legend>
+        <div>
+          <label>Seed</label>
+          <input type="text" name="seed" value="" placeholder="seed" />
+          <button class="randomize-seed">randomize</button>
+        </div>
 
-      <label>
-        <input type="radio" name="project" value="alias-nightmare" />
-        Alia's nightmare
-      </label>
-      <br />
-      <label>
-        <input type="radio" name="project" value="backrooms" />
-        The Backrooms
-      </label>
-    </fieldset>
+        <footer>
+          <button class="generate">Generate</button>
+        </footer>
+      </section>
+      <section
+        class="page"
+        data-project="backrooms"
+        style="
+          background: url('previews/backrooms.png') no-repeat center center;
+        "
+      >
+        <h1>The backrooms</h1>
 
-    <br />
+        <div>
+          <label>Seed</label>
+          <input type="text" name="seed" value="" placeholder="seed" />
+          <button class="randomize-seed">randomize</button>
+        </div>
 
-    <fieldset>
-      <legend>Seed</legend>
-      <input type="text" name="seed" value="" placeholder="seed" />
-      <button id="randomize-seed">randomize</button>
-    </fieldset>
-
-    <br />
-    <br />
-
-    <button id="generate">Generate</button>
+        <footer>
+          <button class="generate">Generate</button>
+        </footer>
+      </section>
+    </main>
   </body>
 </html>

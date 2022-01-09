@@ -10,6 +10,8 @@ const createWindow = () => {
     },
   });
 
+  // win.setMenu(null);
+
   win.loadFile(path.join(__dirname, "electron/index.html"));
 };
 

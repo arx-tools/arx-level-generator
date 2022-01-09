@@ -1,0 +1,103 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif;
+  display: flex;
+}
+
+aside {
+  width: 200px;
+  border-right: 1px solid black;
+}
+
+aside ul {
+  margin: 0;
+  padding: 0;
+}
+aside ul li {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+aside input {
+  display: none;
+}
+
+label {
+  user-select: none;
+}
+
+aside label {
+  display: block;
+  cursor: pointer;
+  height: 50px;
+  line-height: 50px;
+  box-sizing: border-box;
+  padding: 0 5px;
+}
+aside label:hover {
+  background: #ddd;
+}
+aside input:checked + label {
+  background: #aaa;
+}
+
+.hidden {
+  display: none !important;
+}
+
+main {
+  flex: 1;
+}
+
+.page {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background-size: cover;
+}
+
+.page h1 {
+  height: 60px;
+  line-height: 60px;
+  padding: 0 10px;
+  margin: 0;
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.page div {
+  flex: 1;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.3);
+  box-sizing: border-box;
+}
+
+.page footer {
+  background: rgba(255, 255, 255, 0.65);
+  height: 80px;
+  display: grid;
+  place-items: center;
+}
+
+button.generate {
+  padding: 0;
+  margin: 0 auto;
+  display: block;
+  width: 160px;
+  height: 50px;
+  border: 0;
+  border-radius: 2px;
+  background: #398539;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button.generate:hover {
+  background: #4eb64e;
+}
