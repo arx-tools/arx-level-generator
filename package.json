@@ -4,10 +4,11 @@
   "description": "A tool to generate random Arx Fatalis maps",
   "main": "src/index.js",
   "scripts": {
-    "generate": "node src/index.js",
-    "generate:gamedir:win": "set OUTPUTDIR=C:/Program Files/Arx Libertatis&&node src/index.js",
-    "generate:gamedir:linux": "export OUTPUTDIR=/home/lali/projektek/arx/ArxLibertatis/build&&node src/index.js",
-    "generate:watch": "nodemon src/index.js --ignore dist",
+    "start": "electron .",
+    "generate": "node src/generate.js",
+    "generate:gamedir:win": "set OUTPUTDIR=C:/Program Files/Arx Libertatis&&node src/generate.js",
+    "generate:gamedir:linux": "export OUTPUTDIR=/home/lali/projektek/arx/ArxLibertatis/build&&node src/generate.js",
+    "generate:watch": "nodemon src/generate.js --ignore dist",
     "compile": "sh scripts/compile.sh",
     "compile:gamedir:win": "set OUTPUTDIR=/c/Program Files/Arx Libertatis&&sh scripts/compile.sh",
     "compile:gamedir:linux": "export OUTPUTDIR=/home/lali/projektek/arx/ArxLibertatis/build&&sh scripts/compile.sh",
@@ -32,5 +33,8 @@
     "ramda": "^0.27.1",
     "ramda-adjunct": "^2.35.0",
     "seedrandom": "^3.0.5"
+  },
+  "devDependencies": {
+    "electron": "^16.0.6"
   }
 }

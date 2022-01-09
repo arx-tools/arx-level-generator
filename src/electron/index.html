@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <meta
+      http-equiv="X-Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <title>Arx Level Generator</title>
+  </head>
+  <body>
+    <h1>Arx Level Generator</h1>
+
+    <fieldset>
+      <legend>Map</legend>
+
+      <label>
+        <input type="radio" name="project" value="alias-nightmare" />
+        Alia's nightmare
+      </label>
+      <br />
+      <label>
+        <input type="radio" name="project" value="backrooms" />
+        The Backrooms
+      </label>
+    </fieldset>
+
+    <br />
+
+    <fieldset>
+      <legend>Seed</legend>
+      <input type="text" name="seed" value="" placeholder="seed" />
+      <button id="randomize-seed">randomize</button>
+    </fieldset>
+
+    <br />
+    <br />
+
+    <button id="generate">Generate</button>
+  </body>
+</html>

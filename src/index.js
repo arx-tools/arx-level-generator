@@ -1,25 +1,30 @@
-const seedrandom = require("seedrandom");
-const aliasNightmare = require("./projects/alias-nightmare/index.js");
-const theBackrooms = require("./projects/backrooms/index.js");
+const { app, BrowserWindow } = require("electron");
+const path = require("path");
 
-(async () => {
-  // const seed = Math.floor(Math.random() * 1e20);
-  const seed = 70448428008674860000;
-  seedrandom(seed, { global: true });
-
-  console.log(`seed: ${seed}`);
-
-  // await aliasNightmare({
-  //   origin: [6000, 0, 6000],
-  //   levelIdx: 1,
-  //   seed,
-  // });
-
-  await theBackrooms({
-    origin: [6000, 0, 6000],
-    levelIdx: 1,
-    seed,
+const createWindow = () => {
+  const win = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      preload: path.join(__dirname, "electron/preload.js"),
+    },
   });
 
-  console.log("done");
-})();
+  win.loadFile(path.join(__dirname, "electron/index.html"));
+};
+
+app.whenReady().then(() => {
+  createWindow();
+
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
+});
+
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
+});
