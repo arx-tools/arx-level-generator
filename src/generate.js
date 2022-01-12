@@ -9,17 +9,17 @@ const theBackrooms = require("./projects/backrooms/index.js");
   seedrandom(seed, { global: true });
   console.log(`seed: ${seed}`);
 
-  // await aliasNightmare({
-  //   origin: [6000, 0, 6000],
-  //   levelIdx: 1,
-  //   seed,
-  // });
-
-  await theBackrooms({
+  await aliasNightmare({
     origin: [6000, 0, 6000],
     levelIdx: 1,
     seed,
   });
+
+  // await theBackrooms({
+  //   origin: [6000, 0, 6000],
+  //   levelIdx: 1,
+  //   seed,
+  // });
 
   console.log("done");
 })();

@@ -46,8 +46,8 @@ const createWelcomeMarker = (pos) => (config) => {
 ON INIT {
   ${getInjections("init", self)}
   SETCONTROLLEDZONE palette0
-  CINEMASCOPE ON
-  WORLDFADE OUT 0 ${color(colors.ambience[0])}
+  // CINEMASCOPE ON
+  // WORLDFADE OUT 0 ${color(colors.ambience[0])}
   ACCEPT
 }
 ON CONTROLLEDZONE_ENTER {
@@ -55,10 +55,10 @@ ON CONTROLLEDZONE_ENTER {
     TELEPORT -p ${self.ref}
     SET ${self.state.hadIntro} 1
     SETPLAYERCONTROLS OFF
-    TIMERfade 1 2 worldfade IN 2000
-    TIMERmove -m 1 10 SPEAK -p [alia_nightmare2] GOTO READY
+    // TIMERfade 1 2 worldfade IN 2000
+    // TIMERmove -m 1 10 SPEAK -p [alia_nightmare2] GOTO READY
 
-    GOTO READY
+    GOTO READY // delete this when re-enabling cutscene with above line
 
     ACCEPT
   }
@@ -92,11 +92,12 @@ const generate = async (config) => {
   const islands = [
     {
       pos: [0, 0, 0],
-      entrances: EAST,
-      exits: NORTH,
+      entrances: NONE, // EAST,
+      exits: ALL, // NORTH,
       width: 12,
       height: 10,
     },
+    /*
     {
       pos: [0, -200, 2500],
       entrances: SOUTH | NORTH,
@@ -118,9 +119,11 @@ const generate = async (config) => {
       width: 6,
       height: 6,
     },
+    */
   ];
 
   createWelcomeMarker(islands[0].pos)(config);
+  /*
   createHangingCorpse([-300, -150, -200], [0, 145, 0], {
     name: "[public_falan_tomb]",
   });
@@ -131,6 +134,7 @@ const generate = async (config) => {
 
   defineStatue();
   createStatue(islands[2].pos);
+  */
 
   return compose(
     saveToDisk,

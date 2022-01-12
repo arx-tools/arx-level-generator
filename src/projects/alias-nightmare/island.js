@@ -211,7 +211,128 @@ const createPressurePlates = (eventBus) => {
 };
 
 const createEventBus = (gates) => {
-  const eventBus = compose(
+  return compose(
+    addScript((self) => {
+      return `
+  // component: island.eventBus
+  ON INIT {
+    ${getInjections("init", self)}
+    ACCEPT
+  }
+  
+  ON CUSTOM {
+    if ("pp0." isin ^$PARAM1) {
+      if ("pressed" isin ^$PARAM1) {
+        SET ${self.state.pp0pressed} 1
+      } else {
+        SET ${self.state.pp0pressed} 0
+      }
+    }
+  
+    if ("pp1." isin ^$PARAM1) {
+      if ("pressed" isin ^$PARAM1) {
+        SET ${self.state.pp1pressed} 1
+      } else {
+        SET ${self.state.pp1pressed} 0
+      }
+    }
+  
+    if ("pp2." isin ^$PARAM1) {
+      if ("pressed" isin ^$PARAM1) {
+        SET ${self.state.pp2pressed} 1
+      } else {
+        SET ${self.state.pp2pressed} 0
+      }
+    }
+  
+    if ("pp3." isin ^$PARAM1) {
+      if ("pressed" isin ^$PARAM1) {
+        SET ${self.state.pp3pressed} 1
+      } else {
+        SET ${self.state.pp3pressed} 0
+      }
+    }
+  
+    if (${self.state.pp0pressed} == 1) {
+      if (${self.state.pp1pressed} == 1) {
+        if (${self.state.northGateOpened} == 0) {
+          SENDEVENT OPEN ${gates.north.ref} ""
+          SET ${self.state.northGateOpened} 1
+        }
+      } else {
+        if (${self.state.northGateOpened} == 1) {
+          SENDEVENT CLOSE ${gates.north.ref} ""
+          SET ${self.state.northGateOpened} 0
+        }
+      }
+    } else {
+      if (${self.state.northGateOpened} == 1) {
+        SENDEVENT CLOSE ${gates.north.ref} ""
+        SET ${self.state.northGateOpened} 0
+      }
+    }
+  
+    if (${self.state.pp2pressed} == 1) {
+      if (${self.state.pp3pressed} == 1) {
+        if (${self.state.southGateOpened} == 0) {
+          SENDEVENT OPEN ${gates.south.ref} ""
+          SET ${self.state.southGateOpened} 1
+        }
+      } else {
+        if (${self.state.southGateOpened} == 1) {
+          SENDEVENT CLOSE ${gates.south.ref} ""
+          SET ${self.state.southGateOpened} 0
+        }
+      }
+    } else {
+      if (${self.state.southGateOpened} == 1) {
+        SENDEVENT CLOSE ${gates.south.ref} ""
+        SET ${self.state.southGateOpened} 0
+      }
+    }
+  
+    if (${self.state.pp1pressed} == 1) {
+      if (${self.state.pp3pressed} == 1) {
+        if (${self.state.eastGateOpened} == 0) {
+          SENDEVENT OPEN ${gates.east.ref} ""
+          SET ${self.state.eastGateOpened} 1
+        }
+      } else {
+        if (${self.state.eastGateOpened} == 1) {
+          SENDEVENT CLOSE ${gates.east.ref} ""
+          SET ${self.state.eastGateOpened} 0
+        }
+      }
+    } else {
+      if (${self.state.eastGateOpened} == 1) {
+        SENDEVENT CLOSE ${gates.east.ref} ""
+        SET ${self.state.eastGateOpened} 0
+      }
+    }
+  
+    if (${self.state.pp0pressed} == 1) {
+      if (${self.state.pp2pressed} == 1) {
+        if (${self.state.westGateOpened} == 0) {
+          SENDEVENT OPEN ${gates.west.ref} ""
+          SET ${self.state.westGateOpened} 1
+        }
+      } else {
+        if (${self.state.westGateOpened} == 1) {
+          SENDEVENT CLOSE ${gates.west.ref} ""
+          SET ${self.state.westGateOpened} 0
+        }
+      }
+    } else {
+      if (${self.state.westGateOpened} == 1) {
+        SENDEVENT CLOSE ${gates.west.ref} ""
+        SET ${self.state.westGateOpened} 0
+      }
+    }
+  
+    ACCEPT
+  }
+    `;
+    }),
     declare("int", "northGateOpened", 0),
     declare("int", "southGateOpened", 0),
     declare("int", "westGateOpened", 0),
@@ -222,295 +343,67 @@ const createEventBus = (gates) => {
     declare("int", "pp3pressed", 0),
     createItem
   )(items.marker);
+};
 
-  addScript(
-    `
-// component: island.eventBus
+const createGate = (orientation, props) => {
+  return compose(
+    addScript((self) => {
+      return `
+// component island:gates.${orientation}
 ON INIT {
-  ${getInjections("init", eventBus)}
+  ${getInjections("init", self)}
+  HEROSAY "init"
   ACCEPT
 }
+ON INITEND {
+  HEROSAY "load_end"
 
-ON CUSTOM {
-  if ("pp0." isin ^$PARAM1) {
-    if ("pressed" isin ^$PARAM1) {
-      SET ${eventBus.state.pp0pressed} 1
-    } else {
-      SET ${eventBus.state.pp0pressed} 0
-    }
+  IF (${self.state.isWide} == 1) {
+    USE_MESH "L2_Gobel_portcullis_big\\L2_Gobel_portcullis_big.teo"
   }
 
-  if ("pp1." isin ^$PARAM1) {
-    if ("pressed" isin ^$PARAM1) {
-      SET ${eventBus.state.pp1pressed} 1
-    } else {
-      SET ${eventBus.state.pp1pressed} 0
-    }
-  }
-
-  if ("pp2." isin ^$PARAM1) {
-    if ("pressed" isin ^$PARAM1) {
-      SET ${eventBus.state.pp2pressed} 1
-    } else {
-      SET ${eventBus.state.pp2pressed} 0
-    }
-  }
-
-  if ("pp3." isin ^$PARAM1) {
-    if ("pressed" isin ^$PARAM1) {
-      SET ${eventBus.state.pp3pressed} 1
-    } else {
-      SET ${eventBus.state.pp3pressed} 0
-    }
-  }
-
-  if (${eventBus.state.pp0pressed} == 1) {
-    if (${eventBus.state.pp1pressed} == 1) {
-      if (${eventBus.state.northGateOpened} == 0) {
-        SENDEVENT OPEN ${gates.north.ref} ""
-        SET ${eventBus.state.northGateOpened} 1
-      }
-    } else {
-      if (${eventBus.state.northGateOpened} == 1) {
-        SENDEVENT CLOSE ${gates.north.ref} ""
-        SET ${eventBus.state.northGateOpened} 0
-      }
-    }
-  } else {
-    if (${eventBus.state.northGateOpened} == 1) {
-      SENDEVENT CLOSE ${gates.north.ref} ""
-      SET ${eventBus.state.northGateOpened} 0
-    }
-  }
-
-  if (${eventBus.state.pp2pressed} == 1) {
-    if (${eventBus.state.pp3pressed} == 1) {
-      if (${eventBus.state.southGateOpened} == 0) {
-        SENDEVENT OPEN ${gates.south.ref} ""
-        SET ${eventBus.state.southGateOpened} 1
-      }
-    } else {
-      if (${eventBus.state.southGateOpened} == 1) {
-        SENDEVENT CLOSE ${gates.south.ref} ""
-        SET ${eventBus.state.southGateOpened} 0
-      }
-    }
-  } else {
-    if (${eventBus.state.southGateOpened} == 1) {
-      SENDEVENT CLOSE ${gates.south.ref} ""
-      SET ${eventBus.state.southGateOpened} 0
-    }
-  }
-
-  if (${eventBus.state.pp1pressed} == 1) {
-    if (${eventBus.state.pp3pressed} == 1) {
-      if (${eventBus.state.eastGateOpened} == 0) {
-        SENDEVENT OPEN ${gates.east.ref} ""
-        SET ${eventBus.state.eastGateOpened} 1
-      }
-    } else {
-      if (${eventBus.state.eastGateOpened} == 1) {
-        SENDEVENT CLOSE ${gates.east.ref} ""
-        SET ${eventBus.state.eastGateOpened} 0
-      }
-    }
-  } else {
-    if (${eventBus.state.eastGateOpened} == 1) {
-      SENDEVENT CLOSE ${gates.east.ref} ""
-      SET ${eventBus.state.eastGateOpened} 0
-    }
-  }
-
-  if (${eventBus.state.pp0pressed} == 1) {
-    if (${eventBus.state.pp2pressed} == 1) {
-      if (${eventBus.state.westGateOpened} == 0) {
-        SENDEVENT OPEN ${gates.west.ref} ""
-        SET ${eventBus.state.westGateOpened} 1
-      }
-    } else {
-      if (${eventBus.state.westGateOpened} == 1) {
-        SENDEVENT CLOSE ${gates.west.ref} ""
-        SET ${eventBus.state.westGateOpened} 0
-      }
-    }
-  } else {
-    if (${eventBus.state.westGateOpened} == 1) {
-      SENDEVENT CLOSE ${gates.west.ref} ""
-      SET ${eventBus.state.westGateOpened} 0
-    }
+  IF (${self.state.isWide} == 0) {
+    USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
   }
 
   ACCEPT
 }
-  `,
-    eventBus
-  );
-
-  return eventBus;
+ON CLOSE {
+  IF (${self.state.isOpen} == 0) {
+    ACCEPT
+  }
+  SET ${self.state.isOpen} 0
+  PLAYANIM -e ACTION2 COLLISION ON
+  VIEWBLOCK ON
+  PLAY ~£closesfx~
+  REFUSE
+}
+ON OPEN {
+  IF (${self.state.isOpen} == 1) {
+    ACCEPT
+  }
+  SET ${self.state.isOpen} 1
+  PLAYANIM -e ACTION1 COLLISION OFF
+  PLAY ~£opensfx~
+  VIEWBLOCK OFF
+  ANCHOR_BLOCK OFF
+  REFUSE
+}
+  `;
+    }),
+    declare("int", "isOpen", props.isOpen ?? false ? 1 : 0),
+    declare("int", "isWide", props.isWide ?? false ? 1 : 0),
+    createItem
+  )(items.doors.portcullis);
 };
 
 const createGates = () => {
-  const north = compose(
-    declare("int", "open", 0),
-    createItem
-  )(items.doors.portcullis);
-  addScript(
-    `
-// component island:gates.north
-ON INIT {
-  ${getInjections("init", north)}
-  ACCEPT
-}
-ON LOAD {
-  USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
-  ACCEPT
-}
-ON CLOSE {
-  IF (${north.state.open} == 0) {
-    ACCEPT
-  }
-  SET ${north.state.open} 0
-  PLAYANIM -e ACTION2 COLLISION ON
-  VIEWBLOCK ON
-  PLAY ~£closesfx~
-  REFUSE
-}
-ON OPEN {
-  IF (${north.state.open} == 1) {
-    ACCEPT
-  }
-  SET ${north.state.open} 1
-  PLAYANIM -e ACTION1 COLLISION OFF
-  PLAY ~£opensfx~
-  VIEWBLOCK OFF
-  ANCHOR_BLOCK OFF
-  REFUSE
-}
-  `,
-    north
-  );
-
-  const south = compose(
-    declare("int", "open", 0),
-    createItem
-  )(items.doors.portcullis);
-  addScript(
-    `
-// component island:gates.south
-ON INIT {
-  ${getInjections("init", south)}
-  ACCEPT
-}
-ON LOAD {
-  USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
-  ACCEPT
-}
-ON CLOSE {
-  IF (${south.state.open} == 0) {
-    ACCEPT
-  }
-  SET ${south.state.open} 0
-  PLAYANIM -e ACTION2 COLLISION ON
-  VIEWBLOCK ON
-  PLAY ~£closesfx~
-  REFUSE
-}
-ON OPEN {
-  IF (${south.state.open} == 1) {
-    ACCEPT
-  }
-  SET ${south.state.open} 1
-  PLAYANIM -e ACTION1 COLLISION OFF
-  PLAY ~£opensfx~
-  VIEWBLOCK OFF
-  ANCHOR_BLOCK OFF
-  REFUSE
-}
-  `,
-    south
-  );
-
-  const east = compose(
-    declare("int", "open", 0),
-    createItem
-  )(items.doors.portcullis);
-  addScript(
-    `
-// component island:gates.east
-ON INIT {
-  ${getInjections("init", east)}
-  ACCEPT
-}
-ON LOAD {
-  USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
-  ACCEPT
-}
-ON CLOSE {
-  IF (${east.state.open} == 0) {
-    ACCEPT
-  }
-  SET ${east.state.open} 0
-  PLAYANIM -e ACTION2 COLLISION ON
-  VIEWBLOCK ON
-  PLAY ~£closesfx~
-  REFUSE
-}
-ON OPEN {
-  IF (${east.state.open} == 1) {
-    ACCEPT
-  }
-  SET ${east.state.open} 1
-  PLAYANIM -e ACTION1 COLLISION OFF
-  PLAY ~£opensfx~
-  VIEWBLOCK OFF
-  ANCHOR_BLOCK OFF
-  REFUSE
-}
-  `,
-    east
-  );
-
-  const west = compose(
-    declare("int", "open", 0),
-    createItem
-  )(items.doors.portcullis);
-  addScript(
-    `
-// component island:gates.west
-ON INIT {
-  ${getInjections("init", west)}
-  ACCEPT
-}
-ON LOAD {
-  USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
-  ACCEPT
-}
-ON CLOSE {
-  IF (${west.state.open} == 0) {
-    ACCEPT
-  }
-  SET ${west.state.open} 0
-  PLAYANIM -e ACTION2 COLLISION ON
-  VIEWBLOCK ON
-  PLAY ~£closesfx~
-  REFUSE
-}
-ON OPEN {
-  IF (${west.state.open} == 1) {
-    ACCEPT
-  }
-  SET ${west.state.open} 1
-  PLAYANIM -e ACTION1 COLLISION OFF
-  PLAY ~£opensfx~
-  VIEWBLOCK OFF
-  ANCHOR_BLOCK OFF
-  REFUSE
-}
-  `,
-    west
-  );
-
-  return { north, south, east, west };
+  return {
+    north: createGate("north", { isWide: true, isOpen: false }),
+    south: createGate("south", { isWide: true, isOpen: false }),
+    west: createGate("west", { isWide: true, isOpen: false }),
+    east: createGate("east", { isWide: true, isOpen: false }),
+  };
 };
 
 const island = (config) => (mapData) => {
