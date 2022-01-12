@@ -65,7 +65,8 @@ const MAP_HEIGHT = 114.24;
 
 const PLAYER_HEIGHT_ADJUSTMENT = -140;
 
-const ISLAND_JOINT_LENGTH = 3;
+const ISLAND_JOINT_LENGTH = 5;
+const ISLAND_JOINT_WIDTH = 3;
 
 module.exports = {
   POLY_NO_SHADOW,
@@ -126,4 +127,5 @@ module.exports = {
   PLAYER_HEIGHT_ADJUSTMENT,
 
   ISLAND_JOINT_LENGTH,
+  ISLAND_JOINT_WIDTH,
 };

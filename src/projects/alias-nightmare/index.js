@@ -28,6 +28,7 @@ const {
   moveTo,
   addScript,
   addDependencyAs,
+  addDependency,
 } = require("../../assets/items");
 const { declare, color, getInjections } = require("../../scripting");
 const bridges = require("./bridges");
@@ -72,6 +73,7 @@ ON CONTROLLEDZONE_ENTER {
       `;
     }),
     declare("int", "hadIntro", 0),
+    addDependency("graph/levels/level1/map.bmp"),
     addDependencyAs(
       "projects/alias-nightmare/loading.bmp",
       `graph/levels/level${config.levelIdx}/loading.bmp`
@@ -143,8 +145,8 @@ const generate = async (config) => {
     bridges(islands),
     reduce((mapData, config) => island(config)(mapData), __, islands),
 
-    stairs([300, -50, 600]),
-    setColor(colors.terrain),
+    // stairs([300, -50, 600]),
+    // setColor(colors.terrain),
 
     // TODO: pillars for every island is a bit too expensive
     // pillars(

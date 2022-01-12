@@ -21,7 +21,10 @@ const {
 const { isNotEmpty } = require("ramda-adjunct");
 const { textures } = require("../../assets/textures.js");
 const { nanoid } = require("nanoid");
-const { ISLAND_JOINT_LENGTH } = require("../../constants.js");
+const {
+  ISLAND_JOINT_LENGTH,
+  ISLAND_JOINT_WIDTH,
+} = require("../../constants.js");
 
 // PP = pressure plate
 
@@ -447,7 +450,7 @@ const island = (config) => (mapData) => {
   if (exits & NORTH) {
     markAsUsed(gates.north);
     moveTo(
-      move(0, 0, (height * 100) / 2 + ISLAND_JOINT_LENGTH * 100 - 200, pos),
+      move(-25, 0, (height * 100) / 2 + ISLAND_JOINT_LENGTH * 100 - 200, pos),
       [0, 90, 0],
       gates.north
     );
@@ -455,7 +458,7 @@ const island = (config) => (mapData) => {
   if (exits & SOUTH) {
     markAsUsed(gates.south);
     moveTo(
-      move(0, 0, -(height * 100) / 2 - ISLAND_JOINT_LENGTH * 100 - 200, pos),
+      move(25, 0, -(height * 100) / 2 - ISLAND_JOINT_LENGTH * 100 + 200, pos),
       [0, 270, 0],
       gates.south
     );
@@ -463,7 +466,7 @@ const island = (config) => (mapData) => {
   if (exits & EAST) {
     markAsUsed(gates.east);
     moveTo(
-      move((width * 100) / 2 + ISLAND_JOINT_LENGTH * 100 - 200, 0, 0, pos),
+      move((width * 100) / 2 + ISLAND_JOINT_LENGTH * 100 - 200, 0, 25, pos),
       [0, 0, 0],
       gates.east
     );
@@ -471,7 +474,7 @@ const island = (config) => (mapData) => {
   if (exits & WEST) {
     markAsUsed(gates.west);
     moveTo(
-      move(-(width * 100) / 2 - ISLAND_JOINT_LENGTH * 100 - 200, 0, 0, pos),
+      move(-(width * 100) / 2 - ISLAND_JOINT_LENGTH * 100 + 200, 0, -25, pos),
       [0, 180, 0],
       gates.west
     );
@@ -493,7 +496,7 @@ const island = (config) => (mapData) => {
       compose(
         plain(
           move(0, 100, (height * 100) / 2 + jointOffset, pos),
-          [2, ISLAND_JOINT_LENGTH],
+          [ISLAND_JOINT_WIDTH, ISLAND_JOINT_LENGTH],
           "ceiling",
           connectToNearPolygons(`${id}-north-island-joint-top`)
         ),
@@ -501,7 +504,7 @@ const island = (config) => (mapData) => {
         setTexture(textures.gravel.ground1),
         plain(
           move(0, 0, (height * 100) / 2 + jointOffset, pos),
-          [2, ISLAND_JOINT_LENGTH],
+          [ISLAND_JOINT_WIDTH, ISLAND_JOINT_LENGTH],
           "floor"
         ),
         setPolygonGroup(`${id}-north-island-joint-top`),
@@ -513,7 +516,7 @@ const island = (config) => (mapData) => {
       compose(
         plain(
           move(0, 100, -((height * 100) / 2 + jointOffset), pos),
-          [2, ISLAND_JOINT_LENGTH],
+          [ISLAND_JOINT_WIDTH, ISLAND_JOINT_LENGTH],
           "ceiling",
           connectToNearPolygons(`${id}-south-island-joint-top`)
         ),
@@ -521,7 +524,7 @@ const island = (config) => (mapData) => {
         setTexture(textures.gravel.ground1),
         plain(
           move(0, 0, -((height * 100) / 2 + jointOffset), pos),
-          [2, ISLAND_JOINT_LENGTH],
+          [ISLAND_JOINT_WIDTH, ISLAND_JOINT_LENGTH],
           "floor"
         ),
         setPolygonGroup(`${id}-south-island-joint-top`),
@@ -533,7 +536,7 @@ const island = (config) => (mapData) => {
       compose(
         plain(
           move((width * 100) / 2 + jointOffset, 100, 0, pos),
-          [ISLAND_JOINT_LENGTH, 2],
+          [ISLAND_JOINT_LENGTH, ISLAND_JOINT_WIDTH],
           "ceiling",
           connectToNearPolygons(`${id}-east-island-joint-top`)
         ),
@@ -541,7 +544,7 @@ const island = (config) => (mapData) => {
         setTexture(textures.gravel.ground1),
         plain(
           move((width * 100) / 2 + jointOffset, 0, 0, pos),
-          [ISLAND_JOINT_LENGTH, 2],
+          [ISLAND_JOINT_LENGTH, ISLAND_JOINT_WIDTH],
           "floor"
         ),
         setPolygonGroup(`${id}-east-island-joint-top`),
@@ -553,7 +556,7 @@ const island = (config) => (mapData) => {
       compose(
         plain(
           move(-((width * 100) / 2 + jointOffset), 100, 0, pos),
-          [ISLAND_JOINT_LENGTH, 2],
+          [ISLAND_JOINT_LENGTH, ISLAND_JOINT_WIDTH],
           "ceiling",
           connectToNearPolygons(`${id}-west-island-joint-top`)
         ),
@@ -561,7 +564,7 @@ const island = (config) => (mapData) => {
         setTexture(textures.gravel.ground1),
         plain(
           move(-((width * 100) / 2 + jointOffset), 0, 0, pos),
-          [ISLAND_JOINT_LENGTH, 2],
+          [ISLAND_JOINT_LENGTH, ISLAND_JOINT_WIDTH],
           "floor"
         ),
         setPolygonGroup(`${id}-west-island-joint-top`),
