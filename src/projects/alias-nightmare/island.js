@@ -61,156 +61,51 @@ const getPPIndices = (exits) => {
   }
 };
 
+const createPressurePlate = (id, eventBus) => {
+  return compose(
+    addScript((self) => {
+      return `
+  // component: island.${id}
+    ON INIT {
+      SETSCALE 101
+      ${getInjections("init", self)}
+      ACCEPT
+    }
+  
+    ON INITEND {
+      TIMERontop -im 0 500 GOTO TOP
+      ACCEPT
+    }
+  
+    >>TOP
+      IF ( ^$OBJONTOP == "NONE" ) {
+        IF ( ${self.state.onme} == 1 ) {
+          SET ${self.state.onme} 0
+          PLAYANIM ACTION2
+          SENDEVENT CUSTOM ${eventBus.ref} "${id}.released"
+        }
+        ACCEPT
+      }
+      IF ( ${self.state.onme} == 0 ) {
+        SET ${self.state.onme} 1
+        PLAYANIM ACTION1
+        SENDEVENT CUSTOM ${eventBus.ref} "${id}.pressed"
+      }
+      ACCEPT
+    `;
+    }),
+    declare("int", "onme", 0),
+    createItem
+  )(items.mechanisms.pressurePlate);
+};
+
 const createPressurePlates = (eventBus) => {
-  const pp0 = compose(
-    declare("int", "onme", 0),
-    createItem
-  )(items.mechanisms.pressurePlate);
-  addScript(
-    `
-// component: island.pp0
-  ON INIT {
-    SETSCALE 101
-    ${getInjections("init", pp0)}
-    ACCEPT
-  }
-
-  ON INITEND {
-    TIMERontop -im 0 500 GOTO TOP
-    ACCEPT
-  }
-
-  >>TOP
-    IF ( ^$OBJONTOP == "NONE" ) {
-      IF ( ${pp0.state.onme} == 1 ) {
-        SET ${pp0.state.onme} 0
-        PLAYANIM ACTION2
-        SENDEVENT CUSTOM ${eventBus.ref} "pp0.released"
-      }
-      ACCEPT
-    }
-    IF ( ${pp0.state.onme} == 0 ) {
-      SET ${pp0.state.onme} 1
-      PLAYANIM ACTION1
-      SENDEVENT CUSTOM ${eventBus.ref} "pp0.pressed"
-    }
-    ACCEPT
-  `,
-    pp0
-  );
-
-  const pp1 = compose(
-    declare("int", "onme", 0),
-    createItem
-  )(items.mechanisms.pressurePlate);
-  addScript(
-    `
-// component: island.pp1
-  ON INIT {
-    SETSCALE 101
-    ${getInjections("init", pp1)}
-    ACCEPT
-  }
-
-  ON INITEND {
-    TIMERontop -im 0 500 GOTO TOP
-    ACCEPT
-  }
-
-  >>TOP
-    IF ( ^$OBJONTOP == "NONE" ) {
-      IF ( ${pp1.state.onme} == 1 ) {
-        SET ${pp1.state.onme} 0
-        PLAYANIM ACTION2
-        SENDEVENT CUSTOM ${eventBus.ref} "pp1.released"
-      }
-      ACCEPT
-    }
-    IF ( ${pp1.state.onme} == 0 ) {
-      SET ${pp1.state.onme} 1
-      PLAYANIM ACTION1
-      SENDEVENT CUSTOM ${eventBus.ref} "pp1.pressed"
-    }
-    ACCEPT
-  `,
-    pp1
-  );
-
-  const pp2 = compose(
-    declare("int", "onme", 0),
-    createItem
-  )(items.mechanisms.pressurePlate);
-  addScript(
-    `
-// component: island.pp2
-  ON INIT {
-    SETSCALE 101
-    ${getInjections("init", pp2)}
-    ACCEPT
-  }
-
-  ON INITEND {
-    TIMERontop -im 0 500 GOTO TOP
-    ACCEPT
-  }
-
-  >>TOP
-    IF ( ^$OBJONTOP == "NONE" ) {
-      IF ( ${pp2.state.onme} == 1 ) {
-        SET ${pp2.state.onme} 0
-        PLAYANIM ACTION2
-        SENDEVENT CUSTOM ${eventBus.ref} "pp2.released"
-      }
-      ACCEPT
-    }
-    IF ( ${pp2.state.onme} == 0 ) {
-      SET ${pp2.state.onme} 1
-      PLAYANIM ACTION1
-      SENDEVENT CUSTOM ${eventBus.ref} "pp2.pressed"
-    }
-    ACCEPT
-  `,
-    pp2
-  );
-
-  const pp3 = compose(
-    declare("int", "onme", 0),
-    createItem
-  )(items.mechanisms.pressurePlate);
-  addScript(
-    `
-// component: island.pp3
-  ON INIT {
-    SETSCALE 101
-    ${getInjections("init", pp3)}
-    ACCEPT
-  }
-
-  ON INITEND {
-    TIMERontop -im 0 500 GOTO TOP
-    ACCEPT
-  }
-
-  >>TOP
-    IF ( ^$OBJONTOP == "NONE" ) {
-      IF ( ${pp3.state.onme} == 1 ) {
-        SET ${pp3.state.onme} 0
-        PLAYANIM ACTION2
-        SENDEVENT CUSTOM ${eventBus.ref} "pp3.released"
-      }
-      ACCEPT
-    }
-    IF ( ${pp3.state.onme} == 0 ) {
-      SET ${pp3.state.onme} 1
-      PLAYANIM ACTION1
-      SENDEVENT CUSTOM ${eventBus.ref} "pp3.pressed"
-    }
-    ACCEPT
-  `,
-    pp3
-  );
-
-  return [pp0, pp1, pp2, pp3];
+  return [
+    createPressurePlate("pp0", eventBus),
+    createPressurePlate("pp1", eventBus),
+    createPressurePlate("pp2", eventBus),
+    createPressurePlate("pp3", eventBus),
+  ];
 };
 
 const createEventBus = (gates) => {
