@@ -157,7 +157,9 @@ const bridges = (islands) => (mapData) => {
   return compose(
     addIndex(reduce)(
       (mapData, [a, b], idx) => {
-        // TODO
+        // TODO: render polygons between the 2 points
+        console.log("TODO: render bridge between", a, "and", b);
+
         return mapData;
       },
       __,

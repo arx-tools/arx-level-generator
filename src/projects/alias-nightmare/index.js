@@ -49,6 +49,13 @@ ON INIT {
   SETCONTROLLEDZONE palette0
   // CINEMASCOPE ON
   // WORLDFADE OUT 0 ${color(colors.ambience[0])}
+
+  INVENTORY PLAYERADD special/wall_block/wall_block
+  INVENTORY PLAYERADD special/wall_block/wall_block
+  INVENTORY PLAYERADD special/wall_block/wall_block
+  INVENTORY PLAYERADD special/wall_block/wall_block
+  INVENTORY PLAYERADD special/wall_block/wall_block
+
   ACCEPT
 }
 ON CONTROLLEDZONE_ENTER {
@@ -94,12 +101,11 @@ const generate = async (config) => {
   const islands = [
     {
       pos: [0, 0, 0],
-      entrances: NONE, // EAST,
-      exits: ALL, // NORTH,
+      entrances: EAST,
+      exits: NORTH,
       width: 12,
       height: 10,
     },
-    /*
     {
       pos: [0, -200, 2500],
       entrances: SOUTH | NORTH,
@@ -121,7 +127,6 @@ const generate = async (config) => {
       width: 6,
       height: 6,
     },
-    */
   ];
 
   createWelcomeMarker(islands[0].pos)(config);
