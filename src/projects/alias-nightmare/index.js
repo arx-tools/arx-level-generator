@@ -132,6 +132,7 @@ const generate = async (config) => {
   createHangingCorpse([-300, -150, -200], [0, 145, 0], {
     name: "[public_falan_tomb]",
   });
+  */
 
   circleOfVectors(islands[2].pos, 200, 9).forEach((pos) => {
     createSmellyFlower(pos);
@@ -139,7 +140,6 @@ const generate = async (config) => {
 
   defineStatue();
   createStatue(islands[2].pos);
-  */
 
   return compose(
     saveToDisk,
