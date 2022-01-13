@@ -355,17 +355,12 @@ const createGate = (orientation, props) => {
 // component island:gates.${orientation}
 ON INIT {
   ${getInjections("init", self)}
-  HEROSAY "init"
   ACCEPT
 }
 ON INITEND {
-  HEROSAY "load_end"
-
   IF (${self.state.isWide} == 1) {
     USE_MESH "L2_Gobel_portcullis_big\\L2_Gobel_portcullis_big.teo"
-  }
-
-  IF (${self.state.isWide} == 0) {
+  } ELSE {
     USE_MESH "L2_Gobel_portcullis\\L2_Gobel_portcullis.teo"
   }
 

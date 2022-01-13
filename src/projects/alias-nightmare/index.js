@@ -50,12 +50,6 @@ ON INIT {
   // CINEMASCOPE ON
   // WORLDFADE OUT 0 ${color(colors.ambience[0])}
 
-  INVENTORY PLAYERADD special/wall_block/wall_block
-  INVENTORY PLAYERADD special/wall_block/wall_block
-  INVENTORY PLAYERADD special/wall_block/wall_block
-  INVENTORY PLAYERADD special/wall_block/wall_block
-  INVENTORY PLAYERADD special/wall_block/wall_block
-
   ACCEPT
 }
 ON CONTROLLEDZONE_ENTER {
@@ -64,9 +58,7 @@ ON CONTROLLEDZONE_ENTER {
     SET ${self.state.hadIntro} 1
     SETPLAYERCONTROLS OFF
     // TIMERfade 1 2 worldfade IN 2000
-    // TIMERmove -m 1 10 SPEAK -p [alia_nightmare2] GOTO READY
-
-    GOTO READY // delete this when re-enabling cutscene with above line
+    GOTO READY // TIMERmove -m 1 10 SPEAK -p [alia_nightmare2] GOTO READY
 
     ACCEPT
   }
@@ -75,6 +67,12 @@ ON CONTROLLEDZONE_ENTER {
 >>READY {
   CINEMASCOPE -s OFF
   SETPLAYERCONTROLS ON
+
+  INVENTORY PLAYERADD special/wall_block/wall_block
+  INVENTORY PLAYERADD special/wall_block/wall_block
+  INVENTORY PLAYERADD special/wall_block/wall_block
+  INVENTORY PLAYERADD special/wall_block/wall_block
+
   ACCEPT
 }
       `;
