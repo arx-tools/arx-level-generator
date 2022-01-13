@@ -6,8 +6,9 @@ const {
   markAsUsed,
   moveTo,
   createRootItem,
+  addDependency,
 } = require("../../../assets/items");
-const { getInjections } = require("../../../scripting");
+const { getInjections, declare } = require("../../../scripting");
 
 module.exports.defineStatue = () => {
   return compose(
@@ -37,18 +38,175 @@ ON INIT {
 
   PLAYANIM WAIT
 
-  // TIMERmisc_reflection -i 0 7 SENDEVENT IDLE SELF ""
+  TIMERmisc_reflection -i 0 7 SENDEVENT IDLE SELF ""
 
   SENDEVENT IDLE SELF ""
   SET_EVENT HEAR ON
 
   ACCEPT
 }
+
+ON IDLE {
+  INC ${self.state.idleSoundIdx} 1
+  IF (${self.state.idleSoundIdx} == 5) {
+    SET ${self.state.idleSoundIdx} 1
+  }
+  
+  IF (${self.state.idle} == 0) {
+    ACCEPT
+  }
+  
+  IF (${self.state.idleSoundIdx} == 1) {
+    PLAY -p "statue_idle1"
+  }
+
+  IF (${self.state.idleSoundIdx} == 2) {
+    PLAY -p "statue_idle2"
+  }
+  
+  IF (${self.state.idleSoundIdx} == 3) {
+    PLAY -p "statue_idle1"
+  }
+  
+  IF (${self.state.idleSoundIdx} == 3) {
+    PLAY -p "statue_idle3"
+  }
+
+  ACCEPT
+}
+
+ON HEAR {
+  BEHAVIOR MOVE_TO
+  SETTARGET -n ^SENDER
+  SETMOVEMODE WALK
+  
+  IF (${self.state.idle} == 1) {
+    SET ${self.state.idle} 0
+
+    IF (${self.state.idleSoundIdx} == 1) {
+      PLAY -p "statue_jumpscare1"
+    }
+    IF (${self.state.idleSoundIdx} == 2) {
+      PLAY -p "statue_jumpscare2"
+    }
+    IF (${self.state.idleSoundIdx} == 3) {
+      PLAY -p "statue_jumpscare1"
+    }
+    IF (${self.state.idleSoundIdx} == 4) {
+      PLAY -p "statue_jumpscare2"
+    }
+  }
+  
+  ACCEPT
+}
+
+ON DETECTPLAYER {
+  >>PLAYER_DETECTED
+  
+  IF (§idleSoundIdx == 1) {
+    PLAY -p "statue_jumpscare1"
+  }
+  IF (§idleSoundIdx == 2) {
+    PLAY -p "statue_jumpscare2"
+  }
+  IF (§idleSoundIdx == 3) {
+    PLAY -p "statue_jumpscare1"
+  }
+  IF (§idleSoundIdx == 4) {
+    PLAY -p "statue_jumpscare2"
+  }
+  
+  GOTO ATTACK_PLAYER
+  
+  ACCEPT
+}
+
+ON ATTACK_PLAYER {
+  GOTO ATTACK_PLAYER
+  ACCEPT
+}
+
+>>ATTACK_PLAYER {
+  WEAPON ON
+  SET_EVENT HEAR OFF
+  BEHAVIOR -f MOVE_TO
+  SETTARGET PLAYER
+  SETMOVEMODE RUN
+  
+  ACCEPT
+}
+
+ON REACHEDTARGET 
+{
+ IF (^TARGET == PLAYER) 
+ {
+   DO_DAMAGE ~^SENDER~ 1000
+ }
+ ACCEPT
+}
+
+ON MOVE {
+  SETMOVEMODE WALK
+  ACCEPT
+}
+
+ON LOSTTARGET {
+  GOTO LOOK_FOR
+  ACCEPT
+}
+
+ON LOOK_FOR {
+  GOTO LOOK_FOR
+  ACCEPT
+}
+
+ON UNDETECTPLAYER {
+  GOTO LOOK_FOR
+  ACCEPT
+}
+
+>>LOOK_FOR {
+  IF (^DIST_PLAYER < 500) GOTO PLAYER_DETECTED
+ 
+  BEHAVIOR LOOK_FOR 500
+  SETTARGET PLAYER
+  SETMOVEMODE WALK
+
+  SET_EVENT HEAR ON
+  
+  TIMERhome 1 18 GOTO GO_HOME
+
+  ACCEPT
+}
+
+>>GO_HOME {
+  BEHAVIOR NONE
+  SETTARGET PLAYER
+
+  SET §idle 1
+
+  ACCEPT
+}
+
+ON COLLIDE_NPC {
+  IF (^SENDER == PLAYER) {
+    DO_DAMAGE ~^SENDER~ 1000
+  }
+  ACCEPT
+}
       `;
     }),
+    addDependency("sfx/statue_idle1.wav"),
+    addDependency("sfx/statue_idle2.wav"),
+    addDependency("sfx/statue_idle3.wav"),
+    addDependency("sfx/statue_jumpscare1.wav"),
+    addDependency("sfx/statue_jumpscare2.wav"),
+    addDependency("sfx/statue_no.wav"),
+    declare("int", "idle", 1),
+    declare("int", "idleSoundIdx", 0),
     createRootItem
   )(items.npc.statue, {
-    name: "Tulpa",
+    name: "...redacted...",
     speed: 3,
     hp: 1000,
   });
