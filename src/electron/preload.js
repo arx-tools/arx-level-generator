@@ -1,4 +1,5 @@
 const seedrandom = require("seedrandom");
+const { cleanupCache } = require("../helpers.js");
 const aliasNightmare = require("../projects/alias-nightmare/index.js");
 const theBackrooms = require("../projects/backrooms/index.js");
 
@@ -60,35 +61,67 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  const loading = {
+    wrapper: document.getElementById("loading"),
+    text: document.querySelector("#loading p"),
+    btn: document.querySelector("#loading button"),
+    progressbar: document.querySelector("#loading .progressbar"),
+  };
+
   const generateBtns = document.querySelectorAll(".generate");
   generateBtns.forEach((generateBtn) => {
     generateBtn.addEventListener("click", () => {
-      seedrandom(seed, { global: true });
+      generateBtn.disabled = true;
 
-      const config = {
-        origin: [6000, 0, 6000],
-        levelIdx: 1,
-        seed,
-      };
+      loading.text.textContent = "";
+      loading.btn.classList.add("hidden");
+      loading.progressbar.className = "progressbar percent0";
+      loading.wrapper.classList.remove("hidden");
+      console.log("a loading wrapper látható kellene, hogy legyen");
 
-      // TODO: delete local caching of used items
-      // so that when a new map is generated the items list will be empty
-      (async () => {
-        switch (project) {
-          case "backrooms":
-            await theBackrooms({
-              ...config,
-            });
-            break;
-          case "alias-nightmare":
-            await aliasNightmare({
-              ...config,
-            });
-            break;
-        }
+      setTimeout(() => {
+        seedrandom(seed, { global: true });
 
-        console.log("done");
-      })();
+        const config = {
+          origin: [6000, 0, 6000],
+          levelIdx: 1,
+          seed,
+        };
+
+        loading.progressbar.className = "progressbar percent33";
+        loading.text.textContent = "(1/2) Generating level data...";
+
+        (async () => {
+          switch (project) {
+            case "backrooms":
+              await theBackrooms({
+                ...config,
+              });
+              break;
+            case "alias-nightmare":
+              await aliasNightmare({
+                ...config,
+              });
+              break;
+          }
+
+          loading.progressbar.className = "progressbar percent66";
+          loading.text.textContent = "(2/2) Compressing level data...";
+
+          cleanupCache();
+
+          loading.progressbar.className = "progressbar percent100";
+          loading.text.textContent = "Done!";
+          loading.btn.classList.remove("hidden");
+        })();
+      }, 100);
     });
+  });
+
+  loading.btn.addEventListener("click", () => {
+    generateBtns.forEach((generateBtn) => {
+      generateBtn.disabled = false;
+    });
+    loading.wrapper.classList.add("hidden");
   });
 });

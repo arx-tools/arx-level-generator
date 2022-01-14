@@ -8,7 +8,6 @@ const {
   addZone,
   randomBetween,
   circleOfVectors,
-  move,
 } = require("../../helpers");
 const island = require("./island.js");
 const {

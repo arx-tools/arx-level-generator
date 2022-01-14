@@ -16,7 +16,8 @@ const ambiences = {
   },
 };
 
-const usedAmbiences = [];
+let usedAmbiences = [];
+
 const useAmbience = (ambience) => {
   usedAmbiences.push(ambience);
 };
@@ -41,4 +42,8 @@ const exportAmbiences = (outputDir) => {
   )(usedAmbiences);
 };
 
-module.exports = { ambiences, useAmbience, exportAmbiences };
+const resetAmbiences = () => {
+  usedAmbiences = [];
+};
+
+module.exports = { ambiences, useAmbience, exportAmbiences, resetAmbiences };

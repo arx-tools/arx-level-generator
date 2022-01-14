@@ -4,6 +4,7 @@ const {
   createTextureContainers,
   textures,
   exportTextures,
+  resetTextures,
 } = require("./assets/textures.js");
 const {
   createDlfData,
@@ -51,8 +52,13 @@ const {
   exportUsedItems,
   exportScripts,
   exportDependencies,
+  resetItems,
 } = require("./assets/items.js");
-const { exportAmbiences, useAmbience } = require("./assets/ambiences.js");
+const {
+  exportAmbiences,
+  useAmbience,
+  resetAmbiences,
+} = require("./assets/ambiences.js");
 const { dirname } = require("path");
 
 const normalize = (v) => {
@@ -315,11 +321,8 @@ const saveToDisk = async (mapData) => {
   }
 
   let scripts = exportScripts(outputDir);
-
   let textures = exportTextures(outputDir);
-
   let ambiences = exportAmbiences(outputDir);
-
   let dependencies = exportDependencies(outputDir);
 
   const files = {
@@ -679,6 +682,12 @@ const circleOfVectors = (center, radius, division) => {
   return vectors;
 };
 
+const cleanupCache = () => {
+  resetItems();
+  resetAmbiences();
+  resetTextures();
+};
+
 module.exports = {
   subtractVec3,
   magnitude,
@@ -714,4 +723,5 @@ module.exports = {
   radToDeg,
   rotateVec3,
   circleOfVectors,
+  cleanupCache,
 };

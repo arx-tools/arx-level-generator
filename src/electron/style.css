@@ -101,3 +101,73 @@ button.generate {
 button.generate:hover {
   background: #4eb64e;
 }
+
+#loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: block;
+}
+
+#loading::before {
+  content: "";
+  position: absolute;
+  top: calc(50% - (390px / 2));
+  left: calc(50% - (320px / 2));
+  width: 320px;
+  height: 390px;
+  background: url("blank-loading.png");
+  display: block;
+  z-index: -1;
+}
+
+#loading hr.progressbar {
+  background: url("progressbar.png");
+  border: 0;
+  position: absolute;
+  top: calc(50% - (390px / 2) + 53px + 164px);
+  left: calc(50% - (320px / 2) + 54px + 9px);
+  width: 200px;
+  height: 8px;
+  display: block;
+}
+
+/* TODO: overflow it, not change it's width */
+#loading hr.progressbar.percent0 {
+  width: 0px;
+}
+#loading hr.progressbar.percent33 {
+  width: calc(200px / 3);
+}
+#loading hr.progressbar.percent66 {
+  width: calc((200px / 3) * 2);
+}
+#loading hr.progressbar.percent100 {
+  width: 200px;
+}
+
+#loading .info {
+  position: absolute;
+  top: calc(50% - (390px / 2) + 53px);
+  left: calc(50% - (320px / 2) + 54px);
+  width: 218px;
+  height: 164px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 6px 0 black;
+  color: white;
+  display: grid;
+  place-items: center;
+  padding: 10px;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+#loading p {
+  margin: 0;
+  font-family: monospace;
+}

@@ -121,7 +121,7 @@ const items = {
   },
 };
 
-const usedItems = {};
+let usedItems = {};
 
 const propsToInjections = (props) => {
   const init = [];
@@ -162,7 +162,7 @@ const createItem = (item, props = {}) => {
     angle: { a: 0, b: 0, g: 0 },
     script: "",
     flags: 0,
-    dependencies: item.dependencies || [],
+    dependencies: [...(item.dependencies ?? [])],
   });
 
   const { name } = path.parse(item.src);
@@ -185,7 +185,7 @@ const createRootItem = (item, props = {}) => {
     used: false,
     identifier: "root",
     script: "",
-    dependencies: item.dependencies || [],
+    dependencies: [...(item.dependencies ?? [])],
   };
 
   const { name } = path.parse(item.src);
@@ -340,6 +340,10 @@ const saveAs = curry((filename, itemRef) => {
   return itemRef;
 });
 
+const resetItems = () => {
+  usedItems = {};
+};
+
 module.exports = {
   items,
   createItem,
@@ -353,4 +357,5 @@ module.exports = {
   exportScripts,
   exportDependencies,
   saveAs,
+  resetItems,
 };

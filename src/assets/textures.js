@@ -107,7 +107,8 @@ const textures = {
   },
 };
 
-const usedTextures = [];
+let usedTextures = [];
+
 const useTexture = (texture) => {
   if (texture === textures.none) {
     return 0;
@@ -144,9 +145,14 @@ const exportTextures = (outputDir) => {
   )(usedTextures);
 };
 
+const resetTextures = () => {
+  usedTextures = [];
+};
+
 module.exports = {
   textures,
   useTexture,
   createTextureContainers,
   exportTextures,
+  resetTextures,
 };
