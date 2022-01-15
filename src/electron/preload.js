@@ -80,6 +80,9 @@ window.addEventListener("DOMContentLoaded", () => {
       console.log("a loading wrapper látható kellene, hogy legyen");
 
       setTimeout(() => {
+        loading.progressbar.className = "progressbar percent33";
+        loading.text.textContent = "(1/2) Generating level data...";
+
         seedrandom(seed, { global: true });
 
         const config = {
@@ -88,10 +91,7 @@ window.addEventListener("DOMContentLoaded", () => {
           seed,
         };
 
-        loading.progressbar.className = "progressbar percent33";
-        loading.text.textContent = "(1/2) Generating level data...";
-
-        (async () => {
+        setTimeout(async () => {
           switch (project) {
             case "backrooms":
               await theBackrooms({
@@ -108,12 +108,16 @@ window.addEventListener("DOMContentLoaded", () => {
           loading.progressbar.className = "progressbar percent66";
           loading.text.textContent = "(2/2) Compressing level data...";
 
-          cleanupCache();
+          setTimeout(async () => {
+            // generate
 
-          loading.progressbar.className = "progressbar percent100";
-          loading.text.textContent = "Done!";
-          loading.btn.classList.remove("hidden");
-        })();
+            cleanupCache();
+
+            loading.progressbar.className = "progressbar percent100";
+            loading.text.textContent = "Done!";
+            loading.btn.classList.remove("hidden");
+          }, 100);
+        }, 100);
       }, 100);
     });
   });
