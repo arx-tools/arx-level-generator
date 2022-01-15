@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "electron .",
+    "dev": "npm run generate:gamedir:linux && npm run compile:gamedir:linux && npm run game:linux",
     "generate": "node src/generate.js",
     "generate:gamedir:win": "set OUTPUTDIR=C:/Program Files/Arx Libertatis&&node src/generate.js",
     "generate:gamedir:linux": "export OUTPUTDIR=/home/lali/projektek/arx/ArxLibertatis/build&&node src/generate.js",
