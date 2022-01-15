@@ -10,12 +10,9 @@
  *   nem lehet level 0-nál lightningbolt-ot ellőni: https://github.com/arx/ArxLibertatis/blob/master/src/game/Spells.cpp#L742
  *
  * Neon light sound effects: https://www.youtube.com/watch?v=UKoktRXJZLM (Peter Seeba)
- *
- * TODOs recommended by the community:
- *  - maybe a book that tells the player about crouch jumping would be alot easier actually. might teach some players how to do it if they never tried b4
  */
 
-const { compose, reduce } = require("ramda");
+const { compose } = require("ramda");
 const { textures } = require("../../assets/textures");
 const {
   generateBlankMapData,
@@ -30,7 +27,7 @@ const {
   circleOfVectors,
   pickRandoms,
 } = require("../../helpers");
-const { wallX, wallZ, floor, plain } = require("../../prefabs");
+const { wallX, wallZ, plain } = require("../../prefabs");
 const { defineCeilingLamp, createCeilingLamp } = require("./items/ceilingLamp");
 const {
   EXTRAS_SEMIDYNAMIC,
@@ -52,15 +49,18 @@ const { generateGrid, addRoom, getRadius, isOccupied } = require("./rooms");
 const { disableBumping } = require("../../prefabs/plain");
 
 const UNIT = 200;
-const HEIGHT = UNIT * 2;
 
 const wall = ([x, y, z], face) => {
   return (mapData) => {
-    const { origin } = mapData.config;
+    const { origin, roomDimensions } = mapData.config;
 
     return compose((mapData) => {
-      const internalUnit = UNIT / (UNIT / 100);
-      for (let height = 0; height < HEIGHT / internalUnit; height++) {
+      const internalUnit = 100;
+      for (
+        let height = 0;
+        height < (UNIT * roomDimensions.height) / internalUnit;
+        height++
+      ) {
         for (let width = 0; width < UNIT / 100; width++) {
           (face === "left" || face === "right" ? wallX : wallZ)(
             move(
@@ -257,6 +257,7 @@ ON INVENTORYUSE {
 
 const renderGrid = (grid) => {
   return (mapData) => {
+    const { roomDimensions } = mapData.config;
     const radius = getRadius(grid);
     const top = -radius * UNIT + UNIT / 2;
     const left = -radius * UNIT + UNIT / 2;
@@ -293,7 +294,11 @@ const renderGrid = (grid) => {
 
           setTexture(textures.backrooms.ceiling, mapData);
           plain(
-            [left + x * UNIT, -HEIGHT, -(top + y * UNIT)],
+            [
+              left + x * UNIT,
+              -(UNIT * roomDimensions.height),
+              -(top + y * UNIT),
+            ],
             [UNIT / 100, UNIT / 100],
             "ceiling",
             disableBumping
@@ -363,8 +368,12 @@ const generate = async (config) => {
 
   const grid = compose(
     (grid) => {
-      for (let i = 0; i < 50; i++) {
-        grid = addRoom(randomBetween(1, 5), randomBetween(1, 5), grid);
+      for (let i = 0; i < config.numberOfRooms; i++) {
+        grid = addRoom(
+          randomBetween(...config.roomDimensions.width),
+          randomBetween(...config.roomDimensions.depth),
+          grid
+        );
       }
       return grid;
     },
@@ -391,7 +400,11 @@ const generate = async (config) => {
 
             if (x % 3 === 0 && y % 3 === 0) {
               addLamp(
-                [left + x * UNIT - 50, -(HEIGHT - 10), -(top + y * UNIT) - 50],
+                [
+                  left + x * UNIT - 50,
+                  -(config.roomDimensions.height * UNIT - 10),
+                  -(top + y * UNIT) - 50,
+                ],
                 {
                   on: Math.random() < 0.1,
                 }

@@ -99,6 +99,8 @@ window.addEventListener("DOMContentLoaded", () => {
             case "backrooms":
               await theBackrooms({
                 ...config,
+                numberOfRooms: 50,
+                roomDimensions: { width: [1, 5], depth: [1, 5], height: 2 },
               });
               break;
             case "alias-nightmare":
