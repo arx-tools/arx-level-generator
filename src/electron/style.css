@@ -139,11 +139,17 @@ button.generate:hover {
 #loading hr.progressbar.percent0 {
   width: 0px;
 }
-#loading hr.progressbar.percent33 {
-  width: calc(200px / 3);
+#loading hr.progressbar.percent20 {
+  width: calc(200px / 5);
 }
-#loading hr.progressbar.percent66 {
-  width: calc((200px / 3) * 2);
+#loading hr.progressbar.percent40 {
+  width: calc((200px / 5) * 2);
+}
+#loading hr.progressbar.percent60 {
+  width: calc((200px / 5) * 3);
+}
+#loading hr.progressbar.percent80 {
+  width: calc((200px / 5) * 4);
 }
 #loading hr.progressbar.percent100 {
   width: 200px;

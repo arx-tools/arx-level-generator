@@ -1,9 +1,9 @@
-const util = require("util");
-const exec = util.promisify(require("child_process").exec);
+const path = require("path");
 const seedrandom = require("seedrandom");
 const { cleanupCache } = require("../helpers.js");
 const aliasNightmare = require("../projects/alias-nightmare/index.js");
 const theBackrooms = require("../projects/backrooms/index.js");
+const { compileFTS, compileLLF, compileDLF } = require("../compile.js");
 
 const generateSeed = () => Math.floor(Math.random() * 1e20);
 
@@ -83,8 +83,8 @@ window.addEventListener("DOMContentLoaded", () => {
       loading.wrapper.classList.remove("hidden");
 
       setTimeout(() => {
-        loading.progressbar.className = "progressbar percent33";
-        loading.text.textContent = "(1/2) Generating level data...";
+        loading.progressbar.className = "progressbar percent20";
+        loading.text.textContent = "(1/4) Generating level data";
 
         seedrandom(seed, { global: true });
 
@@ -92,6 +92,7 @@ window.addEventListener("DOMContentLoaded", () => {
           origin: [6000, 0, 6000],
           levelIdx: 1,
           seed,
+          outputDir: path.resolve("./dist"),
         };
 
         setTimeout(async () => {
@@ -110,21 +111,31 @@ window.addEventListener("DOMContentLoaded", () => {
               break;
           }
 
-          loading.progressbar.className = "progressbar percent66";
-          loading.text.textContent = "(2/2) Compressing level data...";
+          loading.progressbar.className = "progressbar percent40";
+          loading.text.textContent = "(2/4) Compiling level mesh";
 
           setTimeout(async () => {
-            const { stderr } = await exec(`sh scripts/compile.sh`);
+            await compileFTS(config);
 
-            if (stderr) {
-              console.error(stderr);
-            }
+            loading.progressbar.className = "progressbar percent60";
+            loading.text.textContent = "(3/4) Compiling lighting information";
 
-            cleanupCache();
+            setTimeout(async () => {
+              await compileLLF(config);
 
-            loading.progressbar.className = "progressbar percent100";
-            loading.text.textContent = "Done!";
-            loading.btn.classList.remove("hidden");
+              loading.progressbar.className = "progressbar percent80";
+              loading.text.textContent = "(4/4) Compiling entities and paths";
+
+              setTimeout(async () => {
+                await compileDLF(config);
+
+                cleanupCache();
+
+                loading.progressbar.className = "progressbar percent100";
+                loading.text.textContent = "Done!";
+                loading.btn.classList.remove("hidden");
+              }, 100);
+            }, 100);
           }, 100);
         }, 100);
       }, 100);

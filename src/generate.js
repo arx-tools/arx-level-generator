@@ -15,7 +15,7 @@ const theBackrooms = require("./projects/backrooms/index.js");
     seed,
   };
 
-  const project = "backrooms";
+  const project = "alias-nightmare";
 
   switch (project) {
     case "backrooms":
