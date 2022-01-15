@@ -1,3 +1,5 @@
+const util = require("util");
+const exec = util.promisify(require("child_process").exec);
 const seedrandom = require("seedrandom");
 const { cleanupCache } = require("../helpers.js");
 const aliasNightmare = require("../projects/alias-nightmare/index.js");
@@ -57,7 +59,9 @@ window.addEventListener("DOMContentLoaded", () => {
   randomizeSeedBtns.forEach((randomizeSeedBtn) => {
     randomizeSeedBtn.addEventListener("click", () => {
       seed = generateSeed();
-      seedInput.value = seed;
+      seedInputs.forEach((seedInput) => {
+        seedInput.value = seed;
+      });
     });
   });
 
@@ -77,7 +81,6 @@ window.addEventListener("DOMContentLoaded", () => {
       loading.btn.classList.add("hidden");
       loading.progressbar.className = "progressbar percent0";
       loading.wrapper.classList.remove("hidden");
-      console.log("a loading wrapper látható kellene, hogy legyen");
 
       setTimeout(() => {
         loading.progressbar.className = "progressbar percent33";
@@ -109,7 +112,11 @@ window.addEventListener("DOMContentLoaded", () => {
           loading.text.textContent = "(2/2) Compressing level data...";
 
           setTimeout(async () => {
-            // generate
+            const { stderr } = await exec(`sh scripts/compile.sh`);
+
+            if (stderr) {
+              console.error(stderr);
+            }
 
             cleanupCache();
 
