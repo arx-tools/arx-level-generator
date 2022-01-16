@@ -1,8 +1,16 @@
-const { app, BrowserWindow } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  ipcRenderer,
+} = require("electron");
 const path = require("path");
 
+let win;
+
 const createWindow = () => {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -28,5 +36,15 @@ app.whenReady().then(() => {
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
+  }
+});
+
+ipcMain.on("change output directory", async (e) => {
+  const { canceled, filePaths } = await dialog.showOpenDialog(win, {
+    properties: ["openDirectory"],
+  });
+
+  if (!canceled) {
+    e.sender.send("output directory changed", filePaths[0]);
   }
 });

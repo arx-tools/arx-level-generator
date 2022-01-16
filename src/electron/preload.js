@@ -4,12 +4,14 @@ const { cleanupCache } = require("../helpers.js");
 const aliasNightmare = require("../projects/alias-nightmare/index.js");
 const theBackrooms = require("../projects/backrooms/index.js");
 const { compileFTS, compileLLF, compileDLF } = require("../compile.js");
+const { ipcRenderer } = require("electron");
 
 const generateSeed = () => Math.floor(Math.random() * 1e20);
 
 // let seed = generateSeed()
 let seed = 70448428008674860000;
 let project = "backrooms";
+let outputDir = path.resolve("./dist");
 
 window.addEventListener("DOMContentLoaded", () => {
   const pages = document.querySelectorAll(".page");
@@ -77,64 +79,59 @@ window.addEventListener("DOMContentLoaded", () => {
     generateBtn.addEventListener("click", () => {
       generateBtn.disabled = true;
 
-      loading.text.textContent = "";
       loading.btn.classList.add("hidden");
+      loading.text.textContent = "(1/4) Generating level data";
       loading.progressbar.className = "progressbar percent0";
       loading.wrapper.classList.remove("hidden");
 
-      setTimeout(() => {
-        loading.progressbar.className = "progressbar percent20";
-        loading.text.textContent = "(1/4) Generating level data";
-
+      setTimeout(async () => {
         seedrandom(seed, { global: true });
 
         const config = {
           origin: [6000, 0, 6000],
           levelIdx: 1,
           seed,
-          outputDir: path.resolve("./dist"),
+          outputDir,
         };
 
-        setTimeout(async () => {
-          switch (project) {
-            case "backrooms":
-              await theBackrooms({
-                ...config,
-                numberOfRooms: 50,
-                roomDimensions: { width: [1, 5], depth: [1, 5], height: 2 },
-              });
-              break;
-            case "alias-nightmare":
-              await aliasNightmare({
-                ...config,
-              });
-              break;
-          }
+        switch (project) {
+          case "backrooms":
+            await theBackrooms({
+              ...config,
+              numberOfRooms: 50,
+              roomDimensions: { width: [1, 5], depth: [1, 5], height: 2 },
+            });
+            break;
+          case "alias-nightmare":
+            await aliasNightmare({
+              ...config,
+            });
+            break;
+        }
 
-          loading.progressbar.className = "progressbar percent40";
-          loading.text.textContent = "(2/4) Compiling level mesh";
+        loading.progressbar.className = "progressbar percent25";
+        loading.text.textContent = "(2/4) Compiling level mesh";
+
+        setTimeout(async () => {
+          await compileFTS(config);
+
+          loading.progressbar.className = "progressbar percent50";
+          loading.text.textContent = "(3/4) Compiling lighting information";
 
           setTimeout(async () => {
-            await compileFTS(config);
+            await compileLLF(config);
 
-            loading.progressbar.className = "progressbar percent60";
-            loading.text.textContent = "(3/4) Compiling lighting information";
+            loading.progressbar.className = "progressbar percent75";
+            loading.text.textContent = "(4/4) Compiling entities and paths";
 
             setTimeout(async () => {
-              await compileLLF(config);
+              await compileDLF(config);
 
-              loading.progressbar.className = "progressbar percent80";
-              loading.text.textContent = "(4/4) Compiling entities and paths";
+              cleanupCache();
 
-              setTimeout(async () => {
-                await compileDLF(config);
-
-                cleanupCache();
-
-                loading.progressbar.className = "progressbar percent100";
-                loading.text.textContent = "Done!";
-                loading.btn.classList.remove("hidden");
-              }, 100);
+              loading.progressbar.className = "progressbar percent100";
+              loading.text.textContent = "Done!";
+              loading.btn.classList.remove("hidden");
             }, 100);
           }, 100);
         }, 100);
@@ -147,5 +144,28 @@ window.addEventListener("DOMContentLoaded", () => {
       generateBtn.disabled = false;
     });
     loading.wrapper.classList.add("hidden");
+  });
+
+  // --------------
+
+  const outputDirInputs = document.querySelectorAll(
+    '[name="output-directory"]'
+  );
+  outputDirInputs.forEach((outputDirInput) => {
+    outputDirInput.value = outputDir;
+  });
+
+  const selectDirBtns = document.querySelectorAll(".select-output-directory");
+  selectDirBtns.forEach((selectDirBtn) => {
+    selectDirBtn.addEventListener("click", () => {
+      ipcRenderer.send("change output directory");
+    });
+  });
+
+  ipcRenderer.on("output directory changed", (e, folder) => {
+    outputDir = folder;
+    outputDirInputs.forEach((outputDirInput) => {
+      outputDirInput.value = outputDir;
+    });
   });
 });

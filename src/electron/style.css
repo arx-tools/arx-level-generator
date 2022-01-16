@@ -71,11 +71,51 @@ main {
   background: rgba(255, 255, 255, 0.65);
 }
 
-.page div {
+.page > div {
   flex: 1;
   padding: 10px 20px;
   background: rgba(255, 255, 255, 0.3);
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.page .field {
+  margin: 10px 0;
+  display: flex;
+}
+
+.page .field label {
+  height: 32px;
+  line-height: 32px;
+  display: inline-block;
+  font-weight: bold;
+}
+
+.page .field input[type="text"] {
+  flex: 1;
+  margin: 0 10px;
+  height: 30px;
+  border: 1px solid black;
+  border-radius: 2px;
+  box-sizing: border-box;
+  padding: 0 4px;
+}
+
+.page .field button {
+  padding: 0;
+  margin: 0 auto;
+  display: block;
+  height: 30px;
+  border: 1px solid black;
+  border-radius: 2px;
+  cursor: pointer;
+  width: 100px;
+  background: white;
+}
+
+.page .field button:hover {
+  background: #bbb;
 }
 
 .page footer {
@@ -91,7 +131,7 @@ button.generate {
   display: block;
   width: 160px;
   height: 50px;
-  border: 0;
+  border: 1px solid black;
   border-radius: 2px;
   background: #398539;
   cursor: pointer;
@@ -139,17 +179,14 @@ button.generate:hover {
 #loading hr.progressbar.percent0 {
   width: 0px;
 }
-#loading hr.progressbar.percent20 {
-  width: calc(200px / 5);
+#loading hr.progressbar.percent25 {
+  width: calc(200px / 4);
 }
-#loading hr.progressbar.percent40 {
-  width: calc((200px / 5) * 2);
+#loading hr.progressbar.percent50 {
+  width: calc((200px / 4) * 2);
 }
-#loading hr.progressbar.percent60 {
-  width: calc((200px / 5) * 3);
-}
-#loading hr.progressbar.percent80 {
-  width: calc((200px / 5) * 4);
+#loading hr.progressbar.percent75 {
+  width: calc((200px / 4) * 3);
 }
 #loading hr.progressbar.percent100 {
   width: 200px;
