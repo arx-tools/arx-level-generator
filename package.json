@@ -15,7 +15,8 @@
     "game:linux": "/home/lali/projektek/arx/ArxLibertatis/build/arx --loadlevel 1",
     "launcher": "electron .",
     "launcher:package:linux": "electron-packager . arx-level-generator --platform=linux",
-    "launcher:package:win": "electron-packager . arx-level-generator --platform=win32"
+    "launcher:package:win": "electron-packager . arx-level-generator --platform=win32",
+    "launcher:package:mac": "electron-packager . arx-level-generator --platform=darwin"
   },
   "repository": {
     "type": "git",

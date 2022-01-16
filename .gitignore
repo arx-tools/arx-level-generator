@@ -2,3 +2,4 @@ node_modules
 dist
 arx-level-generator-linux-x64
 arx-level-generator-win32-x64
+arx-level-generator-darwin-x64
