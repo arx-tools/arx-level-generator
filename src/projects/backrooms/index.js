@@ -476,6 +476,10 @@ const generate = async (config) => {
     setColor("#0b0c10"),
 
     movePlayerTo([0, 0, 0]),
+    (mapData) => {
+      mapData.meta.mapName = "The Backrooms";
+      return mapData;
+    },
     generateBlankMapData
   )(config);
 };

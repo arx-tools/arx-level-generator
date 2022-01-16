@@ -177,6 +177,10 @@ const generate = async (config) => {
     setColor(colors.ambience[0]),
 
     movePlayerTo([-origin[0], 0, -origin[2]]),
+    (mapData) => {
+      mapData.meta.mapName = "Alia's nightmare";
+      return mapData;
+    },
     generateBlankMapData
   )(config);
 };

@@ -273,13 +273,23 @@ const addOriginPolygon = (mapData) => {
   return mapData;
 };
 
+const timestampToDate = (timestamp) => {
+  const date = new Date();
+  date.setTime(timestamp * 1000);
+  return date.toUTCString();
+};
+
 const generateBlankMapData = (config) => {
   const now = Math.floor(Date.now() / 1000);
+  const generatorVersion = require("../package.json").version;
 
   const mapData = {
+    meta: {
+      createdAt: timestampToDate(now),
+      generatorVersion,
+    },
     config: {
       ...config,
-      now,
     },
     state: {
       color: null,
@@ -312,7 +322,7 @@ const saveToDisk = async (mapData) => {
   } else {
     try {
       const manifest = require(`${outputDir}/manifest.json`);
-      for (let filename of manifest) {
+      for (let filename of manifest.files) {
         try {
           await fs.promises.rm(`${outputDir}/${filename}`);
         } catch (f) {}
@@ -331,20 +341,24 @@ const saveToDisk = async (mapData) => {
     llf: `${outputDir}/graph/levels/level${levelIdx}/level${levelIdx}.llf.json`,
   };
 
-  const manifest = [
-    ...values(files),
-    ...keys(scripts),
-    ...keys(ambiences),
-    ...keys(dependencies),
-    ...keys(textures),
-    files.fts.replace(".fts.json", ".fts"),
-    files.dlf.replace(".dlf.json", ".dlf"),
-    files.llf.replace(".llf.json", ".llf"),
-  ].sort();
+  const manifest = {
+    meta: mapData.meta,
+    config: mapData.config,
+    files: [
+      ...values(files),
+      ...keys(scripts),
+      ...keys(ambiences),
+      ...keys(dependencies),
+      ...keys(textures),
+      files.fts.replace(".fts.json", ".fts"),
+      files.dlf.replace(".dlf.json", ".dlf"),
+      files.llf.replace(".llf.json", ".llf"),
+    ].sort(),
+  };
 
   const tasks = map(
     (path) => fs.promises.mkdir(dirname(path), { recursive: true }),
-    manifest
+    manifest.files
   );
 
   for (let task of tasks) {
@@ -377,7 +391,7 @@ const saveToDisk = async (mapData) => {
 
   await fs.promises.writeFile(
     `${outputDir}/manifest.json`,
-    JSON.stringify(map(replace(/^\.\/dist\//, ""), manifest.sort()), null, 2)
+    JSON.stringify(manifest, null, 2)
   );
 };
 
