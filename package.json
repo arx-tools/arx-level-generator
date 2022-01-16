@@ -48,7 +48,7 @@
         "tar.gz"
       ]
     },
-    "windows": {
+    "win": {
       "target": [
         "msi",
         "portable"
