@@ -1,6 +1,6 @@
 {
   "name": "arx-level-generator",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "A tool to generate random Arx Fatalis maps",
   "main": "src/index.js",
   "scripts": {
