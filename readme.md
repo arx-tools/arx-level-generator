@@ -4,6 +4,7 @@ Creates procedurally generated levels
 
 **WORK IN PROGRESS**
 
+![launcher](photos/launcher.png?raw=true "launcher")
 ![screenshot](photos/demo.png?raw=true "dummy map")
 ![screenshot](photos/statue.png?raw=true "statue npc")
 
