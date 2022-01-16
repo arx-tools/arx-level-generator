@@ -41,6 +41,16 @@
   },
   "build": {
     "appId": "com.electron.arx-level-generator",
-    "productName": "Arx Level Generator"
+    "productName": "Arx Level Generator",
+    "linux": {
+      "target": [
+        "AppImage",
+        "snap",
+        "deb",
+        "rpm",
+        "freebsd",
+        "tar.gz"
+      ]
+    }
   }
 }

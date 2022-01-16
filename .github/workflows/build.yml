@@ -1,4 +1,5 @@
 # https://github.com/marketplace/actions/electron-builder-action
+# https://www.electron.build/configuration/linux.html
 
 name: Build/release
 
