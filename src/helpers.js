@@ -59,7 +59,7 @@ const {
   useAmbience,
   resetAmbiences,
 } = require("./assets/ambiences.js");
-const { dirname } = require("path");
+const { dirname, resolve } = require("path");
 
 const normalize = (v) => {
   return map(apply(divide), zip(v, repeat(magnitude(v), 3)));
@@ -300,7 +300,7 @@ const generateBlankMapData = (config) => {
 const saveToDisk = async (mapData) => {
   const { levelIdx } = mapData.config;
 
-  const defaultOutputDir = "./dist";
+  const defaultOutputDir = resolve("./dist");
 
   const outputDir =
     process.env.OUTPUTDIR ?? mapData.config.outputDir ?? defaultOutputDir;
