@@ -44,11 +44,7 @@
     "productName": "Arx Level Generator",
     "linux": {
       "target": [
-        "AppImage",
-        "snap",
         "deb",
-        "rpm",
-        "freebsd",
         "tar.gz"
       ]
     }
