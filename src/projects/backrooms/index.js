@@ -458,7 +458,7 @@ const generate = async (config) => {
           break;
         case "front":
           translate = [-75, 0, 80];
-          rotate = [0, 0, 0];
+          rotate = [0, 90, 0];
           break;
       }
 
