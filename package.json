@@ -47,6 +47,12 @@
         "deb",
         "tar.gz"
       ]
+    },
+    "windows": {
+      "target": [
+        "msi",
+        "portable"
+      ]
     }
   }
 }
