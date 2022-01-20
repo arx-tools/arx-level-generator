@@ -90,10 +90,10 @@ const wall = ([x, y, z], face) => {
 };
 
 const addLamp =
-  (pos, config = {}) =>
+  (pos, angle, config = {}) =>
   (mapData) => {
     const isOn = config.on ?? false;
-    createCeilingLamp(pos, [0, 0, 0], { on: isOn });
+    createCeilingLamp(pos, angle, { on: isOn });
 
     return compose(
       addLight(move(0, 20, 0, pos), {
@@ -399,11 +399,19 @@ const generate = async (config) => {
             floors.push([x, y]);
 
             if (x % 3 === 0 && y % 3 === 0) {
+              const offsetX = Math.floor(randomBetween(0, UNIT / 100)) * 100;
+              const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100;
+
               addLamp(
                 [
-                  left + x * UNIT - 50,
+                  left + x * UNIT - 50 + offsetX,
                   -(config.roomDimensions.height * UNIT - 10),
-                  -(top + y * UNIT) - 50,
+                  -(top + y * UNIT) - 50 + offsetZ,
+                ],
+                [
+                  Math.floor(randomBetween(-2, 2)),
+                  0,
+                  Math.floor(randomBetween(-2, 2)),
                 ],
                 {
                   on: Math.random() < 0.1,
