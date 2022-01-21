@@ -43,6 +43,7 @@ const {
   items,
   addDependencyAs,
   addDependency,
+  createRootItem,
 } = require("../../assets/items");
 const { getInjections, declare, color } = require("../../scripting");
 const { generateGrid, addRoom, getRadius, isOccupied } = require("./rooms");
@@ -51,6 +52,7 @@ const {
   defineCeilingDiffuser,
   createCeilingDiffuser,
 } = require("./items/ceilingDiffuser");
+const { overwritePlayerScript } = require("../shared/player");
 
 const UNIT = 200;
 
@@ -236,6 +238,10 @@ const getAlmondWaterVariant = () => {
     return "xp";
   }
 
+  if (factor < 10) {
+    return "slow";
+  }
+
   return "mana";
 };
 
@@ -259,8 +265,12 @@ ON INVENTORYUSE {
   }
 
   IF (${self.state.variant} == "mana") {
-    HEROSAY ^MANA
     SPECIALFX MANA 25
+  }
+
+  IF (${self.state.variant} == "slow") {
+    // SENDEVENT SETSPEED player 0.5
+    // TIMERpenalty 1 10 SENDEVENT SETSPEED player 1
   }
 
   SETINTERACTIVITY NONE
@@ -386,6 +396,7 @@ const generate = async (config) => {
   defineCeilingLamp();
   defineCeilingDiffuser();
 
+  overwritePlayerScript();
   createWelcomeMarker([0, 0, 0], config);
 
   const runes = ["aam", "folgora", "taar"];

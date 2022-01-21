@@ -112,6 +112,10 @@ const items = {
         "graph/obj3d/textures/demon_statue.jpg",
       ],
     },
+    player: {
+      src: "player/player.teo",
+      native: true,
+    },
   },
   shape: {
     cube: {
