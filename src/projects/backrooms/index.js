@@ -229,7 +229,17 @@ ON INIT {
   )(items.keys.oliverQuest, { name: "fire exit key" });
 };
 
-const createAlmondWater = (pos, angle = [0, 0, 0]) => {
+const getAlmondWaterVariant = () => {
+  const factor = randomBetween(0, 100);
+
+  if (factor < 1) {
+    return "xp";
+  }
+
+  return "mana";
+};
+
+const createAlmondWater = (pos, angle = [0, 0, 0], variant = "mana") => {
   return compose(
     markAsUsed,
     moveTo(pos, angle),
@@ -238,21 +248,18 @@ const createAlmondWater = (pos, angle = [0, 0, 0]) => {
 // component: almondWater
 ON INIT {
   ${getInjections("init", self)}
-
-  IF (^RND_100 >= 1) {
-    SET ${self.state.variant} "xp"
-  }
-
   ACCEPT
 }
+
 ON INVENTORYUSE {
-  PLAY "potion_mana"
+  PLAY "drink"
 
   IF (${self.state.variant} == "xp") {
     ADDXP 2000
   }
 
   IF (${self.state.variant} == "mana") {
+    HEROSAY ^MANA
     SPECIALFX MANA 25
   }
 
@@ -267,10 +274,10 @@ ON INVENTORYUSE {
       "projects/backrooms/almondwater.bmp",
       "graph/obj3d/interactive/items/magic/potion_mana/potion_mana[icon].bmp"
     ),
-    declare("string", "variant", "mana"),
+    declare("string", "variant", variant),
     createItem
   )(items.magic.potion.mana, {
-    name: "almond water",
+    name: `almond water (${variant})`,
   });
 };
 
@@ -416,10 +423,7 @@ const generate = async (config) => {
       for (let y = 0; y < grid.length; y++) {
         for (let x = 0; x < grid[y].length; x++) {
           if (isOccupied(x, y, grid)) {
-            floors.push([
-              x + Math.floor(randomBetween(0, UNIT / 100)) * 100,
-              y + Math.floor(randomBetween(0, UNIT / 100)) * 100,
-            ]);
+            floors.push([x, y]);
 
             const offsetX = Math.floor(randomBetween(0, UNIT / 100)) * 100;
             const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100;
@@ -464,7 +468,7 @@ const generate = async (config) => {
 
       const [wallX, wallZ, wallFace] = pickRandoms(1, walls)[0];
       const [[keyX, keyZ], ...manaSlots] = pickRandoms(
-        mapData.config.numberOfRooms + 5,
+        Math.floor(mapData.config.numberOfRooms / 3) + 5,
         floors
       );
 
@@ -475,7 +479,14 @@ const generate = async (config) => {
       ]);
 
       manaSlots.forEach(([x, z]) => {
-        createAlmondWater([left + x * UNIT - 50, 0, -(top + z * UNIT) - 50]);
+        const offsetX = Math.floor(randomBetween(0, UNIT / 100)) * 100;
+        const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100;
+        const pos = [
+          left + x * UNIT - 50 + offsetX,
+          0,
+          -(top + z * UNIT) - 50 + offsetZ,
+        ];
+        createAlmondWater(pos, [0, 0, 0], getAlmondWaterVariant());
       });
 
       let translate = [0, 0, 0];
