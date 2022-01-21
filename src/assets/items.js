@@ -132,6 +132,9 @@ const propsToInjections = (props) => {
   if (props.speed) {
     init.push(`SETSPEED ${props.speed}`);
   }
+  if (props.scale) {
+    init.push(`SETSCALE ${props.scale * 100}`);
+  }
   if (props.hp) {
     init.push(`SET_NPC_STAT life ${props.hp}`);
   }
@@ -333,17 +336,6 @@ const exportDependencies = (outputDir) => {
   )(usedItems);
 };
 
-const saveAs = curry((filename, itemRef) => {
-  const { src, id } = itemRef;
-
-  // TODO: add possibility to set where the file should land
-  // could be combined with the USEMESH command to use the source item
-
-  // USEMESH "polytrans\\polytrans.teo"
-
-  return itemRef;
-});
-
 const resetItems = () => {
   usedItems = {};
 };
@@ -360,6 +352,5 @@ module.exports = {
   exportUsedItems,
   exportScripts,
   exportDependencies,
-  saveAs,
   resetItems,
 };

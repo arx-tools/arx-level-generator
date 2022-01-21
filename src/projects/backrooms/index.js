@@ -47,6 +47,10 @@ const {
 const { getInjections, declare, color } = require("../../scripting");
 const { generateGrid, addRoom, getRadius, isOccupied } = require("./rooms");
 const { disableBumping } = require("../../prefabs/plain");
+const {
+  defineCeilingDiffuser,
+  createCeilingDiffuser,
+} = require("./items/ceilingDiffuser");
 
 const UNIT = 200;
 
@@ -234,13 +238,27 @@ const createAlmondWater = (pos, angle = [0, 0, 0]) => {
 // component: almondWater
 ON INIT {
   ${getInjections("init", self)}
+
+  IF (^RND_100 >= 1) {
+    SET ${self.state.variant} "xp"
+  }
+
   ACCEPT
 }
 ON INVENTORYUSE {
   PLAY "potion_mana"
-  SPECIALFX MANA 25
+
+  IF (${self.state.variant} == "xp") {
+    ADDXP 2000
+  }
+
+  IF (${self.state.variant} == "mana") {
+    SPECIALFX MANA 25
+  }
+
   SETINTERACTIVITY NONE
-  timerreplace 1 1 DESTROY SELF
+  TIMERdestroy 1 1 DESTROY SELF
+
   REFUSE
 }
       `;
@@ -249,6 +267,7 @@ ON INVENTORYUSE {
       "projects/backrooms/almondwater.bmp",
       "graph/obj3d/interactive/items/magic/potion_mana/potion_mana[icon].bmp"
     ),
+    declare("string", "variant", "mana"),
     createItem
   )(items.magic.potion.mana, {
     name: "almond water",
@@ -358,6 +377,7 @@ const renderGrid = (grid) => {
 
 const generate = async (config) => {
   defineCeilingLamp();
+  defineCeilingDiffuser();
 
   createWelcomeMarker([0, 0, 0], config);
 
@@ -396,27 +416,34 @@ const generate = async (config) => {
       for (let y = 0; y < grid.length; y++) {
         for (let x = 0; x < grid[y].length; x++) {
           if (isOccupied(x, y, grid)) {
-            floors.push([x, y]);
+            floors.push([
+              x + Math.floor(randomBetween(0, UNIT / 100)) * 100,
+              y + Math.floor(randomBetween(0, UNIT / 100)) * 100,
+            ]);
+
+            const offsetX = Math.floor(randomBetween(0, UNIT / 100)) * 100;
+            const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100;
 
             if (x % 3 === 0 && y % 3 === 0) {
-              const offsetX = Math.floor(randomBetween(0, UNIT / 100)) * 100;
-              const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100;
-
               addLamp(
                 [
                   left + x * UNIT - 50 + offsetX,
                   -(config.roomDimensions.height * UNIT - 10),
                   -(top + y * UNIT) - 50 + offsetZ,
                 ],
-                [
-                  Math.floor(randomBetween(-2, 2)),
-                  0,
-                  Math.floor(randomBetween(-2, 2)),
-                ],
+                [0, 0, 0],
                 {
                   on: Math.random() < 0.1,
                 }
               )(mapData);
+            } else {
+              if (Math.random() < 0.05) {
+                createCeilingDiffuser([
+                  left + x * UNIT - 50 + offsetX,
+                  -(config.roomDimensions.height * UNIT - 5),
+                  -(top + y * UNIT) - 50 + offsetZ,
+                ]);
+              }
             }
 
             if (isOccupied(x - 1, y, grid) !== true) {
@@ -436,7 +463,10 @@ const generate = async (config) => {
       }
 
       const [wallX, wallZ, wallFace] = pickRandoms(1, walls)[0];
-      const [[keyX, keyZ], ...manaSlots] = pickRandoms(30, floors);
+      const [[keyX, keyZ], ...manaSlots] = pickRandoms(
+        mapData.config.numberOfRooms + 5,
+        floors
+      );
 
       const key = createKey([
         left + keyX * UNIT - 50,

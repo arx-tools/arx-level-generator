@@ -11,6 +11,11 @@ const {
 const { useTexture, textures } = require("../../../assets/textures");
 const { getInjections, declare } = require("../../../scripting");
 
+const itemDesc = {
+  src: "fix_inter/ceiling_lamp/ceiling_lamp.teo",
+  native: true,
+};
+
 module.exports.defineCeilingLamp = () => {
   useTexture(textures.backrooms.ceilingLampOn);
   useTexture(textures.backrooms.ceilingLampOff);
@@ -21,6 +26,7 @@ module.exports.defineCeilingLamp = () => {
 // component: ceilingLamp
 ON INIT {
   ${getInjections("init", self)}
+  USEMESH "polytrans/polytrans.teo"
   ACCEPT
 }
 
@@ -125,7 +131,7 @@ ON HIT {
     addDependency("sfx/fluorescent-lamp-startup.wav"),
     addDependency("sfx/fluorescent-lamp-hum.wav"),
     createRootItem
-  )(items.shape.cube, {
+  )(itemDesc, {
     name: "Ceiling Lamp",
     interactive: false,
   });
@@ -148,5 +154,5 @@ ON INIT {
     }),
     declare("int", "isOn", config.on ?? false ? 1 : 0),
     createItem
-  )(items.shape.cube, {});
+  )(itemDesc, {});
 };
