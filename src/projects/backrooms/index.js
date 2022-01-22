@@ -52,7 +52,7 @@ const {
   defineCeilingDiffuser,
   createCeilingDiffuser,
 } = require("./items/ceilingDiffuser");
-const { overwritePlayerScript } = require("../shared/player");
+const { overridePlayerScript } = require("../shared/player");
 
 const UNIT = 200;
 
@@ -396,7 +396,7 @@ const generate = async (config) => {
   defineCeilingLamp();
   defineCeilingDiffuser();
 
-  overwritePlayerScript();
+  overridePlayerScript();
   createWelcomeMarker([0, 0, 0], config);
 
   const runes = ["aam", "folgora", "taar"];
