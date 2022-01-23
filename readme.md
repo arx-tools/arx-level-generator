@@ -38,6 +38,10 @@ https://wiki.arx-libertatis.org/Script:Variables
 
 `graph/obj3d/textures/npc_human_base_lali_head.bmp`
 
+### NotHere
+
+`misc/backrooms/ceiling-lamp.blend`
+
 ## notes on formats
 
 make sure that all assets are lowercase
