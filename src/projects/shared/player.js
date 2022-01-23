@@ -22,8 +22,6 @@ ON GAME_READY {
 
 ON INIT {
   ${getInjections("init", self)}
-  SET #DEBUG 0
-  SET §cheat 0
   SET #SHUT_UP 0
   LOADANIM WAIT              "player_wait_short"
   LOADANIM WAIT_SHORT                "player_wait_1st"
@@ -267,34 +265,6 @@ ON INIT {
   SET $TMP "NONE"
   SET &TMP 0
 
-  IF ( §cheat == 1 ) {
-    >>CHEAT
-    RUNE ALL
-    INVENTORY PLAYERADD "Provisions\\Backpack\\Backpack"
-    INVENTORY PLAYERADD "weapons\\dagger_assassin\\dagger_assassin"
-    INVENTORY PLAYERADD "weapons\\long_sword\\long_sword"
-    INVENTORY PLAYERADD "weapons\\sabre_Meteor_enchant\\sabre_Meteor_enchant"
-    INVENTORY PLAYERADD "provisions\\lockpicks\\lockpicks"
-    INVENTORY PLAYERADD "special\\sausageV\\sausageV" 
-    INVENTORY PLAYERADD "special\\deed_chicken\\deed_chicken"
-    INVENTORY PLAYERADD "special\\sausage_demo\\sausage_demo"
-    INVENTORY PLAYERADD "Magic\\Ring_Player\\Ring_Player"
-    INVENTORY PLAYERADD "special\\Trashcan\\Trashcan"
-    INVENTORY PLAYERADD "Provisions\\torch\\torch"
-    INVENTORY PLAYERADD "Provisions\\torch\\torch"
-    INVENTORY PLAYERADD "weapons\\bow\\bow"
-    INVENTORY PLAYERADD "weapons\\arrows\\arrows"
-    INVENTORY PLAYERADD "Armor\\ylside_armor\\ylside_armor"
-    INVENTORY PLAYERADD "Armor\\ylside_leggings\\ylside_leggings"
-    ADDGOLD 200
-  }
-
-  ACCEPT
-}
-
-ON CHEAT {
-  HEROSAY "CHHHHHEEEEEEATER !!!!"
-  GOTO CHEAT
   ACCEPT
 }
 
