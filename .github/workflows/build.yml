@@ -26,6 +26,8 @@ jobs:
         with:
           node-version: ">=17.3.1"
 
+      - run: npm run launcher:build
+
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:

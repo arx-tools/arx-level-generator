@@ -1,10 +1,4 @@
-const {
-  app,
-  BrowserWindow,
-  dialog,
-  ipcMain,
-  ipcRenderer,
-} = require("electron");
+const { app, BrowserWindow, dialog, ipcMain } = require("electron");
 const path = require("path");
 
 let win;
@@ -14,13 +8,13 @@ const createWindow = () => {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, "electron/preload.js"),
+      preload: path.join(__dirname, "./build/app.js"),
     },
   });
 
   // win.setMenu(null);
 
-  win.loadFile(path.join(__dirname, "electron/index.html"));
+  win.loadFile(path.join(__dirname, "./static/index.html"));
 };
 
 app.whenReady().then(() => {

@@ -7,7 +7,19 @@ body {
 
 body {
   font-family: sans-serif;
+}
+
+#app {
+  height: 100%;
   display: flex;
+}
+
+.unselectable {
+  user-select: none;
+}
+
+.hidden {
+  display: none !important;
 }
 
 aside {
@@ -24,15 +36,8 @@ aside ul li {
   padding: 0;
   list-style-type: none;
 }
-aside input {
-  display: none;
-}
 
-label {
-  user-select: none;
-}
-
-aside label {
+aside .MenuItem {
   display: block;
   cursor: pointer;
   height: 50px;
@@ -40,15 +45,11 @@ aside label {
   box-sizing: border-box;
   padding: 0 5px;
 }
-aside label:hover {
+aside .MenuItem:hover {
   background: #ddd;
 }
-aside input:checked + label {
+aside .MenuItem.selected {
   background: #aaa;
-}
-
-.hidden {
-  display: none !important;
 }
 
 main {
@@ -92,9 +93,10 @@ main {
   font-weight: bold;
 }
 
-.page .field input[type="text"] {
+.page .field input[type="text"],
+.page .field input[type="number"] {
   flex: 1;
-  margin: 0 10px;
+  margin: 0 0 0 10px;
   height: 30px;
   border: 1px solid black;
   border-radius: 2px;
@@ -104,7 +106,7 @@ main {
 
 .page .field button {
   padding: 0;
-  margin: 0 auto;
+  margin: 0 0 0 10px;
   display: block;
   height: 30px;
   border: 1px solid black;

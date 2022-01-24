@@ -43,7 +43,7 @@ const compileFTS = (config) => {
           transformSplitBy(
             splitAt(offset),
             transformIdentity(),
-            implode(COMPRESSION_BINARY, DICTIONARY_SIZE_LARGE, { debug: true })
+            implode(COMPRESSION_BINARY, DICTIONARY_SIZE_LARGE, { debug: false })
           )
         ).on("error", reject)
       )
@@ -82,7 +82,7 @@ const compileLLF = (config) => {
           transformSplitBy(
             splitAt(offset),
             transformIdentity(),
-            implode(COMPRESSION_BINARY, DICTIONARY_SIZE_LARGE, { debug: true })
+            implode(COMPRESSION_BINARY, DICTIONARY_SIZE_LARGE, { debug: false })
           )
         ).on("error", reject)
       )
@@ -121,7 +121,7 @@ const compileDLF = (config) => {
           transformSplitBy(
             splitAt(offset),
             transformIdentity(),
-            implode(COMPRESSION_BINARY, DICTIONARY_SIZE_LARGE, { debug: true })
+            implode(COMPRESSION_BINARY, DICTIONARY_SIZE_LARGE, { debug: false })
           )
         ).on("error", reject)
       )
