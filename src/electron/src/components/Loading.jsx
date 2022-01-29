@@ -7,7 +7,12 @@ const Loading = ({ message, isVisible, progressbarPercent, onDoneClick }) => {
       <hr className={`progressbar percent${progressbarPercent}`} />
       <div className="info">
         <p>{message}</p>
-        <button onClick={onDoneClick}>ok</button>
+        <button
+          className={cn({ hidden: progressbarPercent < 100 })}
+          onClick={onDoneClick}
+        >
+          ok
+        </button>
       </div>
     </div>
   );

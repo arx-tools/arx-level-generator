@@ -138,8 +138,7 @@ const exportTextures = (outputDir) => {
     reduce((files, texture) => {
       const filename = `${outputDir}/graph/obj3d/textures/${texture.src}`;
       files[filename] = path.resolve(
-        __dirname,
-        `../../assets/graph/obj3d/textures/${texture.src}`
+        `assets/graph/obj3d/textures/${texture.src}`
       );
       return files;
     }, {}),

@@ -29,16 +29,12 @@ const exportAmbiences = (outputDir) => {
       const filename = `${outputDir}/sfx/ambiance/${ambience.name}.amb`;
 
       files[filename] = path.resolve(
-        __dirname,
-        `../../assets/sfx/ambiance/${ambience.name}.amb`
+        `assets/sfx/ambiance/${ambience.name}.amb`
       );
 
       const tracks = ambience.tracks || [];
       tracks.forEach((track) => {
-        files[`${outputDir}/${track}`] = path.resolve(
-          __dirname,
-          `../../assets/${track}`
-        );
+        files[`${outputDir}/${track}`] = path.resolve(`assets/${track}`);
       });
 
       return files;
