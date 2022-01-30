@@ -30,7 +30,6 @@
   "dependencies": {
     "arx-level-json-converter": "^1.0.5",
     "color-rgba": "^2.3.0",
-    "esbuild": "^0.14.14",
     "nanoid": "^3.2.0",
     "node-pkware": "^1.0.0",
     "ramda": "^0.27.1",
@@ -41,6 +40,7 @@
     "classnames": "^2.3.1",
     "electron": "^16.0.6",
     "electron-builder": "^22.14.5",
+    "esbuild": "^0.14.14",
     "nodemon": "^2.0.15",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
