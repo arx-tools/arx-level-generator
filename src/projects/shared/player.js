@@ -22,22 +22,22 @@ ON GAME_READY {
 
 ON INIT {
   ${getInjections("init", self)}
-  SET #SHUT_UP 0
-  LOADANIM WAIT              "player_wait_short"
-  LOADANIM WAIT_SHORT                "player_wait_1st"
-  LOADANIM WALK                      "human_normal_walk"
-  LOADANIM WALK_MINISTEP             "human_normal_walk_little_steps"
-  LOADANIM STRAFE_RIGHT              "human_normal_strafe_right"
-  LOADANIM STRAFE_LEFT               "human_normal_strafe_left"
-  LOADANIM WALK_BACKWARD             "human_normal_walk_backward"
-  LOADANIM RUN                       "player_normal_run_test"
-  LOADANIM RUN_BACKWARD              "player_normal_run_backward_test"
-  LOADANIM STRAFE_RUN_RIGHT          "player_normal_strafe_run_right"
-  LOADANIM STRAFE_RUN_LEFT           "player_normal_strafe_run_left"
-  LOADANIM U_TURN_LEFT              "player_uturn_left"
-  LOADANIM U_TURN_RIGHT              "player_uturn_right"
-  LOADANIM U_TURN_LEFT_FIGHT         "player_uturn_left_fight"
-  LOADANIM U_TURN_RIGHT_FIGHT        "player_uturn_right_fight"
+
+  LOADANIM WAIT                       "player_wait_short"
+  LOADANIM WAIT_SHORT                 "player_wait_1st"
+  LOADANIM WALK                       "human_normal_walk"
+  LOADANIM WALK_MINISTEP              "human_normal_walk_little_steps"
+  LOADANIM STRAFE_RIGHT               "human_normal_strafe_right"
+  LOADANIM STRAFE_LEFT                "human_normal_strafe_left"
+  LOADANIM WALK_BACKWARD              "human_normal_walk_backward"
+  LOADANIM RUN                        "player_normal_run_test"
+  LOADANIM RUN_BACKWARD               "player_normal_run_backward_test"
+  LOADANIM STRAFE_RUN_RIGHT           "player_normal_strafe_run_right"
+  LOADANIM STRAFE_RUN_LEFT            "player_normal_strafe_run_left"
+  LOADANIM U_TURN_LEFT                "player_uturn_left"
+  LOADANIM U_TURN_RIGHT               "player_uturn_right"
+  LOADANIM U_TURN_LEFT_FIGHT          "player_uturn_left_fight"
+  LOADANIM U_TURN_RIGHT_FIGHT         "player_uturn_right_fight"
   LOADANIM FIGHT_WAIT                 "human_fight_wait_player"
   LOADANIM FIGHT_WALK_FORWARD         "player_fight_walk"
   LOADANIM FIGHT_WALK_BACKWARD        "player_fight_walk_backward"
@@ -55,9 +55,9 @@ ON INIT {
   LOADANIM BARE_STRIKE_BOTTOM_START   "human_fight_attack_noweap_top_start"
   LOADANIM BARE_STRIKE_BOTTOM_CYCLE   "human_fight_attack_noweap_top_cycle"
   LOADANIM BARE_STRIKE_BOTTOM         "human_fight_attack_noweap_top_strike"
-  LOADANIM BARE_STRIKE_TOP_START   "human_fight_attack_noweap_bottom_start"
-  LOADANIM BARE_STRIKE_TOP_CYCLE   "human_fight_attack_noweap_bottom_cycle"
-  LOADANIM BARE_STRIKE_TOP         "human_fight_attack_noweap_bottom_strike"
+  LOADANIM BARE_STRIKE_TOP_START      "human_fight_attack_noweap_bottom_start"
+  LOADANIM BARE_STRIKE_TOP_CYCLE      "human_fight_attack_noweap_bottom_cycle"
+  LOADANIM BARE_STRIKE_TOP            "human_fight_attack_noweap_bottom_strike"
   LOADANIM 1H_READY_PART_1            "human_fight_ready_1handed_start"
   LOADANIM 1H_READY_PART_2            "human_fight_ready_1handed_end"
   LOADANIM 1H_UNREADY_PART_1          "human_fight_unready_1handed_start"
@@ -126,7 +126,6 @@ ON INIT {
   LOADANIM CAST_CYCLE                 "human_castspell_cycle"
   LOADANIM CAST                       "human_castspell_cast"
   LOADANIM CAST_END                   "human_castspell_out"
-  LOADANIM CAST_HOLD                  "human_castspell_hold"
   LOADANIM MEDITATION                 "human_meditation"
   LOADANIM LEVITATE                   "human_levitation"
   LOADANIM CROUCH_START               "human_normal_crouch_in"
@@ -137,11 +136,7 @@ ON INIT {
   LOADANIM CROUCH_WALK                "human_normal_crouch_walk_forward"
   LOADANIM CROUCH_WALK_BACKWARD       "human_normal_crouch_walk_backward"
   LOADANIM LEAN_LEFT                  "human_normal_lean_right_in"
-  LOADANIM LEAN_LEFT_CYCLE            "human_normal_lean_right_cycle"
-  LOADANIM LEAN_LEFT_OUT              "human_normal_lean_right_out"
   LOADANIM LEAN_RIGHT                 "human_normal_lean_left_in"
-  LOADANIM LEAN_RIGHT_CYCLE           "human_normal_lean_left_cycle"
-  LOADANIM LEAN_RIGHT_OUT             "human_normal_lean_left_out"
   LOADANIM JUMP_ANTICIPATION          "human_normal_jump_part1_anticipation"
   LOADANIM JUMP_UP                    "human_normal_jump_part2_jumpup"
   LOADANIM JUMP_CYCLE                 "human_normal_jump_part3_cycleinair"
@@ -149,16 +144,15 @@ ON INIT {
   LOADANIM JUMP_END_PART2             "human_normal_jump_part5_contact_floor"
   LOADANIM HOLD_TORCH                 "human_hold_torch_toponly"
   LOADANIM DIE                        "human_death5"
-  loadanim DEATH_CRITICAL             "human_death_cool"
   LOADANIM HIT                        "human_fight_receive_damage"
   LOADANIM TALK_NEUTRAL               "human_talk_neutral_headonly"
   LOADANIM TALK_ANGRY                 "human_talk_angry_headonly"
-  LOADANIM TALK_HAPPY                 "human_talk_happyneutral_headonly"
 
   SET §fighting_amb 0
   SET §fightnow 0
   SET §vol 0
 
+  SET #SHUT_UP 0
   SET #guitar_player_dead 0  // Used to check if guitar player is dead.
   SET #GOB_JAIL_DEAD 0    // Used to check if first goblin in jail has fallen in the hole.
   SET #gingle_played 0    // Used to know if Gingle Ylside have been played.
