@@ -37,6 +37,82 @@ const App = () => {
     });
   }, []);
 
+  const onRandomizeBtnClick = () => {
+    if (isLoading) {
+      return;
+    }
+
+    setSeed(generateSeed());
+  };
+
+  const onGenerateBtnClick = (settings) => {
+    if (isLoading) {
+      return;
+    }
+
+    setIsLoading(true);
+    setLoadingText("(1/4) Generating level data");
+    setLoadingProgressbarPercent(0);
+    setIsLoadingDoneBtnVisible(false);
+
+    setTimeout(async () => {
+      seedrandom(seed, { global: true });
+
+      const config = {
+        origin: [6000, 0, 6000],
+        levelIdx: 1,
+        seed,
+        outputDir,
+        ...settings,
+      };
+
+      switch (project) {
+        case "the-backrooms":
+          await theBackrooms({
+            ...config,
+            roomDimensions: {
+              width: [1, 5],
+              depth: [1, 5],
+              height: 2,
+            },
+          });
+          break;
+        case "alias-nightmare":
+          await aliasNightmare({
+            ...config,
+          });
+          break;
+      }
+
+      setLoadingText("(2/4) Compiling level mesh");
+      setLoadingProgressbarPercent(25);
+
+      setTimeout(async () => {
+        await compileFTS(config);
+
+        setLoadingText("(3/4) Compiling lighting information");
+        setLoadingProgressbarPercent(50);
+
+        setTimeout(async () => {
+          await compileLLF(config);
+
+          setLoadingText("(4/4) Compiling entities and paths");
+          setLoadingProgressbarPercent(75);
+
+          setTimeout(async () => {
+            await compileDLF(config);
+
+            cleanupCache();
+
+            setLoadingProgressbarPercent(100);
+            setLoadingText("Done!");
+            setIsLoadingDoneBtnVisible(true);
+          }, 100);
+        }, 100);
+      }, 100);
+    }, 100);
+  };
+
   return (
     <>
       <aside>
@@ -64,80 +140,8 @@ const App = () => {
             }}
             seed={seed}
             onSeedChange={(e) => setSeed(e.target.value)}
-            onRandomizeBtnClick={() => {
-              if (isLoading) {
-                return;
-              }
-
-              setSeed(generateSeed());
-            }}
-            onGenerateBtnClick={(settings) => {
-              if (isLoading) {
-                return;
-              }
-
-              setIsLoading(true);
-              setLoadingText("(1/4) Generating level data");
-              setLoadingProgressbarPercent(0);
-              setIsLoadingDoneBtnVisible(false);
-
-              setTimeout(async () => {
-                seedrandom(seed, { global: true });
-
-                const config = {
-                  origin: [6000, 0, 6000],
-                  levelIdx: 1,
-                  seed,
-                  outputDir,
-                  ...settings,
-                };
-
-                switch (project) {
-                  case "the-backrooms":
-                    await theBackrooms({
-                      ...config,
-                      roomDimensions: {
-                        width: [1, 5],
-                        depth: [1, 5],
-                        height: 2,
-                      },
-                    });
-                    break;
-                  case "alias-nightmare":
-                    await aliasNightmare({
-                      ...config,
-                    });
-                    break;
-                }
-
-                setLoadingText("(2/4) Compiling level mesh");
-                setLoadingProgressbarPercent(25);
-
-                setTimeout(async () => {
-                  await compileFTS(config);
-
-                  setLoadingText("(3/4) Compiling lighting information");
-                  setLoadingProgressbarPercent(50);
-
-                  setTimeout(async () => {
-                    await compileLLF(config);
-
-                    setLoadingText("(4/4) Compiling entities and paths");
-                    setLoadingProgressbarPercent(75);
-
-                    setTimeout(async () => {
-                      await compileDLF(config);
-
-                      cleanupCache();
-
-                      setLoadingProgressbarPercent(100);
-                      setLoadingText("Done!");
-                      setIsLoadingDoneBtnVisible(true);
-                    }, 100);
-                  }, 100);
-                }, 100);
-              }, 100);
-            }}
+            onRandomizeBtnClick={onRandomizeBtnClick}
+            onGenerateBtnClick={onGenerateBtnClick}
           />
         ))}
       </main>
