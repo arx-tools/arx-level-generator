@@ -5,9 +5,11 @@ const {
   createRootItem,
   items,
 } = require("../../assets/items");
-const { getInjections } = require("../../scripting");
+const { getInjections, declare } = require("../../scripting");
 
 const overridePlayerScript = () => {
+  declare("int", "TUTORIAL_MAGIC", 100, "global"); // disable magic related tutorial messages in rune_aam.asl
+
   compose(
     markAsUsed,
     addScript((self) => {
@@ -15,6 +17,7 @@ const overridePlayerScript = () => {
 // component: player
 ON INIT {
   ${getInjections("init", self)}
+  ${getInjections("init", "global")}
 
   LOADANIM WAIT                       "player_wait_short"
   LOADANIM WAIT_SHORT                 "player_wait_1st"
@@ -182,6 +185,11 @@ ON EARTH_QUAKE {
 ON CRITICAL {
   HEROSAY [player_dbldmg]
   SPEAK [player_attack_1handed_weap] NOP
+  ACCEPT
+}
+
+ON SETSPEED {
+  SETSPEED ^&PARAM1
   ACCEPT
 }
       `;
