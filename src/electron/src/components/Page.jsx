@@ -1,5 +1,6 @@
 import React from "react";
 import cn from "classnames";
+import Badge from "./Badge.jsx";
 
 const Page = ({
   title,
@@ -12,6 +13,7 @@ const Page = ({
   onSeedChange,
   onRandomizeBtnClick,
   onGenerateBtnClick,
+  isInstalled,
   children,
 }) => {
   return (
@@ -21,7 +23,10 @@ const Page = ({
         background: `url('${background}') no-repeat center center`,
       }}
     >
-      <h1>{title}</h1>
+      <h1>
+        <span>{title}</span>
+        {isInstalled && <Badge>installed</Badge>}
+      </h1>
 
       <div>
         <div className="field">

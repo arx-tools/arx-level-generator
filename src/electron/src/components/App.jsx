@@ -11,20 +11,26 @@ import aliasNightmare from "../../../projects/alias-nightmare/index.js";
 import theBackrooms from "../../../projects/backrooms/index.js";
 import { compileFTS, compileLLF, compileDLF } from "../../../compile.js";
 
-const projects = [
-  {
-    label: "Alia's Nightmare",
-    value: "alias-nightmare",
-    Page: AliasNightmare,
-  },
-  { label: "The Backrooms", value: "the-backrooms", Page: TheBackrooms },
-];
-
 const generateSeed = () => Math.floor(Math.random() * 1e20);
 
 const App = () => {
+  const [projects, setProjects] = useState([
+    {
+      name: "Alia's Nightmare",
+      id: "alias-nightmare",
+      Page: AliasNightmare,
+      isInstalled: false,
+    },
+    {
+      name: "The Backrooms",
+      id: "the-backrooms",
+      Page: TheBackrooms,
+      isInstalled: true,
+    },
+  ]);
+
   const [seed, setSeed] = useState("70448428008674860000"); //generateSeed()
-  const [project, setProject] = useState(projects[1].value);
+  const [project, setProject] = useState(projects[1].id);
   const [outputDir, setOutputDir] = useState(path.resolve("./dist"));
   const [isLoading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
@@ -34,8 +40,26 @@ const App = () => {
   useEffect(() => {
     ipcRenderer.on("output directory changed", (e, folder) => {
       setOutputDir(folder);
+      checkForInstalledMaps(folder);
     });
+
+    checkForInstalledMaps(outputDir);
   }, []);
+
+  const checkForInstalledMaps = (folder) => {
+    let mapName = null;
+    try {
+      mapName = require(`${folder}/manifest.json`).meta.mapName;
+    } catch (e) {}
+
+    setProjects(
+      projects.map((project) => {
+        project.isInstalled =
+          project.name.toLowerCase() === mapName.toLowerCase();
+        return project;
+      })
+    );
+  };
 
   const onRandomizeBtnClick = () => {
     if (isLoading) {
@@ -107,6 +131,7 @@ const App = () => {
             setLoadingProgressbarPercent(100);
             setLoadingText("Done!");
             setIsLoadingDoneBtnVisible(true);
+            checkForInstalledMaps(outputDir);
           }, 100);
         }, 100);
       }, 100);
@@ -117,22 +142,24 @@ const App = () => {
     <>
       <aside>
         <ul>
-          {projects.map(({ label, value }) => (
-            <li key={value}>
+          {projects.map(({ name, id, isInstalled }) => (
+            <li key={id}>
               <MenuItem
-                isSelected={project === value}
-                onClick={() => setProject(value)}
-                label={label}
+                isSelected={project === id}
+                onClick={() => setProject(id)}
+                label={name}
+                badgeLabel="installed"
+                showBadge={isInstalled}
               />
             </li>
           ))}
         </ul>
       </aside>
       <main>
-        {projects.map(({ value, Page }) => (
+        {projects.map(({ id, Page, isInstalled }) => (
           <Page
-            key={value}
-            isVisible={project === value}
+            key={id}
+            isVisible={project === id}
             outputDir={outputDir}
             onOutputDirChange={(e) => setOutputDir(e.target.value)}
             onBrowseBtnClick={() => {
@@ -142,6 +169,7 @@ const App = () => {
             onSeedChange={(e) => setSeed(e.target.value)}
             onRandomizeBtnClick={onRandomizeBtnClick}
             onGenerateBtnClick={onGenerateBtnClick}
+            isInstalled={isInstalled}
           />
         ))}
       </main>
