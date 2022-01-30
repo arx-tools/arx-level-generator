@@ -15,6 +15,11 @@ const createWindow = () => {
   // win.setMenu(null);
 
   win.loadFile(path.join(__dirname, "./static/index.html"));
+
+  win.webContents.on("did-finish-load", () => {
+    const version = require("../../package.json").version;
+    win.setTitle(`Arx Fatalis Level Generator (${version})`);
+  });
 };
 
 app.whenReady().then(() => {
