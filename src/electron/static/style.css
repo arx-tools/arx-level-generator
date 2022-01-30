@@ -231,3 +231,8 @@ button.generate:hover {
   border-radius: 5px;
   color: white;
 }
+
+.uninstallBtn {
+  margin-left: 10px;
+  cursor: pointer;
+}

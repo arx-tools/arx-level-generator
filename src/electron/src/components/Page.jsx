@@ -14,6 +14,7 @@ const Page = ({
   onRandomizeBtnClick,
   onGenerateBtnClick,
   isInstalled,
+  onUninstallBtnClick,
   children,
 }) => {
   return (
@@ -25,7 +26,15 @@ const Page = ({
     >
       <h1>
         <span>{title}</span>
-        {isInstalled && <Badge>installed</Badge>}
+        {isInstalled && (
+          <>
+            <span style={{ flex: 1 }}></span>
+            <Badge>installed</Badge>
+            <button className="uninstallBtn" onClick={onUninstallBtnClick}>
+              Uninstall
+            </button>
+          </>
+        )}
       </h1>
 
       <div>

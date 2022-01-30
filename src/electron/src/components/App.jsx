@@ -1,3 +1,4 @@
+import fs from "fs";
 import React, { useState, useEffect } from "react";
 import AliasNightmare from "../projects/AliasNightmare.jsx";
 import TheBackrooms from "../projects/TheBackrooms.jsx";
@@ -6,7 +7,7 @@ import MenuItem from "./MenuItem.jsx";
 import path from "path";
 import seedrandom from "seedrandom";
 import { ipcRenderer } from "electron";
-import { cleanupCache } from "../../../helpers.js";
+import { cleanupCache, uninstall } from "../../../helpers.js";
 import aliasNightmare from "../../../projects/alias-nightmare/index.js";
 import theBackrooms from "../../../projects/backrooms/index.js";
 import { compileFTS, compileLLF, compileDLF } from "../../../compile.js";
@@ -25,7 +26,7 @@ const App = () => {
       name: "The Backrooms",
       id: "the-backrooms",
       Page: TheBackrooms,
-      isInstalled: true,
+      isInstalled: false,
     },
   ]);
 
@@ -46,16 +47,21 @@ const App = () => {
     checkForInstalledMaps(outputDir);
   }, []);
 
-  const checkForInstalledMaps = (folder) => {
+  const checkForInstalledMaps = async (folder) => {
     let mapName = null;
+
     try {
-      mapName = require(`${folder}/manifest.json`).meta.mapName;
+      const raw = await fs.promises.readFile(
+        `${folder}/manifest.json`,
+        "utf-8"
+      );
+      const manifest = JSON.parse(raw);
+      mapName = manifest.meta.mapName.toLowerCase();
     } catch (e) {}
 
     setProjects(
       projects.map((project) => {
-        project.isInstalled =
-          project.name.toLowerCase() === mapName.toLowerCase();
+        project.isInstalled = project.name.toLowerCase() === mapName;
         return project;
       })
     );
@@ -169,6 +175,20 @@ const App = () => {
             onSeedChange={(e) => setSeed(e.target.value)}
             onRandomizeBtnClick={onRandomizeBtnClick}
             onGenerateBtnClick={onGenerateBtnClick}
+            onUninstallBtnClick={async () => {
+              setIsLoading(true);
+              setLoadingText("Uninstalling level");
+              setLoadingProgressbarPercent(0);
+              setIsLoadingDoneBtnVisible(false);
+              setTimeout(async () => {
+                await uninstall(outputDir);
+
+                setLoadingText("Done!");
+                setLoadingProgressbarPercent(100);
+                setIsLoadingDoneBtnVisible(true);
+                checkForInstalledMaps(outputDir);
+              }, 100);
+            }}
             isInstalled={isInstalled}
           />
         ))}

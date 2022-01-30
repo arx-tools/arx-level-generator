@@ -307,6 +307,18 @@ const generateBlankMapData = (config) => {
   return compose(addOriginPolygon)(mapData);
 };
 
+const uninstall = async (dir) => {
+  try {
+    const manifest = require(`${dir}/manifest.json`);
+    for (let file of manifest.files) {
+      try {
+        await fs.promises.rm(file);
+      } catch (f) {}
+    }
+    await fs.promises.rm(`${dir}/manifest.json`);
+  } catch (e) {}
+};
+
 const saveToDisk = async (mapData) => {
   const { levelIdx } = mapData.config;
 
@@ -320,14 +332,7 @@ const saveToDisk = async (mapData) => {
       await fs.promises.rm("dist", { recursive: true });
     } catch (e) {}
   } else {
-    try {
-      const manifest = require(`${outputDir}/manifest.json`);
-      for (let filename of manifest.files) {
-        try {
-          await fs.promises.rm(`${outputDir}/${filename}`);
-        } catch (f) {}
-      }
-    } catch (e) {}
+    await uninstall(outputDir);
   }
 
   let scripts = exportScripts(outputDir);
@@ -738,4 +743,5 @@ module.exports = {
   rotateVec3,
   circleOfVectors,
   cleanupCache,
+  uninstall,
 };
