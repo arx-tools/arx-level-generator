@@ -95,13 +95,12 @@ const wall = ([x, y, z], face) => {
   };
 };
 
-const addLamp =
-  (pos, angle, config = {}) =>
-  (mapData) => {
+const addLamp = (pos, angle, config = {}) => {
+  return (mapData) => {
     const isOn = config.on ?? false;
-    createCeilingLamp(pos, angle, { on: isOn });
+    const lampEntity = createCeilingLamp(pos, angle, { on: isOn });
 
-    return compose(
+    compose(
       addLight(move(0, 20, 0, pos), {
         fallstart: 100,
         fallend: 800,
@@ -119,7 +118,10 @@ const addLamp =
       }),
       setColor("khaki")
     )(mapData);
+
+    return lampEntity;
   };
+};
 
 const createWelcomeMarker = (pos, config) => {
   return compose(
@@ -140,6 +142,65 @@ ON INIT {
       "projects/backrooms/loading.bmp",
       `graph/levels/level${config.levelIdx}/loading.bmp`
     ),
+    createItem
+  )(items.marker);
+};
+
+const createJumpscareController = (pos, config) => {
+  return compose(
+    markAsUsed,
+    moveTo(pos, [0, 0, 0]),
+    addScript((self) => {
+      return `
+// component jumpscareController
+ON INIT {
+  ${getInjections("init", self)}
+  ACCEPT
+}
+      `;
+    }),
+    createItem
+  )(items.marker);
+};
+
+const createLampController = (pos, lamps, config) => {
+  return compose(
+    markAsUsed,
+    moveTo(pos, [0, 0, 0]),
+    addScript((self) => {
+      return `
+// component lampController
+ON INIT {
+  ${getInjections("init", self)}
+  ACCEPT
+}
+
+ON SAVE {
+  ${lamps.map(({ ref }) => `SENDEVENT SAVE ${ref} NOP`).join(`\n  `)}
+  ACCEPT
+}
+
+ON RESTORE {
+  ${lamps.map(({ ref }) => `SENDEVENT RESTORE ${ref} NOP`).join(`\n  `)}
+  ACCEPT
+}
+
+ON ON {
+  ${lamps.map(({ ref }) => `SENDEVENT ON ${ref} NOP`).join(`\n  `)}
+  ACCEPT
+}
+
+ON OFF {
+  ${lamps.map(({ ref }) => `SENDEVENT OFF ${ref} NOP`).join(`\n  `)}
+  ACCEPT
+}
+
+ON RANDOM {
+  ${lamps.map(({ ref }) => `SENDEVENT RANDOM ${ref} NOP`).join(`\n  `)}
+  ACCEPT
+}
+      `;
+    }),
     createItem
   )(items.marker);
 };
@@ -431,6 +492,8 @@ const generate = async (config) => {
       const walls = [];
       const floors = [];
 
+      const lamps = [];
+
       for (let y = 0; y < grid.length; y++) {
         for (let x = 0; x < grid[y].length; x++) {
           if (isOccupied(x, y, grid)) {
@@ -440,7 +503,7 @@ const generate = async (config) => {
             const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100;
 
             if (x % 3 === 0 && y % 3 === 0) {
-              addLamp(
+              const lamp = addLamp(
                 [
                   left + x * UNIT - 50 + offsetX,
                   -(config.roomDimensions.height * UNIT - 10),
@@ -451,6 +514,8 @@ const generate = async (config) => {
                   on: Math.random() < 0.1,
                 }
               )(mapData);
+
+              lamps.push(lamp);
             } else {
               if (Math.random() < 0.05) {
                 createCeilingDiffuser([
@@ -527,6 +592,9 @@ const generate = async (config) => {
         rotate,
         key
       );
+
+      createLampController([10, 0, 10], lamps, config);
+      createJumpscareController([-10, 0, -10], config);
 
       return mapData;
     },

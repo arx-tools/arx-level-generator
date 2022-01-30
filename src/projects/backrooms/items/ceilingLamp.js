@@ -36,12 +36,6 @@ ON INITEND {
   if (${self.state.isOn} == 1) {
     TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-on"
     PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
-
-    // IF (^RND_100 >= 5) {
-    //   SET #BURNOUT_TIMER ~^RND_120~
-    //   INC #BURNOUT_TIMER 30
-    //   TIMERautooff 1 ~#BURNOUT_TIMER~ SENDEVENT OFF SELF ""
-    // }
   } else {
     TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-off"
   }
@@ -61,8 +55,31 @@ ON OFF {
   ACCEPT
 }
 
+ON SAVE {
+  SET ${self.state.savedIsOn} ${self.state.isOn}
+  ACCEPT
+}
+
+ON RESTORE {
+  SET ${self.state.isOn} ${self.state.savedIsOn}
+  GOTO SWITCH
+  ACCEPT
+}
+
+ON RANDOM {
+  IF (^RND_100 > 50) {
+    SET ${self.state.isOn} 1
+  } ELSE {
+    SET ${self.state.isOn} 0
+  }
+  GOTO SWITCH
+  ACCEPT
+}
+
 ON SPELLCAST {
-  IF (^SENDER != PLAYER) ACCEPT
+  IF (^SENDER != PLAYER) {
+    ACCEPT
+  }
 
   IF (^$PARAM1 == lightning_strike) {
     SET ${self.state.lightningWasCast} 1
@@ -97,12 +114,6 @@ ON HIT {
     PLAY "fluorescent-lamp-startup"
     PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
     TIMERon -m 1 1500 GOSUB TURN_ON
-
-    // IF (^RND_100 >= 5) {
-    //   SET #BURNOUT_TIMER ~^RND_120~
-    //   INC #BURNOUT_TIMER 30
-    //   TIMERautooff 1 ~#BURNOUT_TIMER~ SENDEVENT OFF SELF ""
-    // }
   } else {
     SPELLCAST -smfx 1 DOUSE self
     TIMERoff -m 1 500 GOSUB TURN_OFF
@@ -126,6 +137,7 @@ ON HIT {
     }),
     declare("int", "isOn", 0),
     declare("int", "oldIsOn", -1),
+    declare("int", "savedIsOn", -1),
     declare("int", "lightningWasCast", 0),
     addDependency("sfx/fluorescent-lamp-plink.wav"),
     addDependency("sfx/fluorescent-lamp-startup.wav"),
