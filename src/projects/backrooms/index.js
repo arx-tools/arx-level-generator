@@ -10,6 +10,7 @@
  *   nem lehet level 0-nál lightningbolt-ot ellőni: https://github.com/arx/ArxLibertatis/blob/master/src/game/Spells.cpp#L742
  *
  * Neon light sound effects: https://www.youtube.com/watch?v=UKoktRXJZLM (Peter Seeba)
+ * Glass popping sound effects: https://www.youtube.com/watch?v=6nKbpLUpqiQ (SOUND EFFECT EN & FR)
  */
 
 const { compose } = require("ramda");
@@ -43,7 +44,6 @@ const {
   items,
   addDependencyAs,
   addDependency,
-  createRootItem,
 } = require("../../assets/items");
 const { getInjections, declare, color } = require("../../scripting");
 const { generateGrid, addRoom, getRadius, isOccupied } = require("./rooms");
@@ -141,6 +141,14 @@ ON INIT {
     addDependencyAs(
       "projects/backrooms/loading.bmp",
       `graph/levels/level${config.levelIdx}/loading.bmp`
+    ),
+    addDependencyAs(
+      "projects/backrooms/no-sound.wav",
+      "sfx/magic_spell_ignite.wav"
+    ),
+    addDependencyAs(
+      "projects/backrooms/no-sound.wav",
+      "sfx/magic_spell_douse.wav"
     ),
     createItem
   )(items.marker);

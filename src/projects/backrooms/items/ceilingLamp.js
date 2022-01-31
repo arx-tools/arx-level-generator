@@ -7,6 +7,7 @@ const {
   moveTo,
   createRootItem,
   addDependency,
+  addDependencyAs,
 } = require("../../../assets/items");
 const { useTexture, textures } = require("../../../assets/textures");
 const { getInjections, declare } = require("../../../scripting");
@@ -138,6 +139,14 @@ ON HIT {
   TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-off"
   if (${self.state.muted} == 0) {
     PLAY -s "fluorescent-lamp-hum" // [s] = stop (only if unique)
+    SET #TMP ^RND_100
+    IF (#TMP < 33) {
+      PLAY "glass-pop-1"
+    } ELSE IF (#TMP < 66) {
+      PLAY "glass-pop-2"
+    } ELSE {
+      PLAY "glass-pop-3"
+    }
   }
   RETURN
 }
@@ -196,6 +205,18 @@ ON UNMUTE {
     addDependency("sfx/fluorescent-lamp-plink.wav"),
     addDependency("sfx/fluorescent-lamp-startup.wav"),
     addDependency("sfx/fluorescent-lamp-hum.wav"),
+    addDependencyAs(
+      "projects/backrooms/glass-pop-1.wav",
+      "sfx/glass-pop-1.wav"
+    ),
+    addDependencyAs(
+      "projects/backrooms/glass-pop-2.wav",
+      "sfx/glass-pop-2.wav"
+    ),
+    addDependencyAs(
+      "projects/backrooms/glass-pop-3.wav",
+      "sfx/glass-pop-3.wav"
+    ),
     createRootItem
   )(itemDesc, {
     name: "Ceiling Lamp",
