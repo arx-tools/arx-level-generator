@@ -114,7 +114,7 @@ ON HIT {
   if (${self.state.isOn} == 1) {
     SPELLCAST -smfx 1 IGNIT self // [s] = no anim, [m] = no draw, [f] = no mana required, [x] = no sound
     if (${self.state.muted} == 0) {
-      PLAY -i "fluorescent-lamp-startup"
+      PLAY "fluorescent-lamp-startup"
       PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
     }
     TIMERon -m 1 1500 GOSUB TURN_ON
@@ -129,7 +129,7 @@ ON HIT {
 >>TURN_ON {
   TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-on"
   if (${self.state.muted} == 0) {
-    PLAY -i "fluorescent-lamp-plink"
+    PLAY "fluorescent-lamp-plink"
   }
   RETURN
 }
@@ -171,13 +171,17 @@ ON UNMUTE {
 }
 
 >>MUTE {
-  // TODO
+  PLAY -s "fluorescent-lamp-hum"
+  PLAY -s "fluorescent-lamp-startup"
+  PLAY -s "fluorescent-lamp-plink"
 
   RETURN
 }
 
 >>UNMUTE {
-  // TODO
+  IF (${self.state.isOn} == 1) {
+    PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
+  }
 
   RETURN
 }

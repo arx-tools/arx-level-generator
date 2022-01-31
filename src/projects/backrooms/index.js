@@ -199,6 +199,16 @@ ON RANDOM {
   ${lamps.map(({ ref }) => `SENDEVENT RANDOM ${ref} NOP`).join(`\n  `)}
   ACCEPT
 }
+
+ON MUTE {
+  ${lamps.map(({ ref }) => `SENDEVENT MUTE ${ref} NOP`).join(`\n  `)}
+  ACCEPT
+}
+
+ON UNMUTE {
+  ${lamps.map(({ ref }) => `SENDEVENT UNMUTE ${ref} NOP`).join(`\n  `)}
+  ACCEPT
+}
       `;
     }),
     createItem
@@ -223,7 +233,7 @@ ON INIT {
   )(items.magic.rune);
 };
 
-const createExit = (pos, angle = [0, 0, 0], key) => {
+const createExit = (pos, angle = [0, 0, 0], key, lampController) => {
   return compose(
     markAsUsed,
     moveTo(pos, angle),
@@ -254,6 +264,7 @@ ON ACTION {
 }
 
 >>OUTRO {
+  TIMERmute -m 1 1500 SENDEVENT MUTE ${lampController.ref} NOP
   PLAYERINTERFACE HIDE
   SETPLAYERCONTROLS OFF
   TIMERfadeout -m 1 700 WORLDFADE OUT 300 ${color("khaki")}
@@ -587,14 +598,15 @@ const generate = async (config) => {
           break;
       }
 
+      const lampController = createLampController([10, 0, 10], lamps, config);
+      createJumpscareController([-10, 0, -10], config);
+
       createExit(
         move(...translate, [left + wallX * UNIT, 0, -(top + wallZ * UNIT)]),
         rotate,
-        key
+        key,
+        lampController
       );
-
-      createLampController([10, 0, 10], lamps, config);
-      createJumpscareController([-10, 0, -10], config);
 
       return mapData;
     },
