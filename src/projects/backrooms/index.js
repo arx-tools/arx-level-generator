@@ -151,6 +151,10 @@ ON INIT {
       "projects/backrooms/no-sound.wav",
       "sfx/magic_spell_douse.wav"
     ),
+    addDependencyAs(
+      "projects/backrooms/no-sound.wav",
+      "sfx/player_level_up.wav"
+    ),
     createItem
   )(items.marker);
 };

@@ -112,16 +112,21 @@ ON HIT {
 
   SET ${self.state.oldIsOn} ${self.state.isOn}
 
+  SET #ANIMATION_END ^RND_5
+  DEC #ANIMATION_END 1
+  MUL #ANIMATION_END 120
+  INC #ANIMATION_END 500
+
   if (${self.state.isOn} == 1) {
     SPELLCAST -smfx 1 IGNIT self // [s] = no anim, [m] = no draw, [f] = no mana required, [x] = no sound
     if (${self.state.muted} == 0) {
       PLAY "fluorescent-lamp-startup"
       PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
     }
-    TIMERon -m 1 500 GOSUB TURN_ON
+    TIMERon -m 1 #ANIMATION_END GOSUB TURN_ON
   } else {
     SPELLCAST -smfx 1 DOUSE self
-    TIMERoff -m 1 500 GOSUB TURN_OFF
+    TIMERoff -m 1 #ANIMATION_END GOSUB TURN_OFF
   }
 
   ACCEPT
