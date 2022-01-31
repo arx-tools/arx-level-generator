@@ -35,7 +35,9 @@ ON INITEND {
 
   if (${self.state.isOn} == 1) {
     TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-on"
-    PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
+    if (${self.state.muted} == 0) {
+      PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
+    }
   } else {
     TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-off"
   }
@@ -111,8 +113,10 @@ ON HIT {
 
   if (${self.state.isOn} == 1) {
     SPELLCAST -smfx 1 IGNIT self // [s] = no anim, [m] = no draw, [f] = no mana required, [x] = no sound
-    PLAY "fluorescent-lamp-startup"
-    PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
+    if (${self.state.muted} == 0) {
+      PLAY -i "fluorescent-lamp-startup"
+      PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
+    }
     TIMERon -m 1 1500 GOSUB TURN_ON
   } else {
     SPELLCAST -smfx 1 DOUSE self
@@ -124,13 +128,57 @@ ON HIT {
 
 >>TURN_ON {
   TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-on"
-  PLAY "fluorescent-lamp-plink"
+  if (${self.state.muted} == 0) {
+    PLAY -i "fluorescent-lamp-plink"
+  }
   RETURN
 }
 
 >>TURN_OFF {
   TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-off"
-  PLAY -s "fluorescent-lamp-hum" // [s] = stop (only if unique)
+  if (${self.state.muted} == 0) {
+    PLAY -s "fluorescent-lamp-hum" // [s] = stop (only if unique)
+  }
+  RETURN
+}
+
+ON MUTE {
+  SET ${self.state.muted} 1
+  GOTO VOLUME
+  ACCEPT
+}
+
+ON UNMUTE {
+  SET ${self.state.muted} 0
+  GOTO VOLUME
+  ACCEPT
+}
+
+>>VOLUME {
+  if (${self.state.muted} == ${self.state.oldMuted}) {
+    ACCEPT
+  }
+
+  SET ${self.state.oldMuted} ${self.state.muted}
+
+  IF (${self.state.muted} == 1) {
+    GOSUB MUTE
+  } ELSE {
+    GOSUB UNMUTE
+  }
+
+  ACCEPT
+}
+
+>>MUTE {
+  // TODO
+
+  RETURN
+}
+
+>>UNMUTE {
+  // TODO
+
   RETURN
 }
       `;
@@ -139,6 +187,8 @@ ON HIT {
     declare("int", "oldIsOn", -1),
     declare("int", "savedIsOn", -1),
     declare("int", "lightningWasCast", 0),
+    declare("int", "muted", 0),
+    declare("int", "oldMuted", -1),
     addDependency("sfx/fluorescent-lamp-plink.wav"),
     addDependency("sfx/fluorescent-lamp-startup.wav"),
     addDependency("sfx/fluorescent-lamp-hum.wav"),
