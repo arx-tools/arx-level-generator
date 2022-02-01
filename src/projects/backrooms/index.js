@@ -144,15 +144,15 @@ ON INIT {
       `graph/levels/level${config.levelIdx}/loading.bmp`
     ),
     addDependencyAs(
-      "projects/backrooms/no-sound.wav",
+      "projects/backrooms/sfx/no-sound.wav",
       "sfx/magic_spell_ignite.wav"
     ),
     addDependencyAs(
-      "projects/backrooms/no-sound.wav",
+      "projects/backrooms/sfx/no-sound.wav",
       "sfx/magic_spell_douse.wav"
     ),
     addDependencyAs(
-      "projects/backrooms/no-sound.wav",
+      "projects/backrooms/sfx/no-sound.wav",
       "sfx/player_level_up.wav"
     ),
     createItem
@@ -241,7 +241,10 @@ ON ACTION {
     declare("string", "key", key.ref),
     declare("int", "open", 0),
     declare("int", "unlock", 0),
-    addDependency("sfx/backrooms-outro.wav"),
+    addDependencyAs(
+      "projects/backrooms/sfx/backrooms-outro.wav",
+      "sfx/backrooms-outro.wav"
+    ),
     createItem
   )(items.doors.lightDoor, { name: "unmarked fire exit" });
 };
@@ -314,7 +317,7 @@ ON INVENTORYUSE {
       `;
     }),
     addDependencyAs(
-      "projects/backrooms/almondwater.bmp",
+      "projects/backrooms/sfx/almondwater.bmp",
       "graph/obj3d/interactive/items/magic/potion_mana/potion_mana[icon].bmp"
     ),
     declare("string", "variant", variant),

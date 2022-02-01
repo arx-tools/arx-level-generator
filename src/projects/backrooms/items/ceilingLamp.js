@@ -222,19 +222,28 @@ ON UNMUTE {
     declare("int", "lightningWasCast", 0),
     declare("int", "muted", 0),
     declare("int", "oldMuted", -1),
-    addDependency("sfx/fluorescent-lamp-plink.wav"),
-    addDependency("sfx/fluorescent-lamp-startup.wav"),
-    addDependency("sfx/fluorescent-lamp-hum.wav"),
     addDependencyAs(
-      "projects/backrooms/glass-pop-1.wav",
+      "projects/backrooms/sfx/fluorescent-lamp-plink.wav",
+      "sfx/fluorescent-lamp-plink.wav"
+    ),
+    addDependencyAs(
+      "projects/backrooms/sfx/fluorescent-lamp-startup.wav",
+      "sfx/fluorescent-lamp-startup.wav"
+    ),
+    addDependencyAs(
+      "projects/backrooms/sfx/fluorescent-lamp-hum.wav",
+      "sfx/fluorescent-lamp-hum.wav"
+    ),
+    addDependencyAs(
+      "projects/backrooms/sfx/glass-pop-1.wav",
       "sfx/glass-pop-1.wav"
     ),
     addDependencyAs(
-      "projects/backrooms/glass-pop-2.wav",
+      "projects/backrooms/sfx/glass-pop-2.wav",
       "sfx/glass-pop-2.wav"
     ),
     addDependencyAs(
-      "projects/backrooms/glass-pop-3.wav",
+      "projects/backrooms/sfx/glass-pop-3.wav",
       "sfx/glass-pop-3.wav"
     ),
     createRootItem
