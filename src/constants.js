@@ -1,3 +1,5 @@
+const path = require("path");
+
 // flags for polygons
 const POLY_NO_SHADOW = 0x1;
 const POLY_DOUBLESIDED = 0x2;
@@ -68,7 +70,9 @@ const PLAYER_HEIGHT_ADJUSTMENT = -140;
 const ISLAND_JOINT_LENGTH = 5;
 const ISLAND_JOINT_WIDTH = 3;
 
-const ASSETS_FOLDER = path.resolve(__dirname, "./assets");
+const ASSETS_FOLDER = path.resolve("./assets");
+
+console.log(ASSETS_FOLDER);
 
 module.exports = {
   POLY_NO_SHADOW,
