@@ -112,35 +112,50 @@ ON HIT {
 
   SET ${self.state.oldIsOn} ${self.state.isOn}
 
-  SET #ANIMATION_END ^RND_5
-  DEC #ANIMATION_END 1
-  MUL #ANIMATION_END 120
-  INC #ANIMATION_END 500
-
   if (${self.state.isOn} == 1) {
-    SPELLCAST -smfx 1 IGNIT self // [s] = no anim, [m] = no draw, [f] = no mana required, [x] = no sound
-    if (${self.state.muted} == 0) {
-      PLAY "fluorescent-lamp-startup"
-      PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
-    }
-    TIMERon -m 1 #ANIMATION_END GOSUB TURN_ON
+    SET #ANIM ^RND_5
+    DEC #ANIM 1
+    MUL #ANIM 120
+    SET #ANIM2 #ANIM1
+    INC #ANIM2 500
+    TIMERonStart -m 1 #ANIM GOSUB TURN_ON_START
+    TIMERonEnd -m 1 #ANIM2 GOSUB TURN_ON_END
   } else {
-    SPELLCAST -smfx 1 DOUSE self
-    TIMERoff -m 1 #ANIMATION_END GOSUB TURN_OFF
+    SET #ANIM ^RND_5
+    DEC #ANIM 1
+    MUL #ANIM 120
+    SET #ANIM2 #ANIM1
+    INC #ANIM2 500
+    TIMERoffStart -m 1 #ANIM GOSUB TURN_OFF_START
+    TIMERoffEnd -m 1 #ANIM2 GOSUB TURN_OFF_END
   }
 
   ACCEPT
 }
 
->>TURN_ON {
+>>TURN_ON_START {
+  SPELLCAST -smfx 1 IGNIT self // [s] = no anim, [m] = no draw, [f] = no mana required, [x] = no sound
+  if (${self.state.muted} == 0) {
+    PLAY "fluorescent-lamp-startup"
+  }
+  RETURN
+}
+
+>>TURN_ON_END {
   TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-on"
   if (${self.state.muted} == 0) {
+    PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
     PLAY "fluorescent-lamp-plink"
   }
   RETURN
 }
 
->>TURN_OFF {
+>>TURN_OFF_START {
+  SPELLCAST -smfx 1 DOUSE self
+  RETURN
+}
+
+>>TURN_OFF_END {
   TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-off"
   if (${self.state.muted} == 0) {
     PLAY -s "fluorescent-lamp-hum" // [s] = stop (only if unique)
