@@ -9,7 +9,7 @@ import seedrandom from "seedrandom";
 import { ipcRenderer } from "electron";
 import { cleanupCache, uninstall } from "../../../helpers.js";
 import aliasNightmare from "../../../projects/alias-nightmare/index.js";
-import theBackrooms from "../../../projects/backrooms/index.js";
+import theBackrooms from "../../../projects/the-backrooms/index.js";
 import { compileFTS, compileLLF, compileDLF } from "../../../compile.js";
 
 const generateSeed = () => Math.floor(Math.random() * 1e20);

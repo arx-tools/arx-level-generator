@@ -7,7 +7,7 @@ const TheBackrooms = ({ onGenerateBtnClick, ...props }) => {
   return (
     <Page
       title="The Backrooms"
-      background="previews/backrooms.png"
+      background="previews/the-backrooms.png"
       onGenerateBtnClick={(config) => {
         onGenerateBtnClick({ numberOfRooms, ...config });
       }}

@@ -40,7 +40,7 @@ https://wiki.arx-libertatis.org/Script:Variables
 
 ### NotHere
 
-`misc/backrooms/ceiling-lamp.blend`
+`misc/the-backrooms/ceiling-lamp.blend`
 
 ## notes on formats
 

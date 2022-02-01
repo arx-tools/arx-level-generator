@@ -1,7 +1,7 @@
 const seedrandom = require("seedrandom");
 
 const aliasNightmare = require("./projects/alias-nightmare/index.js");
-const theBackrooms = require("./projects/backrooms/index.js");
+const theBackrooms = require("./projects/the-backrooms/index.js");
 
 (async () => {
   // const seed = Math.floor(Math.random() * 1e20);
@@ -15,10 +15,10 @@ const theBackrooms = require("./projects/backrooms/index.js");
     seed,
   };
 
-  const project = "backrooms";
+  const project = "the-backrooms";
 
   switch (project) {
-    case "backrooms":
+    case "the-backrooms":
       await theBackrooms({
         ...config,
         numberOfRooms: 20,

@@ -223,27 +223,27 @@ ON UNMUTE {
     declare("int", "muted", 0),
     declare("int", "oldMuted", -1),
     addDependencyAs(
-      "projects/backrooms/sfx/fluorescent-lamp-plink.wav",
+      "projects/the-backrooms/sfx/fluorescent-lamp-plink.wav",
       "sfx/fluorescent-lamp-plink.wav"
     ),
     addDependencyAs(
-      "projects/backrooms/sfx/fluorescent-lamp-startup.wav",
+      "projects/the-backrooms/sfx/fluorescent-lamp-startup.wav",
       "sfx/fluorescent-lamp-startup.wav"
     ),
     addDependencyAs(
-      "projects/backrooms/sfx/fluorescent-lamp-hum.wav",
+      "projects/the-backrooms/sfx/fluorescent-lamp-hum.wav",
       "sfx/fluorescent-lamp-hum.wav"
     ),
     addDependencyAs(
-      "projects/backrooms/sfx/glass-pop-1.wav",
+      "projects/the-backrooms/sfx/glass-pop-1.wav",
       "sfx/glass-pop-1.wav"
     ),
     addDependencyAs(
-      "projects/backrooms/sfx/glass-pop-2.wav",
+      "projects/the-backrooms/sfx/glass-pop-2.wav",
       "sfx/glass-pop-2.wav"
     ),
     addDependencyAs(
-      "projects/backrooms/sfx/glass-pop-3.wav",
+      "projects/the-backrooms/sfx/glass-pop-3.wav",
       "sfx/glass-pop-3.wav"
     ),
     createRootItem

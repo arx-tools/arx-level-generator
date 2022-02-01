@@ -140,19 +140,19 @@ ON INIT {
     }),
     addDependency("graph/levels/level1/map.bmp"),
     addDependencyAs(
-      "projects/backrooms/loading.bmp",
+      "projects/the-backrooms/loading.bmp",
       `graph/levels/level${config.levelIdx}/loading.bmp`
     ),
     addDependencyAs(
-      "projects/backrooms/sfx/no-sound.wav",
+      "projects/the-backrooms/sfx/no-sound.wav",
       "sfx/magic_spell_ignite.wav"
     ),
     addDependencyAs(
-      "projects/backrooms/sfx/no-sound.wav",
+      "projects/the-backrooms/sfx/no-sound.wav",
       "sfx/magic_spell_douse.wav"
     ),
     addDependencyAs(
-      "projects/backrooms/sfx/no-sound.wav",
+      "projects/the-backrooms/sfx/no-sound.wav",
       "sfx/player_level_up.wav"
     ),
     createItem
@@ -242,7 +242,7 @@ ON ACTION {
     declare("int", "open", 0),
     declare("int", "unlock", 0),
     addDependencyAs(
-      "projects/backrooms/sfx/backrooms-outro.wav",
+      "projects/the-backrooms/sfx/backrooms-outro.wav",
       "sfx/backrooms-outro.wav"
     ),
     createItem
@@ -317,7 +317,7 @@ ON INVENTORYUSE {
       `;
     }),
     addDependencyAs(
-      "projects/backrooms/sfx/almondwater.bmp",
+      "projects/the-backrooms/almondwater.bmp",
       "graph/obj3d/interactive/items/magic/potion_mana/potion_mana[icon].bmp"
     ),
     declare("string", "variant", variant),
