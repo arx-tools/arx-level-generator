@@ -1,5 +1,6 @@
 const { app, BrowserWindow, dialog, ipcMain } = require("electron");
 const path = require("path");
+const { setAssetsFolder, getAssetsFolder } = require("../constants");
 
 let win;
 
@@ -12,8 +13,6 @@ const createWindow = () => {
     },
   });
 
-  // win.setMenu(null);
-
   win.loadFile(path.join(__dirname, "./static/index.html"));
 
   win.webContents.on("did-finish-load", () => {
@@ -23,6 +22,8 @@ const createWindow = () => {
 };
 
 app.whenReady().then(() => {
+  setAssetsFolder(path.resolve(app.getAppPath(), "../../assets"));
+
   createWindow();
 
   app.on("activate", () => {

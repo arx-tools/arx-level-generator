@@ -24,7 +24,7 @@ const {
   uniq,
 } = require("ramda");
 const { padCharsStart, isFunction, isObject } = require("ramda-adjunct");
-const { PLAYER_HEIGHT_ADJUSTMENT, ASSETS_FOLDER } = require("../constants");
+const { PLAYER_HEIGHT_ADJUSTMENT, getAssetsFolder } = require("../constants");
 
 const items = {
   marker: {
@@ -316,11 +316,11 @@ const exportDependencies = (outputDir) => {
         const { dir: dir2, name: name2, ext: ext2 } = path.parse(source);
         files[
           `${outputDir}/${dir1}/${name1}${ext1}`
-        ] = `${ASSETS_FOLDER}/${dir2}/${name2}${ext2}`;
+        ] = `${getAssetsFolder()}/${dir2}/${name2}${ext2}`;
       } else {
         const { dir, name, ext } = path.parse(filename);
         const target = `${outputDir}/${dir}/${name}${ext}`;
-        files[target] = `${ASSETS_FOLDER}/${dir}/${name}${ext}`;
+        files[target] = `${getAssetsFolder()}/${dir}/${name}${ext}`;
       }
 
       return files;

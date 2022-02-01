@@ -70,9 +70,13 @@ const PLAYER_HEIGHT_ADJUSTMENT = -140;
 const ISLAND_JOINT_LENGTH = 5;
 const ISLAND_JOINT_WIDTH = 3;
 
-const ASSETS_FOLDER = path.resolve("./assets");
+let assetsFolder = path.resolve("./assets");
 
-console.log(ASSETS_FOLDER);
+const getAssetsFolder = () => assetsFolder;
+
+const setAssetsFolder = (folder) => {
+  assetsFolder = folder;
+};
 
 module.exports = {
   POLY_NO_SHADOW,
@@ -135,5 +139,6 @@ module.exports = {
   ISLAND_JOINT_LENGTH,
   ISLAND_JOINT_WIDTH,
 
-  ASSETS_FOLDER,
+  getAssetsFolder,
+  setAssetsFolder,
 };
