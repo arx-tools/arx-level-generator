@@ -1,5 +1,6 @@
 const { compose, clone, filter, propEq, reduce, uniq } = require("ramda");
 const path = require("path");
+const { ASSETS_FOLDER } = require("../constants");
 
 const ambiences = {
   none: {
@@ -28,13 +29,11 @@ const exportAmbiences = (outputDir) => {
     reduce((files, ambience) => {
       const filename = `${outputDir}/sfx/ambiance/${ambience.name}.amb`;
 
-      files[filename] = path.resolve(
-        `assets/sfx/ambiance/${ambience.name}.amb`
-      );
+      files[filename] = `${ASSETS_FOLDER}/sfx/ambiance/${ambience.name}.amb`;
 
       const tracks = ambience.tracks || [];
       tracks.forEach((track) => {
-        files[`${outputDir}/${track}`] = path.resolve(`assets/${track}`);
+        files[`${outputDir}/${track}`] = `${ASSETS_FOLDER}/${track}`;
       });
 
       return files;
