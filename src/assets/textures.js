@@ -10,7 +10,7 @@ const {
   reduce,
   uniq,
 } = require("ramda");
-const { getAssetsFolder } = require("../constants");
+const { getRootPath } = require("../../rootpath");
 
 const textures = {
   none: null,
@@ -137,7 +137,7 @@ const exportTextures = (outputDir) => {
   return compose(
     reduce((files, texture) => {
       const filename = `${outputDir}/graph/obj3d/textures/${texture.src}`;
-      files[filename] = `${getAssetsFolder()}/graph/obj3d/textures/${
+      files[filename] = `${getRootPath()}/assets/graph/obj3d/textures/${
         texture.src
       }`;
       return files;
