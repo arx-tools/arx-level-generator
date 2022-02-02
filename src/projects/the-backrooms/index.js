@@ -436,7 +436,7 @@ const generate = async (config) => {
   createWelcomeMarker([0, 0, 0], config);
 
   const runes = ["aam", "folgora", "taar"];
-  circleOfVectors([0, 0, 0], 130, 3).forEach((pos, idx) => {
+  circleOfVectors([0, 0, UNIT / 2], 40, 3).forEach((pos, idx) => {
     createRune(runes[idx], pos, [0, 0, 0]);
   });
 
@@ -518,7 +518,7 @@ const generate = async (config) => {
       }
 
       const [wallX, wallZ, wallFace] = pickRandoms(1, walls)[0];
-      const [[keyX, keyZ], ...manaSlots] = pickRandoms(
+      const [[keyX, keyZ], ...lootSlot] = pickRandoms(
         Math.floor(mapData.config.numberOfRooms / 3) + 5,
         floors
       );
@@ -529,7 +529,12 @@ const generate = async (config) => {
         -(top + keyZ * UNIT) - 50,
       ]);
 
-      manaSlots.forEach(([x, z]) => {
+      const loots = [
+        (pos) => createAlmondWater(pos, [0, 0, 0], getAlmondWaterVariant()),
+        // TODO: more loot
+      ];
+
+      lootSlot.forEach(([x, z]) => {
         const offsetX = Math.floor(randomBetween(0, UNIT / 100)) * 100;
         const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100;
         const pos = [
@@ -537,7 +542,7 @@ const generate = async (config) => {
           0,
           -(top + z * UNIT) - 50 + offsetZ,
         ];
-        createAlmondWater(pos, [0, 0, 0], getAlmondWaterVariant());
+        pickRandoms(1, loots)(pos);
       });
 
       let translate = [0, 0, 0];
