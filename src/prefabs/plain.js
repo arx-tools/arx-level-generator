@@ -16,7 +16,7 @@ const { isEmptyArray } = require("ramda-adjunct");
 
 // pos is relative to origin
 const plain =
-  (pos, size, facing = "floor", onBeforeBumping = identity) =>
+  (pos, size, facing = "floor", onBeforeBumping = identity, config = {}) =>
   (mapData) => {
     const { origin } = mapData.config;
 
@@ -42,17 +42,12 @@ const plain =
 
     for (let j = 0; j < sizeZ; j++) {
       for (let i = 0; i < sizeX; i++) {
-        tmp = floor(
-          [
-            x + 100 * i - (sizeX * 100) / 2 + 100 / 2,
-            y,
-            z + 100 * j - (sizeZ * 100) / 2 + 100 / 2,
-          ],
-          facing,
-          null,
-          90,
-          100
-        )(tmp);
+        const pos = [
+          x + 100 * i - (sizeX * 100) / 2 + 100 / 2,
+          y,
+          z + 100 * j - (sizeZ * 100) / 2 + 100 / 2,
+        ];
+        tmp = floor(pos, facing, null, config.textureRotation ?? 90, 100)(tmp);
       }
     }
 
