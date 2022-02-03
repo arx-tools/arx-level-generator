@@ -29,7 +29,6 @@ const floor =
     let texU = 0;
     let texV = 0;
     let sizeX = size;
-    let sizeY = size;
     let sizeZ = size;
     if (Array.isArray(size)) {
       [sizeX, sizeY, sizeZ] = size;
