@@ -499,6 +499,10 @@ const pickRandoms = (n, set) => {
   }
 };
 
+const pickRandom = (set) => {
+  return pickRandoms(1, set)[0];
+};
+
 const cross = (u, v) => {
   return [
     u[1] * v[2] - u[2] * v[1],
@@ -725,6 +729,7 @@ module.exports = {
   adjustVertexBy,
   randomBetween,
   pickRandoms,
+  pickRandom,
   isPointInPolygon,
   isBetween,
   isBetweenInclusive,
