@@ -570,7 +570,7 @@ const addLight =
         rgb: toFloatRgb(mapData.state.color),
         fallstart: 100,
         fallend: 180,
-        intensity: 0.7,
+        intensity: 1.3,
         i: 0,
         exFlicker: {
           r: 0,

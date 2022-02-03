@@ -117,7 +117,7 @@ const addLamp = (pos, angle, config = {}) => {
           (isOn ? 0 : EXTRAS_STARTEXTINGUISHED) |
           EXTRAS_NO_IGNIT,
       }),
-      setColor("khaki")
+      setColor("#f0e68c") // light khaki
     )(mapData);
 
     return lampEntity;
@@ -486,7 +486,7 @@ const generate = async (config) => {
                 ],
                 [0, 0, 0],
                 {
-                  on: Math.random() < 0.1,
+                  on: Math.random() < 0.3,
                 }
               )(mapData);
 
@@ -542,7 +542,7 @@ const generate = async (config) => {
           0,
           -(top + z * UNIT) - 50 + offsetZ,
         ];
-        pickRandoms(1, loots)(pos);
+        pickRandoms(1, loots)[0](pos);
       });
 
       let translate = [0, 0, 0];
