@@ -74,34 +74,42 @@ const textures = {
   },
   backrooms: {
     wall: {
+      path: "projects/the-backrooms/textures",
       src: "backrooms-[stone]-wall.jpg",
       native: false,
     },
     wall2: {
+      path: "projects/the-backrooms/textures",
       src: "backrooms-[stone]-wall2.jpg",
       native: false,
     },
     floor: {
+      path: "projects/the-backrooms/textures",
       src: "backrooms-[fabric]-carpet.jpg",
       native: false,
     },
     floor2: {
+      path: "projects/the-backrooms/textures",
       src: "backrooms-[fabric]-carpet2.jpg",
       native: false,
     },
     ceiling: {
+      path: "projects/the-backrooms/textures",
       src: "backrooms-[stone]-ceiling-tile.jpg",
       native: false,
     },
     ceilingDiffuser: {
+      path: "projects/the-backrooms/textures",
       src: "backrooms-[metal]-ceiling-air-diffuser.jpg",
       native: false,
     },
     ceilingLampOn: {
+      path: "projects/the-backrooms/textures",
       src: "backrooms-[metal]-light-on.jpg",
       native: false,
     },
     ceilingLampOff: {
+      path: "projects/the-backrooms/textures",
       src: "backrooms-[metal]-light-off.jpg",
       native: false,
     },
@@ -137,9 +145,9 @@ const exportTextures = (outputDir) => {
   return compose(
     reduce((files, texture) => {
       const filename = `${outputDir}/graph/obj3d/textures/${texture.src}`;
-      files[filename] = `${getRootPath()}/assets/graph/obj3d/textures/${
-        texture.src
-      }`;
+      files[filename] = `${getRootPath()}/assets/${
+        texture.path ? texture.path : "graph/obj3d/textures"
+      }/${texture.src}`;
       return files;
     }, {}),
     uniq,
