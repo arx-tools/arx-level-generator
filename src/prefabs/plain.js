@@ -47,7 +47,14 @@ const plain =
           y,
           z + 100 * j - (sizeZ * 100) / 2 + 100 / 2,
         ];
-        tmp = floor(pos, facing, null, config.textureRotation ?? 90, 100)(tmp);
+        tmp = floor(
+          pos,
+          facing,
+          null,
+          config.textureRotation ?? 90,
+          100,
+          config.textureFlags ?? 0
+        )(tmp);
       }
     }
 
