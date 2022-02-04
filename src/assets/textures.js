@@ -74,14 +74,29 @@ const textures = {
   },
   backrooms: {
     wall: {
-      path: "projects/the-backrooms/textures",
-      src: "backrooms-[stone]-wall.jpg",
-      native: false,
+      intact: {
+        path: "projects/the-backrooms/textures",
+        src: "backrooms-[stone]-wall.jpg",
+        native: false,
+      },
+      rippedOnTop: {
+        path: "projects/the-backrooms/textures",
+        src: "backrooms-[stone]-wall-ripped-top.jpg",
+        native: false,
+      },
     },
     wall2: {
-      path: "projects/the-backrooms/textures",
-      src: "backrooms-[stone]-wall2.jpg",
-      native: false,
+      intact: {
+        path: "projects/the-backrooms/textures",
+        src: "backrooms-[stone]-wall2.jpg",
+        native: false,
+      },
+      rippedOnTop: {
+        // TODO
+        path: "projects/the-backrooms/textures",
+        src: "backrooms-[stone]-wall-ripped-top.jpg",
+        native: false,
+      },
     },
     floor: {
       path: "projects/the-backrooms/textures",

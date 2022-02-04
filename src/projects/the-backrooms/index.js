@@ -27,6 +27,7 @@ const {
   randomBetween,
   circleOfVectors,
   pickRandoms,
+  pickRandom,
 } = require("../../helpers");
 const { wallX, wallZ, plain } = require("../../prefabs");
 const { defineCeilingLamp, createCeilingLamp } = require("./items/ceilingLamp");
@@ -35,6 +36,8 @@ const {
   EXTRAS_EXTINGUISHABLE,
   EXTRAS_STARTEXTINGUISHED,
   EXTRAS_NO_IGNIT,
+  HFLIP,
+  VFLIP,
 } = require("../../constants");
 const {
   markAsUsed,
@@ -104,8 +107,8 @@ const addLamp = (pos, angle, config = {}) => {
     compose(
       addLight(move(0, 20, 0, pos), {
         fallstart: 100,
-        fallend: 800,
-        intensity: 2,
+        fallend: 1000,
+        intensity: 1,
         exFlicker: {
           r: 0.2,
           g: 0,
@@ -117,7 +120,7 @@ const addLamp = (pos, angle, config = {}) => {
           (isOn ? 0 : EXTRAS_STARTEXTINGUISHED) |
           EXTRAS_NO_IGNIT,
       }),
-      setColor("#f0e68c") // light khaki
+      setColor("white")
     )(mapData);
 
     return lampEntity;
@@ -356,12 +359,16 @@ const renderGrid = (grid) => {
     for (let y = 0; y < grid.length; y++) {
       for (let x = 0; x < grid[y].length; x++) {
         if (grid[y][x] === 1) {
-          setTexture(textures.backrooms.floor, mapData);
+          setTexture(textures.backrooms.floor2, mapData);
           plain(
             [left + x * UNIT, 0, -(top + y * UNIT)],
             [UNIT / 100, UNIT / 100],
             "floor",
-            disableBumping
+            disableBumping,
+            {
+              textureRotation: pickRandom([0, 90, 180, 270]),
+              textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+            }
           )(mapData);
 
           setTexture(textures.backrooms.ceiling, mapData);
@@ -377,7 +384,7 @@ const renderGrid = (grid) => {
           )(mapData);
 
           if (isOccupied(x - 1, y, grid) !== true) {
-            setTexture(wallTextures.right, mapData);
+            setTexture(wallTextures.right.rippedOnTop, mapData);
             wall(
               [
                 left + x * UNIT - UNIT / 2,
@@ -388,7 +395,7 @@ const renderGrid = (grid) => {
             )(mapData);
           }
           if (isOccupied(x + 1, y, grid) !== true) {
-            setTexture(wallTextures.left, mapData);
+            setTexture(wallTextures.left.intact, mapData);
             wall(
               [
                 left + x * UNIT + UNIT / 2,
@@ -399,7 +406,7 @@ const renderGrid = (grid) => {
             )(mapData);
           }
           if (isOccupied(x, y + 1, grid) !== true) {
-            setTexture(wallTextures.front, mapData);
+            setTexture(wallTextures.front.intact, mapData);
             wall(
               [
                 left + (x - 1) * UNIT - UNIT / 2,
@@ -410,7 +417,7 @@ const renderGrid = (grid) => {
             )(mapData);
           }
           if (isOccupied(x, y - 1, grid) !== true) {
-            setTexture(wallTextures.back, mapData);
+            setTexture(wallTextures.back.intact, mapData);
             wall(
               [
                 left + (x - 1) * UNIT - UNIT / 2,
@@ -469,6 +476,8 @@ const generate = async (config) => {
 
       const lamps = [];
 
+      let isFirstLamp = true;
+
       for (let y = 0; y < grid.length; y++) {
         for (let x = 0; x < grid[y].length; x++) {
           if (isOccupied(x, y, grid)) {
@@ -478,6 +487,15 @@ const generate = async (config) => {
             const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100;
 
             if (x % 3 === 0 && y % 3 === 0) {
+              const lampConfig = {
+                on: Math.random() < 0.3,
+              };
+
+              if (isFirstLamp) {
+                isFirstLamp = false;
+                lampConfig.on = true;
+              }
+
               const lamp = addLamp(
                 [
                   left + x * UNIT - 50 + offsetX,
@@ -485,9 +503,7 @@ const generate = async (config) => {
                   -(top + y * UNIT) - 50 + offsetZ,
                 ],
                 [0, 0, 0],
-                {
-                  on: Math.random() < 0.3,
-                }
+                lampConfig
               )(mapData);
 
               lamps.push(lamp);
