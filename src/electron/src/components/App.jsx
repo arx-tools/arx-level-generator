@@ -30,7 +30,7 @@ const App = () => {
     },
   ]);
 
-  const [seed, setSeed] = useState("70448428008674860000"); //generateSeed()
+  const [seed, setSeed] = generateSeed();
   const [project, setProject] = useState(projects[1].id);
   const [outputDir, setOutputDir] = useState(path.resolve("./dist"));
   const [isLoading, setIsLoading] = useState(false);
