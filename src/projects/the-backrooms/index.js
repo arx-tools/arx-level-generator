@@ -176,23 +176,23 @@ ON INIT {
       `;
     }),
     addDependencyAs(
-      "projects/the-backrooms/whispers/do-you-smell-it.wav",
+      "projects/the-backrooms/whispers/english/do-you-smell-it.wav",
       "speech/english/whisper--do-you-smell-it.wav"
     ),
     addDependencyAs(
-      "projects/the-backrooms/whispers/drink-it.wav",
+      "projects/the-backrooms/whispers/english/drink-it.wav",
       "speech/english/whisper--drink-it.wav"
     ),
     addDependencyAs(
-      "projects/the-backrooms/whispers/drink-the-almond-water.wav",
+      "projects/the-backrooms/whispers/english/drink-the-almond-water.wav",
       "speech/english/whisper--drink-the-almond-water.wav"
     ),
     addDependencyAs(
-      "projects/the-backrooms/whispers/magic-wont-save-you.wav",
+      "projects/the-backrooms/whispers/english/magic-wont-save-you.wav",
       "speech/english/whisper--magic-wont-save-you.wav"
     ),
     addDependencyAs(
-      "projects/the-backrooms/whispers/no-exit.wav",
+      "projects/the-backrooms/whispers/english/no-exit.wav",
       "speech/english/whisper--no-exit.wav"
     ),
     createItem
