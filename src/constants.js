@@ -1,5 +1,3 @@
-const path = require("path");
-
 // flags for polygons
 const POLY_NO_SHADOW = 0x1;
 const POLY_DOUBLESIDED = 0x2;

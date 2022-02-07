@@ -11,6 +11,7 @@ const {
   uniq,
 } = require("ramda");
 const { getRootPath } = require("../../rootpath");
+const { POLY_QUAD, POLY_TRANS, POLY_NO_SHADOW } = require("../constants");
 
 const textures = {
   none: null,
@@ -74,29 +75,14 @@ const textures = {
   },
   backrooms: {
     wall: {
-      intact: {
-        path: "projects/the-backrooms/textures",
-        src: "backrooms-[stone]-wall.jpg",
-        native: false,
-      },
-      rippedOnTop: {
-        path: "projects/the-backrooms/textures",
-        src: "backrooms-[stone]-wall-ripped-top.jpg",
-        native: false,
-      },
+      path: "projects/the-backrooms/textures",
+      src: "backrooms-[stone]-wall.jpg",
+      native: false,
     },
     wall2: {
-      intact: {
-        path: "projects/the-backrooms/textures",
-        src: "backrooms-[stone]-wall2.jpg",
-        native: false,
-      },
-      rippedOnTop: {
-        // TODO
-        path: "projects/the-backrooms/textures",
-        src: "backrooms-[stone]-wall-ripped-top.jpg",
-        native: false,
-      },
+      path: "projects/the-backrooms/textures",
+      src: "backrooms-[stone]-wall2.jpg",
+      native: false,
     },
     floor: {
       path: "projects/the-backrooms/textures",
@@ -127,6 +113,13 @@ const textures = {
       path: "projects/the-backrooms/textures",
       src: "backrooms-[metal]-light-off.jpg",
       native: false,
+    },
+  },
+  misc: {
+    transTest: {
+      src: "fixinter_spider_web.bmp",
+      native: true,
+      flags: POLY_QUAD | POLY_TRANS | POLY_NO_SHADOW,
     },
   },
 };

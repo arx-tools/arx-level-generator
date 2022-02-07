@@ -175,6 +175,26 @@ ON INIT {
 }
       `;
     }),
+    addDependencyAs(
+      "projects/the-backrooms/whispers/do-you-smell-it.wav",
+      "speech/english/whisper--do-you-smell-it.wav"
+    ),
+    addDependencyAs(
+      "projects/the-backrooms/whispers/drink-it.wav",
+      "speech/english/whisper--drink-it.wav"
+    ),
+    addDependencyAs(
+      "projects/the-backrooms/whispers/drink-the-almond-water.wav",
+      "speech/english/whisper--drink-the-almond-water.wav"
+    ),
+    addDependencyAs(
+      "projects/the-backrooms/whispers/magic-wont-save-you.wav",
+      "speech/english/whisper--magic-wont-save-you.wav"
+    ),
+    addDependencyAs(
+      "projects/the-backrooms/whispers/no-exit.wav",
+      "speech/english/whisper--no-exit.wav"
+    ),
     createItem
   )(items.marker);
 };
@@ -384,7 +404,7 @@ const renderGrid = (grid) => {
           )(mapData);
 
           if (isOccupied(x - 1, y, grid) !== true) {
-            setTexture(wallTextures.right.rippedOnTop, mapData);
+            setTexture(wallTextures.right, mapData);
             wall(
               [
                 left + x * UNIT - UNIT / 2,
@@ -395,7 +415,7 @@ const renderGrid = (grid) => {
             )(mapData);
           }
           if (isOccupied(x + 1, y, grid) !== true) {
-            setTexture(wallTextures.left.intact, mapData);
+            setTexture(wallTextures.left, mapData);
             wall(
               [
                 left + x * UNIT + UNIT / 2,
@@ -404,9 +424,19 @@ const renderGrid = (grid) => {
               ],
               "left"
             )(mapData);
+
+            setTexture(textures.misc.transTest, mapData);
+            wall(
+              [
+                left + x * UNIT + UNIT / 2 - 1,
+                0,
+                -(top + (y + 1) * UNIT) - UNIT / 2,
+              ],
+              "left"
+            )(mapData);
           }
           if (isOccupied(x, y + 1, grid) !== true) {
-            setTexture(wallTextures.front.intact, mapData);
+            setTexture(wallTextures.front, mapData);
             wall(
               [
                 left + (x - 1) * UNIT - UNIT / 2,
@@ -417,7 +447,7 @@ const renderGrid = (grid) => {
             )(mapData);
           }
           if (isOccupied(x, y - 1, grid) !== true) {
-            setTexture(wallTextures.back.intact, mapData);
+            setTexture(wallTextures.back, mapData);
             wall(
               [
                 left + (x - 1) * UNIT - UNIT / 2,
