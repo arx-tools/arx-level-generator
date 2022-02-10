@@ -136,7 +136,46 @@ const createWelcomeMarker = (pos, config) => {
 ON INIT {
   ${getInjections("init", self)}
   ADDXP 2000 // can't cast lightning bolt at level 0
+
+  TIMERwelcome -m 1 2000 GOSUB WELCOME_MESSAGE
+
   ACCEPT
+}
+
+ON GOT_RUNE {
+  IF (^$PARAM1 == "aam") {
+    SET ${self.state.hasAam} 1
+  }
+  IF (^$PARAM1 == "folgora") {
+    SET ${self.state.hasFolgora} 1
+  }
+  IF (^$PARAM1 == "taar") {
+    SET ${self.state.hasTaar} 1
+  }
+
+  IF (${self.state.hasAam} == 1) {
+    IF (${self.state.hasFolgora} == 1) {
+      IF (${self.state.hasTaar} == 1) {
+        GOSUB TUTORIAL_LIGHT
+      }
+    }
+  }
+
+  ACCEPT
+}
+
+>>WELCOME_MESSAGE {
+  PLAY -o "system"
+  HEROSAY "You've noclipped out of reality and landed in the backrooms!"
+  QUEST "You've noclipped out of reality and landed in the backrooms!"
+  RETURN
+}
+
+>>TUTORIAL_LIGHT {
+  PLAY -o "system"
+  HEROSAY "Fluorescent lights require electricity, try shooting them with a lightning bolt."
+  QUEST "Fluorescent lights require electricity, try shooting them with a lightning bolt."
+  RETURN
 }
       `;
     }),
@@ -157,6 +196,9 @@ ON INIT {
       "projects/the-backrooms/sfx/no-sound.wav",
       "sfx/player_level_up.wav"
     ),
+    declare("int", "hasAam", 0),
+    declare("int", "hasFolgora", 0),
+    declare("int", "hasTaar", 0),
     createItem
   )(items.marker);
 };
@@ -186,7 +228,7 @@ ON INIT {
 ON PICKUP {
   IF ("almondwater" isin ^$PARAM1) {
     INC ${self.state.almondwaterCntr} 1
-    IF (${self.state.almondwaterCntr} == 2) {
+    IF (${self.state.almondwaterCntr} == 1) {
       GOSUB WHISPER_DRINK1
     }
     IF (${self.state.almondwaterCntr} == 3) {
@@ -287,7 +329,7 @@ ON SPELLCAST {
   )(items.marker);
 };
 
-const createRune = (runeName, pos, angle = [0, 0, 0]) => {
+const createRune = (runeName, pos, angle = [0, 0, 0], welcomeMarker) => {
   return compose(
     markAsUsed,
     moveTo(pos, angle),
@@ -296,6 +338,11 @@ const createRune = (runeName, pos, angle = [0, 0, 0]) => {
 // component: rune
 ON INIT {
   ${getInjections("init", self)}
+  ACCEPT
+}
+
+ON INVENTORYUSE {
+  SENDEVENT GOT_RUNE ${welcomeMarker.ref} "${runeName}"
   ACCEPT
 }
       `;
@@ -607,11 +654,12 @@ const generate = async (config) => {
   defineCeilingDiffuser();
 
   overridePlayerScript();
-  createWelcomeMarker([0, 0, 0], config);
+
+  const welcomeMarker = createWelcomeMarker([0, 0, 0], config);
 
   const runes = ["aam", "folgora", "taar"];
   circleOfVectors([0, 0, UNIT / 2], 40, 3).forEach((pos, idx) => {
-    createRune(runes[idx], pos, [0, 0, 0]);
+    createRune(runes[idx], pos, [0, 0, 0], welcomeMarker);
   });
 
   const grid = compose(

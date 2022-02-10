@@ -225,9 +225,16 @@ const addDependencyAs = curry((source, target, itemRef) => {
 
 const addScript = curry((script, itemRef) => {
   const { src, id } = itemRef;
-  usedItems[src][id].script = trim(
-    isFunction(script) ? script(itemRef) : script
-  );
+  usedItems[src][id].script =
+    (usedItems &&
+    usedItems[src] &&
+    usedItems[src][id] &&
+    usedItems[src][id].script
+      ? usedItems[src][id].script
+      : "") +
+    "\r\n" +
+    "\r\n" +
+    trim(isFunction(script) ? script(itemRef) : script);
   return itemRef;
 });
 

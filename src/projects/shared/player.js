@@ -10,7 +10,7 @@ const { getInjections, declare } = require("../../scripting");
 const overridePlayerScript = () => {
   declare("int", "TUTORIAL_MAGIC", 100, "global"); // disable magic related tutorial messages in rune_aam.asl
 
-  compose(
+  return compose(
     markAsUsed,
     addScript((self) => {
       return `
