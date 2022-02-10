@@ -247,20 +247,40 @@ ON SPELLCAST {
       "speech/english/whisper--do-you-smell-it.wav"
     ),
     addDependencyAs(
+      "projects/the-backrooms/whispers/german/do-you-smell-it.wav",
+      "speech/deutsch/whisper--do-you-smell-it.wav"
+    ),
+    addDependencyAs(
       "projects/the-backrooms/whispers/english/drink-it.wav",
       "speech/english/whisper--drink-it.wav"
+    ),
+    addDependencyAs(
+      "projects/the-backrooms/whispers/german/drink-it.wav",
+      "speech/deutsch/whisper--drink-it.wav"
     ),
     addDependencyAs(
       "projects/the-backrooms/whispers/english/drink-the-almond-water.wav",
       "speech/english/whisper--drink-the-almond-water.wav"
     ),
     addDependencyAs(
+      "projects/the-backrooms/whispers/german/drink-the-almond-water.wav",
+      "speech/deutsch/whisper--drink-the-almond-water.wav"
+    ),
+    addDependencyAs(
       "projects/the-backrooms/whispers/english/magic-wont-save-you.wav",
       "speech/english/whisper--magic-wont-save-you.wav"
     ),
     addDependencyAs(
+      "projects/the-backrooms/whispers/german/magic-wont-save-you.wav",
+      "speech/deutsch/whisper--magic-wont-save-you.wav"
+    ),
+    addDependencyAs(
       "projects/the-backrooms/whispers/english/no-exit.wav",
       "speech/english/whisper--no-exit.wav"
+    ),
+    addDependencyAs(
+      "projects/the-backrooms/whispers/german/no-exit.wav",
+      "speech/deutsch/whisper--no-exit.wav"
     ),
     declare("int", "magicCntr", 0),
     declare("int", "almondwaterCntr", 0),
@@ -338,7 +358,7 @@ ON ACTION {
       "sfx/backrooms-outro.wav"
     ),
     createItem
-  )(items.doors.lightDoor, { name: "unmarked fire exit" });
+  )(items.doors.lightDoor, { name: "[door--exit]" });
 };
 
 const createKey = (pos, angle = [0, 0, 0]) => {
@@ -356,7 +376,7 @@ ON INIT {
       `;
     }),
     createItem
-  )(items.keys.oliverQuest, { name: "fire exit key" });
+  )(items.keys.oliverQuest, { name: "[key--exit]" });
 };
 
 const getAlmondWaterVariant = () => {
