@@ -171,7 +171,74 @@ const createJumpscareController = (pos, config) => {
 // component jumpscareController
 ON INIT {
   ${getInjections("init", self)}
+
+  SET #noexitTrigger ^RND_30000
+  INC #noexitTrigger 30000
+  SET #smellTrigger ^RND_60000
+  INC #smellTrigger 40000
+
+  TIMERnoexit -m 1 #noexitTrigger GOSUB WHISPER_NOEXIT
+
+  TIMERsmell -m 1 #smellTrigger GOSUB WHISPER_SMELL
+
   ACCEPT
+}
+
+ON PICKUP {
+  IF ("almondwater" isin ^$PARAM1) {
+    INC ${self.state.almondwaterCntr} 1
+    IF (${self.state.almondwaterCntr} == 2) {
+      GOSUB WHISPER_DRINK1
+    }
+    IF (${self.state.almondwaterCntr} == 3) {
+      GOSUB WHISPER_DRINK2
+    }
+  }
+
+  ACCEPT
+}
+
+ON SPELLCAST {
+  IF (^SENDER != PLAYER) {
+    ACCEPT
+  }
+
+  INC ${self.state.magicCntr} 1
+  IF (${self.state.magicCntr} == 1) {
+    TIMERspeak -m 1 3000 GOSUB WHISPER_MAGIC
+  }
+
+  ACCEPT
+}
+
+>>WHISPER_NOEXIT {
+  SPEAK -p [whisper--no-exit]
+  HEROSAY [whisper--no-exit]
+  RETURN
+}
+
+>>WHISPER_DRINK1 {
+  SPEAK -p [whisper--drink-the-almond-water]
+  HEROSAY [whisper--drink-the-almond-water]
+  RETURN
+}
+
+>>WHISPER_DRINK2 {
+  SPEAK -p [whisper--drink-it]
+  HEROSAY [whisper--drink-it]
+  RETURN
+}
+
+>>WHISPER_SMELL {
+  SPEAK -p [whisper--do-you-smell-it]
+  HEROSAY [whisper--do-you-smell-it]
+  RETURN
+}
+
+>>WHISPER_MAGIC {
+  SPEAK -p [whisper--magic-wont-save-you]
+  HEROSAY [whisper--magic-wont-save-you]
+  RETURN
 }
       `;
     }),
@@ -195,6 +262,8 @@ ON INIT {
       "projects/the-backrooms/whispers/english/no-exit.wav",
       "speech/english/whisper--no-exit.wav"
     ),
+    declare("int", "magicCntr", 0),
+    declare("int", "almondwaterCntr", 0),
     createItem
   )(items.marker);
 };
@@ -217,7 +286,7 @@ ON INIT {
   )(items.magic.rune);
 };
 
-const createExit = (pos, angle = [0, 0, 0], key, lampController) => {
+const createExit = (pos, angle = [0, 0, 0], key, lampCtrl) => {
   return compose(
     markAsUsed,
     moveTo(pos, angle),
@@ -248,7 +317,7 @@ ON ACTION {
 }
 
 >>OUTRO {
-  TIMERmute -m 1 1500 SENDEVENT MUTE ${lampController.ref} NOP
+  TIMERmute -m 1 1500 SENDEVENT MUTE ${lampCtrl.ref} NOP
   PLAYERINTERFACE HIDE
   SETPLAYERCONTROLS OFF
   TIMERfadeout -m 1 700 WORLDFADE OUT 300 ${color("khaki")}
@@ -304,7 +373,12 @@ const getAlmondWaterVariant = () => {
   return "mana";
 };
 
-const createAlmondWater = (pos, angle = [0, 0, 0], variant = "mana") => {
+const createAlmondWater = (
+  pos,
+  angle = [0, 0, 0],
+  variant = "mana",
+  jumpscareCtrl
+) => {
   return compose(
     markAsUsed,
     moveTo(pos, angle),
@@ -313,6 +387,15 @@ const createAlmondWater = (pos, angle = [0, 0, 0], variant = "mana") => {
 // component: almondWater
 ON INIT {
   ${getInjections("init", self)}
+  ACCEPT
+}
+
+ON INVENTORYIN {
+  IF (${self.state.pickedUp} == 0) {
+    SET ${self.state.pickedUp} 0
+    SENDEVENT PICKUP ${jumpscareCtrl.ref} "almondwater:${variant}"
+  }
+
   ACCEPT
 }
 
@@ -344,6 +427,7 @@ ON INVENTORYUSE {
       "graph/obj3d/interactive/items/magic/potion_mana/potion_mana[icon].bmp"
     ),
     declare("string", "variant", variant),
+    declare("int", "pickedUp", 0),
     createItem
   )(items.magic.potion.mana, {
     name: `almond water (${variant})`,
@@ -575,8 +659,16 @@ const generate = async (config) => {
         -(top + keyZ * UNIT) - 50,
       ]);
 
+      const jumpscareCtrl = createJumpscareController([-10, 0, -10], config);
+
       const loots = [
-        (pos) => createAlmondWater(pos, [0, 0, 0], getAlmondWaterVariant()),
+        (pos) =>
+          createAlmondWater(
+            pos,
+            [0, 0, 0],
+            getAlmondWaterVariant(),
+            jumpscareCtrl
+          ),
         // TODO: more loot
       ];
 
@@ -613,14 +705,13 @@ const generate = async (config) => {
           break;
       }
 
-      const lampController = createLampController([10, 0, 10], lamps, config);
-      createJumpscareController([-10, 0, -10], config);
+      const lampCtrl = createLampController([10, 0, 10], lamps, config);
 
       createExit(
         move(...translate, [left + wallX * UNIT, 0, -(top + wallZ * UNIT)]),
         rotate,
         key,
-        lampController
+        lampCtrl
       );
 
       return mapData;

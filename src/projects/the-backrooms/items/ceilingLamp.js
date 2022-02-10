@@ -2,11 +2,9 @@ const { compose } = require("ramda");
 const {
   addScript,
   createItem,
-  items,
   markAsUsed,
   moveTo,
   createRootItem,
-  addDependency,
   addDependencyAs,
 } = require("../../../assets/items");
 const { useTexture, textures } = require("../../../assets/textures");

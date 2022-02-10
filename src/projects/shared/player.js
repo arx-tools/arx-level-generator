@@ -160,7 +160,7 @@ ON OUCH {
 
 ON DIE {
   PLAY "player_death"
-  SET #TMP ~^RND_10~
+  SET #TMP ^RND_10
   INC #TMP 1
   IF (#TMP < 3) {
     SPEAK -p [player_dying] nop
