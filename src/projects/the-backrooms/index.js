@@ -254,32 +254,52 @@ ON SPELLCAST {
 
 >>WHISPER_NOEXIT {
   SPEAK -p [whisper--no-exit]
-  HEROSAY [whisper--no-exit]
+  // HEROSAY [whisper--no-exit]
+  HEROSAY "It is no use trying to find an exit, Am Sheagar! You will never leave this place!"
   RETURN
 }
 
 >>WHISPER_DRINK1 {
   SPEAK -p [whisper--drink-the-almond-water]
-  HEROSAY [whisper--drink-the-almond-water]
+  // HEROSAY [whisper--drink-the-almond-water]
+  HEROSAY "Drink the almond water! It will be over faster with that!"
   RETURN
 }
 
 >>WHISPER_DRINK2 {
   SPEAK -p [whisper--drink-it]
-  HEROSAY [whisper--drink-it]
+  // HEROSAY [whisper--drink-it]
+  HEROSAY "Drink it! Drink it! Drink it! Drink it! Drink it!"
   RETURN
 }
 
 >>WHISPER_SMELL {
   SPEAK -p [whisper--do-you-smell-it]
-  HEROSAY [whisper--do-you-smell-it]
+  // HEROSAY [whisper--do-you-smell-it]
+  HEROSAY "Do you smell it? It is the smell of how you will rot here next to your precious Alia!"
   RETURN
 }
 
 >>WHISPER_MAGIC {
   SPEAK -p [whisper--magic-wont-save-you]
-  HEROSAY [whisper--magic-wont-save-you]
+  // HEROSAY [whisper--magic-wont-save-you]
+  HEROSAY "Do you really think magic will save you this time?"
   RETURN
+}
+
+>>BABY {
+  // save lámpa state
+  // 100ms villanás sárgába, mint az exit-nél
+  // összes lámpa kialszik
+  // sebesség lelassítása player-nél -> 0.3-ra
+  // kis pause, babasírás fadein
+  // szívdobogás hang
+  // random lámpa felkapcsolások, vagy az összes lámpa felkapcsolása?
+  // 5 másodperc ott tartás
+  // fadeout feketébe
+  // hang kikapcs
+  // lámpák restore
+  // hang vissza
 }
       `;
     }),
@@ -404,7 +424,8 @@ ON ACTION {
       "sfx/backrooms-outro.wav"
     ),
     createItem
-  )(items.doors.lightDoor, { name: "[door--exit]" });
+    // )(items.doors.lightDoor, { name: "[door--exit]" });
+  )(items.doors.lightDoor, { name: "Unmarked fire exit" });
 };
 
 const createKey = (pos, angle = [0, 0, 0]) => {
@@ -422,7 +443,8 @@ ON INIT {
       `;
     }),
     createItem
-  )(items.keys.oliverQuest, { name: "[key--exit]" });
+    // )(items.keys.oliverQuest, { name: "[key--exit]" });
+  )(items.keys.oliverQuest, { name: "Fire exit key" });
 };
 
 const getAlmondWaterVariant = () => {
@@ -496,7 +518,8 @@ ON INVENTORYUSE {
     declare("int", "pickedUp", 0),
     createItem
   )(items.magic.potion.mana, {
-    name: `[item--almond-water]`,
+    // name: `[item--almond-water]`,
+    name: "Almond water",
   });
 };
 
