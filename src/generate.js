@@ -21,7 +21,7 @@ const theBackrooms = require("./projects/the-backrooms/index.js");
     case "the-backrooms":
       await theBackrooms({
         ...config,
-        numberOfRooms: 20,
+        numberOfRooms: 10,
         roomDimensions: { width: [1, 5], depth: [1, 5], height: 2 },
       });
       break;

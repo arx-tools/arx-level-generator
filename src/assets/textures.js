@@ -84,12 +84,17 @@ const textures = {
       src: "backrooms-[stone]-wall2.jpg",
       native: false,
     },
-    floor: {
+    carpet: {
       path: "projects/the-backrooms/textures",
       src: "backrooms-[fabric]-carpet.jpg",
       native: false,
     },
-    floor2: {
+    carpetDirty: {
+      path: "projects/the-backrooms/textures",
+      src: "backrooms-[fabric]-carpet-dirty.jpg",
+      native: false,
+    },
+    carpet2: {
       path: "projects/the-backrooms/textures",
       src: "backrooms-[fabric]-carpet2.jpg",
       native: false,
@@ -114,11 +119,10 @@ const textures = {
       src: "backrooms-[metal]-light-off.jpg",
       native: false,
     },
-  },
-  misc: {
-    transTest: {
-      src: "fixinter_spider_web.bmp",
-      native: true,
+    wallMold: {
+      path: "projects/the-backrooms/textures",
+      src: "mold-wall.jpg",
+      native: false,
       flags: POLY_QUAD | POLY_TRANS | POLY_NO_SHADOW,
     },
   },

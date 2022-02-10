@@ -60,17 +60,16 @@ const { createLampController } = require("./items/lampController");
 
 const UNIT = 200;
 
-const wall = ([x, y, z], face) => {
+const wall = ([x, y, z], face, config = {}) => {
   return (mapData) => {
     const { origin, roomDimensions } = mapData.config;
 
+    const internalUnit = 100;
+
+    const h = config.height ?? (UNIT * roomDimensions.height) / internalUnit;
+
     return compose((mapData) => {
-      const internalUnit = 100;
-      for (
-        let height = 0;
-        height < (UNIT * roomDimensions.height) / internalUnit;
-        height++
-      ) {
+      for (let height = 0; height < h; height++) {
         for (let width = 0; width < UNIT / 100; width++) {
           (face === "left" || face === "right" ? wallX : wallZ)(
             move(
@@ -450,7 +449,7 @@ ON INVENTORYUSE {
     declare("int", "pickedUp", 0),
     createItem
   )(items.magic.potion.mana, {
-    name: `almond water (${variant})`,
+    name: `[item--almond-water]`,
   });
 };
 
@@ -483,7 +482,7 @@ const renderGrid = (grid) => {
     for (let y = 0; y < grid.length; y++) {
       for (let x = 0; x < grid[y].length; x++) {
         if (grid[y][x] === 1) {
-          setTexture(textures.backrooms.floor2, mapData);
+          setTexture(textures.backrooms.carpetDirty, mapData);
           plain(
             [left + x * UNIT, 0, -(top + y * UNIT)],
             [UNIT / 100, UNIT / 100],
@@ -517,6 +516,17 @@ const renderGrid = (grid) => {
               ],
               "right"
             )(mapData);
+
+            setTexture(textures.backrooms.wallMold, mapData);
+            wall(
+              [
+                left + x * UNIT - UNIT / 2 + 1,
+                0,
+                -(top + (y + 1) * UNIT) - UNIT / 2,
+              ],
+              "right",
+              { height: 1 }
+            )(mapData);
           }
           if (isOccupied(x + 1, y, grid) !== true) {
             setTexture(wallTextures.left, mapData);
@@ -529,14 +539,15 @@ const renderGrid = (grid) => {
               "left"
             )(mapData);
 
-            setTexture(textures.misc.transTest, mapData);
+            setTexture(textures.backrooms.wallMold, mapData);
             wall(
               [
                 left + x * UNIT + UNIT / 2 - 1,
                 0,
                 -(top + (y + 1) * UNIT) - UNIT / 2,
               ],
-              "left"
+              "left",
+              { height: 1 }
             )(mapData);
           }
           if (isOccupied(x, y + 1, grid) !== true) {
@@ -549,6 +560,17 @@ const renderGrid = (grid) => {
               ],
               "front"
             )(mapData);
+
+            setTexture(textures.backrooms.wallMold, mapData);
+            wall(
+              [
+                left + (x - 1) * UNIT - UNIT / 2,
+                0,
+                -(top + y * UNIT) - UNIT / 2 + 1,
+              ],
+              "front",
+              { height: 1 }
+            )(mapData);
           }
           if (isOccupied(x, y - 1, grid) !== true) {
             setTexture(wallTextures.back, mapData);
@@ -559,6 +581,17 @@ const renderGrid = (grid) => {
                 -(top + y * UNIT) + UNIT / 2,
               ],
               "back"
+            )(mapData);
+
+            setTexture(textures.backrooms.wallMold, mapData);
+            wall(
+              [
+                left + (x - 1) * UNIT - UNIT / 2,
+                0,
+                -(top + y * UNIT) + UNIT / 2 - 1,
+              ],
+              "back",
+              { height: 1 }
             )(mapData);
           }
         }
