@@ -166,8 +166,8 @@ ON GOT_RUNE {
 
 >>WELCOME_MESSAGE {
   PLAY -o "system"
-  HEROSAY "You've noclipped out of reality and landed in the backrooms!"
-  QUEST "You've noclipped out of reality and landed in the backrooms!"
+  HEROSAY "You've noclipped out of reality and landed in the backrooms! You might leave by exiting through an unmarked fire exit."
+  QUEST "You've noclipped out of reality and landed in the backrooms! You might leave by exiting through an unmarked fire exit."
   RETURN
 }
 
@@ -203,7 +203,7 @@ ON GOT_RUNE {
   )(items.marker);
 };
 
-const createJumpscareController = (pos, config) => {
+const createJumpscareController = (pos, lampCtrl, config) => {
   return compose(
     markAsUsed,
     moveTo(pos, [0, 0, 0]),
@@ -234,6 +234,10 @@ ON PICKUP {
     IF (${self.state.almondwaterCntr} == 3) {
       GOSUB WHISPER_DRINK2
     }
+  }
+
+  if (^$PARAM1 == "key:exit") {
+    GOSUB BABY
   }
 
   ACCEPT
@@ -288,18 +292,20 @@ ON SPELLCAST {
 }
 
 >>BABY {
-  // save lámpa state
-  // 100ms villanás sárgába, mint az exit-nél
-  // összes lámpa kialszik
-  // sebesség lelassítása player-nél -> 0.3-ra
-  // kis pause, babasírás fadein
-  // szívdobogás hang
-  // random lámpa felkapcsolások, vagy az összes lámpa felkapcsolása?
-  // 5 másodperc ott tartás
-  // fadeout feketébe
-  // hang kikapcs
-  // lámpák restore
-  // hang vissza
+  PLAY -o "strange_noise1"
+  PLAY -oil "player_heartb"
+  PLAY -o "baby"
+  SENDEVENT SAVE ${lampCtrl.ref} NOP
+  SENDEVENT SETSPEED player 0.3
+  WORLDFADE OUT 10 ${color("khaki")} WORLDFADE IN 500 NOP
+
+  TIMERoff -m 1 600 SENDEVENT OFF ${lampCtrl.ref} NOP
+  TIMERstopheartbeat -m 1 13000 PLAY -os "player_heartb"
+
+  TIMERend -m 1 13000 SENDEVENT RESTORE ${lampCtrl.ref} NOP
+  TIMERspeedrestore -m 1 14000 SENDEVENT SETSPEED player 1
+
+  RETURN
 }
       `;
     }),
@@ -343,6 +349,7 @@ ON SPELLCAST {
       "projects/the-backrooms/whispers/german/no-exit.wav",
       "speech/deutsch/whisper--no-exit.wav"
     ),
+    addDependencyAs("projects/the-backrooms/sfx/baby.wav", "sfx/baby.wav"),
     declare("int", "magicCntr", 0),
     declare("int", "almondwaterCntr", 0),
     createItem
@@ -428,7 +435,7 @@ ON ACTION {
   )(items.doors.lightDoor, { name: "Unmarked fire exit" });
 };
 
-const createKey = (pos, angle = [0, 0, 0]) => {
+const createKey = (pos, angle = [0, 0, 0], jumpscareCtrl) => {
   return compose(
     markAsUsed,
     moveTo(pos, angle),
@@ -440,8 +447,18 @@ ON INIT {
   OBJECT_HIDE SELF NO
   ACCEPT
 }
+
+ON INVENTORYIN {
+  IF (${self.state.pickedUp} == 0) {
+    SET ${self.state.pickedUp} 0
+    SENDEVENT PICKUP ${jumpscareCtrl.ref} "key:exit"
+  }
+
+  ACCEPT
+}
       `;
     }),
+    declare("int", "pickedUp", 0),
     createItem
     // )(items.keys.oliverQuest, { name: "[key--exit]" });
   )(items.keys.oliverQuest, { name: "Fire exit key" });
@@ -777,36 +794,6 @@ const generate = async (config) => {
         floors
       );
 
-      const key = createKey([
-        left + keyX * UNIT - 50,
-        0,
-        -(top + keyZ * UNIT) - 50,
-      ]);
-
-      const jumpscareCtrl = createJumpscareController([-10, 0, -10], config);
-
-      const loots = [
-        (pos) =>
-          createAlmondWater(
-            pos,
-            [0, 0, 0],
-            getAlmondWaterVariant(),
-            jumpscareCtrl
-          ),
-        // TODO: more loot
-      ];
-
-      lootSlot.forEach(([x, z]) => {
-        const offsetX = Math.floor(randomBetween(0, UNIT / 100)) * 100;
-        const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100;
-        const pos = [
-          left + x * UNIT - 50 + offsetX,
-          0,
-          -(top + z * UNIT) - 50 + offsetZ,
-        ];
-        pickRandoms(1, loots)[0](pos);
-      });
-
       let translate = [0, 0, 0];
       let rotate = [0, 0, 0];
 
@@ -831,12 +818,46 @@ const generate = async (config) => {
 
       const lampCtrl = createLampController([10, 0, 10], lamps, config);
 
+      const jumpscareCtrl = createJumpscareController(
+        [-10, 0, -10],
+        lampCtrl,
+        config
+      );
+
+      const key = createKey(
+        [left + keyX * UNIT - 50, 0, -(top + keyZ * UNIT) - 50],
+        [0, 0, 0],
+        jumpscareCtrl
+      );
+
       createExit(
         move(...translate, [left + wallX * UNIT, 0, -(top + wallZ * UNIT)]),
         rotate,
         key,
         lampCtrl
       );
+
+      const loots = [
+        (pos) =>
+          createAlmondWater(
+            pos,
+            [0, 0, 0],
+            getAlmondWaterVariant(),
+            jumpscareCtrl
+          ),
+        // TODO: more loot
+      ];
+
+      lootSlot.forEach(([x, z]) => {
+        const offsetX = Math.floor(randomBetween(0, UNIT / 100)) * 100;
+        const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100;
+        const pos = [
+          left + x * UNIT - 50 + offsetX,
+          0,
+          -(top + z * UNIT) - 50 + offsetZ,
+        ];
+        pickRandoms(1, loots)[0](pos);
+      });
 
       return mapData;
     },

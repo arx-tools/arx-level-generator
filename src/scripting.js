@@ -1,10 +1,10 @@
 const rgba = require("color-rgba");
-const { compose, dropLast, join, curry, map, divide, __ } = require("ramda");
+const { compose, dropLast, join, curry, map } = require("ramda");
 
 const color = (colorDefinition) => {
   return compose(
     join(" "),
-    map(divide(__, 256)),
+    map((channel) => Math.round((channel / 256) * 10 ** 6) / 10 ** 6),
     dropLast(1),
     rgba
   )(colorDefinition);
