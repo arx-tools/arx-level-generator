@@ -509,6 +509,7 @@ ON INVENTORYUSE {
   PLAY "drink"
 
   IF (${self.state.variant} == "xp") {
+    // TODO: add an effect
     ADDXP 2000
   }
 
