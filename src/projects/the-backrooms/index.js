@@ -292,19 +292,21 @@ ON SPELLCAST {
 }
 
 >>BABY {
+  PLAY -o "magic_spell_slow_down"
   PLAY -o "strange_noise1"
   PLAY -oil "player_heartb"
-  PLAY -o "baby"
   SENDEVENT SAVE ${lampCtrl.ref} NOP
   SENDEVENT SETSPEED player 0.3
   WORLDFADE OUT 10 ${color("khaki")} WORLDFADE IN 500 NOP
+  
+  TIMERoff -m 1 10 SENDEVENT OFF ${lampCtrl.ref} NOP
 
-  TIMERoff -m 1 600 SENDEVENT OFF ${lampCtrl.ref} NOP
+  TIMERbaby -m 1 2000 PLAY -o "baby"
   
-  TIMERstopheartbeat -m 1 13000 PLAY -os "player_heartb"
+  TIMERstopheartbeat -m 1 15000 PLAY -os "player_heartb"
   
-  TIMERend -m 1 14000 SENDEVENT RESTORE ${lampCtrl.ref} NOP
-  TIMERspeedrestore -m 1 14000 SENDEVENT SETSPEED player 1
+  TIMERend -m 1 15500 SENDEVENT RESTORE ${lampCtrl.ref} NOP
+  TIMERspeedrestore -m 1 15500 SENDEVENT SETSPEED player 1
 
   RETURN
 }
