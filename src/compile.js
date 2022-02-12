@@ -17,7 +17,7 @@ const outputInChunks = (buffer, stream) => {
 };
 
 const compileFTS = (config) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const { levelIdx, outputDir } = config;
     const src = path.resolve(
       outputDir,
@@ -27,7 +27,14 @@ const compileFTS = (config) => {
       outputDir,
       `./game/graph/levels/level${levelIdx}/fast.fts`
     );
-    const json = require(src);
+
+    let json;
+    try {
+      const raw = await fs.promises.readFile(src);
+      json = JSON.parse(raw);
+    } catch (e) {
+      reject(e);
+    }
 
     const offset = 280;
 
@@ -56,7 +63,7 @@ const compileFTS = (config) => {
 };
 
 const compileLLF = (config) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const { levelIdx, outputDir } = config;
     const src = path.resolve(
       outputDir,
@@ -66,7 +73,14 @@ const compileLLF = (config) => {
       outputDir,
       `./graph/levels/level${levelIdx}/level${levelIdx}.llf`
     );
-    const json = require(src);
+
+    let json;
+    try {
+      const raw = await fs.promises.readFile(src);
+      json = JSON.parse(raw);
+    } catch (e) {
+      reject(e);
+    }
 
     const offset = 0;
 
@@ -95,7 +109,7 @@ const compileLLF = (config) => {
 };
 
 const compileDLF = (config) => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const { levelIdx, outputDir } = config;
     const src = path.resolve(
       outputDir,
@@ -105,7 +119,14 @@ const compileDLF = (config) => {
       outputDir,
       `./graph/levels/level${levelIdx}/level${levelIdx}.dlf`
     );
-    const json = require(src);
+
+    let json;
+    try {
+      const raw = await fs.promises.readFile(src);
+      json = JSON.parse(raw);
+    } catch (e) {
+      reject(e);
+    }
 
     const offset = 8520;
 

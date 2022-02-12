@@ -96,15 +96,13 @@ const getFittingVariants = (x, y, width, height, grid) => {
 
 // ---------------------------
 
-const generateGrid = curry((size) => {
+const generateGrid = (size) => {
   if (size % 2 === 0) {
     size++;
   }
 
-  return times(() => {
-    return repeat(0, size);
-  }, size);
-});
+  return times(() => repeat(0, size), size);
+};
 
 const addRoom = curry((width, height, grid) => {
   if (isEmpty(grid)) {
