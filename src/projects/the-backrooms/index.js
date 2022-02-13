@@ -126,6 +126,64 @@ const addLamp = (pos, angle, config = {}) => {
   };
 };
 
+const addAmbientLight = (pos, config = {}) => {
+  return (mapData) => {
+    const isOn = config.on ?? false;
+    const lightColor = config.color ?? "red";
+    const radius = config.radius ?? 10000;
+
+    const lightConfig = {
+      fallstart: 0,
+      fallend: 100000,
+      intensity: 1,
+      extras:
+        EXTRAS_SEMIDYNAMIC |
+        EXTRAS_EXTINGUISHABLE |
+        (isOn ? 0 : EXTRAS_STARTEXTINGUISHED) |
+        EXTRAS_NO_IGNIT,
+    };
+
+    const lampEntities = [
+      createCeilingLamp(move(0, -radius, 0, pos), [0, 0, 0], {
+        on: isOn,
+        muted: true,
+      }),
+      createCeilingLamp(move(0, radius, 0, pos), [0, 0, 0], {
+        on: isOn,
+        muted: true,
+      }),
+      createCeilingLamp(move(-radius, 0, 0, pos), [0, 0, 0], {
+        on: isOn,
+        muted: true,
+      }),
+      createCeilingLamp(move(radius, 0, 0, pos), [0, 0, 0], {
+        on: isOn,
+        muted: true,
+      }),
+      createCeilingLamp(move(0, 0, -radius, pos), [0, 0, 0], {
+        on: isOn,
+        muted: true,
+      }),
+      createCeilingLamp(move(0, 0, radius, pos), [0, 0, 0], {
+        on: isOn,
+        muted: true,
+      }),
+    ];
+
+    compose(
+      addLight(move(0, -radius + 20, 0, pos), lightConfig),
+      addLight(move(0, radius + 20, 0, pos), lightConfig),
+      addLight(move(-radius, 20, 0, pos), lightConfig),
+      addLight(move(radius, 20, 0, pos), lightConfig),
+      addLight(move(0, 20, -radius, pos), lightConfig),
+      addLight(move(0, 20, radius, pos), lightConfig),
+      setColor(lightColor)
+    )(mapData);
+
+    return lampEntities;
+  };
+};
+
 const createWelcomeMarker = (pos, config) => {
   return compose(
     markAsUsed,
@@ -203,7 +261,7 @@ ON GOT_RUNE {
   )(items.marker);
 };
 
-const createJumpscareController = (pos, lampCtrl, config) => {
+const createJumpscareController = (pos, lampCtrl, ambientLights, config) => {
   return compose(
     markAsUsed,
     moveTo(pos, [0, 0, 0]),
@@ -298,6 +356,13 @@ ON SPELLCAST {
   SENDEVENT SAVE ${lampCtrl.ref} NOP
   SENDEVENT SETSPEED player 0.3
   WORLDFADE OUT 10 ${color("khaki")} WORLDFADE IN 500 NOP
+
+  TIMERambOn1 -m 1 10 SENDEVENT ON ${ambientLights[0].ref} NOP
+  TIMERambOn2 -m 1 10 SENDEVENT ON ${ambientLights[1].ref} NOP
+  TIMERambOn3 -m 1 10 SENDEVENT ON ${ambientLights[2].ref} NOP
+  TIMERambOn4 -m 1 10 SENDEVENT ON ${ambientLights[3].ref} NOP
+  TIMERambOn5 -m 1 10 SENDEVENT ON ${ambientLights[4].ref} NOP
+  TIMERambOn6 -m 1 10 SENDEVENT ON ${ambientLights[5].ref} NOP
   
   TIMERoff -m 1 10 SENDEVENT OFF ${lampCtrl.ref} NOP
 
@@ -305,6 +370,13 @@ ON SPELLCAST {
   
   TIMERstopheartbeat -m 1 15000 PLAY -os "player_heartb"
   
+  TIMERambOff1 -m 1 15000 SENDEVENT OFF ${ambientLights[0].ref} NOP
+  TIMERambOff2 -m 1 15000 SENDEVENT OFF ${ambientLights[1].ref} NOP
+  TIMERambOff3 -m 1 15000 SENDEVENT OFF ${ambientLights[2].ref} NOP
+  TIMERambOff4 -m 1 15000 SENDEVENT OFF ${ambientLights[3].ref} NOP
+  TIMERambOff5 -m 1 15000 SENDEVENT OFF ${ambientLights[4].ref} NOP
+  TIMERambOff6 -m 1 15000 SENDEVENT OFF ${ambientLights[5].ref} NOP
+
   TIMERend -m 1 15500 SENDEVENT RESTORE ${lampCtrl.ref} NOP
   TIMERspeedrestore -m 1 15500 SENDEVENT SETSPEED player 1
 
@@ -742,6 +814,11 @@ const generate = async (config) => {
       const walls = [];
       const floors = [];
 
+      const ambientLights = addAmbientLight([0, 200, 0], {
+        color: "#8a0707",
+        on: false,
+      })(mapData);
+
       const lamps = [];
 
       let isFirstLamp = true;
@@ -834,6 +911,7 @@ const generate = async (config) => {
       const jumpscareCtrl = createJumpscareController(
         [-10, 0, -10],
         lampCtrl,
+        ambientLights,
         config
       );
 

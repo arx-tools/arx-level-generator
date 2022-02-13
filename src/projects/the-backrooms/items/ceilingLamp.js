@@ -266,6 +266,7 @@ ON INIT {
 }
       `;
     }),
+    declare("int", "muted", config.muted ?? false ? 1 : 0),
     declare("int", "isOn", config.on ?? false ? 1 : 0),
     createItem
   )(itemDesc, {});
