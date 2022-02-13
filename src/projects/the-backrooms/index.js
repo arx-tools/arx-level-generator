@@ -498,6 +498,10 @@ ON INIT {
   ACCEPT
 }
 
+ON IDENTIFY {
+  REFUSE
+}
+
 ON INVENTORYIN {
   IF (${self.state.pickedUp} == 0) {
     SET ${self.state.pickedUp} 0
