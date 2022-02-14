@@ -28,6 +28,8 @@ const {
   circleOfVectors,
   pickRandoms,
   pickRandom,
+  toRgba,
+  toFloatRgb,
 } = require("../../helpers");
 const { wallX, wallZ, plain } = require("../../prefabs");
 const { defineCeilingLamp, createCeilingLamp } = require("./items/ceilingLamp");
@@ -59,6 +61,10 @@ const { overridePlayerScript } = require("../shared/player");
 const { createLampController } = require("./items/lampController");
 
 const UNIT = 200;
+
+const COLORS = {
+  BLOOD: "#8a0707",
+};
 
 const wall = ([x, y, z], face, config = {}) => {
   return (mapData) => {
@@ -108,11 +114,7 @@ const addLamp = (pos, angle, config = {}) => {
         fallstart: 100,
         fallend: 1000,
         intensity: 1,
-        exFlicker: {
-          r: 0.2,
-          g: 0,
-          b: 0,
-        },
+        exFlicker: toFloatRgb(toRgba("#1f1f07")),
         extras:
           EXTRAS_SEMIDYNAMIC |
           EXTRAS_EXTINGUISHABLE |
@@ -143,32 +145,32 @@ const addAmbientLight = (pos, config = {}) => {
         EXTRAS_NO_IGNIT,
     };
 
-    const lampEntities = [
-      createCeilingLamp(move(0, -radius, 0, pos), [0, 0, 0], {
+    const lampEntities = {
+      floor: createCeilingLamp(move(0, -radius, 0, pos), [0, 0, 0], {
         on: isOn,
         muted: true,
       }),
-      createCeilingLamp(move(0, radius, 0, pos), [0, 0, 0], {
+      ceiling: createCeilingLamp(move(0, radius, 0, pos), [0, 0, 0], {
         on: isOn,
         muted: true,
       }),
-      createCeilingLamp(move(-radius, 0, 0, pos), [0, 0, 0], {
+      right: createCeilingLamp(move(-radius, 0, 0, pos), [0, 0, 0], {
         on: isOn,
         muted: true,
       }),
-      createCeilingLamp(move(radius, 0, 0, pos), [0, 0, 0], {
+      left: createCeilingLamp(move(radius, 0, 0, pos), [0, 0, 0], {
         on: isOn,
         muted: true,
       }),
-      createCeilingLamp(move(0, 0, -radius, pos), [0, 0, 0], {
+      front: createCeilingLamp(move(0, 0, -radius, pos), [0, 0, 0], {
         on: isOn,
         muted: true,
       }),
-      createCeilingLamp(move(0, 0, radius, pos), [0, 0, 0], {
+      back: createCeilingLamp(move(0, 0, radius, pos), [0, 0, 0], {
         on: isOn,
         muted: true,
       }),
-    ];
+    };
 
     compose(
       addLight(move(0, -radius + 20, 0, pos), lightConfig),
@@ -355,14 +357,14 @@ ON SPELLCAST {
   PLAY -oil "player_heartb"
   SENDEVENT SAVE ${lampCtrl.ref} NOP
   SENDEVENT SETSPEED player 0.3
-  WORLDFADE OUT 10 ${color("khaki")} WORLDFADE IN 500 NOP
+  WORLDFADE OUT 10 ${color(COLORS.BLOOD)} WORLDFADE IN 500 NOP
 
-  TIMERambOn1 -m 1 10 SENDEVENT ON ${ambientLights[0].ref} NOP
-  TIMERambOn2 -m 1 10 SENDEVENT ON ${ambientLights[1].ref} NOP
-  TIMERambOn3 -m 1 10 SENDEVENT ON ${ambientLights[2].ref} NOP
-  TIMERambOn4 -m 1 10 SENDEVENT ON ${ambientLights[3].ref} NOP
-  TIMERambOn5 -m 1 10 SENDEVENT ON ${ambientLights[4].ref} NOP
-  TIMERambOn6 -m 1 10 SENDEVENT ON ${ambientLights[5].ref} NOP
+  SENDEVENT ON ${ambientLights.ceiling.ref} NOP
+  // SENDEVENT ON ${ambientLights.floor.ref} NOP
+  // SENDEVENT ON ${ambientLights.left.ref} NOP
+  // SENDEVENT ON ${ambientLights.right.ref} NOP
+  // SENDEVENT ON ${ambientLights.front.ref} NOP
+  // SENDEVENT ON ${ambientLights.back.ref} NOP
   
   TIMERoff -m 1 10 SENDEVENT OFF ${lampCtrl.ref} NOP
 
@@ -370,12 +372,12 @@ ON SPELLCAST {
   
   TIMERstopheartbeat -m 1 15000 PLAY -os "player_heartb"
   
-  TIMERambOff1 -m 1 15000 SENDEVENT OFF ${ambientLights[0].ref} NOP
-  TIMERambOff2 -m 1 15000 SENDEVENT OFF ${ambientLights[1].ref} NOP
-  TIMERambOff3 -m 1 15000 SENDEVENT OFF ${ambientLights[2].ref} NOP
-  TIMERambOff4 -m 1 15000 SENDEVENT OFF ${ambientLights[3].ref} NOP
-  TIMERambOff5 -m 1 15000 SENDEVENT OFF ${ambientLights[4].ref} NOP
-  TIMERambOff6 -m 1 15000 SENDEVENT OFF ${ambientLights[5].ref} NOP
+  TIMERambOff1 -m 1 15000 SENDEVENT OFF ${ambientLights.ceiling.ref} NOP
+  // TIMERambOff2 -m 1 15000 SENDEVENT OFF ${ambientLights.floor.ref} NOP
+  // TIMERambOff3 -m 1 15000 SENDEVENT OFF ${ambientLights.left.ref} NOP
+  // TIMERambOff4 -m 1 15000 SENDEVENT OFF ${ambientLights.right.ref} NOP
+  // TIMERambOff5 -m 1 15000 SENDEVENT OFF ${ambientLights.front.ref} NOP
+  // TIMERambOff6 -m 1 15000 SENDEVENT OFF ${ambientLights.back.ref} NOP
 
   TIMERend -m 1 15500 SENDEVENT RESTORE ${lampCtrl.ref} NOP
   TIMERspeedrestore -m 1 15500 SENDEVENT SETSPEED player 1
@@ -815,7 +817,7 @@ const generate = async (config) => {
       const floors = [];
 
       const ambientLights = addAmbientLight([0, 200, 0], {
-        color: "#8a0707",
+        color: COLORS.BLOOD,
         on: false,
       })(mapData);
 

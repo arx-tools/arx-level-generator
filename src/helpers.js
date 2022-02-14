@@ -69,6 +69,7 @@ const move = curry((x, y, z, vector) => {
   return [vector[0] + x, vector[1] + y, vector[2] + z];
 });
 
+// "#ff07a4" -> { r: [0..255], g: [0..255], b: [0..255], a: [0..255] }
 const toRgba = (colorDefinition) => {
   const [r, g, b, a] = rgba(colorDefinition);
 
@@ -78,6 +79,12 @@ const toRgba = (colorDefinition) => {
     b,
     a: Math.round(255 * a),
   };
+};
+
+// { r: 127, g: 0, b: 0, a: 1 } -> { r: [0.0..1.0], g: [0.0..1.0], b: [0.0..1.0] }
+const toFloatRgb = (color) => {
+  const { r, g, b } = color;
+  return { r: r / 256, g: g / 256, b: b / 256 };
 };
 
 const movePlayerTo = curry((pos, mapData) => {
@@ -558,11 +565,6 @@ const isPointInPolygon = curry((point, polygon) => {
   }
 });
 
-const toFloatRgb = (color) => {
-  const { r, g, b } = color;
-  return { r: r / 256, g: g / 256, b: b / 256 };
-};
-
 const addLight =
   (pos, props = {}) =>
   (mapData) => {
@@ -576,11 +578,7 @@ const addLight =
         fallend: 180,
         intensity: 1.3,
         i: 0,
-        exFlicker: {
-          r: 0,
-          g: 0,
-          b: 0,
-        },
+        exFlicker: toFloatRgb(toRgba("black")), // this gets subtracted from light.rgb when flickering
         exRadius: 0,
         exFrequency: 0.01,
         exSize: 0,
