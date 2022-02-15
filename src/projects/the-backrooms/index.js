@@ -316,6 +316,14 @@ ON SPELLCAST {
   ACCEPT
 }
 
+ON OPEN {
+  IF (^$PARAM1 == "exit") {
+    GOSUB OUTRO
+  }
+
+  ACCEPT
+}
+
 >>WHISPER_NOEXIT {
   SPEAK -p [whisper--no-exit]
   // HEROSAY [whisper--no-exit]
@@ -382,6 +390,17 @@ ON SPELLCAST {
   TIMERend -m 1 15500 SENDEVENT RESTORE ${lampCtrl.ref} NOP
   TIMERspeedrestore -m 1 15500 SENDEVENT SETSPEED player 1
 
+  RETURN
+}
+
+>>OUTRO {
+  TIMERmute -m 1 1500 SENDEVENT MUTE ${lampCtrl.ref} NOP
+  PLAYERINTERFACE HIDE
+  SETPLAYERCONTROLS OFF
+  TIMERfadeout -m 1 700 WORLDFADE OUT 300 ${color("khaki")}
+  PLAY -o "backrooms-outro" // [o] = emit from player
+  TIMERfadeout2 -m 1 18180 WORLDFADE OUT 0 ${color("black")}
+  TIMERendgame -m 1 20000 END_GAME
   RETURN
 }
       `;
@@ -456,7 +475,38 @@ ON INVENTORYUSE {
   )(items.magic.rune);
 };
 
-const createExit = (pos, angle = [0, 0, 0], key, lampCtrl) => {
+const createExit = (top, left, wallSegment, key, jumpscareController) => {
+  const [wallX, wallZ, wallFace] = wallSegment;
+
+  let translate = [0, 0, 0];
+  let rotate = [0, 0, 0];
+
+  switch (wallFace) {
+    case "left":
+      translate = [-80, 0, -75];
+      rotate = [0, 180, 0];
+      break;
+    case "right":
+      translate = [80, 0, 75];
+      rotate = [0, 0, 0];
+      break;
+    case "back":
+      translate = [75, 0, -80];
+      rotate = [0, 270, 0];
+      break;
+    case "front":
+      translate = [-75, 0, 80];
+      rotate = [0, 90, 0];
+      break;
+  }
+
+  const pos = move(...translate, [
+    left + wallX * UNIT,
+    0,
+    -(top + wallZ * UNIT),
+  ]);
+  const angle = rotate;
+
   return compose(
     markAsUsed,
     moveTo(pos, angle),
@@ -482,18 +532,8 @@ ON ACTION {
     ACCEPT
   }
 
-  GOTO OUTRO
-  ACCEPT
-}
+  SENDEVENT OPEN ${jumpscareController.ref} "exit"
 
->>OUTRO {
-  TIMERmute -m 1 1500 SENDEVENT MUTE ${lampCtrl.ref} NOP
-  PLAYERINTERFACE HIDE
-  SETPLAYERCONTROLS OFF
-  TIMERfadeout -m 1 700 WORLDFADE OUT 300 ${color("khaki")}
-  PLAY -o "backrooms-outro" // [o] = emit from player
-  TIMERfadeout2 -m 1 18180 WORLDFADE OUT 0 ${color("black")}
-  TIMERendgame -m 1 20000 END_GAME
   ACCEPT
 }
       `;
@@ -813,7 +853,7 @@ const generate = async (config) => {
       const top = -radius * UNIT + UNIT / 2;
       const left = -radius * UNIT + UNIT / 2;
 
-      const walls = [];
+      const wallSegments = [];
       const floors = [];
 
       const ambientLights = addAmbientLight([0, 200, 0], {
@@ -865,47 +905,19 @@ const generate = async (config) => {
             }
 
             if (isOccupied(x - 1, y, grid) !== true) {
-              walls.push([x - 1, y, "right"]);
+              wallSegments.push([x - 1, y, "right"]);
             }
             if (isOccupied(x + 1, y, grid) !== true) {
-              walls.push([x + 1, y, "left"]);
+              wallSegments.push([x + 1, y, "left"]);
             }
             if (isOccupied(x, y + 1, grid) !== true) {
-              walls.push([x, y + 1, "front"]);
+              wallSegments.push([x, y + 1, "front"]);
             }
             if (isOccupied(x, y - 1, grid) !== true) {
-              walls.push([x, y - 1, "back"]);
+              wallSegments.push([x, y - 1, "back"]);
             }
           }
         }
-      }
-
-      const [wallX, wallZ, wallFace] = pickRandoms(1, walls)[0];
-      const [[keyX, keyZ], ...lootSlot] = pickRandoms(
-        Math.floor(mapData.config.numberOfRooms / 3) + 5,
-        floors
-      );
-
-      let translate = [0, 0, 0];
-      let rotate = [0, 0, 0];
-
-      switch (wallFace) {
-        case "left":
-          translate = [-80, 0, -75];
-          rotate = [0, 180, 0];
-          break;
-        case "right":
-          translate = [80, 0, 75];
-          rotate = [0, 0, 0];
-          break;
-        case "back":
-          translate = [75, 0, -80];
-          rotate = [0, 270, 0];
-          break;
-        case "front":
-          translate = [-75, 0, 80];
-          rotate = [0, 90, 0];
-          break;
       }
 
       const lampCtrl = createLampController([10, 0, 10], lamps, config);
@@ -917,18 +929,18 @@ const generate = async (config) => {
         config
       );
 
+      const [[keyX, keyZ], ...lootSlot] = pickRandoms(
+        Math.floor(mapData.config.numberOfRooms / 3) + 5,
+        floors
+      );
+
       const key = createKey(
         [left + keyX * UNIT - 50, 0, -(top + keyZ * UNIT) - 50],
         [0, 0, 0],
         jumpscareCtrl
       );
 
-      createExit(
-        move(...translate, [left + wallX * UNIT, 0, -(top + wallZ * UNIT)]),
-        rotate,
-        key,
-        lampCtrl
-      );
+      createExit(top, left, pickRandom(wallSegments), key, jumpscareCtrl);
 
       const loots = [
         (pos) =>
@@ -949,7 +961,7 @@ const generate = async (config) => {
           0,
           -(top + z * UNIT) - 50 + offsetZ,
         ];
-        pickRandoms(1, loots)[0](pos);
+        pickRandom(loots)(pos);
       });
 
       return mapData;

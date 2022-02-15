@@ -1,5 +1,5 @@
 const { times, repeat, clamp, curry, flatten, uniq, pathEq } = require("ramda");
-const { pickRandoms } = require("../../helpers");
+const { pickRandom } = require("../../helpers");
 
 const getRadius = (grid) => (grid.length - 1) / 2;
 
@@ -129,7 +129,7 @@ const addRoom = curry((width, height, grid) => {
     return grid;
   }
 
-  const candidate = pickRandoms(1, candidates)[0];
+  const candidate = pickRandom(candidates);
 
   const variants = getFittingVariants(
     candidate[0],
@@ -139,7 +139,7 @@ const addRoom = curry((width, height, grid) => {
     grid
   );
 
-  const startingPos = pickRandoms(1, variants)[0];
+  const startingPos = pickRandom(variants);
 
   return insertRoom(startingPos[0], startingPos[1], width, height, grid);
 });
