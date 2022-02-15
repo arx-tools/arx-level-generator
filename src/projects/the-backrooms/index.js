@@ -731,7 +731,7 @@ const renderGrid = (grid) => {
               "right"
             )(mapData);
 
-            setTexture(textures.backrooms.wallMold, mapData);
+            setTexture(textures.backrooms.moldEdge, mapData);
             wall(
               [
                 left + x * UNIT - UNIT / 2 + 1,
@@ -753,7 +753,7 @@ const renderGrid = (grid) => {
               "left"
             )(mapData);
 
-            setTexture(textures.backrooms.wallMold, mapData);
+            setTexture(textures.backrooms.moldEdge, mapData);
             wall(
               [
                 left + x * UNIT + UNIT / 2 - 1,
@@ -775,7 +775,7 @@ const renderGrid = (grid) => {
               "front"
             )(mapData);
 
-            setTexture(textures.backrooms.wallMold, mapData);
+            setTexture(textures.backrooms.moldEdge, mapData);
             wall(
               [
                 left + (x - 1) * UNIT - UNIT / 2,
@@ -797,7 +797,7 @@ const renderGrid = (grid) => {
               "back"
             )(mapData);
 
-            setTexture(textures.backrooms.wallMold, mapData);
+            setTexture(textures.backrooms.moldEdge, mapData);
             wall(
               [
                 left + (x - 1) * UNIT - UNIT / 2,

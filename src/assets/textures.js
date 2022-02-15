@@ -119,9 +119,9 @@ const textures = {
       src: "backrooms-[metal]-light-off.jpg",
       native: false,
     },
-    wallMold: {
+    moldEdge: {
       path: "projects/the-backrooms/textures",
-      src: "mold-wall.jpg",
+      src: "mold-edge.jpg",
       native: false,
       flags: POLY_QUAD | POLY_TRANS | POLY_NO_SHADOW,
     },
