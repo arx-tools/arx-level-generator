@@ -31,17 +31,17 @@ ON RESTORE {
 }
 
 ON ON {
-  ${lamps.map(({ ref }) => `SENDEVENT ON ${ref} NOP`).join(`\n  `)}
+  ${lamps.map(({ ref }) => `SENDEVENT ON ${ref} ~^$PARAM1~`).join(`\n  `)}
   ACCEPT
 }
 
 ON OFF {
-  ${lamps.map(({ ref }) => `SENDEVENT OFF ${ref} NOP`).join(`\n  `)}
+  ${lamps.map(({ ref }) => `SENDEVENT OFF ${ref} ~^$PARAM1~`).join(`\n  `)}
   ACCEPT
 }
 
 ON RANDOM {
-  ${lamps.map(({ ref }) => `SENDEVENT RANDOM ${ref} NOP`).join(`\n  `)}
+  ${lamps.map(({ ref }) => `SENDEVENT RANDOM ${ref} ~^$PARAM1~`).join(`\n  `)}
   ACCEPT
 }
 

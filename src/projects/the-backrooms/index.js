@@ -374,7 +374,7 @@ ON OPEN {
   // SENDEVENT ON ${ambientLights.front.ref} NOP
   // SENDEVENT ON ${ambientLights.back.ref} NOP
   
-  TIMERoff -m 1 10 SENDEVENT OFF ${lampCtrl.ref} NOP
+  TIMERoff -m 1 10 SENDEVENT OFF ${lampCtrl.ref} "instant"
 
   TIMERbaby -m 1 2000 PLAY -o "baby"
   

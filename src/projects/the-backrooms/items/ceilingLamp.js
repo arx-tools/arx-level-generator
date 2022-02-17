@@ -46,12 +46,22 @@ ON INITEND {
 
 ON ON {
   SET ${self.state.isOn} 1
+  if (^$PARAM1 == "instant") {
+    SET ${self.state.instantSwitching} 1
+  } else {
+    SET ${self.state.instantSwitching} 0
+  }
   GOTO SWITCH
   ACCEPT
 }
 
 ON OFF {
   SET ${self.state.isOn} 0
+  if (^$PARAM1 == "instant") {
+    SET ${self.state.instantSwitching} 1
+  } else {
+    SET ${self.state.instantSwitching} 0
+  }
   GOTO SWITCH
   ACCEPT
 }
@@ -72,6 +82,11 @@ ON RANDOM {
     SET ${self.state.isOn} 1
   } ELSE {
     SET ${self.state.isOn} 0
+  }
+  if (^$PARAM1 == "instant") {
+    SET ${self.state.instantSwitching} 1
+  } else {
+    SET ${self.state.instantSwitching} 0
   }
   GOTO SWITCH
   ACCEPT
@@ -111,17 +126,25 @@ ON HIT {
   SET ${self.state.oldIsOn} ${self.state.isOn}
 
   if (${self.state.isOn} == 1) {
-    SET #ANIM ^RND_5
-    DEC #ANIM 1
-    MUL #ANIM 120
+    if (${self.state.instantSwitching} == 1) {
+      SET #ANIM 0
+    } else {
+      SET #ANIM ^RND_5
+      DEC #ANIM 1
+      MUL #ANIM 120
+    }
     SET #ANIM2 #ANIM1
     INC #ANIM2 500
     TIMERonStart -m 1 #ANIM GOSUB TURN_ON_START
     TIMERonEnd -m 1 #ANIM2 GOSUB TURN_ON_END
   } else {
-    SET #ANIM ^RND_5
-    DEC #ANIM 1
-    MUL #ANIM 120
+    if (${self.state.instantSwitching} == 1) {
+      SET #ANIM 0
+    } else {
+      SET #ANIM ^RND_5
+      DEC #ANIM 1
+      MUL #ANIM 120
+    }
     SET #ANIM2 #ANIM1
     INC #ANIM2 500
     TIMERoffStart -m 1 #ANIM GOSUB TURN_OFF_START
@@ -220,6 +243,7 @@ ON UNMUTE {
     declare("int", "lightningWasCast", 0),
     declare("int", "muted", 0),
     declare("int", "oldMuted", -1),
+    declare("int", "instantSwitching", 0),
     addDependencyAs(
       "projects/the-backrooms/sfx/fluorescent-lamp-plink.wav",
       "sfx/fluorescent-lamp-plink.wav"
