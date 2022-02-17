@@ -365,28 +365,21 @@ ON OPEN {
   PLAY -oil "player_heartb"
   SENDEVENT SAVE ${lampCtrl.ref} NOP
   SENDEVENT SETSPEED player 0.3
-  WORLDFADE OUT 10 ${color(COLORS.BLOOD)} WORLDFADE IN 500 NOP
+  WORLDFADE OUT 10 ${color(COLORS.BLOOD)}
+  TIMERblinkend -m 1 500 WORLDFADE IN 500 NOP
 
   SENDEVENT ON ${ambientLights.ceiling.ref} NOP
-  // SENDEVENT ON ${ambientLights.floor.ref} NOP
-  // SENDEVENT ON ${ambientLights.left.ref} NOP
-  // SENDEVENT ON ${ambientLights.right.ref} NOP
-  // SENDEVENT ON ${ambientLights.front.ref} NOP
-  // SENDEVENT ON ${ambientLights.back.ref} NOP
   
-  TIMERoff -m 1 10 SENDEVENT OFF ${lampCtrl.ref} "instant"
+  SENDEVENT MUTE ${lampCtrl.ref} NOP
+  SENDEVENT OFF ${lampCtrl.ref} "instant"
 
   TIMERbaby -m 1 2000 PLAY -o "baby"
   
   TIMERstopheartbeat -m 1 15000 PLAY -os "player_heartb"
   
   TIMERambOff1 -m 1 15000 SENDEVENT OFF ${ambientLights.ceiling.ref} NOP
-  // TIMERambOff2 -m 1 15000 SENDEVENT OFF ${ambientLights.floor.ref} NOP
-  // TIMERambOff3 -m 1 15000 SENDEVENT OFF ${ambientLights.left.ref} NOP
-  // TIMERambOff4 -m 1 15000 SENDEVENT OFF ${ambientLights.right.ref} NOP
-  // TIMERambOff5 -m 1 15000 SENDEVENT OFF ${ambientLights.front.ref} NOP
-  // TIMERambOff6 -m 1 15000 SENDEVENT OFF ${ambientLights.back.ref} NOP
 
+  TIMERlampUnmute -m 1 15000 SENDEVENT UNMUTE ${lampCtrl.ref} NOP
   TIMERend -m 1 15500 SENDEVENT RESTORE ${lampCtrl.ref} NOP
   TIMERspeedrestore -m 1 15500 SENDEVENT SETSPEED player 1
 
