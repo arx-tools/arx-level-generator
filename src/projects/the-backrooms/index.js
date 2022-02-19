@@ -667,25 +667,6 @@ const renderGrid = (grid) => {
     const top = -radius * UNIT + UNIT / 2;
     const left = -radius * UNIT + UNIT / 2;
 
-    const wallTextures = {
-      front:
-        Math.random() > 0.3
-          ? textures.backrooms.wall
-          : textures.backrooms.wall2,
-      back:
-        Math.random() > 0.7
-          ? textures.backrooms.wall
-          : textures.backrooms.wall2,
-      left:
-        Math.random() > 0.5
-          ? textures.backrooms.wall
-          : textures.backrooms.wall2,
-      right:
-        Math.random() > 0.5
-          ? textures.backrooms.wall
-          : textures.backrooms.wall2,
-    };
-
     for (let y = 0; y < grid.length; y++) {
       for (let x = 0; x < grid[y].length; x++) {
         if (grid[y][x] === 1) {
@@ -712,98 +693,79 @@ const renderGrid = (grid) => {
             "ceiling",
             disableBumping
           )(mapData);
+        }
+      }
+    }
 
+    const wallSegments = [];
+
+    for (let y = 0; y < grid.length; y++) {
+      for (let x = 0; x < grid[y].length; x++) {
+        if (grid[y][x] === 1) {
           if (isOccupied(x - 1, y, grid) !== true) {
-            setTexture(wallTextures.right, mapData);
-            wall(
-              [
-                left + x * UNIT - UNIT / 2,
-                0,
-                -(top + (y + 1) * UNIT) - UNIT / 2,
-              ],
-              "right"
-            )(mapData);
-
-            setTexture(textures.backrooms.moldEdge, mapData);
-            wall(
-              [
-                left + x * UNIT - UNIT / 2 + 1,
-                0,
-                -(top + (y + 1) * UNIT) - UNIT / 2,
-              ],
-              "right",
-              { height: 1 }
-            )(mapData);
+            wallSegments.push([x, y, "right"]);
           }
           if (isOccupied(x + 1, y, grid) !== true) {
-            setTexture(wallTextures.left, mapData);
-            wall(
-              [
-                left + x * UNIT + UNIT / 2,
-                0,
-                -(top + (y + 1) * UNIT) - UNIT / 2,
-              ],
-              "left"
-            )(mapData);
-
-            setTexture(textures.backrooms.moldEdge, mapData);
-            wall(
-              [
-                left + x * UNIT + UNIT / 2 - 1,
-                0,
-                -(top + (y + 1) * UNIT) - UNIT / 2,
-              ],
-              "left",
-              { height: 1 }
-            )(mapData);
+            wallSegments.push([x, y, "left"]);
           }
           if (isOccupied(x, y + 1, grid) !== true) {
-            setTexture(wallTextures.front, mapData);
-            wall(
-              [
-                left + (x - 1) * UNIT - UNIT / 2,
-                0,
-                -(top + y * UNIT) - UNIT / 2,
-              ],
-              "front"
-            )(mapData);
-
-            setTexture(textures.backrooms.moldEdge, mapData);
-            wall(
-              [
-                left + (x - 1) * UNIT - UNIT / 2,
-                0,
-                -(top + y * UNIT) - UNIT / 2 + 1,
-              ],
-              "front",
-              { height: 1 }
-            )(mapData);
+            wallSegments.push([x, y, "front"]);
           }
           if (isOccupied(x, y - 1, grid) !== true) {
-            setTexture(wallTextures.back, mapData);
-            wall(
-              [
-                left + (x - 1) * UNIT - UNIT / 2,
-                0,
-                -(top + y * UNIT) + UNIT / 2,
-              ],
-              "back"
-            )(mapData);
-
-            setTexture(textures.backrooms.moldEdge, mapData);
-            wall(
-              [
-                left + (x - 1) * UNIT - UNIT / 2,
-                0,
-                -(top + y * UNIT) + UNIT / 2 - 1,
-              ],
-              "back",
-              { height: 1 }
-            )(mapData);
+            wallSegments.push([x, y, "back"]);
           }
         }
       }
     }
+
+    wallSegments.forEach(([x, y, direction]) => {
+      let coords;
+      let decalOffset;
+
+      switch (direction) {
+        case "right":
+          coords = [
+            left + x * UNIT - UNIT / 2,
+            0,
+            -(top + (y + 1) * UNIT) - UNIT / 2,
+          ];
+          decalOffset = [1, 0, 0];
+          break;
+        case "left":
+          coords = [
+            left + x * UNIT + UNIT / 2,
+            0,
+            -(top + (y + 1) * UNIT) - UNIT / 2,
+          ];
+          decalOffset = [-1, 0, 0];
+          break;
+        case "front":
+          coords = [
+            left + (x - 1) * UNIT - UNIT / 2,
+            0,
+            -(top + y * UNIT) - UNIT / 2,
+          ];
+          decalOffset = [0, 0, 1];
+          break;
+        case "back":
+          coords = [
+            left + (x - 1) * UNIT - UNIT / 2,
+            0,
+            -(top + y * UNIT) + UNIT / 2,
+          ];
+          decalOffset = [0, 0, -1];
+          break;
+      }
+
+      setTexture(
+        textures.backrooms[Math.random() > 0.5 ? "wall" : "wall2"],
+        mapData
+      );
+      wall(coords, direction)(mapData);
+
+      setTexture(textures.backrooms.moldEdge, mapData);
+      wall(move(...decalOffset, coords), direction, { height: 1 })(mapData);
+    });
 
     return mapData;
   };
