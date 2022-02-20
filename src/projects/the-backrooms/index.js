@@ -30,6 +30,7 @@ const {
   pickRandom,
   toRgba,
   toFloatRgb,
+  addZone,
 } = require("../../helpers");
 const { wallX, wallZ, plain } = require("../../prefabs");
 const { defineCeilingLamp, createCeilingLamp } = require("./items/ceilingLamp");
@@ -59,6 +60,7 @@ const {
 } = require("./items/ceilingDiffuser");
 const { overridePlayerScript } = require("../shared/player");
 const { createLampController } = require("./items/lampController");
+const { ambiences } = require("../../assets/ambiences");
 
 const UNIT = 200;
 
@@ -196,10 +198,18 @@ const createWelcomeMarker = (pos, config) => {
 // component: welcomeMarker
 ON INIT {
   ${getInjections("init", self)}
+
+  SETCONTROLLEDZONE palette0
+
   ADDXP 2000 // can't cast lightning bolt at level 0
 
   TIMERwelcome -m 1 2000 GOSUB WELCOME_MESSAGE
 
+  ACCEPT
+}
+
+ON CONTROLLEDZONE_ENTER {
+  TELEPORT -p ${self.ref}
   ACCEPT
 }
 
@@ -668,6 +678,108 @@ const renderGrid = (grid) => {
     const top = -radius * UNIT + UNIT / 2;
     const left = -radius * UNIT + UNIT / 2;
 
+    const decalOffset = {
+      right: [1, 0, 0],
+      left: [-1, 0, 0],
+      front: [0, 0, 1],
+      back: [0, 0, -1],
+    };
+
+    const wallSegments = [];
+
+    for (let y = 0; y < grid.length; y++) {
+      for (let x = 0; x < grid[y].length; x++) {
+        if (grid[y][x] === 1) {
+          if (isOccupied(x - 1, y, grid) !== true) {
+            wallSegments.push([x, y, "right"]);
+          }
+          if (isOccupied(x + 1, y, grid) !== true) {
+            wallSegments.push([x, y, "left"]);
+          }
+          if (isOccupied(x, y + 1, grid) !== true) {
+            wallSegments.push([x, y, "front"]);
+          }
+          if (isOccupied(x, y - 1, grid) !== true) {
+            wallSegments.push([x, y, "back"]);
+          }
+        }
+      }
+    }
+
+    const rightWalls = wallSegments
+      .filter(([x, y, direction]) => direction === "right")
+      .sort(([ax, ay], [bx, by]) => ax - bx || ay - by)
+      .reduce((walls, [x, y]) => {
+        const adjacentWallIdx = walls.findIndex(
+          (wall) => wall.x === x && wall.y + wall.width === y
+        );
+
+        if (adjacentWallIdx !== -1) {
+          walls[adjacentWallIdx].width += 1;
+          return walls;
+        }
+
+        walls.push({ x, y, width: 1 });
+
+        return walls;
+      }, []);
+
+    const leftWalls = wallSegments
+      .filter(([x, y, direction]) => direction === "left")
+      .sort(([ax, ay], [bx, by]) => ax - bx || ay - by)
+      .reduce((walls, [x, y]) => {
+        const adjacentWallIdx = walls.findIndex(
+          (wall) => wall.x === x && wall.y + wall.width === y
+        );
+
+        if (adjacentWallIdx !== -1) {
+          walls[adjacentWallIdx].width += 1;
+          return walls;
+        }
+
+        walls.push({ x, y, width: 1 });
+
+        return walls;
+      }, []);
+
+    const frontWalls = wallSegments
+      .filter(([x, y, direction]) => direction === "front")
+      .sort(([ax, ay], [bx, by]) => ay - by || ax - bx)
+      .reduce((walls, [x, y]) => {
+        const adjacentWallIdx = walls.findIndex(
+          (wall) => wall.y === y && wall.x + wall.width === x
+        );
+
+        if (adjacentWallIdx !== -1) {
+          walls[adjacentWallIdx].width += 1;
+          return walls;
+        }
+
+        walls.push({ x, y, width: 1 });
+
+        return walls;
+      }, []);
+
+    const backWalls = wallSegments
+      .filter(([x, y, direction]) => direction === "back")
+      .sort(([ax, ay], [bx, by]) => ay - by || ax - bx)
+      .reduce((walls, [x, y]) => {
+        const adjacentWallIdx = walls.findIndex(
+          (wall) => wall.y === y && wall.x + wall.width === x
+        );
+
+        if (adjacentWallIdx !== -1) {
+          walls[adjacentWallIdx].width += 1;
+          return walls;
+        }
+
+        walls.push({ x, y, width: 1 });
+
+        return walls;
+      }, []);
+
+    // ----------------
+
     for (let y = 0; y < grid.length; y++) {
       for (let x = 0; x < grid[y].length; x++) {
         if (grid[y][x] === 1) {
@@ -698,172 +810,81 @@ const renderGrid = (grid) => {
       }
     }
 
-    const wallSegments = [];
-
-    for (let y = 0; y < grid.length; y++) {
-      for (let x = 0; x < grid[y].length; x++) {
-        if (grid[y][x] === 1) {
-          if (isOccupied(x - 1, y, grid) !== true) {
-            wallSegments.push([x, y, "right"]);
-          }
-          if (isOccupied(x + 1, y, grid) !== true) {
-            wallSegments.push([x, y, "left"]);
-          }
-          if (isOccupied(x, y + 1, grid) !== true) {
-            wallSegments.push([x, y, "front"]);
-          }
-          if (isOccupied(x, y - 1, grid) !== true) {
-            wallSegments.push([x, y, "back"]);
-          }
-        }
-      }
-    }
-
-    const rightWalls = wallSegments
-      .filter(([x, y, direction]) => direction === "right")
-      .sort(([ax, ay], [bx, by]) => ax - bx || ay - by)
-      .reduce((walls, [x, y]) => {
-        const nextWallIdx = walls.findIndex(
-          (wall) => wall.x === x && wall.y === y + 1
-        );
-
-        if (nextWallIdx !== -1) {
-          walls[nextWallIdx].width += 1;
-          walls[nextWallIdx].y -= 1;
-          return walls;
-        }
-
-        const prevWallIdx = walls.findIndex(
-          (wall) => wall.x === x && wall.y + (wall.width - 1) === y - 1
-        );
-
-        if (prevWallIdx !== -1) {
-          walls[prevWallIdx].width += 1;
-          return walls;
-        }
-
-        walls.push({ x, y, width: 1 });
-
-        return walls;
-      }, []);
-
-    const leftWalls = wallSegments
-      .filter(([x, y, direction]) => direction === "left")
-      .sort(([ax, ay], [bx, by]) => ax - bx || ay - by)
-      .reduce((walls, [x, y]) => {
-        const nextWallIdx = walls.findIndex(
-          (wall) => wall.x === x && wall.y === y + 1
-        );
-
-        if (nextWallIdx !== -1) {
-          walls[nextWallIdx].width += 1;
-          walls[nextWallIdx].y -= 1;
-          return walls;
-        }
-
-        const prevWallIdx = walls.findIndex(
-          (wall) => wall.x === x && wall.y + (wall.width - 1) === y - 1
-        );
-
-        if (prevWallIdx !== -1) {
-          walls[prevWallIdx].width += 1;
-          return walls;
-        }
-
-        walls.push({ x, y, width: 1 });
-
-        return walls;
-      }, []);
-
     rightWalls.forEach(({ x, y, width }) => {
-      setTexture(
-        textures.backrooms[Math.random() > 0.5 ? "wall" : "wall2"],
-        mapData
-      );
       const coords = [
         left + x * UNIT - UNIT / 2,
         0,
         -(top + (y + width) * UNIT) - UNIT / 2,
       ];
-      wall(coords, "right", { width })(mapData);
-    });
-
-    leftWalls.forEach(({ x, y, width }) => {
       setTexture(
         textures.backrooms[Math.random() > 0.5 ? "wall" : "wall2"],
         mapData
       );
+      wall(coords, "right", { width })(mapData);
+      setTexture(textures.backrooms.moldEdge, mapData);
+      wall(move(...decalOffset.right, coords), "right", { height: 1, width })(
+        mapData
+      );
+    });
+
+    leftWalls.forEach(({ x, y, width }) => {
       const coords = [
         left + x * UNIT + UNIT / 2,
         0,
         -(top + (y + width) * UNIT) - UNIT / 2,
       ];
-      wall(coords, "left", { width })(mapData);
-    });
-
-    const decalOffset = {
-      right: [1, 0, 0],
-      left: [-1, 0, 0],
-      front: [0, 0, 1],
-      back: [0, 0, -1],
-    };
-
-    /*
-    wallSegments.forEach(([x, y, direction]) => {
-      let coords;
-      let decalOffset;
-
-      switch (direction) {
-        case "right":
-          coords = [
-            left + x * UNIT - UNIT / 2,
-            0,
-            -(top + (y + 1) * UNIT) - UNIT / 2,
-          ];
-          
-          break;
-        case "left":
-          coords = [
-            left + x * UNIT + UNIT / 2,
-            0,
-            -(top + (y + 1) * UNIT) - UNIT / 2,
-          ];
-          decalOffset = [-1, 0, 0];
-          break;
-        case "front":
-          coords = [
-            left + (x - 1) * UNIT - UNIT / 2,
-            0,
-            -(top + y * UNIT) - UNIT / 2,
-          ];
-          decalOffset = [0, 0, 1];
-          break;
-        case "back":
-          coords = [
-            left + (x - 1) * UNIT - UNIT / 2,
-            0,
-            -(top + y * UNIT) + UNIT / 2,
-          ];
-          decalOffset = [0, 0, -1];
-          break;
-      }
-
       setTexture(
         textures.backrooms[Math.random() > 0.5 ? "wall" : "wall2"],
         mapData
       );
-      wall(coords, direction)(mapData);
-
+      wall(coords, "left", { width })(mapData);
       setTexture(textures.backrooms.moldEdge, mapData);
-      wall(move(...decalOffset, coords), direction, { height: 1 })(mapData);
+      wall(move(...decalOffset.left, coords), "left", { height: 1, width })(
+        mapData
+      );
     });
-    */
+
+    frontWalls.forEach(({ x, y, width }) => {
+      const coords = [
+        left + (x - 1) * UNIT - UNIT / 2,
+        0,
+        -(top + y * UNIT) - UNIT / 2,
+      ];
+      setTexture(
+        textures.backrooms[Math.random() > 0.5 ? "wall" : "wall2"],
+        mapData
+      );
+      wall(coords, "front", { width })(mapData);
+      setTexture(textures.backrooms.moldEdge, mapData);
+      wall(move(...decalOffset.front, coords), "front", { height: 1, width })(
+        mapData
+      );
+    });
+
+    backWalls.forEach(({ x, y, width }) => {
+      const coords = [
+        left + (x - 1) * UNIT - UNIT / 2,
+        0,
+        -(top + y * UNIT) + UNIT / 2,
+      ];
+      setTexture(
+        textures.backrooms[Math.random() > 0.5 ? "wall" : "wall2"],
+        mapData
+      );
+      wall(coords, "back", { width })(mapData);
+      setTexture(textures.backrooms.moldEdge, mapData);
+      wall(move(...decalOffset.back, coords), "back", { height: 1, width })(
+        mapData
+      );
+    });
 
     return mapData;
   };
 };
 
 const generate = async (config) => {
+  const { origin } = config;
+
   defineCeilingLamp();
   defineCeilingDiffuser();
 
@@ -1018,7 +1039,16 @@ const generate = async (config) => {
 
     setColor("#0b0c10"),
 
-    movePlayerTo([0, 0, 0]),
+    addZone(
+      [-origin[0], 0, -origin[2]],
+      [100, 0, 100],
+      "palette0",
+      ambiences.none,
+      5000
+    ),
+    setColor("black"),
+
+    movePlayerTo([-origin[0], 0, -origin[2]]),
     (mapData) => {
       mapData.meta.mapName = "The Backrooms";
       return mapData;
