@@ -11,6 +11,8 @@ module.exports.wall = ([x, y, z], face, config = {}) => {
 
     const h = config.height ?? (UNIT * roomDimensions.height) / internalUnit;
     const w = config.width ?? 1;
+    const textureRotation = config.textureRotation ?? 0;
+    const textureFlags = config.textureFlags ?? 0;
 
     return compose((mapData) => {
       for (let height = 0; height < h; height++) {
@@ -32,8 +34,9 @@ module.exports.wall = ([x, y, z], face, config = {}) => {
             ),
             face,
             null,
-            0,
-            internalUnit
+            textureRotation,
+            internalUnit,
+            textureFlags
           )(mapData);
         }
       }
