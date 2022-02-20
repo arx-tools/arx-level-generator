@@ -73,10 +73,11 @@ const wall = ([x, y, z], face, config = {}) => {
     const internalUnit = 100;
 
     const h = config.height ?? (UNIT * roomDimensions.height) / internalUnit;
+    const w = config.width ?? 1;
 
     return compose((mapData) => {
       for (let height = 0; height < h; height++) {
-        for (let width = 0; width < UNIT / 100; width++) {
+        for (let width = 0; width < w * (UNIT / 100); width++) {
           (face === "left" || face === "right" ? wallX : wallZ)(
             move(
               x +
@@ -718,6 +719,96 @@ const renderGrid = (grid) => {
       }
     }
 
+    const rightWalls = wallSegments
+      .filter(([x, y, direction]) => direction === "right")
+      .sort(([ax, ay], [bx, by]) => ax - bx || ay - by)
+      .reduce((walls, [x, y]) => {
+        const nextWallIdx = walls.findIndex(
+          (wall) => wall.x === x && wall.y === y + 1
+        );
+
+        if (nextWallIdx !== -1) {
+          walls[nextWallIdx].width += 1;
+          walls[nextWallIdx].y -= 1;
+          return walls;
+        }
+
+        const prevWallIdx = walls.findIndex(
+          (wall) => wall.x === x && wall.y + (wall.width - 1) === y - 1
+        );
+
+        if (prevWallIdx !== -1) {
+          walls[prevWallIdx].width += 1;
+          return walls;
+        }
+
+        walls.push({ x, y, width: 1 });
+
+        return walls;
+      }, []);
+
+    const leftWalls = wallSegments
+      .filter(([x, y, direction]) => direction === "left")
+      .sort(([ax, ay], [bx, by]) => ax - bx || ay - by)
+      .reduce((walls, [x, y]) => {
+        const nextWallIdx = walls.findIndex(
+          (wall) => wall.x === x && wall.y === y + 1
+        );
+
+        if (nextWallIdx !== -1) {
+          walls[nextWallIdx].width += 1;
+          walls[nextWallIdx].y -= 1;
+          return walls;
+        }
+
+        const prevWallIdx = walls.findIndex(
+          (wall) => wall.x === x && wall.y + (wall.width - 1) === y - 1
+        );
+
+        if (prevWallIdx !== -1) {
+          walls[prevWallIdx].width += 1;
+          return walls;
+        }
+
+        walls.push({ x, y, width: 1 });
+
+        return walls;
+      }, []);
+
+    rightWalls.forEach(({ x, y, width }) => {
+      setTexture(
+        textures.backrooms[Math.random() > 0.5 ? "wall" : "wall2"],
+        mapData
+      );
+      const coords = [
+        left + x * UNIT - UNIT / 2,
+        0,
+        -(top + (y + width) * UNIT) - UNIT / 2,
+      ];
+      wall(coords, "right", { width })(mapData);
+    });
+
+    leftWalls.forEach(({ x, y, width }) => {
+      setTexture(
+        textures.backrooms[Math.random() > 0.5 ? "wall" : "wall2"],
+        mapData
+      );
+      const coords = [
+        left + x * UNIT + UNIT / 2,
+        0,
+        -(top + (y + width) * UNIT) - UNIT / 2,
+      ];
+      wall(coords, "left", { width })(mapData);
+    });
+
+    const decalOffset = {
+      right: [1, 0, 0],
+      left: [-1, 0, 0],
+      front: [0, 0, 1],
+      back: [0, 0, -1],
+    };
+
+    /*
     wallSegments.forEach(([x, y, direction]) => {
       let coords;
       let decalOffset;
@@ -729,7 +820,7 @@ const renderGrid = (grid) => {
             0,
             -(top + (y + 1) * UNIT) - UNIT / 2,
           ];
-          decalOffset = [1, 0, 0];
+          
           break;
         case "left":
           coords = [
@@ -766,6 +857,7 @@ const renderGrid = (grid) => {
       setTexture(textures.backrooms.moldEdge, mapData);
       wall(move(...decalOffset, coords), direction, { height: 1 })(mapData);
     });
+    */
 
     return mapData;
   };
