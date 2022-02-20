@@ -61,51 +61,8 @@ const {
 const { overridePlayerScript } = require("../shared/player");
 const { createLampController } = require("./items/lampController");
 const { ambiences } = require("../../assets/ambiences");
-
-const UNIT = 200;
-
-const COLORS = {
-  BLOOD: "#8a0707",
-};
-
-const wall = ([x, y, z], face, config = {}) => {
-  return (mapData) => {
-    const { origin, roomDimensions } = mapData.config;
-
-    const internalUnit = 100;
-
-    const h = config.height ?? (UNIT * roomDimensions.height) / internalUnit;
-    const w = config.width ?? 1;
-
-    return compose((mapData) => {
-      for (let height = 0; height < h; height++) {
-        for (let width = 0; width < w * (UNIT / 100); width++) {
-          (face === "left" || face === "right" ? wallX : wallZ)(
-            move(
-              x +
-                internalUnit / 2 +
-                (face === "front" || face === "back"
-                  ? width * internalUnit + UNIT
-                  : 0),
-              y - internalUnit / 2 - height * internalUnit,
-              z +
-                internalUnit / 2 +
-                (face === "left" || face === "right"
-                  ? width * internalUnit + UNIT
-                  : 0),
-              origin
-            ),
-            face,
-            null,
-            0,
-            internalUnit
-          )(mapData);
-        }
-      }
-      return mapData;
-    })(mapData);
-  };
-};
+const { wall } = require("./wall.js");
+const { UNIT, COLORS } = require("./constants.js");
 
 const addLamp = (pos, angle, config = {}) => {
   return (mapData) => {
