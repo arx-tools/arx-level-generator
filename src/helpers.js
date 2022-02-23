@@ -37,6 +37,7 @@ const {
   repeat,
   either,
   clone,
+  flatten,
 } = require("ramda");
 const {
   POLY_QUAD,
@@ -709,6 +710,13 @@ const cleanupCache = () => {
   resetTextures();
 };
 
+const pickRandomLoot = (lootTable) => {
+  const idx = pickRandom(
+    flatten(lootTable.map(({ weight }, idx) => repeat(idx, weight)))
+  );
+  return lootTable[idx];
+};
+
 module.exports = {
   subtractVec3,
   magnitude,
@@ -747,4 +755,5 @@ module.exports = {
   circleOfVectors,
   cleanupCache,
   uninstall,
+  pickRandomLoot,
 };

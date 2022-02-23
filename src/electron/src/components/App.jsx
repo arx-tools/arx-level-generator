@@ -93,6 +93,7 @@ const App = () => {
         levelIdx: 1,
         seed,
         outputDir,
+        lootTable: [],
         ...settings,
       };
 
@@ -105,6 +106,23 @@ const App = () => {
               depth: [1, 5],
               height: 2,
             },
+            lootTable: [
+              {
+                name: "almondWater",
+                weight: 10,
+                variant: "mana",
+              },
+              {
+                name: "almondWater",
+                weight: 1,
+                variant: "xp",
+              },
+              {
+                name: "almondWater",
+                weight: 2,
+                variant: "slow",
+              },
+            ],
           });
           break;
         case "alias-nightmare":

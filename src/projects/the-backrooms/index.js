@@ -31,6 +31,7 @@ const {
   toRgba,
   toFloatRgb,
   addZone,
+  pickRandomLoot,
 } = require("../../helpers.js");
 const { wallX, wallZ, plain } = require("../../prefabs");
 const {
@@ -551,20 +552,6 @@ ON INVENTORYIN {
   )(items.keys.oliverQuest, { name: "Fire exit key" });
 };
 
-const getAlmondWaterVariant = () => {
-  const factor = randomBetween(0, 100);
-
-  if (factor < 1) {
-    return "xp";
-  }
-
-  if (factor < 10) {
-    return "slow";
-  }
-
-  return "mana";
-};
-
 const createAlmondWater = (
   pos,
   angle = [0, 0, 0],
@@ -765,17 +752,6 @@ const generate = async (config) => {
 
       createExit(top, left, pickRandom(wallSegments), key, jumpscareCtrl);
 
-      const loots = [
-        (pos) =>
-          createAlmondWater(
-            pos,
-            [0, 0, 0],
-            getAlmondWaterVariant(),
-            jumpscareCtrl
-          ),
-        // TODO: more loot
-      ];
-
       lootSlot.forEach(([x, z]) => {
         const offsetX = Math.floor(randomBetween(0, UNIT / 100)) * 100;
         const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100;
@@ -784,7 +760,18 @@ const generate = async (config) => {
           0,
           -(top + z * UNIT) - 50 + offsetZ,
         ];
-        pickRandom(loots)(pos);
+
+        const loot = pickRandomLoot(config.lootTable);
+
+        switch (loot.name) {
+          case "almondWater":
+            {
+              createAlmondWater(pos, [0, 0, 0], loot.variant, jumpscareCtrl);
+            }
+            break;
+          default:
+            console.error("unknown item", loot);
+        }
       });
 
       return mapData;

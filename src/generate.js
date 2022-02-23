@@ -13,6 +13,7 @@ const theBackrooms = require("./projects/the-backrooms/index.js");
     origin: [6000, 0, 6000],
     levelIdx: 1,
     seed,
+    lootTable: [],
   };
 
   const project = "the-backrooms";
@@ -23,6 +24,23 @@ const theBackrooms = require("./projects/the-backrooms/index.js");
         ...config,
         numberOfRooms: 10,
         roomDimensions: { width: [1, 5], depth: [1, 5], height: 2 },
+        lootTable: [
+          {
+            name: "almondWater",
+            weight: 10,
+            variant: "mana",
+          },
+          {
+            name: "almondWater",
+            weight: 1,
+            variant: "xp",
+          },
+          {
+            name: "almondWater",
+            weight: 2,
+            variant: "slow",
+          },
+        ],
       });
       break;
     case "alias-nightmare":
