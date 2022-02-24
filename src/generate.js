@@ -16,15 +16,15 @@ const theBackrooms = require("./projects/the-backrooms/index.js");
     lootTable: [],
   };
 
-  const project = "the-backrooms";
+  const project = "alias-nightmare";
 
   switch (project) {
     case "the-backrooms":
       await theBackrooms({
         ...config,
         numberOfRooms: 10,
-        roomDimensions: { width: [1, 5], depth: [1, 5], height: 10 },
-        percentOfLightsOn: 70,
+        roomDimensions: { width: [1, 5], depth: [1, 5], height: 2 },
+        percentOfLightsOn: 60,
         lootTable: [
           {
             name: "almondWater",
@@ -47,6 +47,7 @@ const theBackrooms = require("./projects/the-backrooms/index.js");
     case "alias-nightmare":
       await aliasNightmare({
         ...config,
+        bumpFactor: 3,
       });
       break;
   }

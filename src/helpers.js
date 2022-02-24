@@ -479,7 +479,7 @@ const adjustVertexBy = (ref, fn, polygons) => {
         vertex.posY === ref.posY &&
         vertex.posZ === ref.posZ
       ) {
-        return fn(vertex);
+        return fn(vertex, polygon);
       }
 
       return vertex;

@@ -9,7 +9,11 @@ const {
   unsetPolygonGroup,
 } = require("../../helpers.js");
 const { colors, NORTH, SOUTH, WEST, EAST, NONE } = require("./constants.js");
-const { plain, connectToNearPolygons } = require("../../prefabs/plain.js");
+const {
+  plain,
+  connectToNearPolygons,
+  disableBumping,
+} = require("../../prefabs/plain.js");
 const { declare, getInjections } = require("../../scripting.js");
 const {
   items,
@@ -388,7 +392,12 @@ const island = (config) => (mapData) => {
           move(0, 100, (height * 100) / 2 + jointOffset, pos),
           [ISLAND_JOINT_WIDTH, ISLAND_JOINT_LENGTH],
           "ceiling",
-          connectToNearPolygons(`${id}-north-island-joint-top`)
+          (polygon, mapData) => {
+            return connectToNearPolygons(`${id}-north-island-joint-top`)(
+              disableBumping(polygon),
+              mapData
+            );
+          }
         ),
         setPolygonGroup(`${id}-north-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
@@ -408,7 +417,12 @@ const island = (config) => (mapData) => {
           move(0, 100, -((height * 100) / 2 + jointOffset), pos),
           [ISLAND_JOINT_WIDTH, ISLAND_JOINT_LENGTH],
           "ceiling",
-          connectToNearPolygons(`${id}-south-island-joint-top`)
+          (polygon, mapData) => {
+            return connectToNearPolygons(`${id}-south-island-joint-top`)(
+              disableBumping(polygon),
+              mapData
+            );
+          }
         ),
         setPolygonGroup(`${id}-south-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
@@ -428,7 +442,12 @@ const island = (config) => (mapData) => {
           move((width * 100) / 2 + jointOffset, 100, 0, pos),
           [ISLAND_JOINT_LENGTH, ISLAND_JOINT_WIDTH],
           "ceiling",
-          connectToNearPolygons(`${id}-east-island-joint-top`)
+          (polygon, mapData) => {
+            return connectToNearPolygons(`${id}-east-island-joint-top`)(
+              disableBumping(polygon),
+              mapData
+            );
+          }
         ),
         setPolygonGroup(`${id}-east-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
@@ -448,7 +467,12 @@ const island = (config) => (mapData) => {
           move(-((width * 100) / 2 + jointOffset), 100, 0, pos),
           [ISLAND_JOINT_LENGTH, ISLAND_JOINT_WIDTH],
           "ceiling",
-          connectToNearPolygons(`${id}-west-island-joint-top`)
+          (polygon, mapData) => {
+            return connectToNearPolygons(`${id}-west-island-joint-top`)(
+              disableBumping(polygon),
+              mapData
+            );
+          }
         ),
         setPolygonGroup(`${id}-west-island-joint-bottom`),
         setTexture(textures.gravel.ground1),

@@ -11,7 +11,7 @@ const {
   distance,
   sortByDistance,
 } = require("../helpers.js");
-const { identity, reject, __, map } = require("ramda");
+const { identity, reject, __, map, clamp } = require("ramda");
 const { isEmptyArray } = require("ramda-adjunct");
 
 // pos is relative to origin
@@ -70,7 +70,7 @@ const plain =
     middles = reject(isPartOfNonBumpablePolygon(polygons), middles);
 
     corners.forEach((corner) => {
-      const magnitude = 10;
+      const magnitude = 5 * mapData.config.bumpFactor;
       polygons = adjustVertexBy(
         corner,
         bumpByMagnitude(
@@ -80,7 +80,7 @@ const plain =
       );
     });
     edges.forEach((edge) => {
-      const magnitude = 10;
+      const magnitude = 5 * mapData.config.bumpFactor;
       polygons = adjustVertexBy(
         edge,
         bumpByMagnitude(
@@ -90,10 +90,19 @@ const plain =
       );
     });
     pickRandoms(15, middles).forEach((middle) => {
-      const magnitude = 50;
+      const magnitude = 10 * mapData.config.bumpFactor;
       polygons = adjustVertexBy(
         middle,
-        bumpByMagnitude(randomBetween(-magnitude, magnitude)),
+        bumpByMagnitude(
+          facing === "floor"
+            ? clamp(-50, Infinity, randomBetween(-magnitude, magnitude))
+            : clamp(
+                -Infinity,
+                50,
+                randomBetween(-magnitude, magnitude) * 3 -
+                  randomBetween(5, 25) * mapData.config.bumpFactor
+              )
+        ),
         polygons
       );
     });
@@ -128,10 +137,11 @@ const connectToNearPolygons = (targetGroup) => (polygons, mapData) => {
 
   const distanceThreshold = 100;
 
-  [...corners, ...edges].forEach((corner) => {
+  [...corners, ...edges].forEach((polygon) => {
     polygons = adjustVertexBy(
-      corner,
-      (vertex) => {
+      polygon,
+      (vertex, polyOfVertex) => {
+        polyOfVertex.config.bumpable = false;
         const closestVertex = allVertices.sort(
           sortByDistance(vertexToVector(vertex))
         )[0];
@@ -148,9 +158,6 @@ const connectToNearPolygons = (targetGroup) => (polygons, mapData) => {
       },
       polygons
     );
-    polygons.forEach((polygon) => {
-      polygon.config.bumpable = false;
-    });
   });
 
   return polygons;
