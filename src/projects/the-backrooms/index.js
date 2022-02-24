@@ -79,11 +79,13 @@ const addLamp = (pos, angle, config = {}) => {
     const isOn = config.on ?? false;
     const lampEntity = createCeilingLamp(pos, angle, { on: isOn });
 
+    const roomHeight = mapData.config.roomDimensions.height;
+
     compose(
       addLight(move(0, 20, 0, pos), {
         fallstart: 100,
-        fallend: 1000,
-        intensity: 1,
+        fallend: 500 * roomHeight,
+        intensity: 1.3 - roomHeight * 0.1,
         exFlicker: toFloatRgb(toRgba("#1f1f07")),
         extras:
           EXTRAS_SEMIDYNAMIC |
@@ -685,7 +687,7 @@ const generate = async (config) => {
 
             if (x % 3 === 0 && y % 3 === 0) {
               const lampConfig = {
-                on: Math.random() < 0.3,
+                on: randomBetween(0, 100) < config.percentOfLightsOn,
               };
 
               if (isFirstLamp) {

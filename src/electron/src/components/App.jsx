@@ -93,14 +93,13 @@ const App = () => {
         levelIdx: 1,
         seed,
         outputDir,
-        lootTable: [],
         ...settings,
       };
 
       switch (project) {
         case "the-backrooms":
           await theBackrooms({
-            ...config,
+            percentOfLightsOn: 30,
             roomDimensions: {
               width: [1, 5],
               depth: [1, 5],
@@ -123,10 +122,12 @@ const App = () => {
                 variant: "slow",
               },
             ],
+            ...config,
           });
           break;
         case "alias-nightmare":
           await aliasNightmare({
+            lootTable: [],
             ...config,
           });
           break;

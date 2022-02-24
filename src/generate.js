@@ -23,7 +23,8 @@ const theBackrooms = require("./projects/the-backrooms/index.js");
       await theBackrooms({
         ...config,
         numberOfRooms: 10,
-        roomDimensions: { width: [1, 5], depth: [1, 5], height: 2 },
+        roomDimensions: { width: [1, 5], depth: [1, 5], height: 10 },
+        percentOfLightsOn: 70,
         lootTable: [
           {
             name: "almondWater",
