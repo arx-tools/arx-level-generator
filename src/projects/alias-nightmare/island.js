@@ -525,6 +525,15 @@ const island = (config) => (mapData) => {
     }),
     setPolygonGroup(`${id}-island-top`),
     setTexture(textures.stone.humanWall1),
+
+    plain(
+      move(0, 5000, 0, pos),
+      [width + 10, height + 10],
+      "floor",
+      disableBumping
+    ),
+    setTexture(textures.none),
+
     setColor(colors.terrain)
   )(mapData);
 };
