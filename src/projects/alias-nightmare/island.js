@@ -528,23 +528,7 @@ const island = (config) => (mapData) => {
     setPolygonGroup(`${id}-island-top`),
     setTexture(textures.stone.humanWall1),
 
-    plain(
-      move(0, 10000, 0, pos),
-      [width + 10, height + 10],
-      "floor",
-      disableBumping
-    ),
-    setTexture(textures.none),
-    setColor(colors.terrain),
-
-    addZone(
-      move(0, 5000, 0, pos),
-      [(width + 10) * 100, 100, (height + 10) * 100],
-      `fall-detector-${config.idx}`,
-      ambiences.none,
-      5000
-    ),
-    setColor(colors.ambience[0])
+    setColor(colors.terrain)
   )(mapData);
 };
 

@@ -8,6 +8,7 @@ const {
   addZone,
   randomBetween,
   circleOfVectors,
+  setTexture,
 } = require("../../helpers");
 const island = require("./island.js");
 const {
@@ -34,7 +35,10 @@ const bridges = require("./bridges");
 const { createSmellyFlower } = require("./items/smellyFlower");
 const { createHangingCorpse } = require("./items/hangingCorpse");
 const { createStatue, defineStatue } = require("./items/statue");
-const { stairs } = require("../../prefabs");
+const { stairs, plain } = require("../../prefabs");
+const { textures } = require("../../assets/textures");
+const { MAP_MAX_WIDTH, MAP_MAX_HEIGHT } = require("../../constants");
+const { disableBumping } = require("../../prefabs/plain");
 
 const createWelcomeMarker = (pos) => (config) => {
   return compose(
@@ -86,7 +90,7 @@ ON CONTROLLEDZONE_ENTER {
   )(items.marker);
 };
 
-const generateFallSaver = (pos, idx, target) => {
+const createFallSaver = (pos, target) => {
   return compose(
     markAsUsed,
     moveTo(pos, [0, 0, 0]),
@@ -95,16 +99,29 @@ const generateFallSaver = (pos, idx, target) => {
 // component fallsaver
 ON INIT {
   ${getInjections("init", self)}
-  SETCONTROLLEDZONE "fall-detector-${idx}"
+  SETCONTROLLEDZONE "fall-detector"
   ACCEPT
 }
 
 ON CONTROLLEDZONE_ENTER {
-  TELEPORT -p ${target.ref}
+  GOSUB FADEOUT
+  TIMERfadein -m 1 1000 GOSUB FADEIN NOP
   ACCEPT
+}
+
+>>FADEOUT {
+  WORLDFADE OUT 1000 ${color("black")}
+  RETURN
+}
+
+>>FADEIN {
+  TELEPORT -p ${target.ref}
+  TIMERfadein -m 1 1000 WORLDFADE IN 300
+  RETURN
 }
       `;
     }),
+    addDependencyAs("projects/alias-nightmare/UruLink.wav", `sfx/UruLink.wav`),
     createItem
   )(items.marker);
 };
@@ -163,10 +180,7 @@ const generate = async (config) => {
   defineStatue();
   createStatue(islands[2].pos);
 
-  generateFallSaver(islands[0].pos, 0, welcomeMarker);
-  generateFallSaver(islands[1].pos, 1, welcomeMarker);
-  generateFallSaver(islands[2].pos, 2, welcomeMarker);
-  generateFallSaver(islands[3].pos, 3, welcomeMarker);
+  // createFallSaver(islands[0].pos, welcomeMarker);
 
   return compose(
     saveToDisk,
@@ -179,25 +193,22 @@ const generate = async (config) => {
       islands
     ),
 
-    // stairs([300, -50, 600]),
-    // setColor(colors.terrain),
+    plain(
+      [-origin[0] + MAP_MAX_WIDTH * 50, 500, -origin[2] + MAP_MAX_HEIGHT * 50],
+      [MAP_MAX_WIDTH, MAP_MAX_HEIGHT],
+      "floor"
+    ),
+    setTexture(textures.wood.aliciaRoomMur02),
+    setColor("white"),
 
-    // TODO: pillars for every island is a bit too expensive
-    // pillars(
-    //   pos,
-    //   30,
-    //   [width * 100 * 3, height * 100 * 3],
-    //   [width * 100 + 50, height * 100 + 50],
-    //   [
-    //     (exits | entrances) & NORTH ? 350 : 0,
-    //     (exits | entrances) & EAST ? 350 : 0,
-    //     (exits | entrances) & SOUTH ? 350 : 0,
-    //     (exits | entrances) & WEST ? 350 : 0,
-    //   ]
+    // addZone(
+    //   [0, 5000, 0],
+    //   [15000, 100, 15000],
+    //   `fall-detector`,
+    //   ambiences.sirs,
+    //   5000
     // ),
-    // setPolygonGroup(`${id}-pillars`),
-    // setTexture(textures.stone.humanPriest4),
-    // setColor(colors.pillars)afternoon gellert spa
+    // setColor(colors.ambience[0]),
 
     addZone(
       [-origin[0], 0, -origin[2]],
