@@ -7,6 +7,7 @@ const {
   setTexture,
   setPolygonGroup,
   unsetPolygonGroup,
+  addZone,
 } = require("../../helpers.js");
 const { colors, NORTH, SOUTH, WEST, EAST, NONE } = require("./constants.js");
 const {
@@ -29,6 +30,7 @@ const {
   ISLAND_JOINT_LENGTH,
   ISLAND_JOINT_WIDTH,
 } = require("../../constants.js");
+const { ambiences } = require("../../assets/ambiences.js");
 
 // PP = pressure plate
 
@@ -527,14 +529,22 @@ const island = (config) => (mapData) => {
     setTexture(textures.stone.humanWall1),
 
     plain(
-      move(0, 5000, 0, pos),
+      move(0, 10000, 0, pos),
       [width + 10, height + 10],
       "floor",
       disableBumping
     ),
     setTexture(textures.none),
+    setColor(colors.terrain),
 
-    setColor(colors.terrain)
+    addZone(
+      move(0, 5000, 0, pos),
+      [(width + 10) * 100, 100, (height + 10) * 100],
+      `fall-detector-${config.idx}`,
+      ambiences.none,
+      5000
+    ),
+    setColor(colors.ambience[0])
   )(mapData);
 };
 

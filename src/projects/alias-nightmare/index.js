@@ -1,4 +1,4 @@
-const { compose, reduce, __ } = require("ramda");
+const { compose, reduce, __, addIndex } = require("ramda");
 const {
   generateBlankMapData,
   movePlayerTo,
@@ -86,6 +86,29 @@ ON CONTROLLEDZONE_ENTER {
   )(items.marker);
 };
 
+const generateFallSaver = (pos, idx, target) => {
+  return compose(
+    markAsUsed,
+    moveTo(pos, [0, 0, 0]),
+    addScript((self) => {
+      return `
+// component fallsaver
+ON INIT {
+  ${getInjections("init", self)}
+  SETCONTROLLEDZONE "fall-detector-${idx}"
+  ACCEPT
+}
+
+ON CONTROLLEDZONE_ENTER {
+  TELEPORT -p ${target.ref}
+  ACCEPT
+}
+      `;
+    }),
+    createItem
+  )(items.marker);
+};
+
 const generateAtLeastOneExit = () => {
   return (
     Math.round(randomBetween(NONE, ALL)) || 1 << Math.round(randomBetween(0, 3))
@@ -126,7 +149,7 @@ const generate = async (config) => {
     },
   ];
 
-  createWelcomeMarker(islands[0].pos)(config);
+  const welcomeMarker = createWelcomeMarker(islands[0].pos)(config);
   /*
   createHangingCorpse([-300, -150, -200], [0, 145, 0], {
     name: "[public_falan_tomb]",
@@ -140,12 +163,21 @@ const generate = async (config) => {
   defineStatue();
   createStatue(islands[2].pos);
 
+  generateFallSaver(islands[0].pos, 0, welcomeMarker);
+  generateFallSaver(islands[1].pos, 1, welcomeMarker);
+  generateFallSaver(islands[2].pos, 2, welcomeMarker);
+  generateFallSaver(islands[3].pos, 3, welcomeMarker);
+
   return compose(
     saveToDisk,
     finalize,
 
     bridges(islands),
-    reduce((mapData, config) => island(config)(mapData), __, islands),
+    addIndex(reduce)(
+      (mapData, config, idx) => island({ ...config, idx })(mapData),
+      __,
+      islands
+    ),
 
     // stairs([300, -50, 600]),
     // setColor(colors.terrain),
