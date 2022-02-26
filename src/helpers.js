@@ -204,6 +204,7 @@ const calculateNormals = (mapData) => {
 };
 
 const finalize = (mapData) => {
+  console.time("finalize");
   mapData.fts.polygons = compose(unnest, values)(mapData.fts.polygons);
   mapData.dlf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
   mapData.llf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
@@ -218,41 +219,32 @@ const finalize = (mapData) => {
   );
   mapData.fts.sceneHeader.mScenePosition = { x, y, z };
 
-  mapData.llf.lights = map((light) => {
-    const { x, y, z } = light.pos;
+  mapData.llf.lights.forEach((light) => {
+    light.pos.x -= spawn[0];
+    light.pos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT;
+    light.pos.z -= spawn[2];
+  });
 
-    light.pos = {
-      x: x - spawn[0],
-      y: y - spawn[1] - PLAYER_HEIGHT_ADJUSTMENT,
-      z: z - spawn[2],
-    };
+  mapData.dlf.paths.forEach((zone) => {
+    zone.header.initPos.x -= spawn[0];
+    zone.header.initPos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT;
+    zone.header.initPos.z -= spawn[2];
 
-    return light;
-  }, mapData.llf.lights);
+    zone.header.pos.x -= spawn[0];
+    zone.header.pos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT;
+    zone.header.pos.z -= spawn[2];
+  });
 
-  mapData.dlf.paths = map((zone) => {
-    const { pos, initPos } = zone.header;
-    zone.header.initPos = {
-      x: initPos.x - spawn[0],
-      y: initPos.y - spawn[1] - PLAYER_HEIGHT_ADJUSTMENT,
-      z: initPos.z - spawn[2],
-    };
-
-    zone.header.pos = {
-      x: pos.x - spawn[0],
-      y: pos.y - spawn[1] - PLAYER_HEIGHT_ADJUSTMENT,
-      z: pos.z - spawn[2],
-    };
-
-    return zone;
-  }, mapData.dlf.paths);
-
-  return compose(
+  mapData = compose(
     generateLights,
     calculateNormals,
     exportUsedItems,
     createTextureContainers
   )(mapData);
+
+  console.timeEnd("finalize");
+
+  return mapData;
 };
 
 const addOriginPolygon = (mapData) => {
