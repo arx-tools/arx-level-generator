@@ -9,6 +9,8 @@ const {
   randomBetween,
   circleOfVectors,
   setTexture,
+  setPolygonGroup,
+  unsetPolygonGroup,
 } = require("../../helpers");
 const island = require("./island.js");
 const {
@@ -193,12 +195,31 @@ const generate = async (config) => {
       islands
     ),
 
-    plain(
-      [-origin[0] + MAP_MAX_WIDTH * 50, 500, -origin[2] + MAP_MAX_HEIGHT * 50],
-      [MAP_MAX_WIDTH, MAP_MAX_HEIGHT],
-      "floor"
-    ),
-    setTexture(textures.wood.aliciaRoomMur02),
+    (mapData) => {
+      const divider = 10;
+      for (let x = 0; x < divider; x++) {
+        for (let y = 0; y < divider; y++) {
+          setPolygonGroup(`gravity-${x}-${y}`)(mapData);
+          plain(
+            [
+              -origin[0] +
+                (MAP_MAX_WIDTH / divider) * 50 +
+                (MAP_MAX_WIDTH / divider) * 100 * x,
+              500,
+              -origin[2] +
+                (MAP_MAX_HEIGHT / divider) * 50 +
+                (MAP_MAX_HEIGHT / divider) * 100 * y,
+            ],
+            [MAP_MAX_WIDTH / divider, MAP_MAX_HEIGHT / divider],
+            "floor",
+            disableBumping
+          )(mapData);
+          unsetPolygonGroup(mapData);
+        }
+      }
+      return mapData;
+    },
+    setTexture(textures.none),
     setColor("white"),
 
     // addZone(

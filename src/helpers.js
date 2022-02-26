@@ -398,9 +398,9 @@ const saveToDisk = async (mapData) => {
 
   // ------------
 
-  await fs.promises.writeFile(files.dlf, JSON.stringify(mapData.dlf, null, 2));
-  await fs.promises.writeFile(files.fts, JSON.stringify(mapData.fts, null, 2));
-  await fs.promises.writeFile(files.llf, JSON.stringify(mapData.llf, null, 2));
+  await fs.promises.writeFile(files.dlf, JSON.stringify(mapData.dlf));
+  await fs.promises.writeFile(files.fts, JSON.stringify(mapData.fts));
+  await fs.promises.writeFile(files.llf, JSON.stringify(mapData.llf));
 
   await fs.promises.writeFile(
     `${outputDir}/manifest.json`,
@@ -436,16 +436,6 @@ const unpackCoords = map(
     nth(0)
   )
 );
-
-const isPartOfNonBumpablePolygon = curry((polygons, vertex) => {
-  return compose(
-    includes(vertex),
-    map(pick(["posX", "posY", "posZ"])),
-    unnest,
-    pluck("vertices"),
-    filter((polygon) => polygon.config.bumpable === false)
-  )(polygons);
-});
 
 const categorizeVertices = compose(
   ([corner, [edge, middle]]) => ({
@@ -729,7 +719,6 @@ module.exports = {
   saveToDisk,
   setColor,
   setTexture,
-  isPartOfNonBumpablePolygon,
   categorizeVertices,
   bumpByMagnitude,
   adjustVertexBy,

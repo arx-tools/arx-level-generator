@@ -5,19 +5,33 @@ const {
   adjustVertexBy,
   randomBetween,
   pickRandoms,
-  isPartOfNonBumpablePolygon,
   move,
   vertexToVector,
   distance,
   sortByDistance,
 } = require("../helpers.js");
-const { identity, reject, __, map, clamp } = require("ramda");
+const {
+  identity,
+  reject,
+  __,
+  map,
+  clamp,
+  includes,
+  pick,
+  unnest,
+  pluck,
+} = require("ramda");
 const { isEmptyArray } = require("ramda-adjunct");
 
 // pos is relative to origin
-const plain =
-  (pos, size, facing = "floor", onBeforeBumping = identity, config = {}) =>
-  (mapData) => {
+const plain = (
+  pos,
+  size,
+  facing = "floor",
+  onBeforeBumping = identity,
+  config = {}
+) => {
+  return (mapData) => {
     const { origin } = mapData.config;
 
     const [x, y, z] = move(...pos, origin);
@@ -63,66 +77,95 @@ const plain =
       mapData
     );
 
-    let { corners, edges, middles } = categorizeVertices(polygons);
+    const nonBumpablePolygons = polygons.filter(
+      (polygon) => polygon.config.bumpable === false
+    );
 
-    corners = reject(isPartOfNonBumpablePolygon(polygons), corners);
-    edges = reject(isPartOfNonBumpablePolygon(polygons), edges);
-    middles = reject(isPartOfNonBumpablePolygon(polygons), middles);
-
-    corners.forEach((corner) => {
-      const magnitude = 5 * mapData.config.bumpFactor;
-      polygons = adjustVertexBy(
-        corner,
-        bumpByMagnitude(
-          randomBetween(-magnitude, magnitude) + (facing === "floor" ? -80 : 80)
-        ),
-        polygons
+    if (polygons.length > nonBumpablePolygons.length) {
+      const nonBumpableVertices = nonBumpablePolygons.reduce(
+        (acc, { vertices }) => {
+          acc.push(
+            ...vertices.map(({ posX, posY, posZ }) => `${posX}|${posY}|${posZ}`)
+          );
+          return acc;
+        },
+        []
       );
-    });
-    edges.forEach((edge) => {
-      const magnitude = 5 * mapData.config.bumpFactor;
-      polygons = adjustVertexBy(
-        edge,
-        bumpByMagnitude(
-          randomBetween(-magnitude, magnitude) + (facing === "floor" ? -40 : 40)
-        ),
-        polygons
-      );
-    });
-    pickRandoms(15, middles).forEach((middle) => {
-      const magnitude = 10 * mapData.config.bumpFactor;
-      polygons = adjustVertexBy(
-        middle,
-        bumpByMagnitude(
-          facing === "floor"
-            ? clamp(-50, Infinity, randomBetween(-magnitude, magnitude))
-            : clamp(
-                -Infinity,
-                50,
-                randomBetween(-magnitude, magnitude) * 3 -
-                  randomBetween(5, 25) * mapData.config.bumpFactor
-              )
-        ),
-        polygons
-      );
-    });
 
-    mapData.fts.polygons[mapData.state.polygonGroup] =
-      mapData.fts.polygons[mapData.state.polygonGroup] || [];
+      let { corners, edges, middles } = categorizeVertices(polygons);
 
-    mapData.fts.polygons[mapData.state.polygonGroup] = [
-      ...mapData.fts.polygons[mapData.state.polygonGroup],
-      ...polygons,
-    ];
+      corners
+        .filter(
+          ({ posX, posY, posZ }) =>
+            !nonBumpableVertices.includes(`${posX}|${posY}|${posZ}`)
+        )
+        .forEach((corner) => {
+          const magnitude = 5 * mapData.config.bumpFactor;
+          polygons = adjustVertexBy(
+            corner,
+            bumpByMagnitude(
+              randomBetween(-magnitude, magnitude) +
+                (facing === "floor" ? -80 : 80)
+            ),
+            polygons
+          );
+        });
+
+      edges
+        .filter(
+          ({ posX, posY, posZ }) =>
+            !nonBumpableVertices.includes(`${posX}|${posY}|${posZ}`)
+        )
+        .forEach((edge) => {
+          const magnitude = 5 * mapData.config.bumpFactor;
+          polygons = adjustVertexBy(
+            edge,
+            bumpByMagnitude(
+              randomBetween(-magnitude, magnitude) +
+                (facing === "floor" ? -40 : 40)
+            ),
+            polygons
+          );
+        });
+
+      middles = middles.filter(
+        ({ posX, posY, posZ }) =>
+          !nonBumpableVertices.includes(`${posX}|${posY}|${posZ}`)
+      );
+      pickRandoms(15, middles).forEach((middle) => {
+        const magnitude = 10 * mapData.config.bumpFactor;
+        polygons = adjustVertexBy(
+          middle,
+          bumpByMagnitude(
+            facing === "floor"
+              ? clamp(-50, Infinity, randomBetween(-magnitude, magnitude))
+              : clamp(
+                  -Infinity,
+                  50,
+                  randomBetween(-magnitude, magnitude) * 3 -
+                    randomBetween(5, 25) * mapData.config.bumpFactor
+                )
+          ),
+          polygons
+        );
+      });
+    }
+
+    if (!mapData.fts.polygons[mapData.state.polygonGroup]) {
+      mapData.fts.polygons[mapData.state.polygonGroup] = polygons;
+    } else {
+      mapData.fts.polygons[mapData.state.polygonGroup].push(...polygons);
+    }
 
     return mapData;
   };
+};
 
 const disableBumping = (polygons) => {
-  return map((polygon) => {
+  polygons.forEach((polygon) => {
     polygon.config.bumpable = false;
-    return polygon;
-  })(polygons);
+  });
+  return polygons;
 };
 
 const connectToNearPolygons = (targetGroup) => (polygons, mapData) => {
