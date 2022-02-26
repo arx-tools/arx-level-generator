@@ -271,12 +271,11 @@ const exportUsedItems = (mapData) => {
         "C:\\ARX\\Graph\\Obj3D\\Interactive\\" + arxifyFilename(item.filename);
       delete item.filename;
       delete item.script;
-      const { x, y, z } = item.pos;
-      item.pos = {
-        x: x - spawn[0],
-        y: y - spawn[1] - PLAYER_HEIGHT_ADJUSTMENT,
-        z: z - spawn[2],
-      };
+
+      item.pos.x -= spawn[0];
+      item.pos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT;
+      item.pos.z -= spawn[2];
+
       return item;
     }),
     filter(propEq("used", true)),
@@ -286,8 +285,6 @@ const exportUsedItems = (mapData) => {
     values,
     clone
   )(usedItems);
-
-  return mapData;
 };
 
 const exportScripts = (outputDir) => {

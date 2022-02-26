@@ -109,47 +109,38 @@ const isInCell = (polygonX, polygonZ, cellX, cellZ) => {
 };
 
 const generateLights = (mapData) => {
-  const { polygons } = mapData.fts;
-
   let colorIdx = 0;
+
+  const colors = [];
+  const white = toRgba("white");
 
   for (let z = 0; z < MAP_MAX_HEIGHT; z++) {
     for (let x = 0; x < MAP_MAX_WIDTH; x++) {
-      const polygonsInCell = polygons.filter(({ config }) => {
-        return isInCell(config.minX, config.minZ, x, z);
-      });
+      mapData.fts.polygons.forEach(({ config, vertices }) => {
+        if (!isInCell(config.minX, config.minZ, x, z)) {
+          return;
+        }
 
-      polygonsInCell.forEach(({ config, vertices }) => {
         const { color, isQuad } = config;
 
         if (color === null) {
-          mapData.llf.colors.push(toRgba("white"));
-          vertices[0].llfColorIdx = colorIdx++;
-          mapData.llf.colors.push(toRgba("white"));
-          vertices[1].llfColorIdx = colorIdx++;
-          mapData.llf.colors.push(toRgba("white"));
-          vertices[2].llfColorIdx = colorIdx++;
-          if (isQuad) {
-            mapData.llf.colors.push(toRgba("white"));
-            vertices[3].llfColorIdx = colorIdx++;
-          }
-        } else {
-          mapData.llf.colors.push(color);
-          vertices[0].llfColorIdx = colorIdx++;
-          mapData.llf.colors.push(color);
-          vertices[1].llfColorIdx = colorIdx++;
-          mapData.llf.colors.push(color);
-          vertices[2].llfColorIdx = colorIdx++;
-          if (isQuad) {
-            mapData.llf.colors.push(color);
-            vertices[3].llfColorIdx = colorIdx++;
-          }
+          color = white;
+        }
+
+        colors.push(color, color, color);
+        vertices[0].llfColorIdx = colorIdx++;
+        vertices[1].llfColorIdx = colorIdx++;
+        vertices[2].llfColorIdx = colorIdx++;
+
+        if (isQuad) {
+          colors.push(color);
+          vertices[3].llfColorIdx = colorIdx++;
         }
       });
     }
   }
 
-  return mapData;
+  mapData.llf.colors = colors;
 };
 
 const vertexToVector = ({ posX, posY, posZ }) => [
@@ -199,12 +190,10 @@ const calculateNormals = (mapData) => {
 
     polygon.normals = [polygon.norm, polygon.norm, polygon.norm, polygon.norm2];
   });
-
-  return mapData;
 };
 
 const finalize = (mapData) => {
-  console.time("finalize");
+  console.time("set spawn");
   mapData.fts.polygons = compose(unnest, values)(mapData.fts.polygons);
   mapData.dlf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
   mapData.llf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
@@ -234,15 +223,23 @@ const finalize = (mapData) => {
     zone.header.pos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT;
     zone.header.pos.z -= spawn[2];
   });
+  console.timeEnd("set spawn");
 
-  mapData = compose(
-    generateLights,
-    calculateNormals,
-    exportUsedItems,
-    createTextureContainers
-  )(mapData);
+  console.time("createTextureContainers");
+  createTextureContainers(mapData);
+  console.timeEnd("createTextureContainers");
 
-  console.timeEnd("finalize");
+  console.time("exportUsedItems");
+  exportUsedItems(mapData);
+  console.timeEnd("exportUsedItems");
+
+  console.time("calculateNormals");
+  calculateNormals(mapData);
+  console.timeEnd("calculateNormals");
+
+  console.time("generateLights");
+  generateLights(mapData);
+  console.timeEnd("generateLights");
 
   return mapData;
 };

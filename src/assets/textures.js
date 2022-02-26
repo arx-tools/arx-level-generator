@@ -143,14 +143,13 @@ const useTexture = (texture) => {
 };
 
 const createTextureContainers = (mapData) => {
-  mapData.fts.textureContainers = addIndex(map)((texture, idx) => {
+  mapData.fts.textureContainers = usedTextures.map((texture, idx) => {
     return {
       tc: idx + 1,
       temp: 0,
       fic: `GRAPH\\OBJ3D\\TEXTURES\\${texture.src}`,
     };
-  }, usedTextures);
-  return mapData;
+  });
 };
 
 const exportTextures = (outputDir) => {
