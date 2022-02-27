@@ -38,6 +38,7 @@ const {
   either,
   clone,
   flatten,
+  times,
 } = require("ramda");
 const {
   POLY_QUAD,
@@ -114,13 +115,23 @@ const generateLights = (mapData) => {
   const colors = [];
   const white = toRgba("white");
 
+  const p = mapData.fts.polygons.reduce((acc, { config }, idx) => {
+    const cellX = Math.floor(config.minX / 100);
+    const cellZ = Math.floor(config.minZ) + 1;
+
+    if (!acc[`${cellZ}-${cellX}`]) {
+      acc[`${cellZ}-${cellX}`] = [idx];
+    } else {
+      acc[`${cellZ}-${cellX}`].push(idx);
+    }
+
+    return acc;
+  }, {});
+
   for (let z = 0; z < MAP_MAX_HEIGHT; z++) {
     for (let x = 0; x < MAP_MAX_WIDTH; x++) {
-      mapData.fts.polygons.forEach(({ config, vertices }) => {
-        if (!isInCell(config.minX, config.minZ, x, z)) {
-          return;
-        }
-
+      (p[`${z}-${x}`] || []).forEach((idx) => {
+        const { config, vertices } = mapData.fts.polygons[idx];
         const { color, isQuad } = config;
 
         if (color === null) {
