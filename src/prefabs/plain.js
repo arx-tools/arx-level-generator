@@ -29,7 +29,7 @@ const plain = (
   size,
   facing = "floor",
   onBeforeBumping = identity,
-  config = {}
+  config = () => ({})
 ) => {
   return (mapData) => {
     const { origin } = mapData.config;
@@ -65,9 +65,9 @@ const plain = (
           pos,
           facing,
           null,
-          config.textureRotation ?? 90,
+          config().textureRotation ?? 90,
           100,
-          config.textureFlags ?? 0
+          config().textureFlags ?? 0
         )(tmp);
       }
     }

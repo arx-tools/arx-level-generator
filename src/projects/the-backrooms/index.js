@@ -20,7 +20,6 @@ const {
   finalize,
   saveToDisk,
   setColor,
-  setTexture,
   movePlayerTo,
   addLight,
   move,

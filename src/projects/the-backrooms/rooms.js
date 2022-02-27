@@ -343,10 +343,10 @@ const renderGrid = (grid) => {
             [UNIT / 100, UNIT / 100],
             "floor",
             disableBumping,
-            {
+            () => ({
               textureRotation: pickRandom([0, 90, 180, 270]),
               textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
-            }
+            })
           )(mapData);
 
           setTexture(textures.backrooms.ceiling, mapData);

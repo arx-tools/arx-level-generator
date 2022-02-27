@@ -1,4 +1,4 @@
-const { compose } = require("ramda");
+const { compose, identity } = require("ramda");
 const { ambiences } = require("../../assets/ambiences");
 const {
   items,
@@ -8,6 +8,7 @@ const {
   addScript,
 } = require("../../assets/items");
 const { textures } = require("../../assets/textures");
+const { HFLIP, VFLIP } = require("../../constants");
 const {
   saveToDisk,
   finalize,
@@ -17,6 +18,7 @@ const {
   setColor,
   setTexture,
   addLight,
+  pickRandom,
 } = require("../../helpers");
 const { plain, wallX } = require("../../prefabs");
 const { disableBumping } = require("../../prefabs/plain");
@@ -53,12 +55,21 @@ const createPlant = (pos) => {
   )(items.plants.fern);
 };
 
+const createAmikarsRock = (pos) => {
+  return compose(
+    markAsUsed,
+    moveTo(pos, [0, 0, 0]),
+    createItem
+  )(items.magic.amikarsRock);
+};
+
 const generate = async (config) => {
   const { origin } = config;
 
   const welcomeMarker = createWelcomeMarker([500, 0, 500]);
 
   createPlant([700, 0, 700]);
+  createAmikarsRock([-500, 210, 500]);
 
   return compose(
     saveToDisk,
@@ -66,9 +77,9 @@ const generate = async (config) => {
 
     (mapData) => {
       addLight([0, -2000, 0], {
-        fallstart: 3000,
+        fallstart: 1,
         fallend: 3000,
-        intensity: 3,
+        intensity: 5,
       })(mapData);
 
       return mapData;
@@ -79,12 +90,24 @@ const generate = async (config) => {
     setTexture(textures.water.cave),
     setColor("lightblue"),
 
-    plain([-450, 210, 450], [10, 10], "floor"),
-    plain([-450, 140, -450], [10, 10], "floor"),
-    plain([450, 70, -450], [10, 10], "floor"),
-    plain([450, 0, 450], [10, 10], "floor"),
+    plain([-450, 210, 450], [10, 10], "floor", identity, () => ({
+      textureRotation: pickRandom([0, 90, 180, 270]),
+      textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+    })),
+    plain([-450, 140, -450], [10, 10], "floor", identity, () => ({
+      textureRotation: pickRandom([0, 90, 180, 270]),
+      textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+    })),
+    plain([450, 70, -450], [10, 10], "floor", identity, () => ({
+      textureRotation: pickRandom([0, 90, 180, 270]),
+      textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+    })),
+    plain([450, 0, 450], [10, 10], "floor", identity, () => ({
+      textureRotation: pickRandom([0, 90, 180, 270]),
+      textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+    })),
     setTexture(textures.gravel.ground1),
-    setColor("lime"),
+    setColor("hsv(150, 37%, 70%)"),
 
     addZone(
       [-origin[0], 0, -origin[2]],

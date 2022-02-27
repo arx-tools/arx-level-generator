@@ -96,6 +96,10 @@ const items = {
         native: true,
       },
     },
+    amikarsRock: {
+      src: "items/quest_item/rock_amikar/rock_amikar.teo",
+      native: true,
+    },
   },
   npc: {
     statue: {
