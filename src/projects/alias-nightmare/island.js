@@ -1,4 +1,4 @@
-const { compose, map, props, any, __, when } = require("ramda");
+const { compose, map, props, any, __, when, identity } = require("ramda");
 const {
   setColor,
   move,
@@ -8,6 +8,7 @@ const {
   setPolygonGroup,
   unsetPolygonGroup,
   addZone,
+  pickRandom,
 } = require("../../helpers.js");
 const { colors, NORTH, SOUTH, WEST, EAST, NONE } = require("./constants.js");
 const {
@@ -29,6 +30,8 @@ const { nanoid } = require("nanoid");
 const {
   ISLAND_JOINT_LENGTH,
   ISLAND_JOINT_WIDTH,
+  HFLIP,
+  VFLIP,
 } = require("../../constants.js");
 const { ambiences } = require("../../assets/ambiences.js");
 
@@ -399,7 +402,11 @@ const island = (config) => (mapData) => {
               disableBumping(polygon),
               mapData
             );
-          }
+          },
+          () => ({
+            textureRotation: pickRandom([0, 90, 180, 270]),
+            textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+          })
         ),
         setPolygonGroup(`${id}-north-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
@@ -424,7 +431,11 @@ const island = (config) => (mapData) => {
               disableBumping(polygon),
               mapData
             );
-          }
+          },
+          () => ({
+            textureRotation: pickRandom([0, 90, 180, 270]),
+            textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+          })
         ),
         setPolygonGroup(`${id}-south-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
@@ -449,7 +460,11 @@ const island = (config) => (mapData) => {
               disableBumping(polygon),
               mapData
             );
-          }
+          },
+          () => ({
+            textureRotation: pickRandom([0, 90, 180, 270]),
+            textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+          })
         ),
         setPolygonGroup(`${id}-east-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
@@ -474,7 +489,11 @@ const island = (config) => (mapData) => {
               disableBumping(polygon),
               mapData
             );
-          }
+          },
+          () => ({
+            textureRotation: pickRandom([0, 90, 180, 270]),
+            textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+          })
         ),
         setPolygonGroup(`${id}-west-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
@@ -492,7 +511,11 @@ const island = (config) => (mapData) => {
       move(0, 100, 0, pos),
       [width, height],
       "ceiling",
-      connectToNearPolygons(`${id}-island-top`)
+      connectToNearPolygons(`${id}-island-top`),
+      () => ({
+        textureRotation: pickRandom([0, 90, 180, 270]),
+        textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+      })
     ),
     setPolygonGroup(`${id}-island-bottom`),
     setTexture(textures.gravel.ground1),

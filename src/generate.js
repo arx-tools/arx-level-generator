@@ -18,7 +18,7 @@ const theLake = require("./projects/the-lake/index.js");
     bumpFactor: 3,
   };
 
-  const project = "the-lake";
+  const project = "alias-nightmare";
 
   switch (project) {
     case "the-backrooms":
