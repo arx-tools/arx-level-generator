@@ -110,7 +110,7 @@ const generateLights = (mapData) => {
 
   const p = mapData.fts.polygons.reduce((acc, { config }, idx) => {
     const cellX = Math.floor(config.minX / 100);
-    const cellZ = Math.floor(config.minZ) + 1;
+    const cellZ = Math.floor(config.minZ / 100) + 1;
 
     if (!acc[`${cellZ}-${cellX}`]) {
       acc[`${cellZ}-${cellX}`] = [idx];
