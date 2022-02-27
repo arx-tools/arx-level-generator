@@ -106,24 +106,31 @@ ON INIT {
 }
 
 ON CONTROLLEDZONE_ENTER {
+  IF (${self.state.isCatching} == 1) {
+    ACCEPT
+  }
+  SET ${self.state.isCatching} 1
   GOSUB FADEOUT
-  TIMERfadein -m 1 1000 GOSUB FADEIN NOP
+  TIMERfadein -m 1 300 GOSUB FADEIN NOP
   ACCEPT
 }
 
 >>FADEOUT {
-  WORLDFADE OUT 1000 ${color("black")}
+  WORLDFADE OUT 300 ${color("black")}
+  PLAY -o "UruLink"
   RETURN
 }
 
 >>FADEIN {
   TELEPORT -p ${target.ref}
-  TIMERfadein -m 1 1000 WORLDFADE IN 300
+  SET ${self.state.isCatching} 0
+  TIMERfadein -m 1 2000 WORLDFADE IN 1000
   RETURN
 }
       `;
     }),
     addDependencyAs("projects/alias-nightmare/UruLink.wav", `sfx/UruLink.wav`),
+    declare("int", "isCatching", 0),
     createItem
   )(items.marker);
 };
@@ -182,7 +189,7 @@ const generate = async (config) => {
   defineStatue();
   createStatue(islands[2].pos);
 
-  // createFallSaver(islands[0].pos, welcomeMarker);
+  createFallSaver(islands[0].pos, welcomeMarker);
 
   return compose(
     saveToDisk,
@@ -205,7 +212,7 @@ const generate = async (config) => {
               -origin[0] +
                 (MAP_MAX_WIDTH / divider) * 50 +
                 (MAP_MAX_WIDTH / divider) * 100 * x,
-              500,
+              10000,
               -origin[2] +
                 (MAP_MAX_HEIGHT / divider) * 50 +
                 (MAP_MAX_HEIGHT / divider) * 100 * y,
@@ -222,14 +229,15 @@ const generate = async (config) => {
     setTexture(textures.none),
     setColor("white"),
 
-    // addZone(
-    //   [0, 5000, 0],
-    //   [15000, 100, 15000],
-    //   `fall-detector`,
-    //   ambiences.sirs,
-    //   5000
-    // ),
-    // setColor(colors.ambience[0]),
+    // TODO: expose control over flags and make fall detector not set ambience and color
+    addZone(
+      [0, 5000, 0],
+      [MAP_MAX_WIDTH * 100, 1000, MAP_MAX_HEIGHT * 100],
+      `fall-detector`,
+      ambiences.sirs,
+      5000
+    ),
+    setColor(colors.ambience[0]),
 
     addZone(
       [-origin[0], 0, -origin[2]],
