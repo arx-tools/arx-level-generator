@@ -125,7 +125,7 @@ const generateLights = (mapData) => {
     for (let x = 0; x < MAP_MAX_WIDTH; x++) {
       (p[`${z}-${x}`] || []).forEach((idx) => {
         const { config, vertices } = mapData.fts.polygons[idx];
-        const { color, isQuad } = config;
+        let { color, isQuad } = config;
 
         if (color === null) {
           color = white;
