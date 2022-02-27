@@ -11,6 +11,7 @@ import { cleanupCache, uninstall } from "../../../helpers.js";
 import aliasNightmare from "../../../projects/alias-nightmare/index.js";
 import theBackrooms from "../../../projects/the-backrooms/index.js";
 import { compileFTS, compileLLF, compileDLF } from "../../../compile.js";
+import TheLake from "../projects/TheLake.jsx";
 
 const generateSeed = () => Math.floor(Math.random() * 1e20);
 
@@ -26,6 +27,12 @@ const App = () => {
       name: "The Backrooms",
       id: "the-backrooms",
       Page: TheBackrooms,
+      isInstalled: false,
+    },
+    {
+      name: "The Lake",
+      id: "the-lake",
+      Page: TheLake,
       isInstalled: false,
     },
   ]);
@@ -128,6 +135,11 @@ const App = () => {
         case "alias-nightmare":
           await aliasNightmare({
             lootTable: [],
+            ...config,
+          });
+          break;
+        case "the-lake":
+          await TheLake({
             ...config,
           });
           break;

@@ -11,7 +11,12 @@ const {
   uniq,
 } = require("ramda");
 const { getRootPath } = require("../../rootpath");
-const { POLY_QUAD, POLY_TRANS, POLY_NO_SHADOW } = require("../constants");
+const {
+  POLY_QUAD,
+  POLY_TRANS,
+  POLY_NO_SHADOW,
+  POLY_WATER,
+} = require("../constants");
 
 const textures = {
   none: null,
@@ -124,6 +129,13 @@ const textures = {
       src: "mold-edge.jpg",
       native: false,
       flags: POLY_QUAD | POLY_TRANS | POLY_NO_SHADOW,
+    },
+  },
+  water: {
+    cave: {
+      src: "(WATER)CAVEWATER.jpg",
+      native: true,
+      flags: POLY_QUAD | POLY_NO_SHADOW | POLY_WATER | POLY_TRANS,
     },
   },
 };

@@ -18,7 +18,7 @@ const theLake = require("./projects/the-lake/index.js");
     bumpFactor: 3,
   };
 
-  const project = "the-backrooms";
+  const project = "the-lake";
 
   switch (project) {
     case "the-backrooms":
@@ -26,7 +26,7 @@ const theLake = require("./projects/the-lake/index.js");
         ...config,
         numberOfRooms: 10,
         roomDimensions: { width: [1, 5], depth: [1, 5], height: 2 },
-        percentOfLightsOn: 0,
+        percentOfLightsOn: 60,
         lootTable: [
           {
             name: "almondWater",
