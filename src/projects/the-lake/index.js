@@ -69,7 +69,7 @@ const generate = async (config) => {
   const welcomeMarker = createWelcomeMarker([500, 0, 500]);
 
   createPlant([700, 0, 700]);
-  createAmikarsRock([-500, 210, 500]);
+  createAmikarsRock([-500, 220, 500]);
 
   return compose(
     saveToDisk,
