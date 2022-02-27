@@ -102,13 +102,6 @@ const isBetweenInclusive = (min, max, value) => {
   return value >= min && value <= max;
 };
 
-const isInCell = (polygonX, polygonZ, cellX, cellZ) => {
-  return (
-    isBetween(cellX * 100, (cellX + 1) * 100, polygonX) &&
-    isBetween(cellZ * 100, (cellZ + 1) * 100, polygonZ + 1)
-  );
-};
-
 const generateLights = (mapData) => {
   let colorIdx = 0;
 
@@ -155,24 +148,12 @@ const generateLights = (mapData) => {
 };
 
 const vertexToVector = ({ posX, posY, posZ }) => [
-  Math.round(posX * 10 ** 4) / 10 ** 4,
-  Math.round(posY * 10 ** 4) / 10 ** 4,
-  Math.round(posZ * 10 ** 4) / 10 ** 4,
+  Math.round(posX * 10000) / 10000,
+  Math.round(posY * 10000) / 10000,
+  Math.round(posZ * 10000) / 10000,
 ];
 
-// const dotProduct = (u, v) => {
-//   // TODO
-// };
-
 const vectorToXYZ = ([x, y, z]) => ({ x, y, z });
-
-// const averageVectors = (...vectors) => {
-//   return [
-//     sum(pluck(0, vectors)) / vectors.length,
-//     sum(pluck(1, vectors)) / vectors.length,
-//     sum(pluck(2, vectors)) / vectors.length,
-//   ];
-// };
 
 const calculateNormals = (mapData) => {
   // https://computergraphics.stackexchange.com/questions/4031/programmatically-generating-vertex-normals
@@ -204,7 +185,6 @@ const calculateNormals = (mapData) => {
 };
 
 const finalize = (mapData) => {
-  console.time("set spawn");
   mapData.fts.polygons = compose(unnest, values)(mapData.fts.polygons);
   mapData.dlf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
   mapData.llf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
@@ -234,23 +214,11 @@ const finalize = (mapData) => {
     zone.header.pos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT;
     zone.header.pos.z -= spawn[2];
   });
-  console.timeEnd("set spawn");
 
-  console.time("createTextureContainers");
   createTextureContainers(mapData);
-  console.timeEnd("createTextureContainers");
-
-  console.time("exportUsedItems");
   exportUsedItems(mapData);
-  console.timeEnd("exportUsedItems");
-
-  console.time("calculateNormals");
   calculateNormals(mapData);
-  console.timeEnd("calculateNormals");
-
-  console.time("generateLights");
   generateLights(mapData);
-  console.timeEnd("generateLights");
 
   return mapData;
 };
