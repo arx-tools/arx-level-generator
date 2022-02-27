@@ -1,8 +1,6 @@
 # Arx Fatalis level generator
 
-Creates procedurally generated levels
-
-**WORK IN PROGRESS**
+A launcher that generates randomized maps for the video game Arx Fatalis
 
 ![launcher](photos/launcher.png?raw=true "launcher")
 ![screenshot](photos/demo.png?raw=true "dummy map")
@@ -12,14 +10,6 @@ Creates procedurally generated levels
 ## Requirements
 
 nodejs 14.14.0+ (because of https://nodejs.org/api/fs.html#fspromisesrmpath-options)
-
-## How to run
-
-step 1: `npm run generate`
-
-step 2: `npm run compile`
-
-step 3: copy contents of dist folder into Arx Fatalis/Arx Libertatis game folder
 
 ## Resources
 
