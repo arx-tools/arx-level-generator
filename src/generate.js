@@ -2,6 +2,7 @@ const seedrandom = require("seedrandom");
 
 const aliasNightmare = require("./projects/alias-nightmare/index.js");
 const theBackrooms = require("./projects/the-backrooms/index.js");
+const theLake = require("./projects/the-lake/index.js");
 
 (async () => {
   // const seed = Math.floor(Math.random() * 1e20);
@@ -14,9 +15,10 @@ const theBackrooms = require("./projects/the-backrooms/index.js");
     levelIdx: 1,
     seed,
     lootTable: [],
+    bumpFactor: 3,
   };
 
-  const project = "alias-nightmare";
+  const project = "the-backrooms";
 
   switch (project) {
     case "the-backrooms":
@@ -24,7 +26,7 @@ const theBackrooms = require("./projects/the-backrooms/index.js");
         ...config,
         numberOfRooms: 10,
         roomDimensions: { width: [1, 5], depth: [1, 5], height: 2 },
-        percentOfLightsOn: 60,
+        percentOfLightsOn: 0,
         lootTable: [
           {
             name: "almondWater",
@@ -47,7 +49,11 @@ const theBackrooms = require("./projects/the-backrooms/index.js");
     case "alias-nightmare":
       await aliasNightmare({
         ...config,
-        bumpFactor: 3,
+      });
+      break;
+    case "the-lake":
+      await theLake({
+        ...config,
       });
       break;
   }

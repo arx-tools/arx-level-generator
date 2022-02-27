@@ -675,8 +675,6 @@ const generate = async (config) => {
 
       const lamps = [];
 
-      let isFirstLamp = true;
-
       for (let y = 0; y < grid.length; y++) {
         for (let x = 0; x < grid[y].length; x++) {
           if (isOccupied(x, y, grid)) {
@@ -689,11 +687,6 @@ const generate = async (config) => {
               const lampConfig = {
                 on: randomBetween(0, 100) < config.percentOfLightsOn,
               };
-
-              if (isFirstLamp) {
-                isFirstLamp = false;
-                lampConfig.on = true;
-              }
 
               const lamp = addLamp(
                 [
@@ -780,7 +773,6 @@ const generate = async (config) => {
     },
 
     renderGrid(grid),
-
     setColor("#0b0c10"),
 
     addZone(
