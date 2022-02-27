@@ -196,7 +196,7 @@ const generate = async (config) => {
     ),
 
     (mapData) => {
-      const divider = 10;
+      const divider = 4;
       for (let x = 0; x < divider; x++) {
         for (let y = 0; y < divider; y++) {
           setPolygonGroup(`gravity-${x}-${y}`)(mapData);
