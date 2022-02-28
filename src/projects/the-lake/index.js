@@ -66,7 +66,7 @@ const createAmikarsRock = (pos) => {
 const generate = async (config) => {
   const { origin } = config;
 
-  const welcomeMarker = createWelcomeMarker([500, 0, 500]);
+  createWelcomeMarker([500, 0, 500]);
 
   createPlant([700, 0, 700]);
   createAmikarsRock([-500, 220, 500]);

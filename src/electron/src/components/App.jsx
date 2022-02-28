@@ -2,16 +2,17 @@ import fs from "fs";
 import React, { useState, useEffect } from "react";
 import AliasNightmare from "../projects/AliasNightmare.jsx";
 import TheBackrooms from "../projects/TheBackrooms.jsx";
+import TheLake from "../projects/TheLake.jsx";
 import Loading from "./Loading.jsx";
 import MenuItem from "./MenuItem.jsx";
 import path from "path";
 import seedrandom from "seedrandom";
 import { ipcRenderer } from "electron";
 import { cleanupCache, uninstall } from "../../../helpers.js";
-import aliasNightmare from "../../../projects/alias-nightmare/index.js";
-import theBackrooms from "../../../projects/the-backrooms/index.js";
+import aliasNightmareGenerator from "../../../projects/alias-nightmare/index.js";
+import theBackroomsGenerator from "../../../projects/the-backrooms/index.js";
+import theLakeGenerator from "../../../projects/the-lake/index.js";
 import { compileFTS, compileLLF, compileDLF } from "../../../compile.js";
-import TheLake from "../projects/TheLake.jsx";
 
 const generateSeed = () => Math.floor(Math.random() * 1e20);
 
@@ -100,12 +101,15 @@ const App = () => {
         levelIdx: 1,
         seed,
         outputDir,
+        lootTable: [],
+        bumpFactor: 3,
         ...settings,
       };
 
       switch (project) {
         case "the-backrooms":
-          await theBackrooms({
+          await theBackroomsGenerator({
+            ...config,
             percentOfLightsOn: 30,
             roomDimensions: {
               width: [1, 5],
@@ -129,17 +133,15 @@ const App = () => {
                 variant: "slow",
               },
             ],
-            ...config,
           });
           break;
         case "alias-nightmare":
-          await aliasNightmare({
-            lootTable: [],
+          await aliasNightmareGenerator({
             ...config,
           });
           break;
         case "the-lake":
-          await TheLake({
+          await theLakeGenerator({
             ...config,
           });
           break;
@@ -171,7 +173,7 @@ const App = () => {
             checkForInstalledMaps(outputDir);
           }, 100);
         }, 100);
-      }, 100);
+      }, 1000);
     }, 100);
   };
 

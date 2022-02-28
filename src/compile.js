@@ -23,6 +23,7 @@ const compileFTS = (config) => {
       outputDir,
       `./game/graph/levels/level${levelIdx}/fast.fts.json`
     );
+
     const dest = path.resolve(
       outputDir,
       `./game/graph/levels/level${levelIdx}/fast.fts`
