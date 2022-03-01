@@ -266,11 +266,27 @@ ON INIT {
 
 ON PICKUP {
   IF ("almondwater" isin ^$PARAM1) {
-    INC ${self.state.almondwaterCntr} 1
-    IF (${self.state.almondwaterCntr} == 1) {
+    IF (":slow" isin ^$PARAM1) {
+      INC ${self.state.harmfulAlmondWaterCounter} 1
+    }
+    // TODO: add more harmful almondwater effects here
+  }
+
+  if (${self.state.harmfulAlmondWaterCounter} != ${
+        self.state.previousHarmfulAlmondWaterCounter
+      }) {
+    if (${self.state.harmfulAlmondWaterCounter} > 2) {
+      set ${self.state.harmfulAlmondWaterCounter} 1
+    }
+
+    SET ${self.state.previousHarmfulAlmondWaterCounter} ${
+        self.state.harmfulAlmondWaterCounter
+      }
+
+    IF (${self.state.harmfulAlmondWaterCounter} == 1) {
       GOSUB WHISPER_DRINK1
     }
-    IF (${self.state.almondwaterCntr} == 3) {
+    IF (${self.state.harmfulAlmondWaterCounter} == 2) {
       GOSUB WHISPER_DRINK2
     }
   }
@@ -419,7 +435,8 @@ ON OPEN {
     ),
     addDependencyAs("projects/the-backrooms/sfx/baby.wav", "sfx/baby.wav"),
     declare("int", "magicCntr", 0),
-    declare("int", "almondwaterCntr", 0),
+    declare("int", "harmfulAlmondWaterCounter", 0),
+    declare("int", "previousHarmfulAlmondWaterCounter", -1),
     createItem
   )(items.marker);
 };
