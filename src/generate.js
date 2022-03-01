@@ -6,7 +6,10 @@ const theLake = require("./projects/the-lake/index.js");
 
 (async () => {
   // const seed = Math.floor(Math.random() * 1e20);
+
   let seed = 70448428008674860000;
+  // let seed = 35366160917956100000;
+
   seedrandom(seed, { global: true });
   console.log(`seed: ${seed}`);
 
@@ -18,15 +21,15 @@ const theLake = require("./projects/the-lake/index.js");
     bumpFactor: 3,
   };
 
-  const project = "the-lake";
+  const project = "the-backrooms";
 
   switch (project) {
     case "the-backrooms":
       await theBackrooms({
         ...config,
-        numberOfRooms: 10,
+        numberOfRooms: 20,
         roomDimensions: { width: [1, 5], depth: [1, 5], height: 2 },
-        percentOfLightsOn: 60,
+        percentOfLightsOn: 30,
         lootTable: [
           {
             name: "almondWater",
