@@ -275,8 +275,6 @@ ON UNMUTE {
   });
 };
 
-// TODO: disable ignite/douse sounds
-
 module.exports.createCeilingLamp = (pos, angle = [0, 0, 0], config = {}) => {
   return compose(
     markAsUsed,
