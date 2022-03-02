@@ -168,42 +168,45 @@ const disableBumping = (polygons) => {
   return polygons;
 };
 
-const connectToNearPolygons = (targetGroup) => (polygons, mapData) => {
-  const { corners, edges } = categorizeVertices(polygons);
+const connectToNearPolygons =
+  (targetGroup, distanceThreshold = 100) =>
+  (polygons, mapData) => {
+    const { corners, edges } = categorizeVertices(polygons);
 
-  const target = categorizeVertices(mapData.fts.polygons[targetGroup] || []);
-  const allVertices = map(vertexToVector, [...target.corners, ...target.edges]);
+    const target = categorizeVertices(mapData.fts.polygons[targetGroup] || []);
+    const allVertices = map(vertexToVector, [
+      ...target.corners,
+      ...target.edges,
+    ]);
 
-  if (isEmptyArray(allVertices)) {
+    if (isEmptyArray(allVertices)) {
+      return polygons;
+    }
+
+    [...corners, ...edges].forEach((polygon) => {
+      polygons = adjustVertexBy(
+        polygon,
+        (vertex, polyOfVertex) => {
+          const closestVertex = allVertices.sort(
+            sortByDistance(vertexToVector(vertex))
+          )[0];
+
+          if (
+            distance(vertexToVector(vertex), closestVertex) < distanceThreshold
+          ) {
+            polyOfVertex.config.bumpable = false;
+            vertex.posX = closestVertex[0];
+            vertex.posY = closestVertex[1];
+            vertex.posZ = closestVertex[2];
+          }
+
+          return vertex;
+        },
+        polygons
+      );
+    });
+
     return polygons;
-  }
-
-  const distanceThreshold = 100;
-
-  [...corners, ...edges].forEach((polygon) => {
-    polygons = adjustVertexBy(
-      polygon,
-      (vertex, polyOfVertex) => {
-        polyOfVertex.config.bumpable = false;
-        const closestVertex = allVertices.sort(
-          sortByDistance(vertexToVector(vertex))
-        )[0];
-
-        if (
-          distance(vertexToVector(vertex), closestVertex) < distanceThreshold
-        ) {
-          vertex.posX = closestVertex[0];
-          vertex.posY = closestVertex[1];
-          vertex.posZ = closestVertex[2];
-        }
-
-        return vertex;
-      },
-      polygons
-    );
-  });
-
-  return polygons;
-};
+  };
 
 module.exports = { plain, disableBumping, connectToNearPolygons };

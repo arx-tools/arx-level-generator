@@ -19,9 +19,15 @@ const {
   setTexture,
   addLight,
   pickRandom,
+  circleOfVectors,
+  setPolygonGroup,
+  unsetPolygonGroup,
 } = require("../../helpers");
 const { plain, wallX } = require("../../prefabs");
-const { disableBumping } = require("../../prefabs/plain");
+const {
+  disableBumping,
+  connectToNearPolygons,
+} = require("../../prefabs/plain");
 const { getInjections } = require("../../scripting");
 
 const createWelcomeMarker = (pos) => {
@@ -63,12 +69,32 @@ const createAmikarsRock = (pos) => {
   )(items.magic.amikarsRock);
 };
 
+const createCompanion = (pos, angle) => {
+  return compose(
+    markAsUsed,
+    moveTo(pos, angle),
+    addScript((self) => {
+      return `
+// component createCompanion
+ON INIT {
+  ${getInjections("init", self)}
+  SPAWN NPC goblin_base/goblin_base ${self.ref}
+  ACCEPT
+}
+      `;
+    }),
+    createItem
+  )(items.marker);
+};
+
 const generate = async (config) => {
   const { origin } = config;
 
   createWelcomeMarker([500, 0, 500]);
 
   createPlant([700, 0, 700]);
+  createCompanion([250, 0, 250], [0, 135, 0]);
+
   createAmikarsRock([-500, 220, 500]);
 
   return compose(
@@ -76,36 +102,61 @@ const generate = async (config) => {
     finalize,
 
     (mapData) => {
-      addLight([0, -2000, 0], {
-        fallstart: 1,
-        fallend: 3000,
-        intensity: 5,
-      })(mapData);
+      circleOfVectors([0, -1000, 0], 1000, 3).forEach((pos) => {
+        addLight(pos, {
+          fallstart: 1,
+          fallend: 3000,
+          intensity: 3,
+        })(mapData);
+      });
 
       return mapData;
     },
     setColor("white"),
 
-    plain([0, 10, 0], [23, 23], "floor", disableBumping),
+    plain([0, 10, 0], [50, 50], "floor", disableBumping),
     setTexture(textures.water.cave),
     setColor("lightblue"),
 
-    plain([-450, 210, 450], [10, 10], "floor", identity, () => ({
+    unsetPolygonGroup,
+    plain(
+      [-500, 210, 500],
+      [10, 10],
+      "floor",
+      connectToNearPolygons("island-3", 150),
+      () => ({
+        textureRotation: pickRandom([0, 90, 180, 270]),
+        textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+      })
+    ),
+    setPolygonGroup("island-4"),
+    plain(
+      [-500, 140, -500],
+      [10, 10],
+      "floor",
+      connectToNearPolygons("island-2"),
+      () => ({
+        textureRotation: pickRandom([0, 90, 180, 270]),
+        textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+      })
+    ),
+    setPolygonGroup("island-3"),
+    plain(
+      [500, 70, -500],
+      [10, 10],
+      "floor",
+      connectToNearPolygons("island-1"),
+      () => ({
+        textureRotation: pickRandom([0, 90, 180, 270]),
+        textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+      })
+    ),
+    setPolygonGroup("island-2"),
+    plain([500, 0, 500], [10, 10], "floor", identity, () => ({
       textureRotation: pickRandom([0, 90, 180, 270]),
       textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
     })),
-    plain([-450, 140, -450], [10, 10], "floor", identity, () => ({
-      textureRotation: pickRandom([0, 90, 180, 270]),
-      textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
-    })),
-    plain([450, 70, -450], [10, 10], "floor", identity, () => ({
-      textureRotation: pickRandom([0, 90, 180, 270]),
-      textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
-    })),
-    plain([450, 0, 450], [10, 10], "floor", identity, () => ({
-      textureRotation: pickRandom([0, 90, 180, 270]),
-      textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
-    })),
+    setPolygonGroup("island-1"),
     setTexture(textures.gravel.ground1),
     setColor("hsv(150, 37%, 70%)"),
 
@@ -114,7 +165,7 @@ const generate = async (config) => {
       [100, 0, 100],
       "palette0",
       ambiences.none,
-      5000
+      2000
     ),
     setColor("#DBF4FF"),
 
@@ -129,3 +180,13 @@ const generate = async (config) => {
 };
 
 module.exports = generate;
+
+/*
+TODOs:
+ - create a custom goblin from goblin_base
+ - add some cards to the map
+ - add possibility to give the cards to the goblin
+ - add fireplace to the center of the island-1
+ - add invisible wall around the 4 islands
+ - add a small yellow brick wall to connect island-1 and island-4
+*/
