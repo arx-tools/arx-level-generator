@@ -173,7 +173,7 @@ const App = () => {
             checkForInstalledMaps(outputDir);
           }, 100);
         }, 100);
-      }, 1000);
+      }, 100);
     }, 100);
   };
 
