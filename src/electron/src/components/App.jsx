@@ -2,7 +2,7 @@ import fs from "fs";
 import React, { useState, useEffect } from "react";
 import AliasNightmare from "../projects/AliasNightmare.jsx";
 import TheBackrooms from "../projects/TheBackrooms.jsx";
-import TheLake from "../projects/TheLake.jsx";
+import OnTheIsland from "../projects/OnTheIsland.jsx";
 import Loading from "./Loading.jsx";
 import MenuItem from "./MenuItem.jsx";
 import path from "path";
@@ -11,7 +11,7 @@ import { ipcRenderer } from "electron";
 import { cleanupCache, uninstall } from "../../../helpers.js";
 import aliasNightmareGenerator from "../../../projects/alias-nightmare/index.js";
 import theBackroomsGenerator from "../../../projects/the-backrooms/index.js";
-import theLakeGenerator from "../../../projects/the-lake/index.js";
+import onTheIslandGenerator from "../../../projects/on-the-island/index.js";
 import { compileFTS, compileLLF, compileDLF } from "../../../compile.js";
 
 const generateSeed = () => Math.floor(Math.random() * 1e20);
@@ -31,9 +31,9 @@ const App = () => {
       isInstalled: false,
     },
     {
-      name: "The Lake",
-      id: "the-lake",
-      Page: TheLake,
+      name: "On the island",
+      id: "on-the-island",
+      Page: OnTheIsland,
       isInstalled: false,
     },
   ]);
@@ -140,8 +140,8 @@ const App = () => {
             ...config,
           });
           break;
-        case "the-lake":
-          await theLakeGenerator({
+        case "on-the-island":
+          await onTheIslandGenerator({
             ...config,
           });
           break;

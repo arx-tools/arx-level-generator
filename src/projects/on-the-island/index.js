@@ -171,7 +171,7 @@ const generate = async (config) => {
 
     movePlayerTo([-origin[0], 0, -origin[2]]),
     (mapData) => {
-      mapData.meta.mapName = "The Lake";
+      mapData.meta.mapName = "On the island";
       return mapData;
     },
 

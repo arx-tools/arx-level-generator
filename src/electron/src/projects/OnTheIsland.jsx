@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import Page from "../components/Page.jsx";
 
-const TheLake = ({ onGenerateBtnClick, ...props }) => {
+const OnTheIsland = ({ onGenerateBtnClick, ...props }) => {
   return (
     <Page
-      title="The Lake"
-      background="previews/the-lake.png"
+      title="On the island"
+      background="previews/on-the-island.png"
       onGenerateBtnClick={onGenerateBtnClick}
       {...props}
     />
   );
 };
 
-export default TheLake;
+export default OnTheIsland;

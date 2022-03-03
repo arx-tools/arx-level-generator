@@ -2,7 +2,7 @@ const seedrandom = require("seedrandom");
 
 const aliasNightmare = require("./projects/alias-nightmare/index.js");
 const theBackrooms = require("./projects/the-backrooms/index.js");
-const theLake = require("./projects/the-lake/index.js");
+const onTheIsland = require("./projects/on-the-island/index.js");
 
 (async () => {
   // const seed = Math.floor(Math.random() * 1e20);
@@ -21,7 +21,7 @@ const theLake = require("./projects/the-lake/index.js");
     bumpFactor: 3,
   };
 
-  const project = "the-lake";
+  const project = "on-the-island";
 
   switch (project) {
     case "the-backrooms":
@@ -54,8 +54,8 @@ const theLake = require("./projects/the-lake/index.js");
         ...config,
       });
       break;
-    case "the-lake":
-      await theLake({
+    case "on-the-island":
+      await onTheIsland({
         ...config,
       });
       break;
