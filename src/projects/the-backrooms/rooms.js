@@ -4,7 +4,7 @@ const { HFLIP, VFLIP } = require("../../constants.js");
 const { setTexture, pickRandom, move } = require("../../helpers.js");
 const { plain, disableBumping } = require("../../prefabs/plain.js");
 const { UNIT } = require("./constants.js");
-const { wall } = require("./wall.js");
+const wall = require("../../prefabs/wall.js");
 
 const getRadius = (grid) => (grid.length - 1) / 2;
 
@@ -376,17 +376,20 @@ const renderGrid = (grid) => {
           textures.backrooms[Math.random() > 0.5 ? "wall" : "wall2"],
           mapData
         );
-        wall(coords, "right", { width })(mapData);
+        wall(coords, "right", { width, unit: UNIT })(mapData);
 
         setTexture(textures.backrooms.moldEdge, mapData);
-        wall(move(...decalOffset.right, coords), "right", { height: 1, width })(
-          mapData
-        );
+        wall(move(...decalOffset.right, coords), "right", {
+          height: 1,
+          width,
+          unit: UNIT,
+        })(mapData);
 
         if (isLeftCornerConcave) {
           wall(move(...decalOffset.right, coords), "right", {
             width: 1 / (UNIT / 100),
             textureRotation: 270,
+            unit: UNIT,
           })(mapData);
         }
 
@@ -400,6 +403,7 @@ const renderGrid = (grid) => {
             {
               width: 1 / (UNIT / 100),
               textureRotation: 90,
+              unit: UNIT,
             }
           )(mapData);
         }
@@ -418,12 +422,14 @@ const renderGrid = (grid) => {
           textures.backrooms[Math.random() > 0.5 ? "wall" : "wall2"],
           mapData
         );
-        wall(coords, "left", { width })(mapData);
+        wall(coords, "left", { width, unit: UNIT })(mapData);
 
         setTexture(textures.backrooms.moldEdge, mapData);
-        wall(move(...decalOffset.left, coords), "left", { height: 1, width })(
-          mapData
-        );
+        wall(move(...decalOffset.left, coords), "left", {
+          height: 1,
+          width,
+          unit: UNIT,
+        })(mapData);
 
         if (isLeftCornerConcave) {
           wall(
@@ -435,6 +441,7 @@ const renderGrid = (grid) => {
             {
               width: 1 / (UNIT / 100),
               textureRotation: 90,
+              unit: UNIT,
             }
           )(mapData);
         }
@@ -443,6 +450,7 @@ const renderGrid = (grid) => {
           wall(move(...decalOffset.left, coords), "left", {
             width: 1 / (UNIT / 100),
             textureRotation: 270,
+            unit: UNIT,
           })(mapData);
         }
       }
@@ -460,12 +468,14 @@ const renderGrid = (grid) => {
           textures.backrooms[Math.random() > 0.5 ? "wall" : "wall2"],
           mapData
         );
-        wall(coords, "front", { width })(mapData);
+        wall(coords, "front", { width, unit: UNIT })(mapData);
 
         setTexture(textures.backrooms.moldEdge, mapData);
-        wall(move(...decalOffset.front, coords), "front", { height: 1, width })(
-          mapData
-        );
+        wall(move(...decalOffset.front, coords), "front", {
+          height: 1,
+          width,
+          unit: UNIT,
+        })(mapData);
 
         if (isLeftCornerConcave) {
           wall(
@@ -477,6 +487,7 @@ const renderGrid = (grid) => {
             {
               width: 1 / (UNIT / 100),
               textureRotation: 90,
+              unit: UNIT,
             }
           )(mapData);
         }
@@ -485,6 +496,7 @@ const renderGrid = (grid) => {
           wall(move(...decalOffset.front, coords), "front", {
             width: 1 / (UNIT / 100),
             textureRotation: 270,
+            unit: UNIT,
           })(mapData);
         }
       }
@@ -501,17 +513,20 @@ const renderGrid = (grid) => {
           textures.backrooms[Math.random() > 0.5 ? "wall" : "wall2"],
           mapData
         );
-        wall(coords, "back", { width })(mapData);
+        wall(coords, "back", { width, unit: UNIT })(mapData);
 
         setTexture(textures.backrooms.moldEdge, mapData);
-        wall(move(...decalOffset.back, coords), "back", { height: 1, width })(
-          mapData
-        );
+        wall(move(...decalOffset.back, coords), "back", {
+          height: 1,
+          width,
+          unit: UNIT,
+        })(mapData);
 
         if (isLeftCornerConcave) {
           wall(move(...decalOffset.back, coords), "back", {
             width: 1 / (UNIT / 100),
             textureRotation: 270,
+            unit: UNIT,
           })(mapData);
         }
 
@@ -525,6 +540,7 @@ const renderGrid = (grid) => {
             {
               width: 1 / (UNIT / 100),
               textureRotation: 90,
+              unit: UNIT,
             }
           )(mapData);
         }

@@ -6,6 +6,7 @@ const { plain } = require("./plain.js");
 const pillar = require("./pillar.js");
 const pillars = require("./pillars.js");
 const stairs = require("./stairs.js");
+const wall = require("./wall.js");
 
 module.exports = {
   floor,
@@ -16,4 +17,5 @@ module.exports = {
   pillar,
   pillars,
   stairs,
+  wall,
 };

@@ -70,7 +70,6 @@ const {
 const { overridePlayerScript } = require("../shared/player.js");
 const { createLampController } = require("./items/lampController.js");
 const { ambiences } = require("../../assets/ambiences.js");
-const { wall } = require("./wall.js");
 const { UNIT, COLORS } = require("./constants.js");
 
 const addLamp = (pos, angle, config = {}) => {

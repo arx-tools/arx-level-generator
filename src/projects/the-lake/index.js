@@ -116,7 +116,7 @@ const generate = async (config) => {
 
     plain([0, 10, 0], [50, 50], "floor", disableBumping),
     setTexture(textures.water.cave),
-    setColor("lightblue"),
+    // setColor("red"),
 
     unsetPolygonGroup,
     plain(
@@ -187,6 +187,8 @@ TODOs:
  - add some cards to the map
  - add possibility to give the cards to the goblin
  - add fireplace to the center of the island-1
- - add invisible wall around the 4 islands
+ - add invisible wall around the 4 islands -- need transparent textures for that
  - add a small yellow brick wall to connect island-1 and island-4
+
+lol, make a small quest where they got drunk, woke up somewhere random and now have to find their lost cards 🥴
 */

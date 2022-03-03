@@ -147,11 +147,7 @@ const generateLights = (mapData) => {
   mapData.llf.colors = colors;
 };
 
-const vertexToVector = ({ posX, posY, posZ }) => [
-  Math.round(posX * 10000) / 10000,
-  Math.round(posY * 10000) / 10000,
-  Math.round(posZ * 10000) / 10000,
-];
+const vertexToVector = ({ posX, posY, posZ }) => [posX, posY, posZ];
 
 const vectorToXYZ = ([x, y, z]) => ({ x, y, z });
 
