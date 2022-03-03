@@ -187,8 +187,12 @@ TODOs:
  - add some cards to the map
  - add possibility to give the cards to the goblin
  - add fireplace to the center of the island-1
- - add invisible wall around the 4 islands -- need transparent textures for that
+ - add invisible wall around the 4 islands -- needs transparent texture for that
  - add a small yellow brick wall to connect island-1 and island-4
 
-lol, make a small quest where they got drunk, woke up somewhere random and now have to find their lost cards 🥴
+lol, make a small quest where they got drunk, woke up somewhere random and now have to find their lost cards
+
+BUGs:
+  - connectToNearPolygons leaves a small gap
+  - light calculation issue (incorrect color calculation again) - set water color to red to see the effect
 */
