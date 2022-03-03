@@ -191,6 +191,7 @@ TODOs:
  - add a small yellow brick wall to connect island-1 and island-4
 
 lol, make a small quest where they got drunk, woke up somewhere random and now have to find their lost cards
+And as a reward he tells you a joke
 
 BUGs:
   - connectToNearPolygons leaves a small gap
