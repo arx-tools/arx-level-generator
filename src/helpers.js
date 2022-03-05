@@ -108,9 +108,12 @@ const generateLights = (mapData) => {
   const colors = [];
   const white = toRgba("white");
 
-  const p = mapData.fts.polygons.reduce((acc, { config }, idx) => {
-    const cellX = Math.floor(config.minX / 100);
-    const cellZ = Math.floor(config.minZ / 100) + 1;
+  const p = mapData.fts.polygons.reduce((acc, { vertices }, idx) => {
+    const x = Math.min(...pluck("posX", vertices));
+    const z = Math.min(...pluck("posZ", vertices));
+
+    const cellX = Math.floor(x / 100);
+    const cellZ = Math.floor(z / 100) + 1;
 
     if (!acc[`${cellZ}-${cellX}`]) {
       acc[`${cellZ}-${cellX}`] = [idx];
@@ -224,8 +227,6 @@ const addOriginPolygon = (mapData) => {
     config: {
       color: toRgba("black"),
       isQuad: true,
-      minX: 0,
-      minZ: 0,
       bumpable: false,
     },
     vertices: [
@@ -426,7 +427,7 @@ const bumpByMagnitude = (magnitude) => (vertex) => {
 };
 
 const adjustVertexBy = (ref, fn, polygons) => {
-  return polygons.map((polygon) => {
+  polygons.forEach((polygon) => {
     polygon.vertices = polygon.vertices.map((vertex) => {
       if (
         vertex.posX === ref.posX &&
@@ -438,8 +439,6 @@ const adjustVertexBy = (ref, fn, polygons) => {
 
       return vertex;
     });
-
-    return polygon;
   });
 };
 
@@ -601,15 +600,7 @@ const sortByDistance = (vertex) => (a, b) => {
   const distanceA = distance(vertex, a);
   const distanceB = distance(vertex, b);
 
-  if (distanceA < distanceB) {
-    return -1;
-  }
-
-  if (distanceA > distanceB) {
-    return 1;
-  }
-
-  return 0;
+  return distanceA - distanceB;
 };
 
 // [ a, b, c  [ x      [ ax + by + cz

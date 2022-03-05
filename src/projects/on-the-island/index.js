@@ -90,7 +90,9 @@ ON INIT {
 const generate = async (config) => {
   const { origin } = config;
 
-  createWelcomeMarker([500, 0, 500]);
+  const islandSize = 10;
+
+  createWelcomeMarker([islandSize * 50, 0, islandSize * 50]);
 
   createPlant([700, 0, 700]);
   createCompanion([250, 0, 250], [0, 135, 0]);
@@ -116,14 +118,14 @@ const generate = async (config) => {
 
     plain([0, 10, 0], [50, 50], "floor", disableBumping),
     setTexture(textures.water.cave),
-    // setColor("red"),
+    setColor("lightblue"),
 
     unsetPolygonGroup,
     plain(
-      [-500, 210, 500],
-      [10, 10],
+      [-(islandSize * 50), 210, islandSize * 50],
+      [islandSize, islandSize],
       "floor",
-      connectToNearPolygons("island-3", 150),
+      connectToNearPolygons("island-3"),
       () => ({
         textureRotation: pickRandom([0, 90, 180, 270]),
         textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
@@ -131,8 +133,8 @@ const generate = async (config) => {
     ),
     setPolygonGroup("island-4"),
     plain(
-      [-500, 140, -500],
-      [10, 10],
+      [-(islandSize * 50), 140, -(islandSize * 50)],
+      [islandSize, islandSize],
       "floor",
       connectToNearPolygons("island-2"),
       () => ({
@@ -142,8 +144,8 @@ const generate = async (config) => {
     ),
     setPolygonGroup("island-3"),
     plain(
-      [500, 70, -500],
-      [10, 10],
+      [islandSize * 50, 70, -(islandSize * 50)],
+      [islandSize, islandSize],
       "floor",
       connectToNearPolygons("island-1"),
       () => ({
@@ -152,10 +154,16 @@ const generate = async (config) => {
       })
     ),
     setPolygonGroup("island-2"),
-    plain([500, 0, 500], [10, 10], "floor", identity, () => ({
-      textureRotation: pickRandom([0, 90, 180, 270]),
-      textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
-    })),
+    plain(
+      [islandSize * 50, 0, islandSize * 50],
+      [islandSize, islandSize],
+      "floor",
+      identity,
+      () => ({
+        textureRotation: pickRandom([0, 90, 180, 270]),
+        textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+      })
+    ),
     setPolygonGroup("island-1"),
     setTexture(textures.gravel.ground1),
     setColor("hsv(150, 37%, 70%)"),
@@ -195,5 +203,4 @@ And as a reward he tells you a joke
 
 BUGs:
   - connectToNearPolygons leaves a small gap
-  - light calculation issue (incorrect color calculation again) - set water color to red to see the effect
 */

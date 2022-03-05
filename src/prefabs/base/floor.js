@@ -129,8 +129,6 @@ const floor =
       config: {
         color: mapData.state.color,
         isQuad: (textureFlags & POLY_QUAD) > 0,
-        minX: x - sizeX / 2,
-        minZ: z - sizeZ / 2,
         bumpable: true,
       },
       vertices,

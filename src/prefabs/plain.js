@@ -101,7 +101,7 @@ const plain = (
         )
         .forEach((corner) => {
           const magnitude = 5 * mapData.config.bumpFactor;
-          polygons = adjustVertexBy(
+          adjustVertexBy(
             corner,
             bumpByMagnitude(
               randomBetween(-magnitude, magnitude) +
@@ -118,7 +118,7 @@ const plain = (
         )
         .forEach((edge) => {
           const magnitude = 5 * mapData.config.bumpFactor;
-          polygons = adjustVertexBy(
+          adjustVertexBy(
             edge,
             bumpByMagnitude(
               randomBetween(-magnitude, magnitude) +
@@ -134,7 +134,7 @@ const plain = (
       );
       pickRandoms(15, middles).forEach((middle) => {
         const magnitude = 10 * mapData.config.bumpFactor;
-        polygons = adjustVertexBy(
+        adjustVertexBy(
           middle,
           bumpByMagnitude(
             facing === "floor"
@@ -174,20 +174,20 @@ const connectToNearPolygons =
     const { corners, edges } = categorizeVertices(polygons);
 
     const target = categorizeVertices(mapData.fts.polygons[targetGroup] || []);
-    const allVertices = map(vertexToVector, [
+    const targetVertices = map(vertexToVector, [
       ...target.corners,
       ...target.edges,
     ]);
 
-    if (isEmptyArray(allVertices)) {
+    if (isEmptyArray(targetVertices)) {
       return polygons;
     }
 
-    [...corners, ...edges].forEach((polygon) => {
-      polygons = adjustVertexBy(
+    [...corners, ...edges].forEach((polygon, idx) => {
+      adjustVertexBy(
         polygon,
         (vertex, polyOfVertex) => {
-          const closestVertex = allVertices.sort(
+          const closestVertex = targetVertices.sort(
             sortByDistance(vertexToVector(vertex))
           )[0];
 
