@@ -125,7 +125,12 @@ const generate = async (config) => {
       [-(islandSize * 50), 210, islandSize * 50],
       [islandSize, islandSize],
       "floor",
-      connectToNearPolygons("island-3"),
+      (polygons, mapData) => {
+        // TODO: don't know why this only works in this particular order and not the other way around
+        polygons = connectToNearPolygons("island-1", 200)(polygons, mapData);
+        polygons = connectToNearPolygons("island-3", 100)(polygons, mapData);
+        return polygons;
+      },
       () => ({
         textureRotation: pickRandom([0, 90, 180, 270]),
         textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),

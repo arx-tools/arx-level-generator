@@ -9,6 +9,7 @@ const {
   vertexToVector,
   distance,
   sortByDistance,
+  isBetween,
 } = require("../helpers.js");
 const {
   identity,
@@ -172,6 +173,7 @@ const connectToNearPolygons =
   (targetGroup, distanceThreshold = 100) =>
   (polygons, mapData) => {
     const { corners, edges } = categorizeVertices(polygons);
+    const sourceVertices = [...corners, ...edges];
 
     const target = categorizeVertices(mapData.fts.polygons[targetGroup] || []);
     const targetVertices = map(vertexToVector, [
@@ -183,27 +185,67 @@ const connectToNearPolygons =
       return polygons;
     }
 
-    [...corners, ...edges].forEach((polygon, idx) => {
+    const candidates = {};
+    const vertices = [];
+
+    sourceVertices.forEach((polygon, idx) => {
       adjustVertexBy(
         polygon,
         (vertex, polyOfVertex) => {
-          const closestVertex = targetVertices.sort(
-            sortByDistance(vertexToVector(vertex))
-          )[0];
+          const targets = targetVertices.filter((targetVertex) => {
+            const d = distance(vertexToVector(vertex), targetVertex);
+            return isBetween(10, distanceThreshold, d);
+          });
 
-          if (
-            distance(vertexToVector(vertex), closestVertex) < distanceThreshold
-          ) {
-            polyOfVertex.config.bumpable = false;
-            vertex.posX = closestVertex[0];
-            vertex.posY = closestVertex[1];
-            vertex.posZ = closestVertex[2];
+          if (targets.length) {
+            vertex.haveBeenAdjusted = false;
+            vertices.push(vertex);
           }
+
+          targets.forEach((targetVertex) => {
+            const [x, y, z] = targetVertex;
+            candidates[`${x}|${y}|${z}`] = candidates[`${x}|${y}|${z}`] || [];
+            candidates[`${x}|${y}|${z}`].push({
+              polygon: polyOfVertex,
+              vertex,
+              distance: distance(vertexToVector(vertex), targetVertex),
+              coordinates: [x, y, z],
+            });
+          });
 
           return vertex;
         },
         polygons
       );
+    });
+
+    Object.values(candidates)
+      .sort((a, b) => {
+        const aDistance = Math.min(...pluck("distance", a));
+        const bDistance = Math.min(...pluck("distance", b));
+        return aDistance - bDistance;
+      })
+      .forEach((candidate) => {
+        const smallestDistance = Math.min(...pluck("distance", candidate));
+
+        candidate
+          .filter(
+            (x) =>
+              x.distance === smallestDistance &&
+              x.vertex.haveBeenAdjusted !== true
+          )
+          .forEach(({ coordinates, polygon, vertex }) => {
+            const [x, y, z] = coordinates;
+            vertex.haveBeenAdjusted = true;
+            polygon.config.bumpable = false;
+            vertex.posX = x;
+            vertex.posY = y;
+            vertex.posZ = z;
+          });
+      });
+
+    vertices.forEach((vertex) => {
+      delete vertex.haveBeenAdjusted;
     });
 
     return polygons;
