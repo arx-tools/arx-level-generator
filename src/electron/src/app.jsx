@@ -3,6 +3,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { setRootPath } from "../../../rootpath.js";
 import App from "./components/App.jsx";
+import "./style.scss";
 
 setRootPath(path.resolve(__dirname, "../../../"));
 

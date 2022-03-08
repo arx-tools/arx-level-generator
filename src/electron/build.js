@@ -1,4 +1,5 @@
 const { build } = require("esbuild");
+const { sassPlugin } = require("esbuild-sass-plugin");
 const path = require("path");
 const fs = require("fs");
 
@@ -12,7 +13,7 @@ const initOutputFolder = async () => {
   return fs.promises.mkdir(OUTPUT, { recursive: true });
 };
 
-const buildJS = async () => {
+const buildJsAndCss = async () => {
   return build({
     entryPoints: [path.resolve(__dirname, "./src/app.jsx")],
     outdir: OUTPUT,
@@ -31,11 +32,13 @@ const buildJS = async () => {
       "ramda",
       "ramda-adjunct",
       "seedrandom",
+      "*.png",
     ],
+    plugins: [sassPlugin()],
   });
 };
 
 (async () => {
   await initOutputFolder();
-  await buildJS();
+  await buildJsAndCss();
 })();
