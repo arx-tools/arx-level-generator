@@ -464,6 +464,10 @@ const pickRandom = (set) => {
   return pickRandoms(1, set)[0];
 };
 
+const pickRandomIdx = (set) => {
+  return pickRandom(Object.keys(set));
+};
+
 const cross = (u, v) => {
   return [
     u[1] * v[2] - u[2] * v[1],
@@ -680,6 +684,7 @@ module.exports = {
   randomBetween,
   pickRandoms,
   pickRandom,
+  pickRandomIdx,
   isPointInPolygon,
   isBetween,
   isBetweenInclusive,

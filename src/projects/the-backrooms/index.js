@@ -32,6 +32,7 @@ const {
   addZone,
   pickRandomLoot,
   sortByDistance,
+  pickRandomIdx,
 } = require("../../helpers.js");
 const { wallX, wallZ, plain } = require("../../prefabs");
 const {
@@ -762,10 +763,16 @@ const generate = async (config) => {
         config
       );
 
-      const [[keyX, keyZ], ...lootSlots] = pickRandoms(
+      const lootSlots = pickRandoms(
         Math.floor(mapData.config.numberOfRooms / 3) + 5,
         floors
       );
+
+      // TODO: filter 5 of the farthest lootSlots compared to spawn and select
+      // a random from that
+      const keySlot = pickRandomIdx(lootSlots);
+      const [keyX, keyZ] = lootSlots[keySlot];
+      lootSlots.splice(keySlot, 1);
 
       const key = createKey(
         [left + keyX * UNIT - 50, 0, -(top + keyZ * UNIT) - 50],
