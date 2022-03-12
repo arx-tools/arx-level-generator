@@ -8,7 +8,6 @@ const {
   move,
   vertexToVector,
   distance,
-  sortByDistance,
   isBetween,
 } = require("../helpers.js");
 const {

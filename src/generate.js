@@ -21,7 +21,7 @@ const onTheIsland = require("./projects/on-the-island/index.js");
     bumpFactor: 3,
   };
 
-  const project = "on-the-island";
+  const project = "the-backrooms";
 
   switch (project) {
     case "the-backrooms":
@@ -29,7 +29,7 @@ const onTheIsland = require("./projects/on-the-island/index.js");
         ...config,
         numberOfRooms: 20,
         roomDimensions: { width: [1, 5], depth: [1, 5], height: 2 },
-        percentOfLightsOn: 30,
+        percentOfLightsOn: 0,
         lootTable: [
           {
             name: "almondWater",

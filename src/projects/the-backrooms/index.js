@@ -31,6 +31,7 @@ const {
   toFloatRgb,
   addZone,
   pickRandomLoot,
+  sortByDistance,
 } = require("../../helpers.js");
 const { wallX, wallZ, plain } = require("../../prefabs");
 const {
@@ -53,6 +54,7 @@ const {
   items,
   addDependencyAs,
   addDependency,
+  whereIs,
 } = require("../../assets/items.js");
 const { getInjections, declare, color } = require("../../scripting.js");
 const {
@@ -651,11 +653,6 @@ const generate = async (config) => {
 
   const welcomeMarker = createWelcomeMarker([0, 0, 0], config);
 
-  const runes = ["aam", "folgora", "taar"];
-  circleOfVectors([0, 0, UNIT / 2], 40, 3).forEach((pos, idx) => {
-    createRune(runes[idx], pos, [0, 0, 0], welcomeMarker);
-  });
-
   const grid = compose(
     (grid) => {
       for (let i = 0; i < config.numberOfRooms; i++) {
@@ -683,12 +680,12 @@ const generate = async (config) => {
       const wallSegments = [];
       const floors = [];
 
-      const ambientLights = addAmbientLight([0, 200, 0], {
+      const ambientLights = addAmbientLight([0, 0, 0], {
         color: COLORS.BLOOD,
         on: false,
       })(mapData);
 
-      const lamps = [];
+      const lampsToBeCreated = [];
 
       for (let y = 0; y < grid.length; y++) {
         for (let x = 0; x < grid[y].length; x++) {
@@ -699,21 +696,16 @@ const generate = async (config) => {
             const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100;
 
             if (x % 3 === 0 && y % 3 === 0) {
-              const lampConfig = {
-                on: randomBetween(0, 100) < config.percentOfLightsOn,
-              };
-
-              const lamp = addLamp(
-                [
+              lampsToBeCreated.push({
+                pos: [
                   left + x * UNIT - 50 + offsetX,
                   -(config.roomDimensions.height * UNIT - 10),
                   -(top + y * UNIT) - 50 + offsetZ,
                 ],
-                [0, 0, 0],
-                lampConfig
-              )(mapData);
-
-              lamps.push(lamp);
+                config: {
+                  on: randomBetween(0, 100) < config.percentOfLightsOn,
+                },
+              });
             } else {
               if (Math.random() < 0.05) {
                 createCeilingDiffuser([
@@ -740,6 +732,27 @@ const generate = async (config) => {
         }
       }
 
+      const runes = ["aam", "folgora", "taar"];
+      const runeSpawn = [0, 0, UNIT / 2];
+      circleOfVectors(runeSpawn, 40, 3).forEach((pos, idx) => {
+        createRune(runes[idx], pos, [0, 0, 0], welcomeMarker);
+      });
+
+      const importantLocations = [runeSpawn];
+
+      importantLocations.forEach((pos) => {
+        const sortedLamps = lampsToBeCreated.sort((a, b) => {
+          return sortByDistance(pos)(a.pos, b.pos);
+        });
+
+        sortedLamps[0].config.on = true;
+      });
+
+      const lamps = lampsToBeCreated.reduce((lamps, { pos, config }) => {
+        lamps.push(addLamp(pos, [0, 0, 0], config)(mapData));
+        return lamps;
+      }, []);
+
       const lampCtrl = createLampController([10, 0, 10], lamps, config);
 
       const jumpscareCtrl = createJumpscareController(
@@ -749,7 +762,7 @@ const generate = async (config) => {
         config
       );
 
-      const [[keyX, keyZ], ...lootSlot] = pickRandoms(
+      const [[keyX, keyZ], ...lootSlots] = pickRandoms(
         Math.floor(mapData.config.numberOfRooms / 3) + 5,
         floors
       );
@@ -762,7 +775,7 @@ const generate = async (config) => {
 
       createExit(top, left, pickRandom(wallSegments), key, jumpscareCtrl);
 
-      lootSlot.forEach(([x, z]) => {
+      lootSlots.forEach(([x, z]) => {
         const offsetX = Math.floor(randomBetween(0, UNIT / 100)) * 100;
         const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100;
         const pos = [

@@ -249,6 +249,11 @@ const moveTo = curry(([x, y, z], [a, b, g], itemRef) => {
   return itemRef;
 });
 
+const whereIs = (itemRef) => {
+  const { src, id } = itemRef;
+  return clone(usedItems[src][id].pos);
+};
+
 const markAsUsed = (itemRef) => {
   const { src, id } = itemRef;
   usedItems[src][id].used = true;
@@ -356,6 +361,7 @@ module.exports = {
   addDependency,
   addDependencyAs,
   moveTo,
+  whereIs,
   markAsUsed,
   exportUsedItems,
   exportScripts,
