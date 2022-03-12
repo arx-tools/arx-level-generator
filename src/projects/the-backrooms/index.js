@@ -74,6 +74,7 @@ const { overridePlayerScript } = require("../shared/player.js");
 const { createLampController } = require("./items/lampController.js");
 const { ambiences } = require("../../assets/ambiences.js");
 const { UNIT, COLORS } = require("./constants.js");
+const { equals } = require("ramda");
 
 const addLamp = (pos, angle, config = {}) => {
   return (mapData) => {
@@ -654,20 +655,31 @@ const generate = async (config) => {
 
   const welcomeMarker = createWelcomeMarker([0, 0, 0], config);
 
+  let roomCounter = 1;
+
   const grid = compose(
     (grid) => {
+      let oldGrid = JSON.stringify(grid);
       for (let i = 0; i < config.numberOfRooms; i++) {
         grid = addRoom(
           randomBetween(...config.roomDimensions.width),
           randomBetween(...config.roomDimensions.depth),
           grid
         );
+        let newGrid = JSON.stringify(grid);
+        if (newGrid !== oldGrid) {
+          oldGrid = newGrid;
+          roomCounter++;
+        }
       }
       return grid;
     },
     addRoom(3, 3),
     generateGrid
   )(50);
+
+  config.originalNumberOfRooms = config.numberOfRooms;
+  config.numberOfRooms = roomCounter;
 
   return compose(
     saveToDisk,

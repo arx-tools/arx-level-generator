@@ -29,7 +29,7 @@ const onTheIsland = require("./projects/on-the-island/index.js");
         ...config,
         numberOfRooms: 20,
         roomDimensions: { width: [1, 5], depth: [1, 5], height: 2 },
-        percentOfLightsOn: 0,
+        percentOfLightsOn: 100,
         lootTable: [
           {
             name: "almondWater",
