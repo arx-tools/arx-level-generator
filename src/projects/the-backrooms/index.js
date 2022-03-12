@@ -780,8 +780,7 @@ const generate = async (config) => {
         floors
       );
 
-      // TODO: filter 5 of the farthest lootSlots compared to spawn and select
-      // a random from that
+      // TODO: filter 5 of the farthest lootSlots compared to spawn and select a random from that
       const keySlot = pickRandomIdx(lootSlots);
       const [keyX, keyZ] = lootSlots[keySlot];
       lootSlots.splice(keySlot, 1);
