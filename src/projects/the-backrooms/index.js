@@ -24,7 +24,6 @@ const {
   addLight,
   move,
   randomBetween,
-  circleOfVectors,
   pickRandoms,
   pickRandom,
   toRgba,
@@ -444,29 +443,6 @@ ON OPEN {
   )(items.marker);
 };
 
-const createRune = (runeName, pos, angle = [0, 0, 0], welcomeMarker) => {
-  return compose(
-    markAsUsed,
-    moveTo(pos, angle),
-    addScript((self) => {
-      return `
-// component: rune
-ON INIT {
-  ${getInjections("init", self)}
-  ACCEPT
-}
-
-ON INVENTORYUSE {
-  SENDEVENT GOT_RUNE ${welcomeMarker.ref} "${runeName}"
-  ACCEPT
-}
-      `;
-    }),
-    declare("string", "rune_name", runeName),
-    createItem
-  )(items.magic.rune);
-};
-
 const createExit = (top, left, wallSegment, key, jumpscareController) => {
   const [wallX, wallZ, wallFace] = wallSegment;
 
@@ -645,6 +621,55 @@ ON INVENTORYUSE {
   });
 };
 
+const createRune = (runeName, pos, angle = [0, 0, 0], welcomeMarker) => {
+  return compose(
+    markAsUsed,
+    moveTo(pos, angle),
+    addScript((self) => {
+      return `
+// component: rune
+ON INIT {
+  ${getInjections("init", self)}
+  ACCEPT
+}
+
+ON INVENTORYUSE {
+  SENDEVENT GOT_RUNE ${welcomeMarker.ref} "${runeName}"
+  ACCEPT
+}
+      `;
+    }),
+    declare("string", "rune_name", runeName),
+    createItem
+  )(items.magic.rune);
+};
+
+const createSpawnContainer = (pos, angle, contents = []) => {
+  return compose(
+    markAsUsed,
+    moveTo(pos, angle),
+    addScript((self) => {
+      return `
+// component: spawn container
+ON INIT {
+  ${getInjections("init", self)}
+
+  setscale 75
+
+  ${contents
+    .map(({ ref }) => {
+      return `inventory addfromscene "${ref}"`;
+    })
+    .join("  \n")}
+
+  ACCEPT
+}
+      `;
+    }),
+    createItem
+  )(items.containers.barrel);
+};
+
 const generate = async (config) => {
   const { origin } = config;
 
@@ -745,13 +770,34 @@ const generate = async (config) => {
         }
       }
 
-      const runes = ["aam", "folgora", "taar"];
-      const runeSpawn = [0, 0, UNIT / 2];
-      circleOfVectors(runeSpawn, 40, 3).forEach((pos, idx) => {
-        createRune(runes[idx], pos, [0, 0, 0], welcomeMarker);
-      });
+      const spawnContainerPos = [0, 0, UNIT];
 
-      const importantLocations = [runeSpawn];
+      const aam = createRune(
+        "aam",
+        spawnContainerPos,
+        [0, 0, 0],
+        welcomeMarker
+      );
+      const folgora = createRune(
+        "folgora",
+        spawnContainerPos,
+        [0, 0, 0],
+        welcomeMarker
+      );
+      const taar = createRune(
+        "taar",
+        spawnContainerPos,
+        [0, 0, 0],
+        welcomeMarker
+      );
+
+      const spawnContainer = createSpawnContainer(
+        spawnContainerPos,
+        [0, 0, 0],
+        [aam, folgora, taar]
+      );
+
+      const importantLocations = [spawnContainerPos];
 
       importantLocations.forEach((pos) => {
         const sortedLamps = lampsToBeCreated.sort((a, b) => {

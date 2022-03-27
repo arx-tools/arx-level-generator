@@ -127,6 +127,12 @@ const items = {
       native: true,
     },
   },
+  containers: {
+    barrel: {
+      src: "fix_inter/barrel/barrel.teo",
+      native: true,
+    },
+  },
 };
 
 let usedItems = {};
