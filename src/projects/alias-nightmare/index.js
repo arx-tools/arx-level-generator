@@ -141,6 +141,38 @@ const generateAtLeastOneExit = () => {
   );
 };
 
+const createFallInducer = (origin) => (mapData) => {
+  const divider = 4;
+
+  return compose(
+    (mapData) => {
+      for (let x = 0; x < divider; x++) {
+        for (let y = 0; y < divider; y++) {
+          setPolygonGroup(`gravity-${x}-${y}`)(mapData);
+          plain(
+            [
+              -origin[0] +
+                (MAP_MAX_WIDTH / divider) * 50 +
+                (MAP_MAX_WIDTH / divider) * 100 * x,
+              origin[1] + 10000,
+              -origin[2] +
+                (MAP_MAX_HEIGHT / divider) * 50 +
+                (MAP_MAX_HEIGHT / divider) * 100 * y,
+            ],
+            [MAP_MAX_WIDTH / divider, MAP_MAX_HEIGHT / divider],
+            "floor",
+            disableBumping
+          )(mapData);
+          unsetPolygonGroup(mapData);
+        }
+      }
+      return mapData;
+    },
+    setTexture(textures.none),
+    setColor("white")
+  )(mapData);
+};
+
 const generate = async (config) => {
   const { origin } = config;
 
@@ -202,32 +234,7 @@ const generate = async (config) => {
       islands
     ),
 
-    (mapData) => {
-      const divider = 4;
-      for (let x = 0; x < divider; x++) {
-        for (let y = 0; y < divider; y++) {
-          setPolygonGroup(`gravity-${x}-${y}`)(mapData);
-          plain(
-            [
-              -origin[0] +
-                (MAP_MAX_WIDTH / divider) * 50 +
-                (MAP_MAX_WIDTH / divider) * 100 * x,
-              10000,
-              -origin[2] +
-                (MAP_MAX_HEIGHT / divider) * 50 +
-                (MAP_MAX_HEIGHT / divider) * 100 * y,
-            ],
-            [MAP_MAX_WIDTH / divider, MAP_MAX_HEIGHT / divider],
-            "floor",
-            disableBumping
-          )(mapData);
-          unsetPolygonGroup(mapData);
-        }
-      }
-      return mapData;
-    },
-    setTexture(textures.none),
-    setColor("white"),
+    createFallInducer(origin),
 
     addZone(
       [0, 5000, 0],
