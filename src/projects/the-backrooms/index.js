@@ -590,7 +590,12 @@ ON INVENTORYUSE {
   }
 
   IF (${self.state.variant} == "mana") {
-    SPECIALFX MANA 25
+    IF (^PLAYER_MAXMANA > 0) {
+      // only in ArxLibertatis 1.3+
+      SPECIALFX MANA ^PLAYER_MAXMANA // TODO: only add half the player's mana
+    } ELSE {
+      SPECIALFX MANA 25
+    }
   }
 
   IF (${self.state.variant} == "slow") {
