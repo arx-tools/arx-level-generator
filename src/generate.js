@@ -21,7 +21,7 @@ const onTheIsland = require("./projects/on-the-island/index.js");
     bumpFactor: 3,
   };
 
-  const project = "alias-nightmare";
+  const project = "the-backrooms";
 
   switch (project) {
     case "the-backrooms":
@@ -43,8 +43,13 @@ const onTheIsland = require("./projects/on-the-island/index.js");
           },
           {
             name: "almondWater",
-            weight: 2,
+            weight: 4,
             variant: "slow",
+          },
+          {
+            name: "almondWater",
+            weight: 2,
+            variant: "speed",
           },
         ],
       });

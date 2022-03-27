@@ -582,6 +582,8 @@ ON INVENTORYIN {
 ON INVENTORYUSE {
   PLAY "drink"
 
+  // TODO: make sure to handle effects, which have duration from running parallel
+
   IF (${self.state.variant} == "xp") {
     // TODO: add an effect
     ADDXP 2000
@@ -598,6 +600,15 @@ ON INVENTORYUSE {
     TIMERpenalty -m 1 7000 SENDEVENT SETSPEED player 1
     TIMERend -m 1 7000 PLAY -o "magic_spell_slow_down_end"
     TIMERstopheartbeat -m 1 7000 PLAY -os "player_heartb"
+  }
+
+  IF (${self.state.variant} == "speed") {
+    PLAY -o "magic_spell_speedstart"
+    PLAY -oil "player_heartb"
+    SENDEVENT SETSPEED player 2
+    TIMERbonusend -m 1 10000 SENDEVENT SETSPEED player 1
+    TIMERend -m 1 10000 PLAY -o "magic_spell_speedend"
+    TIMERstopheartbeat -m 1 10000 PLAY -os "player_heartb"
   }
 
   OBJECT_HIDE SELF YES

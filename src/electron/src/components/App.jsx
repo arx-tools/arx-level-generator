@@ -129,8 +129,13 @@ const App = () => {
               },
               {
                 name: "almondWater",
-                weight: 2,
+                weight: 4,
                 variant: "slow",
+              },
+              {
+                name: "almondWater",
+                weight: 2,
+                variant: "speed",
               },
             ],
           });
