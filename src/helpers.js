@@ -551,7 +551,14 @@ const addLight =
   };
 
 const addZone =
-  (pos, size, name, ambience = ambiences.none, drawDistance = 2000) =>
+  (
+    pos,
+    size,
+    name,
+    ambience = ambiences.none,
+    drawDistance = 2000,
+    flags = PATH_RGB | PATH_AMBIANCE | PATH_FARCLIP
+  ) =>
   (mapData) => {
     let [x, y, z] = pos;
 
@@ -561,7 +568,7 @@ const addZone =
       header: {
         name,
         idx: 0,
-        flags: PATH_RGB | PATH_AMBIANCE | PATH_FARCLIP,
+        flags,
         initPos: { x, y, z },
         pos: { x, y, z },
         rgb: toFloatRgb(mapData.state.color),

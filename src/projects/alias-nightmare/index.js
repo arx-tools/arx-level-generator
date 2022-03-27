@@ -39,7 +39,7 @@ const { createHangingCorpse } = require("./items/hangingCorpse");
 const { createStatue, defineStatue } = require("./items/statue");
 const { stairs, plain } = require("../../prefabs");
 const { textures } = require("../../assets/textures");
-const { MAP_MAX_WIDTH, MAP_MAX_HEIGHT } = require("../../constants");
+const { MAP_MAX_WIDTH, MAP_MAX_HEIGHT, PATH_RGB } = require("../../constants");
 const { disableBumping } = require("../../prefabs/plain");
 
 const createWelcomeMarker = (pos) => (config) => {
@@ -229,13 +229,13 @@ const generate = async (config) => {
     setTexture(textures.none),
     setColor("white"),
 
-    // TODO: expose control over flags and make fall detector not set ambience and color
     addZone(
       [0, 5000, 0],
       [MAP_MAX_WIDTH * 100, 1000, MAP_MAX_HEIGHT * 100],
       `fall-detector`,
-      ambiences.sirs,
-      5000
+      ambiences.none,
+      0,
+      PATH_RGB
     ),
     setColor(colors.ambience[0]),
 

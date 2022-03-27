@@ -21,7 +21,7 @@ const onTheIsland = require("./projects/on-the-island/index.js");
     bumpFactor: 3,
   };
 
-  const project = "the-backrooms";
+  const project = "alias-nightmare";
 
   switch (project) {
     case "the-backrooms":

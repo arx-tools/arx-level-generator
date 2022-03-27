@@ -7,7 +7,6 @@ const {
   setTexture,
   setPolygonGroup,
   unsetPolygonGroup,
-  addZone,
   pickRandom,
 } = require("../../helpers.js");
 const { colors, NORTH, SOUTH, WEST, EAST, NONE } = require("./constants.js");
