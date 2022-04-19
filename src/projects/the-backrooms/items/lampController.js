@@ -1,14 +1,14 @@
-const { compose } = require("ramda");
-const {
+import { compose } from 'ramda'
+import {
   markAsUsed,
   moveTo,
   addScript,
   createItem,
   items,
-} = require("../../../assets/items");
-const { getInjections } = require("../../../scripting");
+} from '../../../assets/items'
+import { getInjections } from '../../../scripting'
 
-module.exports.createLampController = (pos, lamps) => {
+export const createLampController = (pos, lamps) => {
   return compose(
     markAsUsed,
     moveTo(pos, [0, 0, 0]),
@@ -16,7 +16,7 @@ module.exports.createLampController = (pos, lamps) => {
       return `
 // component lampController
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
   ACCEPT
 }
 
@@ -54,8 +54,8 @@ ON UNMUTE {
   ${lamps.map(({ ref }) => `SENDEVENT UNMUTE ${ref} NOP`).join(`\n  `)}
   ACCEPT
 }
-      `;
+      `
     }),
-    createItem
-  )(items.marker);
-};
+    createItem,
+  )(items.marker)
+}

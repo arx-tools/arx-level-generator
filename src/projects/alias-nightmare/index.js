@@ -1,5 +1,5 @@
-const { compose, reduce, __, addIndex } = require('ramda')
-const {
+import { compose, reduce, __, addIndex } from 'ramda'
+import {
   generateBlankMapData,
   movePlayerTo,
   finalize,
@@ -11,19 +11,11 @@ const {
   setTexture,
   setPolygonGroup,
   unsetPolygonGroup,
-} = require('../../helpers')
-const island = require('./island.js')
-const {
-  colors,
-  NONE,
-  ALL,
-  NORTH,
-  EAST,
-  SOUTH,
-  WEST,
-} = require('./constants.js')
-const { ambiences } = require('../../assets/ambiences')
-const {
+} from '../../helpers'
+import island from './island.js'
+import { colors, NONE, ALL, NORTH, EAST, SOUTH, WEST } from './constants.js'
+import { ambiences } from '../../assets/ambiences'
+import {
   items,
   createItem,
   markAsUsed,
@@ -31,16 +23,15 @@ const {
   addScript,
   addDependencyAs,
   addDependency,
-} = require('../../assets/items')
-const { declare, color, getInjections } = require('../../scripting')
-const bridges = require('./bridges')
-const { createSmellyFlower } = require('./items/smellyFlower')
-const { createHangingCorpse } = require('./items/hangingCorpse')
-const { createStatue, defineStatue } = require('./items/statue')
-const { stairs, plain } = require('../../prefabs')
-const { textures } = require('../../assets/textures')
-const { MAP_MAX_WIDTH, MAP_MAX_HEIGHT, PATH_RGB } = require('../../constants')
-const { disableBumping } = require('../../prefabs/plain')
+} from '../../assets/items'
+import { declare, color, getInjections } from '../../scripting'
+import bridges from './bridges'
+import { createSmellyFlower } from './items/smellyFlower'
+import { createStatue, defineStatue } from './items/statue'
+import { plain } from '../../prefabs'
+import { textures } from '../../assets/textures'
+import { MAP_MAX_WIDTH, MAP_MAX_HEIGHT, PATH_RGB } from '../../constants'
+import { disableBumping } from '../../prefabs/plain'
 
 const createWelcomeMarker = (pos) => (config) => {
   return compose(
@@ -264,4 +255,4 @@ const generate = async (config) => {
   )(config)
 }
 
-module.exports = generate
+export default generate

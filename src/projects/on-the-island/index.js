@@ -1,15 +1,15 @@
-const { compose, identity } = require('ramda')
-const { ambiences } = require('../../assets/ambiences')
-const {
+import { compose, identity } from 'ramda'
+import { ambiences } from '../../assets/ambiences'
+import {
   items,
   createItem,
   moveTo,
   markAsUsed,
   addScript,
-} = require('../../assets/items')
-const { textures } = require('../../assets/textures')
-const { HFLIP, VFLIP } = require('../../constants')
-const {
+} from '../../assets/items'
+import { textures } from '../../assets/textures'
+import { HFLIP, VFLIP } from '../../constants'
+import {
   saveToDisk,
   finalize,
   generateBlankMapData,
@@ -22,10 +22,10 @@ const {
   circleOfVectors,
   setPolygonGroup,
   unsetPolygonGroup,
-} = require('../../helpers')
-const { plain, wallX } = require('../../prefabs')
-const { disableBumping, connectToNearPolygons } = require('../../prefabs/plain')
-const { getInjections } = require('../../scripting')
+} from '../../helpers'
+import { plain } from '../../prefabs'
+import { disableBumping, connectToNearPolygons } from '../../prefabs/plain'
+import { getInjections } from '../../scripting'
 
 const createWelcomeMarker = (pos) => {
   return compose(
@@ -189,4 +189,4 @@ const generate = async (config) => {
   )(config)
 }
 
-module.exports = generate
+export default generate

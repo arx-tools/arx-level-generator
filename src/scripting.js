@@ -1,73 +1,67 @@
-const rgba = require("color-rgba");
-const { compose, dropLast, join, curry, map } = require("ramda");
+import rgba from 'color-rgba'
+import { compose, dropLast, join, curry, map } from 'ramda'
 
-const color = (colorDefinition) => {
+export const color = (colorDefinition) => {
   return compose(
-    join(" "),
+    join(' '),
     map((channel) => Math.round((channel / 256) * 10 ** 6) / 10 ** 6),
     dropLast(1),
-    rgba
-  )(colorDefinition);
-};
+    rgba,
+  )(colorDefinition)
+}
 
 const globalScope = {
   state: {},
   injections: {},
-};
+}
 
-const declare = curry((type, name, initialValue, scope) => {
-  let value = initialValue;
-  if (scope === "global") {
+export const declare = curry((type, name, initialValue, scope) => {
+  let value = initialValue
+  if (scope === 'global') {
     switch (type) {
-      case "int":
-        globalScope.state[name] = `#${name}`;
-        break;
-      case "float":
-        globalScope.state[name] = `&${name}`;
-        break;
-      case "string":
-        globalScope.state[name] = `$${name}`;
-        value = `"${initialValue}"`;
-        break;
+      case 'int':
+        globalScope.state[name] = `#${name}`
+        break
+      case 'float':
+        globalScope.state[name] = `&${name}`
+        break
+      case 'string':
+        globalScope.state[name] = `$${name}`
+        value = `"${initialValue}"`
+        break
     }
 
     if (value !== undefined) {
-      globalScope.injections.init = globalScope.injections.init || [];
+      globalScope.injections.init = globalScope.injections.init || []
       globalScope.injections.init.push(
-        `SET ${globalScope.state[name]} ${value}`
-      );
+        `SET ${globalScope.state[name]} ${value}`,
+      )
     }
   } else {
     switch (type) {
-      case "int":
-        scope.state[name] = `§${name}`;
-        break;
-      case "float":
-        scope.state[name] = `@${name}`;
-        break;
-      case "string":
-        scope.state[name] = `£${name}`;
-        value = `"${initialValue}"`;
-        break;
+      case 'int':
+        scope.state[name] = `§${name}`
+        break
+      case 'float':
+        scope.state[name] = `@${name}`
+        break
+      case 'string':
+        scope.state[name] = `£${name}`
+        value = `"${initialValue}"`
+        break
     }
 
     if (value !== undefined) {
-      scope.injections.init = scope.injections.init || [];
-      scope.injections.init.push(`SET ${scope.state[name]} ${value}`);
+      scope.injections.init = scope.injections.init || []
+      scope.injections.init.push(`SET ${scope.state[name]} ${value}`)
     }
   }
 
-  return scope;
-});
+  return scope
+})
 
-const getInjections = (eventName, scope) => {
+export const getInjections = (eventName, scope) => {
   return (
-    (scope === "global" ? globalScope : scope).injections[eventName] || []
-  ).join("\n  ");
-};
-
-module.exports = {
-  color,
-  declare,
-  getInjections,
-};
+    (scope === 'global' ? globalScope : scope).injections[eventName] || []
+  ).join('\n  ')
+}

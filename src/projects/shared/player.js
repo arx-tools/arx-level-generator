@@ -1,14 +1,14 @@
-const { compose } = require("ramda");
-const {
+import { compose } from 'ramda'
+import {
   markAsUsed,
   addScript,
   createRootItem,
   items,
-} = require("../../assets/items");
-const { getInjections, declare } = require("../../scripting");
+} from '../../assets/items'
+import { getInjections, declare } from '../../scripting'
 
-const overridePlayerScript = () => {
-  declare("int", "TUTORIAL_MAGIC", 100, "global"); // disable magic related tutorial messages in rune_aam.asl
+export const overridePlayerScript = () => {
+  declare('int', 'TUTORIAL_MAGIC', 100, 'global') // disable magic related tutorial messages in rune_aam.asl
 
   return compose(
     markAsUsed,
@@ -16,8 +16,8 @@ const overridePlayerScript = () => {
       return `
 // component: player
 ON INIT {
-  ${getInjections("init", self)}
-  ${getInjections("init", "global")}
+  ${getInjections('init', self)}
+  ${getInjections('init', 'global')}
 
   LOADANIM WAIT                       "player_wait_short"
   LOADANIM WAIT_SHORT                 "player_wait_1st"
@@ -192,12 +192,8 @@ ON SETSPEED {
   SETSPEED ^&PARAM1
   ACCEPT
 }
-      `;
+      `
     }),
-    createRootItem
-  )(items.npc.player);
-};
-
-module.exports = {
-  overridePlayerScript,
-};
+    createRootItem,
+  )(items.npc.player)
+}

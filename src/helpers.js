@@ -1,13 +1,13 @@
-const fs = require('fs')
-const rgba = require('color-rgba')
-const {
+import fs from 'fs'
+import rgba from 'color-rgba'
+import {
   createTextureContainers,
   textures,
   exportTextures,
   resetTextures,
-} = require('./assets/textures.js')
-const { createDlfData, createFtsData, createLlfData } = require('./blankMap.js')
-const {
+} from './assets/textures'
+import { createDlfData, createFtsData, createLlfData } from './blankMap'
+import {
   pluck,
   compose,
   pick,
@@ -22,21 +22,17 @@ const {
   split,
   unary,
   values,
-  replace,
   keys,
   curry,
   apply,
   zip,
-  filter,
-  includes,
   divide,
   repeat,
   either,
   clone,
   flatten,
-  times,
-} = require('ramda')
-const {
+} from 'ramda'
+import {
   POLY_QUAD,
   MAP_MAX_HEIGHT,
   MAP_MAX_WIDTH,
@@ -45,19 +41,19 @@ const {
   PATH_RGB,
   PATH_AMBIANCE,
   PATH_FARCLIP,
-} = require('./constants.js')
-const {
+} from './constants'
+import {
   exportUsedItems,
   exportScripts,
   exportDependencies,
   resetItems,
-} = require('./assets/items.js')
-const {
+} from './assets/items'
+import {
   exportAmbiences,
   useAmbience,
   resetAmbiences,
-} = require('./assets/ambiences.js')
-const { dirname, resolve } = require('path')
+} from './assets/ambiences'
+import { dirname, resolve } from 'path'
 
 const normalize = (v) => {
   return map(apply(divide), zip(v, repeat(magnitude(v), 3)))
@@ -669,7 +665,8 @@ const pickRandomLoot = (lootTable) => {
   return lootTable[idx]
 }
 
-module.exports = {
+// TODO: make these exports inline
+export {
   subtractVec3,
   magnitude,
   normalize,

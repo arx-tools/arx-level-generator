@@ -8,11 +8,11 @@ import MenuItem from './MenuItem.jsx'
 import path from 'path'
 import seedrandom from 'seedrandom'
 import { ipcRenderer } from 'electron'
-import { cleanupCache, uninstall } from '../../../helpers.js'
-import aliasNightmareGenerator from '../../../projects/alias-nightmare/index.js'
-import theBackroomsGenerator from '../../../projects/the-backrooms/index.js'
-import onTheIslandGenerator from '../../../projects/on-the-island/index.js'
-import { compileFTS, compileLLF, compileDLF } from '../../../compile.js'
+import { cleanupCache, uninstall } from '../../../helpers'
+import aliasNightmareGenerator from '../../../projects/alias-nightmare/index'
+import theBackroomsGenerator from '../../../projects/the-backrooms/index'
+import onTheIslandGenerator from '../../../projects/on-the-island/index'
+import { compileFTS, compileLLF, compileDLF } from '../../../compile'
 
 const generateSeed = () => Math.floor(Math.random() * 1e20)
 

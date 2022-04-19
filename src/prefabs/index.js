@@ -1,21 +1,11 @@
-const floor = require("./base/floor.js");
-const wallX = require("./base/wallX.js");
-const wallZ = require("./base/wallZ.js");
-const skybox = require("./skybox.js");
-const { plain } = require("./plain.js");
-const pillar = require("./pillar.js");
-const pillars = require("./pillars.js");
-const stairs = require("./stairs.js");
-const wall = require("./wall.js");
+import floor from './base/floor'
+import wallX from './base/wallX'
+import wallZ from './base/wallZ'
+import skybox from './skybox'
+import { plain } from './plain'
+import pillar from './pillar'
+import pillars from './pillars'
+import stairs from './stairs'
+import wall from './wall'
 
-module.exports = {
-  floor,
-  wallX,
-  wallZ,
-  skybox,
-  plain,
-  pillar,
-  pillars,
-  stairs,
-  wall,
-};
+export { floor, wallX, wallZ, skybox, plain, pillar, pillars, stairs, wall }

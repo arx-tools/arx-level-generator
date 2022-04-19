@@ -1,14 +1,14 @@
-const { compose } = require("ramda");
-const {
+import { compose } from 'ramda'
+import {
   addScript,
   createItem,
   items,
   markAsUsed,
   moveTo,
-} = require("../../../assets/items");
-const { getInjections } = require("../../../scripting");
+} from '../../../assets/items'
+import { getInjections } from '../../../scripting'
 
-module.exports.createSmellyFlower = (pos, angle = [0, 0, 0], props = {}) => {
+export const createSmellyFlower = (pos, angle = [0, 0, 0], props = {}) => {
   return compose(
     markAsUsed,
     moveTo(pos, angle),
@@ -16,14 +16,14 @@ module.exports.createSmellyFlower = (pos, angle = [0, 0, 0], props = {}) => {
       return `
 // component: smellyFlower
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
   ACCEPT
 }
-      `;
+      `
     }),
-    createItem
+    createItem,
   )(items.plants.fern, {
-    name: "Smelly flower",
+    name: 'Smelly flower',
     ...props,
-  });
-};
+  })
+}

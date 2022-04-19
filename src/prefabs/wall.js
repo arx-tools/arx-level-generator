@@ -1,7 +1,7 @@
-const wallX = require('./base/wallX.js')
-const wallZ = require('./base/wallZ.js')
-const { compose } = require('ramda')
-const { move } = require('../helpers')
+import wallX from './base/wallX'
+import wallZ from './base/wallZ'
+import { compose } from 'ramda'
+import { move } from '../helpers'
 
 const internalUnit = 100
 
@@ -46,4 +46,4 @@ const wall = ([x, y, z], face, config = {}) => {
   }
 }
 
-module.exports = wall
+export default wall

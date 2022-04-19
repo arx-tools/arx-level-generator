@@ -1,18 +1,13 @@
-const {
-  POLY_QUAD,
-  POLY_NO_SHADOW,
-  HFLIP,
-  VFLIP,
-} = require("../../constants.js");
-const { useTexture } = require("../../assets/textures.js");
-const { flipPolygon } = require("../../helpers.js");
+import { POLY_QUAD, POLY_NO_SHADOW, HFLIP, VFLIP } from '../../constants'
+import { useTexture } from '../../assets/textures'
+import { flipPolygon } from '../../helpers'
 
 // [x, y, z] are absolute coordinates,
 // not relative to origin
 const floor =
   (
     [x, y, z],
-    direction = "floor", // floor|ceiling
+    direction: 'floor' | 'ceiling' = 'floor',
     quad = 0,
     textureRotation = 0,
     size = 100,
@@ -22,70 +17,71 @@ const floor =
       b: { u: 1, v: 1 },
       c: { u: 0, v: 0 },
       d: { u: 0, v: 1 },
-    }
+    },
   ) =>
   (mapData) => {
-    const { texture } = mapData.state;
-    let texU = 0;
-    let texV = 0;
-    let sizeX = size;
-    let sizeZ = size;
+    const { texture } = mapData.state
+    let texU = 0
+    let texV = 0
+    let sizeX = size
+    let sizeZ = size
     if (Array.isArray(size)) {
-      [sizeX, sizeY, sizeZ] = size;
+      sizeX = size[0]
+      sizeZ = size[2]
     }
 
-    let a = { u: 0.5, v: 0 };
-    let b = { u: 0.5, v: 0.5 };
-    let c = { u: 0, v: 0 };
-    let d = { u: 0, v: 0.5 };
+    let a = { u: 0.5, v: 0 }
+    let b = { u: 0.5, v: 0.5 }
+    let c = { u: 0, v: 0 }
+    let d = { u: 0, v: 0.5 }
 
     if (quad === null) {
-      a = _uv.a;
-      b = _uv.b;
-      c = _uv.c;
-      d = _uv.d;
+      a = _uv.a
+      b = _uv.b
+      c = _uv.c
+      d = _uv.d
     } else {
       switch (quad) {
         case 0:
-          texU = 0;
-          texV = 0;
-          break;
+          texU = 0
+          texV = 0
+          break
         case 1:
-          texU = 0.5;
-          texV = 0;
-          break;
+          texU = 0.5
+          texV = 0
+          break
         case 2:
-          texU = 0;
-          texV = 0.5;
-          break;
+          texU = 0
+          texV = 0.5
+          break
         case 3:
-          texU = 0.5;
-          texV = 0.5;
-          break;
+          texU = 0.5
+          texV = 0.5
+          break
       }
     }
 
-    let uv = [c, d, a, b]; // 0
+    let uv = [c, d, a, b] // 0
     switch (textureRotation) {
       case 90:
-        uv = [a, c, b, d]; // 90
-        break;
+        uv = [a, c, b, d] // 90
+        break
       case 180:
-        uv = [b, a, d, c]; // 180
-        break;
+        uv = [b, a, d, c] // 180
+        break
       case 270:
-        uv = [d, b, c, a]; // 270
+        uv = [d, b, c, a] // 270
     }
 
     if (flags & HFLIP) {
-      uv = [uv[2], uv[3], uv[0], uv[1]];
+      uv = [uv[2], uv[3], uv[0], uv[1]]
     }
 
     if (flags & VFLIP) {
-      uv = [uv[1], uv[0], uv[3], uv[2]];
+      uv = [uv[1], uv[0], uv[3], uv[2]]
     }
 
-    const textureFlags = texture?.flags ?? POLY_QUAD | POLY_NO_SHADOW;
+    const textureFlags = texture?.flags ?? POLY_QUAD | POLY_NO_SHADOW
 
     let vertices = [
       {
@@ -116,14 +112,14 @@ const floor =
         texU: texU + uv[3].u,
         texV: texV + uv[3].v,
       },
-    ];
+    ]
 
-    if (direction === "ceiling") {
-      vertices = flipPolygon(vertices);
+    if (direction === 'ceiling') {
+      vertices = flipPolygon(vertices)
     }
 
     mapData.fts.polygons[mapData.state.polygonGroup] =
-      mapData.fts.polygons[mapData.state.polygonGroup] || [];
+      mapData.fts.polygons[mapData.state.polygonGroup] || []
 
     mapData.fts.polygons[mapData.state.polygonGroup].push({
       config: {
@@ -138,9 +134,9 @@ const floor =
       type: textureFlags,
       room: 1,
       paddy: 0,
-    });
+    })
 
-    return mapData;
-  };
+    return mapData
+  }
 
-module.exports = floor;
+export default floor

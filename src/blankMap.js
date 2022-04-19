@@ -1,19 +1,14 @@
-const {
-  MAP_MAX_WIDTH,
-  MAP_MAX_HEIGHT,
-  MAP_WIDTH,
-  MAP_HEIGHT,
-} = require("./constants.js");
+import { MAP_MAX_WIDTH, MAP_MAX_HEIGHT } from './constants'
 
-const createDlfData = (level, now) => ({
+export const createDlfData = (level, now) => ({
   meta: {
-    type: "dlf",
+    type: 'dlf',
     numberOfLeftoverBytes: 0,
   },
   header: {
     version: 1.44,
-    identifier: "DANAE_FILE",
-    lastUser: "generator",
+    identifier: 'DANAE_FILE',
+    lastUser: 'generator',
     time: now,
     posEdit: {
       x: 0,
@@ -46,12 +41,12 @@ const createDlfData = (level, now) => ({
   lights: [],
   fogs: [],
   paths: [],
-});
+})
 
-const createFtsData = (level) => {
+export const createFtsData = (level) => {
   const fts = {
     meta: {
-      type: "fts",
+      type: 'fts',
       numberOfLeftoverBytes: 0,
     },
     header: {
@@ -137,24 +132,24 @@ const createFtsData = (level) => {
         },
       },
     ],
-  };
-
-  for (let i = 0; i < MAP_MAX_WIDTH * MAP_MAX_HEIGHT; i++) {
-    fts.cells.push({ anchors: [] });
   }
 
-  return fts;
-};
+  for (let i = 0; i < MAP_MAX_WIDTH * MAP_MAX_HEIGHT; i++) {
+    fts.cells.push({ anchors: [] })
+  }
 
-const createLlfData = (now) => ({
+  return fts
+}
+
+export const createLlfData = (now) => ({
   meta: {
-    type: "llf",
+    type: 'llf',
     numberOfLeftoverBytes: 0,
   },
   header: {
     version: 1.44,
-    identifier: "DANAE_LLH_FILE",
-    lastUser: "generator",
+    identifier: 'DANAE_LLH_FILE',
+    lastUser: 'generator',
     time: now,
     numberOfShadowPolygons: 0,
     numberOfIgnoredPolygons: 0,
@@ -162,10 +157,4 @@ const createLlfData = (now) => ({
   },
   lights: [],
   colors: [],
-});
-
-module.exports = {
-  createDlfData,
-  createFtsData,
-  createLlfData,
-};
+})

@@ -1,30 +1,30 @@
-const { compose } = require("ramda");
-const {
+import { compose } from 'ramda'
+import {
   addScript,
   createItem,
   markAsUsed,
   moveTo,
   createRootItem,
   addDependencyAs,
-} = require("../../../assets/items");
-const { useTexture, textures } = require("../../../assets/textures");
-const { getInjections, declare } = require("../../../scripting");
+} from '../../../assets/items'
+import { useTexture, textures } from '../../../assets/textures'
+import { getInjections, declare } from '../../../scripting'
 
 const itemDesc = {
-  src: "fix_inter/ceiling_lamp/ceiling_lamp.teo",
+  src: 'fix_inter/ceiling_lamp/ceiling_lamp.teo',
   native: true,
-};
+}
 
-module.exports.defineCeilingLamp = () => {
-  useTexture(textures.backrooms.ceilingLampOn);
-  useTexture(textures.backrooms.ceilingLampOff);
+export const defineCeilingLamp = () => {
+  useTexture(textures.backrooms.ceilingLampOn)
+  useTexture(textures.backrooms.ceilingLampOff)
 
   return compose(
     addScript((self) => {
       return `
 // component: ceilingLamp
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
   USEMESH "polytrans/polytrans.teo"
   ACCEPT
 }
@@ -235,47 +235,47 @@ ON UNMUTE {
 
   RETURN
 }
-      `;
+      `
     }),
-    declare("int", "isOn", 0),
-    declare("int", "oldIsOn", -1),
-    declare("int", "savedIsOn", -1),
-    declare("int", "lightningWasCast", 0),
-    declare("int", "muted", 0),
-    declare("int", "oldMuted", -1),
-    declare("int", "instantSwitching", 0),
+    declare('int', 'isOn', 0),
+    declare('int', 'oldIsOn', -1),
+    declare('int', 'savedIsOn', -1),
+    declare('int', 'lightningWasCast', 0),
+    declare('int', 'muted', 0),
+    declare('int', 'oldMuted', -1),
+    declare('int', 'instantSwitching', 0),
     addDependencyAs(
-      "projects/the-backrooms/sfx/fluorescent-lamp-plink.wav",
-      "sfx/fluorescent-lamp-plink.wav"
+      'projects/the-backrooms/sfx/fluorescent-lamp-plink.wav',
+      'sfx/fluorescent-lamp-plink.wav',
     ),
     addDependencyAs(
-      "projects/the-backrooms/sfx/fluorescent-lamp-startup.wav",
-      "sfx/fluorescent-lamp-startup.wav"
+      'projects/the-backrooms/sfx/fluorescent-lamp-startup.wav',
+      'sfx/fluorescent-lamp-startup.wav',
     ),
     addDependencyAs(
-      "projects/the-backrooms/sfx/fluorescent-lamp-hum.wav",
-      "sfx/fluorescent-lamp-hum.wav"
+      'projects/the-backrooms/sfx/fluorescent-lamp-hum.wav',
+      'sfx/fluorescent-lamp-hum.wav',
     ),
     addDependencyAs(
-      "projects/the-backrooms/sfx/glass-pop-1.wav",
-      "sfx/glass-pop-1.wav"
+      'projects/the-backrooms/sfx/glass-pop-1.wav',
+      'sfx/glass-pop-1.wav',
     ),
     addDependencyAs(
-      "projects/the-backrooms/sfx/glass-pop-2.wav",
-      "sfx/glass-pop-2.wav"
+      'projects/the-backrooms/sfx/glass-pop-2.wav',
+      'sfx/glass-pop-2.wav',
     ),
     addDependencyAs(
-      "projects/the-backrooms/sfx/glass-pop-3.wav",
-      "sfx/glass-pop-3.wav"
+      'projects/the-backrooms/sfx/glass-pop-3.wav',
+      'sfx/glass-pop-3.wav',
     ),
-    createRootItem
+    createRootItem,
   )(itemDesc, {
-    name: "Ceiling Lamp",
+    name: 'Ceiling Lamp',
     interactive: false,
-  });
-};
+  })
+}
 
-module.exports.createCeilingLamp = (pos, angle = [0, 0, 0], config = {}) => {
+export const createCeilingLamp = (pos, angle = [0, 0, 0], config = {}) => {
   return compose(
     markAsUsed,
     moveTo(pos, angle),
@@ -283,13 +283,13 @@ module.exports.createCeilingLamp = (pos, angle = [0, 0, 0], config = {}) => {
       return `
 // component: ceilingLamp
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
   ACCEPT
 }
-      `;
+      `
     }),
-    declare("int", "muted", config.muted ?? false ? 1 : 0),
-    declare("int", "isOn", config.on ?? false ? 1 : 0),
-    createItem
-  )(itemDesc, {});
-};
+    declare('int', 'muted', config.muted ?? false ? 1 : 0),
+    declare('int', 'isOn', config.on ?? false ? 1 : 0),
+    createItem,
+  )(itemDesc, {})
+}

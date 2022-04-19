@@ -1,52 +1,45 @@
-const {
+import {
   includes,
   indexOf,
-  addIndex,
-  map,
   compose,
   clone,
   filter,
   propEq,
   reduce,
   uniq,
-} = require("ramda");
-const { getRootPath } = require("../../rootpath");
-const {
-  POLY_QUAD,
-  POLY_TRANS,
-  POLY_NO_SHADOW,
-  POLY_WATER,
-} = require("../constants");
+} from 'ramda'
+import { getRootPath } from '../../rootpath'
+import { POLY_QUAD, POLY_TRANS, POLY_NO_SHADOW, POLY_WATER } from '../constants'
 
-const textures = {
+export const textures = {
   none: null,
   gravel: {
     ground1: {
-      src: "L5_CAVES_[GRAVEL]_GROUND05",
+      src: 'L5_CAVES_[GRAVEL]_GROUND05',
       native: true,
     },
   },
   wood: {
     aliciaRoomMur02: {
-      src: "[WOOD]_ALICIAROOM_MUR02.jpg",
+      src: '[WOOD]_ALICIAROOM_MUR02.jpg',
       native: true,
     },
   },
   stone: {
     humanWall1: {
-      src: "[STONE]_HUMAN_STONE_WALL1.jpg",
+      src: '[STONE]_HUMAN_STONE_WALL1.jpg',
       native: true,
     },
     akbaa4f: {
-      src: "[STONE]_HUMAN_AKBAA4_F.jpg",
+      src: '[STONE]_HUMAN_AKBAA4_F.jpg',
       native: true,
     },
     humanPriest4: {
-      src: "[STONE]_HUMAN_PRIEST4.jpg",
+      src: '[STONE]_HUMAN_PRIEST4.jpg',
       native: true,
     },
     stairs: {
-      src: "[STONE]_HUMAN_STONE_ORNAMENT.jpg",
+      src: '[STONE]_HUMAN_STONE_ORNAMENT.jpg',
       native: true,
       width: 256,
       height: 256,
@@ -54,139 +47,131 @@ const textures = {
   },
   skybox: {
     top: {
-      src: "skybox_01_top.jpg",
+      src: 'skybox_01_top.jpg',
       native: false,
     },
     left: {
-      src: "skybox_01_left.jpg",
+      src: 'skybox_01_left.jpg',
       native: false,
     },
     right: {
-      src: "skybox_01_right.jpg",
+      src: 'skybox_01_right.jpg',
       native: false,
     },
     front: {
-      src: "skybox_01_front.jpg",
+      src: 'skybox_01_front.jpg',
       native: false,
     },
     back: {
-      src: "skybox_01_back.jpg",
+      src: 'skybox_01_back.jpg',
       native: false,
     },
     bottom: {
-      src: "skybox_01_bottom.jpg",
+      src: 'skybox_01_bottom.jpg',
       native: false,
     },
   },
   backrooms: {
     wall: {
-      path: "projects/the-backrooms/textures",
-      src: "backrooms-[stone]-wall.jpg",
+      path: 'projects/the-backrooms/textures',
+      src: 'backrooms-[stone]-wall.jpg',
       native: false,
     },
     wall2: {
-      path: "projects/the-backrooms/textures",
-      src: "backrooms-[stone]-wall2.jpg",
+      path: 'projects/the-backrooms/textures',
+      src: 'backrooms-[stone]-wall2.jpg',
       native: false,
     },
     carpet: {
-      path: "projects/the-backrooms/textures",
-      src: "backrooms-[fabric]-carpet.jpg",
+      path: 'projects/the-backrooms/textures',
+      src: 'backrooms-[fabric]-carpet.jpg',
       native: false,
     },
     carpetDirty: {
-      path: "projects/the-backrooms/textures",
-      src: "backrooms-[fabric]-carpet-dirty.jpg",
+      path: 'projects/the-backrooms/textures',
+      src: 'backrooms-[fabric]-carpet-dirty.jpg',
       native: false,
     },
     carpet2: {
-      path: "projects/the-backrooms/textures",
-      src: "backrooms-[fabric]-carpet2.jpg",
+      path: 'projects/the-backrooms/textures',
+      src: 'backrooms-[fabric]-carpet2.jpg',
       native: false,
     },
     ceiling: {
-      path: "projects/the-backrooms/textures",
-      src: "backrooms-[stone]-ceiling-tile.jpg",
+      path: 'projects/the-backrooms/textures',
+      src: 'backrooms-[stone]-ceiling-tile.jpg',
       native: false,
     },
     ceilingDiffuser: {
-      path: "projects/the-backrooms/textures",
-      src: "backrooms-[metal]-ceiling-air-diffuser.jpg",
+      path: 'projects/the-backrooms/textures',
+      src: 'backrooms-[metal]-ceiling-air-diffuser.jpg',
       native: false,
     },
     ceilingLampOn: {
-      path: "projects/the-backrooms/textures",
-      src: "backrooms-[metal]-light-on.jpg",
+      path: 'projects/the-backrooms/textures',
+      src: 'backrooms-[metal]-light-on.jpg',
       native: false,
     },
     ceilingLampOff: {
-      path: "projects/the-backrooms/textures",
-      src: "backrooms-[metal]-light-off.jpg",
+      path: 'projects/the-backrooms/textures',
+      src: 'backrooms-[metal]-light-off.jpg',
       native: false,
     },
     moldEdge: {
-      path: "projects/the-backrooms/textures",
-      src: "mold-edge.jpg",
+      path: 'projects/the-backrooms/textures',
+      src: 'mold-edge.jpg',
       native: false,
       flags: POLY_QUAD | POLY_TRANS | POLY_NO_SHADOW,
     },
   },
   water: {
     cave: {
-      src: "(WATER)CAVEWATER.jpg",
+      src: '(WATER)CAVEWATER.jpg',
       native: true,
       flags: POLY_QUAD | POLY_NO_SHADOW | POLY_WATER | POLY_TRANS,
     },
   },
-};
+}
 
-let usedTextures = [];
+let usedTextures = []
 
-const useTexture = (texture) => {
+export const useTexture = (texture) => {
   if (texture === textures.none) {
-    return 0;
+    return 0
   }
 
   if (!includes(texture, usedTextures)) {
-    usedTextures.push(texture);
+    usedTextures.push(texture)
   }
 
-  return indexOf(texture, usedTextures) + 1;
-};
+  return indexOf(texture, usedTextures) + 1
+}
 
-const createTextureContainers = (mapData) => {
+export const createTextureContainers = (mapData) => {
   mapData.fts.textureContainers = usedTextures.map((texture, idx) => {
     return {
       tc: idx + 1,
       temp: 0,
       fic: `GRAPH\\OBJ3D\\TEXTURES\\${texture.src}`,
-    };
-  });
-};
+    }
+  })
+}
 
-const exportTextures = (outputDir) => {
+export const exportTextures = (outputDir) => {
   return compose(
     reduce((files, texture) => {
-      const filename = `${outputDir}/graph/obj3d/textures/${texture.src}`;
+      const filename = `${outputDir}/graph/obj3d/textures/${texture.src}`
       files[filename] = `${getRootPath()}/assets/${
-        texture.path ? texture.path : "graph/obj3d/textures"
-      }/${texture.src}`;
-      return files;
+        texture.path ? texture.path : 'graph/obj3d/textures'
+      }/${texture.src}`
+      return files
     }, {}),
     uniq,
-    filter(propEq("native", false)),
-    clone
-  )(usedTextures);
-};
+    filter(propEq('native', false)),
+    clone,
+  )(usedTextures)
+}
 
-const resetTextures = () => {
-  usedTextures = [];
-};
-
-module.exports = {
-  textures,
-  useTexture,
-  createTextureContainers,
-  exportTextures,
-  resetTextures,
-};
+export const resetTextures = () => {
+  usedTextures = []
+}

@@ -15,8 +15,8 @@
     "compile:gamedir:linux": "export OUTPUTDIR=/home/lali/projektek/arx/ArxLibertatis/build&&sh scripts/compile.sh",
     "game:win": "C:/Program Files/Arx Libertatis/arx.exe --loadlevel 1",
     "game:linux": "/home/lali/projektek/arx/ArxLibertatis/build/arx --loadlevel 1",
-    "launcher:build": "node src/electron/build.js",
-    "launcher:build:watch": "nodemon --watch src src/electron/build.js -e js,jsx,scss,css,html,png --ignore src/electron/build",
+    "launcher:build": "ts-node src/electron/build.ts",
+    "launcher:build:watch": "nodemon --watch src src/electron/build.ts -e js,jsx,scss,css,html,png --ignore src/electron/build",
     "launcher:run": "electron ./src/electron/index.js"
   },
   "repository": {

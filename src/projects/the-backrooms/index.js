@@ -13,9 +13,8 @@
  * Glass popping sound effects: https://www.youtube.com/watch?v=6nKbpLUpqiQ (SOUND EFFECT EN & FR)
  */
 
-const { compose } = require('ramda')
-const { textures } = require('../../assets/textures.js')
-const {
+import { compose } from 'ramda'
+import {
   generateBlankMapData,
   finalize,
   saveToDisk,
@@ -32,21 +31,15 @@ const {
   pickRandomLoot,
   sortByDistance,
   pickRandomIdx,
-} = require('../../helpers.js')
-const { wallX, wallZ, plain } = require('../../prefabs')
-const {
-  defineCeilingLamp,
-  createCeilingLamp,
-} = require('./items/ceilingLamp.js')
-const {
+} from '../../helpers'
+import { defineCeilingLamp, createCeilingLamp } from './items/ceilingLamp'
+import {
   EXTRAS_SEMIDYNAMIC,
   EXTRAS_EXTINGUISHABLE,
   EXTRAS_STARTEXTINGUISHED,
   EXTRAS_NO_IGNIT,
-  HFLIP,
-  VFLIP,
-} = require('../../constants.js')
-const {
+} from '../../constants'
+import {
   markAsUsed,
   moveTo,
   addScript,
@@ -54,26 +47,23 @@ const {
   items,
   addDependencyAs,
   addDependency,
-  whereIs,
-} = require('../../assets/items.js')
-const { getInjections, declare, color } = require('../../scripting.js')
-const {
+} from '../../assets/items'
+import { getInjections, declare, color } from '../../scripting'
+import {
   generateGrid,
   addRoom,
   getRadius,
   isOccupied,
   renderGrid,
-} = require('./rooms.js')
-const { disableBumping } = require('../../prefabs/plain.js')
-const {
+} from './rooms'
+import {
   defineCeilingDiffuser,
   createCeilingDiffuser,
-} = require('./items/ceilingDiffuser.js')
-const { overridePlayerScript } = require('../shared/player.js')
-const { createLampController } = require('./items/lampController.js')
-const { ambiences } = require('../../assets/ambiences.js')
-const { UNIT, COLORS } = require('./constants.js')
-const { equals } = require('ramda')
+} from './items/ceilingDiffuser'
+import { overridePlayerScript } from '../shared/player'
+import { createLampController } from './items/lampController'
+import { ambiences } from '../../assets/ambiences'
+import { UNIT, COLORS } from './constants'
 
 const addLamp = (pos, angle, config = {}) => {
   return (mapData) => {
@@ -896,4 +886,4 @@ const generate = async (config) => {
   )(config)
 }
 
-module.exports = generate
+export default generate

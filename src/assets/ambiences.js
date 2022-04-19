@@ -1,52 +1,50 @@
-const { compose, clone, filter, propEq, reduce, uniq } = require("ramda");
-const { getRootPath } = require("../../rootpath");
+import { compose, clone, filter, propEq, reduce, uniq } from 'ramda'
+import { getRootPath } from '../../rootpath'
 
-const ambiences = {
+export const ambiences = {
   none: {
-    name: "NONE",
+    name: 'NONE',
     native: true,
   },
   noden: {
-    name: "ambient_noden",
+    name: 'ambient_noden',
     native: true,
   },
   sirs: {
-    name: "ambient_sirs",
-    tracks: ["sfx/ambiance/loop_sirs.wav"],
+    name: 'ambient_sirs',
+    tracks: ['sfx/ambiance/loop_sirs.wav'],
     native: false,
   },
-};
+}
 
-let usedAmbiences = [];
+let usedAmbiences = []
 
-const useAmbience = (ambience) => {
-  usedAmbiences.push(ambience);
-};
+export const useAmbience = (ambience) => {
+  usedAmbiences.push(ambience)
+}
 
-const exportAmbiences = (outputDir) => {
+export const exportAmbiences = (outputDir) => {
   return compose(
     reduce((files, ambience) => {
-      const filename = `${outputDir}/sfx/ambiance/${ambience.name}.amb`;
+      const filename = `${outputDir}/sfx/ambiance/${ambience.name}.amb`
 
       files[filename] = `${getRootPath()}/assets/sfx/ambiance/${
         ambience.name
-      }.amb`;
+      }.amb`
 
-      const tracks = ambience.tracks || [];
+      const tracks = ambience.tracks || []
       tracks.forEach((track) => {
-        files[`${outputDir}/${track}`] = `${getRootPath()}/assets/${track}`;
-      });
+        files[`${outputDir}/${track}`] = `${getRootPath()}/assets/${track}`
+      })
 
-      return files;
+      return files
     }, {}),
     uniq,
-    filter(propEq("native", false)),
-    clone
-  )(usedAmbiences);
-};
+    filter(propEq('native', false)),
+    clone,
+  )(usedAmbiences)
+}
 
-const resetAmbiences = () => {
-  usedAmbiences = [];
-};
-
-module.exports = { ambiences, useAmbience, exportAmbiences, resetAmbiences };
+export const resetAmbiences = () => {
+  usedAmbiences = []
+}

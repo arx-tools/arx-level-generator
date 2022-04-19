@@ -1,5 +1,5 @@
-const { compose } = require("ramda");
-const {
+import { compose } from 'ramda'
+import {
   addScript,
   createItem,
   items,
@@ -7,16 +7,16 @@ const {
   moveTo,
   createRootItem,
   addDependency,
-} = require("../../../assets/items");
-const { getInjections, declare } = require("../../../scripting");
+} from '../../../assets/items'
+import { getInjections, declare } from '../../../scripting'
 
-module.exports.defineStatue = () => {
+export const defineStatue = () => {
   return compose(
     addScript((self) => {
       return `
 // component: statue
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
   SET_MATERIAL STONE
   SETDETECT 2000
 
@@ -194,25 +194,25 @@ ON COLLIDE_NPC {
   }
   ACCEPT
 }
-      `;
+      `
     }),
-    addDependency("sfx/statue_idle1.wav"),
-    addDependency("sfx/statue_idle2.wav"),
-    addDependency("sfx/statue_idle3.wav"),
-    addDependency("sfx/statue_jumpscare1.wav"),
-    addDependency("sfx/statue_jumpscare2.wav"),
-    addDependency("sfx/statue_no.wav"),
-    declare("int", "idle", 1),
-    declare("int", "idleSoundIdx", 0),
-    createRootItem
+    addDependency('sfx/statue_idle1.wav'),
+    addDependency('sfx/statue_idle2.wav'),
+    addDependency('sfx/statue_idle3.wav'),
+    addDependency('sfx/statue_jumpscare1.wav'),
+    addDependency('sfx/statue_jumpscare2.wav'),
+    addDependency('sfx/statue_no.wav'),
+    declare('int', 'idle', 1),
+    declare('int', 'idleSoundIdx', 0),
+    createRootItem,
   )(items.npc.statue, {
-    name: "...redacted...",
+    name: '...redacted...',
     speed: 3,
     hp: 1000,
-  });
-};
+  })
+}
 
-module.exports.createStatue = (pos, angle = [0, 0, 0], props = {}) => {
+export const createStatue = (pos, angle = [0, 0, 0], props = {}) => {
   return compose(
     markAsUsed,
     moveTo(pos, angle),
@@ -220,11 +220,11 @@ module.exports.createStatue = (pos, angle = [0, 0, 0], props = {}) => {
       return `
 // component: statue
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
   ACCEPT
 }
-      `;
+      `
     }),
-    createItem
-  )(items.npc.statue, props);
-};
+    createItem,
+  )(items.npc.statue, props)
+}

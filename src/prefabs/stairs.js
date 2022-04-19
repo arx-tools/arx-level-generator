@@ -1,15 +1,15 @@
-const { nanoid } = require('nanoid')
-const { compose, times, identity, reduce, __ } = require('ramda')
-const wallZ = require('./base/wallZ')
-const { textures } = require('../assets/textures')
-const {
+import { nanoid } from 'nanoid'
+import floor from './base/floor'
+import { compose, times, identity, reduce, __ } from 'ramda'
+import wallZ from './base/wallZ'
+import { textures } from '../assets/textures'
+import {
   setPolygonGroup,
   unsetPolygonGroup,
   setTexture,
   move,
-} = require('../helpers')
-const { HFLIP, VFLIP } = require('../constants')
-const floor = require('./base/floor')
+} from '../helpers'
+import { HFLIP, VFLIP } from '../constants'
 
 const STEP = {
   WIDTH: 180,
@@ -143,4 +143,4 @@ const stairs = (pos) => (mapData) => {
   )(mapData)
 }
 
-module.exports = stairs
+export default stairs

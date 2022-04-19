@@ -1,11 +1,9 @@
-let folder = __dirname;
+let folder = __dirname
 
-const getRootPath = () => {
-  return folder;
-};
+export const getRootPath = () => {
+  return folder
+}
 
-const setRootPath = (newFolder) => {
-  folder = newFolder;
-};
-
-module.exports = { getRootPath, setRootPath };
+export const setRootPath = (newFolder) => {
+  folder = newFolder
+}

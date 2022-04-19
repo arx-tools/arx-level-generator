@@ -1,5 +1,5 @@
-const { compose, map, props, any, __, when, identity } = require('ramda')
-const {
+import { compose, map, props, any, __, when } from 'ramda'
+import {
   setColor,
   move,
   isPointInPolygon,
@@ -8,31 +8,30 @@ const {
   setPolygonGroup,
   unsetPolygonGroup,
   pickRandom,
-} = require('../../helpers.js')
-const { colors, NORTH, SOUTH, WEST, EAST, NONE } = require('./constants.js')
-const {
+} from '../../helpers'
+import { colors, NORTH, SOUTH, WEST, EAST, NONE } from './constants'
+import {
   plain,
   connectToNearPolygons,
   disableBumping,
-} = require('../../prefabs/plain.js')
-const { declare, getInjections } = require('../../scripting.js')
-const {
+} from '../../prefabs/plain'
+import { declare, getInjections } from '../../scripting'
+import {
   items,
   moveTo,
   createItem,
   addScript,
   markAsUsed,
-} = require('../../assets/items.js')
-const { isNotEmpty } = require('ramda-adjunct')
-const { textures } = require('../../assets/textures.js')
-const { nanoid } = require('nanoid')
-const {
+} from '../../assets/items'
+import { isNotEmpty } from 'ramda-adjunct'
+import { textures } from '../../assets/textures'
+import { nanoid } from 'nanoid'
+import {
   ISLAND_JOINT_LENGTH,
   ISLAND_JOINT_WIDTH,
   HFLIP,
   VFLIP,
-} = require('../../constants.js')
-const { ambiences } = require('../../assets/ambiences.js')
+} from '../../constants'
 
 // PP = pressure plate
 
@@ -559,4 +558,4 @@ const island = (config) => (mapData) => {
   )(mapData)
 }
 
-module.exports = island
+export default island

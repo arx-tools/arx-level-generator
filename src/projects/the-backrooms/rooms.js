@@ -1,65 +1,65 @@
-const { times, repeat, clamp, curry, flatten, uniq, pathEq } = require("ramda");
-const { textures } = require("../../assets/textures.js");
-const { HFLIP, VFLIP } = require("../../constants.js");
-const { setTexture, pickRandom, move } = require("../../helpers.js");
-const { plain, disableBumping } = require("../../prefabs/plain.js");
-const { UNIT } = require("./constants.js");
-const wall = require("../../prefabs/wall.js");
+import { times, repeat, clamp, curry, flatten, uniq } from 'ramda'
+import { textures } from '../../assets/textures'
+import { HFLIP, VFLIP } from '../../constants'
+import { setTexture, pickRandom, move } from '../../helpers'
+import { plain, disableBumping } from '../../prefabs/plain'
+import { UNIT } from './constants'
+import wall from '../../prefabs/wall'
 
-const getRadius = (grid) => (grid.length - 1) / 2;
+export const getRadius = (grid) => (grid.length - 1) / 2
 
 const insertRoom = (left, top, width, height, grid) => {
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      grid[top + y][left + x] = 1;
+      grid[top + y][left + x] = 1
     }
   }
 
-  return grid;
-};
+  return grid
+}
 
 const addFirstRoom = (width, height, grid) => {
-  const radius = getRadius(grid);
+  const radius = getRadius(grid)
 
-  width = clamp(1, radius * 2 + 1, width);
-  height = clamp(1, radius * 2 + 1, height);
+  width = clamp(1, radius * 2 + 1, width)
+  height = clamp(1, radius * 2 + 1, height)
 
-  const left = radius - Math.floor(width / 2);
-  const top = radius - Math.floor(height / 2);
+  const left = radius - Math.floor(width / 2)
+  const top = radius - Math.floor(height / 2)
 
-  return insertRoom(left, top, width, height, grid);
-};
+  return insertRoom(left, top, width, height, grid)
+}
 
 // is every cell of the grid === 0 ?
 const isEmpty = (grid) => {
-  const elementsInGrid = uniq(flatten(grid));
-  return elementsInGrid.length === 1 && elementsInGrid[0] === 0;
-};
+  const elementsInGrid = uniq(flatten(grid))
+  return elementsInGrid.length === 1 && elementsInGrid[0] === 0
+}
 
 // is the X/Y position of the grid === 1 ?
-const isOccupied = (x, y, grid) => {
-  if (typeof grid[y] === "undefined") {
-    return null;
+export const isOccupied = (x, y, grid) => {
+  if (typeof grid[y] === 'undefined') {
+    return null
   }
-  if (typeof grid[y][x] === "undefined") {
-    return null;
+  if (typeof grid[y][x] === 'undefined') {
+    return null
   }
 
-  return grid[y][x] === 1;
-};
+  return grid[y][x] === 1
+}
 
 // starting from left/top does a width/height sized rectangle only occupy 0 slots?
 const canFitRoom = (left, top, width, height, grid) => {
   for (let y = top; y < top + height; y++) {
     for (let x = left; x < left + width; x++) {
       if (isOccupied(x, y, grid) !== false) {
-        return false;
+        return false
       }
     }
   }
 
-  return true;
-};
+  return true
+}
 
 // is there a variation of a width/height sized rectangle containing the position x/y which
 // can occupy only 0 slots?
@@ -67,13 +67,13 @@ const canFitRoomAtPos = (x, y, width, height, grid) => {
   for (let j = 0; j < height; j++) {
     for (let i = 0; i < width; i++) {
       if (canFitRoom(x - i, y - j, width, height, grid)) {
-        return true;
+        return true
       }
     }
   }
 
-  return false;
-};
+  return false
+}
 
 // is the x/y slot surrounded by at least 1 slot containing 1? (north/south/east/west, no diagonals)
 const isConnected = (x, y, grid) => {
@@ -82,90 +82,90 @@ const isConnected = (x, y, grid) => {
     isOccupied(x + 1, y, grid) ||
     isOccupied(x, y - 1, grid) ||
     isOccupied(x, y + 1, grid)
-  );
-};
+  )
+}
 
 const getFittingVariants = (x, y, width, height, grid) => {
-  const variations = [];
+  const variations = []
 
   for (let j = 0; j < height; j++) {
     for (let i = 0; i < width; i++) {
       if (canFitRoom(x - i, y - j, width, height, grid)) {
-        variations.push([x - i, y - j]);
+        variations.push([x - i, y - j])
       }
     }
   }
 
-  return variations;
-};
+  return variations
+}
 
-const generateGrid = (size) => {
+export const generateGrid = (size) => {
   if (size % 2 === 0) {
-    size++;
+    size++
   }
 
-  return times(() => repeat(0, size), size);
-};
+  return times(() => repeat(0, size), size)
+}
 
-const addRoom = curry((width, height, grid) => {
+export const addRoom = curry((width, height, grid) => {
   if (isEmpty(grid)) {
-    return addFirstRoom(width, height, grid);
+    return addFirstRoom(width, height, grid)
   }
 
-  let candidates = [];
+  let candidates = []
 
   for (let y = 0; y < grid.length; y++) {
     for (let x = 0; x < grid[y].length; x++) {
       if (grid[y][x] !== 1) {
         if (isConnected(x, y, grid)) {
-          candidates.push([x, y]);
+          candidates.push([x, y])
         }
       }
     }
   }
 
   candidates = candidates.filter(([x, y]) => {
-    return canFitRoomAtPos(x, y, width, height, grid);
-  });
+    return canFitRoomAtPos(x, y, width, height, grid)
+  })
 
   if (!candidates.length) {
-    return grid;
+    return grid
   }
 
-  const candidate = pickRandom(candidates);
+  const candidate = pickRandom(candidates)
 
   const variants = getFittingVariants(
     candidate[0],
     candidate[1],
     width,
     height,
-    grid
-  );
+    grid,
+  )
 
-  const startingPos = pickRandom(variants);
+  const startingPos = pickRandom(variants)
 
-  return insertRoom(startingPos[0], startingPos[1], width, height, grid);
-});
+  return insertRoom(startingPos[0], startingPos[1], width, height, grid)
+})
 
 const decalOffset = {
   right: [1, 0, 0],
   left: [-1, 0, 0],
   front: [0, 0, 1],
   back: [0, 0, -1],
-};
+}
 
 const getRightWalls = (wallSegments) => {
   return wallSegments
-    .filter(([x, y, direction]) => direction === "right")
+    .filter(([x, y, direction]) => direction === 'right')
     .sort(([ax, ay], [bx, by]) => ax - bx || ay - by)
     .reduce((walls, [x, y]) => {
       const adjacentWallIdx = walls.findIndex(
-        (wall) => wall.x === x && wall.y + wall.width === y
-      );
+        (wall) => wall.x === x && wall.y + wall.width === y,
+      )
 
       if (adjacentWallIdx !== -1) {
-        walls[adjacentWallIdx].width += 1;
-        return walls;
+        walls[adjacentWallIdx].width += 1
+        return walls
       }
 
       walls.push({
@@ -174,24 +174,24 @@ const getRightWalls = (wallSegments) => {
         width: 1,
         isLeftCornerConcave: false,
         isRightCornerConcave: false,
-      });
+      })
 
-      return walls;
-    }, []);
-};
+      return walls
+    }, [])
+}
 
 const getLeftWalls = (wallSegments) => {
   return wallSegments
-    .filter(([x, y, direction]) => direction === "left")
+    .filter(([x, y, direction]) => direction === 'left')
     .sort(([ax, ay], [bx, by]) => ax - bx || ay - by)
     .reduce((walls, [x, y]) => {
       const adjacentWallIdx = walls.findIndex(
-        (wall) => wall.x === x && wall.y + wall.width === y
-      );
+        (wall) => wall.x === x && wall.y + wall.width === y,
+      )
 
       if (adjacentWallIdx !== -1) {
-        walls[adjacentWallIdx].width += 1;
-        return walls;
+        walls[adjacentWallIdx].width += 1
+        return walls
       }
 
       walls.push({
@@ -200,24 +200,24 @@ const getLeftWalls = (wallSegments) => {
         width: 1,
         isLeftCornerConcave: false,
         isRightCornerConcave: false,
-      });
+      })
 
-      return walls;
-    }, []);
-};
+      return walls
+    }, [])
+}
 
 const getFrontWalls = (wallSegments) => {
   return wallSegments
-    .filter(([x, y, direction]) => direction === "front")
+    .filter(([x, y, direction]) => direction === 'front')
     .sort(([ax, ay], [bx, by]) => ay - by || ax - bx)
     .reduce((walls, [x, y]) => {
       const adjacentWallIdx = walls.findIndex(
-        (wall) => wall.y === y && wall.x + wall.width === x
-      );
+        (wall) => wall.y === y && wall.x + wall.width === x,
+      )
 
       if (adjacentWallIdx !== -1) {
-        walls[adjacentWallIdx].width += 1;
-        return walls;
+        walls[adjacentWallIdx].width += 1
+        return walls
       }
 
       walls.push({
@@ -226,24 +226,24 @@ const getFrontWalls = (wallSegments) => {
         width: 1,
         isLeftCornerConcave: false,
         isRightCornerConcave: false,
-      });
+      })
 
-      return walls;
-    }, []);
-};
+      return walls
+    }, [])
+}
 
 const getBackWalls = (wallSegments) => {
   return wallSegments
-    .filter(([x, y, direction]) => direction === "back")
+    .filter(([x, y, direction]) => direction === 'back')
     .sort(([ax, ay], [bx, by]) => ay - by || ax - bx)
     .reduce((walls, [x, y]) => {
       const adjacentWallIdx = walls.findIndex(
-        (wall) => wall.y === y && wall.x + wall.width === x
-      );
+        (wall) => wall.y === y && wall.x + wall.width === x,
+      )
 
       if (adjacentWallIdx !== -1) {
-        walls[adjacentWallIdx].width += 1;
-        return walls;
+        walls[adjacentWallIdx].width += 1
+        return walls
       }
 
       walls.push({
@@ -252,104 +252,104 @@ const getBackWalls = (wallSegments) => {
         width: 1,
         isLeftCornerConcave: false,
         isRightCornerConcave: false,
-      });
+      })
 
-      return walls;
-    }, []);
-};
+      return walls
+    }, [])
+}
 
-const renderGrid = (grid) => {
+export const renderGrid = (grid) => {
   return (mapData) => {
-    const { roomDimensions } = mapData.config;
-    const radius = getRadius(grid);
-    const top = -radius * UNIT + UNIT / 2;
-    const left = -radius * UNIT + UNIT / 2;
+    const { roomDimensions } = mapData.config
+    const radius = getRadius(grid)
+    const top = -radius * UNIT + UNIT / 2
+    const left = -radius * UNIT + UNIT / 2
 
-    const wallSegments = [];
+    const wallSegments = []
 
     for (let y = 0; y < grid.length; y++) {
       for (let x = 0; x < grid[y].length; x++) {
         if (grid[y][x] === 1) {
           if (isOccupied(x - 1, y, grid) !== true) {
-            wallSegments.push([x, y, "right"]);
+            wallSegments.push([x, y, 'right'])
           }
           if (isOccupied(x + 1, y, grid) !== true) {
-            wallSegments.push([x, y, "left"]);
+            wallSegments.push([x, y, 'left'])
           }
           if (isOccupied(x, y + 1, grid) !== true) {
-            wallSegments.push([x, y, "front"]);
+            wallSegments.push([x, y, 'front'])
           }
           if (isOccupied(x, y - 1, grid) !== true) {
-            wallSegments.push([x, y, "back"]);
+            wallSegments.push([x, y, 'back'])
           }
         }
       }
     }
 
-    const rightWalls = getRightWalls(wallSegments);
-    const leftWalls = getLeftWalls(wallSegments);
-    const frontWalls = getFrontWalls(wallSegments);
-    const backWalls = getBackWalls(wallSegments);
+    const rightWalls = getRightWalls(wallSegments)
+    const leftWalls = getLeftWalls(wallSegments)
+    const frontWalls = getFrontWalls(wallSegments)
+    const backWalls = getBackWalls(wallSegments)
 
     rightWalls.forEach((wall) => {
-      const { x, y, width } = wall;
+      const { x, y, width } = wall
 
       const leftAdjacentWallIdx = frontWalls.findIndex((frontWall) => {
-        return frontWall.x === x && frontWall.y === y + width - 1;
-      });
+        return frontWall.x === x && frontWall.y === y + width - 1
+      })
       const rightAdjacentWallIdx = backWalls.findIndex((backWall) => {
-        return backWall.x === x && backWall.y === y;
-      });
+        return backWall.x === x && backWall.y === y
+      })
 
       if (leftAdjacentWallIdx !== -1) {
-        wall.isLeftCornerConcave = true;
-        frontWalls[leftAdjacentWallIdx].isRightCornerConcave = true;
+        wall.isLeftCornerConcave = true
+        frontWalls[leftAdjacentWallIdx].isRightCornerConcave = true
       }
       if (rightAdjacentWallIdx !== -1) {
-        wall.isRightCornerConcave = true;
-        backWalls[rightAdjacentWallIdx].isLeftCornerConcave = true;
+        wall.isRightCornerConcave = true
+        backWalls[rightAdjacentWallIdx].isLeftCornerConcave = true
       }
-    });
+    })
 
     leftWalls.forEach((wall) => {
-      const { x, y, width } = wall;
+      const { x, y, width } = wall
 
       const leftAdjacentWallIdx = backWalls.findIndex((backWall) => {
-        return backWall.x + backWall.width - 1 === x && backWall.y === y;
-      });
+        return backWall.x + backWall.width - 1 === x && backWall.y === y
+      })
       const rightAdjacentWallIdx = frontWalls.findIndex((frontWall) => {
         return (
           frontWall.x + frontWall.width - 1 === x &&
           frontWall.y === y + width - 1
-        );
-      });
+        )
+      })
 
       if (leftAdjacentWallIdx !== -1) {
-        wall.isLeftCornerConcave = true;
-        backWalls[leftAdjacentWallIdx].isRightCornerConcave = true;
+        wall.isLeftCornerConcave = true
+        backWalls[leftAdjacentWallIdx].isRightCornerConcave = true
       }
       if (rightAdjacentWallIdx !== -1) {
-        wall.isRightCornerConcave = true;
-        frontWalls[rightAdjacentWallIdx].isLeftCornerConcave = true;
+        wall.isRightCornerConcave = true
+        frontWalls[rightAdjacentWallIdx].isLeftCornerConcave = true
       }
-    });
+    })
 
     for (let y = 0; y < grid.length; y++) {
       for (let x = 0; x < grid[y].length; x++) {
         if (grid[y][x] === 1) {
-          setTexture(textures.backrooms.carpetDirty, mapData);
+          setTexture(textures.backrooms.carpetDirty, mapData)
           plain(
             [left + x * UNIT, 0, -(top + y * UNIT)],
             [UNIT / 100, UNIT / 100],
-            "floor",
+            'floor',
             disableBumping,
             () => ({
               textureRotation: pickRandom([0, 90, 180, 270]),
               textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
-            })
-          )(mapData);
+            }),
+          )(mapData)
 
-          setTexture(textures.backrooms.ceiling, mapData);
+          setTexture(textures.backrooms.ceiling, mapData)
           plain(
             [
               left + x * UNIT,
@@ -357,9 +357,9 @@ const renderGrid = (grid) => {
               -(top + y * UNIT),
             ],
             [UNIT / 100, UNIT / 100],
-            "ceiling",
-            disableBumping
-          )(mapData);
+            'ceiling',
+            disableBumping,
+          )(mapData)
         }
       }
     }
@@ -370,45 +370,45 @@ const renderGrid = (grid) => {
           left + x * UNIT - UNIT / 2,
           0,
           -(top + (y + width) * UNIT) - UNIT / 2,
-        ];
+        ]
 
         setTexture(
-          textures.backrooms[Math.random() > 0.5 ? "wall" : "wall2"],
-          mapData
-        );
-        wall(coords, "right", { width, unit: UNIT })(mapData);
+          textures.backrooms[Math.random() > 0.5 ? 'wall' : 'wall2'],
+          mapData,
+        )
+        wall(coords, 'right', { width, unit: UNIT })(mapData)
 
-        setTexture(textures.backrooms.moldEdge, mapData);
-        wall(move(...decalOffset.right, coords), "right", {
+        setTexture(textures.backrooms.moldEdge, mapData)
+        wall(move(...decalOffset.right, coords), 'right', {
           height: 1,
           width,
           unit: UNIT,
-        })(mapData);
+        })(mapData)
 
         if (isLeftCornerConcave) {
-          wall(move(...decalOffset.right, coords), "right", {
+          wall(move(...decalOffset.right, coords), 'right', {
             width: 1 / (UNIT / 100),
             textureRotation: 270,
             unit: UNIT,
-          })(mapData);
+          })(mapData)
         }
 
         if (isRightCornerConcave) {
           wall(
             move(
               ...decalOffset.right,
-              move(0, 0, UNIT * width - UNIT / 2, coords)
+              move(0, 0, UNIT * width - UNIT / 2, coords),
             ),
-            "right",
+            'right',
             {
               width: 1 / (UNIT / 100),
               textureRotation: 90,
               unit: UNIT,
-            }
-          )(mapData);
+            },
+          )(mapData)
         }
-      }
-    );
+      },
+    )
 
     leftWalls.forEach(
       ({ x, y, width, isLeftCornerConcave, isRightCornerConcave }) => {
@@ -416,45 +416,45 @@ const renderGrid = (grid) => {
           left + x * UNIT + UNIT / 2,
           0,
           -(top + (y + width) * UNIT) - UNIT / 2,
-        ];
+        ]
 
         setTexture(
-          textures.backrooms[Math.random() > 0.5 ? "wall" : "wall2"],
-          mapData
-        );
-        wall(coords, "left", { width, unit: UNIT })(mapData);
+          textures.backrooms[Math.random() > 0.5 ? 'wall' : 'wall2'],
+          mapData,
+        )
+        wall(coords, 'left', { width, unit: UNIT })(mapData)
 
-        setTexture(textures.backrooms.moldEdge, mapData);
-        wall(move(...decalOffset.left, coords), "left", {
+        setTexture(textures.backrooms.moldEdge, mapData)
+        wall(move(...decalOffset.left, coords), 'left', {
           height: 1,
           width,
           unit: UNIT,
-        })(mapData);
+        })(mapData)
 
         if (isLeftCornerConcave) {
           wall(
             move(
               ...decalOffset.left,
-              move(0, 0, UNIT * width - UNIT / 2, coords)
+              move(0, 0, UNIT * width - UNIT / 2, coords),
             ),
-            "left",
+            'left',
             {
               width: 1 / (UNIT / 100),
               textureRotation: 90,
               unit: UNIT,
-            }
-          )(mapData);
+            },
+          )(mapData)
         }
 
         if (isRightCornerConcave) {
-          wall(move(...decalOffset.left, coords), "left", {
+          wall(move(...decalOffset.left, coords), 'left', {
             width: 1 / (UNIT / 100),
             textureRotation: 270,
             unit: UNIT,
-          })(mapData);
+          })(mapData)
         }
-      }
-    );
+      },
+    )
 
     frontWalls.forEach(
       ({ x, y, width, isLeftCornerConcave, isRightCornerConcave }) => {
@@ -462,45 +462,45 @@ const renderGrid = (grid) => {
           left + (x - 1) * UNIT - UNIT / 2,
           0,
           -(top + y * UNIT) - UNIT / 2,
-        ];
+        ]
 
         setTexture(
-          textures.backrooms[Math.random() > 0.5 ? "wall" : "wall2"],
-          mapData
-        );
-        wall(coords, "front", { width, unit: UNIT })(mapData);
+          textures.backrooms[Math.random() > 0.5 ? 'wall' : 'wall2'],
+          mapData,
+        )
+        wall(coords, 'front', { width, unit: UNIT })(mapData)
 
-        setTexture(textures.backrooms.moldEdge, mapData);
-        wall(move(...decalOffset.front, coords), "front", {
+        setTexture(textures.backrooms.moldEdge, mapData)
+        wall(move(...decalOffset.front, coords), 'front', {
           height: 1,
           width,
           unit: UNIT,
-        })(mapData);
+        })(mapData)
 
         if (isLeftCornerConcave) {
           wall(
             move(
               ...decalOffset.front,
-              move(UNIT * width - UNIT / 2, 0, 0, coords)
+              move(UNIT * width - UNIT / 2, 0, 0, coords),
             ),
-            "front",
+            'front',
             {
               width: 1 / (UNIT / 100),
               textureRotation: 90,
               unit: UNIT,
-            }
-          )(mapData);
+            },
+          )(mapData)
         }
 
         if (isRightCornerConcave) {
-          wall(move(...decalOffset.front, coords), "front", {
+          wall(move(...decalOffset.front, coords), 'front', {
             width: 1 / (UNIT / 100),
             textureRotation: 270,
             unit: UNIT,
-          })(mapData);
+          })(mapData)
         }
-      }
-    );
+      },
+    )
 
     backWalls.forEach(
       ({ x, y, width, isLeftCornerConcave, isRightCornerConcave }) => {
@@ -508,53 +508,45 @@ const renderGrid = (grid) => {
           left + (x - 1) * UNIT - UNIT / 2,
           0,
           -(top + y * UNIT) + UNIT / 2,
-        ];
+        ]
         setTexture(
-          textures.backrooms[Math.random() > 0.5 ? "wall" : "wall2"],
-          mapData
-        );
-        wall(coords, "back", { width, unit: UNIT })(mapData);
+          textures.backrooms[Math.random() > 0.5 ? 'wall' : 'wall2'],
+          mapData,
+        )
+        wall(coords, 'back', { width, unit: UNIT })(mapData)
 
-        setTexture(textures.backrooms.moldEdge, mapData);
-        wall(move(...decalOffset.back, coords), "back", {
+        setTexture(textures.backrooms.moldEdge, mapData)
+        wall(move(...decalOffset.back, coords), 'back', {
           height: 1,
           width,
           unit: UNIT,
-        })(mapData);
+        })(mapData)
 
         if (isLeftCornerConcave) {
-          wall(move(...decalOffset.back, coords), "back", {
+          wall(move(...decalOffset.back, coords), 'back', {
             width: 1 / (UNIT / 100),
             textureRotation: 270,
             unit: UNIT,
-          })(mapData);
+          })(mapData)
         }
 
         if (isRightCornerConcave) {
           wall(
             move(
               ...decalOffset.back,
-              move(UNIT * width - UNIT / 2, 0, 0, coords)
+              move(UNIT * width - UNIT / 2, 0, 0, coords),
             ),
-            "back",
+            'back',
             {
               width: 1 / (UNIT / 100),
               textureRotation: 90,
               unit: UNIT,
-            }
-          )(mapData);
+            },
+          )(mapData)
         }
-      }
-    );
+      },
+    )
 
-    return mapData;
-  };
-};
-
-module.exports = {
-  getRadius,
-  generateGrid,
-  addRoom,
-  isOccupied,
-  renderGrid,
-};
+    return mapData
+  }
+}

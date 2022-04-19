@@ -1,6 +1,6 @@
-const { reduce, times, identity, __ } = require('ramda')
-const { isBetweenInclusive, randomBetween, move } = require('../helpers.js')
-const pillar = require('./pillar.js')
+import { reduce, times, identity, __ } from 'ramda'
+import { isBetweenInclusive, randomBetween, move } from '../helpers'
+import pillar from './pillar'
 
 const isInExcludeRadius = (pos, excludeRadius, x, z) => {
   const [originalX, originalY, originalZ] = pos
@@ -104,4 +104,4 @@ const pillars = (
     times(identity, n),
   )
 
-module.exports = pillars
+export default pillars

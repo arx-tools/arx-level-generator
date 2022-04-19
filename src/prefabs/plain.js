@@ -1,5 +1,5 @@
-const floor = require('./base/floor.js')
-const {
+import floor from './base/floor'
+import {
   categorizeVertices,
   bumpByMagnitude,
   adjustVertexBy,
@@ -9,22 +9,12 @@ const {
   vertexToVector,
   distance,
   isBetween,
-} = require('../helpers.js')
-const {
-  identity,
-  reject,
-  __,
-  map,
-  clamp,
-  includes,
-  pick,
-  unnest,
-  pluck,
-} = require('ramda')
-const { isEmptyArray } = require('ramda-adjunct')
+} from '../helpers.js'
+import { identity, map, clamp, pluck } from 'ramda'
+import { isEmptyArray } from 'ramda-adjunct'
 
 // pos is relative to origin
-const plain = (
+export const plain = (
   pos,
   size,
   facing = 'floor',
@@ -163,14 +153,14 @@ const plain = (
   }
 }
 
-const disableBumping = (polygons) => {
+export const disableBumping = (polygons) => {
   polygons.forEach((polygon) => {
     polygon.config.bumpable = false
   })
   return polygons
 }
 
-const connectToNearPolygons =
+export const connectToNearPolygons =
   (targetGroup, distanceThreshold = 100) =>
   (polygons, mapData) => {
     const { corners, edges } = categorizeVertices(polygons)
@@ -251,5 +241,3 @@ const connectToNearPolygons =
 
     return polygons
   }
-
-module.exports = { plain, disableBumping, connectToNearPolygons }

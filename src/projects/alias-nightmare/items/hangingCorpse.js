@@ -1,14 +1,14 @@
-const { compose } = require("ramda");
-const {
+import { compose } from 'ramda'
+import {
   addScript,
   createItem,
   items,
   markAsUsed,
   moveTo,
-} = require("../../../assets/items");
-const { getInjections } = require("../../../scripting");
+} from '../../../assets/items'
+import { getInjections } from '../../../scripting'
 
-module.exports.createHangingCorpse = (pos, angle = [0, 0, 0], props = {}) => {
+export const createHangingCorpse = (pos, angle = [0, 0, 0], props = {}) => {
   return compose(
     markAsUsed,
     moveTo(pos, angle),
@@ -16,7 +16,7 @@ module.exports.createHangingCorpse = (pos, angle = [0, 0, 0], props = {}) => {
       return `
 // component: hangingCorpse
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
   INVENTORY CREATE
   INVENTORY SKIN "ingame_inventory_corpse"
   INVENTORY ADD "jewelry\\gold_coin\\gold_coin"
@@ -26,11 +26,11 @@ ON INIT {
 ON DIE {
   REFUSE
 }
-      `;
+      `
     }),
-    createItem
+    createItem,
   )(items.corpse.hanging, {
     hp: 0,
     ...props,
-  });
-};
+  })
+}
