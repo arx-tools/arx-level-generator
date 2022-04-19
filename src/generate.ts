@@ -7,7 +7,7 @@ const onTheIsland = require("./projects/on-the-island/index.js");
 (async () => {
   // const seed = Math.floor(Math.random() * 1e20);
 
-  let seed = 70448428008674860000;
+  let seed: number = 70448428008674860000;
   // let seed = 35366160917956100000;
 
   seedrandom(seed, { global: true });
@@ -21,7 +21,7 @@ const onTheIsland = require("./projects/on-the-island/index.js");
     bumpFactor: 3,
   };
 
-  const project = "the-backrooms";
+  const project: string = "on-the-island";
 
   switch (project) {
     case "the-backrooms":

@@ -155,12 +155,12 @@ button.generate {
     left: calc(50% - (320px / 2));
     width: 320px;
     height: 390px;
-    background: #{url("blank-loading.png")};
+    background: #{url("../static/blank-loading.png")};
     display: block;
     z-index: -1;
   }
   hr.progressbar {
-    background: #{url("progressbar.png")};
+    background: #{url("../static/progressbar.png")};
     border: 0;
     position: absolute;
     top: calc(50% - (390px / 2) + 53px + 164px);
