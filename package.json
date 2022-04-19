@@ -4,7 +4,8 @@
   "description": "A tool to generate random Arx Fatalis maps",
   "main": "src/electron/index.js",
   "scripts": {
-    "dev": "npm run generate:gamedir:linux && npm run compile:gamedir:linux && npm run game:linux",
+    "dev:win": "npm run generate:gamedir:win && npm run compile:gamedir:win && npm run game:win",
+    "dev:linux": "npm run generate:gamedir:linux && npm run compile:gamedir:linux && npm run game:linux",
     "generate": "ts-node src/generate.ts",
     "generate:gamedir:win": "set OUTPUTDIR=C:/Program Files/Arx Libertatis&&ts-node src/generate.ts",
     "generate:gamedir:linux": "export OUTPUTDIR=/home/lali/projektek/arx/ArxLibertatis/build&&ts-node src/generate.ts",
@@ -12,6 +13,7 @@
     "compile": "sh scripts/compile.sh",
     "compile:gamedir:win": "set OUTPUTDIR=/c/Program Files/Arx Libertatis&&sh scripts/compile.sh",
     "compile:gamedir:linux": "export OUTPUTDIR=/home/lali/projektek/arx/ArxLibertatis/build&&sh scripts/compile.sh",
+    "game:win": "C:/Program Files/Arx Libertatis/arx.exe --loadlevel 1",
     "game:linux": "/home/lali/projektek/arx/ArxLibertatis/build/arx --loadlevel 1",
     "launcher:build": "node src/electron/build.js",
     "launcher:build:watch": "nodemon --watch src src/electron/build.js -e js,jsx,scss,css,html,png --ignore src/electron/build",
