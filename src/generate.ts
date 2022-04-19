@@ -12,7 +12,7 @@ import { MapConfig } from './types'
   console.log(`seed: ${seed}`)
 
   const config: MapConfig = {
-    origin: [6000, 0, 6000],
+    origin: { type: 'absolute', coords: [6000, 0, 6000] },
     levelIdx: 1,
     seed,
     lootTable: [],

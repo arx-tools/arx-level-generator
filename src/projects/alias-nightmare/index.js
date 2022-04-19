@@ -1,4 +1,4 @@
-const { compose, reduce, __, addIndex } = require("ramda");
+const { compose, reduce, __, addIndex } = require('ramda')
 const {
   generateBlankMapData,
   movePlayerTo,
@@ -11,8 +11,8 @@ const {
   setTexture,
   setPolygonGroup,
   unsetPolygonGroup,
-} = require("../../helpers");
-const island = require("./island.js");
+} = require('../../helpers')
+const island = require('./island.js')
 const {
   colors,
   NONE,
@@ -21,8 +21,8 @@ const {
   EAST,
   SOUTH,
   WEST,
-} = require("./constants.js");
-const { ambiences } = require("../../assets/ambiences");
+} = require('./constants.js')
+const { ambiences } = require('../../assets/ambiences')
 const {
   items,
   createItem,
@@ -31,16 +31,16 @@ const {
   addScript,
   addDependencyAs,
   addDependency,
-} = require("../../assets/items");
-const { declare, color, getInjections } = require("../../scripting");
-const bridges = require("./bridges");
-const { createSmellyFlower } = require("./items/smellyFlower");
-const { createHangingCorpse } = require("./items/hangingCorpse");
-const { createStatue, defineStatue } = require("./items/statue");
-const { stairs, plain } = require("../../prefabs");
-const { textures } = require("../../assets/textures");
-const { MAP_MAX_WIDTH, MAP_MAX_HEIGHT, PATH_RGB } = require("../../constants");
-const { disableBumping } = require("../../prefabs/plain");
+} = require('../../assets/items')
+const { declare, color, getInjections } = require('../../scripting')
+const bridges = require('./bridges')
+const { createSmellyFlower } = require('./items/smellyFlower')
+const { createHangingCorpse } = require('./items/hangingCorpse')
+const { createStatue, defineStatue } = require('./items/statue')
+const { stairs, plain } = require('../../prefabs')
+const { textures } = require('../../assets/textures')
+const { MAP_MAX_WIDTH, MAP_MAX_HEIGHT, PATH_RGB } = require('../../constants')
+const { disableBumping } = require('../../prefabs/plain')
 
 const createWelcomeMarker = (pos) => (config) => {
   return compose(
@@ -50,7 +50,7 @@ const createWelcomeMarker = (pos) => (config) => {
       return `
 // component: welcomeMarker
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
   SETCONTROLLEDZONE palette0
   // CINEMASCOPE ON
   // WORLDFADE OUT 0 ${color(colors.ambience[0])}
@@ -80,17 +80,17 @@ ON CONTROLLEDZONE_ENTER {
 
   ACCEPT
 }
-      `;
+      `
     }),
-    declare("int", "hadIntro", 0),
-    addDependency("graph/levels/level1/map.bmp"),
+    declare('int', 'hadIntro', 0),
+    addDependency('graph/levels/level1/map.bmp'),
     addDependencyAs(
-      "projects/alias-nightmare/loading.bmp",
-      `graph/levels/level${config.levelIdx}/loading.bmp`
+      'projects/alias-nightmare/loading.bmp',
+      `graph/levels/level${config.levelIdx}/loading.bmp`,
     ),
-    createItem
-  )(items.marker);
-};
+    createItem,
+  )(items.marker)
+}
 
 const createFallSaver = (pos, target) => {
   return compose(
@@ -100,7 +100,7 @@ const createFallSaver = (pos, target) => {
       return `
 // component fallsaver
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
   SETCONTROLLEDZONE "fall-detector"
   ACCEPT
 }
@@ -116,7 +116,7 @@ ON CONTROLLEDZONE_ENTER {
 }
 
 >>FADEOUT {
-  WORLDFADE OUT 300 ${color("black")}
+  WORLDFADE OUT 300 ${color('black')}
   PLAY -o "UruLink"
   RETURN
 }
@@ -127,54 +127,54 @@ ON CONTROLLEDZONE_ENTER {
   TIMERfadein -m 1 2000 WORLDFADE IN 1000
   RETURN
 }
-      `;
+      `
     }),
-    addDependencyAs("projects/alias-nightmare/UruLink.wav", `sfx/UruLink.wav`),
-    declare("int", "isCatching", 0),
-    createItem
-  )(items.marker);
-};
+    addDependencyAs('projects/alias-nightmare/UruLink.wav', `sfx/UruLink.wav`),
+    declare('int', 'isCatching', 0),
+    createItem,
+  )(items.marker)
+}
 
 const generateAtLeastOneExit = () => {
   return (
     Math.round(randomBetween(NONE, ALL)) || 1 << Math.round(randomBetween(0, 3))
-  );
-};
+  )
+}
 
 const createFallInducer = (origin) => (mapData) => {
-  const divider = 4;
+  const divider = 4
 
   return compose(
     (mapData) => {
       for (let x = 0; x < divider; x++) {
         for (let y = 0; y < divider; y++) {
-          setPolygonGroup(`gravity-${x}-${y}`)(mapData);
+          setPolygonGroup(`gravity-${x}-${y}`)(mapData)
           plain(
             [
-              -origin[0] +
+              -origin.coords[0] +
                 (MAP_MAX_WIDTH / divider) * 50 +
                 (MAP_MAX_WIDTH / divider) * 100 * x,
-              origin[1] + 10000,
-              -origin[2] +
+              origin.coords[1] + 10000,
+              -origin.coords[2] +
                 (MAP_MAX_HEIGHT / divider) * 50 +
                 (MAP_MAX_HEIGHT / divider) * 100 * y,
             ],
             [MAP_MAX_WIDTH / divider, MAP_MAX_HEIGHT / divider],
-            "floor",
-            disableBumping
-          )(mapData);
-          unsetPolygonGroup(mapData);
+            'floor',
+            disableBumping,
+          )(mapData)
+          unsetPolygonGroup(mapData)
         }
       }
-      return mapData;
+      return mapData
     },
     setTexture(textures.none),
-    setColor("white")
-  )(mapData);
-};
+    setColor('white'),
+  )(mapData)
+}
 
 const generate = async (config) => {
-  const { origin } = config;
+  const { origin } = config
 
   const islands = [
     {
@@ -205,9 +205,9 @@ const generate = async (config) => {
       width: 6,
       height: 6,
     },
-  ];
+  ]
 
-  const welcomeMarker = createWelcomeMarker(islands[0].pos)(config);
+  const welcomeMarker = createWelcomeMarker(islands[0].pos)(config)
   /*
   createHangingCorpse([-300, -150, -200], [0, 145, 0], {
     name: "[public_falan_tomb]",
@@ -215,13 +215,13 @@ const generate = async (config) => {
   */
 
   circleOfVectors(islands[2].pos, 200, 9).forEach((pos) => {
-    createSmellyFlower(pos);
-  });
+    createSmellyFlower(pos)
+  })
 
-  defineStatue();
-  createStatue(islands[2].pos);
+  defineStatue()
+  createStatue(islands[2].pos)
 
-  createFallSaver(islands[0].pos, welcomeMarker);
+  createFallSaver(islands[0].pos, welcomeMarker)
 
   return compose(
     saveToDisk,
@@ -231,7 +231,7 @@ const generate = async (config) => {
     addIndex(reduce)(
       (mapData, config, idx) => island({ ...config, idx })(mapData),
       __,
-      islands
+      islands,
     ),
 
     createFallInducer(origin),
@@ -242,26 +242,26 @@ const generate = async (config) => {
       `fall-detector`,
       ambiences.none,
       0,
-      PATH_RGB
+      PATH_RGB,
     ),
     setColor(colors.ambience[0]),
 
     addZone(
-      [-origin[0], 0, -origin[2]],
+      [-origin.coords[0], 0, -origin.coords[2]],
       [100, 0, 100],
-      "palette0",
+      'palette0',
       ambiences.sirs,
-      5000
+      5000,
     ),
     setColor(colors.ambience[0]),
 
-    movePlayerTo([-origin[0], 0, -origin[2]]),
+    movePlayerTo([-origin.coords[0], 0, -origin.coords[2]]),
     (mapData) => {
-      mapData.meta.mapName = "Alia's Nightmare";
-      return mapData;
+      mapData.meta.mapName = "Alia's Nightmare"
+      return mapData
     },
-    generateBlankMapData
-  )(config);
-};
+    generateBlankMapData,
+  )(config)
+}
 
-module.exports = generate;
+module.exports = generate

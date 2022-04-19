@@ -1,4 +1,4 @@
-const { compose, map, props, any, __, when, identity } = require("ramda");
+const { compose, map, props, any, __, when, identity } = require('ramda')
 const {
   setColor,
   move,
@@ -8,31 +8,31 @@ const {
   setPolygonGroup,
   unsetPolygonGroup,
   pickRandom,
-} = require("../../helpers.js");
-const { colors, NORTH, SOUTH, WEST, EAST, NONE } = require("./constants.js");
+} = require('../../helpers.js')
+const { colors, NORTH, SOUTH, WEST, EAST, NONE } = require('./constants.js')
 const {
   plain,
   connectToNearPolygons,
   disableBumping,
-} = require("../../prefabs/plain.js");
-const { declare, getInjections } = require("../../scripting.js");
+} = require('../../prefabs/plain.js')
+const { declare, getInjections } = require('../../scripting.js')
 const {
   items,
   moveTo,
   createItem,
   addScript,
   markAsUsed,
-} = require("../../assets/items.js");
-const { isNotEmpty } = require("ramda-adjunct");
-const { textures } = require("../../assets/textures.js");
-const { nanoid } = require("nanoid");
+} = require('../../assets/items.js')
+const { isNotEmpty } = require('ramda-adjunct')
+const { textures } = require('../../assets/textures.js')
+const { nanoid } = require('nanoid')
 const {
   ISLAND_JOINT_LENGTH,
   ISLAND_JOINT_WIDTH,
   HFLIP,
   VFLIP,
-} = require("../../constants.js");
-const { ambiences } = require("../../assets/ambiences.js");
+} = require('../../constants.js')
+const { ambiences } = require('../../assets/ambiences.js')
 
 // PP = pressure plate
 
@@ -47,27 +47,27 @@ const getPPIndices = (exits) => {
     case SOUTH | EAST | WEST:
     case NORTH | SOUTH:
     case EAST | WEST:
-      return [0, 1, 2, 3];
+      return [0, 1, 2, 3]
     case NORTH | WEST:
-      return [0, 1, 2];
+      return [0, 1, 2]
     case NORTH | EAST:
-      return [0, 1, 3];
+      return [0, 1, 3]
     case SOUTH | WEST:
-      return [0, 2, 3];
+      return [0, 2, 3]
     case SOUTH | EAST:
-      return [1, 2, 3];
+      return [1, 2, 3]
     case NORTH:
-      return [0, 1];
+      return [0, 1]
     case SOUTH:
-      return [2, 3];
+      return [2, 3]
     case EAST:
-      return [1, 3];
+      return [1, 3]
     case WEST:
-      return [0, 2];
+      return [0, 2]
     default:
-      return [];
+      return []
   }
-};
+}
 
 const createPressurePlate = (id, eventBus) => {
   return compose(
@@ -76,7 +76,7 @@ const createPressurePlate = (id, eventBus) => {
   // component: island.${id}
     ON INIT {
       SETSCALE 101
-      ${getInjections("init", self)}
+      ${getInjections('init', self)}
       ACCEPT
     }
   
@@ -100,21 +100,21 @@ const createPressurePlate = (id, eventBus) => {
         SENDEVENT CUSTOM ${eventBus.ref} "${id}.pressed"
       }
       ACCEPT
-    `;
+    `
     }),
-    declare("int", "onme", 0),
-    createItem
-  )(items.mechanisms.pressurePlate);
-};
+    declare('int', 'onme', 0),
+    createItem,
+  )(items.mechanisms.pressurePlate)
+}
 
 const createPressurePlates = (eventBus) => {
   return [
-    createPressurePlate("pp0", eventBus),
-    createPressurePlate("pp1", eventBus),
-    createPressurePlate("pp2", eventBus),
-    createPressurePlate("pp3", eventBus),
-  ];
-};
+    createPressurePlate('pp0', eventBus),
+    createPressurePlate('pp1', eventBus),
+    createPressurePlate('pp2', eventBus),
+    createPressurePlate('pp3', eventBus),
+  ]
+}
 
 const createEventBus = (gates) => {
   return compose(
@@ -122,7 +122,7 @@ const createEventBus = (gates) => {
       return `
   // component: island.eventBus
   ON INIT {
-    ${getInjections("init", self)}
+    ${getInjections('init', self)}
     ACCEPT
   }
   
@@ -237,19 +237,19 @@ const createEventBus = (gates) => {
   
     ACCEPT
   }
-    `;
+    `
     }),
-    declare("int", "northGateOpened", 0),
-    declare("int", "southGateOpened", 0),
-    declare("int", "westGateOpened", 0),
-    declare("int", "eastGateOpened", 0),
-    declare("int", "pp0pressed", 0),
-    declare("int", "pp1pressed", 0),
-    declare("int", "pp2pressed", 0),
-    declare("int", "pp3pressed", 0),
-    createItem
-  )(items.marker);
-};
+    declare('int', 'northGateOpened', 0),
+    declare('int', 'southGateOpened', 0),
+    declare('int', 'westGateOpened', 0),
+    declare('int', 'eastGateOpened', 0),
+    declare('int', 'pp0pressed', 0),
+    declare('int', 'pp1pressed', 0),
+    declare('int', 'pp2pressed', 0),
+    declare('int', 'pp3pressed', 0),
+    createItem,
+  )(items.marker)
+}
 
 const createGate = (orientation, props) => {
   return compose(
@@ -257,7 +257,7 @@ const createGate = (orientation, props) => {
       return `
 // component island:gates.${orientation}
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
   ACCEPT
 }
 ON INITEND {
@@ -290,92 +290,92 @@ ON OPEN {
   ANCHOR_BLOCK OFF
   REFUSE
 }
-  `;
+  `
     }),
-    declare("int", "isOpen", props.isOpen ?? false ? 1 : 0),
-    declare("int", "isWide", props.isWide ?? false ? 1 : 0),
-    createItem
-  )(items.doors.portcullis);
-};
+    declare('int', 'isOpen', props.isOpen ?? false ? 1 : 0),
+    declare('int', 'isWide', props.isWide ?? false ? 1 : 0),
+    createItem,
+  )(items.doors.portcullis)
+}
 
 const createGates = () => {
   return {
-    north: createGate("north", { isWide: true, isOpen: false }),
-    south: createGate("south", { isWide: true, isOpen: false }),
-    west: createGate("west", { isWide: true, isOpen: false }),
-    east: createGate("east", { isWide: true, isOpen: false }),
-  };
-};
+    north: createGate('north', { isWide: true, isOpen: false }),
+    south: createGate('south', { isWide: true, isOpen: false }),
+    west: createGate('west', { isWide: true, isOpen: false }),
+    east: createGate('east', { isWide: true, isOpen: false }),
+  }
+}
 
 const island = (config) => (mapData) => {
-  const id = nanoid(6);
-  const { pos, entrances = NONE, width, height } = config;
+  const id = nanoid(6)
+  const { pos, entrances = NONE, width, height } = config
   // exits are locked connection points, entrances are not
-  let { exits = NONE } = config;
-  exits = exits & ~entrances;
-  const spawn = move(...mapData.config.origin, mapData.state.spawn);
+  let { exits = NONE } = config
+  exits = exits & ~entrances
+  const spawn = move(...mapData.config.origin.coords, mapData.state.spawn)
 
-  const quartX = width * 50 - 300;
-  const quartZ = height * 50 - 300;
+  const quartX = width * 50 - 300
+  const quartZ = height * 50 - 300
 
   const ppCoords = [
     move(-quartX, -6, quartZ, pos),
     move(quartX, -6, quartZ, pos),
     move(-quartX, -6, -quartZ, pos),
     move(quartX, -6, -quartZ, pos),
-  ];
-  const ppIndices = getPPIndices(exits);
+  ]
+  const ppIndices = getPPIndices(exits)
 
-  const jointOffset = (ISLAND_JOINT_LENGTH * 100) / 2 - 100;
+  const jointOffset = (ISLAND_JOINT_LENGTH * 100) / 2 - 100
 
-  const gates = createGates();
-  const eventBus = createEventBus(gates);
-  const pps = createPressurePlates(eventBus);
+  const gates = createGates()
+  const eventBus = createEventBus(gates)
+  const pps = createPressurePlates(eventBus)
 
   for (let i = 0; i < 4; i++) {
-    moveTo(ppCoords[i], [0, 0, 0], pps[i]);
+    moveTo(ppCoords[i], [0, 0, 0], pps[i])
   }
 
   props(ppIndices, pps).forEach((pp) => {
-    markAsUsed(pp);
-  });
+    markAsUsed(pp)
+  })
 
   if (isNotEmpty(ppIndices)) {
-    markAsUsed(eventBus);
+    markAsUsed(eventBus)
   }
 
   // TODO: moveTo the used gates + add small bridge segments
   if (exits & NORTH) {
-    markAsUsed(gates.north);
+    markAsUsed(gates.north)
     moveTo(
       move(-25, 0, (height * 100) / 2 + ISLAND_JOINT_LENGTH * 100 - 200, pos),
       [0, 90, 0],
-      gates.north
-    );
+      gates.north,
+    )
   }
   if (exits & SOUTH) {
-    markAsUsed(gates.south);
+    markAsUsed(gates.south)
     moveTo(
       move(25, 0, -(height * 100) / 2 - ISLAND_JOINT_LENGTH * 100 + 200, pos),
       [0, 270, 0],
-      gates.south
-    );
+      gates.south,
+    )
   }
   if (exits & EAST) {
-    markAsUsed(gates.east);
+    markAsUsed(gates.east)
     moveTo(
       move((width * 100) / 2 + ISLAND_JOINT_LENGTH * 100 - 200, 0, 25, pos),
       [0, 0, 0],
-      gates.east
-    );
+      gates.east,
+    )
   }
   if (exits & WEST) {
-    markAsUsed(gates.west);
+    markAsUsed(gates.west)
     moveTo(
       move(-(width * 100) / 2 - ISLAND_JOINT_LENGTH * 100 + 200, 0, -25, pos),
       [0, 180, 0],
-      gates.west
-    );
+      gates.west,
+    )
   }
 
   return compose(
@@ -383,9 +383,9 @@ const island = (config) => (mapData) => {
 
     (mapData) => {
       props(ppIndices, ppCoords).forEach((ppCoord) => {
-        mapData = addLight(move(0, -10, 0, ppCoord))(mapData);
-      });
-      return mapData;
+        mapData = addLight(move(0, -10, 0, ppCoord))(mapData)
+      })
+      return mapData
     },
     setColor(colors.lights),
 
@@ -395,28 +395,28 @@ const island = (config) => (mapData) => {
         plain(
           move(0, 100, (height * 100) / 2 + jointOffset, pos),
           [ISLAND_JOINT_WIDTH, ISLAND_JOINT_LENGTH],
-          "ceiling",
+          'ceiling',
           (polygon, mapData) => {
             return connectToNearPolygons(`${id}-north-island-joint-top`)(
               disableBumping(polygon),
-              mapData
-            );
+              mapData,
+            )
           },
           () => ({
             textureRotation: pickRandom([0, 90, 180, 270]),
             textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
-          })
+          }),
         ),
         setPolygonGroup(`${id}-north-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
         plain(
           move(0, 0, (height * 100) / 2 + jointOffset, pos),
           [ISLAND_JOINT_WIDTH, ISLAND_JOINT_LENGTH],
-          "floor"
+          'floor',
         ),
         setPolygonGroup(`${id}-north-island-joint-top`),
-        setTexture(textures.stone.humanWall1)
-      )
+        setTexture(textures.stone.humanWall1),
+      ),
     ),
     when(
       () => (exits | entrances) & SOUTH,
@@ -424,28 +424,28 @@ const island = (config) => (mapData) => {
         plain(
           move(0, 100, -((height * 100) / 2 + jointOffset), pos),
           [ISLAND_JOINT_WIDTH, ISLAND_JOINT_LENGTH],
-          "ceiling",
+          'ceiling',
           (polygon, mapData) => {
             return connectToNearPolygons(`${id}-south-island-joint-top`)(
               disableBumping(polygon),
-              mapData
-            );
+              mapData,
+            )
           },
           () => ({
             textureRotation: pickRandom([0, 90, 180, 270]),
             textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
-          })
+          }),
         ),
         setPolygonGroup(`${id}-south-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
         plain(
           move(0, 0, -((height * 100) / 2 + jointOffset), pos),
           [ISLAND_JOINT_WIDTH, ISLAND_JOINT_LENGTH],
-          "floor"
+          'floor',
         ),
         setPolygonGroup(`${id}-south-island-joint-top`),
-        setTexture(textures.stone.humanWall1)
-      )
+        setTexture(textures.stone.humanWall1),
+      ),
     ),
     when(
       () => (exits | entrances) & EAST,
@@ -453,28 +453,28 @@ const island = (config) => (mapData) => {
         plain(
           move((width * 100) / 2 + jointOffset, 100, 0, pos),
           [ISLAND_JOINT_LENGTH, ISLAND_JOINT_WIDTH],
-          "ceiling",
+          'ceiling',
           (polygon, mapData) => {
             return connectToNearPolygons(`${id}-east-island-joint-top`)(
               disableBumping(polygon),
-              mapData
-            );
+              mapData,
+            )
           },
           () => ({
             textureRotation: pickRandom([0, 90, 180, 270]),
             textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
-          })
+          }),
         ),
         setPolygonGroup(`${id}-east-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
         plain(
           move((width * 100) / 2 + jointOffset, 0, 0, pos),
           [ISLAND_JOINT_LENGTH, ISLAND_JOINT_WIDTH],
-          "floor"
+          'floor',
         ),
         setPolygonGroup(`${id}-east-island-joint-top`),
-        setTexture(textures.stone.humanWall1)
-      )
+        setTexture(textures.stone.humanWall1),
+      ),
     ),
     when(
       () => (exits | entrances) & WEST,
@@ -482,76 +482,81 @@ const island = (config) => (mapData) => {
         plain(
           move(-((width * 100) / 2 + jointOffset), 100, 0, pos),
           [ISLAND_JOINT_LENGTH, ISLAND_JOINT_WIDTH],
-          "ceiling",
+          'ceiling',
           (polygon, mapData) => {
             return connectToNearPolygons(`${id}-west-island-joint-top`)(
               disableBumping(polygon),
-              mapData
-            );
+              mapData,
+            )
           },
           () => ({
             textureRotation: pickRandom([0, 90, 180, 270]),
             textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
-          })
+          }),
         ),
         setPolygonGroup(`${id}-west-island-joint-bottom`),
         setTexture(textures.gravel.ground1),
         plain(
           move(-((width * 100) / 2 + jointOffset), 0, 0, pos),
           [ISLAND_JOINT_LENGTH, ISLAND_JOINT_WIDTH],
-          "floor"
+          'floor',
         ),
         setPolygonGroup(`${id}-west-island-joint-top`),
-        setTexture(textures.stone.humanWall1)
-      )
+        setTexture(textures.stone.humanWall1),
+      ),
     ),
 
     plain(
       move(0, 100, 0, pos),
       [width, height],
-      "ceiling",
+      'ceiling',
       connectToNearPolygons(`${id}-island-top`),
       () => ({
         textureRotation: pickRandom([0, 90, 180, 270]),
         textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
-      })
+      }),
     ),
     setPolygonGroup(`${id}-island-bottom`),
     setTexture(textures.gravel.ground1),
 
-    plain(pos, [width, height], "floor", (polygons) => {
+    plain(pos, [width, height], 'floor', (polygons) => {
       const ppAbsoluteCoords = map(
-        move(...mapData.config.origin),
-        props(ppIndices, ppCoords)
-      );
+        move(...mapData.config.origin.coords),
+        props(ppIndices, ppCoords),
+      )
 
       return map((polygon) => {
         if (isPointInPolygon(pos, polygon)) {
-          polygon.config.bumpable = false;
+          polygon.config.bumpable = false
         }
 
-        if (isPointInPolygon(move(...mapData.config.origin, spawn), polygon)) {
-          polygon.config.bumpable = false;
+        if (
+          isPointInPolygon(
+            move(...mapData.config.origin.coords, spawn),
+            polygon,
+          )
+        ) {
+          polygon.config.bumpable = false
         }
 
         if (
           any(
             isPointInPolygon(__, polygon),
-            map(move(0, 6, 0), ppAbsoluteCoords)
+            map(move(0, 6, 0), ppAbsoluteCoords),
           )
         ) {
-          polygon.tex = 0;
-          polygon.config.bumpable = false;
+          polygon.tex = 0
+          polygon.config.bumpable = false
         }
 
-        return polygon;
-      }, polygons);
+        return polygon
+      }, polygons)
     }),
     setPolygonGroup(`${id}-island-top`),
     setTexture(textures.stone.humanWall1),
 
-    setColor(colors.terrain)
-  )(mapData);
-};
+    setColor(colors.terrain),
+  )(mapData)
+}
 
-module.exports = island;
+module.exports = island

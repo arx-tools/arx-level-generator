@@ -1,43 +1,43 @@
-const { reduce, times, identity, __ } = require("ramda");
-const { isBetweenInclusive, randomBetween, move } = require("../helpers.js");
-const pillar = require("./pillar.js");
+const { reduce, times, identity, __ } = require('ramda')
+const { isBetweenInclusive, randomBetween, move } = require('../helpers.js')
+const pillar = require('./pillar.js')
 
 const isInExcludeRadius = (pos, excludeRadius, x, z) => {
-  const [originalX, originalY, originalZ] = pos;
-  let excludeRadiusX = excludeRadius;
-  let excludeRadiusZ = excludeRadius;
+  const [originalX, originalY, originalZ] = pos
+  let excludeRadiusX = excludeRadius
+  let excludeRadiusZ = excludeRadius
   if (Array.isArray(excludeRadius)) {
-    [excludeRadiusX, excludeRadiusZ] = excludeRadius;
+    ;[excludeRadiusX, excludeRadiusZ] = excludeRadius
   }
 
   if (excludeRadiusX === 0 && excludeRadiusZ === 0) {
-    return false;
+    return false
   }
 
   return (
     isBetweenInclusive(
       originalX - excludeRadiusX / 2,
       originalX + excludeRadiusX / 2,
-      x
+      x,
     ) &&
     isBetweenInclusive(
       originalZ - excludeRadiusZ / 2,
       originalZ + excludeRadiusZ / 2,
-      z
+      z,
     )
-  );
-};
+  )
+}
 
 const isInBorderGap = (pos, borderGap, x, z) => {
-  const [originalX, originalY, originalZ] = pos;
-  const [top, right, bottom, left] = borderGap; // clockwise order, like in CSS
+  const [originalX, originalY, originalZ] = pos
+  const [top, right, bottom, left] = borderGap // clockwise order, like in CSS
 
   if (
     top > 0 &&
     z > 0 &&
     isBetweenInclusive(originalX - top / 2, originalX + top / 2, x)
   ) {
-    return true;
+    return true
   }
 
   if (
@@ -45,7 +45,7 @@ const isInBorderGap = (pos, borderGap, x, z) => {
     z < 0 &&
     isBetweenInclusive(originalX - bottom / 2, originalX + bottom / 2, x)
   ) {
-    return true;
+    return true
   }
 
   if (
@@ -53,7 +53,7 @@ const isInBorderGap = (pos, borderGap, x, z) => {
     x < 0 &&
     isBetweenInclusive(originalZ - left / 2, originalZ + left / 2, z)
   ) {
-    return true;
+    return true
   }
 
   if (
@@ -61,47 +61,47 @@ const isInBorderGap = (pos, borderGap, x, z) => {
     x > 0 &&
     isBetweenInclusive(originalZ - right / 2, originalZ + right / 2, z)
   ) {
-    return true;
+    return true
   }
 
-  return false;
-};
+  return false
+}
 
 const tooCloseToOtherPillars = (x, z) => {
   // TODO: generate them more evenly spaced out
-  return false;
-};
+  return false
+}
 
 const pillars = (
   pos,
   n,
   radius,
   excludeRadius = 100,
-  borderGap = [0, 0, 0, 0]
+  borderGap = [0, 0, 0, 0],
 ) =>
   reduce(
     (mapData) => {
-      const { origin } = mapData.config;
-      const [originalX, originalY, originalZ] = pos;
-      let radiusX = radius;
-      let radiusZ = radius;
+      const { origin } = mapData.config
+      const [originalX, originalY, originalZ] = pos
+      let radiusX = radius
+      let radiusZ = radius
       if (Array.isArray(radius)) {
-        [radiusX, radiusZ] = radius;
+        ;[radiusX, radiusZ] = radius
       }
 
       do {
-        x = originalX + randomBetween(-radiusX / 2, radiusX / 2);
-        z = originalZ + randomBetween(-radiusZ / 2, radiusZ / 2);
+        x = originalX + randomBetween(-radiusX / 2, radiusX / 2)
+        z = originalZ + randomBetween(-radiusZ / 2, radiusZ / 2)
       } while (
         isInExcludeRadius(pos, excludeRadius, x, z) ||
         isInBorderGap(pos, borderGap, x, z) ||
         tooCloseToOtherPillars(x, z)
-      );
+      )
 
-      return pillar(...move(x, originalY, z, origin), 20)(mapData);
+      return pillar(...move(x, originalY, z, origin.coords), 20)(mapData)
     },
     __,
-    times(identity, n)
-  );
+    times(identity, n),
+  )
 
-module.exports = pillars;
+module.exports = pillars

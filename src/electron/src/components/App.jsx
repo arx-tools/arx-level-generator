@@ -1,113 +1,110 @@
-import fs from "fs";
-import React, { useState, useEffect } from "react";
-import AliasNightmare from "../projects/AliasNightmare.jsx";
-import TheBackrooms from "../projects/TheBackrooms.jsx";
-import OnTheIsland from "../projects/OnTheIsland.jsx";
-import Loading from "./Loading.jsx";
-import MenuItem from "./MenuItem.jsx";
-import path from "path";
-import seedrandom from "seedrandom";
-import { ipcRenderer } from "electron";
-import { cleanupCache, uninstall } from "../../../helpers.js";
-import aliasNightmareGenerator from "../../../projects/alias-nightmare/index.js";
-import theBackroomsGenerator from "../../../projects/the-backrooms/index.js";
-import onTheIslandGenerator from "../../../projects/on-the-island/index.js";
-import { compileFTS, compileLLF, compileDLF } from "../../../compile.js";
+import fs from 'fs'
+import React, { useState, useEffect } from 'react'
+import AliasNightmare from '../projects/AliasNightmare.jsx'
+import TheBackrooms from '../projects/TheBackrooms.jsx'
+import OnTheIsland from '../projects/OnTheIsland.jsx'
+import Loading from './Loading.jsx'
+import MenuItem from './MenuItem.jsx'
+import path from 'path'
+import seedrandom from 'seedrandom'
+import { ipcRenderer } from 'electron'
+import { cleanupCache, uninstall } from '../../../helpers.js'
+import aliasNightmareGenerator from '../../../projects/alias-nightmare/index.js'
+import theBackroomsGenerator from '../../../projects/the-backrooms/index.js'
+import onTheIslandGenerator from '../../../projects/on-the-island/index.js'
+import { compileFTS, compileLLF, compileDLF } from '../../../compile.js'
 
-const generateSeed = () => Math.floor(Math.random() * 1e20);
+const generateSeed = () => Math.floor(Math.random() * 1e20)
 
 const App = () => {
   const [projects, setProjects] = useState([
     {
       name: "Alia's Nightmare",
-      id: "alias-nightmare",
+      id: 'alias-nightmare',
       Page: AliasNightmare,
       isInstalled: false,
     },
     {
-      name: "The Backrooms",
-      id: "the-backrooms",
+      name: 'The Backrooms',
+      id: 'the-backrooms',
       Page: TheBackrooms,
       isInstalled: false,
     },
     {
-      name: "On the island",
-      id: "on-the-island",
+      name: 'On the island',
+      id: 'on-the-island',
       Page: OnTheIsland,
       isInstalled: false,
     },
-  ]);
-  const [project, setProject] = useState(projects[0].id);
+  ])
+  const [project, setProject] = useState(projects[0].id)
 
-  const [seed, setSeed] = useState(generateSeed());
-  const [outputDir, setOutputDir] = useState(path.resolve("./dist"));
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingText, setLoadingText] = useState("");
-  const [loadingProgressbarPercent, setLoadingProgressbarPercent] = useState(0);
-  const [isLoadingDoneBtnVisible, setIsLoadingDoneBtnVisible] = useState(false);
+  const [seed, setSeed] = useState(generateSeed())
+  const [outputDir, setOutputDir] = useState(path.resolve('./dist'))
+  const [isLoading, setIsLoading] = useState(false)
+  const [loadingText, setLoadingText] = useState('')
+  const [loadingProgressbarPercent, setLoadingProgressbarPercent] = useState(0)
+  const [isLoadingDoneBtnVisible, setIsLoadingDoneBtnVisible] = useState(false)
 
   useEffect(() => {
-    ipcRenderer.on("output directory changed", (e, folder) => {
-      setOutputDir(folder);
-      checkForInstalledMaps(folder);
-    });
+    ipcRenderer.on('output directory changed', (e, folder) => {
+      setOutputDir(folder)
+      checkForInstalledMaps(folder)
+    })
 
-    checkForInstalledMaps(outputDir);
-  }, []);
+    checkForInstalledMaps(outputDir)
+  }, [])
 
   const checkForInstalledMaps = async (folder) => {
-    let mapName = null;
+    let mapName = null
 
     try {
-      const raw = await fs.promises.readFile(
-        `${folder}/manifest.json`,
-        "utf-8"
-      );
-      const manifest = JSON.parse(raw);
-      mapName = manifest.meta.mapName.toLowerCase();
+      const raw = await fs.promises.readFile(`${folder}/manifest.json`, 'utf-8')
+      const manifest = JSON.parse(raw)
+      mapName = manifest.meta.mapName.toLowerCase()
     } catch (e) {}
 
     setProjects(
       projects.map((project) => {
-        project.isInstalled = project.name.toLowerCase() === mapName;
-        return project;
-      })
-    );
-  };
+        project.isInstalled = project.name.toLowerCase() === mapName
+        return project
+      }),
+    )
+  }
 
   const onRandomizeBtnClick = () => {
     if (isLoading) {
-      return;
+      return
     }
 
-    setSeed(generateSeed());
-  };
+    setSeed(generateSeed())
+  }
 
   const onGenerateBtnClick = (settings) => {
     if (isLoading) {
-      return;
+      return
     }
 
-    setIsLoading(true);
-    setLoadingText("(1/4) Generating level data");
-    setLoadingProgressbarPercent(0);
-    setIsLoadingDoneBtnVisible(false);
+    setIsLoading(true)
+    setLoadingText('(1/4) Generating level data')
+    setLoadingProgressbarPercent(0)
+    setIsLoadingDoneBtnVisible(false)
 
     setTimeout(async () => {
-      seedrandom(seed, { global: true });
+      seedrandom(seed, { global: true })
 
       const config = {
-        origin: [6000, 0, 6000],
+        origin: { type: 'absolute', coords: [6000, 0, 6000] },
         levelIdx: 1,
         seed,
         outputDir,
         lootTable: [],
         bumpFactor: 3,
         ...settings,
-      };
+      }
 
       switch (project) {
-        case "the-backrooms":
+        case 'the-backrooms':
           await theBackroomsGenerator({
             ...config,
             percentOfLightsOn: 30,
@@ -118,69 +115,69 @@ const App = () => {
             },
             lootTable: [
               {
-                name: "almondWater",
+                name: 'almondWater',
                 weight: 10,
-                variant: "mana",
+                variant: 'mana',
               },
               {
-                name: "almondWater",
+                name: 'almondWater',
                 weight: 1,
-                variant: "xp",
+                variant: 'xp',
               },
               {
-                name: "almondWater",
+                name: 'almondWater',
                 weight: 4,
-                variant: "slow",
+                variant: 'slow',
               },
               {
-                name: "almondWater",
+                name: 'almondWater',
                 weight: 2,
-                variant: "speed",
+                variant: 'speed',
               },
             ],
-          });
-          break;
-        case "alias-nightmare":
+          })
+          break
+        case 'alias-nightmare':
           await aliasNightmareGenerator({
             ...config,
-          });
-          break;
-        case "on-the-island":
+          })
+          break
+        case 'on-the-island':
           await onTheIslandGenerator({
             ...config,
-          });
-          break;
+          })
+          break
       }
 
-      setLoadingText("(2/4) Compiling level mesh");
-      setLoadingProgressbarPercent(25);
+      setLoadingText('(2/4) Compiling level mesh')
+      setLoadingProgressbarPercent(25)
 
       setTimeout(async () => {
-        await compileFTS(config);
+        await compileFTS(config)
 
-        setLoadingText("(3/4) Compiling lighting information");
-        setLoadingProgressbarPercent(50);
+        setLoadingText('(3/4) Compiling lighting information')
+        setLoadingProgressbarPercent(50)
 
         setTimeout(async () => {
-          await compileLLF(config);
+          await compileLLF(config)
 
-          setLoadingText("(4/4) Compiling entities and paths");
-          setLoadingProgressbarPercent(75);
+          setLoadingText('(4/4) Compiling entities and paths')
+          setLoadingProgressbarPercent(75)
 
           setTimeout(async () => {
-            await compileDLF(config);
+            await compileDLF(config)
 
-            cleanupCache();
+            cleanupCache()
 
-            setLoadingProgressbarPercent(100);
-            setLoadingText("Done!");
-            setIsLoadingDoneBtnVisible(true);
-            checkForInstalledMaps(outputDir);
-          }, 100);
-        }, 100);
-      }, 100);
-    }, 100);
-  };
+            setLoadingProgressbarPercent(100)
+            setLoadingText('Done!')
+            setIsLoadingDoneBtnVisible(true)
+            checkForInstalledMaps(outputDir)
+          }, 100)
+        }, 100)
+      }, 100)
+    }, 100)
+  }
 
   return (
     <>
@@ -207,25 +204,25 @@ const App = () => {
             outputDir={outputDir}
             onOutputDirChange={(e) => setOutputDir(e.target.value)}
             onBrowseBtnClick={() => {
-              ipcRenderer.send("change output directory");
+              ipcRenderer.send('change output directory')
             }}
             seed={seed}
             onSeedChange={(e) => setSeed(e.target.value)}
             onRandomizeBtnClick={onRandomizeBtnClick}
             onGenerateBtnClick={onGenerateBtnClick}
             onUninstallBtnClick={async () => {
-              setIsLoading(true);
-              setLoadingText("Uninstalling level");
-              setLoadingProgressbarPercent(0);
-              setIsLoadingDoneBtnVisible(false);
+              setIsLoading(true)
+              setLoadingText('Uninstalling level')
+              setLoadingProgressbarPercent(0)
+              setIsLoadingDoneBtnVisible(false)
               setTimeout(async () => {
-                await uninstall(outputDir);
+                await uninstall(outputDir)
 
-                setLoadingText("Done!");
-                setLoadingProgressbarPercent(100);
-                setIsLoadingDoneBtnVisible(true);
-                checkForInstalledMaps(outputDir);
-              }, 100);
+                setLoadingText('Done!')
+                setLoadingProgressbarPercent(100)
+                setIsLoadingDoneBtnVisible(true)
+                checkForInstalledMaps(outputDir)
+              }, 100)
             }}
             isInstalled={isInstalled}
           />
@@ -237,11 +234,11 @@ const App = () => {
         progressbarPercent={loadingProgressbarPercent}
         showDoneBtn={isLoadingDoneBtnVisible}
         onDoneClick={() => {
-          setIsLoading(false);
+          setIsLoading(false)
         }}
       />
     </>
-  );
-};
+  )
+}
 
-export default App;
+export default App

@@ -1,8 +1,20 @@
-export type AbsoluteCoords = [number, number, number]
+export type Vec3 = [number, number, number]
 
-export type RelativeCoords = [number, number, number]
+export type AbsoluteCoords = {
+  type: 'absolute'
+  coords: Vec3
+}
 
-export type LootTableEntry = any
+export type RelativeCoords = {
+  type: 'relative'
+  coords: Vec3
+}
+
+export type LootTableEntry = {
+  name: string
+  weight: number
+  variant?: string
+}
 
 export type LootTable = LootTableEntry[]
 

@@ -1,16 +1,12 @@
-const fs = require("fs");
-const rgba = require("color-rgba");
+const fs = require('fs')
+const rgba = require('color-rgba')
 const {
   createTextureContainers,
   textures,
   exportTextures,
   resetTextures,
-} = require("./assets/textures.js");
-const {
-  createDlfData,
-  createFtsData,
-  createLlfData,
-} = require("./blankMap.js");
+} = require('./assets/textures.js')
+const { createDlfData, createFtsData, createLlfData } = require('./blankMap.js')
 const {
   pluck,
   compose,
@@ -39,7 +35,7 @@ const {
   clone,
   flatten,
   times,
-} = require("ramda");
+} = require('ramda')
 const {
   POLY_QUAD,
   MAP_MAX_HEIGHT,
@@ -49,183 +45,183 @@ const {
   PATH_RGB,
   PATH_AMBIANCE,
   PATH_FARCLIP,
-} = require("./constants.js");
+} = require('./constants.js')
 const {
   exportUsedItems,
   exportScripts,
   exportDependencies,
   resetItems,
-} = require("./assets/items.js");
+} = require('./assets/items.js')
 const {
   exportAmbiences,
   useAmbience,
   resetAmbiences,
-} = require("./assets/ambiences.js");
-const { dirname, resolve } = require("path");
+} = require('./assets/ambiences.js')
+const { dirname, resolve } = require('path')
 
 const normalize = (v) => {
-  return map(apply(divide), zip(v, repeat(magnitude(v), 3)));
-};
+  return map(apply(divide), zip(v, repeat(magnitude(v), 3)))
+}
 
 const move = curry((x, y, z, vector) => {
-  return [vector[0] + x, vector[1] + y, vector[2] + z];
-});
+  return [vector[0] + x, vector[1] + y, vector[2] + z]
+})
 
 // "#ff07a4" -> { r: [0..255], g: [0..255], b: [0..255], a: [0..255] }
 const toRgba = (colorDefinition) => {
-  const [r, g, b, a] = rgba(colorDefinition);
+  const [r, g, b, a] = rgba(colorDefinition)
 
   return {
     r,
     g,
     b,
     a: Math.round(255 * a),
-  };
-};
+  }
+}
 
 // { r: 127, g: 0, b: 0, a: 1 } -> { r: [0.0..1.0], g: [0.0..1.0], b: [0.0..1.0] }
 const toFloatRgb = (color) => {
-  const { r, g, b } = color;
-  return { r: r / 256, g: g / 256, b: b / 256 };
-};
+  const { r, g, b } = color
+  return { r: r / 256, g: g / 256, b: b / 256 }
+}
 
 const movePlayerTo = curry((pos, mapData) => {
-  mapData.state.spawn = pos;
-  return mapData;
-});
+  mapData.state.spawn = pos
+  return mapData
+})
 
 const isBetween = (min, max, value) => {
-  return value >= min && value < max;
-};
+  return value >= min && value < max
+}
 
 const isBetweenInclusive = (min, max, value) => {
-  return value >= min && value <= max;
-};
+  return value >= min && value <= max
+}
 
 const generateLights = (mapData) => {
-  let colorIdx = 0;
+  let colorIdx = 0
 
-  const colors = [];
-  const white = toRgba("white");
+  const colors = []
+  const white = toRgba('white')
 
   const p = mapData.fts.polygons.reduce((acc, { vertices }, idx) => {
-    const x = Math.min(...pluck("posX", vertices));
-    const z = Math.min(...pluck("posZ", vertices));
+    const x = Math.min(...pluck('posX', vertices))
+    const z = Math.min(...pluck('posZ', vertices))
 
-    const cellX = Math.floor(x / 100);
-    const cellZ = Math.floor(z / 100) + 1;
+    const cellX = Math.floor(x / 100)
+    const cellZ = Math.floor(z / 100) + 1
 
     if (!acc[`${cellZ}-${cellX}`]) {
-      acc[`${cellZ}-${cellX}`] = [idx];
+      acc[`${cellZ}-${cellX}`] = [idx]
     } else {
-      acc[`${cellZ}-${cellX}`].push(idx);
+      acc[`${cellZ}-${cellX}`].push(idx)
     }
 
-    return acc;
-  }, {});
+    return acc
+  }, {})
 
   for (let z = 0; z < MAP_MAX_HEIGHT; z++) {
     for (let x = 0; x < MAP_MAX_WIDTH; x++) {
-      (p[`${z}-${x}`] || []).forEach((idx) => {
-        const { config, vertices } = mapData.fts.polygons[idx];
-        let { color, isQuad } = config;
+      ;(p[`${z}-${x}`] || []).forEach((idx) => {
+        const { config, vertices } = mapData.fts.polygons[idx]
+        let { color, isQuad } = config
 
         if (color === null) {
-          color = white;
+          color = white
         }
 
-        colors.push(color, color, color);
-        vertices[0].llfColorIdx = colorIdx++;
-        vertices[1].llfColorIdx = colorIdx++;
-        vertices[2].llfColorIdx = colorIdx++;
+        colors.push(color, color, color)
+        vertices[0].llfColorIdx = colorIdx++
+        vertices[1].llfColorIdx = colorIdx++
+        vertices[2].llfColorIdx = colorIdx++
 
         if (isQuad) {
-          colors.push(color);
-          vertices[3].llfColorIdx = colorIdx++;
+          colors.push(color)
+          vertices[3].llfColorIdx = colorIdx++
         }
-      });
+      })
     }
   }
 
-  mapData.llf.colors = colors;
-};
+  mapData.llf.colors = colors
+}
 
-const vertexToVector = ({ posX, posY, posZ }) => [posX, posY, posZ];
+const vertexToVector = ({ posX, posY, posZ }) => [posX, posY, posZ]
 
-const vectorToXYZ = ([x, y, z]) => ({ x, y, z });
+const vectorToXYZ = ([x, y, z]) => ({ x, y, z })
 
 const calculateNormals = (mapData) => {
   // https://computergraphics.stackexchange.com/questions/4031/programmatically-generating-vertex-normals
 
   mapData.fts.polygons.forEach((polygon) => {
-    const { vertices, config } = polygon;
+    const { vertices, config } = polygon
 
-    const points = vertices.map(vertexToVector);
+    const points = vertices.map(vertexToVector)
 
     // vertices are laid down in a russian i shape (И):
     // a c
     // b d
-    const [a, b, c, d] = points;
+    const [a, b, c, d] = points
 
     if (config.isQuad) {
       polygon.norm2 = vectorToXYZ(
-        normalize(cross(subtractVec3(c, d), subtractVec3(b, d)))
-      );
+        normalize(cross(subtractVec3(c, d), subtractVec3(b, d))),
+      )
     } else {
-      polygon.norm2 = vectorToXYZ([0, 0, 0]);
+      polygon.norm2 = vectorToXYZ([0, 0, 0])
     }
 
     polygon.norm = vectorToXYZ(
-      normalize(cross(subtractVec3(b, a), subtractVec3(c, a)))
-    );
+      normalize(cross(subtractVec3(b, a), subtractVec3(c, a))),
+    )
 
-    polygon.normals = [polygon.norm, polygon.norm, polygon.norm, polygon.norm2];
-  });
-};
+    polygon.normals = [polygon.norm, polygon.norm, polygon.norm, polygon.norm2]
+  })
+}
 
 const finalize = (mapData) => {
-  mapData.fts.polygons = compose(unnest, values)(mapData.fts.polygons);
-  mapData.dlf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
-  mapData.llf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length;
+  mapData.fts.polygons = compose(unnest, values)(mapData.fts.polygons)
+  mapData.dlf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length
+  mapData.llf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length
 
-  const { spawn } = mapData.state;
+  const { spawn } = mapData.state
 
   const [x, y, z] = move(
     0,
     PLAYER_HEIGHT_ADJUSTMENT,
     0,
-    move(...mapData.config.origin, spawn)
-  );
-  mapData.fts.sceneHeader.mScenePosition = { x, y, z };
+    move(...mapData.config.origin.coords, spawn),
+  )
+  mapData.fts.sceneHeader.mScenePosition = { x, y, z }
 
   mapData.llf.lights.forEach((light) => {
-    light.pos.x -= spawn[0];
-    light.pos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT;
-    light.pos.z -= spawn[2];
-  });
+    light.pos.x -= spawn[0]
+    light.pos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT
+    light.pos.z -= spawn[2]
+  })
 
   mapData.dlf.paths.forEach((zone) => {
-    zone.header.initPos.x -= spawn[0];
-    zone.header.initPos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT;
-    zone.header.initPos.z -= spawn[2];
+    zone.header.initPos.x -= spawn[0]
+    zone.header.initPos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT
+    zone.header.initPos.z -= spawn[2]
 
-    zone.header.pos.x -= spawn[0];
-    zone.header.pos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT;
-    zone.header.pos.z -= spawn[2];
-  });
+    zone.header.pos.x -= spawn[0]
+    zone.header.pos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT
+    zone.header.pos.z -= spawn[2]
+  })
 
-  createTextureContainers(mapData);
-  exportUsedItems(mapData);
-  calculateNormals(mapData);
-  generateLights(mapData);
+  createTextureContainers(mapData)
+  exportUsedItems(mapData)
+  calculateNormals(mapData)
+  generateLights(mapData)
 
-  return mapData;
-};
+  return mapData
+}
 
 const addOriginPolygon = (mapData) => {
   mapData.fts.polygons.global.push({
     config: {
-      color: toRgba("black"),
+      color: toRgba('black'),
       isQuad: true,
       bumpable: false,
     },
@@ -241,20 +237,20 @@ const addOriginPolygon = (mapData) => {
     type: POLY_QUAD | POLY_NODRAW,
     room: 1,
     paddy: 0,
-  });
+  })
 
-  return mapData;
-};
+  return mapData
+}
 
 const timestampToDate = (timestamp) => {
-  const date = new Date();
-  date.setTime(timestamp * 1000);
-  return date.toUTCString();
-};
+  const date = new Date()
+  date.setTime(timestamp * 1000)
+  return date.toUTCString()
+}
 
 const generateBlankMapData = (config) => {
-  const now = Math.floor(Date.now() / 1000);
-  const generatorVersion = require("../package.json").version;
+  const now = Math.floor(Date.now() / 1000)
+  const generatorVersion = require('../package.json').version
 
   const mapData = {
     meta: {
@@ -269,55 +265,55 @@ const generateBlankMapData = (config) => {
       texture: textures.none,
       spawn: [0, 0, 0],
       vertexCounter: 0,
-      polygonGroup: "global",
+      polygonGroup: 'global',
     },
     items: [],
     dlf: createDlfData(config.levelIdx, now),
     fts: createFtsData(config.levelIdx),
     llf: createLlfData(now),
-  };
+  }
 
-  return compose(addOriginPolygon)(mapData);
-};
+  return compose(addOriginPolygon)(mapData)
+}
 
 const uninstall = async (dir) => {
   try {
-    const manifest = require(`${dir}/manifest.json`);
+    const manifest = require(`${dir}/manifest.json`)
     for (let file of manifest.files) {
       try {
-        await fs.promises.rm(file);
+        await fs.promises.rm(file)
       } catch (f) {}
     }
-    await fs.promises.rm(`${dir}/manifest.json`);
+    await fs.promises.rm(`${dir}/manifest.json`)
   } catch (e) {}
-};
+}
 
 const saveToDisk = async (mapData) => {
-  const { levelIdx } = mapData.config;
+  const { levelIdx } = mapData.config
 
-  const defaultOutputDir = resolve("./dist");
+  const defaultOutputDir = resolve('./dist')
 
   const outputDir =
-    process.env.OUTPUTDIR ?? mapData.config.outputDir ?? defaultOutputDir;
+    process.env.OUTPUTDIR ?? mapData.config.outputDir ?? defaultOutputDir
 
   if (outputDir === defaultOutputDir) {
     try {
-      await fs.promises.rm("dist", { recursive: true });
+      await fs.promises.rm('dist', { recursive: true })
     } catch (e) {}
   } else {
-    await uninstall(outputDir);
+    await uninstall(outputDir)
   }
 
-  let scripts = exportScripts(outputDir);
-  let textures = exportTextures(outputDir);
-  let ambiences = exportAmbiences(outputDir);
-  let dependencies = exportDependencies(outputDir);
+  let scripts = exportScripts(outputDir)
+  let textures = exportTextures(outputDir)
+  let ambiences = exportAmbiences(outputDir)
+  let dependencies = exportDependencies(outputDir)
 
   const files = {
     fts: `${outputDir}/game/graph/levels/level${levelIdx}/fast.fts.json`,
     dlf: `${outputDir}/graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`,
     llf: `${outputDir}/graph/levels/level${levelIdx}/level${levelIdx}.llf.json`,
-  };
+  }
 
   const manifest = {
     meta: mapData.meta,
@@ -328,79 +324,79 @@ const saveToDisk = async (mapData) => {
       ...keys(ambiences),
       ...keys(dependencies),
       ...keys(textures),
-      files.fts.replace(".fts.json", ".fts"),
-      files.dlf.replace(".dlf.json", ".dlf"),
-      files.llf.replace(".llf.json", ".llf"),
+      files.fts.replace('.fts.json', '.fts'),
+      files.dlf.replace('.dlf.json', '.dlf'),
+      files.llf.replace('.llf.json', '.llf'),
     ].sort(),
-  };
+  }
 
   const tasks = map(
     (path) => fs.promises.mkdir(dirname(path), { recursive: true }),
-    manifest.files
-  );
+    manifest.files,
+  )
 
   for (let task of tasks) {
-    await task;
+    await task
   }
 
   // ------------
 
-  scripts = toPairs(scripts);
+  scripts = toPairs(scripts)
 
   for (let [filename, script] of scripts) {
-    await fs.promises.writeFile(filename, script, "latin1");
+    await fs.promises.writeFile(filename, script, 'latin1')
   }
 
   // ------------
 
-  ambiences = toPairs(ambiences);
-  dependencies = toPairs(dependencies);
-  textures = toPairs(textures);
+  ambiences = toPairs(ambiences)
+  dependencies = toPairs(dependencies)
+  textures = toPairs(textures)
 
   for (let [target, source] of [...ambiences, ...dependencies, ...textures]) {
-    await fs.promises.copyFile(source, target);
+    await fs.promises.copyFile(source, target)
   }
 
   // ------------
 
-  await fs.promises.writeFile(files.dlf, JSON.stringify(mapData.dlf));
-  await fs.promises.writeFile(files.fts, JSON.stringify(mapData.fts));
-  await fs.promises.writeFile(files.llf, JSON.stringify(mapData.llf));
+  await fs.promises.writeFile(files.dlf, JSON.stringify(mapData.dlf))
+  await fs.promises.writeFile(files.fts, JSON.stringify(mapData.fts))
+  await fs.promises.writeFile(files.llf, JSON.stringify(mapData.llf))
 
   await fs.promises.writeFile(
     `${outputDir}/manifest.json`,
-    JSON.stringify(manifest, null, 2)
-  );
-};
+    JSON.stringify(manifest, null, 2),
+  )
+}
 
 const setColor = curry((color, mapData) => {
-  mapData.state.color = toRgba(color);
-  return mapData;
-});
+  mapData.state.color = toRgba(color)
+  return mapData
+})
 
 const setTexture = curry((texture, mapData) => {
-  mapData.state.texture = clone(texture);
-  return mapData;
-});
+  mapData.state.texture = clone(texture)
+  return mapData
+})
 
 const setPolygonGroup = curry((group, mapData) => {
-  mapData.state.polygonGroup = group;
-  return mapData;
-});
+  mapData.state.polygonGroup = group
+  return mapData
+})
 
 const unsetPolygonGroup = (mapData) => {
-  mapData.state.polygonGroup = "global";
-  return mapData;
-};
+  mapData.state.polygonGroup = 'global'
+  return mapData
+}
 
 const unpackCoords = map(
   compose(
     ([posX, posY, posZ]) => ({ posX, posY, posZ }),
     map(unary(parseInt)),
-    split("|"),
-    nth(0)
-  )
-);
+    split('|'),
+    nth(0),
+  ),
+)
 
 const categorizeVertices = compose(
   ([corner, [edge, middle]]) => ({
@@ -412,19 +408,19 @@ const categorizeVertices = compose(
   partition(compose(either(equals(1), equals(3)), nth(1))),
   toPairs,
   countBy(({ posX, posY, posZ }) => `${posX}|${posY}|${posZ}`),
-  map(pick(["posX", "posY", "posZ"])),
+  map(pick(['posX', 'posY', 'posZ'])),
   unnest,
-  pluck("vertices")
-);
+  pluck('vertices'),
+)
 
 const bumpByMagnitude = (magnitude) => (vertex) => {
   if (!vertex.modified) {
-    vertex.posY -= magnitude;
-    vertex.modified = true;
+    vertex.posY -= magnitude
+    vertex.modified = true
   }
 
-  return vertex;
-};
+  return vertex
+}
 
 const adjustVertexBy = (ref, fn, polygons) => {
   polygons.forEach((polygon) => {
@@ -434,99 +430,99 @@ const adjustVertexBy = (ref, fn, polygons) => {
         vertex.posY === ref.posY &&
         vertex.posZ === ref.posZ
       ) {
-        return fn(vertex, polygon);
+        return fn(vertex, polygon)
       }
 
-      return vertex;
-    });
-  });
-};
+      return vertex
+    })
+  })
+}
 
 const randomBetween = (min, max) => {
-  return Math.random() * (max - min) + min;
-};
+  return Math.random() * (max - min) + min
+}
 
 const pickRandoms = (n, set) => {
   if (set.length <= n) {
-    return set;
+    return set
   } else {
-    let remaining = set.slice();
-    let matches = [];
+    let remaining = set.slice()
+    let matches = []
     for (let i = 0; i < n; i++) {
-      let idx = randomBetween(0, remaining.length);
-      matches = matches.concat(remaining.splice(idx, 1));
+      let idx = randomBetween(0, remaining.length)
+      matches = matches.concat(remaining.splice(idx, 1))
     }
-    return matches;
+    return matches
   }
-};
+}
 
 const pickRandom = (set) => {
-  return pickRandoms(1, set)[0];
-};
+  return pickRandoms(1, set)[0]
+}
 
 const pickRandomIdx = (set) => {
-  return pickRandom(Object.keys(set));
-};
+  return pickRandom(Object.keys(set))
+}
 
 const cross = (u, v) => {
   return [
     u[1] * v[2] - u[2] * v[1],
     u[2] * v[0] - u[0] * v[2],
     u[0] * v[1] - u[1] * v[0],
-  ];
-};
+  ]
+}
 
 const subtractVec3 = (a, b) => {
-  return [b[0] - a[0], b[1] - a[1], b[2] - a[2]];
-};
+  return [b[0] - a[0], b[1] - a[1], b[2] - a[2]]
+}
 
 const magnitude = ([x, y, z]) => {
-  return Math.sqrt(x ** 2 + y ** 2 + z ** 2);
-};
+  return Math.sqrt(x ** 2 + y ** 2 + z ** 2)
+}
 
 const triangleArea = (a, b, c) => {
-  return magnitude(cross(subtractVec3(a, b), subtractVec3(a, c))) / 2;
-};
+  return magnitude(cross(subtractVec3(a, b), subtractVec3(a, c))) / 2
+}
 
 const distance = (a, b) => {
-  return Math.abs(magnitude(subtractVec3(a, b)));
-};
+  return Math.abs(magnitude(subtractVec3(a, b)))
+}
 
 // source: https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/barycentric-coordinates
 const isPointInTriangle = curry((p, a, b, c) => {
-  const area = triangleArea(a, b, c);
+  const area = triangleArea(a, b, c)
 
-  const u = triangleArea(c, a, p) / area;
-  const v = triangleArea(a, b, p) / area;
-  const w = triangleArea(b, c, p) / area;
+  const u = triangleArea(c, a, p) / area
+  const v = triangleArea(a, b, p) / area
+  const w = triangleArea(b, c, p) / area
 
   return (
     isBetweenInclusive(0, 1, u) &&
     isBetweenInclusive(0, 1, v) &&
     isBetweenInclusive(0, 1, w) &&
     u + v + w === 1
-  );
-});
+  )
+})
 
 const isPointInPolygon = curry((point, polygon) => {
   const [a, b, c, d] = polygon.vertices.map(({ posX, posY, posZ }) => [
     posX,
     posY,
     posZ,
-  ]);
+  ])
   if (polygon.config.isQuad) {
     return (
       isPointInTriangle(point, a, b, c) || isPointInTriangle(point, b, c, d)
-    );
+    )
   } else {
-    return isPointInTriangle(point, a, b, c);
+    return isPointInTriangle(point, a, b, c)
   }
-});
+})
 
 const addLight =
   (pos, props = {}) =>
   (mapData) => {
-    let [x, y, z] = pos;
+    let [x, y, z] = pos
 
     mapData.llf.lights.push({
       ...{
@@ -536,7 +532,7 @@ const addLight =
         fallend: 180,
         intensity: 1.3,
         i: 0,
-        exFlicker: toFloatRgb(toRgba("black")), // this gets subtracted from light.rgb when flickering
+        exFlicker: toFloatRgb(toRgba('black')), // this gets subtracted from light.rgb when flickering
         exRadius: 0,
         exFrequency: 0.01,
         exSize: 0,
@@ -545,10 +541,10 @@ const addLight =
         extras: 0,
       },
       ...props,
-    });
+    })
 
-    return mapData;
-  };
+    return mapData
+  }
 
 const addZone =
   (
@@ -557,12 +553,12 @@ const addZone =
     name,
     ambience = ambiences.none,
     drawDistance = 2000,
-    flags = PATH_RGB | PATH_AMBIANCE | PATH_FARCLIP
+    flags = PATH_RGB | PATH_AMBIANCE | PATH_FARCLIP,
   ) =>
   (mapData) => {
-    let [x, y, z] = pos;
+    let [x, y, z] = pos
 
-    useAmbience(ambience);
+    useAmbience(ambience)
 
     const zoneData = {
       header: {
@@ -592,44 +588,44 @@ const addZone =
         },
         { rpos: { x: size[0] / 2, y: 0, z: size[2] / 2 }, flag: 0, time: 0 },
       ],
-    };
+    }
 
-    mapData.dlf.paths.push(zoneData);
-    return mapData;
-  };
+    mapData.dlf.paths.push(zoneData)
+    return mapData
+  }
 
 const flipPolygon = (vertices) => {
-  const [a, b, c, d] = vertices;
+  const [a, b, c, d] = vertices
   // vertices are laid down in a russian i shape (И):
   // a c
   // b d
   // to flip both triangles I'm flipping the middle 2 vertices
-  return [a, c, b, d];
-};
+  return [a, c, b, d]
+}
 
 const sortByDistance = (vertex) => (a, b) => {
-  const distanceA = distance(vertex, a);
-  const distanceB = distance(vertex, b);
+  const distanceA = distance(vertex, a)
+  const distanceB = distance(vertex, b)
 
-  return distanceA - distanceB;
-};
+  return distanceA - distanceB
+}
 
 // [ a, b, c  [ x      [ ax + by + cz
 //   d, e, f    y    =   dx + ey + fz
 //   g, h, i ]  z ]      gx + hy + iz ]
 const matrix3MulVec3 = ([a, b, c, d, e, f, g, h, i], [x, y, z]) => {
-  return [a * x + b * y + c * z, d * x + e * y + f * z, g * x + h * y + i * z];
-};
+  return [a * x + b * y + c * z, d * x + e * y + f * z, g * x + h * y + i * z]
+}
 
-const degToRad = (deg) => (deg * Math.PI) / 180;
-const radToDeg = (rad) => rad * (180 / Math.PI);
+const degToRad = (deg) => (deg * Math.PI) / 180
+const radToDeg = (rad) => rad * (180 / Math.PI)
 
 const rotateVec3 = (point, [a, b, g]) => {
-  a = degToRad(a);
-  b = degToRad(b);
-  g = degToRad(g);
+  a = degToRad(a)
+  b = degToRad(b)
+  g = degToRad(g)
 
-  const { sin, cos } = Math;
+  const { sin, cos } = Math
 
   const rotation = [
     cos(a) * cos(b),
@@ -641,37 +637,37 @@ const rotateVec3 = (point, [a, b, g]) => {
     -sin(b),
     cos(b) * sin(g),
     cos(b) * cos(g),
-  ];
+  ]
 
-  return matrix3MulVec3(rotation, point);
-};
+  return matrix3MulVec3(rotation, point)
+}
 
 const circleOfVectors = (center, radius, division) => {
-  const angle = 360 / division;
+  const angle = 360 / division
 
-  const vectors = [];
+  const vectors = []
 
   for (let i = 0; i < division; i++) {
     vectors.push(
-      move(...rotateVec3([0, 0, 1 * radius], [0, angle * i, 0]), center)
-    );
+      move(...rotateVec3([0, 0, 1 * radius], [0, angle * i, 0]), center),
+    )
   }
 
-  return vectors;
-};
+  return vectors
+}
 
 const cleanupCache = () => {
-  resetItems();
-  resetAmbiences();
-  resetTextures();
-};
+  resetItems()
+  resetAmbiences()
+  resetTextures()
+}
 
 const pickRandomLoot = (lootTable) => {
   const idx = pickRandom(
-    flatten(lootTable.map(({ weight }, idx) => repeat(idx, weight)))
-  );
-  return lootTable[idx];
-};
+    flatten(lootTable.map(({ weight }, idx) => repeat(idx, weight))),
+  )
+  return lootTable[idx]
+}
 
 module.exports = {
   subtractVec3,
@@ -712,4 +708,4 @@ module.exports = {
   cleanupCache,
   uninstall,
   pickRandomLoot,
-};
+}

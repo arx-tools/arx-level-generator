@@ -13,8 +13,8 @@
  * Glass popping sound effects: https://www.youtube.com/watch?v=6nKbpLUpqiQ (SOUND EFFECT EN & FR)
  */
 
-const { compose } = require("ramda");
-const { textures } = require("../../assets/textures.js");
+const { compose } = require('ramda')
+const { textures } = require('../../assets/textures.js')
 const {
   generateBlankMapData,
   finalize,
@@ -32,12 +32,12 @@ const {
   pickRandomLoot,
   sortByDistance,
   pickRandomIdx,
-} = require("../../helpers.js");
-const { wallX, wallZ, plain } = require("../../prefabs");
+} = require('../../helpers.js')
+const { wallX, wallZ, plain } = require('../../prefabs')
 const {
   defineCeilingLamp,
   createCeilingLamp,
-} = require("./items/ceilingLamp.js");
+} = require('./items/ceilingLamp.js')
 const {
   EXTRAS_SEMIDYNAMIC,
   EXTRAS_EXTINGUISHABLE,
@@ -45,7 +45,7 @@ const {
   EXTRAS_NO_IGNIT,
   HFLIP,
   VFLIP,
-} = require("../../constants.js");
+} = require('../../constants.js')
 const {
   markAsUsed,
   moveTo,
@@ -55,57 +55,57 @@ const {
   addDependencyAs,
   addDependency,
   whereIs,
-} = require("../../assets/items.js");
-const { getInjections, declare, color } = require("../../scripting.js");
+} = require('../../assets/items.js')
+const { getInjections, declare, color } = require('../../scripting.js')
 const {
   generateGrid,
   addRoom,
   getRadius,
   isOccupied,
   renderGrid,
-} = require("./rooms.js");
-const { disableBumping } = require("../../prefabs/plain.js");
+} = require('./rooms.js')
+const { disableBumping } = require('../../prefabs/plain.js')
 const {
   defineCeilingDiffuser,
   createCeilingDiffuser,
-} = require("./items/ceilingDiffuser.js");
-const { overridePlayerScript } = require("../shared/player.js");
-const { createLampController } = require("./items/lampController.js");
-const { ambiences } = require("../../assets/ambiences.js");
-const { UNIT, COLORS } = require("./constants.js");
-const { equals } = require("ramda");
+} = require('./items/ceilingDiffuser.js')
+const { overridePlayerScript } = require('../shared/player.js')
+const { createLampController } = require('./items/lampController.js')
+const { ambiences } = require('../../assets/ambiences.js')
+const { UNIT, COLORS } = require('./constants.js')
+const { equals } = require('ramda')
 
 const addLamp = (pos, angle, config = {}) => {
   return (mapData) => {
-    const isOn = config.on ?? false;
-    const lampEntity = createCeilingLamp(pos, angle, { on: isOn });
+    const isOn = config.on ?? false
+    const lampEntity = createCeilingLamp(pos, angle, { on: isOn })
 
-    const roomHeight = mapData.config.roomDimensions.height;
+    const roomHeight = mapData.config.roomDimensions.height
 
     compose(
       addLight(move(0, 20, 0, pos), {
         fallstart: 100,
         fallend: 500 * roomHeight,
         intensity: 1.3 - roomHeight * 0.1,
-        exFlicker: toFloatRgb(toRgba("#1f1f07")),
+        exFlicker: toFloatRgb(toRgba('#1f1f07')),
         extras:
           EXTRAS_SEMIDYNAMIC |
           EXTRAS_EXTINGUISHABLE |
           (isOn ? 0 : EXTRAS_STARTEXTINGUISHED) |
           EXTRAS_NO_IGNIT,
       }),
-      setColor("white")
-    )(mapData);
+      setColor('white'),
+    )(mapData)
 
-    return lampEntity;
-  };
-};
+    return lampEntity
+  }
+}
 
 const addAmbientLight = (pos, config = {}) => {
   return (mapData) => {
-    const isOn = config.on ?? false;
-    const lightColor = config.color ?? "red";
-    const radius = config.radius ?? 10000;
+    const isOn = config.on ?? false
+    const lightColor = config.color ?? 'red'
+    const radius = config.radius ?? 10000
 
     const lightConfig = {
       fallstart: 0,
@@ -116,7 +116,7 @@ const addAmbientLight = (pos, config = {}) => {
         EXTRAS_EXTINGUISHABLE |
         (isOn ? 0 : EXTRAS_STARTEXTINGUISHED) |
         EXTRAS_NO_IGNIT,
-    };
+    }
 
     const lampEntities = {
       floor: createCeilingLamp(move(0, -radius, 0, pos), [0, 0, 0], {
@@ -143,7 +143,7 @@ const addAmbientLight = (pos, config = {}) => {
         on: isOn,
         muted: true,
       }),
-    };
+    }
 
     compose(
       addLight(move(0, -radius + 20, 0, pos), lightConfig),
@@ -152,12 +152,12 @@ const addAmbientLight = (pos, config = {}) => {
       addLight(move(radius, 20, 0, pos), lightConfig),
       addLight(move(0, 20, -radius, pos), lightConfig),
       addLight(move(0, 20, radius, pos), lightConfig),
-      setColor(lightColor)
-    )(mapData);
+      setColor(lightColor),
+    )(mapData)
 
-    return lampEntities;
-  };
-};
+    return lampEntities
+  }
+}
 
 const createWelcomeMarker = (pos, config) => {
   return compose(
@@ -167,7 +167,7 @@ const createWelcomeMarker = (pos, config) => {
       return `
 // component: welcomeMarker
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
 
   SETCONTROLLEDZONE palette0
 
@@ -218,31 +218,31 @@ ON GOT_RUNE {
   QUEST "Fluorescent lights require electricity, try shooting them with a lightning bolt."
   RETURN
 }
-      `;
+      `
     }),
-    addDependency("graph/levels/level1/map.bmp"),
+    addDependency('graph/levels/level1/map.bmp'),
     addDependencyAs(
-      "projects/the-backrooms/loading.bmp",
-      `graph/levels/level${config.levelIdx}/loading.bmp`
+      'projects/the-backrooms/loading.bmp',
+      `graph/levels/level${config.levelIdx}/loading.bmp`,
     ),
     addDependencyAs(
-      "projects/the-backrooms/sfx/no-sound.wav",
-      "sfx/magic_spell_ignite.wav"
+      'projects/the-backrooms/sfx/no-sound.wav',
+      'sfx/magic_spell_ignite.wav',
     ),
     addDependencyAs(
-      "projects/the-backrooms/sfx/no-sound.wav",
-      "sfx/magic_spell_douse.wav"
+      'projects/the-backrooms/sfx/no-sound.wav',
+      'sfx/magic_spell_douse.wav',
     ),
     addDependencyAs(
-      "projects/the-backrooms/sfx/no-sound.wav",
-      "sfx/player_level_up.wav"
+      'projects/the-backrooms/sfx/no-sound.wav',
+      'sfx/player_level_up.wav',
     ),
-    declare("int", "hasAam", 0),
-    declare("int", "hasFolgora", 0),
-    declare("int", "hasTaar", 0),
-    createItem
-  )(items.marker);
-};
+    declare('int', 'hasAam', 0),
+    declare('int', 'hasFolgora', 0),
+    declare('int', 'hasTaar', 0),
+    createItem,
+  )(items.marker)
+}
 
 const createJumpscareController = (pos, lampCtrl, ambientLights, config) => {
   return compose(
@@ -252,7 +252,7 @@ const createJumpscareController = (pos, lampCtrl, ambientLights, config) => {
       return `
 // component jumpscareController
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
 
   SET #noexitTrigger ^RND_30000
   INC #noexitTrigger 30000
@@ -387,93 +387,93 @@ ON OPEN {
   TIMERmute -m 1 1500 SENDEVENT MUTE ${lampCtrl.ref} NOP
   PLAYERINTERFACE HIDE
   SETPLAYERCONTROLS OFF
-  TIMERfadeout -m 1 700 WORLDFADE OUT 300 ${color("khaki")}
+  TIMERfadeout -m 1 700 WORLDFADE OUT 300 ${color('khaki')}
   PLAY -o "backrooms-outro" // [o] = emit from player
-  TIMERfadeout2 -m 1 18180 WORLDFADE OUT 0 ${color("black")}
+  TIMERfadeout2 -m 1 18180 WORLDFADE OUT 0 ${color('black')}
   TIMERendgame -m 1 20000 END_GAME
   RETURN
 }
-      `;
+      `
     }),
     addDependencyAs(
-      "projects/the-backrooms/whispers/english/do-you-smell-it.wav",
-      "speech/english/whisper--do-you-smell-it.wav"
+      'projects/the-backrooms/whispers/english/do-you-smell-it.wav',
+      'speech/english/whisper--do-you-smell-it.wav',
     ),
     addDependencyAs(
-      "projects/the-backrooms/whispers/german/do-you-smell-it.wav",
-      "speech/deutsch/whisper--do-you-smell-it.wav"
+      'projects/the-backrooms/whispers/german/do-you-smell-it.wav',
+      'speech/deutsch/whisper--do-you-smell-it.wav',
     ),
     addDependencyAs(
-      "projects/the-backrooms/whispers/english/drink-it.wav",
-      "speech/english/whisper--drink-it.wav"
+      'projects/the-backrooms/whispers/english/drink-it.wav',
+      'speech/english/whisper--drink-it.wav',
     ),
     addDependencyAs(
-      "projects/the-backrooms/whispers/german/drink-it.wav",
-      "speech/deutsch/whisper--drink-it.wav"
+      'projects/the-backrooms/whispers/german/drink-it.wav',
+      'speech/deutsch/whisper--drink-it.wav',
     ),
     addDependencyAs(
-      "projects/the-backrooms/whispers/english/drink-the-almond-water.wav",
-      "speech/english/whisper--drink-the-almond-water.wav"
+      'projects/the-backrooms/whispers/english/drink-the-almond-water.wav',
+      'speech/english/whisper--drink-the-almond-water.wav',
     ),
     addDependencyAs(
-      "projects/the-backrooms/whispers/german/drink-the-almond-water.wav",
-      "speech/deutsch/whisper--drink-the-almond-water.wav"
+      'projects/the-backrooms/whispers/german/drink-the-almond-water.wav',
+      'speech/deutsch/whisper--drink-the-almond-water.wav',
     ),
     addDependencyAs(
-      "projects/the-backrooms/whispers/english/magic-wont-save-you.wav",
-      "speech/english/whisper--magic-wont-save-you.wav"
+      'projects/the-backrooms/whispers/english/magic-wont-save-you.wav',
+      'speech/english/whisper--magic-wont-save-you.wav',
     ),
     addDependencyAs(
-      "projects/the-backrooms/whispers/german/magic-wont-save-you.wav",
-      "speech/deutsch/whisper--magic-wont-save-you.wav"
+      'projects/the-backrooms/whispers/german/magic-wont-save-you.wav',
+      'speech/deutsch/whisper--magic-wont-save-you.wav',
     ),
     addDependencyAs(
-      "projects/the-backrooms/whispers/english/no-exit.wav",
-      "speech/english/whisper--no-exit.wav"
+      'projects/the-backrooms/whispers/english/no-exit.wav',
+      'speech/english/whisper--no-exit.wav',
     ),
     addDependencyAs(
-      "projects/the-backrooms/whispers/german/no-exit.wav",
-      "speech/deutsch/whisper--no-exit.wav"
+      'projects/the-backrooms/whispers/german/no-exit.wav',
+      'speech/deutsch/whisper--no-exit.wav',
     ),
-    addDependencyAs("projects/the-backrooms/sfx/baby.wav", "sfx/baby.wav"),
-    declare("int", "magicCntr", 0),
-    declare("int", "harmfulAlmondWaterCounter", 0),
-    declare("int", "previousHarmfulAlmondWaterCounter", -1),
-    createItem
-  )(items.marker);
-};
+    addDependencyAs('projects/the-backrooms/sfx/baby.wav', 'sfx/baby.wav'),
+    declare('int', 'magicCntr', 0),
+    declare('int', 'harmfulAlmondWaterCounter', 0),
+    declare('int', 'previousHarmfulAlmondWaterCounter', -1),
+    createItem,
+  )(items.marker)
+}
 
 const createExit = (top, left, wallSegment, key, jumpscareController) => {
-  const [wallX, wallZ, wallFace] = wallSegment;
+  const [wallX, wallZ, wallFace] = wallSegment
 
-  let translate = [0, 0, 0];
-  let rotate = [0, 0, 0];
+  let translate = [0, 0, 0]
+  let rotate = [0, 0, 0]
 
   switch (wallFace) {
-    case "left":
-      translate = [-80, 0, -75];
-      rotate = [0, 180, 0];
-      break;
-    case "right":
-      translate = [80, 0, 75];
-      rotate = [0, 0, 0];
-      break;
-    case "back":
-      translate = [75, 0, -80];
-      rotate = [0, 270, 0];
-      break;
-    case "front":
-      translate = [-75, 0, 80];
-      rotate = [0, 90, 0];
-      break;
+    case 'left':
+      translate = [-80, 0, -75]
+      rotate = [0, 180, 0]
+      break
+    case 'right':
+      translate = [80, 0, 75]
+      rotate = [0, 0, 0]
+      break
+    case 'back':
+      translate = [75, 0, -80]
+      rotate = [0, 270, 0]
+      break
+    case 'front':
+      translate = [-75, 0, 80]
+      rotate = [0, 90, 0]
+      break
   }
 
   const pos = move(...translate, [
     left + wallX * UNIT,
     0,
     -(top + wallZ * UNIT),
-  ]);
-  const angle = rotate;
+  ])
+  const angle = rotate
 
   return compose(
     markAsUsed,
@@ -482,7 +482,7 @@ const createExit = (top, left, wallSegment, key, jumpscareController) => {
       return `
 // component: exit
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
   ACCEPT
 }
  
@@ -504,21 +504,21 @@ ON ACTION {
 
   ACCEPT
 }
-      `;
+      `
     }),
-    declare("int", "lockpickability", 100),
-    declare("string", "type", "Door_Ylsides"),
-    declare("string", "key", key.ref),
-    declare("int", "open", 0),
-    declare("int", "unlock", 0),
+    declare('int', 'lockpickability', 100),
+    declare('string', 'type', 'Door_Ylsides'),
+    declare('string', 'key', key.ref),
+    declare('int', 'open', 0),
+    declare('int', 'unlock', 0),
     addDependencyAs(
-      "projects/the-backrooms/sfx/backrooms-outro.wav",
-      "sfx/backrooms-outro.wav"
+      'projects/the-backrooms/sfx/backrooms-outro.wav',
+      'sfx/backrooms-outro.wav',
     ),
-    createItem
+    createItem,
     // )(items.doors.lightDoor, { name: "[door--exit]" });
-  )(items.doors.lightDoor, { name: "Unmarked fire exit" });
-};
+  )(items.doors.lightDoor, { name: 'Unmarked fire exit' })
+}
 
 const createKey = (pos, angle = [0, 0, 0], jumpscareCtrl) => {
   return compose(
@@ -528,7 +528,7 @@ const createKey = (pos, angle = [0, 0, 0], jumpscareCtrl) => {
       return `
 // component: key
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
   OBJECT_HIDE SELF NO
   ACCEPT
 }
@@ -541,19 +541,19 @@ ON INVENTORYIN {
 
   ACCEPT
 }
-      `;
+      `
     }),
-    declare("int", "pickedUp", 0),
-    createItem
+    declare('int', 'pickedUp', 0),
+    createItem,
     // )(items.keys.oliverQuest, { name: "[key--exit]" });
-  )(items.keys.oliverQuest, { name: "Fire exit key" });
-};
+  )(items.keys.oliverQuest, { name: 'Fire exit key' })
+}
 
 const createAlmondWater = (
   pos,
   angle = [0, 0, 0],
-  variant = "mana",
-  jumpscareCtrl
+  variant = 'mana',
+  jumpscareCtrl,
 ) => {
   return compose(
     markAsUsed,
@@ -562,7 +562,7 @@ const createAlmondWater = (
       return `
 // component: almondWater
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
   ACCEPT
 }
 
@@ -622,20 +622,20 @@ ON INVENTORYUSE {
 
   REFUSE
 }
-      `;
+      `
     }),
     addDependencyAs(
-      "projects/the-backrooms/almondwater.bmp",
-      "graph/obj3d/interactive/items/magic/potion_mana/potion_mana[icon].bmp"
+      'projects/the-backrooms/almondwater.bmp',
+      'graph/obj3d/interactive/items/magic/potion_mana/potion_mana[icon].bmp',
     ),
-    declare("string", "variant", variant),
-    declare("int", "pickedUp", 0),
-    createItem
+    declare('string', 'variant', variant),
+    declare('int', 'pickedUp', 0),
+    createItem,
   )(items.magic.potion.mana, {
     // name: `[item--almond-water]`,
-    name: "Almond water",
-  });
-};
+    name: 'Almond water',
+  })
+}
 
 const createRune = (runeName, pos, angle = [0, 0, 0], welcomeMarker) => {
   return compose(
@@ -645,7 +645,7 @@ const createRune = (runeName, pos, angle = [0, 0, 0], welcomeMarker) => {
       return `
 // component: rune
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
   ACCEPT
 }
 
@@ -653,12 +653,12 @@ ON INVENTORYUSE {
   SENDEVENT GOT_RUNE ${welcomeMarker.ref} "${runeName}"
   ACCEPT
 }
-      `;
+      `
     }),
-    declare("string", "rune_name", runeName),
-    createItem
-  )(items.magic.rune);
-};
+    declare('string', 'rune_name', runeName),
+    createItem,
+  )(items.magic.rune)
+}
 
 const createSpawnContainer = (pos, angle, contents = []) => {
   return compose(
@@ -668,86 +668,86 @@ const createSpawnContainer = (pos, angle, contents = []) => {
       return `
 // component: spawn container
 ON INIT {
-  ${getInjections("init", self)}
+  ${getInjections('init', self)}
 
   setscale 75
 
   ${contents
     .map(({ ref }) => {
-      return `inventory addfromscene "${ref}"`;
+      return `inventory addfromscene "${ref}"`
     })
-    .join("  \n")}
+    .join('  \n')}
 
   ACCEPT
 }
-      `;
+      `
     }),
-    createItem
-  )(items.containers.barrel);
-};
+    createItem,
+  )(items.containers.barrel)
+}
 
 const generate = async (config) => {
-  const { origin } = config;
+  const { origin } = config
 
-  defineCeilingLamp();
-  defineCeilingDiffuser();
+  defineCeilingLamp()
+  defineCeilingDiffuser()
 
-  overridePlayerScript();
+  overridePlayerScript()
 
-  const welcomeMarker = createWelcomeMarker([0, 0, 0], config);
+  const welcomeMarker = createWelcomeMarker([0, 0, 0], config)
 
-  let roomCounter = 1;
+  let roomCounter = 1
 
   const grid = compose(
     (grid) => {
-      let oldGrid = JSON.stringify(grid);
+      let oldGrid = JSON.stringify(grid)
       for (let i = 0; i < config.numberOfRooms; i++) {
         grid = addRoom(
           randomBetween(...config.roomDimensions.width),
           randomBetween(...config.roomDimensions.depth),
-          grid
-        );
-        let newGrid = JSON.stringify(grid);
+          grid,
+        )
+        let newGrid = JSON.stringify(grid)
         if (newGrid !== oldGrid) {
-          oldGrid = newGrid;
-          roomCounter++;
+          oldGrid = newGrid
+          roomCounter++
         }
       }
-      return grid;
+      return grid
     },
     addRoom(3, 3),
-    generateGrid
-  )(50);
+    generateGrid,
+  )(50)
 
-  config.originalNumberOfRooms = config.numberOfRooms;
-  config.numberOfRooms = roomCounter;
+  config.originalNumberOfRooms = config.numberOfRooms
+  config.numberOfRooms = roomCounter
 
   return compose(
     saveToDisk,
     finalize,
 
     (mapData) => {
-      const radius = getRadius(grid);
-      const top = -radius * UNIT + UNIT / 2;
-      const left = -radius * UNIT + UNIT / 2;
+      const radius = getRadius(grid)
+      const top = -radius * UNIT + UNIT / 2
+      const left = -radius * UNIT + UNIT / 2
 
-      const wallSegments = [];
-      const floors = [];
+      const wallSegments = []
+      const floors = []
 
       const ambientLights = addAmbientLight([0, 0, 0], {
         color: COLORS.BLOOD,
         on: false,
-      })(mapData);
+      })(mapData)
 
-      const lampsToBeCreated = [];
+      const lampsToBeCreated = []
 
       for (let y = 0; y < grid.length; y++) {
         for (let x = 0; x < grid[y].length; x++) {
           if (isOccupied(x, y, grid)) {
-            floors.push([x, y]);
+            floors.push([x, y])
 
-            const offsetX = Math.floor(randomBetween(0, UNIT / 100)) * 100;
-            const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100;
+            const offsetX = Math.floor(randomBetween(0, UNIT / 100)) * 100
+            const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100
 
             if (x % 3 === 0 && y % 3 === 0) {
               lampsToBeCreated.push({
@@ -759,146 +759,141 @@ const generate = async (config) => {
                 config: {
                   on: randomBetween(0, 100) < config.percentOfLightsOn,
                 },
-              });
+              })
             } else {
               if (Math.random() < 0.05) {
                 createCeilingDiffuser([
                   left + x * UNIT - 50 + offsetX,
                   -(config.roomDimensions.height * UNIT - 5),
                   -(top + y * UNIT) - 50 + offsetZ,
-                ]);
+                ])
               }
             }
 
             if (isOccupied(x - 1, y, grid) !== true) {
-              wallSegments.push([x - 1, y, "right"]);
+              wallSegments.push([x - 1, y, 'right'])
             }
             if (isOccupied(x + 1, y, grid) !== true) {
-              wallSegments.push([x + 1, y, "left"]);
+              wallSegments.push([x + 1, y, 'left'])
             }
             if (isOccupied(x, y + 1, grid) !== true) {
-              wallSegments.push([x, y + 1, "front"]);
+              wallSegments.push([x, y + 1, 'front'])
             }
             if (isOccupied(x, y - 1, grid) !== true) {
-              wallSegments.push([x, y - 1, "back"]);
+              wallSegments.push([x, y - 1, 'back'])
             }
           }
         }
       }
 
-      const spawnContainerPos = [0, 0, UNIT];
+      const spawnContainerPos = [0, 0, UNIT]
 
-      const aam = createRune(
-        "aam",
-        spawnContainerPos,
-        [0, 0, 0],
-        welcomeMarker
-      );
+      const aam = createRune('aam', spawnContainerPos, [0, 0, 0], welcomeMarker)
       const folgora = createRune(
-        "folgora",
+        'folgora',
         spawnContainerPos,
         [0, 0, 0],
-        welcomeMarker
-      );
+        welcomeMarker,
+      )
       const taar = createRune(
-        "taar",
+        'taar',
         spawnContainerPos,
         [0, 0, 0],
-        welcomeMarker
-      );
+        welcomeMarker,
+      )
 
       const spawnContainer = createSpawnContainer(
         spawnContainerPos,
         [0, 0, 0],
-        [aam, folgora, taar]
-      );
+        [aam, folgora, taar],
+      )
 
-      const importantLocations = [spawnContainerPos];
+      const importantLocations = [spawnContainerPos]
 
       importantLocations.forEach((pos) => {
         const sortedLamps = lampsToBeCreated.sort((a, b) => {
-          return sortByDistance(pos)(a.pos, b.pos);
-        });
+          return sortByDistance(pos)(a.pos, b.pos)
+        })
 
-        sortedLamps[0].config.on = true;
-      });
+        sortedLamps[0].config.on = true
+      })
 
       const lamps = lampsToBeCreated.reduce((lamps, { pos, config }) => {
-        lamps.push(addLamp(pos, [0, 0, 0], config)(mapData));
-        return lamps;
-      }, []);
+        lamps.push(addLamp(pos, [0, 0, 0], config)(mapData))
+        return lamps
+      }, [])
 
-      const lampCtrl = createLampController([10, 0, 10], lamps, config);
+      const lampCtrl = createLampController([10, 0, 10], lamps, config)
 
       const jumpscareCtrl = createJumpscareController(
         [-10, 0, -10],
         lampCtrl,
         ambientLights,
-        config
-      );
+        config,
+      )
 
       const lootSlots = pickRandoms(
         Math.floor(mapData.config.numberOfRooms / 3) + 5,
-        floors
-      );
+        floors,
+      )
 
       // TODO: filter 5 of the farthest lootSlots compared to spawn and select a random from that
-      const keySlot = pickRandomIdx(lootSlots);
-      const [keyX, keyZ] = lootSlots[keySlot];
-      lootSlots.splice(keySlot, 1);
+      const keySlot = pickRandomIdx(lootSlots)
+      const [keyX, keyZ] = lootSlots[keySlot]
+      lootSlots.splice(keySlot, 1)
 
       const key = createKey(
         [left + keyX * UNIT - 50, 0, -(top + keyZ * UNIT) - 50],
         [0, 0, 0],
-        jumpscareCtrl
-      );
+        jumpscareCtrl,
+      )
 
-      createExit(top, left, pickRandom(wallSegments), key, jumpscareCtrl);
+      createExit(top, left, pickRandom(wallSegments), key, jumpscareCtrl)
 
       lootSlots.forEach(([x, z]) => {
-        const offsetX = Math.floor(randomBetween(0, UNIT / 100)) * 100;
-        const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100;
+        const offsetX = Math.floor(randomBetween(0, UNIT / 100)) * 100
+        const offsetZ = Math.floor(randomBetween(0, UNIT / 100)) * 100
         const pos = [
           left + x * UNIT - 50 + offsetX,
           0,
           -(top + z * UNIT) - 50 + offsetZ,
-        ];
+        ]
 
-        const loot = pickRandomLoot(config.lootTable);
+        const loot = pickRandomLoot(config.lootTable)
 
         switch (loot.name) {
-          case "almondWater":
+          case 'almondWater':
             {
-              createAlmondWater(pos, [0, 0, 0], loot.variant, jumpscareCtrl);
+              createAlmondWater(pos, [0, 0, 0], loot.variant, jumpscareCtrl)
             }
-            break;
+            break
           default:
-            console.error("unknown item", loot);
+            console.error('unknown item', loot)
         }
-      });
+      })
 
-      return mapData;
+      return mapData
     },
 
     renderGrid(grid),
-    setColor("#0b0c10"),
+    setColor('#0b0c10'),
 
     addZone(
-      [-origin[0], 0, -origin[2]],
+      [-origin.coords[0], 0, -origin.coords[2]],
       [100, 0, 100],
-      "palette0",
+      'palette0',
       ambiences.none,
-      5000
+      5000,
     ),
-    setColor("black"),
+    setColor('black'),
 
-    movePlayerTo([-origin[0], 0, -origin[2]]),
+    movePlayerTo([-origin.coords[0], 0, -origin.coords[2]]),
     (mapData) => {
-      mapData.meta.mapName = "The Backrooms";
-      return mapData;
+      mapData.meta.mapName = 'The Backrooms'
+      return mapData
     },
-    generateBlankMapData
-  )(config);
-};
+    generateBlankMapData,
+  )(config)
+}
 
-module.exports = generate;
+module.exports = generate
