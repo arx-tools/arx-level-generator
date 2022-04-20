@@ -1,10 +1,7 @@
 /**
  * The Backrooms
  *
- * Issues:
- *  - https://bugs.arx-libertatis.org/arx/issues/1599
- *
- * To be reported:
+ * Issues to be reported/discussed:
  *   -x flag a spellcast-nál nem némítja el a douse-ot, meg az ignite-ot
  *   a light-oknak lehet extra flag-eknél NO_IGNIT-et megadni, de nincs NO_DOUSE
  *   nem lehet level 0-nál lightningbolt-ot ellőni: https://github.com/arx/ArxLibertatis/blob/master/src/game/Spells.cpp#L742

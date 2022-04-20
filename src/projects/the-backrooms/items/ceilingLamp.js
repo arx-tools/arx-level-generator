@@ -92,30 +92,16 @@ ON RANDOM {
   ACCEPT
 }
 
-ON SPELLCAST {
-  IF (^SENDER != PLAYER) {
-    ACCEPT
-  }
-
-  IF (^$PARAM1 == lightning_strike) {
-    SET ${self.state.lightningWasCast} 1
-  } ELSE {
-    IF (^$PARAM1 == DOUSE) {
-      SENDEVENT OFF SELF ""
-    }
-    SET ${self.state.lightningWasCast} 0
-  }
-
-  ACCEPT
-}
-
 ON HIT {
   IF (^$PARAM2 == "spell") {
-    IF (${self.state.lightningWasCast} == 1) {
+    IF (lightning_strike isin ^$PARAM3) {
       SENDEVENT ON SELF ""
     }
+    IF (douse isin ^$PARAM3) {
+      SENDEVENT OFF SELF ""
+    }
   }
-  ACCEPT
+  REFUSE
 }
 
 >>SWITCH {
@@ -240,7 +226,6 @@ ON UNMUTE {
     declare('int', 'isOn', 0),
     declare('int', 'oldIsOn', -1),
     declare('int', 'savedIsOn', -1),
-    declare('int', 'lightningWasCast', 0),
     declare('int', 'muted', 0),
     declare('int', 'oldMuted', -1),
     declare('int', 'instantSwitching', 0),
