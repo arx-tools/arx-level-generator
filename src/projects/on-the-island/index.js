@@ -26,11 +26,12 @@ import {
 import { plain } from '../../prefabs'
 import { disableBumping, connectToNearPolygons } from '../../prefabs/plain'
 import { getInjections } from '../../scripting'
+import { createGoblin } from './items/goblin'
 
 const createWelcomeMarker = (pos) => {
   return compose(
     markAsUsed,
-    moveTo(pos, [0, 0, 0]),
+    moveTo({ type: 'relative', coords: pos }, [0, 0, 0]),
     addScript((self) => {
       return `
 // component: welcomeMarker
@@ -53,7 +54,7 @@ ON CONTROLLEDZONE_ENTER {
 const createPlant = (pos) => {
   return compose(
     markAsUsed,
-    moveTo(pos, [0, 0, 0]),
+    moveTo({ type: 'relative', coords: pos }, [0, 0, 0]),
     createItem,
   )(items.plants.fern)
 }
@@ -61,27 +62,17 @@ const createPlant = (pos) => {
 const createAmikarsRock = (pos) => {
   return compose(
     markAsUsed,
-    moveTo(pos, [0, 0, 0]),
+    moveTo({ type: 'relative', coords: pos }, [0, 0, 0]),
     createItem,
   )(items.magic.amikarsRock)
 }
 
-const createCompanion = (pos, angle) => {
+const createFishSpawn = (pos) => {
   return compose(
     markAsUsed,
-    moveTo(pos, angle),
-    addScript((self) => {
-      return `
-// component createCompanion
-ON INIT {
-  ${getInjections('init', self)}
-  SPAWN NPC goblin_base/goblin_base ${self.ref}
-  ACCEPT
-}
-      `
-    }),
+    moveTo({ type: 'relative', coords: pos }, [0, 0, 0]),
     createItem,
-  )(items.marker)
+  )(items.fishSpawn)
 }
 
 const generate = async (config) => {
@@ -91,8 +82,12 @@ const generate = async (config) => {
 
   createWelcomeMarker([islandSize * 50, 0, islandSize * 50])
 
+  createFishSpawn([-(islandSize * 50), 50, islandSize * 50])
+  createFishSpawn([-(islandSize * 50), 50, -(islandSize * 50)])
+  createFishSpawn([islandSize * 50, 50, -(islandSize * 50)])
+
   createPlant([700, 0, 700])
-  createCompanion([250, 0, 250], [0, 135, 0])
+  createGoblin([250, 0, 250], [0, 135, 0])
 
   createAmikarsRock([-500, 220, 500])
 

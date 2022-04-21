@@ -332,7 +332,7 @@ const island = (config) => (mapData) => {
   const pps = createPressurePlates(eventBus)
 
   for (let i = 0; i < 4; i++) {
-    moveTo(ppCoords[i], [0, 0, 0], pps[i])
+    moveTo({ type: 'relative', coords: ppCoords[i] }, [0, 0, 0], pps[i])
   }
 
   props(ppIndices, pps).forEach((pp) => {
@@ -347,7 +347,15 @@ const island = (config) => (mapData) => {
   if (exits & NORTH) {
     markAsUsed(gates.north)
     moveTo(
-      move(-25, 0, (height * 100) / 2 + ISLAND_JOINT_LENGTH * 100 - 200, pos),
+      {
+        type: 'relative',
+        coords: move(
+          -25,
+          0,
+          (height * 100) / 2 + ISLAND_JOINT_LENGTH * 100 - 200,
+          pos,
+        ),
+      },
       [0, 90, 0],
       gates.north,
     )
@@ -355,7 +363,15 @@ const island = (config) => (mapData) => {
   if (exits & SOUTH) {
     markAsUsed(gates.south)
     moveTo(
-      move(25, 0, -(height * 100) / 2 - ISLAND_JOINT_LENGTH * 100 + 200, pos),
+      {
+        type: 'relative',
+        coords: move(
+          25,
+          0,
+          -(height * 100) / 2 - ISLAND_JOINT_LENGTH * 100 + 200,
+          pos,
+        ),
+      },
       [0, 270, 0],
       gates.south,
     )
@@ -363,7 +379,15 @@ const island = (config) => (mapData) => {
   if (exits & EAST) {
     markAsUsed(gates.east)
     moveTo(
-      move((width * 100) / 2 + ISLAND_JOINT_LENGTH * 100 - 200, 0, 25, pos),
+      {
+        type: 'relative',
+        coords: move(
+          (width * 100) / 2 + ISLAND_JOINT_LENGTH * 100 - 200,
+          0,
+          25,
+          pos,
+        ),
+      },
       [0, 0, 0],
       gates.east,
     )
@@ -371,7 +395,15 @@ const island = (config) => (mapData) => {
   if (exits & WEST) {
     markAsUsed(gates.west)
     moveTo(
-      move(-(width * 100) / 2 - ISLAND_JOINT_LENGTH * 100 + 200, 0, -25, pos),
+      {
+        type: 'relative',
+        coords: move(
+          -(width * 100) / 2 - ISLAND_JOINT_LENGTH * 100 + 200,
+          0,
+          -25,
+          pos,
+        ),
+      },
       [0, 180, 0],
       gates.west,
     )

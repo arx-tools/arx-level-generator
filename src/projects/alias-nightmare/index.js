@@ -36,7 +36,7 @@ import { disableBumping } from '../../prefabs/plain'
 const createWelcomeMarker = (pos) => (config) => {
   return compose(
     markAsUsed,
-    moveTo(pos, [0, 0, 0]),
+    moveTo({ type: 'relative', coords: pos }, [0, 0, 0]),
     addScript((self) => {
       return `
 // component: welcomeMarker
@@ -86,7 +86,7 @@ ON CONTROLLEDZONE_ENTER {
 const createFallSaver = (pos, target) => {
   return compose(
     markAsUsed,
-    moveTo(pos, [0, 0, 0]),
+    moveTo({ type: 'relative', coords: pos }, [0, 0, 0]),
     addScript((self) => {
       return `
 // component fallsaver

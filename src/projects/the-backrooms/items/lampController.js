@@ -11,7 +11,7 @@ import { getInjections } from '../../../scripting'
 export const createLampController = (pos, lamps) => {
   return compose(
     markAsUsed,
-    moveTo(pos, [0, 0, 0]),
+    moveTo({ type: 'relative', coords: pos }, [0, 0, 0]),
     addScript((self) => {
       return `
 // component lampController

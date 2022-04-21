@@ -11,7 +11,7 @@ import { getInjections } from '../../../scripting'
 export const createHangingCorpse = (pos, angle = [0, 0, 0], props = {}) => {
   return compose(
     markAsUsed,
-    moveTo(pos, angle),
+    moveTo({ type: 'relative', coords: pos }, angle),
     addScript((self) => {
       return `
 // component: hangingCorpse

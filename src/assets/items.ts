@@ -23,10 +23,39 @@ import {
   uniq,
 } from 'ramda'
 import { padCharsStart, isFunction, isObject } from 'ramda-adjunct'
+import { RelativeCoords } from 'src/types'
 import { getRootPath } from '../../rootpath'
 import { PLAYER_HEIGHT_ADJUSTMENT } from '../constants'
 
-const items = {
+type InjectableProps = {
+  name?: string
+  speed?: number
+  scale?: number
+  hp?: number
+  interactive?: boolean
+  collision?: boolean
+}
+
+type RenderedInjectableProps = {
+  init?: string[]
+}
+
+type Item = {
+  src: string
+  native: boolean
+  dependencies?: string[]
+  props: InjectableProps
+}
+
+type ItemRef = {
+  src: string
+  id: 'root' | number
+  state: Record<string, any>
+  injections: RenderedInjectableProps
+  ref: string
+}
+
+export const items = {
   marker: {
     src: 'system/marker/marker.teo',
     native: true,
@@ -120,6 +149,10 @@ const items = {
       src: 'player/player.teo',
       native: true,
     },
+    goblin: {
+      src: 'npc/goblin_base/goblin_base.teo',
+      native: true,
+    },
   },
   shape: {
     cube: {
@@ -133,12 +166,16 @@ const items = {
       native: true,
     },
   },
+  fishSpawn: {
+    src: 'fix_inter/fish_spawn/fish_spawn.teo',
+    native: true,
+  },
 }
 
 let usedItems = {}
 
-const propsToInjections = (props) => {
-  const init = []
+const propsToInjections = (props: InjectableProps): RenderedInjectableProps => {
+  const init: string[] = []
 
   if (props.name) {
     init.push(`SETNAME "${props.name}"`)
@@ -152,10 +189,10 @@ const propsToInjections = (props) => {
   if (props.hp) {
     init.push(`SET_NPC_STAT life ${props.hp}`)
   }
-  if (typeof props.interactive !== 'undefined') {
+  if (typeof props.interactive === 'boolean') {
     init.push(`SET_INTERACTIVITY ${props.interactive ? 'ON' : 'NONE'}`)
   }
-  if (typeof props.collision !== 'undefined') {
+  if (typeof props.collision !== 'boolean') {
     init.push(`COLLISION ${props.collision ? 'ON' : 'OFF'}`)
   }
 
@@ -166,7 +203,7 @@ const propsToInjections = (props) => {
   }
 }
 
-const createItem = (item, props = {}) => {
+export const createItem = (item: Item, props = {}): ItemRef => {
   usedItems[item.src] = usedItems[item.src] || []
 
   const id = usedItems[item.src].length
@@ -194,7 +231,7 @@ const createItem = (item, props = {}) => {
   }
 }
 
-const createRootItem = (item, props = {}) => {
+export const createRootItem = (item: Item, props = {}): ItemRef => {
   usedItems[item.src] = usedItems[item.src] || []
 
   usedItems[item.src].root = {
@@ -216,13 +253,15 @@ const createRootItem = (item, props = {}) => {
   }
 }
 
-const addDependency = curry((dependency, itemRef) => {
+export const addDependency = curry((dependency, itemRef: ItemRef) => {
   const { src, id } = itemRef
+
   usedItems[src][id].dependencies.push(dependency)
+
   return itemRef
 })
 
-const addDependencyAs = curry((source, target, itemRef) => {
+export const addDependencyAs = curry((source, target, itemRef: ItemRef) => {
   const { src, id } = itemRef
 
   usedItems[src][id].dependencies.push({
@@ -233,8 +272,9 @@ const addDependencyAs = curry((source, target, itemRef) => {
   return itemRef
 })
 
-const addScript = curry((script, itemRef) => {
+export const addScript = curry((script, itemRef: ItemRef) => {
   const { src, id } = itemRef
+
   usedItems[src][id].script =
     (usedItems &&
     usedItems[src] &&
@@ -245,27 +285,35 @@ const addScript = curry((script, itemRef) => {
     '\r\n' +
     '\r\n' +
     trim(isFunction(script) ? script(itemRef) : script)
+
   return itemRef
 })
 
-const moveTo = curry(([x, y, z], [a, b, g], itemRef) => {
-  const { src, id } = itemRef
-  usedItems[src][id].pos = { x, y, z }
-  usedItems[src][id].angle = { a, b, g }
-  return itemRef
-})
+export const moveTo = curry(
+  ({ coords: [x, y, z] }: RelativeCoords, [a, b, g], itemRef: ItemRef) => {
+    const { src, id } = itemRef
 
-const whereIs = (itemRef) => {
+    usedItems[src][id].pos = { x, y, z }
+    usedItems[src][id].angle = { a, b, g }
+
+    return itemRef
+  },
+)
+
+export const whereIs = (itemRef: ItemRef): ItemRef => {
   const { src, id } = itemRef
+
   return clone(usedItems[src][id].pos)
 }
 
-const markAsUsed = (itemRef) => {
+export const markAsUsed = (itemRef: ItemRef) => {
   const { src, id } = itemRef
+
   usedItems[src][id].used = true
   if (usedItems[src].root) {
     usedItems[src].root.used = true
   }
+
   return itemRef
 }
 
@@ -273,11 +321,11 @@ const markAsUsed = (itemRef) => {
 const capitalize = compose(join(''), juxt([compose(toUpper, head), tail]))
 
 // asd/asd.teo -> Asd\\Asd.teo
-const arxifyFilename = (filename) => {
-  return compose(join('\\'), map(capitalize), split('/'))(filename)
+const arxifyFilename = (filename: string) => {
+  return filename.split('/').map(capitalize).join('\\')
 }
 
-const exportUsedItems = (mapData) => {
+export const exportUsedItems = (mapData) => {
   const { spawn } = mapData.state
 
   mapData.dlf.interactiveObjects = compose(
@@ -302,7 +350,7 @@ const exportUsedItems = (mapData) => {
   )(usedItems)
 }
 
-const exportScripts = (outputDir) => {
+export const exportScripts = (outputDir: string) => {
   return compose(
     reduce((files, item) => {
       const { dir, name } = path.parse(item.filename)
@@ -326,13 +374,20 @@ const exportScripts = (outputDir) => {
   )(usedItems)
 }
 
-const exportDependencies = (outputDir) => {
+export const exportDependencies = (outputDir: string) => {
   return compose(
     reduce((files, filename) => {
-      if (isObject(filename)) {
-        const { source, target } = filename
-        const { dir: dir1, name: name1, ext: ext1 } = path.parse(target)
-        const { dir: dir2, name: name2, ext: ext2 } = path.parse(source)
+      if (typeof filename === 'object') {
+        const {
+          dir: dir1,
+          name: name1,
+          ext: ext1,
+        } = path.parse(filename.target as string)
+        const {
+          dir: dir2,
+          name: name2,
+          ext: ext2,
+        } = path.parse(filename.source as string)
         files[
           `${outputDir}/${dir1}/${name1}${ext1}`
         ] = `${getRootPath()}/assets/${dir2}/${name2}${ext2}`
@@ -355,22 +410,6 @@ const exportDependencies = (outputDir) => {
   )(usedItems)
 }
 
-const resetItems = () => {
+export const resetItems = () => {
   usedItems = {}
-}
-
-export {
-  items,
-  createItem,
-  createRootItem,
-  addScript,
-  addDependency,
-  addDependencyAs,
-  moveTo,
-  whereIs,
-  markAsUsed,
-  exportUsedItems,
-  exportScripts,
-  exportDependencies,
-  resetItems,
 }

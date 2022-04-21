@@ -149,7 +149,7 @@ const addAmbientLight = (pos, config = {}) => {
 const createWelcomeMarker = (pos, config) => {
   return compose(
     markAsUsed,
-    moveTo(pos, [0, 0, 0]),
+    moveTo({ type: 'relative', coords: pos }, [0, 0, 0]),
     addScript((self) => {
       return `
 // component: welcomeMarker
@@ -234,7 +234,7 @@ ON GOT_RUNE {
 const createJumpscareController = (pos, lampCtrl, ambientLights, config) => {
   return compose(
     markAsUsed,
-    moveTo(pos, [0, 0, 0]),
+    moveTo({ type: 'relative', coords: pos }, [0, 0, 0]),
     addScript((self) => {
       return `
 // component jumpscareController
@@ -464,7 +464,7 @@ const createExit = (top, left, wallSegment, key, jumpscareController) => {
 
   return compose(
     markAsUsed,
-    moveTo(pos, angle),
+    moveTo({ type: 'relative', coords: pos }, angle),
     addScript((self) => {
       return `
 // component: exit
@@ -510,7 +510,7 @@ ON ACTION {
 const createKey = (pos, angle = [0, 0, 0], jumpscareCtrl) => {
   return compose(
     markAsUsed,
-    moveTo(pos, angle),
+    moveTo({ type: 'relative', coords: pos }, angle),
     addScript((self) => {
       return `
 // component: key
@@ -544,7 +544,7 @@ const createAlmondWater = (
 ) => {
   return compose(
     markAsUsed,
-    moveTo(pos, angle),
+    moveTo({ type: 'relative', coords: pos }, angle),
     addScript((self) => {
       return `
 // component: almondWater
@@ -627,7 +627,7 @@ ON INVENTORYUSE {
 const createRune = (runeName, pos, angle = [0, 0, 0], welcomeMarker) => {
   return compose(
     markAsUsed,
-    moveTo(pos, angle),
+    moveTo({ type: 'relative', coords: pos }, angle),
     addScript((self) => {
       return `
 // component: rune
@@ -650,7 +650,7 @@ ON INVENTORYUSE {
 const createSpawnContainer = (pos, angle, contents = []) => {
   return compose(
     markAsUsed,
-    moveTo(pos, angle),
+    moveTo({ type: 'relative', coords: pos }, angle),
     addScript((self) => {
       return `
 // component: spawn container
