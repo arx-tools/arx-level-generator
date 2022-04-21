@@ -9,7 +9,7 @@ import {
   vertexToVector,
   distance,
   isBetween,
-} from '../helpers.js'
+} from '../helpers'
 import { identity, map, clamp, pluck } from 'ramda'
 import { isEmptyArray } from 'ramda-adjunct'
 

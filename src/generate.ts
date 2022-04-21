@@ -4,8 +4,7 @@ import theBackrooms from './projects/the-backrooms/index'
 import onTheIsland from './projects/on-the-island/index'
 import { MapConfig } from './types'
 ;(async () => {
-  // const seed = (Math.floor(Math.random() * 1e20)).toString();
-
+  // const seed = (Math.floor(Math.random() * 1e20)).toString()
   const seed: string = '70448428008674860000'
 
   seedrandom(seed, { global: true })

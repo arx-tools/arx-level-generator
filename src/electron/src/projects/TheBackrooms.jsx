@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import Page from "../components/Page.jsx";
+import React, { useState } from 'react'
+import Page from '../components/Page'
 
 const TheBackrooms = ({ onGenerateBtnClick, ...props }) => {
-  const [numberOfRooms, setNumberOfRooms] = useState(50);
-  const [roomHeight, setRoomHeight] = useState(4);
-  const [percentOfLightsOn, setPercentOfLightsOn] = useState(30);
+  const [numberOfRooms, setNumberOfRooms] = useState(50)
+  const [roomHeight, setRoomHeight] = useState(4)
+  const [percentOfLightsOn, setPercentOfLightsOn] = useState(30)
 
   return (
     <Page
@@ -20,7 +20,7 @@ const TheBackrooms = ({ onGenerateBtnClick, ...props }) => {
             height: Math.floor(roomHeight / 2),
           },
           ...config,
-        });
+        })
       }}
       {...props}
     >
@@ -33,9 +33,9 @@ const TheBackrooms = ({ onGenerateBtnClick, ...props }) => {
           step={1}
           value={numberOfRooms}
           onInput={(e) => {
-            const newValue = parseInt(e.target.value);
+            const newValue = parseInt(e.target.value)
             if (!isNaN(newValue) && newValue >= 0) {
-              setNumberOfRooms(newValue);
+              setNumberOfRooms(newValue)
             }
           }}
           placeholder=""
@@ -50,9 +50,9 @@ const TheBackrooms = ({ onGenerateBtnClick, ...props }) => {
           step={1}
           value={roomHeight}
           onInput={(e) => {
-            const newValue = parseInt(e.target.value);
+            const newValue = parseInt(e.target.value)
             if (!isNaN(newValue) && newValue >= 0) {
-              setRoomHeight(newValue);
+              setRoomHeight(newValue)
             }
           }}
           placeholder=""
@@ -67,16 +67,16 @@ const TheBackrooms = ({ onGenerateBtnClick, ...props }) => {
           step={1}
           value={percentOfLightsOn}
           onInput={(e) => {
-            const newValue = parseInt(e.target.value);
+            const newValue = parseInt(e.target.value)
             if (!isNaN(newValue) && newValue >= 0) {
-              setPercentOfLightsOn(newValue);
+              setPercentOfLightsOn(newValue)
             }
           }}
           placeholder=""
         />
       </div>
     </Page>
-  );
-};
+  )
+}
 
-export default TheBackrooms;
+export default TheBackrooms

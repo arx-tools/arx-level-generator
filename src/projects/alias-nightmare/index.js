@@ -12,8 +12,8 @@ import {
   setPolygonGroup,
   unsetPolygonGroup,
 } from '../../helpers'
-import island from './island.js'
-import { colors, NONE, ALL, NORTH, EAST, SOUTH, WEST } from './constants.js'
+import island from './island'
+import { colors, NONE, ALL, NORTH, EAST, SOUTH, WEST } from './constants'
 import { ambiences } from '../../assets/ambiences'
 import {
   items,

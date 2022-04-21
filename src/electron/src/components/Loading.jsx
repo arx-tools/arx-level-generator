@@ -1,5 +1,5 @@
-import React from "react";
-import cn from "classnames";
+import React from 'react'
+import cn from 'classnames'
 
 const Loading = ({ message, isVisible, progressbarPercent, onDoneClick }) => {
   return (
@@ -15,7 +15,7 @@ const Loading = ({ message, isVisible, progressbarPercent, onDoneClick }) => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Loading;
+export default Loading

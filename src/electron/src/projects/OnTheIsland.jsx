@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import Page from "../components/Page.jsx";
+import React from 'react'
+import Page from '../components/Page'
 
 const OnTheIsland = ({ onGenerateBtnClick, ...props }) => {
   return (
@@ -9,7 +9,7 @@ const OnTheIsland = ({ onGenerateBtnClick, ...props }) => {
       onGenerateBtnClick={onGenerateBtnClick}
       {...props}
     />
-  );
-};
+  )
+}
 
-export default OnTheIsland;
+export default OnTheIsland

@@ -1,6 +1,6 @@
-import React from "react";
-import cn from "classnames";
-import Badge from "./Badge.jsx";
+import React from 'react'
+import cn from 'classnames'
+import Badge from './Badge'
 
 const Page = ({
   title,
@@ -19,7 +19,7 @@ const Page = ({
 }) => {
   return (
     <section
-      className={cn("page", { hidden: !isVisible })}
+      className={cn('page', { hidden: !isVisible })}
       style={{
         background: `url('${background}') no-repeat center center`,
       }}
@@ -67,14 +67,14 @@ const Page = ({
         <button
           className="generate"
           onClick={() => {
-            onGenerateBtnClick({});
+            onGenerateBtnClick({})
           }}
         >
           Generate
         </button>
       </footer>
     </section>
-  );
-};
+  )
+}
 
-export default Page;
+export default Page

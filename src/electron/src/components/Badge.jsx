@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
 const Badge = ({ children }) => {
-  return <span className="badge">{children}</span>;
-};
+  return <span className="badge">{children}</span>
+}
 
-export default Badge;
+export default Badge

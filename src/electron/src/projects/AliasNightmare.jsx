@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import Page from "../components/Page.jsx";
+import React, { useState } from 'react'
+import Page from '../components/Page'
 
 const AliasNightmare = ({ onGenerateBtnClick, ...props }) => {
-  const [bumpFactor, setBumpFactor] = useState(3);
+  const [bumpFactor, setBumpFactor] = useState(3)
   return (
     <Page
       title="Alia's Nightmare"
@@ -11,7 +11,7 @@ const AliasNightmare = ({ onGenerateBtnClick, ...props }) => {
         onGenerateBtnClick({
           bumpFactor,
           ...config,
-        });
+        })
       }}
       {...props}
     >
@@ -24,16 +24,16 @@ const AliasNightmare = ({ onGenerateBtnClick, ...props }) => {
           step={1}
           value={bumpFactor}
           onInput={(e) => {
-            const newValue = parseInt(e.target.value);
+            const newValue = parseInt(e.target.value)
             if (!isNaN(newValue) && newValue >= 0) {
-              setBumpFactor(newValue);
+              setBumpFactor(newValue)
             }
           }}
           placeholder=""
         />
       </div>
     </Page>
-  );
-};
+  )
+}
 
-export default AliasNightmare;
+export default AliasNightmare
