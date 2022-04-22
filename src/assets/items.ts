@@ -204,7 +204,7 @@ const propsToInjections = (props: InjectableProps): RenderedInjectableProps => {
   if (typeof props.interactive === 'boolean') {
     init.push(`SET_INTERACTIVITY ${props.interactive ? 'ON' : 'NONE'}`)
   }
-  if (typeof props.collision !== 'boolean') {
+  if (typeof props.collision === 'boolean') {
     init.push(`COLLISION ${props.collision ? 'ON' : 'OFF'}`)
   }
 
