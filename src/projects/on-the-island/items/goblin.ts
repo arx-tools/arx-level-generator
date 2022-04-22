@@ -6,7 +6,7 @@ import {
   markAsUsed,
   moveTo,
 } from '../../../assets/items'
-import { getInjections, declare } from '../../../scripting'
+import { getInjections } from '../../../scripting'
 
 export const createGoblin = (pos, angle = [0, 0, 0], props = {}) => {
   return compose(

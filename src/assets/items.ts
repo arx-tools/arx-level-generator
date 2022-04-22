@@ -5,7 +5,6 @@ import {
   compose,
   unnest,
   clone,
-  split,
   join,
   juxt,
   toUpper,
@@ -13,7 +12,6 @@ import {
   tail,
   reduce,
   toString,
-  trim,
   propEq,
   filter,
   curry,
@@ -22,7 +20,7 @@ import {
   pluck,
   uniq,
 } from 'ramda'
-import { padCharsStart, isFunction, isObject } from 'ramda-adjunct'
+import { padCharsStart } from 'ramda-adjunct'
 import { RelativeCoords } from 'src/types'
 import { getRootPath } from '../../rootpath'
 import { PLAYER_HEIGHT_ADJUSTMENT } from '../constants'
@@ -170,6 +168,20 @@ export const items = {
     src: 'fix_inter/fish_spawn/fish_spawn.teo',
     native: true,
   },
+  misc: {
+    rope: {
+      src: 'items/provisions/rope/rope.teo',
+      native: true,
+    },
+    pole: {
+      src: 'items/provisions/pole/pole.teo',
+      native: true,
+    },
+    deckOfCards: {
+      src: 'items/movable/cards/card.teo',
+      native: true,
+    },
+  },
 }
 
 let usedItems = {}
@@ -272,22 +284,24 @@ export const addDependencyAs = curry((source, target, itemRef: ItemRef) => {
   return itemRef
 })
 
-export const addScript = curry((script, itemRef: ItemRef) => {
-  const { src, id } = itemRef
+export const addScript = curry(
+  (script: string | ((self: ItemRef) => string), itemRef: ItemRef) => {
+    const { src, id } = itemRef
 
-  usedItems[src][id].script =
-    (usedItems &&
-    usedItems[src] &&
-    usedItems[src][id] &&
-    usedItems[src][id].script
-      ? usedItems[src][id].script
-      : '') +
-    '\r\n' +
-    '\r\n' +
-    trim(isFunction(script) ? script(itemRef) : script)
+    usedItems[src][id].script =
+      (usedItems &&
+      usedItems[src] &&
+      usedItems[src][id] &&
+      usedItems[src][id].script
+        ? usedItems[src][id].script
+        : '') +
+      '\r\n' +
+      '\r\n' +
+      (typeof script === 'function' ? script(itemRef) : script).trim()
 
-  return itemRef
-})
+    return itemRef
+  },
+)
 
 export const moveTo = curry(
   ({ coords: [x, y, z] }: RelativeCoords, [a, b, g], itemRef: ItemRef) => {

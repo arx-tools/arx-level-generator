@@ -75,6 +75,31 @@ const createFishSpawn = (pos) => {
   )(items.fishSpawn)
 }
 
+const createBarrel = (pos, angle, contents = []) => {
+  return compose(
+    markAsUsed,
+    moveTo({ type: 'relative', coords: pos }, angle),
+    addScript((self) => {
+      return `
+// component: barrel
+ON INIT {
+  ${getInjections('init', self)}
+
+  // setscale 75
+
+  ${contents
+    .map(({ ref }) => {
+      return `inventory addfromscene "${ref}"`
+    })
+    .join('  \n')}
+
+  ACCEPT
+}
+      `
+    }),
+    createItem,
+  )(items.containers.barrel)
+}
 const generate = async (config) => {
   const { origin } = config
 
@@ -82,12 +107,25 @@ const generate = async (config) => {
 
   createWelcomeMarker([islandSize * 50, 0, islandSize * 50])
 
+  createGoblin([250, -10, 250], [0, 135, 0])
+
+  createFishSpawn([islandSize * 50, 50, islandSize * 50])
   createFishSpawn([-(islandSize * 50), 50, islandSize * 50])
   createFishSpawn([-(islandSize * 50), 50, -(islandSize * 50)])
   createFishSpawn([islandSize * 50, 50, -(islandSize * 50)])
 
-  createPlant([700, 0, 700])
-  createGoblin([250, 0, 250], [0, 135, 0])
+  createPlant([700, -10, 700])
+
+  const startingLoot = [
+    compose(markAsUsed, createItem)(items.misc.pole),
+    compose(markAsUsed, createItem)(items.misc.rope),
+  ]
+
+  createBarrel(
+    [(islandSize * 50) / 2, -10, islandSize * 50 - 50],
+    [0, 0, 0],
+    startingLoot,
+  )
 
   createAmikarsRock([-500, 220, 500])
 
