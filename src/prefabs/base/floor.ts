@@ -1,14 +1,13 @@
 import { POLY_QUAD, POLY_NO_SHADOW, HFLIP, VFLIP } from '../../constants'
 import { useTexture } from '../../assets/textures'
 import { flipPolygon } from '../../helpers'
+import { AbsoluteCoords } from 'src/types'
 
-// [x, y, z] are absolute coordinates,
-// not relative to origin
 const floor =
   (
-    [x, y, z],
-    direction: 'floor' | 'ceiling' = 'floor',
-    quad = 0,
+    position: AbsoluteCoords,
+    facing: 'floor' | 'ceiling' = 'floor',
+    quad: number | null = 0,
     textureRotation = 0,
     size = 100,
     flags = 0,
@@ -20,6 +19,7 @@ const floor =
     },
   ) =>
   (mapData) => {
+    const [x, y, z] = position.coords
     const { texture } = mapData.state
     let texU = 0
     let texV = 0
@@ -35,30 +35,29 @@ const floor =
     let c = { u: 0, v: 0 }
     let d = { u: 0, v: 0.5 }
 
-    if (quad === null) {
-      a = _uv.a
-      b = _uv.b
-      c = _uv.c
-      d = _uv.d
-    } else {
-      switch (quad) {
-        case 0:
-          texU = 0
-          texV = 0
-          break
-        case 1:
-          texU = 0.5
-          texV = 0
-          break
-        case 2:
-          texU = 0
-          texV = 0.5
-          break
-        case 3:
-          texU = 0.5
-          texV = 0.5
-          break
-      }
+    switch (quad) {
+      case null:
+        a = _uv.a
+        b = _uv.b
+        c = _uv.c
+        d = _uv.d
+        break
+      case 0:
+        texU = 0
+        texV = 0
+        break
+      case 1:
+        texU = 0.5
+        texV = 0
+        break
+      case 2:
+        texU = 0
+        texV = 0.5
+        break
+      case 3:
+        texU = 0.5
+        texV = 0.5
+        break
     }
 
     let uv = [c, d, a, b] // 0
@@ -114,7 +113,7 @@ const floor =
       },
     ]
 
-    if (direction === 'ceiling') {
+    if (facing === 'ceiling') {
       vertices = flipPolygon(vertices)
     }
 

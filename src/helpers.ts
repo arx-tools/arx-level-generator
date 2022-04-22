@@ -49,13 +49,22 @@ import {
   resetItems,
 } from './assets/items'
 import {
+  ambiences,
   exportAmbiences,
   useAmbience,
   resetAmbiences,
 } from './assets/ambiences'
 import { dirname, resolve } from 'path'
+import {
+  FloatRgb,
+  PosVertex3,
+  RgbaBytes,
+  RotationVector3,
+  Vector3,
+  Vertex3,
+} from './types'
 
-const normalize = (v) => {
+const normalize = (v: Vector3): Vector3 => {
   return map(apply(divide), zip(v, repeat(magnitude(v), 3)))
 }
 
@@ -64,8 +73,8 @@ const move = curry((x, y, z, vector) => {
 })
 
 // "#ff07a4" -> { r: [0..255], g: [0..255], b: [0..255], a: [0..255] }
-const toRgba = (colorDefinition) => {
-  const [r, g, b, a] = rgba(colorDefinition)
+export const toRgba = (cssColor: string): RgbaBytes => {
+  const [r, g, b, a] = rgba(cssColor)
 
   return {
     r,
@@ -76,7 +85,7 @@ const toRgba = (colorDefinition) => {
 }
 
 // { r: 127, g: 0, b: 0, a: 1 } -> { r: [0.0..1.0], g: [0.0..1.0], b: [0.0..1.0] }
-const toFloatRgb = (color) => {
+const toFloatRgb = (color: RgbaBytes): FloatRgb => {
   const { r, g, b } = color
   return { r: r / 256, g: g / 256, b: b / 256 }
 }
@@ -97,7 +106,7 @@ const isBetweenInclusive = (min, max, value) => {
 const generateLights = (mapData) => {
   let colorIdx = 0
 
-  const colors = []
+  const colors: RgbaBytes[] = []
   const white = toRgba('white')
 
   const p = mapData.fts.polygons.reduce((acc, { vertices }, idx) => {
@@ -142,9 +151,13 @@ const generateLights = (mapData) => {
   mapData.llf.colors = colors
 }
 
-const vertexToVector = ({ posX, posY, posZ }) => [posX, posY, posZ]
+const vertexToVector = ({ posX, posY, posZ }: PosVertex3): Vector3 => [
+  posX,
+  posY,
+  posZ,
+]
 
-const vectorToXYZ = ([x, y, z]) => ({ x, y, z })
+const vectorToXYZ = ([x, y, z]: Vector3): Vertex3 => ({ x, y, z })
 
 const calculateNormals = (mapData) => {
   // https://computergraphics.stackexchange.com/questions/4031/programmatically-generating-vertex-normals
@@ -177,8 +190,9 @@ const calculateNormals = (mapData) => {
 
 const finalize = (mapData) => {
   mapData.fts.polygons = compose(unnest, values)(mapData.fts.polygons)
-  mapData.dlf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length
-  mapData.llf.header.numberOfBackgroundPolygons = mapData.fts.polygons.length
+  const numberOfPolygons = mapData.fts.polygons.length
+  mapData.dlf.header.numberOfBackgroundPolygons = numberOfPolygons
+  mapData.llf.header.numberOfBackgroundPolygons = numberOfPolygons
 
   const { spawn } = mapData.state
 
@@ -460,7 +474,7 @@ const pickRandomIdx = (set) => {
   return pickRandom(Object.keys(set))
 }
 
-const cross = (u, v) => {
+const cross = (u: Vector3, v: Vector3): Vector3 => {
   return [
     u[1] * v[2] - u[2] * v[1],
     u[2] * v[0] - u[0] * v[2],
@@ -468,15 +482,15 @@ const cross = (u, v) => {
   ]
 }
 
-const subtractVec3 = (a, b) => {
+const subtractVec3 = (a: Vector3, b: Vector3): Vector3 => {
   return [b[0] - a[0], b[1] - a[1], b[2] - a[2]]
 }
 
-const magnitude = ([x, y, z]) => {
+const magnitude = ([x, y, z]: Vector3) => {
   return Math.sqrt(x ** 2 + y ** 2 + z ** 2)
 }
 
-const triangleArea = (a, b, c) => {
+const triangleArea = (a: Vector3, b: Vector3, c: Vector3) => {
   return magnitude(cross(subtractVec3(a, b), subtractVec3(a, c))) / 2
 }
 
@@ -609,14 +623,17 @@ const sortByDistance = (vertex) => (a, b) => {
 // [ a, b, c  [ x      [ ax + by + cz
 //   d, e, f    y    =   dx + ey + fz
 //   g, h, i ]  z ]      gx + hy + iz ]
-const matrix3MulVec3 = ([a, b, c, d, e, f, g, h, i], [x, y, z]) => {
+const matrix3MulVec3: (matrix: number[], vector: Vector3) => Vector3 = (
+  [a, b, c, d, e, f, g, h, i],
+  [x, y, z],
+) => {
   return [a * x + b * y + c * z, d * x + e * y + f * z, g * x + h * y + i * z]
 }
 
 const degToRad = (deg) => (deg * Math.PI) / 180
 const radToDeg = (rad) => rad * (180 / Math.PI)
 
-const rotateVec3 = (point, [a, b, g]) => {
+const rotateVec3 = (point: Vector3, [a, b, g]: RotationVector3) => {
   a = degToRad(a)
   b = degToRad(b)
   g = degToRad(g)
@@ -638,15 +655,15 @@ const rotateVec3 = (point, [a, b, g]) => {
   return matrix3MulVec3(rotation, point)
 }
 
-const circleOfVectors = (center, radius, division) => {
+const circleOfVectors = (center, radius: number, division) => {
   const angle = 360 / division
 
-  const vectors = []
+  const vectors: Vector3[] = []
 
   for (let i = 0; i < division; i++) {
-    vectors.push(
-      move(...rotateVec3([0, 0, 1 * radius], [0, angle * i, 0]), center),
-    )
+    const point: Vector3 = [0, 0, 1 * radius]
+    const rotation: RotationVector3 = [0, angle * i, 0]
+    vectors.push(move(...rotateVec3(point, rotation), center))
   }
 
   return vectors
@@ -671,7 +688,6 @@ export {
   magnitude,
   normalize,
   move,
-  toRgba,
   movePlayerTo,
   finalize,
   generateBlankMapData,

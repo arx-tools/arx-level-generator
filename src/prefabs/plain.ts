@@ -10,16 +10,28 @@ import {
   distance,
   isBetween,
 } from '../helpers'
-import { identity, map, clamp, pluck } from 'ramda'
-import { isEmptyArray } from 'ramda-adjunct'
+import { identity, clamp, pluck } from 'ramda'
+import { AbsoluteCoords, PosVertex3, Vector3 } from 'src/types'
+
+type AdjustablePosVertex3 = PosVertex3 & { haveBeenAdjusted?: boolean }
+
+type Candidate = {
+  polygon: any // TODO
+  vertex: AdjustablePosVertex3
+  distance: number
+  coordinates: Vector3
+}
 
 // pos is relative to origin
 export const plain = (
   pos,
   size,
-  facing = 'floor',
+  facing: 'floor' | 'ceiling' = 'floor',
   onBeforeBumping = identity,
-  config = () => ({}),
+  getConfig: () => {
+    textureRotation?: number
+    textureFlags?: number
+  } = () => ({}),
 ) => {
   return (mapData) => {
     const { origin } = mapData.config
@@ -46,18 +58,22 @@ export const plain = (
 
     for (let j = 0; j < sizeZ; j++) {
       for (let i = 0; i < sizeX; i++) {
-        const pos = [
-          x + 100 * i - (sizeX * 100) / 2 + 100 / 2,
-          y,
-          z + 100 * j - (sizeZ * 100) / 2 + 100 / 2,
-        ]
-        tmp = floor(
-          pos,
+        const config = getConfig()
+        const position: AbsoluteCoords = {
+          type: 'absolute',
+          coords: [
+            x + 100 * i - (sizeX * 100) / 2 + 100 / 2,
+            y,
+            z + 100 * j - (sizeZ * 100) / 2 + 100 / 2,
+          ],
+        }
+        floor(
+          position,
           facing,
           null,
-          config().textureRotation ?? 90,
+          config.textureRotation ?? 90,
           100,
-          config().textureFlags ?? 0,
+          config.textureFlags ?? 0,
         )(tmp)
       }
     }
@@ -160,36 +176,34 @@ export const disableBumping = (polygons) => {
   return polygons
 }
 
-export const connectToNearPolygons =
-  (targetGroup, distanceThreshold = 100) =>
-  (polygons, mapData) => {
-    const { corners, edges } = categorizeVertices(polygons)
-    const sourceVertices = [...corners, ...edges]
-
+export const connectToNearPolygons = (targetGroup, distanceThreshold = 100) => {
+  return (polygons, mapData) => {
     const target = categorizeVertices(mapData.fts.polygons[targetGroup] || [])
-    const targetVertices = map(vertexToVector, [
-      ...target.corners,
-      ...target.edges,
-    ])
+    const targetVertices: Vector3[] = [...target.corners, ...target.edges].map(
+      vertexToVector,
+    )
 
-    if (isEmptyArray(targetVertices)) {
+    if (targetVertices.length === 0) {
       return polygons
     }
 
-    const candidates = {}
-    const vertices = []
+    const candidates: { [key: string]: Candidate[] } = {}
 
-    sourceVertices.forEach((polygon, idx) => {
+    const vertices: AdjustablePosVertex3[] = []
+
+    const source = categorizeVertices(polygons)
+
+    ;[...source.corners, ...source.edges].forEach((polygon) => {
       adjustVertexBy(
         polygon,
-        (vertex, polyOfVertex) => {
+        (vertex: AdjustablePosVertex3, polyOfVertex) => {
           const targets = targetVertices.filter((targetVertex) => {
             const d = distance(vertexToVector(vertex), targetVertex)
             return isBetween(10, distanceThreshold, d)
           })
 
           if (targets.length) {
-            vertex.haveBeenAdjusted = false
+            vertex.haveBeenAdjusted = false // TODO: remove the need for mutation
             vertices.push(vertex)
           }
 
@@ -241,3 +255,4 @@ export const connectToNearPolygons =
 
     return polygons
   }
+}

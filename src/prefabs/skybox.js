@@ -14,9 +14,21 @@ import {
 const skybox = (x, y, z, size) => {
   return compose(
     unsetPolygonGroup,
-    floor([x, y - size / 2, z], 'ceiling', null, 0, size),
+    floor(
+      { type: 'absolute', coords: [x, y - size / 2, z] },
+      'ceiling',
+      null,
+      0,
+      size,
+    ),
     setTexture(textures.skybox.top),
-    floor([x, y + size / 2, z], 'floor', null, 2, size),
+    floor(
+      { type: 'absolute', coords: [x, y + size / 2, z] },
+      'floor',
+      null,
+      2,
+      size,
+    ),
     setTexture(textures.skybox.bottom),
     wallX([x + size, y, z], 'left', null, 0, size, HFLIP),
     setTexture(textures.skybox.left),

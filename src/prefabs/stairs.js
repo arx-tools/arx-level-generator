@@ -21,12 +21,15 @@ const PIXEL = 1 / textures.stone.stairs.height
 
 const stairTopLeft = (pos, isLeftFlipped, areSidesFlipped) => {
   return floor(
-    move(
-      areSidesFlipped ? STEP.WIDTH / 4 : -STEP.WIDTH / 4,
-      -STEP.HEIGHT,
-      STEP.DEPTH / 2,
-      pos,
-    ),
+    {
+      type: 'absolute',
+      coords: move(
+        areSidesFlipped ? STEP.WIDTH / 4 : -STEP.WIDTH / 4,
+        -STEP.HEIGHT,
+        STEP.DEPTH / 2,
+        pos,
+      ),
+    },
     'floor',
     null,
     STEP.WIDTH / 2,
@@ -43,12 +46,15 @@ const stairTopLeft = (pos, isLeftFlipped, areSidesFlipped) => {
 
 const stairTopRight = (pos, isRightFlipped, areSidesFlipped) => {
   return floor(
-    move(
-      areSidesFlipped ? -STEP.WIDTH / 4 : STEP.WIDTH / 4,
-      -STEP.HEIGHT,
-      STEP.DEPTH / 2,
-      pos,
-    ),
+    {
+      type: 'absolute',
+      coords: move(
+        areSidesFlipped ? -STEP.WIDTH / 4 : STEP.WIDTH / 4,
+        -STEP.HEIGHT,
+        STEP.DEPTH / 2,
+        pos,
+      ),
+    },
     'floor',
     null,
     STEP.WIDTH / 2,

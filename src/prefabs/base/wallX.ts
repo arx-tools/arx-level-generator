@@ -7,7 +7,7 @@ import { flipPolygon } from '../../helpers'
 const wallX =
   (
     [x, y, z],
-    direction: 'left' | 'right' = 'left',
+    facing: 'left' | 'right' = 'left',
     quad = 0,
     textureRotation = 0,
     size = 100,
@@ -114,7 +114,7 @@ const wallX =
       },
     ]
 
-    if (direction === 'left') {
+    if (facing === 'left') {
       vertices = flipPolygon(vertices)
     }
 
