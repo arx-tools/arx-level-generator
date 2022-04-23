@@ -221,6 +221,7 @@ const generate = async (config) => {
     }),
     (mapData) => {
       mapData.meta.mapName = 'On the island'
+      mapData.state.spawnAngle = 180
       return mapData
     },
 

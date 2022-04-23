@@ -199,7 +199,7 @@ export const finalize = (mapData) => {
   mapData.dlf.header.numberOfBackgroundPolygons = numberOfPolygons
   mapData.llf.header.numberOfBackgroundPolygons = numberOfPolygons
 
-  const { spawn } = mapData.state
+  const { spawn, spawnAngle } = mapData.state
 
   const [x, y, z] = move(
     0,
@@ -224,6 +224,8 @@ export const finalize = (mapData) => {
     zone.header.pos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT
     zone.header.pos.z -= spawn[2]
   })
+
+  mapData.dlf.header.angleEdit.b = spawnAngle
 
   createTextureContainers(mapData)
   exportUsedItems(mapData)
@@ -279,6 +281,7 @@ export const generateBlankMapData = (config) => {
       color: null,
       texture: textures.none,
       spawn: [0, 0, 0],
+      spawnAngle: 0,
       vertexCounter: 0,
       polygonGroup: 'global',
     },
