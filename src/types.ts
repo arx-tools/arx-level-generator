@@ -6,6 +6,8 @@ export type PosVertex3 = {
   posX: number
   posY: number
   posZ: number
+  texU: number
+  texV: number
 }
 
 export type Vertex3 = {

@@ -65,11 +65,11 @@ import {
   Vertex3,
 } from './types'
 
-const normalize = (v: Vector3): Vector3 => {
+export const normalize = (v: Vector3): Vector3 => {
   return map(apply(divide), zip(v, repeat(magnitude(v), 3)))
 }
 
-const move = curry((x, y, z, vector) => {
+export const move = curry((x, y, z, vector) => {
   return [vector[0] + x, vector[1] + y, vector[2] + z]
 })
 
@@ -86,21 +86,21 @@ export const toRgba = (cssColor: string): RgbaBytes => {
 }
 
 // { r: 127, g: 0, b: 0, a: 1 } -> { r: [0.0..1.0], g: [0.0..1.0], b: [0.0..1.0] }
-const toFloatRgb = (color: RgbaBytes): FloatRgb => {
+export const toFloatRgb = (color: RgbaBytes): FloatRgb => {
   const { r, g, b } = color
   return { r: r / 256, g: g / 256, b: b / 256 }
 }
 
-const movePlayerTo = curry((pos: RelativeCoords, mapData) => {
+export const movePlayerTo = curry((pos: RelativeCoords, mapData) => {
   mapData.state.spawn = pos.coords
   return mapData
 })
 
-const isBetween = (min: number, max: number, value: number) => {
+export const isBetween = (min: number, max: number, value: number) => {
   return value >= min && value < max
 }
 
-const isBetweenInclusive = (min: number, max: number, value: number) => {
+export const isBetweenInclusive = (min: number, max: number, value: number) => {
   return value >= min && value <= max
 }
 
@@ -152,13 +152,17 @@ const generateLights = (mapData) => {
   mapData.llf.colors = colors
 }
 
-const vertexToVector = ({ posX, posY, posZ }: PosVertex3): Vector3 => [
+export const posVertexToVector = ({
   posX,
   posY,
   posZ,
-]
+}: PosVertex3): Vector3 => {
+  return [posX, posY, posZ]
+}
 
-const vectorToXYZ = ([x, y, z]: Vector3): Vertex3 => ({ x, y, z })
+const vectorToXYZ = ([x, y, z]: Vector3): Vertex3 => {
+  return { x, y, z }
+}
 
 const calculateNormals = (mapData) => {
   // https://computergraphics.stackexchange.com/questions/4031/programmatically-generating-vertex-normals
@@ -166,7 +170,7 @@ const calculateNormals = (mapData) => {
   mapData.fts.polygons.forEach((polygon) => {
     const { vertices, config } = polygon
 
-    const points = vertices.map(vertexToVector)
+    const points = vertices.map(posVertexToVector)
 
     // vertices are laid down in a russian i shape (И):
     // a c
@@ -189,7 +193,7 @@ const calculateNormals = (mapData) => {
   })
 }
 
-const finalize = (mapData) => {
+export const finalize = (mapData) => {
   mapData.fts.polygons = compose(unnest, values)(mapData.fts.polygons)
   const numberOfPolygons = mapData.fts.polygons.length
   mapData.dlf.header.numberOfBackgroundPolygons = numberOfPolygons
@@ -259,7 +263,7 @@ const timestampToDate = (timestamp) => {
   return date.toUTCString()
 }
 
-const generateBlankMapData = (config) => {
+export const generateBlankMapData = (config) => {
   const now = Math.floor(Date.now() / 1000)
   const generatorVersion = require('../package.json').version
 
@@ -284,10 +288,10 @@ const generateBlankMapData = (config) => {
     llf: createLlfData(now),
   }
 
-  return compose(addOriginPolygon)(mapData)
+  return addOriginPolygon(mapData)
 }
 
-const uninstall = async (dir) => {
+export const uninstall = async (dir) => {
   try {
     const manifest = require(`${dir}/manifest.json`)
     for (let file of manifest.files) {
@@ -299,7 +303,7 @@ const uninstall = async (dir) => {
   } catch (e) {}
 }
 
-const saveToDisk = async (mapData) => {
+export const saveToDisk = async (mapData) => {
   const { levelIdx } = mapData.config
 
   const defaultOutputDir = resolve('./dist')
@@ -380,22 +384,22 @@ const saveToDisk = async (mapData) => {
   )
 }
 
-const setColor = curry((color, mapData) => {
+export const setColor = curry((color, mapData) => {
   mapData.state.color = toRgba(color)
   return mapData
 })
 
-const setTexture = curry((texture, mapData) => {
+export const setTexture = curry((texture, mapData) => {
   mapData.state.texture = clone(texture)
   return mapData
 })
 
-const setPolygonGroup = curry((group, mapData) => {
+export const setPolygonGroup = curry((group, mapData) => {
   mapData.state.polygonGroup = group
   return mapData
 })
 
-const unsetPolygonGroup = (mapData) => {
+export const unsetPolygonGroup = (mapData) => {
   mapData.state.polygonGroup = 'global'
   return mapData
 }
@@ -409,22 +413,24 @@ const unpackCoords = map(
   ),
 )
 
-const categorizeVertices = compose(
-  ([corner, [edge, middle]]) => ({
-    corners: unpackCoords(corner),
-    edges: unpackCoords(edge),
-    middles: unpackCoords(middle),
-  }),
-  adjust(1, partition(compose(equals(2), nth(1)))),
-  partition(compose(either(equals(1), equals(3)), nth(1))),
-  toPairs,
-  countBy(({ posX, posY, posZ }) => `${posX}|${posY}|${posZ}`),
-  map(pick(['posX', 'posY', 'posZ'])),
-  unnest,
-  pluck('vertices'),
-)
+export const categorizeVertices = (polygons) => {
+  return compose(
+    ([corner, [edge, middle]]) => ({
+      corners: unpackCoords(corner),
+      edges: unpackCoords(edge),
+      middles: unpackCoords(middle),
+    }),
+    adjust(1, partition(compose(equals(2), nth(1)))),
+    partition(compose(either(equals(1), equals(3)), nth(1))),
+    toPairs,
+    countBy(({ posX, posY, posZ }) => `${posX}|${posY}|${posZ}`),
+    map(pick(['posX', 'posY', 'posZ'])),
+    unnest,
+    pluck('vertices'),
+  )(polygons)
+}
 
-const bumpByMagnitude = (magnitude) => (vertex) => {
+export const bumpByMagnitude = (magnitude) => (vertex) => {
   if (!vertex.modified) {
     vertex.posY -= magnitude
     vertex.modified = true
@@ -433,7 +439,7 @@ const bumpByMagnitude = (magnitude) => (vertex) => {
   return vertex
 }
 
-const adjustVertexBy = (ref, fn, polygons) => {
+export const adjustVertexBy = (ref, fn, polygons) => {
   polygons.forEach((polygon) => {
     polygon.vertices = polygon.vertices.map((vertex) => {
       if (
@@ -449,11 +455,11 @@ const adjustVertexBy = (ref, fn, polygons) => {
   })
 }
 
-const randomBetween = (min, max) => {
+export const randomBetween = (min: number, max: number) => {
   return Math.random() * (max - min) + min
 }
 
-const pickRandoms = (n, set) => {
+export const pickRandoms = (n, set) => {
   if (set.length <= n) {
     return set
   } else {
@@ -467,11 +473,11 @@ const pickRandoms = (n, set) => {
   }
 }
 
-const pickRandom = (set) => {
+export const pickRandom = (set) => {
   return pickRandoms(1, set)[0]
 }
 
-const pickRandomIdx = (set) => {
+export const pickRandomIdx = (set) => {
   return pickRandom(Object.keys(set))
 }
 
@@ -483,11 +489,11 @@ const cross = (u: Vector3, v: Vector3): Vector3 => {
   ]
 }
 
-const subtractVec3 = (a: Vector3, b: Vector3): Vector3 => {
+export const subtractVec3 = (a: Vector3, b: Vector3): Vector3 => {
   return [b[0] - a[0], b[1] - a[1], b[2] - a[2]]
 }
 
-const magnitude = ([x, y, z]: Vector3) => {
+export const magnitude = ([x, y, z]: Vector3) => {
   return Math.sqrt(x ** 2 + y ** 2 + z ** 2)
 }
 
@@ -495,12 +501,12 @@ const triangleArea = (a: Vector3, b: Vector3, c: Vector3) => {
   return magnitude(cross(subtractVec3(a, b), subtractVec3(a, c))) / 2
 }
 
-const distance = (a, b) => {
+export const distance = (a: Vector3, b: Vector3) => {
   return Math.abs(magnitude(subtractVec3(a, b)))
 }
 
 // source: https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/barycentric-coordinates
-const isPointInTriangle = curry((p, a, b, c) => {
+const isPointInTriangle = (p: Vector3, a, b, c) => {
   const area = triangleArea(a, b, c)
 
   const u = triangleArea(c, a, p) / area
@@ -513,14 +519,11 @@ const isPointInTriangle = curry((p, a, b, c) => {
     isBetweenInclusive(0, 1, w) &&
     u + v + w === 1
   )
-})
+}
 
-const isPointInPolygon = curry((point, polygon) => {
-  const [a, b, c, d] = polygon.vertices.map(({ posX, posY, posZ }) => [
-    posX,
-    posY,
-    posZ,
-  ])
+export const isPointInPolygon = curry((point: Vector3, polygon) => {
+  const [a, b, c, d] = polygon.vertices.map(posVertexToVector)
+
   if (polygon.config.isQuad) {
     return (
       isPointInTriangle(point, a, b, c) || isPointInTriangle(point, b, c, d)
@@ -530,9 +533,8 @@ const isPointInPolygon = curry((point, polygon) => {
   }
 })
 
-const addLight =
-  (pos, props = {}) =>
-  (mapData) => {
+export const addLight = (pos: Vector3, props = {}) => {
+  return (mapData) => {
     let [x, y, z] = pos
 
     mapData.llf.lights.push({
@@ -556,6 +558,7 @@ const addLight =
 
     return mapData
   }
+}
 
 export const addZone = (
   pos: RelativeCoords,
@@ -605,7 +608,7 @@ export const addZone = (
   }
 }
 
-const flipPolygon = (vertices) => {
+export const flipPolygon = (vertices) => {
   const [a, b, c, d] = vertices
   // vertices are laid down in a russian i shape (И):
   // a c
@@ -614,12 +617,13 @@ const flipPolygon = (vertices) => {
   return [a, c, b, d]
 }
 
-const sortByDistance = (vertex) => (a, b) => {
-  const distanceA = distance(vertex, a)
-  const distanceB = distance(vertex, b)
+export const sortByDistance =
+  (fromPoint: Vector3) => (a: Vector3, b: Vector3) => {
+    const distanceA = distance(fromPoint, a)
+    const distanceB = distance(fromPoint, b)
 
-  return distanceA - distanceB
-}
+    return distanceA - distanceB
+  }
 
 // [ a, b, c  [ x      [ ax + by + cz
 //   d, e, f    y    =   dx + ey + fz
@@ -631,10 +635,10 @@ const matrix3MulVec3: (matrix: number[], vector: Vector3) => Vector3 = (
   return [a * x + b * y + c * z, d * x + e * y + f * z, g * x + h * y + i * z]
 }
 
-const degToRad = (deg) => (deg * Math.PI) / 180
-const radToDeg = (rad) => rad * (180 / Math.PI)
+export const degToRad = (deg: number) => (deg * Math.PI) / 180
+export const radToDeg = (rad: number) => rad * (180 / Math.PI)
 
-const rotateVec3 = (point: Vector3, [a, b, g]: RotationVector3) => {
+export const rotateVec3 = (point: Vector3, [a, b, g]: RotationVector3) => {
   a = degToRad(a)
   b = degToRad(b)
   g = degToRad(g)
@@ -656,7 +660,7 @@ const rotateVec3 = (point: Vector3, [a, b, g]: RotationVector3) => {
   return matrix3MulVec3(rotation, point)
 }
 
-const circleOfVectors = (center, radius: number, division) => {
+export const circleOfVectors = (center, radius: number, division) => {
   const angle = 360 / division
 
   const vectors: Vector3[] = []
@@ -670,55 +674,15 @@ const circleOfVectors = (center, radius: number, division) => {
   return vectors
 }
 
-const cleanupCache = () => {
+export const cleanupCache = () => {
   resetItems()
   resetAmbiences()
   resetTextures()
 }
 
-const pickRandomLoot = (lootTable) => {
+export const pickRandomLoot = (lootTable) => {
   const idx = pickRandom(
     flatten(lootTable.map(({ weight }, idx) => repeat(idx, weight))),
   )
   return lootTable[idx]
-}
-
-// TODO: make these exports inline
-export {
-  subtractVec3,
-  magnitude,
-  normalize,
-  move,
-  movePlayerTo,
-  finalize,
-  generateBlankMapData,
-  saveToDisk,
-  setColor,
-  setTexture,
-  categorizeVertices,
-  bumpByMagnitude,
-  adjustVertexBy,
-  randomBetween,
-  pickRandoms,
-  pickRandom,
-  pickRandomIdx,
-  isPointInPolygon,
-  isBetween,
-  isBetweenInclusive,
-  toFloatRgb,
-  addLight,
-  vertexToVector,
-  flipPolygon,
-  distance,
-  sortByDistance,
-  setPolygonGroup,
-  unsetPolygonGroup,
-  matrix3MulVec3,
-  degToRad,
-  radToDeg,
-  rotateVec3,
-  circleOfVectors,
-  cleanupCache,
-  uninstall,
-  pickRandomLoot,
 }

@@ -6,7 +6,7 @@ import {
   randomBetween,
   pickRandoms,
   move,
-  vertexToVector,
+  posVertexToVector,
   distance,
   isBetween,
 } from '../helpers'
@@ -180,7 +180,7 @@ export const connectToNearPolygons = (targetGroup, distanceThreshold = 100) => {
   return (polygons, mapData) => {
     const target = categorizeVertices(mapData.fts.polygons[targetGroup] || [])
     const targetVertices: Vector3[] = [...target.corners, ...target.edges].map(
-      vertexToVector,
+      posVertexToVector,
     )
 
     if (targetVertices.length === 0) {
@@ -198,7 +198,7 @@ export const connectToNearPolygons = (targetGroup, distanceThreshold = 100) => {
         polygon,
         (vertex: AdjustablePosVertex3, polyOfVertex) => {
           const targets = targetVertices.filter((targetVertex) => {
-            const d = distance(vertexToVector(vertex), targetVertex)
+            const d = distance(posVertexToVector(vertex), targetVertex)
             return isBetween(10, distanceThreshold, d)
           })
 
@@ -213,7 +213,7 @@ export const connectToNearPolygons = (targetGroup, distanceThreshold = 100) => {
             candidates[`${x}|${y}|${z}`].push({
               polygon: polyOfVertex,
               vertex,
-              distance: distance(vertexToVector(vertex), targetVertex),
+              distance: distance(posVertexToVector(vertex), targetVertex),
               coordinates: [x, y, z],
             })
           })
