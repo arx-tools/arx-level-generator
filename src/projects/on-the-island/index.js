@@ -204,7 +204,10 @@ const generate = async (config) => {
     setColor('hsv(150, 37%, 70%)'),
 
     addZone(
-      [-origin.coords[0], -origin.coords[1], -origin.coords[2]],
+      {
+        type: 'relative',
+        coords: [-origin.coords[0], -origin.coords[1], -origin.coords[2]],
+      },
       [100, 0, 100],
       'palette0',
       ambiences.none,

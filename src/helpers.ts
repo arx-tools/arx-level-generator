@@ -557,17 +557,16 @@ const addLight =
     return mapData
   }
 
-const addZone =
-  (
-    pos,
-    size,
-    name,
-    ambience = ambiences.none,
-    drawDistance = 2000,
-    flags = PATH_RGB | PATH_AMBIANCE | PATH_FARCLIP,
-  ) =>
-  (mapData) => {
-    let [x, y, z] = pos
+export const addZone = (
+  pos: RelativeCoords,
+  size,
+  name,
+  ambience = ambiences.none,
+  drawDistance = 2000,
+  flags = PATH_RGB | PATH_AMBIANCE | PATH_FARCLIP,
+) => {
+  return (mapData) => {
+    let [x, y, z] = pos.coords
 
     useAmbience(ambience)
 
@@ -604,6 +603,7 @@ const addZone =
     mapData.dlf.paths.push(zoneData)
     return mapData
   }
+}
 
 const flipPolygon = (vertices) => {
   const [a, b, c, d] = vertices
@@ -707,7 +707,6 @@ export {
   isBetweenInclusive,
   toFloatRgb,
   addLight,
-  addZone,
   vertexToVector,
   flipPolygon,
   distance,

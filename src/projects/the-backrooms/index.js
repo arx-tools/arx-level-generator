@@ -866,7 +866,10 @@ const generate = async (config) => {
     setColor('#0b0c10'),
 
     addZone(
-      [-origin.coords[0], -origin.coords[1], -origin.coords[2]],
+      {
+        type: 'relative',
+        coords: [-origin.coords[0], -origin.coords[1], -origin.coords[2]],
+      },
       [100, 0, 100],
       'palette0',
       ambiences.none,

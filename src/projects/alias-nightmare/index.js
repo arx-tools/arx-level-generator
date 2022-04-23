@@ -228,7 +228,7 @@ const generate = async (config) => {
     createFallInducer(origin),
 
     addZone(
-      [0, 5000, 0],
+      { type: 'relative', coords: [0, 5000, 0] },
       [MAP_MAX_WIDTH * 100, 1000, MAP_MAX_HEIGHT * 100],
       `fall-detector`,
       ambiences.none,
@@ -238,7 +238,10 @@ const generate = async (config) => {
     setColor(colors.ambience[0]),
 
     addZone(
-      [-origin.coords[0], -origin.coords[1], -origin.coords[2]],
+      {
+        type: 'relative',
+        coords: [-origin.coords[0], -origin.coords[1], -origin.coords[2]],
+      },
       [100, 0, 100],
       'palette0',
       ambiences.sirs,
