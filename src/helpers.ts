@@ -58,6 +58,7 @@ import { dirname, resolve } from 'path'
 import {
   FloatRgb,
   PosVertex3,
+  RelativeCoords,
   RgbaBytes,
   RotationVector3,
   Vector3,
@@ -90,16 +91,16 @@ const toFloatRgb = (color: RgbaBytes): FloatRgb => {
   return { r: r / 256, g: g / 256, b: b / 256 }
 }
 
-const movePlayerTo = curry((pos, mapData) => {
-  mapData.state.spawn = pos
+const movePlayerTo = curry((pos: RelativeCoords, mapData) => {
+  mapData.state.spawn = pos.coords
   return mapData
 })
 
-const isBetween = (min, max, value) => {
+const isBetween = (min: number, max: number, value: number) => {
   return value >= min && value < max
 }
 
-const isBetweenInclusive = (min, max, value) => {
+const isBetweenInclusive = (min: number, max: number, value: number) => {
   return value >= min && value <= max
 }
 

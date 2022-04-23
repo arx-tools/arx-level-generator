@@ -100,6 +100,7 @@ ON INIT {
     createItem,
   )(items.containers.barrel)
 }
+
 const generate = async (config) => {
   const { origin } = config
 
@@ -107,9 +108,8 @@ const generate = async (config) => {
 
   createWelcomeMarker([islandSize * 50, 0, islandSize * 50])
 
-  createGoblin([250, -10, 250], [0, 135, 0])
+  createGoblin([(islandSize * 50) / 2, 0, (islandSize * 50) / 2], [0, 135, 0])
 
-  createFishSpawn([islandSize * 50, 50, islandSize * 50])
   createFishSpawn([-(islandSize * 50), 50, islandSize * 50])
   createFishSpawn([-(islandSize * 50), 50, -(islandSize * 50)])
   createFishSpawn([islandSize * 50, 50, -(islandSize * 50)])
@@ -122,7 +122,7 @@ const generate = async (config) => {
   ]
 
   createBarrel(
-    [(islandSize * 50) / 2, -10, islandSize * 50 - 50],
+    [(islandSize * 50) / 2, 0, islandSize * 50 - 50],
     [0, 0, 0],
     startingLoot,
   )
@@ -204,7 +204,7 @@ const generate = async (config) => {
     setColor('hsv(150, 37%, 70%)'),
 
     addZone(
-      [-origin.coords[0], 0, -origin.coords[2]],
+      [-origin.coords[0], -origin.coords[1], -origin.coords[2]],
       [100, 0, 100],
       'palette0',
       ambiences.none,
@@ -212,7 +212,10 @@ const generate = async (config) => {
     ),
     setColor('#DBF4FF'),
 
-    movePlayerTo([-origin.coords[0], 0, -origin.coords[2]]),
+    movePlayerTo({
+      type: 'relative',
+      coords: [-origin.coords[0], -origin.coords[1], -origin.coords[2]],
+    }),
     (mapData) => {
       mapData.meta.mapName = 'On the island'
       return mapData

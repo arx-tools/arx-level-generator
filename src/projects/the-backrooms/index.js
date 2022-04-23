@@ -866,7 +866,7 @@ const generate = async (config) => {
     setColor('#0b0c10'),
 
     addZone(
-      [-origin.coords[0], 0, -origin.coords[2]],
+      [-origin.coords[0], -origin.coords[1], -origin.coords[2]],
       [100, 0, 100],
       'palette0',
       ambiences.none,
@@ -874,7 +874,10 @@ const generate = async (config) => {
     ),
     setColor('black'),
 
-    movePlayerTo([-origin.coords[0], 0, -origin.coords[2]]),
+    movePlayerTo({
+      type: 'relative',
+      coords: [-origin.coords[0], -origin.coords[1], -origin.coords[2]],
+    }),
     (mapData) => {
       mapData.meta.mapName = 'The Backrooms'
       return mapData
