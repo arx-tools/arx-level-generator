@@ -13,7 +13,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "incremental": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "paths": {
+      "@src/*": ["src/*"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
