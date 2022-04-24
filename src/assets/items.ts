@@ -151,6 +151,23 @@ export const items = {
       src: 'npc/goblin_base/goblin_base.teo',
       native: true,
     },
+    flyingCreature: {
+      src: 'npc/flying_creature/flying_creature.teo',
+      native: true,
+    },
+    lich: {
+      src: 'npc/undead_liche/undead_liche.teo',
+      native: true,
+    },
+    akbaa: {
+      src: 'npc/akbaa_phase2/akbaa_phase2.teo',
+      native: true,
+    },
+    ylside: {
+      src: 'npc/human_base/human_base.teo',
+      native: true,
+      variant: 'human_ylside', // TODO: ON INIT { SET Łtype "human_ylside" }
+    },
   },
   shape: {
     cube: {
