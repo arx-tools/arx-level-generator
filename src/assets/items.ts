@@ -203,7 +203,7 @@ export const items = {
       native: true,
     },
     campfire: {
-      src: 'items/fire_camp/fire_camp.teo',
+      src: 'fix_inter/fire_camp/fire_camp.teo',
       native: true,
     },
   },
