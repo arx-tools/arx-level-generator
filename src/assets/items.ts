@@ -21,7 +21,8 @@ import {
   uniq,
 } from 'ramda'
 import { padCharsStart } from 'ramda-adjunct'
-import { RelativeCoords } from 'src/types'
+import { declare } from '../scripting'
+import { RelativeCoords } from '../types'
 import { getRootPath } from '../../rootpath'
 import { PLAYER_HEIGHT_ADJUSTMENT } from '../constants'
 
@@ -32,6 +33,7 @@ type InjectableProps = {
   hp?: number
   interactive?: boolean
   collision?: boolean
+  variant?: string
 }
 
 type RenderedInjectableProps = {
@@ -42,7 +44,7 @@ type Item = {
   src: string
   native: boolean
   dependencies?: string[]
-  props: InjectableProps
+  props?: InjectableProps
 }
 
 type ItemRef = {
@@ -166,7 +168,9 @@ export const items = {
     ylside: {
       src: 'npc/human_base/human_base.teo',
       native: true,
-      variant: 'human_ylside', // TODO: ON INIT { SET Łtype "human_ylside" }
+      props: {
+        variant: 'human_ylside',
+      },
     },
   },
   shape: {
@@ -198,6 +202,10 @@ export const items = {
       src: 'items/movable/cards/card.teo',
       native: true,
     },
+    campfire: {
+      src: 'items/fire_camp/fire_camp.teo',
+      native: true,
+    },
   },
 }
 
@@ -223,6 +231,16 @@ const propsToInjections = (props: InjectableProps): RenderedInjectableProps => {
   }
   if (typeof props.collision === 'boolean') {
     init.push(`COLLISION ${props.collision ? 'ON' : 'OFF'}`)
+  }
+  if (props.variant) {
+    const tmpScope = {
+      state: {},
+      injections: {
+        init: [],
+      },
+    }
+    declare('string', 'type', props.variant, tmpScope)
+    init.push(...tmpScope.injections.init)
   }
 
   if (isEmpty(init)) {
