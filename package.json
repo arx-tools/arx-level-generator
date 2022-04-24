@@ -6,16 +6,16 @@
   "scripts": {
     "dev:win": "npm run generate:gamedir:win && npm run compile:gamedir:win && npm run game:win",
     "dev:linux": "npm run generate:gamedir:linux && npm run compile:gamedir:linux && npm run game:linux",
-    "generate": "ts-node src/generate.ts",
-    "generate:gamedir:win": "set OUTPUTDIR=C:/Program Files/Arx Libertatis&&ts-node src/generate.ts",
-    "generate:gamedir:linux": "export OUTPUTDIR=/home/lali/projektek/arx/ArxLibertatis/build&&ts-node src/generate.ts",
+    "generate": "ts-node -r tsconfig-paths/register src/generate.ts",
+    "generate:gamedir:win": "set OUTPUTDIR=C:/Program Files/Arx Libertatis&&npm run generate",
+    "generate:gamedir:linux": "export OUTPUTDIR=/home/lali/projektek/arx/ArxLibertatis/build&&npm run generate",
     "generate:watch": "nodemon src/generate.ts --ignore dist",
     "compile": "sh scripts/compile.sh",
     "compile:gamedir:win": "set OUTPUTDIR=/c/Program Files/Arx Libertatis&&sh scripts/compile.sh",
     "compile:gamedir:linux": "export OUTPUTDIR=/home/lali/projektek/arx/ArxLibertatis/build&&sh scripts/compile.sh",
     "game:win": "C:/Program Files/Arx Libertatis/arx.exe --loadlevel 1",
     "game:linux": "/home/lali/projektek/arx/ArxLibertatis/build/arx --loadlevel 1",
-    "launcher:build": "ts-node src/electron/build.ts",
+    "launcher:build": "ts-node -r tsconfig-paths/register src/electron/build.ts",
     "launcher:build:watch": "nodemon --watch src src/electron/build.ts -e js,jsx,scss,css,html,png --ignore src/electron/build",
     "launcher:run": "electron ./src/electron/index.js"
   },
@@ -38,6 +38,7 @@
     "ramda-adjunct": "^2.35.0",
     "seedrandom": "^3.0.5",
     "ts-node": "^10.7.0",
+    "tsconfig-paths": "^3.14.1",
     "typescript": "^4.6.3"
   },
   "devDependencies": {

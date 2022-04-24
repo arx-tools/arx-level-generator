@@ -26,7 +26,7 @@ import { RelativeCoords } from '../types'
 import { getRootPath } from '../../rootpath'
 import { PLAYER_HEIGHT_ADJUSTMENT } from '../constants'
 
-type InjectableProps = {
+export type InjectableProps = {
   name?: string
   speed?: number
   scale?: number
@@ -36,18 +36,18 @@ type InjectableProps = {
   variant?: string
 }
 
-type RenderedInjectableProps = {
+export type RenderedInjectableProps = {
   init?: string[]
 }
 
-type Item = {
+export type Item = {
   src: string
   native: boolean
   dependencies?: string[]
   props?: InjectableProps
 }
 
-type ItemRef = {
+export type ItemRef = {
   src: string
   id: 'root' | number
   state: Record<string, any>

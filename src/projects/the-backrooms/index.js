@@ -61,6 +61,7 @@ import { overridePlayerScript } from '../shared/player'
 import { createLampController } from './items/lampController'
 import { ambiences } from '../../assets/ambiences'
 import { UNIT, COLORS } from './constants'
+import { createRune } from '@items/createRune'
 
 const addLamp = (pos, angle, config = {}) => {
   return (mapData) => {
@@ -622,29 +623,6 @@ ON INVENTORYUSE {
     // name: `[item--almond-water]`,
     name: 'Almond water',
   })
-}
-
-const createRune = (runeName, pos, angle = [0, 0, 0], welcomeMarker) => {
-  return compose(
-    markAsUsed,
-    moveTo({ type: 'relative', coords: pos }, angle),
-    addScript((self) => {
-      return `
-// component: rune
-ON INIT {
-  ${getInjections('init', self)}
-  ACCEPT
-}
-
-ON INVENTORYUSE {
-  SENDEVENT GOT_RUNE ${welcomeMarker.ref} "${runeName}"
-  ACCEPT
-}
-      `
-    }),
-    declare('string', 'rune_name', runeName),
-    createItem,
-  )(items.magic.rune)
 }
 
 const createSpawnContainer = (pos, angle, contents = []) => {
