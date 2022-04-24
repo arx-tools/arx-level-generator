@@ -1,3 +1,4 @@
+import { createRune } from '@items/createRune'
 import { compose, identity } from 'ramda'
 import { ambiences } from '../../assets/ambiences'
 import {
@@ -8,7 +9,17 @@ import {
   addScript,
 } from '../../assets/items'
 import { textures } from '../../assets/textures'
-import { HFLIP, VFLIP } from '../../constants'
+import {
+  EXTRAS_EXTINGUISHABLE,
+  EXTRAS_FIREPLACE,
+  EXTRAS_FLARE,
+  EXTRAS_SEMIDYNAMIC,
+  EXTRAS_SPAWNFIRE,
+  EXTRAS_SPAWNSMOKE,
+  EXTRAS_STARTEXTINGUISHED,
+  HFLIP,
+  VFLIP,
+} from '../../constants'
 import {
   saveToDisk,
   finalize,
@@ -22,10 +33,13 @@ import {
   circleOfVectors,
   setPolygonGroup,
   unsetPolygonGroup,
+  toFloatRgb,
+  toRgba,
 } from '../../helpers'
 import { plain } from '../../prefabs'
 import { disableBumping, connectToNearPolygons } from '../../prefabs/plain'
 import { getInjections } from '../../scripting'
+import { createCampfire } from './items/campfire'
 import { createGoblin } from './items/goblin'
 
 const createWelcomeMarker = (pos) => {
@@ -101,12 +115,19 @@ ON INIT {
   )(items.containers.barrel)
 }
 
+const createCards = (pos, angle = [0, 0, 0], props = {}) => {
+  const item = createItem(items.misc.deckOfCards, props)
+  moveTo({ type: 'relative', coords: pos }, angle, item)
+  markAsUsed(item)
+  return item
+}
+
 const generate = async (config) => {
   const { origin } = config
 
   const islandSize = 10
 
-  createWelcomeMarker([islandSize * 50, 0, islandSize * 50])
+  createWelcomeMarker([islandSize * 50, 0, islandSize * 50 * 1.5])
 
   createGoblin([(islandSize * 50) / 2, 0, (islandSize * 50) / 2], [0, 135, 0])
 
@@ -116,9 +137,13 @@ const generate = async (config) => {
 
   createPlant([700, -10, 700])
 
+  createCampfire([islandSize * 50, -10, islandSize * 50])
+
   const startingLoot = [
     compose(markAsUsed, createItem)(items.misc.pole),
     compose(markAsUsed, createItem)(items.misc.rope),
+    createRune('aam'),
+    createRune('yok'),
   ]
 
   createBarrel(
@@ -126,6 +151,7 @@ const generate = async (config) => {
     [0, 0, 0],
     startingLoot,
   )
+  createCards([(islandSize * 50) / 2, -100, islandSize * 50 - 50])
 
   createAmikarsRock([-500, 220, 500])
 
@@ -134,6 +160,27 @@ const generate = async (config) => {
     finalize,
 
     (mapData) => {
+      /*
+      // campfire flame
+      compose(
+        addLight([islandSize * 50, -50, islandSize * 50], {
+          fallstart: 10,
+          fallend: 100,
+          intensity: 5,
+          exFlicker: toFloatRgb(toRgba('#1f1f07')),
+          extras:
+            EXTRAS_SEMIDYNAMIC |
+            EXTRAS_EXTINGUISHABLE |
+            EXTRAS_STARTEXTINGUISHED |
+            EXTRAS_SPAWNFIRE |
+            EXTRAS_SPAWNSMOKE |
+            EXTRAS_FIREPLACE |
+            EXTRAS_FLARE,
+        }),
+        setColor('white'),
+      )(mapData)
+      */
+
       circleOfVectors([0, -1000, 0], 1000, 3).forEach((pos) => {
         addLight(pos, {
           fallstart: 1,

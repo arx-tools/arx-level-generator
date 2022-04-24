@@ -15,7 +15,7 @@
     "incremental": true,
     "noImplicitAny": false,
     "paths": {
-      "@src/*": ["src/*"]
+      "@items/*": ["src/items/*"]
     }
   },
   "include": ["src/**/*"],
