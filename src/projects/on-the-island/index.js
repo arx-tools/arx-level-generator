@@ -151,7 +151,7 @@ const generate = async (config) => {
     [0, 0, 0],
     startingLoot,
   )
-  createCards([(islandSize * 50) / 2, -100, islandSize * 50 - 50])
+  createCards([(islandSize * 50) / 2, -120, islandSize * 50 - 30])
 
   createAmikarsRock([-500, 220, 500])
 
