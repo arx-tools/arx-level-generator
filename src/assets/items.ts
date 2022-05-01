@@ -250,7 +250,10 @@ const propsToInjections = (props: InjectableProps): RenderedInjectableProps => {
   }
 }
 
-export const createItem = (item: Item, props = {}): ItemRef => {
+export const createItem = (
+  item: Item,
+  props: InjectableProps = {},
+): ItemRef => {
   usedItems[item.src] = usedItems[item.src] || []
 
   const id = usedItems[item.src].length
@@ -278,7 +281,10 @@ export const createItem = (item: Item, props = {}): ItemRef => {
   }
 }
 
-export const createRootItem = (item: Item, props = {}): ItemRef => {
+export const createRootItem = (
+  item: Item,
+  props: InjectableProps = {},
+): ItemRef => {
   usedItems[item.src] = usedItems[item.src] || []
 
   usedItems[item.src].root = {
