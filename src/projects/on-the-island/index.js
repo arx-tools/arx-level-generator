@@ -27,12 +27,7 @@ import {
 import { plain } from '../../prefabs'
 import { disableBumping, connectToNearPolygons } from '../../prefabs/plain'
 import { getInjections } from '../../scripting'
-import {
-  createCampfire,
-  createCampfireCookMarker,
-  createCampfireCookZone,
-  createCampfireFlames,
-} from './items/campfire'
+import { createCampfire } from './items/campfire'
 import { createGoblin } from './items/goblin'
 
 const createWelcomeMarker = (pos) => {
@@ -151,11 +146,6 @@ const generate = async (config) => {
     createFishSpawn([x, 50, z])
   })
 
-  createCampfire({
-    type: 'relative',
-    coords: [islandCenter.x, -10, islandCenter.z],
-  })
-
   const startingLoot = [
     compose(markAsUsed, createItem)(items.misc.pole),
     compose(markAsUsed, createItem)(items.misc.rope),
@@ -175,20 +165,13 @@ const generate = async (config) => {
     finalize,
 
     (mapData) => {
-      createCampfireFlames(
-        { type: 'relative', coords: [islandCenter.x - 6, -40, islandCenter.z] },
+      createCampfire(
+        {
+          type: 'relative',
+          coords: [islandCenter.x, -20, islandCenter.z],
+        },
+        [0, 0, 0],
         mapData,
-      )
-
-      createCampfireCookZone(
-        { type: 'relative', coords: [islandCenter.x - 6, 0, islandCenter.z] },
-        'cookzone',
-        mapData,
-      )
-
-      createCampfireCookMarker(
-        { type: 'relative', coords: [islandCenter.x - 6, -40, islandCenter.z] },
-        'cookzone',
       )
 
       setColor('white', mapData)

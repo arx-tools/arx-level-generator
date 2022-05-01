@@ -56,6 +56,7 @@ import {
 } from './assets/ambiences'
 import { dirname, resolve } from 'path'
 import {
+  AbsoluteCoords,
   FloatRgb,
   PosVertex3,
   RelativeCoords,
@@ -72,6 +73,24 @@ export const normalize = (v: Vector3): Vector3 => {
 export const move = curry((x, y, z, vector) => {
   return [vector[0] + x, vector[1] + y, vector[2] + z]
 })
+
+export const addCoords = (
+  a: RelativeCoords | AbsoluteCoords,
+  b: RelativeCoords | AbsoluteCoords,
+): RelativeCoords | AbsoluteCoords => {
+  if (a.type === b.type) {
+    return {
+      type: a.type,
+      coords: [
+        a.coords[0] + b.coords[0],
+        a.coords[1] + b.coords[1],
+        a.coords[2] + b.coords[2],
+      ],
+    }
+  }
+
+  throw new Error('Incompatible coords')
+}
 
 // "#ff07a4" -> { r: [0..255], g: [0..255], b: [0..255], a: [0..255] }
 export const toRgba = (cssColor: string): RgbaBytes => {
