@@ -101,14 +101,15 @@ const generate = async (config) => {
   const islandSize = islandSizeInTiles * 100
   const islandRadius = islandSize / 2
   const islandCenter = { x: islandSize / 2, z: islandSize / 2 }
+  const islandEdgeOffset = 150
 
   createWelcomeMarker([islandCenter.x, 0, islandCenter.z + islandRadius * 0.5])
 
   createGoblin(
     [
-      islandCenter.x - islandRadius * 0.75,
+      islandCenter.x - islandRadius + islandEdgeOffset,
       0,
-      islandCenter.z - islandRadius * 0.75,
+      islandCenter.z - islandRadius + islandEdgeOffset,
     ],
     [0, 135, 0],
   )
@@ -154,11 +155,15 @@ const generate = async (config) => {
   ]
 
   createBarrel(
-    [islandCenter.x - islandRadius * 0.75, 0, islandCenter.z],
+    [islandCenter.x - islandRadius + islandEdgeOffset, 0, islandCenter.z],
     [0, 0, 0],
     startingLoot,
   )
-  createCards([islandCenter.x - islandRadius * 0.75, -120, islandCenter.z + 30])
+  createCards([
+    islandCenter.x - islandRadius + islandEdgeOffset,
+    -120,
+    islandCenter.z + 30,
+  ])
 
   return compose(
     saveToDisk,
