@@ -22,7 +22,7 @@ import {
 } from 'ramda'
 import { padCharsStart } from 'ramda-adjunct'
 import { declare } from '../scripting'
-import { RelativeCoords } from '../types'
+import { RelativeCoords, RotationVector3 } from '../types'
 import { getRootPath } from '../../rootpath'
 import { PLAYER_HEIGHT_ADJUSTMENT } from '../constants'
 
@@ -345,7 +345,11 @@ export const addScript = curry(
 )
 
 export const moveTo = curry(
-  ({ coords: [x, y, z] }: RelativeCoords, [a, b, g], itemRef: ItemRef) => {
+  (
+    { coords: [x, y, z] }: RelativeCoords,
+    [a, b, g]: RotationVector3,
+    itemRef: ItemRef,
+  ) => {
     const { src, id } = itemRef
 
     usedItems[src][id].pos = { x, y, z }

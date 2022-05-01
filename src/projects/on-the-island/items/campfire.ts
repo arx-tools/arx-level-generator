@@ -6,7 +6,7 @@ import {
   EXTRAS_SPAWNSMOKE,
   EXTRAS_STARTEXTINGUISHED,
 } from 'src/constants'
-import { addLight, addZone, setColor } from 'src/helpers'
+import { addCoords, addLight, addZone, setColor } from 'src/helpers'
 import { declare, getInjections } from 'src/scripting'
 import { RelativeCoords, RotationVector3 } from 'src/types'
 import {
@@ -18,18 +18,7 @@ import {
   addScript,
 } from '../../../assets/items'
 
-export const createCampfire = (
-  pos: RelativeCoords,
-  angle: RotationVector3 = [0, 0, 0],
-  props: InjectableProps = {},
-) => {
-  const campfire = createItem(items.misc.campfire, props)
-  moveTo(pos, angle, campfire)
-  markAsUsed(campfire)
-  return campfire
-}
-
-export const createCampfireFlames = (pos: RelativeCoords, mapData) => {
+const createCampfireFlames = (pos: RelativeCoords, mapData) => {
   setColor('white', mapData)
   addLight(pos.coords, {
     fallstart: 63,
@@ -55,7 +44,7 @@ export const createCampfireFlames = (pos: RelativeCoords, mapData) => {
   })(mapData)
 }
 
-export const createCampfireCookZone = (
+const createCampfireCookZone = (
   pos: RelativeCoords,
   zoneName: string = 'cookzone',
   mapData,
@@ -63,7 +52,7 @@ export const createCampfireCookZone = (
   addZone(pos, [100, 0, 100], zoneName, ambiences.none, 0, 0)(mapData)
 }
 
-export const createCampfireCookMarker = (
+const createCampfireCookMarker = (
   pos: RelativeCoords,
   zoneName: string,
   props: InjectableProps = {},
@@ -140,4 +129,27 @@ ON SPELLCAST {
   }, cookMarker)
 
   return cookMarker
+}
+
+export const createCampfire = (
+  pos: RelativeCoords,
+  angle: RotationVector3 = [0, 0, 0],
+  mapData,
+) => {
+  const campfire = createItem(items.misc.campfire)
+
+  moveTo(pos, angle, campfire)
+  markAsUsed(campfire)
+
+  createCampfireFlames(
+    addCoords(pos, {
+      type: 'relative',
+      coords: [-6, -30, 0],
+    }) as RelativeCoords,
+    mapData,
+  )
+  createCampfireCookZone(pos, 'cookzone', mapData)
+  createCampfireCookMarker(pos, 'cookzone')
+
+  return campfire
 }
