@@ -29,8 +29,6 @@ export const createRespawnController = (
   const ref = createItem(items.marker, {})
 
   declare('bool', 'ignoreNextKillEvent', FALSE, ref)
-  declare('int', 'respawnTimerCntr', 1, ref)
-  declare('int', 'spawnProtectTimerCntr', 1, ref)
 
   declare('int', 'respawnQueueSize', 0, ref)
   for (let i = 1; i <= numberOfBots; i++) {
@@ -66,19 +64,7 @@ ON KILLED {
     
     INC ${self.state.respawnQueueSize} 1
     SET "£respawnQueueItem~${self.state.respawnQueueSize}~" £victimID
-    ${[...Array(numberOfBots).keys()]
-      .map((i) => {
-        return `
-    IF (${self.state.respawnTimerCntr} == ${i + 1}) {
-      TIMERrespawnNpc${i + 1} -m 1 ${DEATHCAM_TIME} GOTO RESURRECT_NPC
-    }`
-      })
-      .join('')}
-
-    INC ${self.state.respawnTimerCntr} 1
-    IF (${self.state.respawnTimerCntr} == ${numberOfBots + 1}) {
-      SET ${self.state.respawnTimerCntr} 1
-    }
+    TIMER -m 1 ${DEATHCAM_TIME} GOTO RESURRECT_NPC
   }
 
   ACCEPT
@@ -105,21 +91,7 @@ ${[...Array(numberOfBots).keys()]
   .join(SCRIPT_EOL)}
 
     DEC ${self.state.respawnQueueSize} 1
-    ${[...Array(numberOfBots).keys()]
-      .map((i) => {
-        return `
-    IF (${self.state.spawnProtectTimerCntr} == ${i + 1}) {
-      TIMERspawnProtectOffNpc${
-        i + 1
-      } -m 1 ${SPAWN_PROTECT_TIME} GOTO SPAWN_PROTECT_OFF_NPC
-    }`
-      })
-      .join('')}
-    
-    INC ${self.state.spawnProtectTimerCntr} 1
-    IF (${self.state.spawnProtectTimerCntr} == ${numberOfBots + 1}) {
-      SET ${self.state.spawnProtectTimerCntr} 1
-    }
+    TIMER -m 1 ${SPAWN_PROTECT_TIME} GOTO SPAWN_PROTECT_OFF_NPC
   }
 
   ACCEPT

@@ -109,7 +109,7 @@ const generate = async (config) => {
     coords: [-10, 0, -10],
   })
 
-  const numberOfBots = 100
+  const numberOfBots = 10
 
   const respawnCtrl = createRespawnController(
     [10, 0, 10],
