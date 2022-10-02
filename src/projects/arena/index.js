@@ -21,7 +21,7 @@ import {
   setColor,
   setTexture,
 } from '../../helpers'
-import { plain } from '../../prefabs'
+import { plain, wall } from '../../prefabs'
 import { getInjections } from '../../scripting'
 import { overridePlayerScript } from '../shared/player'
 import { hideMinimap } from '../shared/reset'
@@ -70,7 +70,7 @@ const generate = async (config) => {
     mapData,
   )
 
-  setColor('#333333', mapData)
+  setColor('#223340', mapData)
   addZone(
     {
       type: 'relative',
@@ -90,6 +90,47 @@ const generate = async (config) => {
     textureRotation: pickRandom([0, 90, 180, 270]),
     textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
   }))(mapData)
+
+  // -------------------
+
+  const building = (x, z, width, height, depth, mapData) => {
+    let y = 30
+
+    wall(
+      [x - (width / 2) * 100 - 100, y, z + (depth / 2) * 100],
+      'front',
+      { width: width, height: height, unit: 100 },
+      mapData,
+    )
+    wall(
+      [x - (width / 2) * 100 - 100, y, z - (depth / 2) * 100],
+      'back',
+      { width: width, height: height, unit: 100 },
+      mapData,
+    )
+    wall(
+      [x - (width / 2) * 100, y, z - (depth / 2) * 100 - 100],
+      'left',
+      { width: depth, height: height, unit: 100 },
+      mapData,
+    )
+    wall(
+      [x + (width / 2) * 100, y, z - (depth / 2) * 100 - 100],
+      'right',
+      { width: depth, height: height, unit: 100 },
+      mapData,
+    )
+  }
+
+  setColor('#777777', mapData)
+  setTexture(textures.stone.templeWall[0], mapData)
+  building(-900, 900, 3, 5, 3, mapData)
+  building(-500, 970, 4, 3, 2, mapData)
+
+  setTexture(textures.stone.templeWall[2], mapData)
+  building(-725, 1120, 1, 4, 3, mapData)
+
+  // -------------------
 
   setColor('white', mapData)
   circleOfVectors([0, -1000, 0], 1000, 3).forEach((pos) => {

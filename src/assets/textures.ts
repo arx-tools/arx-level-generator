@@ -37,8 +37,26 @@ export const textures = {
       src: '[STONE]_HUMAN_AKBAA4_F.jpg',
       native: true,
     },
-    humanPriest4: {
-      src: '[STONE]_HUMAN_PRIEST4.jpg',
+    templeWallBase: {
+      src: '[STONE]_HUMAN_PRIEST11.jpg',
+      native: true,
+    },
+    templeWall: [
+      {
+        src: '[STONE]_HUMAN_PRIEST2.jpg',
+        native: true,
+      },
+      {
+        src: '[STONE]_HUMAN_PRIEST3.jpg',
+        native: true,
+      },
+      {
+        src: '[STONE]_HUMAN_PRIEST4.jpg',
+        native: true,
+      },
+    ],
+    templeWallEdge: {
+      src: '[STONE]_HUMAN_PRIEST5.jpg',
       native: true,
     },
     stairs: {

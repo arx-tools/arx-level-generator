@@ -278,7 +278,7 @@ const generate = async (config) => {
   // createFallSaver(islands[0].pos, welcomeMarker)
   // createGravityInducer(origin, mapData)
 
-  // setTexture(textures.stone.humanPriest4, mapData)
+  // setTexture(textures.stone.templeWall[2], mapData)
   // pillars(islands[0].pos, 20, 5000, 1000, [200, 200, 0, 0], mapData)
 
   islands.forEach((config, idx) => {
