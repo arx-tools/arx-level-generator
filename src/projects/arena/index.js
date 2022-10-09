@@ -17,6 +17,7 @@ import {
   generateBlankMapData,
   movePlayerTo,
   pickRandom,
+  randomBetween,
   saveToDisk,
   setColor,
   setTexture,
@@ -124,11 +125,36 @@ const generate = async (config) => {
 
   setColor('#777777', mapData)
   setTexture(textures.stone.templeWall[0], mapData)
-  building(-900, 900, 3, 5, 3, mapData)
-  building(-500, 970, 4, 3, 2, mapData)
 
-  setTexture(textures.stone.templeWall[2], mapData)
-  building(-725, 1120, 1, 4, 3, mapData)
+  let x = -900
+  let z = 700
+
+  let prevSizeX = 0
+  let currSizeX = 3
+  let currSizeY = 5
+  let currSizeZ = 3
+
+  building(x, z, currSizeX, currSizeY, currSizeZ, mapData)
+
+  for (let i = 0; i < 6; i++) {
+    prevSizeX = currSizeX
+    currSizeX = pickRandom([2, 4, 6])
+    currSizeY = randomBetween(3, 10 - currSizeX)
+    currSizeZ = randomBetween(1, 2)
+    x += prevSizeX * 50 + currSizeX * 50
+    // calculation of walls is still not okay, when width or depth is not even
+    building(
+      x,
+      z + randomBetween(-100, 300),
+      currSizeX,
+      currSizeY,
+      currSizeZ,
+      mapData,
+    )
+  }
+
+  // setTexture(textures.stone.templeWall[2], mapData)
+  // building(-725, 1120, 1, 4, 3, mapData)
 
   // -------------------
 
