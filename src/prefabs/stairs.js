@@ -69,7 +69,7 @@ const stairTopRight = (pos, isRightFlipped, areSidesFlipped, mapData) => {
 }
 
 const stairFrontRight = (pos, isRightFlipped, areSidesFlipped, mapData) => {
-  return wallZ(
+  wallZ(
     move(
       areSidesFlipped ? -STEP.WIDTH / 4 : STEP.WIDTH / 4,
       -STEP.HEIGHT / 2,
@@ -91,7 +91,7 @@ const stairFrontRight = (pos, isRightFlipped, areSidesFlipped, mapData) => {
 }
 
 const stairFrontLeft = (pos, isLeftFlipped, areSidesFlipped, mapData) => {
-  return wallZ(
+  wallZ(
     move(
       areSidesFlipped ? STEP.WIDTH / 4 : -STEP.WIDTH / 4,
       -STEP.HEIGHT / 2,

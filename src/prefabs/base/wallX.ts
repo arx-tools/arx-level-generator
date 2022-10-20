@@ -135,8 +135,6 @@ const wallX =
       room: 1,
       paddy: 0,
     })
-
-    return mapData
   }
 
 export default wallX

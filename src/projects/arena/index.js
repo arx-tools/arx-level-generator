@@ -22,13 +22,14 @@ import {
   setColor,
   setTexture,
 } from '../../helpers'
-import { plain, wall } from '../../prefabs'
+import { plain } from '../../prefabs'
 import { getInjections } from '../../scripting'
 import { overridePlayerScript } from '../shared/player'
 import { hideMinimap } from '../shared/reset'
 import { createGungameController } from './gamemodes/gungame'
 import { createNPC, defineNPC } from './items/npc'
 import { createRespawnController } from './items/respawnController'
+import { house } from './buildings'
 
 const createWelcomeMarker = (pos, config) => {
   const ref = createItem(items.marker)
@@ -84,7 +85,7 @@ const generate = async (config) => {
   )(mapData)
 
   setColor('#a7a7a7', mapData)
-  setTexture(textures.stone.humanAkbaaPavingF, mapData)
+  setTexture(textures.gravel.ground1, mapData)
 
   plain([0, 0, 0], 20, 'floor', identity, () => ({
     quad: pickRandom([0, 1, 2, 3]),
@@ -94,67 +95,8 @@ const generate = async (config) => {
 
   // -------------------
 
-  const building = (x, z, width, height, depth, mapData) => {
-    let y = 30
-
-    wall(
-      [x - (width / 2) * 100 - 100, y, z + (depth / 2) * 100],
-      'front',
-      { width: width, height: height, unit: 100 },
-      mapData,
-    )
-    wall(
-      [x - (width / 2) * 100 - 100, y, z - (depth / 2) * 100],
-      'back',
-      { width: width, height: height, unit: 100 },
-      mapData,
-    )
-    wall(
-      [x - (width / 2) * 100, y, z - (depth / 2) * 100 - 100],
-      'left',
-      { width: depth, height: height, unit: 100 },
-      mapData,
-    )
-    wall(
-      [x + (width / 2) * 100, y, z - (depth / 2) * 100 - 100],
-      'right',
-      { width: depth, height: height, unit: 100 },
-      mapData,
-    )
-  }
-
   setColor('#777777', mapData)
-  setTexture(textures.stone.templeWall[0], mapData)
-
-  let x = -900
-  let z = 700
-
-  let prevSizeX = 0
-  let currSizeX = 3
-  let currSizeY = 5
-  let currSizeZ = 3
-
-  building(x, z, currSizeX, currSizeY, currSizeZ, mapData)
-
-  for (let i = 0; i < 6; i++) {
-    prevSizeX = currSizeX
-    currSizeX = pickRandom([2, 4, 6])
-    currSizeY = randomBetween(3, 10 - currSizeX)
-    currSizeZ = randomBetween(1, 2)
-    x += prevSizeX * 50 + currSizeX * 50
-    // calculation of walls is still not okay, when width or depth is not even
-    building(
-      x,
-      z + randomBetween(-100, 300),
-      currSizeX,
-      currSizeY,
-      currSizeZ,
-      mapData,
-    )
-  }
-
-  // setTexture(textures.stone.templeWall[2], mapData)
-  // building(-725, 1120, 1, 4, 3, mapData)
+  house([-900, 0, 900], mapData)
 
   // -------------------
 

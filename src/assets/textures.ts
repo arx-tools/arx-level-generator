@@ -27,8 +27,36 @@ export const textures = {
       src: '[WOOD]_ALICIAROOM_MUR02.jpg',
       native: true,
     },
+    logs: {
+      src: 'L2_TROLLS_[WOOD]_PILLAR.jpg',
+      native: true,
+    },
+  },
+  wall: {
+    roughcast: [
+      {
+        src: '[WOOD]_HUMAN_ROUGHCAST_WALL.jpg',
+        native: true,
+      },
+      {
+        src: '[WOOD]_HUMAN_ROUGHCAST_WALL2.jpg',
+        native: true,
+      },
+      {
+        src: '[WOOD]_HUMAN_ROUGHCAST_WALL3.jpg',
+        native: true,
+      },
+    ],
+  },
+  window: {
+    src: '[GLASS]_WINDOWS.jpg',
+    native: true,
   },
   stone: {
+    roof: {
+      src: '[STONE]_HUMAN_ROOF.jpg',
+      native: true,
+    },
     humanWall1: {
       src: '[STONE]_HUMAN_STONE_WALL1.jpg',
       native: true,

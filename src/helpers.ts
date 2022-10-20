@@ -1,20 +1,7 @@
 import fs from 'fs'
 import rgba from 'color-rgba'
-import {
-  createTextureContainers,
-  textures,
-  exportTextures,
-  resetTextures,
-  TextureDefinition,
-} from './assets/textures'
-import {
-  createDlfData,
-  createFtsData,
-  createLlfData,
-  DlfData,
-  FtsData,
-  LlfData,
-} from './blankMap'
+import { createTextureContainers, textures, exportTextures, resetTextures, TextureDefinition } from './assets/textures'
+import { createDlfData, createFtsData, createLlfData, DlfData, FtsData, LlfData } from './blankMap'
 import { countBy, partition, repeat, clone } from './faux-ramda'
 import {
   POLY_QUAD,
@@ -26,19 +13,8 @@ import {
   PATH_AMBIANCE,
   PATH_FARCLIP,
 } from './constants'
-import {
-  exportUsedItems,
-  exportScripts,
-  exportDependencies,
-  resetItems,
-} from './assets/items'
-import {
-  ambiences,
-  exportAmbiences,
-  useAmbience,
-  resetAmbiences,
-  AmbienceDefinition,
-} from './assets/ambiences'
+import { exportUsedItems, exportScripts, exportDependencies, resetItems } from './assets/items'
+import { ambiences, exportAmbiences, useAmbience, resetAmbiences, AmbienceDefinition } from './assets/ambiences'
 import { dirname, resolve } from 'path'
 import {
   AbsoluteCoords,
@@ -80,12 +56,7 @@ export const normalize = (vector: Vector3): Vector3 => {
   return [x / mag, y / mag, z / mag]
 }
 
-export const move = (
-  x: number,
-  y: number,
-  z: number,
-  vector: Vector3,
-): Vector3 => {
+export const move = (x: number, y: number, z: number, vector: Vector3): Vector3 => {
   const [vx, vy, vz] = vector
   return [vx + x, vy + y, vz + z]
 }
@@ -100,11 +71,7 @@ export const addCoords = (
 
   return {
     type: a.type,
-    coords: [
-      a.coords[0] + b.coords[0],
-      a.coords[1] + b.coords[1],
-      a.coords[2] + b.coords[2],
-    ],
+    coords: [a.coords[0] + b.coords[0], a.coords[1] + b.coords[1], a.coords[2] + b.coords[2]],
   }
 }
 
@@ -150,24 +117,21 @@ const generateLights = (mapData: any) => {
 
   const colors: RgbaBytes[] = []
 
-  const p = mapData.fts.polygons.reduce(
-    (acc, { vertices }: { vertices: PosVertex3[] }, idx) => {
-      const x = Math.min(...vertices.map(({ posX }) => posX))
-      const z = Math.min(...vertices.map(({ posZ }) => posZ))
+  const p = mapData.fts.polygons.reduce((acc, { vertices }: { vertices: PosVertex3[] }, idx) => {
+    const x = Math.min(...vertices.map(({ posX }) => posX))
+    const z = Math.min(...vertices.map(({ posZ }) => posZ))
 
-      const cellX = Math.floor(x / 100)
-      const cellZ = Math.floor(z / 100) + 1
+    const cellX = Math.floor(x / 100)
+    const cellZ = Math.floor(z / 100) + 1
 
-      if (!acc[`${cellZ}-${cellX}`]) {
-        acc[`${cellZ}-${cellX}`] = [idx]
-      } else {
-        acc[`${cellZ}-${cellX}`].push(idx)
-      }
+    if (!acc[`${cellZ}-${cellX}`]) {
+      acc[`${cellZ}-${cellX}`] = [idx]
+    } else {
+      acc[`${cellZ}-${cellX}`].push(idx)
+    }
 
-      return acc
-    },
-    {},
-  )
+    return acc
+  }, {})
 
   for (let z = 0; z < MAP_MAX_HEIGHT; z++) {
     for (let x = 0; x < MAP_MAX_WIDTH; x++) {
@@ -213,16 +177,12 @@ const calculateNormals = (mapData: any) => {
     const [a, b, c, d] = points
 
     if (config.isQuad) {
-      polygon.norm2 = vectorToXYZ(
-        normalize(cross(subtractVec3(c, d), subtractVec3(b, d))),
-      )
+      polygon.norm2 = vectorToXYZ(normalize(cross(subtractVec3(c, d), subtractVec3(b, d))))
     } else {
       polygon.norm2 = vectorToXYZ([0, 0, 0])
     }
 
-    polygon.norm = vectorToXYZ(
-      normalize(cross(subtractVec3(b, a), subtractVec3(c, a))),
-    )
+    polygon.norm = vectorToXYZ(normalize(cross(subtractVec3(b, a), subtractVec3(c, a))))
 
     polygon.normals = [polygon.norm, polygon.norm, polygon.norm, polygon.norm2]
   })
@@ -240,12 +200,7 @@ export const finalize = (mapData: MapData) => {
 
   const { spawn, spawnAngle } = mapData.state
 
-  const [x, y, z] = move(
-    0,
-    PLAYER_HEIGHT_ADJUSTMENT,
-    0,
-    move(...mapData.config.origin.coords, spawn),
-  )
+  const [x, y, z] = move(0, PLAYER_HEIGHT_ADJUSTMENT, 0, move(...mapData.config.origin.coords, spawn))
   finalizedMapData.fts.sceneHeader.mScenePosition = { x, y, z }
 
   finalizedMapData.llf.lights.forEach((light) => {
@@ -349,10 +304,7 @@ export const saveToDisk = async (finalizedMapData) => {
   const { levelIdx } = finalizedMapData.config
   const defaultOutputDir = resolve('./dist')
 
-  const outputDir =
-    process.env.OUTPUTDIR ??
-    finalizedMapData.config.outputDir ??
-    defaultOutputDir
+  const outputDir = process.env.OUTPUTDIR ?? finalizedMapData.config.outputDir ?? defaultOutputDir
 
   console.log('output directory:', outputDir)
 
@@ -422,11 +374,7 @@ ${translation}`,
   const dependenciesPairs = Object.entries(dependencies)
   const texturesPairs = Object.entries(textures)
 
-  for (let [target, source] of [
-    ...ambiencesPairs,
-    ...dependenciesPairs,
-    ...texturesPairs,
-  ]) {
+  for (let [target, source] of [...ambiencesPairs, ...dependenciesPairs, ...texturesPairs]) {
     await fs.promises.copyFile(source, target)
   }
 
@@ -436,10 +384,7 @@ ${translation}`,
   await fs.promises.writeFile(files.fts, JSON.stringify(finalizedMapData.fts))
   await fs.promises.writeFile(files.llf, JSON.stringify(finalizedMapData.llf))
 
-  await fs.promises.writeFile(
-    `${outputDir}/manifest.json`,
-    JSON.stringify(manifest, null, 2),
-  )
+  await fs.promises.writeFile(`${outputDir}/manifest.json`, JSON.stringify(manifest, null, 2))
 }
 
 export const setColor = (color: string, mapData: MapData) => {
@@ -480,10 +425,7 @@ export const categorizeVertices = (polygons) => {
     Object.entries(summary),
   )
 
-  const [edge, middle] = partition(
-    ([hash, amount]: [string, number]) => amount === 2,
-    tmp,
-  )
+  const [edge, middle] = partition(([hash, amount]: [string, number]) => amount === 2, tmp)
 
   return {
     corners: unpackCoords(corner),
@@ -504,11 +446,7 @@ export const bumpByMagnitude = (magnitude) => (vertex) => {
 export const adjustVertexBy = (ref, fn, polygons) => {
   polygons.forEach((polygon) => {
     polygon.vertices = polygon.vertices.map((vertex) => {
-      if (
-        vertex.posX === ref.posX &&
-        vertex.posY === ref.posY &&
-        vertex.posZ === ref.posZ
-      ) {
+      if (vertex.posX === ref.posX && vertex.posY === ref.posY && vertex.posZ === ref.posZ) {
         return fn(vertex, polygon)
       }
 
@@ -544,11 +482,7 @@ export const pickRandomIdx = <T>(set: T[]) => {
 }
 
 const cross = (u: Vector3, v: Vector3): Vector3 => {
-  return [
-    u[1] * v[2] - u[2] * v[1],
-    u[2] * v[0] - u[0] * v[2],
-    u[0] * v[1] - u[1] * v[0],
-  ]
+  return [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]]
 }
 
 export const subtractVec3 = (a: Vector3, b: Vector3): Vector3 => {
@@ -575,21 +509,14 @@ const isPointInTriangle = (p: Vector3, a, b, c) => {
   const v = triangleArea(a, b, p) / area
   const w = triangleArea(b, c, p) / area
 
-  return (
-    isBetweenInclusive(0, 1, u) &&
-    isBetweenInclusive(0, 1, v) &&
-    isBetweenInclusive(0, 1, w) &&
-    u + v + w === 1
-  )
+  return isBetweenInclusive(0, 1, u) && isBetweenInclusive(0, 1, v) && isBetweenInclusive(0, 1, w) && u + v + w === 1
 }
 
 export const isPointInPolygon = (point: Vector3, polygon) => {
   const [a, b, c, d] = polygon.vertices.map(posVertexToVector)
 
   if (polygon.config.isQuad) {
-    return (
-      isPointInTriangle(point, a, b, c) || isPointInTriangle(point, b, c, d)
-    )
+    return isPointInTriangle(point, a, b, c) || isPointInTriangle(point, b, c, d)
   } else {
     return isPointInTriangle(point, a, b, c)
   }
@@ -677,21 +604,17 @@ export const flipPolygon = (vertices) => {
   return [a, c, b, d]
 }
 
-export const sortByDistance =
-  (fromPoint: Vector3) => (a: Vector3, b: Vector3) => {
-    const distanceA = distance(fromPoint, a)
-    const distanceB = distance(fromPoint, b)
+export const sortByDistance = (fromPoint: Vector3) => (a: Vector3, b: Vector3) => {
+  const distanceA = distance(fromPoint, a)
+  const distanceB = distance(fromPoint, b)
 
-    return distanceA - distanceB
-  }
+  return distanceA - distanceB
+}
 
 // [ a, b, c  [ x      [ ax + by + cz
 //   d, e, f    y    =   dx + ey + fz
 //   g, h, i ]  z ]      gx + hy + iz ]
-const matrix3MulVec3: (matrix: number[], vector: Vector3) => Vector3 = (
-  [a, b, c, d, e, f, g, h, i],
-  [x, y, z],
-) => {
+const matrix3MulVec3: (matrix: number[], vector: Vector3) => Vector3 = ([a, b, c, d, e, f, g, h, i], [x, y, z]) => {
   return [a * x + b * y + c * z, d * x + e * y + f * z, g * x + h * y + i * z]
 }
 
@@ -760,11 +683,7 @@ export const randomSort = <T>(items: T[]) => {
 // guaranteePresenceOfAll=true will sort items with smaller weights to the beginning of the weightedSet
 // so they will always be present in the list of items, no matter how heavy other items are
 // this way the item with weight=1 will be guaranteed to show up in the selected list
-export const pickWeightedRandoms = (
-  amount: number,
-  set: { weight: number }[],
-  guaranteePresenceOfAll = false,
-) => {
+export const pickWeightedRandoms = (amount: number, set: { weight: number }[], guaranteePresenceOfAll = false) => {
   const weights = set.map(({ weight }) => weight)
   const totalWeight = sum(weights)
   const percentages = weights.map((weight) => weight / totalWeight)
@@ -790,4 +709,16 @@ export const pickWeightedRandoms = (
 
 export const roundToNDecimals = (decimals: number, x: number) => {
   return Math.round(x * 10 ** decimals) / 10 ** decimals
+}
+
+export const normalizeDegree = (degree: number) => {
+  if (isBetween(0, 360, degree)) {
+    return degree
+  }
+
+  if (degree >= 360) {
+    return degree % 360
+  }
+
+  return (degree % 360) + 360
 }

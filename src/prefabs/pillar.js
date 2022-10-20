@@ -22,7 +22,7 @@ const segment = (x, y, z, size) => (mapData) => {
     uv,
   )(mapData)
 
-  mapData = wallX(
+  wallX(
     [x + size / 2, y, z - size / 2],
     'right',
     null,
@@ -32,7 +32,7 @@ const segment = (x, y, z, size) => (mapData) => {
     uv,
   )(mapData)
 
-  mapData = wallZ(
+  wallZ(
     [x - size / 2, y, z - size / 2],
     'back',
     null,
@@ -42,7 +42,7 @@ const segment = (x, y, z, size) => (mapData) => {
     uv,
   )(mapData)
 
-  mapData = wallZ(
+  wallZ(
     [x - size / 2, y, z + size / 2],
     'front',
     null,
