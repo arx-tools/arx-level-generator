@@ -67,3 +67,10 @@ export type FloatRgb = {
   g: number
   b: number
 }
+
+export type UV = {
+  u: number
+  v: number
+}
+
+export type UVQuad = [UV, UV, UV, UV]

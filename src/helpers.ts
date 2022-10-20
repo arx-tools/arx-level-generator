@@ -24,6 +24,7 @@ import {
   RelativeCoords,
   RgbaBytes,
   RotationVector3,
+  UVQuad,
   Vector3,
   Vertex3,
 } from './types'
@@ -712,13 +713,42 @@ export const roundToNDecimals = (decimals: number, x: number) => {
 }
 
 export const normalizeDegree = (degree: number) => {
-  if (isBetween(0, 360, degree)) {
-    return degree
+  let normalizedDegree = degree % 360
+  if (normalizedDegree < 0) {
+    normalizedDegree += 360
+  }
+  return Math.abs(normalizedDegree)
+}
+
+export const flipUVHorizontally = ([c, d, a, b]: UVQuad): UVQuad => {
+  return [a, b, c, d]
+}
+
+export const flipUVVertically = ([c, d, a, b]: UVQuad): UVQuad => {
+  return [d, c, b, a]
+}
+
+export const rotateUV = (degree: number, [c, d, a, b]: UVQuad) => {
+  const normalizedDegree = normalizeDegree(degree)
+
+  let uv: UVQuad
+
+  switch (normalizedDegree) {
+    case 0:
+      uv = [c, d, a, b]
+      break
+    case 90:
+      uv = [a, c, b, d]
+      break
+    case 180:
+      uv = [b, a, d, c]
+      break
+    case 270:
+      uv = [d, b, c, a]
+    default:
+      // TODO: implement custom rotation (https://forum.unity.com/threads/rotate-uv-coordinates-is-it-possible.135025/)
+      uv = [a, b, c, d]
   }
 
-  if (degree >= 360) {
-    return degree % 360
-  }
-
-  return (degree % 360) + 360
+  return uv
 }
