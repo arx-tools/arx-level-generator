@@ -22,26 +22,31 @@ const wallX =
   ) =>
   (mapData) => {
     const { texture } = mapData.state
-    let texU = 0
-    let texV = 0
-    let sizeX = size
-    let sizeY = size
-    let sizeZ = size
-    if (Array.isArray(size)) {
-      ;[sizeX, sizeY, sizeZ] = size
-    }
 
-    let a = { u: 0.5, v: 0 }
-    let b = { u: 0.5, v: 0.5 }
-    let c = { u: 0, v: 0 }
-    let d = { u: 0, v: 0.5 }
+    const [sizeX, sizeY, sizeZ] = Array.isArray(size) ? size : [size, size, size]
+
+    let a
+    let b
+    let c
+    let d
+
+    let texU
+    let texV
 
     if (quad === null) {
       a = _uv.a
       b = _uv.b
       c = _uv.c
       d = _uv.d
+
+      texU = 0
+      texV = 0
     } else {
+      a = { u: 0.5, v: 0 }
+      b = { u: 0.5, v: 0.5 }
+      c = { u: 0, v: 0 }
+      d = { u: 0, v: 0.5 }
+
       switch (quad) {
         case 0:
           texU = 0
