@@ -49,28 +49,37 @@ const wallX =
         d = { u: 0, v: 1 }
         break
       case TEXTURE_QUAD_TOP_LEFT:
-        a = { u: 0.5, v: 0 }
-        b = { u: 0.5, v: 0.5 }
-        c = { u: 0, v: 0 }
-        d = { u: 0, v: 0.5 }
+        {
+          const scale = 0.5
+          a = { u: 1 * scale, v: 0 }
+          b = { u: 1 * scale, v: 1 * scale }
+          c = { u: 0, v: 0 }
+          d = { u: 0, v: 1 * scale }
+        }
         break
       case TEXTURE_QUAD_TOP_RIGHT:
-        a = { u: 1, v: 0 }
-        b = { u: 1, v: 0.5 }
-        c = { u: 0.5, v: 0 }
-        d = { u: 0.5, v: 0.5 }
+        {
+          a = { u: 1, v: 0 }
+          b = { u: 1, v: 0.5 }
+          c = { u: 0.5, v: 0 }
+          d = { u: 0.5, v: 0.5 }
+        }
         break
       case TEXTURE_QUAD_BOTTOM_RIGHT:
-        a = { u: 1, v: 0.5 }
-        b = { u: 1, v: 1 }
-        c = { u: 0.5, v: 0.5 }
-        d = { u: 0.5, v: 1 }
+        {
+          a = { u: 1, v: 0.5 }
+          b = { u: 1, v: 1 }
+          c = { u: 0.5, v: 0.5 }
+          d = { u: 0.5, v: 1 }
+        }
         break
       case TEXTURE_QUAD_BOTTOM_LEFT:
-        a = { u: 0.5, v: 0.5 }
-        b = { u: 0.5, v: 1 }
-        c = { u: 0, v: 0.5 }
-        d = { u: 0, v: 1 }
+        {
+          a = { u: 0.5, v: 0.5 }
+          b = { u: 0.5, v: 1 }
+          c = { u: 0, v: 0.5 }
+          d = { u: 0, v: 1 }
+        }
         break
       case TEXTURE_CUSTOM_SCALE:
         ;({ a, b, c, d } = _uv)

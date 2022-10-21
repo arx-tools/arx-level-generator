@@ -12,7 +12,8 @@ import {
   MapData,
 } from '../helpers'
 import { identity, clamp } from '../faux-ramda'
-import { AbsoluteCoords, PosVertex3, Vector3 } from '../types'
+import { AbsoluteCoords, PosVertex3, TextureQuad, Vector3 } from '../types'
+import { TEXTURE_FULL_SCALE } from '../constants'
 
 export type AdjustablePosVertex3 = PosVertex3 & { haveBeenAdjusted?: boolean }
 
@@ -32,8 +33,8 @@ export const plain = (
   getConfig: () => {
     textureRotation?: number
     textureFlags?: number
-    quad?: number | null
-  } = () => ({}),
+    quad: TextureQuad
+  } = () => ({ quad: TEXTURE_FULL_SCALE }),
 ) => {
   return (mapData) => {
     const { origin } = mapData.config
@@ -70,79 +71,45 @@ export const plain = (
           ],
         }
 
-        floor(
-          position,
-          facing,
-          config.quad ?? null,
-          config.textureRotation ?? 90,
-          100,
-          config.textureFlags ?? 0,
-        )(dummyMapData)
+        floor(position, facing, config.quad, config.textureRotation ?? 90, 100, config.textureFlags ?? 0)(dummyMapData)
       }
     }
 
-    const polygons = onBeforeBumping(
-      dummyMapData.fts.polygons[mapData.state.polygonGroup],
-      mapData,
-    )
+    const polygons = onBeforeBumping(dummyMapData.fts.polygons[mapData.state.polygonGroup], mapData)
 
-    const nonBumpablePolygons = polygons.filter(
-      (polygon) => polygon.config.bumpable === false,
-    )
+    const nonBumpablePolygons = polygons.filter((polygon) => polygon.config.bumpable === false)
 
     if (polygons.length > nonBumpablePolygons.length) {
-      const nonBumpableVertices = nonBumpablePolygons.reduce(
-        (acc, { vertices }) => {
-          acc.push(
-            ...vertices.map(
-              ({ posX, posY, posZ }) => `${posX}|${posY}|${posZ}`,
-            ),
-          )
-          return acc
-        },
-        [],
-      )
+      const nonBumpableVertices = nonBumpablePolygons.reduce((acc, { vertices }) => {
+        acc.push(...vertices.map(({ posX, posY, posZ }) => `${posX}|${posY}|${posZ}`))
+        return acc
+      }, [])
 
       let { corners, edges, middles } = categorizeVertices(polygons)
 
       corners
-        .filter(
-          ({ posX, posY, posZ }) =>
-            !nonBumpableVertices.includes(`${posX}|${posY}|${posZ}`),
-        )
+        .filter(({ posX, posY, posZ }) => !nonBumpableVertices.includes(`${posX}|${posY}|${posZ}`))
         .forEach((corner) => {
           const magnitude = 5 * mapData.config.bumpFactor
           adjustVertexBy(
             corner,
-            bumpByMagnitude(
-              randomBetween(-magnitude, magnitude) +
-                (facing === 'floor' ? -80 : 80),
-            ),
+            bumpByMagnitude(randomBetween(-magnitude, magnitude) + (facing === 'floor' ? -80 : 80)),
             polygons,
           )
         })
 
       edges
-        .filter(
-          ({ posX, posY, posZ }) =>
-            !nonBumpableVertices.includes(`${posX}|${posY}|${posZ}`),
-        )
+        .filter(({ posX, posY, posZ }) => !nonBumpableVertices.includes(`${posX}|${posY}|${posZ}`))
         .forEach((edge) => {
           const magnitude = 5 * mapData.config.bumpFactor
           adjustVertexBy(
             edge,
-            bumpByMagnitude(
-              randomBetween(-magnitude, magnitude) +
-                (facing === 'floor' ? -40 : 40),
-            ),
+            bumpByMagnitude(randomBetween(-magnitude, magnitude) + (facing === 'floor' ? -40 : 40)),
             polygons,
           )
         })
 
-      middles = middles.filter(
-        ({ posX, posY, posZ }) =>
-          !nonBumpableVertices.includes(`${posX}|${posY}|${posZ}`),
-      )
+      middles = middles.filter(({ posX, posY, posZ }) => !nonBumpableVertices.includes(`${posX}|${posY}|${posZ}`))
       pickRandoms(15, middles).forEach((middle) => {
         const magnitude = 10 * mapData.config.bumpFactor
         adjustVertexBy(
@@ -153,8 +120,7 @@ export const plain = (
               : clamp(
                   -Infinity,
                   50,
-                  randomBetween(-magnitude, magnitude) * 3 -
-                    randomBetween(5, 25) * mapData.config.bumpFactor,
+                  randomBetween(-magnitude, magnitude) * 3 - randomBetween(5, 25) * mapData.config.bumpFactor,
                 ),
           ),
           polygons,
@@ -179,15 +145,10 @@ export const disableBumping = (polygons) => {
   return polygons
 }
 
-export const connectToNearPolygons = (
-  targetGroup: string,
-  distanceThreshold: number = 100,
-) => {
+export const connectToNearPolygons = (targetGroup: string, distanceThreshold: number = 100) => {
   return (polygons, mapData) => {
     const target = categorizeVertices(mapData.fts.polygons[targetGroup] || [])
-    const targetVertices: Vector3[] = [...target.corners, ...target.edges].map(
-      posVertexToVector,
-    )
+    const targetVertices: Vector3[] = [...target.corners, ...target.edges].map(posVertexToVector)
 
     if (targetVertices.length === 0) {
       return polygons
@@ -237,16 +198,10 @@ export const connectToNearPolygons = (
         return aDistance - bDistance
       })
       .forEach((candidate) => {
-        const smallestDistance = Math.min(
-          ...candidate.map(({ distance }) => distance),
-        )
+        const smallestDistance = Math.min(...candidate.map(({ distance }) => distance))
 
         candidate
-          .filter(
-            (x) =>
-              x.distance === smallestDistance &&
-              x.vertex.haveBeenAdjusted !== true,
-          )
+          .filter((x) => x.distance === smallestDistance && x.vertex.haveBeenAdjusted !== true)
           .forEach(({ coordinates, polygon, vertex }) => {
             const [x, y, z] = coordinates
             vertex.haveBeenAdjusted = true
