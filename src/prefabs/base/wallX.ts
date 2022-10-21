@@ -1,6 +1,7 @@
 import { POLY_QUAD, POLY_NO_SHADOW, HFLIP, VFLIP } from '../../constants'
 import { useTexture } from '../../assets/textures'
-import { flipPolygon } from '../../helpers'
+import { flipPolygon, flipUVHorizontally, flipUVVertically, rotateUV } from '../../helpers'
+import { UVQuad } from '../../types'
 
 // [x, y, z] are absolute coordinates,
 // not relative to origin
@@ -61,24 +62,14 @@ const wallX =
       }
     }
 
-    let uv = [c, d, a, b] // 0
-    switch (textureRotation) {
-      case 90:
-        uv = [a, c, b, d] // 90
-        break
-      case 180:
-        uv = [b, a, d, c] // 180
-        break
-      case 270:
-        uv = [d, b, c, a] // 270
-    }
+    let uv = rotateUV(textureRotation, [c, d, a, b])
 
     if (flags & HFLIP) {
-      uv = [uv[2], uv[3], uv[0], uv[1]]
+      uv = flipUVHorizontally(uv)
     }
 
     if (flags & VFLIP) {
-      uv = [uv[1], uv[0], uv[3], uv[2]]
+      uv = flipUVVertically(uv)
     }
 
     const textureFlags = texture.flags ?? POLY_QUAD | POLY_NO_SHADOW
@@ -118,8 +109,7 @@ const wallX =
       vertices = flipPolygon(vertices)
     }
 
-    mapData.fts.polygons[mapData.state.polygonGroup] =
-      mapData.fts.polygons[mapData.state.polygonGroup] || []
+    mapData.fts.polygons[mapData.state.polygonGroup] = mapData.fts.polygons[mapData.state.polygonGroup] || []
 
     mapData.fts.polygons[mapData.state.polygonGroup].push({
       config: {

@@ -1,12 +1,7 @@
 import path from 'path'
 import { clone, uniq } from '../faux-ramda'
 import { declare, SCRIPT_EOL } from '../scripting'
-import {
-  RelativeCoords,
-  RotationVector3,
-  RotationVertex3,
-  Vertex3,
-} from '../types'
+import { RelativeCoords, RotationVector3, RotationVertex3, Vertex3 } from '../types'
 import { getRootPath } from '../rootpath'
 import { PLAYER_HEIGHT_ADJUSTMENT } from '../constants'
 import glob from 'tiny-glob'
@@ -17,16 +12,7 @@ export type RenderedInjectableProps = {
   initend?: string[]
 }
 
-export type Materials =
-  | 'stone'
-  | 'wood'
-  | 'metal'
-  | 'cloth'
-  | 'flesh'
-  | 'ice'
-  | 'glass'
-  | 'earth'
-  | 'weapon'
+export type Materials = 'stone' | 'wood' | 'metal' | 'cloth' | 'flesh' | 'ice' | 'glass' | 'earth' | 'weapon'
 
 export type InjectableProps = {
   name?: string
@@ -319,10 +305,7 @@ const propsToInjections = (props: InjectableProps): RenderedInjectableProps => {
   return result
 }
 
-export const createItem = (
-  item: ItemDefinition,
-  props: InjectableProps = {},
-): ItemRef => {
+export const createItem = (item: ItemDefinition, props: InjectableProps = {}): ItemRef => {
   if (typeof usedItems[item.src] === 'undefined') {
     usedItems[item.src] = { instances: [] }
   }
@@ -354,10 +337,7 @@ export const createItem = (
   }
 }
 
-export const createRootItem = (
-  item: ItemDefinition,
-  props: InjectableProps = {},
-): ItemRef => {
+export const createRootItem = (item: ItemDefinition, props: InjectableProps = {}): ItemRef => {
   if (typeof usedItems[item.src] === 'undefined') {
     usedItems[item.src] = { instances: [] }
   }
@@ -395,11 +375,7 @@ export const addDependency = (dependency, itemRef: ItemRef) => {
   }
 }
 
-export const addDependencyAs = (
-  source: string,
-  target: string,
-  itemRef: ItemRef,
-) => {
+export const addDependencyAs = (source: string, target: string, itemRef: ItemRef) => {
   const { src, id } = itemRef
 
   if (usedItems[src]) {
@@ -417,16 +393,11 @@ export const addDependencyAs = (
   }
 }
 
-export const addScript = (
-  script: string | ((self: ItemRef) => string),
-  itemRef: ItemRef,
-) => {
+export const addScript = (script: string | ((self: ItemRef) => string), itemRef: ItemRef) => {
   const { src, id } = itemRef
 
   if (usedItems[src]) {
-    const scriptContent = (
-      typeof script === 'function' ? script(itemRef) : script
-    ).trim()
+    const scriptContent = (typeof script === 'function' ? script(itemRef) : script).trim()
 
     if (id === 'root') {
       const root = usedItems[src].root
@@ -448,11 +419,7 @@ export const addScript = (
   }
 }
 
-export const moveTo = (
-  { coords: [x, y, z] }: RelativeCoords,
-  [a, b, g]: RotationVector3,
-  itemRef: ItemRef,
-) => {
+export const moveTo = ({ coords: [x, y, z] }: RelativeCoords, [a, b, g]: RotationVector3, itemRef: ItemRef) => {
   const { src, id } = itemRef
 
   if (usedItems[src] && id !== 'root') {
@@ -476,6 +443,8 @@ export const markAsUsed = (itemRef: ItemRef) => {
       root.used = true
     }
   }
+
+  return itemRef
 }
 
 // source: https://stackoverflow.com/a/40011873/1806628
@@ -575,9 +544,7 @@ export const exportDependencies = async (outputDir: string) => {
     })
     .filter(({ used }) => used === true)
 
-  const dependencies = itemsToBeExported.flatMap(
-    ({ dependencies }) => dependencies,
-  )
+  const dependencies = itemsToBeExported.flatMap(({ dependencies }) => dependencies)
 
   const rootPath = getRootPath()
 
@@ -586,26 +553,14 @@ export const exportDependencies = async (outputDir: string) => {
     let target: string
 
     if (typeof dependency === 'object') {
-      const {
-        dir: dir1,
-        name: name1,
-        ext: ext1,
-      } = path.parse(dependency.target)
-      const {
-        dir: dir2,
-        name: name2,
-        ext: ext2,
-      } = path.parse(dependency.source)
+      const { dir: dir1, name: name1, ext: ext1 } = path.parse(dependency.target)
+      const { dir: dir2, name: name2, ext: ext2 } = path.parse(dependency.source)
       source = `${rootPath}/assets/${dir2}/${name2}${ext2}`
-      target = [outputDir, dir1, `${name1}${ext1}`]
-        .filter((p) => p.length > 0)
-        .join('/')
+      target = [outputDir, dir1, `${name1}${ext1}`].filter((p) => p.length > 0).join('/')
     } else {
       const { dir, name, ext } = path.parse(dependency)
       source = `${rootPath}/assets/${dir}/${name}${ext}`
-      target = [outputDir, dir, `${name}${ext}`]
-        .filter((p) => p.length > 0)
-        .join('/')
+      target = [outputDir, dir, `${name}${ext}`].filter((p) => p.length > 0).join('/')
     }
 
     const files = await accumulatorP

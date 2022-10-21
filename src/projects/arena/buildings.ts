@@ -48,24 +48,14 @@ const calculateUV = (quad = null, textureRotation = 0, flags = 0) => {
     }
   }
 
-  let uv = [c, d, a, b] // 0
-  switch (textureRotation) {
-    case 90:
-      uv = [a, c, b, d] // 90
-      break
-    case 180:
-      uv = [b, a, d, c] // 180
-      break
-    case 270:
-      uv = [d, b, c, a] // 270
-  }
+  let uv = rotateUV(textureRotation, [c, d, a, b])
 
   if (flags & HFLIP) {
-    uv = [uv[2], uv[3], uv[0], uv[1]]
+    uv = flipUVHorizontally(uv)
   }
 
   if (flags & VFLIP) {
-    uv = [uv[1], uv[0], uv[3], uv[2]]
+    uv = flipUVVertically(uv)
   }
 
   return uv

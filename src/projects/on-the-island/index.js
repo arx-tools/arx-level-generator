@@ -1,13 +1,7 @@
 import { createRune } from '../../items/createRune'
 import { identity, uniq } from '../../faux-ramda'
 import { ambiences } from '../../assets/ambiences'
-import {
-  items,
-  createItem,
-  moveTo,
-  markAsUsed,
-  addScript,
-} from '../../assets/items'
+import { items, createItem, moveTo, markAsUsed, addScript } from '../../assets/items'
 import { textures } from '../../assets/textures'
 import { HFLIP, VFLIP } from '../../constants'
 import {
@@ -111,11 +105,7 @@ const generate = async (config) => {
   createWelcomeMarker([islandCenter.x, 0, islandCenter.z + islandRadius * 0.5])
 
   createGoblin(
-    [
-      islandCenter.x - islandRadius + islandEdgeOffset,
-      0,
-      islandCenter.z - islandRadius + islandEdgeOffset,
-    ],
+    [islandCenter.x - islandRadius + islandEdgeOffset, 0, islandCenter.z - islandRadius + islandEdgeOffset],
     [0, 135, 0],
   )
 
@@ -123,16 +113,8 @@ const generate = async (config) => {
 
   const distanceBetweenSpawns = 800
 
-  for (
-    let x = 0;
-    x <= Math.floor(islandCenter.x / distanceBetweenSpawns) + 1;
-    x++
-  ) {
-    for (
-      let z = 0;
-      z <= Math.floor(islandCenter.z / distanceBetweenSpawns) + 1;
-      z++
-    ) {
+  for (let x = 0; x <= Math.floor(islandCenter.x / distanceBetweenSpawns) + 1; x++) {
+    for (let z = 0; z <= Math.floor(islandCenter.z / distanceBetweenSpawns) + 1; z++) {
       fishSpawnCoords.push([
         -islandCenter.x - islandRadius + x * distanceBetweenSpawns,
         islandCenter.z - islandRadius + z * distanceBetweenSpawns,
@@ -155,20 +137,12 @@ const generate = async (config) => {
   const startingLoot = [
     markAsUsed(createItem(items.misc.pole)),
     markAsUsed(createItem(items.misc.rope)),
-    createRune('aam'),
-    createRune('yok'),
+    markAsUsed(createRune('aam')),
+    markAsUsed(createRune('yok')),
   ]
 
-  createBarrel(
-    [islandCenter.x - islandRadius + islandEdgeOffset, 0, islandCenter.z],
-    [0, 0, 0],
-    startingLoot,
-  )
-  createCards([
-    islandCenter.x - islandRadius + islandEdgeOffset,
-    -90,
-    islandCenter.z + 30,
-  ])
+  createBarrel([islandCenter.x - islandRadius + islandEdgeOffset, 0, islandCenter.z], [0, 0, 0], startingLoot)
+  createCards([islandCenter.x - islandRadius + islandEdgeOffset, -90, islandCenter.z + 30])
 
   const mapData = generateBlankMapData(config)
 
@@ -198,16 +172,10 @@ const generate = async (config) => {
   setTexture(textures.gravel.ground1, mapData)
   setPolygonGroup('island-1', mapData)
 
-  plain(
-    [islandCenter.x, 0, islandCenter.z],
-    [islandSizeInTiles, islandSizeInTiles],
-    'floor',
-    identity,
-    () => ({
-      textureRotation: pickRandom([0, 90, 180, 270]),
-      textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
-    }),
-  )(mapData)
+  plain([islandCenter.x, 0, islandCenter.z], [islandSizeInTiles, islandSizeInTiles], 'floor', identity, () => ({
+    textureRotation: pickRandom([0, 90, 180, 270]),
+    textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+  }))(mapData)
 
   setPolygonGroup('island-2', mapData)
 

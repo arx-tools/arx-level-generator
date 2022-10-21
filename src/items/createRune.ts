@@ -1,12 +1,5 @@
 import { RotationVector3, Vector3 } from '../types'
-import {
-  items,
-  markAsUsed,
-  moveTo,
-  createItem,
-  addScript,
-  ItemRef,
-} from '../assets/items'
+import { items, moveTo, createItem, addScript, ItemRef } from '../assets/items'
 import { getInjections, declare } from '../scripting'
 
 export const createRune = (
@@ -42,8 +35,6 @@ ON INVENTORYUSE {
   if (pos !== null) {
     moveTo({ type: 'relative', coords: pos }, angle, ref)
   }
-
-  markAsUsed(ref)
 
   return ref
 }

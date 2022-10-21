@@ -29,20 +29,8 @@ import {
   pickRandom,
 } from '../../helpers'
 import { defineCeilingLamp, createCeilingLamp } from './items/ceilingLamp'
-import {
-  EXTRAS_SEMIDYNAMIC,
-  EXTRAS_EXTINGUISHABLE,
-  EXTRAS_STARTEXTINGUISHED,
-  EXTRAS_NO_IGNIT,
-} from '../../constants'
-import {
-  markAsUsed,
-  moveTo,
-  addScript,
-  createItem,
-  items,
-  addDependencyAs,
-} from '../../assets/items'
+import { EXTRAS_SEMIDYNAMIC, EXTRAS_EXTINGUISHABLE, EXTRAS_STARTEXTINGUISHED, EXTRAS_NO_IGNIT } from '../../constants'
+import { markAsUsed, moveTo, addScript, createItem, items, addDependencyAs } from '../../assets/items'
 import { getInjections, declare, color, FALSE, TRUE } from '../../scripting'
 import {
   generateGrid,
@@ -56,10 +44,7 @@ import {
   CONNECT_ALL,
   CONNECT_BOTTOM,
 } from './rooms'
-import {
-  defineCeilingDiffuser,
-  createCeilingDiffuser,
-} from './items/ceilingDiffuser'
+import { defineCeilingDiffuser, createCeilingDiffuser } from './items/ceilingDiffuser'
 import { overridePlayerScript } from '../shared/player'
 import { createLampController } from './items/lampController'
 import { ambiences } from '../../assets/ambiences'
@@ -68,13 +53,7 @@ import { createRune } from '../../items/createRune'
 import { addTranslations } from '../../assets/i18n'
 import translations from './i18n.json'
 import { defineWallPlug, createWallPlug } from './items/wallPlug'
-import {
-  hideHealthbar,
-  hideMinimap,
-  hideStealthIndicator,
-  removeSound,
-  useWillowModifiedFont,
-} from '../shared/reset'
+import { hideHealthbar, hideMinimap, hideStealthIndicator, removeSound, useWillowModifiedFont } from '../shared/reset'
 
 const addLamp = (pos, angle, config = {}) => {
   return (mapData) => {
@@ -91,11 +70,7 @@ const addLamp = (pos, angle, config = {}) => {
         fallend: 500 * size,
         intensity: 1.3 - size * 0.1,
         exFlicker: toFloatRgb(toRgba('#1f1f07')),
-        extras:
-          EXTRAS_SEMIDYNAMIC |
-          EXTRAS_EXTINGUISHABLE |
-          (isOn ? 0 : EXTRAS_STARTEXTINGUISHED) |
-          EXTRAS_NO_IGNIT,
+        extras: EXTRAS_SEMIDYNAMIC | EXTRAS_EXTINGUISHABLE | (isOn ? 0 : EXTRAS_STARTEXTINGUISHED) | EXTRAS_NO_IGNIT,
       },
       mapData,
     )
@@ -114,11 +89,7 @@ const addAmbientLight = (pos, config = {}) => {
       fallstart: 0,
       fallend: 100000,
       intensity: 1,
-      extras:
-        EXTRAS_SEMIDYNAMIC |
-        EXTRAS_EXTINGUISHABLE |
-        (isOn ? 0 : EXTRAS_STARTEXTINGUISHED) |
-        EXTRAS_NO_IGNIT,
+      extras: EXTRAS_SEMIDYNAMIC | EXTRAS_EXTINGUISHABLE | (isOn ? 0 : EXTRAS_STARTEXTINGUISHED) | EXTRAS_NO_IGNIT,
     }
 
     const lampEntities = {
@@ -175,17 +146,9 @@ const createWelcomeMarker = (pos, config) => {
 
   const uiTheme = 'vhs' // vhs | steampunk
 
-  addDependencyAs(
-    `projects/the-backrooms/ui/${uiTheme}/graph/**/*.{jpg,bmp}`,
-    'graph',
-    ref,
-  )
+  addDependencyAs(`projects/the-backrooms/ui/${uiTheme}/graph/**/*.{jpg,bmp}`, 'graph', ref)
 
-  addDependencyAs(
-    'projects/the-backrooms/loading.bmp',
-    `graph/levels/level${config.levelIdx}/loading.bmp`,
-    ref,
-  )
+  addDependencyAs('projects/the-backrooms/loading.bmp', `graph/levels/level${config.levelIdx}/loading.bmp`, ref)
 
   declare('bool', 'hasAam', FALSE, ref)
   declare('bool', 'hasFolgora', FALSE, ref)
@@ -267,16 +230,8 @@ const createJumpscareController = (pos, lampCtrl, ambientLights, config) => {
     'speech/deutsch/whisper--do-you-smell-it.wav',
     ref,
   )
-  addDependencyAs(
-    'projects/the-backrooms/whispers/english/drink-it.wav',
-    'speech/english/whisper--drink-it.wav',
-    ref,
-  )
-  addDependencyAs(
-    'projects/the-backrooms/whispers/german/drink-it.wav',
-    'speech/deutsch/whisper--drink-it.wav',
-    ref,
-  )
+  addDependencyAs('projects/the-backrooms/whispers/english/drink-it.wav', 'speech/english/whisper--drink-it.wav', ref)
+  addDependencyAs('projects/the-backrooms/whispers/german/drink-it.wav', 'speech/deutsch/whisper--drink-it.wav', ref)
   addDependencyAs(
     'projects/the-backrooms/whispers/english/drink-the-almond-water.wav',
     'speech/english/whisper--drink-the-almond-water.wav',
@@ -297,16 +252,8 @@ const createJumpscareController = (pos, lampCtrl, ambientLights, config) => {
     'speech/deutsch/whisper--magic-wont-save-you.wav',
     ref,
   )
-  addDependencyAs(
-    'projects/the-backrooms/whispers/english/no-exit.wav',
-    'speech/english/whisper--no-exit.wav',
-    ref,
-  )
-  addDependencyAs(
-    'projects/the-backrooms/whispers/german/no-exit.wav',
-    'speech/deutsch/whisper--no-exit.wav',
-    ref,
-  )
+  addDependencyAs('projects/the-backrooms/whispers/english/no-exit.wav', 'speech/english/whisper--no-exit.wav', ref)
+  addDependencyAs('projects/the-backrooms/whispers/german/no-exit.wav', 'speech/deutsch/whisper--no-exit.wav', ref)
   addDependencyAs('projects/the-backrooms/sfx/baby.wav', 'sfx/baby.wav', ref)
   declare('int', 'magicCntr', 0, ref)
   declare('int', 'harmfulAlmondWaterCounter', 0, ref)
@@ -340,16 +287,12 @@ ON PICKUP {
     // TODO: add more harmful almondwater effects here
   }
 
-  if (${self.state.harmfulAlmondWaterCounter} != ${
-      self.state.previousHarmfulAlmondWaterCounter
-    }) {
+  if (${self.state.harmfulAlmondWaterCounter} != ${self.state.previousHarmfulAlmondWaterCounter}) {
     if (${self.state.harmfulAlmondWaterCounter} > 2) {
       set ${self.state.harmfulAlmondWaterCounter} 1
     }
 
-    SET ${self.state.previousHarmfulAlmondWaterCounter} ${
-      self.state.harmfulAlmondWaterCounter
-    }
+    SET ${self.state.previousHarmfulAlmondWaterCounter} ${self.state.harmfulAlmondWaterCounter}
 
     IF (${self.state.harmfulAlmondWaterCounter} == 1) {
       GOSUB WHISPER_DRINK1
@@ -412,9 +355,7 @@ ON POWEROUT {
     RETURN
   }
   SET ${self.state.isWhisperEnabled} ${FALSE}
-  SPEAK -p [whisper--no-exit] TIMERspeakAgain -m 1 200 SET ${
-    self.state.isWhisperEnabled
-  } ${TRUE}
+  SPEAK -p [whisper--no-exit] TIMERspeakAgain -m 1 200 SET ${self.state.isWhisperEnabled} ${TRUE}
   HEROSAY [whisper--no-exit]
   RETURN
 }
@@ -424,9 +365,7 @@ ON POWEROUT {
     RETURN
   }
   SET ${self.state.isWhisperEnabled} ${FALSE}
-  SPEAK -p [whisper--drink-the-almond-water] TIMERspeakAgain -m 1 200 SET ${
-    self.state.isWhisperEnabled
-  } ${TRUE}
+  SPEAK -p [whisper--drink-the-almond-water] TIMERspeakAgain -m 1 200 SET ${self.state.isWhisperEnabled} ${TRUE}
   HEROSAY [whisper--drink-the-almond-water]
   RETURN
 }
@@ -436,9 +375,7 @@ ON POWEROUT {
     RETURN
   }
   SET ${self.state.isWhisperEnabled} ${FALSE}
-  SPEAK -p [whisper--drink-it] TIMERspeakAgain -m 1 200 SET ${
-    self.state.isWhisperEnabled
-  } ${TRUE}
+  SPEAK -p [whisper--drink-it] TIMERspeakAgain -m 1 200 SET ${self.state.isWhisperEnabled} ${TRUE}
   HEROSAY [whisper--drink-it]
   RETURN
 }
@@ -448,9 +385,7 @@ ON POWEROUT {
     RETURN
   }
   SET ${self.state.isWhisperEnabled} ${FALSE}
-  SPEAK -p [whisper--do-you-smell-it] TIMERspeakAgain -m 1 200 SET ${
-    self.state.isWhisperEnabled
-  } ${TRUE}
+  SPEAK -p [whisper--do-you-smell-it] TIMERspeakAgain -m 1 200 SET ${self.state.isWhisperEnabled} ${TRUE}
   HEROSAY [whisper--do-you-smell-it]
   RETURN
 }
@@ -460,9 +395,7 @@ ON POWEROUT {
     RETURN
   }
   SET ${self.state.isWhisperEnabled} ${FALSE}
-  SPEAK -p [whisper--magic-wont-save-you] TIMERspeakAgain -m 1 200 SET ${
-    self.state.isWhisperEnabled
-  } ${TRUE}
+  SPEAK -p [whisper--magic-wont-save-you] TIMERspeakAgain -m 1 200 SET ${self.state.isWhisperEnabled} ${TRUE}
   HEROSAY [whisper--magic-wont-save-you]
   RETURN
 }
@@ -493,9 +426,7 @@ ON POWEROUT {
   TIMERpowerOn -m 1 14900 SET #powerOn 1
   TIMERlampUnmute -m 1 15000 SENDEVENT UNMUTE ${lampCtrl.ref} NOP
   TIMERend -m 1 15500 SENDEVENT RESTORE ${lampCtrl.ref} NOP
-  TIMERspeedrestore -m 1 15500 SENDEVENT SETSPEED player 1 SET ${
-    self.state.isWhisperEnabled
-  } ${TRUE}
+  TIMERspeedrestore -m 1 15500 SENDEVENT SETSPEED player 1 SET ${self.state.isWhisperEnabled} ${TRUE}
 
   RETURN
 }
@@ -526,13 +457,7 @@ ON POWEROUT {
   return ref
 }
 
-const createExit = (
-  originX,
-  originZ,
-  wallSegment,
-  key,
-  jumpscareController,
-) => {
+const createExit = (originX, originZ, wallSegment, key, jumpscareController) => {
   const [wallX, wallY, wallZ, wallFace] = wallSegment
 
   let translate = [0, 0, 0]
@@ -557,11 +482,7 @@ const createExit = (
       break
   }
 
-  const pos = move(...translate, [
-    originX + wallX * UNIT,
-    0,
-    -(originZ + wallZ * UNIT),
-  ])
+  const pos = move(...translate, [originX + wallX * UNIT, 0, -(originZ + wallZ * UNIT)])
   const angle = rotate
 
   const ref = createItem(items.doors.lightDoor, { name: '[door--exit]' })
@@ -571,11 +492,7 @@ const createExit = (
   declare('string', 'key', key.ref, ref)
   declare('bool', 'open', FALSE, ref)
   declare('bool', 'unlock', FALSE, ref)
-  addDependencyAs(
-    'projects/the-backrooms/sfx/backrooms-outro.wav',
-    'sfx/backrooms-outro.wav',
-    ref,
-  )
+  addDependencyAs('projects/the-backrooms/sfx/backrooms-outro.wav', 'sfx/backrooms-outro.wav', ref)
 
   addScript((self) => {
     return `
@@ -641,12 +558,7 @@ ON INVENTORYIN {
   return ref
 }
 
-const createAlmondWater = (
-  pos,
-  angle = [0, 0, 0],
-  variant = 'mana',
-  jumpscareCtrl,
-) => {
+const createAlmondWater = (pos, angle = [0, 0, 0], variant = 'mana', jumpscareCtrl) => {
   const ref = createItem(items.magic.potion.mana, {
     name: `[item--almond-water]`,
   })
@@ -759,13 +671,7 @@ ON INIT {
   return ref
 }
 
-const placeWallPlug = (
-  originX,
-  originZ,
-  wallSegment,
-  config = {},
-  jumpscareCtrl,
-) => {
+const placeWallPlug = (originX, originZ, wallSegment, config = {}, jumpscareCtrl) => {
   const [wallX, wallY, wallZ, wallFace] = wallSegment
 
   let translate = [0, 0, 0]
@@ -792,11 +698,7 @@ const placeWallPlug = (
       break
   }
 
-  const pos = move(...translate, [
-    originX + wallX * UNIT,
-    0,
-    -(originZ + wallZ * UNIT),
-  ])
+  const pos = move(...translate, [originX + wallX * UNIT, 0, -(originZ + wallZ * UNIT)])
   const angle = rotate
 
   return createWallPlug(pos, angle, config, jumpscareCtrl)
@@ -954,14 +856,14 @@ const generate = async (config) => {
 
   const spawnContainerPos = [0, 0, UNIT]
 
-  const aam = createRune('aam', spawnContainerPos, [0, 0, 0], welcomeMarker)
-  const folgora = createRune(
+  const aam = markAsUsed(createRune('aam', spawnContainerPos, [0, 0, 0], welcomeMarker))
+  const folgora = markAsUsed(createRune(
     'folgora',
     spawnContainerPos,
     [0, 0, 0],
     welcomeMarker,
-  )
-  const taar = createRune('taar', spawnContainerPos, [0, 0, 0], welcomeMarker)
+  ))
+  const taar = markAsUsed(createRune('taar', spawnContainerPos, [0, 0, 0], welcomeMarker))
 
   createSpawnContainer(spawnContainerPos, [0, 0, 0], [aam, folgora, taar])
 
