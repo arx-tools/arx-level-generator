@@ -12,7 +12,7 @@ import {
 } from '../../constants'
 import { useTexture } from '../../assets/textures'
 import { flipPolygon, flipUVHorizontally, flipUVVertically, rotateUV } from '../../helpers'
-import { TextureQuad } from '../../types'
+import { TextureQuad, UV } from '../../types'
 
 // [x, y, z] are absolute coordinates,
 // not relative to origin
@@ -24,7 +24,7 @@ const wallX =
     textureRotation = 0,
     size = 100,
     flags = 0,
-    _uv = {
+    _uv: { a: UV; b: UV; c: UV; d: UV } = {
       a: { u: 1, v: 0 },
       b: { u: 1, v: 1 },
       c: { u: 0, v: 0 },
@@ -47,12 +47,6 @@ const wallX =
         b = { u: 1, v: 1 }
         c = { u: 0, v: 0 }
         d = { u: 0, v: 1 }
-        break
-      case TEXTURE_CUSTOM_SCALE:
-        a = _uv.a
-        b = _uv.b
-        c = _uv.c
-        d = _uv.d
         break
       case TEXTURE_QUAD_TOP_LEFT:
         a = { u: 0.5, v: 0 }
@@ -77,6 +71,9 @@ const wallX =
         b = { u: 0.5, v: 1 }
         c = { u: 0, v: 0.5 }
         d = { u: 0, v: 1 }
+        break
+      case TEXTURE_CUSTOM_SCALE:
+        ;({ a, b, c, d } = _uv)
         break
     }
 
