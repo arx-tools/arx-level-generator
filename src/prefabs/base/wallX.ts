@@ -50,11 +50,11 @@ const wallX =
         break
       case TEXTURE_QUAD_TOP_LEFT:
         {
-          const scale = 0.5
-          a = { u: 1 * scale, v: 0 }
-          b = { u: 1 * scale, v: 1 * scale }
-          c = { u: 0, v: 0 }
-          d = { u: 0, v: 1 * scale }
+          const scale = 2
+          a = { u: 1 * (1 / scale), v: 0 * (1 / scale) }
+          b = { u: 1 * (1 / scale), v: 1 * (1 / scale) }
+          c = { u: 0 * (1 / scale), v: 0 * (1 / scale) }
+          d = { u: 0 * (1 / scale), v: 1 * (1 / scale) }
         }
         break
       case TEXTURE_QUAD_TOP_RIGHT:
