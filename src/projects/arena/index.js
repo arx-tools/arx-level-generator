@@ -1,11 +1,5 @@
 import { ambiences } from '../../assets/ambiences'
-import {
-  addScript,
-  createItem,
-  items,
-  markAsUsed,
-  moveTo,
-} from '../../assets/items'
+import { addScript, createItem, items, markAsUsed, moveTo } from '../../assets/items'
 import { textures } from '../../assets/textures'
 import { HFLIP, VFLIP } from '../../constants'
 import { identity } from '../../faux-ramda'
@@ -96,7 +90,7 @@ const generate = async (config) => {
   // -------------------
 
   setColor('#777777', mapData)
-  house([-900, 0, 900], mapData)
+  house({ type: 'relative', coords: [-900, 0, 900] }, mapData)
 
   // -------------------
 
@@ -120,11 +114,7 @@ const generate = async (config) => {
 
   const numberOfBots = 10
 
-  const respawnCtrl = createRespawnController(
-    [10, 0, 10],
-    numberOfBots,
-    gungameCtrl,
-  )
+  const respawnCtrl = createRespawnController([10, 0, 10], numberOfBots, gungameCtrl)
 
   overridePlayerScript({
     __injections: {
@@ -141,14 +131,10 @@ const generate = async (config) => {
   const welcomeMaker = createWelcomeMarker([0, 0, 0], config)
 
   const bots = circleOfVectors([0, 0, 0], 300, numberOfBots).map((pos, i) => {
-    return createNPC(
-      { type: 'relative', coords: pos },
-      [0, 180 - i * Math.floor(360 / numberOfBots), 0],
-      {
-        type: pickRandom(['rebel guard', 'arx guard']),
-        groups: ['bot'],
-      },
-    )
+    return createNPC({ type: 'relative', coords: pos }, [0, 180 - i * Math.floor(360 / numberOfBots), 0], {
+      type: pickRandom(['rebel guard', 'arx guard']),
+      groups: ['bot'],
+    })
   })
 
   const finalizedMapData = finalize(mapData)

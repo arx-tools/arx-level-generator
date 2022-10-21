@@ -1,6 +1,7 @@
-import { POLY_QUAD, POLY_NO_SHADOW, HFLIP, VFLIP } from '../../constants'
+import { POLY_QUAD, POLY_NO_SHADOW, HFLIP, VFLIP, TEXTURE_CUSTOM_SCALE } from '../../constants'
 import { useTexture } from '../../assets/textures'
 import { flipPolygon, flipUVHorizontally, flipUVVertically, rotateUV } from '../../helpers'
+import { TextureQuad } from '../../types'
 
 // [x, y, z] are absolute coordinates,
 // not relative to origin
@@ -8,7 +9,7 @@ const wallZ =
   (
     [x, y, z],
     facing: 'front' | 'back' = 'front',
-    quad = 0,
+    quad: TextureQuad = 0,
     textureRotation = 0,
     size = 100,
     flags = 0,
@@ -35,7 +36,7 @@ const wallZ =
     let c = { u: 0, v: 0 }
     let d = { u: 0, v: 0.5 }
 
-    if (quad === null) {
+    if (quad === null || quad === TEXTURE_CUSTOM_SCALE) {
       a = _uv.a
       b = _uv.b
       c = _uv.c

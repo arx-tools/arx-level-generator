@@ -2,13 +2,8 @@ import { nanoid } from 'nanoid'
 import floor from './base/floor'
 import wallZ from './base/wallZ'
 import { textures } from '../assets/textures'
-import {
-  setPolygonGroup,
-  unsetPolygonGroup,
-  setTexture,
-  move,
-} from '../helpers'
-import { HFLIP, VFLIP } from '../constants'
+import { setPolygonGroup, unsetPolygonGroup, setTexture, move } from '../helpers'
+import { HFLIP, TEXTURE_CUSTOM_SCALE, VFLIP } from '../constants'
 
 const STEP = {
   WIDTH: 180,
@@ -22,15 +17,10 @@ const stairTopLeft = (pos, isLeftFlipped, areSidesFlipped, mapData) => {
   return floor(
     {
       type: 'absolute',
-      coords: move(
-        areSidesFlipped ? STEP.WIDTH / 4 : -STEP.WIDTH / 4,
-        -STEP.HEIGHT,
-        STEP.DEPTH / 2,
-        pos,
-      ),
+      coords: move(areSidesFlipped ? STEP.WIDTH / 4 : -STEP.WIDTH / 4, -STEP.HEIGHT, STEP.DEPTH / 2, pos),
     },
     'floor',
-    null,
+    TEXTURE_CUSTOM_SCALE,
     STEP.WIDTH / 2,
     [STEP.WIDTH / 2, 0, STEP.DEPTH],
     HFLIP | isLeftFlipped ? 0 : VFLIP,
@@ -47,15 +37,10 @@ const stairTopRight = (pos, isRightFlipped, areSidesFlipped, mapData) => {
   return floor(
     {
       type: 'absolute',
-      coords: move(
-        areSidesFlipped ? -STEP.WIDTH / 4 : STEP.WIDTH / 4,
-        -STEP.HEIGHT,
-        STEP.DEPTH / 2,
-        pos,
-      ),
+      coords: move(areSidesFlipped ? -STEP.WIDTH / 4 : STEP.WIDTH / 4, -STEP.HEIGHT, STEP.DEPTH / 2, pos),
     },
     'floor',
-    null,
+    TEXTURE_CUSTOM_SCALE,
     STEP.WIDTH / 2,
     [STEP.WIDTH / 2, 0, STEP.DEPTH],
     HFLIP | isRightFlipped ? 0 : VFLIP,
@@ -70,14 +55,9 @@ const stairTopRight = (pos, isRightFlipped, areSidesFlipped, mapData) => {
 
 const stairFrontRight = (pos, isRightFlipped, areSidesFlipped, mapData) => {
   wallZ(
-    move(
-      areSidesFlipped ? -STEP.WIDTH / 4 : STEP.WIDTH / 4,
-      -STEP.HEIGHT / 2,
-      0,
-      pos,
-    ),
+    move(areSidesFlipped ? -STEP.WIDTH / 4 : STEP.WIDTH / 4, -STEP.HEIGHT / 2, 0, pos),
     'back',
-    null,
+    TEXTURE_CUSTOM_SCALE,
     0,
     [STEP.WIDTH / 2, STEP.HEIGHT, 0],
     isRightFlipped ? HFLIP : 0,
@@ -92,14 +72,9 @@ const stairFrontRight = (pos, isRightFlipped, areSidesFlipped, mapData) => {
 
 const stairFrontLeft = (pos, isLeftFlipped, areSidesFlipped, mapData) => {
   wallZ(
-    move(
-      areSidesFlipped ? STEP.WIDTH / 4 : -STEP.WIDTH / 4,
-      -STEP.HEIGHT / 2,
-      0,
-      pos,
-    ),
+    move(areSidesFlipped ? STEP.WIDTH / 4 : -STEP.WIDTH / 4, -STEP.HEIGHT / 2, 0, pos),
     'back',
-    null,
+    TEXTURE_CUSTOM_SCALE,
     0,
     [STEP.WIDTH / 2, STEP.HEIGHT, 0],
     isLeftFlipped ? HFLIP : 0,
@@ -112,13 +87,7 @@ const stairFrontLeft = (pos, isLeftFlipped, areSidesFlipped, mapData) => {
   )(mapData)
 }
 
-const stairStep = (
-  pos,
-  isLeftFlipped,
-  isRightFlipped,
-  areSidesFlipped,
-  mapData,
-) => {
+const stairStep = (pos, isLeftFlipped, isRightFlipped, areSidesFlipped, mapData) => {
   stairFrontLeft(pos, isLeftFlipped, areSidesFlipped, mapData)
   stairFrontRight(pos, isRightFlipped, areSidesFlipped, mapData)
   stairTopLeft(pos, isLeftFlipped, areSidesFlipped, mapData)

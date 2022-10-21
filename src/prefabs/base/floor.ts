@@ -1,13 +1,13 @@
-import { POLY_QUAD, POLY_NO_SHADOW, HFLIP, VFLIP } from '../../constants'
+import { POLY_QUAD, POLY_NO_SHADOW, HFLIP, VFLIP, TEXTURE_CUSTOM_SCALE } from '../../constants'
 import { useTexture } from '../../assets/textures'
 import { flipPolygon, flipUVHorizontally, flipUVVertically, rotateUV } from '../../helpers'
-import { AbsoluteCoords } from '../../types'
+import { AbsoluteCoords, TextureQuad } from '../../types'
 
 const floor =
   (
     position: AbsoluteCoords,
     facing: 'floor' | 'ceiling' = 'floor',
-    quad: number | null = 0,
+    quad: TextureQuad = 0,
     textureRotation = 0,
     size = 100,
     flags = 0,
@@ -36,6 +36,7 @@ const floor =
     let d = { u: 0, v: 0.5 }
 
     switch (quad) {
+      case TEXTURE_CUSTOM_SCALE:
       case null:
         a = _uv.a
         b = _uv.b

@@ -1,7 +1,18 @@
-import { POLY_QUAD, POLY_NO_SHADOW, HFLIP, VFLIP } from '../../constants'
+import {
+  POLY_QUAD,
+  POLY_NO_SHADOW,
+  HFLIP,
+  VFLIP,
+  TEXTURE_QUAD_TOP_LEFT,
+  TEXTURE_QUAD_TOP_RIGHT,
+  TEXTURE_QUAD_BOTTOM_RIGHT,
+  TEXTURE_QUAD_BOTTOM_LEFT,
+  TEXTURE_FULL_SCALE,
+  TEXTURE_CUSTOM_SCALE,
+} from '../../constants'
 import { useTexture } from '../../assets/textures'
 import { flipPolygon, flipUVHorizontally, flipUVVertically, rotateUV } from '../../helpers'
-import { UVQuad } from '../../types'
+import { TextureQuad } from '../../types'
 
 // [x, y, z] are absolute coordinates,
 // not relative to origin
@@ -9,7 +20,7 @@ const wallX =
   (
     [x, y, z],
     facing: 'left' | 'right' = 'left',
-    quad = 0,
+    quad: TextureQuad = TEXTURE_FULL_SCALE,
     textureRotation = 0,
     size = 100,
     flags = 0,
@@ -30,41 +41,43 @@ const wallX =
     let c
     let d
 
-    let texU
-    let texV
-
-    if (quad === null) {
-      a = _uv.a
-      b = _uv.b
-      c = _uv.c
-      d = _uv.d
-
-      texU = 0
-      texV = 0
-    } else {
-      a = { u: 0.5, v: 0 }
-      b = { u: 0.5, v: 0.5 }
-      c = { u: 0, v: 0 }
-      d = { u: 0, v: 0.5 }
-
-      switch (quad) {
-        case 0:
-          texU = 0
-          texV = 0
-          break
-        case 1:
-          texU = 0.5
-          texV = 0
-          break
-        case 2:
-          texU = 0.5
-          texV = 0.5
-          break
-        case 3:
-          texU = 0
-          texV = 0.5
-          break
-      }
+    switch (quad) {
+      case TEXTURE_FULL_SCALE:
+        a = { u: 1, v: 0 }
+        b = { u: 1, v: 1 }
+        c = { u: 0, v: 0 }
+        d = { u: 0, v: 1 }
+        break
+      case TEXTURE_CUSTOM_SCALE:
+        a = _uv.a
+        b = _uv.b
+        c = _uv.c
+        d = _uv.d
+        break
+      case TEXTURE_QUAD_TOP_LEFT:
+        a = { u: 0.5, v: 0 }
+        b = { u: 0.5, v: 0.5 }
+        c = { u: 0, v: 0 }
+        d = { u: 0, v: 0.5 }
+        break
+      case TEXTURE_QUAD_TOP_RIGHT:
+        a = { u: 1, v: 0 }
+        b = { u: 1, v: 0.5 }
+        c = { u: 0.5, v: 0 }
+        d = { u: 0.5, v: 0.5 }
+        break
+      case TEXTURE_QUAD_BOTTOM_RIGHT:
+        a = { u: 1, v: 0.5 }
+        b = { u: 1, v: 1 }
+        c = { u: 0.5, v: 0.5 }
+        d = { u: 0.5, v: 1 }
+        break
+      case TEXTURE_QUAD_BOTTOM_LEFT:
+        a = { u: 0.5, v: 0.5 }
+        b = { u: 0.5, v: 1 }
+        c = { u: 0, v: 0.5 }
+        d = { u: 0, v: 1 }
+        break
     }
 
     let uv = rotateUV(textureRotation, [c, d, a, b])
@@ -84,29 +97,29 @@ const wallX =
         posX: x - sizeX / 2,
         posY: y - sizeY / 2,
         posZ: z - sizeZ / 2,
-        texU: texU + uv[0].u,
-        texV: texV + uv[0].v,
+        texU: uv[0].u,
+        texV: uv[0].v,
       },
       {
         posX: x - sizeX / 2,
         posY: y + sizeY / 2,
         posZ: z - sizeZ / 2,
-        texU: texU + uv[1].u,
-        texV: texV + uv[1].v,
+        texU: uv[1].u,
+        texV: uv[1].v,
       },
       {
         posX: x - sizeX / 2,
         posY: y - sizeY / 2,
         posZ: z + sizeZ / 2,
-        texU: texU + uv[2].u,
-        texV: texV + uv[2].v,
+        texU: uv[2].u,
+        texV: uv[2].v,
       },
       {
         posX: x - sizeX / 2,
         posY: y + sizeY / 2,
         posZ: z + sizeZ / 2,
-        texU: texU + uv[3].u,
-        texV: texV + uv[3].v,
+        texU: uv[3].u,
+        texV: uv[3].v,
       },
     ]
 

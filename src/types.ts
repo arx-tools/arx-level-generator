@@ -1,3 +1,12 @@
+import {
+  TEXTURE_CUSTOM_SCALE,
+  TEXTURE_FULL_SCALE,
+  TEXTURE_QUAD_BOTTOM_LEFT,
+  TEXTURE_QUAD_BOTTOM_RIGHT,
+  TEXTURE_QUAD_TOP_LEFT,
+  TEXTURE_QUAD_TOP_RIGHT,
+} from './constants'
+
 export type Vector3 = [number, number, number]
 
 export type RotationVector3 = [number, number, number]
@@ -74,3 +83,11 @@ export type UV = {
 }
 
 export type UVQuad = [UV, UV, UV, UV]
+
+export type TextureQuad =
+  | typeof TEXTURE_CUSTOM_SCALE
+  | typeof TEXTURE_FULL_SCALE
+  | typeof TEXTURE_QUAD_TOP_LEFT
+  | typeof TEXTURE_QUAD_TOP_RIGHT
+  | typeof TEXTURE_QUAD_BOTTOM_LEFT
+  | typeof TEXTURE_QUAD_BOTTOM_RIGHT
