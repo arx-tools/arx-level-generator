@@ -8,6 +8,7 @@ import {
   TEXTURE_QUAD_BOTTOM_RIGHT,
   TEXTURE_QUAD_BOTTOM_LEFT,
   TEXTURE_FULL_SCALE,
+  TEXTURE_CUSTOM_UV,
   TEXTURE_CUSTOM_SCALE,
 } from '../../constants'
 import { useTexture } from '../../assets/textures'
@@ -24,66 +25,62 @@ const wallX =
     textureRotation = 0,
     size = 100,
     flags = 0,
-    _uv: { a: UV; b: UV; c: UV; d: UV } = {
-      a: { u: 1, v: 0 },
-      b: { u: 1, v: 1 },
-      c: { u: 0, v: 0 },
-      d: { u: 0, v: 1 },
-    },
+    _uv: { a: UV; b: UV; c: UV; d: UV } | null = null,
+    scale: number = 1,
+    offsetU: number = 0,
+    offsetV: number = 0,
   ) =>
   (mapData) => {
     const { texture } = mapData.state
 
     const [sizeX, sizeY, sizeZ] = Array.isArray(size) ? size : [size, size, size]
 
-    let a
-    let b
-    let c
-    let d
+    let a = { u: 1, v: 0 }
+    let b = { u: 1, v: 1 }
+    let c = { u: 0, v: 0 }
+    let d = { u: 0, v: 1 }
 
-    switch (quad) {
-      case TEXTURE_FULL_SCALE:
-        a = { u: 1, v: 0 }
-        b = { u: 1, v: 1 }
-        c = { u: 0, v: 0 }
-        d = { u: 0, v: 1 }
-        break
-      case TEXTURE_QUAD_TOP_LEFT:
-        {
-          const scale = 2
-          a = { u: 1 * (1 / scale), v: 0 * (1 / scale) }
-          b = { u: 1 * (1 / scale), v: 1 * (1 / scale) }
-          c = { u: 0 * (1 / scale), v: 0 * (1 / scale) }
-          d = { u: 0 * (1 / scale), v: 1 * (1 / scale) }
-        }
-        break
-      case TEXTURE_QUAD_TOP_RIGHT:
-        {
-          a = { u: 1, v: 0 }
-          b = { u: 1, v: 0.5 }
-          c = { u: 0.5, v: 0 }
-          d = { u: 0.5, v: 0.5 }
-        }
-        break
-      case TEXTURE_QUAD_BOTTOM_RIGHT:
-        {
-          a = { u: 1, v: 0.5 }
-          b = { u: 1, v: 1 }
-          c = { u: 0.5, v: 0.5 }
-          d = { u: 0.5, v: 1 }
-        }
-        break
-      case TEXTURE_QUAD_BOTTOM_LEFT:
-        {
-          a = { u: 0.5, v: 0.5 }
-          b = { u: 0.5, v: 1 }
-          c = { u: 0, v: 0.5 }
-          d = { u: 0, v: 1 }
-        }
-        break
-      case TEXTURE_CUSTOM_SCALE:
+    if (quad === TEXTURE_CUSTOM_UV) {
+      if (_uv !== null) {
         ;({ a, b, c, d } = _uv)
-        break
+      }
+    } else if (quad === TEXTURE_CUSTOM_SCALE) {
+      a = { u: offsetU + 1 / scale, v: offsetV }
+      b = { u: offsetU + 1 / scale, v: offsetV + 1 / scale }
+      c = { u: offsetU, v: offsetV }
+      d = { u: offsetU, v: offsetV + 1 / scale }
+    } else {
+      let scale = 1
+      let offsetU = 0
+      let offsetV = 0
+
+      switch (quad) {
+        case TEXTURE_QUAD_TOP_LEFT:
+          scale = 2
+          offsetU = 0
+          offsetV = 0
+          break
+        case TEXTURE_QUAD_TOP_RIGHT:
+          scale = 2
+          offsetU = 1 / scale
+          offsetV = 0
+          break
+        case TEXTURE_QUAD_BOTTOM_RIGHT:
+          scale = 2
+          offsetU = 1 / scale
+          offsetV = 1 / scale
+          break
+        case TEXTURE_QUAD_BOTTOM_LEFT:
+          scale = 2
+          offsetU = 0
+          offsetV = 1 / scale
+          break
+      }
+
+      a = { u: offsetU + 1 / scale, v: offsetV }
+      b = { u: offsetU + 1 / scale, v: offsetV + 1 / scale }
+      c = { u: offsetU, v: offsetV }
+      d = { u: offsetU, v: offsetV + 1 / scale }
     }
 
     let uv = rotateUV(textureRotation, [c, d, a, b])

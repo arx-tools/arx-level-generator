@@ -1,6 +1,6 @@
 import wallX from './base/wallX'
 import wallZ from './base/wallZ'
-import { HFLIP, TEXTURE_CUSTOM_SCALE } from '../constants'
+import { HFLIP, TEXTURE_CUSTOM_UV } from '../constants'
 
 const segment = (x, y, z, size) => (mapData) => {
   const height = 500
@@ -12,10 +12,10 @@ const segment = (x, y, z, size) => (mapData) => {
     d: { u: 0.49, v: 1 },
   }
 
-  wallX([x - size / 2, y, z - size / 2], 'left', TEXTURE_CUSTOM_SCALE, 0, [size, height, size], 0, uv)(mapData)
-  wallX([x + size / 2, y, z - size / 2], 'right', TEXTURE_CUSTOM_SCALE, 0, [size, height, size], HFLIP, uv)(mapData)
-  wallZ([x - size / 2, y, z - size / 2], 'back', TEXTURE_CUSTOM_SCALE, 0, [size, height, size], 0, uv)(mapData)
-  wallZ([x - size / 2, y, z + size / 2], 'front', TEXTURE_CUSTOM_SCALE, 0, [size, height, size], HFLIP, uv)(mapData)
+  wallX([x - size / 2, y, z - size / 2], 'left', TEXTURE_CUSTOM_UV, 0, [size, height, size], 0, uv)(mapData)
+  wallX([x + size / 2, y, z - size / 2], 'right', TEXTURE_CUSTOM_UV, 0, [size, height, size], HFLIP, uv)(mapData)
+  wallZ([x - size / 2, y, z - size / 2], 'back', TEXTURE_CUSTOM_UV, 0, [size, height, size], 0, uv)(mapData)
+  wallZ([x - size / 2, y, z + size / 2], 'front', TEXTURE_CUSTOM_UV, 0, [size, height, size], HFLIP, uv)(mapData)
 }
 
 const pillar = (x, y, z, diameter) => (mapData) => {

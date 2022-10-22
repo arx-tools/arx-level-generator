@@ -1,5 +1,6 @@
 import {
   TEXTURE_CUSTOM_SCALE,
+  TEXTURE_CUSTOM_UV,
   TEXTURE_FULL_SCALE,
   TEXTURE_QUAD_BOTTOM_LEFT,
   TEXTURE_QUAD_BOTTOM_RIGHT,
@@ -86,6 +87,7 @@ export type UVQuad = [UV, UV, UV, UV]
 
 export type TextureQuad =
   | typeof TEXTURE_CUSTOM_SCALE
+  | typeof TEXTURE_CUSTOM_UV
   | typeof TEXTURE_FULL_SCALE
   | typeof TEXTURE_QUAD_TOP_LEFT
   | typeof TEXTURE_QUAD_TOP_RIGHT

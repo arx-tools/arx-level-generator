@@ -50,7 +50,8 @@ export const PATH_FARCLIP = 0x08
 export const HFLIP = 0x100
 export const VFLIP = 0x200
 
-export const TEXTURE_CUSTOM_SCALE = -1
+export const TEXTURE_CUSTOM_SCALE = -2
+export const TEXTURE_CUSTOM_UV = -1
 export const TEXTURE_FULL_SCALE = null
 export const TEXTURE_QUAD_TOP_LEFT = 0
 export const TEXTURE_QUAD_TOP_RIGHT = 1
