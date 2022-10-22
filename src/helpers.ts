@@ -730,7 +730,11 @@ export const flipUVVertically = ([c, d, a, b]: UVQuad): UVQuad => {
   return [d, c, b, a]
 }
 
-export const rotateUV = (degree: number, [c, d, a, b]: UVQuad): UVQuad => {
+export const rotateUV = (
+  degree: number,
+  [rotateCenterU, rotateCenterV]: [number, number],
+  [c, d, a, b]: UVQuad,
+): UVQuad => {
   const normalizedDegree = normalizeDegree(degree)
 
   switch (normalizedDegree) {
@@ -746,25 +750,4 @@ export const rotateUV = (degree: number, [c, d, a, b]: UVQuad): UVQuad => {
       // TODO: implement custom rotation (https://forum.unity.com/threads/rotate-uv-coordinates-is-it-possible.135025/)
       return [a, b, c, d]
   }
-}
-
-export const calculateUV = (textureRotation = 0, flags = 0) => {
-  let uv: UVQuad = [
-    { u: 0, v: 0 },
-    { u: 0, v: 1 },
-    { u: 1, v: 0 },
-    { u: 1, v: 1 },
-  ]
-
-  uv = rotateUV(textureRotation, uv)
-
-  if (flags & HFLIP) {
-    uv = flipUVHorizontally(uv)
-  }
-
-  if (flags & VFLIP) {
-    uv = flipUVVertically(uv)
-  }
-
-  return uv
 }

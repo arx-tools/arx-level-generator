@@ -23,7 +23,8 @@ import { hideMinimap } from '../shared/reset'
 import { createGungameController } from './gamemodes/gungame'
 import { createNPC, defineNPC } from './items/npc'
 import { createRespawnController } from './items/respawnController'
-import { house } from './buildings'
+import { quadX } from './buildings'
+import { disableBumping } from '../../prefabs/plain'
 
 const createWelcomeMarker = (pos, config) => {
   const ref = createItem(items.marker)
@@ -81,7 +82,7 @@ const generate = async (config) => {
   setColor('#a7a7a7', mapData)
   setTexture(textures.gravel.ground1, mapData)
 
-  plain([0, 0, 0], 20, 'floor', identity, () => ({
+  plain([0, 0, 0], 20, 'floor', disableBumping, () => ({
     quad: pickRandom([0, 1, 2, 3]),
     textureRotation: pickRandom([0, 90, 180, 270]),
     textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
@@ -90,7 +91,8 @@ const generate = async (config) => {
   // -------------------
 
   setColor('#777777', mapData)
-  house({ type: 'relative', coords: [-900, 0, 900] }, mapData)
+  setTexture(textures.wall.roughcast[0], mapData)
+  quadX({ type: 'relative', coords: [-900, 0, 400] }, [378, 462], mapData)
 
   // -------------------
 

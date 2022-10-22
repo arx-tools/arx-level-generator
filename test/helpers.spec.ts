@@ -79,8 +79,8 @@ describe('rotateUV', () => {
       { u: 0, v: 0 },
       { u: 0, v: 1 },
     ]
-    assert.deepStrictEqual(rotateUV(0, input), input)
-    assert.deepStrictEqual(rotateUV(360, input), input)
-    assert.deepStrictEqual(rotateUV(-360, input), input)
+    assert.deepStrictEqual(rotateUV(0, [0.5, 0.5], input), input)
+    assert.deepStrictEqual(rotateUV(360, [0.5, 0.5], input), input)
+    assert.deepStrictEqual(rotateUV(-360, [0.5, 0.5], input), input)
   })
 })

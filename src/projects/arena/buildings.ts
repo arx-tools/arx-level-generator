@@ -1,53 +1,132 @@
-import { textures } from '../../assets/textures'
-import {
-  TEXTURE_CUSTOM_SCALE,
-  TEXTURE_FULL_SCALE,
-  TEXTURE_QUAD_BOTTOM_LEFT,
-  TEXTURE_QUAD_BOTTOM_RIGHT,
-  TEXTURE_QUAD_TOP_LEFT,
-  TEXTURE_QUAD_TOP_RIGHT,
-} from '../../constants'
-import { MapData, move, setTexture } from '../../helpers'
+import { TEXTURE_CUSTOM_SCALE } from '../../constants'
+import { MapData, move } from '../../helpers'
 import wallX from '../../prefabs/base/wallX'
 import { RelativeCoords } from '../../types'
 
-export const house = (pos: RelativeCoords, mapData: MapData) => {
+export const quadX = (pos: RelativeCoords, size: [number, number], mapData: MapData) => {
   const { origin } = mapData.config
 
-  setTexture(textures.wall.roughcast[0], mapData)
+  const rotation = 0
 
-  // TODO: rotate around a fix point
-  const rotate = 0
+  const [surfaceWidth, surfaceHeight] = size
+  const [scaleUPercent, scaleVPercent] = [100, 100]
+  const [offsetUPercent, offsetVPercent] = [0, 0]
 
-  wallX(move(0, -50, 0, move(...pos.coords, origin.coords)), 'right', TEXTURE_FULL_SCALE, rotate)(mapData)
+  const numberOfWholeTilesX = Math.floor(surfaceWidth / 100)
+  const lastTileWidth = surfaceWidth % 100
 
-  wallX(move(0, -50, -200, move(...pos.coords, origin.coords)), 'right', TEXTURE_QUAD_BOTTOM_RIGHT, rotate)(mapData)
-  wallX(move(0, -50, -300, move(...pos.coords, origin.coords)), 'right', TEXTURE_QUAD_BOTTOM_LEFT, rotate)(mapData)
-  wallX(move(0, -150, -200, move(...pos.coords, origin.coords)), 'right', TEXTURE_QUAD_TOP_RIGHT, rotate)(mapData)
-  wallX(move(0, -150, -300, move(...pos.coords, origin.coords)), 'right', TEXTURE_QUAD_TOP_LEFT, rotate)(mapData)
+  const numberOfWholeTilesY = Math.floor(surfaceHeight / 100)
+  const lastTileHeight = surfaceHeight % 100
 
-  const scaleU = 5
-  const scaleV = 10
-  for (let y = 0; y < scaleV; y++) {
-    for (let x = 0; x < scaleU; x++) {
+  let rotateCenterX: number
+  let rotateCenterY: number
+  let scaleU: number
+  let scaleV: number
+
+  scaleU = (scaleUPercent / 100) * (surfaceWidth / 100)
+  scaleV = (scaleVPercent / 100) * (surfaceWidth / 100)
+
+  for (let y = 0; y < numberOfWholeTilesY; y++) {
+    for (let x = 0; x < numberOfWholeTilesX; x++) {
+      // TODO: calculate the rotation origin
+      rotateCenterX = 0.5
+      rotateCenterY = 0.5
+
       wallX(
         move(
           0,
-          -50 - (scaleV - 1) * 100 + y * 100,
-          -500 - (scaleU - 1) * 100 + x * 100,
+          -(numberOfWholeTilesY - 1) * 100 + y * 100 - lastTileHeight - 50,
+          50 + x * 100,
           move(...pos.coords, origin.coords),
         ),
         'right',
         TEXTURE_CUSTOM_SCALE,
-        rotate,
-        100,
+        rotation,
+        [0, 100, 100],
         0,
         null,
         scaleU,
         scaleV,
-        (1 / scaleU) * x,
-        (1 / scaleV) * y,
+        (1 / scaleU) * x - offsetUPercent / 100,
+        (1 / scaleV) * y - offsetVPercent / 100,
+        rotateCenterX,
+        rotateCenterY,
       )(mapData)
     }
   }
+
+  // TODO: calculate the rotation origin
+  rotateCenterX = 0.5
+  rotateCenterY = 0.5
+  scaleU = (scaleUPercent / 100) * (surfaceWidth / 100)
+  scaleV = ((scaleVPercent / 100) * (surfaceWidth / 100)) / (lastTileHeight / 100)
+
+  for (let x = 0; x < numberOfWholeTilesX; x++) {
+    wallX(
+      move(0, -lastTileHeight / 2, 50 + x * 100, move(...pos.coords, origin.coords)),
+      'right',
+      TEXTURE_CUSTOM_SCALE,
+      rotation,
+      [0, lastTileHeight, 100],
+      0,
+      null,
+      scaleU,
+      scaleV,
+      (1 / scaleU) * x - offsetUPercent / 100,
+      (1 / scaleV) * ((numberOfWholeTilesY * 100) / lastTileHeight) - offsetVPercent / 100,
+      rotateCenterX,
+      rotateCenterY,
+    )(mapData)
+  }
+
+  // TODO: calculate the rotation origin
+  rotateCenterX = 0.5
+  rotateCenterY = 0.5
+  scaleU = ((scaleUPercent / 100) * (surfaceWidth / 100)) / (lastTileWidth / 100)
+  scaleV = (scaleVPercent / 100) * (surfaceWidth / 100)
+
+  for (let y = 0; y < numberOfWholeTilesY; y++) {
+    wallX(
+      move(
+        0,
+        -(numberOfWholeTilesY - 1) * 100 + y * 100 - lastTileHeight - 50,
+        lastTileWidth / 2 + numberOfWholeTilesX * 100,
+        move(...pos.coords, origin.coords),
+      ),
+      'right',
+      TEXTURE_CUSTOM_SCALE,
+      rotation,
+      [0, 100, lastTileWidth],
+      0,
+      null,
+      scaleU,
+      scaleV,
+      (1 / scaleU) * ((numberOfWholeTilesX * 100) / lastTileWidth) - offsetUPercent / 100,
+      (1 / scaleV) * y - offsetVPercent / 100,
+      rotateCenterX,
+      rotateCenterY,
+    )(mapData)
+  }
+
+  // TODO: calculate the rotation origin
+  rotateCenterX = 0.5
+  rotateCenterY = 0.5
+  scaleU = ((scaleUPercent / 100) * (surfaceWidth / 100)) / (lastTileWidth / 100)
+  scaleV = ((scaleVPercent / 100) * (surfaceWidth / 100)) / (lastTileHeight / 100)
+
+  wallX(
+    move(0, -lastTileHeight / 2, lastTileWidth / 2 + numberOfWholeTilesX * 100, move(...pos.coords, origin.coords)),
+    'right',
+    TEXTURE_CUSTOM_SCALE,
+    rotation,
+    [0, lastTileHeight, lastTileWidth],
+    0,
+    null,
+    scaleU,
+    scaleV,
+    (1 / scaleU) * ((numberOfWholeTilesX * 100) / lastTileWidth) - offsetUPercent / 100,
+    (1 / scaleV) * ((numberOfWholeTilesY * 100) / lastTileHeight) - offsetVPercent / 100,
+    rotateCenterX,
+    rotateCenterY,
+  )(mapData)
 }

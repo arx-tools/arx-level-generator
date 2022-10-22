@@ -61,7 +61,7 @@ const floor =
         break
     }
 
-    let uv = rotateUV(textureRotation, [c, d, a, b])
+    let uv = rotateUV(textureRotation, [0.5, 0.5], [c, d, a, b])
 
     if (flags & HFLIP) {
       uv = flipUVHorizontally(uv)

@@ -23,15 +23,15 @@ const wallX =
     facing: 'left' | 'right' = 'left',
     quad: TextureQuad = TEXTURE_FULL_SCALE,
     textureRotation = 0,
-    size = 100,
+    size: number | [number, number, number] = 100,
     flags = 0,
     _uv: { a: UV; b: UV; c: UV; d: UV } | null = null,
     scaleU: number = 1,
     scaleV: number = 1,
     offsetU: number = 0,
     offsetV: number = 0,
-    rotateU: number = 0.5,
-    rotateV: number = 0.5,
+    rotateCenterU: number = 0.5,
+    rotateCenterV: number = 0.5,
   ) =>
   (mapData) => {
     const { texture } = mapData.state
@@ -86,7 +86,7 @@ const wallX =
       d = { u: offsetU, v: offsetV + 1 / scale }
     }
 
-    let uv = rotateUV(textureRotation, [c, d, a, b])
+    let uv = rotateUV(textureRotation, [rotateCenterU, rotateCenterV], [c, d, a, b])
 
     if (flags & HFLIP) {
       uv = flipUVHorizontally(uv)
