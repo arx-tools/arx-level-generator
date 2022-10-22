@@ -1,17 +1,15 @@
-import { MapData, move } from '../../helpers'
-import { AbsoluteCoords, RelativeCoords, TextureQuad, UV, UVQuad } from '../../types'
+import { MapData, move, normalizeDegree } from '../../helpers'
+import { AbsoluteCoords, RelativeCoords, UVQuad } from '../../types'
 import { POLY_QUAD, POLY_NO_SHADOW } from '../../constants'
 import { useTexture } from '../../assets/textures'
 import { flipPolygon } from '../../helpers'
 
-const wallX = (
+const wallOnTheZAxis = (
   pos: AbsoluteCoords,
-  facing: 'left' | 'right' = 'left',
+  facing: 'left' | 'right',
   [sizeX, sizeY, sizeZ]: [number, number, number],
-  scaleU: number = 1,
-  scaleV: number = 1,
-  offsetU: number = 0,
-  offsetV: number = 0,
+  [scaleU, scaleV]: [number, number],
+  [offsetU, offsetV]: [number, number],
 ) => {
   return (mapData) => {
     const { texture } = mapData.state
@@ -80,40 +78,46 @@ const wallX = (
   }
 }
 
-export const quadX = (pos: RelativeCoords, [surfaceWidth, surfaceHeight]: [number, number], mapData: MapData) => {
+export const quadX = (
+  pos: RelativeCoords,
+  [surfaceWidth, surfaceHeight]: [number, number],
+  rawAngle: number,
+  mapData: MapData,
+) => {
   const { origin } = mapData.config
+  const angle = normalizeDegree(rawAngle)
 
   const [scaleUPercent, scaleVPercent] = [100, 100]
   const [offsetUPercent, offsetVPercent] = [0, 0]
 
-  const numberOfWholeTilesX = Math.floor(surfaceWidth / 100)
+  const numberOfWholeTilesW = Math.floor(surfaceWidth / 100)
   const lastTileWidth = surfaceWidth % 100
 
-  const numberOfWholeTilesY = Math.floor(surfaceHeight / 100)
+  const numberOfWholeTilesH = Math.floor(surfaceHeight / 100)
   const lastTileHeight = surfaceHeight % 100
 
   const scaleU = (scaleUPercent / 100) * (surfaceWidth / 100)
   const scaleV = (scaleVPercent / 100) * (surfaceWidth / 100)
 
-  for (let y = 0; y < numberOfWholeTilesY; y++) {
-    for (let x = 0; x < numberOfWholeTilesX; x++) {
-      wallX(
-        {
-          type: 'absolute',
-          coords: move(
-            0,
-            -(numberOfWholeTilesY - 1) * 100 + y * 100 - lastTileHeight,
-            x * 100,
-            move(...pos.coords, origin.coords),
-          ),
-        },
-        'right',
-        [0, 100, 100],
-        scaleU,
-        scaleV,
-        (1 / scaleU) * x - offsetUPercent / 100,
-        (1 / scaleV) * y - offsetVPercent / 100,
-      )(mapData)
+  for (let h = 0; h < numberOfWholeTilesH; h++) {
+    for (let w = 0; w < numberOfWholeTilesW; w++) {
+      if (angle === 90 || angle === 270) {
+        wallOnTheZAxis(
+          {
+            type: 'absolute',
+            coords: move(
+              0,
+              -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight,
+              w * 100,
+              move(...pos.coords, origin.coords),
+            ),
+          },
+          angle === 90 ? 'right' : 'left',
+          [0, 100, 100],
+          [scaleU, scaleV],
+          [(1 / scaleU) * w - offsetUPercent / 100, (1 / scaleV) * h - offsetVPercent / 100],
+        )(mapData)
+      }
     }
   }
 
@@ -121,16 +125,19 @@ export const quadX = (pos: RelativeCoords, [surfaceWidth, surfaceHeight]: [numbe
     const scaleU = (scaleUPercent / 100) * (surfaceWidth / 100)
     const scaleV = ((scaleVPercent / 100) * (surfaceWidth / 100)) / (lastTileHeight / 100)
 
-    for (let x = 0; x < numberOfWholeTilesX; x++) {
-      wallX(
-        { type: 'absolute', coords: move(0, 0, x * 100, move(...pos.coords, origin.coords)) },
-        'right',
-        [0, lastTileHeight, 100],
-        scaleU,
-        scaleV,
-        (1 / scaleU) * x - offsetUPercent / 100,
-        (1 / scaleV) * ((numberOfWholeTilesY * 100) / lastTileHeight) - offsetVPercent / 100,
-      )(mapData)
+    for (let w = 0; w < numberOfWholeTilesW; w++) {
+      if (angle === 90 || angle === 270) {
+        wallOnTheZAxis(
+          { type: 'absolute', coords: move(0, 0, w * 100, move(...pos.coords, origin.coords)) },
+          angle === 90 ? 'right' : 'left',
+          [0, lastTileHeight, 100],
+          [scaleU, scaleV],
+          [
+            (1 / scaleU) * w - offsetUPercent / 100,
+            (1 / scaleV) * ((numberOfWholeTilesH * 100) / lastTileHeight) - offsetVPercent / 100,
+          ],
+        )(mapData)
+      }
     }
   }
 
@@ -138,24 +145,27 @@ export const quadX = (pos: RelativeCoords, [surfaceWidth, surfaceHeight]: [numbe
     const scaleU = ((scaleUPercent / 100) * (surfaceWidth / 100)) / (lastTileWidth / 100)
     const scaleV = (scaleVPercent / 100) * (surfaceWidth / 100)
 
-    for (let y = 0; y < numberOfWholeTilesY; y++) {
-      wallX(
-        {
-          type: 'absolute',
-          coords: move(
-            0,
-            -(numberOfWholeTilesY - 1) * 100 + y * 100 - lastTileHeight,
-            (numberOfWholeTilesX - 1) * 100 + lastTileWidth,
-            move(...pos.coords, origin.coords),
-          ),
-        },
-        'right',
-        [0, 100, lastTileWidth],
-        scaleU,
-        scaleV,
-        (1 / scaleU) * ((numberOfWholeTilesX * 100) / lastTileWidth) - offsetUPercent / 100,
-        (1 / scaleV) * y - offsetVPercent / 100,
-      )(mapData)
+    for (let h = 0; h < numberOfWholeTilesH; h++) {
+      if (angle === 90 || angle === 270) {
+        wallOnTheZAxis(
+          {
+            type: 'absolute',
+            coords: move(
+              0,
+              -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight,
+              (numberOfWholeTilesW - 1) * 100 + lastTileWidth,
+              move(...pos.coords, origin.coords),
+            ),
+          },
+          angle === 90 ? 'right' : 'left',
+          [0, 100, lastTileWidth],
+          [scaleU, scaleV],
+          [
+            (1 / scaleU) * ((numberOfWholeTilesW * 100) / lastTileWidth) - offsetUPercent / 100,
+            (1 / scaleV) * h - offsetVPercent / 100,
+          ],
+        )(mapData)
+      }
     }
   }
 
@@ -163,17 +173,20 @@ export const quadX = (pos: RelativeCoords, [surfaceWidth, surfaceHeight]: [numbe
     const scaleU = ((scaleUPercent / 100) * (surfaceWidth / 100)) / (lastTileWidth / 100)
     const scaleV = ((scaleVPercent / 100) * (surfaceWidth / 100)) / (lastTileHeight / 100)
 
-    wallX(
-      {
-        type: 'absolute',
-        coords: move(0, 0, lastTileWidth + (numberOfWholeTilesX - 1) * 100, move(...pos.coords, origin.coords)),
-      },
-      'right',
-      [0, lastTileHeight, lastTileWidth],
-      scaleU,
-      scaleV,
-      (1 / scaleU) * ((numberOfWholeTilesX * 100) / lastTileWidth) - offsetUPercent / 100,
-      (1 / scaleV) * ((numberOfWholeTilesY * 100) / lastTileHeight) - offsetVPercent / 100,
-    )(mapData)
+    if (angle === 90 || angle === 270) {
+      wallOnTheZAxis(
+        {
+          type: 'absolute',
+          coords: move(0, 0, lastTileWidth + (numberOfWholeTilesW - 1) * 100, move(...pos.coords, origin.coords)),
+        },
+        angle === 90 ? 'right' : 'left',
+        [0, lastTileHeight, lastTileWidth],
+        [scaleU, scaleV],
+        [
+          (1 / scaleU) * ((numberOfWholeTilesW * 100) / lastTileWidth) - offsetUPercent / 100,
+          (1 / scaleV) * ((numberOfWholeTilesH * 100) / lastTileHeight) - offsetVPercent / 100,
+        ],
+      )(mapData)
+    }
   }
 }
