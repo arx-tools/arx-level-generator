@@ -17,7 +17,7 @@ export const house = (pos: RelativeCoords, mapData: MapData) => {
   setTexture(textures.wall.roughcast[0], mapData)
 
   // TODO: rotate around a fix point
-  const rotate = 90
+  const rotate = 0
 
   wallX(move(0, -50, 0, move(...pos.coords, origin.coords)), 'right', TEXTURE_FULL_SCALE, rotate)(mapData)
 
@@ -26,14 +26,15 @@ export const house = (pos: RelativeCoords, mapData: MapData) => {
   wallX(move(0, -150, -200, move(...pos.coords, origin.coords)), 'right', TEXTURE_QUAD_TOP_RIGHT, rotate)(mapData)
   wallX(move(0, -150, -300, move(...pos.coords, origin.coords)), 'right', TEXTURE_QUAD_TOP_LEFT, rotate)(mapData)
 
-  const scale = 5
-  for (let y = 0; y < scale; y++) {
-    for (let x = 0; x < scale; x++) {
+  const scaleU = 5
+  const scaleV = 10
+  for (let y = 0; y < scaleV; y++) {
+    for (let x = 0; x < scaleU; x++) {
       wallX(
         move(
           0,
-          -50 - (scale - 1) * 100 + y * 100,
-          -500 - (scale - 1) * 100 + x * 100,
+          -50 - (scaleV - 1) * 100 + y * 100,
+          -500 - (scaleU - 1) * 100 + x * 100,
           move(...pos.coords, origin.coords),
         ),
         'right',
@@ -42,9 +43,10 @@ export const house = (pos: RelativeCoords, mapData: MapData) => {
         100,
         0,
         null,
-        scale,
-        (1 / scale) * x,
-        (1 / scale) * y,
+        scaleU,
+        scaleV,
+        (1 / scaleU) * x,
+        (1 / scaleV) * y,
       )(mapData)
     }
   }

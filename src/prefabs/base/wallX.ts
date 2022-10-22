@@ -26,9 +26,12 @@ const wallX =
     size = 100,
     flags = 0,
     _uv: { a: UV; b: UV; c: UV; d: UV } | null = null,
-    scale: number = 1,
+    scaleU: number = 1,
+    scaleV: number = 1,
     offsetU: number = 0,
     offsetV: number = 0,
+    rotateU: number = 0.5,
+    rotateV: number = 0.5,
   ) =>
   (mapData) => {
     const { texture } = mapData.state
@@ -45,10 +48,10 @@ const wallX =
         ;({ a, b, c, d } = _uv)
       }
     } else if (quad === TEXTURE_CUSTOM_SCALE) {
-      a = { u: offsetU + 1 / scale, v: offsetV }
-      b = { u: offsetU + 1 / scale, v: offsetV + 1 / scale }
+      a = { u: offsetU + 1 / scaleU, v: offsetV }
+      b = { u: offsetU + 1 / scaleU, v: offsetV + 1 / scaleV }
       c = { u: offsetU, v: offsetV }
-      d = { u: offsetU, v: offsetV + 1 / scale }
+      d = { u: offsetU, v: offsetV + 1 / scaleV }
     } else {
       let scale = 1
       let offsetU = 0
