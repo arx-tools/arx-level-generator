@@ -1,93 +1,35 @@
 import { MapData, move } from '../../helpers'
-import { RelativeCoords, TextureQuad, UV } from '../../types'
-import {
-  POLY_QUAD,
-  POLY_NO_SHADOW,
-  HFLIP,
-  VFLIP,
-  TEXTURE_QUAD_TOP_LEFT,
-  TEXTURE_QUAD_TOP_RIGHT,
-  TEXTURE_QUAD_BOTTOM_RIGHT,
-  TEXTURE_QUAD_BOTTOM_LEFT,
-  TEXTURE_FULL_SCALE,
-  TEXTURE_CUSTOM_UV,
-  TEXTURE_CUSTOM_SCALE,
-} from '../../constants'
+import { RelativeCoords, TextureQuad, UV, UVQuad } from '../../types'
+import { POLY_QUAD, POLY_NO_SHADOW, HFLIP, VFLIP, TEXTURE_CUSTOM_SCALE } from '../../constants'
 import { useTexture } from '../../assets/textures'
 import { flipPolygon, flipUVHorizontally, flipUVVertically, rotateUV } from '../../helpers'
 
 // [x, y, z] are absolute coordinates,
 // not relative to origin
-const wallX =
-  (
-    [x, y, z],
-    facing: 'left' | 'right' = 'left',
-    quad: TextureQuad = TEXTURE_FULL_SCALE,
-    textureRotation = 0,
-    size: number | [number, number, number] = 100,
-    flags = 0,
-    _uv: { a: UV; b: UV; c: UV; d: UV } | null = null,
-    scaleU: number = 1,
-    scaleV: number = 1,
-    offsetU: number = 0,
-    offsetV: number = 0,
-    rotateCenterU: number = 0.5,
-    rotateCenterV: number = 0.5,
-  ) =>
-  (mapData) => {
+const wallX = (
+  [x, y, z],
+  facing: 'left' | 'right' = 'left',
+  textureRotation = 0,
+  [sizeX, sizeY, sizeZ]: [number, number, number],
+  flags = 0,
+  scaleU: number = 1,
+  scaleV: number = 1,
+  offsetU: number = 0,
+  offsetV: number = 0,
+  rotateCenterU: number = 0.5,
+  rotateCenterV: number = 0.5,
+) => {
+  return (mapData) => {
     const { texture } = mapData.state
 
-    const [sizeX, sizeY, sizeZ] = Array.isArray(size) ? size : [size, size, size]
+    let uv: UVQuad = [
+      { u: offsetU, v: offsetV },
+      { u: offsetU, v: offsetV + 1 / scaleV },
+      { u: offsetU + 1 / scaleU, v: offsetV },
+      { u: offsetU + 1 / scaleU, v: offsetV + 1 / scaleV },
+    ]
 
-    let a = { u: 1, v: 0 }
-    let b = { u: 1, v: 1 }
-    let c = { u: 0, v: 0 }
-    let d = { u: 0, v: 1 }
-
-    if (quad === TEXTURE_CUSTOM_UV) {
-      if (_uv !== null) {
-        ;({ a, b, c, d } = _uv)
-      }
-    } else if (quad === TEXTURE_CUSTOM_SCALE) {
-      a = { u: offsetU + 1 / scaleU, v: offsetV }
-      b = { u: offsetU + 1 / scaleU, v: offsetV + 1 / scaleV }
-      c = { u: offsetU, v: offsetV }
-      d = { u: offsetU, v: offsetV + 1 / scaleV }
-    } else {
-      let scale = 1
-      let offsetU = 0
-      let offsetV = 0
-
-      switch (quad) {
-        case TEXTURE_QUAD_TOP_LEFT:
-          scale = 2
-          offsetU = 0
-          offsetV = 0
-          break
-        case TEXTURE_QUAD_TOP_RIGHT:
-          scale = 2
-          offsetU = 1 / scale
-          offsetV = 0
-          break
-        case TEXTURE_QUAD_BOTTOM_RIGHT:
-          scale = 2
-          offsetU = 1 / scale
-          offsetV = 1 / scale
-          break
-        case TEXTURE_QUAD_BOTTOM_LEFT:
-          scale = 2
-          offsetU = 0
-          offsetV = 1 / scale
-          break
-      }
-
-      a = { u: offsetU + 1 / scale, v: offsetV }
-      b = { u: offsetU + 1 / scale, v: offsetV + 1 / scale }
-      c = { u: offsetU, v: offsetV }
-      d = { u: offsetU, v: offsetV + 1 / scale }
-    }
-
-    let uv = rotateUV(textureRotation, [rotateCenterU, rotateCenterV], [c, d, a, b])
+    uv = rotateUV(textureRotation, [rotateCenterU, rotateCenterV], uv)
 
     if (flags & HFLIP) {
       uv = flipUVHorizontally(uv)
@@ -101,30 +43,30 @@ const wallX =
 
     let vertices = [
       {
-        posX: x - sizeX / 2,
-        posY: y - sizeY / 2,
-        posZ: z - sizeZ / 2,
+        posX: x - sizeX,
+        posY: y - sizeY,
+        posZ: z - sizeZ,
         texU: uv[0].u,
         texV: uv[0].v,
       },
       {
-        posX: x - sizeX / 2,
-        posY: y + sizeY / 2,
-        posZ: z - sizeZ / 2,
+        posX: x - sizeX,
+        posY: y,
+        posZ: z - sizeZ,
         texU: uv[1].u,
         texV: uv[1].v,
       },
       {
-        posX: x - sizeX / 2,
-        posY: y - sizeY / 2,
-        posZ: z + sizeZ / 2,
+        posX: x - sizeX,
+        posY: y - sizeY,
+        posZ: z,
         texU: uv[2].u,
         texV: uv[2].v,
       },
       {
-        posX: x - sizeX / 2,
-        posY: y + sizeY / 2,
-        posZ: z + sizeZ / 2,
+        posX: x - sizeX,
+        posY: y,
+        posZ: z,
         texU: uv[3].u,
         texV: uv[3].v,
       },
@@ -151,8 +93,7 @@ const wallX =
       paddy: 0,
     })
   }
-
-// -------------------
+}
 
 export const quadX = (pos: RelativeCoords, size: [number, number], mapData: MapData) => {
   const { origin } = mapData.config
@@ -186,16 +127,14 @@ export const quadX = (pos: RelativeCoords, size: [number, number], mapData: MapD
       wallX(
         move(
           0,
-          -(numberOfWholeTilesY - 1) * 100 + y * 100 - lastTileHeight - 50,
-          50 + x * 100,
+          -(numberOfWholeTilesY - 1) * 100 + y * 100 - lastTileHeight,
+          x * 100,
           move(...pos.coords, origin.coords),
         ),
         'right',
-        TEXTURE_CUSTOM_SCALE,
         rotation,
         [0, 100, 100],
         0,
-        null,
         scaleU,
         scaleV,
         (1 / scaleU) * x - offsetUPercent / 100,
@@ -215,13 +154,11 @@ export const quadX = (pos: RelativeCoords, size: [number, number], mapData: MapD
 
     for (let x = 0; x < numberOfWholeTilesX; x++) {
       wallX(
-        move(0, -lastTileHeight / 2, 50 + x * 100, move(...pos.coords, origin.coords)),
+        move(0, 0, x * 100, move(...pos.coords, origin.coords)),
         'right',
-        TEXTURE_CUSTOM_SCALE,
         rotation,
         [0, lastTileHeight, 100],
         0,
-        null,
         scaleU,
         scaleV,
         (1 / scaleU) * x - offsetUPercent / 100,
@@ -243,16 +180,14 @@ export const quadX = (pos: RelativeCoords, size: [number, number], mapData: MapD
       wallX(
         move(
           0,
-          -(numberOfWholeTilesY - 1) * 100 + y * 100 - lastTileHeight - 50,
-          lastTileWidth / 2 + numberOfWholeTilesX * 100,
+          -(numberOfWholeTilesY - 1) * 100 + y * 100 - lastTileHeight,
+          (numberOfWholeTilesX - 1) * 100 + lastTileWidth,
           move(...pos.coords, origin.coords),
         ),
         'right',
-        TEXTURE_CUSTOM_SCALE,
         rotation,
         [0, 100, lastTileWidth],
         0,
-        null,
         scaleU,
         scaleV,
         (1 / scaleU) * ((numberOfWholeTilesX * 100) / lastTileWidth) - offsetUPercent / 100,
@@ -271,13 +206,11 @@ export const quadX = (pos: RelativeCoords, size: [number, number], mapData: MapD
     scaleV = ((scaleVPercent / 100) * (surfaceWidth / 100)) / (lastTileHeight / 100)
 
     wallX(
-      move(0, -lastTileHeight / 2, lastTileWidth / 2 + numberOfWholeTilesX * 100, move(...pos.coords, origin.coords)),
+      move(0, 0, lastTileWidth + (numberOfWholeTilesX - 1) * 100, move(...pos.coords, origin.coords)),
       'right',
-      TEXTURE_CUSTOM_SCALE,
       rotation,
       [0, lastTileHeight, lastTileWidth],
       0,
-      null,
       scaleU,
       scaleV,
       (1 / scaleU) * ((numberOfWholeTilesX * 100) / lastTileWidth) - offsetUPercent / 100,

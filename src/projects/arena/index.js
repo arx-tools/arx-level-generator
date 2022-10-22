@@ -92,7 +92,7 @@ const generate = async (config) => {
 
   setColor('#777777', mapData)
   setTexture(textures.wall.roughcast[0], mapData)
-  quadX({ type: 'relative', coords: [-900, 0, 400] }, [378, 462], mapData)
+  quadX({ type: 'relative', coords: [-900, 0, 400] }, [378, 492], mapData)
 
   // -------------------
 
