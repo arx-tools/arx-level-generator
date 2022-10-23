@@ -172,6 +172,11 @@ const flipAxis = ([x, y, z]: Vector3): Vector3 => {
   return [z, y, x]
 }
 
+// ooooooc
+// ooooooc
+// ooooooc
+// aaaaaax
+
 export const quad = (
   pos: RelativeCoords,
   [surfaceWidth, surfaceHeight]: [number, number],
@@ -193,6 +198,7 @@ export const quad = (
   const scaleU = (scaleUPercent / 100) * (surfaceWidth / 100)
   const scaleV = (scaleVPercent / 100) * (surfaceWidth / 100)
 
+  // "o" blocks
   for (let h = 0; h < numberOfWholeTilesH; h++) {
     for (let w = 0; w < numberOfWholeTilesW; w++) {
       const positionOffset: Vector3 = [0, -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight, w * 100]
@@ -225,6 +231,7 @@ export const quad = (
     }
   }
 
+  // "a" blocks
   if (lastTileHeight > 0) {
     const scaleU = (scaleUPercent / 100) * (surfaceWidth / 100)
     const scaleV = ((scaleVPercent / 100) * (surfaceWidth / 100)) / (lastTileHeight / 100)
@@ -260,6 +267,7 @@ export const quad = (
     }
   }
 
+  // "c" blocks
   if (lastTileWidth > 0) {
     const scaleU = ((scaleUPercent / 100) * (surfaceWidth / 100)) / (lastTileWidth / 100)
     const scaleV = (scaleVPercent / 100) * (surfaceWidth / 100)
@@ -305,6 +313,7 @@ export const quad = (
     }
   }
 
+  // "x" block
   if (lastTileWidth > 0 && lastTileHeight > 0) {
     const scaleU = ((scaleUPercent / 100) * (surfaceWidth / 100)) / (lastTileWidth / 100)
     const scaleV = ((scaleVPercent / 100) * (surfaceWidth / 100)) / (lastTileHeight / 100)
