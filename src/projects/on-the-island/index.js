@@ -18,8 +18,7 @@ import {
   setPolygonGroup,
   unsetPolygonGroup,
 } from '../../helpers'
-import { plain } from '../../prefabs'
-import { disableBumping, connectToNearPolygons } from '../../prefabs/plain'
+import { disableBumping, connectToNearPolygons, plain } from '../../prefabs/plain'
 import { getInjections } from '../../scripting'
 import { createCampfire } from './items/campfire'
 import { createGoblin } from './items/goblin'

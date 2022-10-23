@@ -15,22 +15,14 @@ import {
 import island from './island'
 import { colors, NONE, ALL, NORTH, EAST, SOUTH, WEST } from './constants'
 import { ambiences } from '../../assets/ambiences'
-import {
-  items,
-  createItem,
-  markAsUsed,
-  moveTo,
-  addScript,
-  addDependencyAs,
-} from '../../assets/items'
+import { items, createItem, markAsUsed, moveTo, addScript, addDependencyAs } from '../../assets/items'
 import { declare, color, getInjections, FALSE, TRUE } from '../../scripting'
 import bridges from './bridges'
 import { createSmellyFlower } from './items/smellyFlower'
 import { createStatue, defineStatue } from './items/statue'
-import { pillars, plain } from '../../prefabs'
 import { textures } from '../../assets/textures'
 import { MAP_MAX_WIDTH, MAP_MAX_HEIGHT, PATH_RGB } from '../../constants'
-import { disableBumping } from '../../prefabs/plain'
+import { plain, disableBumping } from '../../prefabs/plain'
 import { createStone } from './items/stone'
 import { overridePlayerScript } from '../shared/player'
 
@@ -39,16 +31,8 @@ const createWelcomeMarker = (pos, config) => {
 
   declare('bool', 'hadIntro', FALSE, ref)
 
-  addDependencyAs(
-    'reset/map.bmp',
-    `graph/levels/level${config.levelIdx}/map.bmp`,
-    ref,
-  )
-  addDependencyAs(
-    'projects/alias-nightmare/loading.bmp',
-    `graph/levels/level${config.levelIdx}/loading.bmp`,
-    ref,
-  )
+  addDependencyAs('reset/map.bmp', `graph/levels/level${config.levelIdx}/map.bmp`, ref)
+  addDependencyAs('projects/alias-nightmare/loading.bmp', `graph/levels/level${config.levelIdx}/loading.bmp`, ref)
   addScript((self) => {
     return `
   // component: welcomeMarker
@@ -93,11 +77,7 @@ const createFallSaver = (pos, target) => {
 
   declare('bool', 'isCatching', FALSE, ref)
 
-  addDependencyAs(
-    'projects/alias-nightmare/sfx/uru-link.wav',
-    `sfx/uru-link.wav`,
-    ref,
-  )
+  addDependencyAs('projects/alias-nightmare/sfx/uru-link.wav', `sfx/uru-link.wav`, ref)
   addScript((self) => {
     return `
 // component fallsaver
@@ -138,9 +118,7 @@ ON CONTROLLEDZONE_ENTER {
 }
 
 const generateAtLeastOneExit = () => {
-  return (
-    Math.round(randomBetween(NONE, ALL)) || 1 << Math.round(randomBetween(0, 3))
-  )
+  return Math.round(randomBetween(NONE, ALL)) || 1 << Math.round(randomBetween(0, 3))
 }
 
 // creates a large flat plane for the player to fall onto
@@ -155,13 +133,9 @@ const createGravityInducer = (origin, mapData) => {
       setPolygonGroup(`gravity-${x}-${y}`, mapData)
       plain(
         [
-          -origin.coords[0] +
-            (MAP_MAX_WIDTH / divider) * 50 +
-            (MAP_MAX_WIDTH / divider) * 100 * x,
+          -origin.coords[0] + (MAP_MAX_WIDTH / divider) * 50 + (MAP_MAX_WIDTH / divider) * 100 * x,
           origin.coords[1] + 10000,
-          -origin.coords[2] +
-            (MAP_MAX_HEIGHT / divider) * 50 +
-            (MAP_MAX_HEIGHT / divider) * 100 * y,
+          -origin.coords[2] + (MAP_MAX_HEIGHT / divider) * 50 + (MAP_MAX_HEIGHT / divider) * 100 * y,
         ],
         [MAP_MAX_WIDTH / divider, MAP_MAX_HEIGHT / divider],
         'floor',

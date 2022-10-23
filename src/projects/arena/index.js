@@ -16,7 +16,6 @@ import {
   setColor,
   setTexture,
 } from '../../helpers'
-import { plain } from '../../prefabs'
 import { getInjections } from '../../scripting'
 import { overridePlayerScript } from '../shared/player'
 import { hideMinimap } from '../shared/reset'
@@ -24,7 +23,7 @@ import { createGungameController } from './gamemodes/gungame'
 import { createNPC, defineNPC } from './items/npc'
 import { createRespawnController } from './items/respawnController'
 import { quad } from '../../prefabs/base/quad'
-import { disableBumping } from '../../prefabs/plain'
+import { disableBumping, plain } from '../../prefabs/plain'
 
 const createWelcomeMarker = (pos, config) => {
   const ref = createItem(items.marker)
