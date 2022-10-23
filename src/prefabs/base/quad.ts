@@ -1,5 +1,5 @@
 import { MapData, move, normalizeDegree } from '../../helpers'
-import { AbsoluteCoords, RelativeCoords, UVQuad } from '../../types'
+import { AbsoluteCoords, RelativeCoords, UVQuad, Vector3 } from '../../types'
 import { POLY_QUAD, POLY_NO_SHADOW } from '../../constants'
 import { useTexture } from '../../assets/textures'
 import { flipPolygon } from '../../helpers'
@@ -154,6 +154,10 @@ const wallOnTheXAxis = (
   }
 }
 
+const flipAxis = ([x, y, z]: Vector3): Vector3 => {
+  return [z, y, x]
+}
+
 export const quad = (
   pos: RelativeCoords,
   [surfaceWidth, surfaceHeight]: [number, number],
@@ -177,19 +181,16 @@ export const quad = (
 
   for (let h = 0; h < numberOfWholeTilesH; h++) {
     for (let w = 0; w < numberOfWholeTilesW; w++) {
+      const positionOffset: Vector3 = [0, -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight, w * 100]
+      const size: Vector3 = [0, 100, 100]
       if (angle === 90 || angle === 270) {
         wallOnTheZAxis(
           {
             type: 'absolute',
-            coords: move(
-              0,
-              -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight,
-              w * 100,
-              move(...pos.coords, origin.coords),
-            ),
+            coords: move(...positionOffset, move(...pos.coords, origin.coords)),
           },
           angle === 90 ? 'right' : 'left',
-          [0, 100, 100],
+          size,
           [scaleU, scaleV],
           [(1 / scaleU) * w - offsetUPercent / 100, (1 / scaleV) * h - offsetVPercent / 100],
         )(mapData)
@@ -197,15 +198,10 @@ export const quad = (
         wallOnTheXAxis(
           {
             type: 'absolute',
-            coords: move(
-              w * 100,
-              -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight,
-              0,
-              move(...pos.coords, origin.coords),
-            ),
+            coords: move(...flipAxis(positionOffset), move(...pos.coords, origin.coords)),
           },
           angle === 0 ? 'front' : 'back',
-          [100, 100, 0],
+          flipAxis(size),
           [scaleU, scaleV],
           [(1 / scaleU) * w - offsetUPercent / 100, (1 / scaleV) * h - offsetVPercent / 100],
         )(mapData)
@@ -220,11 +216,13 @@ export const quad = (
     const scaleV = ((scaleVPercent / 100) * (surfaceWidth / 100)) / (lastTileHeight / 100)
 
     for (let w = 0; w < numberOfWholeTilesW; w++) {
+      const positionOffset: Vector3 = [0, 0, w * 100]
+      const size: Vector3 = [0, lastTileHeight, 100]
       if (angle === 90 || angle === 270) {
         wallOnTheZAxis(
-          { type: 'absolute', coords: move(0, 0, w * 100, move(...pos.coords, origin.coords)) },
+          { type: 'absolute', coords: move(...positionOffset, move(...pos.coords, origin.coords)) },
           angle === 90 ? 'right' : 'left',
-          [0, lastTileHeight, 100],
+          size,
           [scaleU, scaleV],
           [
             (1 / scaleU) * w - offsetUPercent / 100,
@@ -233,9 +231,9 @@ export const quad = (
         )(mapData)
       } else if (angle === 0 || angle === 180) {
         wallOnTheXAxis(
-          { type: 'absolute', coords: move(w * 100, 0, 0, move(...pos.coords, origin.coords)) },
+          { type: 'absolute', coords: move(...flipAxis(positionOffset), move(...pos.coords, origin.coords)) },
           angle === 0 ? 'front' : 'back',
-          [100, lastTileHeight, 0],
+          flipAxis(size),
           [scaleU, scaleV],
           [
             (1 / scaleU) * w - offsetUPercent / 100,
@@ -253,19 +251,20 @@ export const quad = (
     const scaleV = (scaleVPercent / 100) * (surfaceWidth / 100)
 
     for (let h = 0; h < numberOfWholeTilesH; h++) {
+      const positionOffset: Vector3 = [
+        0,
+        -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight,
+        (numberOfWholeTilesW - 1) * 100 + lastTileWidth,
+      ]
+      const size: Vector3 = [0, 100, lastTileWidth]
       if (angle === 90 || angle === 270) {
         wallOnTheZAxis(
           {
             type: 'absolute',
-            coords: move(
-              0,
-              -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight,
-              (numberOfWholeTilesW - 1) * 100 + lastTileWidth,
-              move(...pos.coords, origin.coords),
-            ),
+            coords: move(...positionOffset, move(...pos.coords, origin.coords)),
           },
           angle === 90 ? 'right' : 'left',
-          [0, 100, lastTileWidth],
+          size,
           [scaleU, scaleV],
           [
             (1 / scaleU) * ((numberOfWholeTilesW * 100) / lastTileWidth) - offsetUPercent / 100,
@@ -276,15 +275,10 @@ export const quad = (
         wallOnTheXAxis(
           {
             type: 'absolute',
-            coords: move(
-              (numberOfWholeTilesW - 1) * 100 + lastTileWidth,
-              -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight,
-              0,
-              move(...pos.coords, origin.coords),
-            ),
+            coords: move(...flipAxis(positionOffset), move(...pos.coords, origin.coords)),
           },
           angle === 0 ? 'front' : 'back',
-          [lastTileWidth, 100, 0],
+          flipAxis(size),
           [scaleU, scaleV],
           [
             (1 / scaleU) * ((numberOfWholeTilesW * 100) / lastTileWidth) - offsetUPercent / 100,
@@ -301,14 +295,17 @@ export const quad = (
     const scaleU = ((scaleUPercent / 100) * (surfaceWidth / 100)) / (lastTileWidth / 100)
     const scaleV = ((scaleVPercent / 100) * (surfaceWidth / 100)) / (lastTileHeight / 100)
 
+    const positionOffset: Vector3 = [0, 0, lastTileWidth + (numberOfWholeTilesW - 1) * 100]
+    const size: Vector3 = [0, lastTileHeight, lastTileWidth]
+
     if (angle === 90 || angle === 270) {
       wallOnTheZAxis(
         {
           type: 'absolute',
-          coords: move(0, 0, lastTileWidth + (numberOfWholeTilesW - 1) * 100, move(...pos.coords, origin.coords)),
+          coords: move(...positionOffset, move(...pos.coords, origin.coords)),
         },
         angle === 90 ? 'right' : 'left',
-        [0, lastTileHeight, lastTileWidth],
+        size,
         [scaleU, scaleV],
         [
           (1 / scaleU) * ((numberOfWholeTilesW * 100) / lastTileWidth) - offsetUPercent / 100,
@@ -319,10 +316,10 @@ export const quad = (
       wallOnTheXAxis(
         {
           type: 'absolute',
-          coords: move(lastTileWidth + (numberOfWholeTilesW - 1) * 100, 0, 0, move(...pos.coords, origin.coords)),
+          coords: move(...flipAxis(positionOffset), move(...pos.coords, origin.coords)),
         },
         angle === 0 ? 'front' : 'back',
-        [lastTileWidth, lastTileHeight, 0],
+        flipAxis(size),
         [scaleU, scaleV],
         [
           (1 / scaleU) * ((numberOfWholeTilesW * 100) / lastTileWidth) - offsetUPercent / 100,
