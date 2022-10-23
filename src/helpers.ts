@@ -12,8 +12,6 @@ import {
   PATH_RGB,
   PATH_AMBIANCE,
   PATH_FARCLIP,
-  HFLIP,
-  VFLIP,
 } from './constants'
 import { exportUsedItems, exportScripts, exportDependencies, resetItems } from './assets/items'
 import { ambiences, exportAmbiences, useAmbience, resetAmbiences, AmbienceDefinition } from './assets/ambiences'
@@ -22,6 +20,7 @@ import {
   AbsoluteCoords,
   FloatRgb,
   MapConfig,
+  Polygon,
   PosVertex3,
   RelativeCoords,
   RgbaBytes,
@@ -598,8 +597,7 @@ export const addZone = (
   }
 }
 
-export const flipPolygon = (vertices) => {
-  const [a, b, c, d] = vertices
+export const flipPolygon = ([a, b, c, d]: Polygon): Polygon => {
   // vertices are laid down in a russian i shape (И):
   // a c
   // b d

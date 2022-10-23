@@ -1,62 +1,104 @@
 import { MapData, move, normalizeDegree } from '../../helpers'
-import { AbsoluteCoords, RelativeCoords, UVQuad, Vector3 } from '../../types'
+import { AbsoluteCoords, Polygon, RelativeCoords, UVQuad, Vector3 } from '../../types'
 import { POLY_QUAD, POLY_NO_SHADOW } from '../../constants'
 import { useTexture } from '../../assets/textures'
 import { flipPolygon } from '../../helpers'
 
-// quasii wallX
-const wallOnTheZAxis = (
+const createPolygon = (
   pos: AbsoluteCoords,
   facing: string,
   [sizeX, sizeY, sizeZ]: [number, number, number],
   [scaleU, scaleV]: [number, number],
   [offsetU, offsetV]: [number, number],
 ) => {
+  const [x, y, z] = pos.coords
+
+  let vertices: Polygon
+
+  if (facing === 'left' || facing === 'right') {
+    vertices = [
+      {
+        posX: x - sizeX,
+        posY: y - sizeY,
+        posZ: z - sizeZ,
+        texU: offsetU,
+        texV: offsetV,
+      },
+      {
+        posX: x - sizeX,
+        posY: y,
+        posZ: z - sizeZ,
+        texU: offsetU,
+        texV: offsetV + 1 / scaleV,
+      },
+      {
+        posX: x - sizeX,
+        posY: y - sizeY,
+        posZ: z,
+        texU: offsetU + 1 / scaleU,
+        texV: offsetV,
+      },
+      {
+        posX: x - sizeX,
+        posY: y,
+        posZ: z,
+        texU: offsetU + 1 / scaleU,
+        texV: offsetV + 1 / scaleV,
+      },
+    ]
+  } else {
+    vertices = [
+      {
+        posX: x - sizeX,
+        posY: y - sizeY,
+        posZ: z - sizeZ,
+        texU: offsetU,
+        texV: offsetV,
+      },
+      {
+        posX: x - sizeX,
+        posY: y,
+        posZ: z - sizeZ,
+        texU: offsetU,
+        texV: offsetV + 1 / scaleV,
+      },
+      {
+        posX: x,
+        posY: y - sizeY,
+        posZ: z - sizeZ,
+        texU: offsetU + 1 / scaleU,
+        texV: offsetV,
+      },
+      {
+        posX: x,
+        posY: y,
+        posZ: z - sizeZ,
+        texU: offsetU + 1 / scaleU,
+        texV: offsetV + 1 / scaleV,
+      },
+    ]
+  }
+
+  if (facing === 'left' || facing === 'front') {
+    vertices = flipPolygon(vertices)
+  }
+
+  return vertices
+}
+
+// quasii wallX
+const wallOnTheZAxis = (
+  pos: AbsoluteCoords,
+  facing: string,
+  size: [number, number, number],
+  scale: [number, number],
+  offset: [number, number],
+) => {
   return (mapData) => {
+    const vertices = createPolygon(pos, facing, size, scale, offset)
+    const [sizeX, sizeY, sizeZ] = size
+
     const { texture } = mapData.state
-    const [x, y, z] = pos.coords
-
-    const uv: UVQuad = [
-      { u: offsetU, v: offsetV },
-      { u: offsetU, v: offsetV + 1 / scaleV },
-      { u: offsetU + 1 / scaleU, v: offsetV },
-      { u: offsetU + 1 / scaleU, v: offsetV + 1 / scaleV },
-    ]
-
-    let vertices = [
-      {
-        posX: x - sizeX,
-        posY: y - sizeY,
-        posZ: z - sizeZ,
-        texU: uv[0].u,
-        texV: uv[0].v,
-      },
-      {
-        posX: x - sizeX,
-        posY: y,
-        posZ: z - sizeZ,
-        texU: uv[1].u,
-        texV: uv[1].v,
-      },
-      {
-        posX: x - sizeX,
-        posY: y - sizeY,
-        posZ: z,
-        texU: uv[2].u,
-        texV: uv[2].v,
-      },
-      {
-        posX: x - sizeX,
-        posY: y,
-        posZ: z,
-        texU: uv[3].u,
-        texV: uv[3].v,
-      },
-    ]
-
-    if (facing === 'left') {
-      vertices = flipPolygon(vertices)
-    }
 
     const textureFlags = texture.flags ?? POLY_QUAD | POLY_NO_SHADOW
 
@@ -71,7 +113,7 @@ const wallOnTheZAxis = (
       vertices,
       tex: useTexture(texture),
       transval: 0,
-      area: sizeX * sizeY,
+      area: sizeY * sizeZ,
       type: textureFlags,
       room: 1,
       paddy: 0,
@@ -83,55 +125,15 @@ const wallOnTheZAxis = (
 const wallOnTheXAxis = (
   pos: AbsoluteCoords,
   facing: string,
-  [sizeX, sizeY, sizeZ]: [number, number, number],
-  [scaleU, scaleV]: [number, number],
-  [offsetU, offsetV]: [number, number],
+  size: [number, number, number],
+  scale: [number, number],
+  offset: [number, number],
 ) => {
   return (mapData) => {
+    const vertices = createPolygon(pos, facing, size, scale, offset)
+    const [sizeX, sizeY, sizeZ] = size
+
     const { texture } = mapData.state
-    const [x, y, z] = pos.coords
-
-    const uv: UVQuad = [
-      { u: offsetU, v: offsetV },
-      { u: offsetU, v: offsetV + 1 / scaleV },
-      { u: offsetU + 1 / scaleU, v: offsetV },
-      { u: offsetU + 1 / scaleU, v: offsetV + 1 / scaleV },
-    ]
-
-    let vertices = [
-      {
-        posX: x - sizeX,
-        posY: y - sizeY,
-        posZ: z - sizeZ,
-        texU: uv[0].u,
-        texV: uv[0].v,
-      },
-      {
-        posX: x - sizeX,
-        posY: y,
-        posZ: z - sizeZ,
-        texU: uv[1].u,
-        texV: uv[1].v,
-      },
-      {
-        posX: x,
-        posY: y - sizeY,
-        posZ: z - sizeZ,
-        texU: uv[2].u,
-        texV: uv[2].v,
-      },
-      {
-        posX: x,
-        posY: y,
-        posZ: z - sizeZ,
-        texU: uv[3].u,
-        texV: uv[3].v,
-      },
-    ]
-
-    if (facing === 'front') {
-      vertices = flipPolygon(vertices)
-    }
 
     const textureFlags = texture.flags ?? POLY_QUAD | POLY_NO_SHADOW
 

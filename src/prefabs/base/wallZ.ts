@@ -1,7 +1,7 @@
 import { POLY_QUAD, POLY_NO_SHADOW, HFLIP, VFLIP, TEXTURE_CUSTOM_UV } from '../../constants'
 import { useTexture } from '../../assets/textures'
 import { flipPolygon, flipUVHorizontally, flipUVVertically, rotateUV } from '../../helpers'
-import { TextureQuad } from '../../types'
+import { Polygon, TextureQuad } from '../../types'
 
 // [x, y, z] are absolute coordinates,
 // not relative to origin
@@ -74,7 +74,7 @@ const wallZ =
 
     const textureFlags = texture.flags ?? POLY_QUAD | POLY_NO_SHADOW
 
-    let vertices = [
+    let vertices: Polygon = [
       {
         posX: x - sizeX / 2,
         posY: y - sizeY / 2,

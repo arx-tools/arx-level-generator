@@ -20,6 +20,8 @@ export type PosVertex3 = {
   texV: number
 }
 
+export type Polygon = [PosVertex3, PosVertex3, PosVertex3, PosVertex3]
+
 export type Vertex3 = {
   x: number
   y: number
