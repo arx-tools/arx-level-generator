@@ -4,9 +4,10 @@ import { POLY_QUAD, POLY_NO_SHADOW } from '../../constants'
 import { useTexture } from '../../assets/textures'
 import { flipPolygon } from '../../helpers'
 
+// quasii wallX
 const wallOnTheZAxis = (
   pos: AbsoluteCoords,
-  facing: 'left' | 'right',
+  facing: string,
   [sizeX, sizeY, sizeZ]: [number, number, number],
   [scaleU, scaleV]: [number, number],
   [offsetU, offsetV]: [number, number],
@@ -78,6 +79,81 @@ const wallOnTheZAxis = (
   }
 }
 
+// quasii wallZ
+const wallOnTheXAxis = (
+  pos: AbsoluteCoords,
+  facing: string,
+  [sizeX, sizeY, sizeZ]: [number, number, number],
+  [scaleU, scaleV]: [number, number],
+  [offsetU, offsetV]: [number, number],
+) => {
+  return (mapData) => {
+    const { texture } = mapData.state
+    const [x, y, z] = pos.coords
+
+    const uv: UVQuad = [
+      { u: offsetU, v: offsetV },
+      { u: offsetU, v: offsetV + 1 / scaleV },
+      { u: offsetU + 1 / scaleU, v: offsetV },
+      { u: offsetU + 1 / scaleU, v: offsetV + 1 / scaleV },
+    ]
+
+    let vertices = [
+      {
+        posX: x - sizeX,
+        posY: y - sizeY,
+        posZ: z - sizeZ,
+        texU: uv[0].u,
+        texV: uv[0].v,
+      },
+      {
+        posX: x - sizeX,
+        posY: y,
+        posZ: z - sizeZ,
+        texU: uv[1].u,
+        texV: uv[1].v,
+      },
+      {
+        posX: x,
+        posY: y - sizeY,
+        posZ: z - sizeZ,
+        texU: uv[2].u,
+        texV: uv[2].v,
+      },
+      {
+        posX: x,
+        posY: y,
+        posZ: z - sizeZ,
+        texU: uv[3].u,
+        texV: uv[3].v,
+      },
+    ]
+
+    if (facing === 'front') {
+      vertices = flipPolygon(vertices)
+    }
+
+    const textureFlags = texture.flags ?? POLY_QUAD | POLY_NO_SHADOW
+
+    mapData.fts.polygons[mapData.state.polygonGroup] = mapData.fts.polygons[mapData.state.polygonGroup] || []
+
+    mapData.fts.polygons[mapData.state.polygonGroup].push({
+      config: {
+        color: mapData.state.color,
+        isQuad: (textureFlags & POLY_QUAD) > 0,
+        bumpable: true,
+      },
+      vertices,
+      tex: useTexture(texture),
+      transval: 0,
+      area: sizeX * sizeY,
+      type: textureFlags,
+      room: 1,
+      paddy: 0,
+    })
+  }
+}
+
 export const quad = (
   pos: RelativeCoords,
   [surfaceWidth, surfaceHeight]: [number, number],
@@ -117,6 +193,24 @@ export const quad = (
           [scaleU, scaleV],
           [(1 / scaleU) * w - offsetUPercent / 100, (1 / scaleV) * h - offsetVPercent / 100],
         )(mapData)
+      } else if (angle === 0 || angle === 180) {
+        wallOnTheXAxis(
+          {
+            type: 'absolute',
+            coords: move(
+              w * 100,
+              -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight,
+              0,
+              move(...pos.coords, origin.coords),
+            ),
+          },
+          angle === 0 ? 'front' : 'back',
+          [100, 100, 0],
+          [scaleU, scaleV],
+          [(1 / scaleU) * w - offsetUPercent / 100, (1 / scaleV) * h - offsetVPercent / 100],
+        )(mapData)
+      } else {
+        // TODO: calculate arbitrary rotation
       }
     }
   }
@@ -137,6 +231,19 @@ export const quad = (
             (1 / scaleV) * ((numberOfWholeTilesH * 100) / lastTileHeight) - offsetVPercent / 100,
           ],
         )(mapData)
+      } else if (angle === 0 || angle === 180) {
+        wallOnTheXAxis(
+          { type: 'absolute', coords: move(w * 100, 0, 0, move(...pos.coords, origin.coords)) },
+          angle === 0 ? 'front' : 'back',
+          [100, lastTileHeight, 0],
+          [scaleU, scaleV],
+          [
+            (1 / scaleU) * w - offsetUPercent / 100,
+            (1 / scaleV) * ((numberOfWholeTilesH * 100) / lastTileHeight) - offsetVPercent / 100,
+          ],
+        )(mapData)
+      } else {
+        // TODO: calculate arbitrary rotation
       }
     }
   }
@@ -165,6 +272,27 @@ export const quad = (
             (1 / scaleV) * h - offsetVPercent / 100,
           ],
         )(mapData)
+      } else if (angle === 0 || angle === 180) {
+        wallOnTheXAxis(
+          {
+            type: 'absolute',
+            coords: move(
+              (numberOfWholeTilesW - 1) * 100 + lastTileWidth,
+              -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight,
+              0,
+              move(...pos.coords, origin.coords),
+            ),
+          },
+          angle === 0 ? 'front' : 'back',
+          [lastTileWidth, 100, 0],
+          [scaleU, scaleV],
+          [
+            (1 / scaleU) * ((numberOfWholeTilesW * 100) / lastTileWidth) - offsetUPercent / 100,
+            (1 / scaleV) * h - offsetVPercent / 100,
+          ],
+        )(mapData)
+      } else {
+        // TODO: calculate arbitrary rotation
       }
     }
   }
@@ -187,6 +315,22 @@ export const quad = (
           (1 / scaleV) * ((numberOfWholeTilesH * 100) / lastTileHeight) - offsetVPercent / 100,
         ],
       )(mapData)
+    } else if (angle === 0 || angle === 180) {
+      wallOnTheXAxis(
+        {
+          type: 'absolute',
+          coords: move(lastTileWidth + (numberOfWholeTilesW - 1) * 100, 0, 0, move(...pos.coords, origin.coords)),
+        },
+        angle === 0 ? 'front' : 'back',
+        [lastTileWidth, lastTileHeight, 0],
+        [scaleU, scaleV],
+        [
+          (1 / scaleU) * ((numberOfWholeTilesW * 100) / lastTileWidth) - offsetUPercent / 100,
+          (1 / scaleV) * ((numberOfWholeTilesH * 100) / lastTileHeight) - offsetVPercent / 100,
+        ],
+      )(mapData)
+    } else {
+      // TODO: calculate arbitrary rotation
     }
   }
 }

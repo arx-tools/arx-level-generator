@@ -92,6 +92,9 @@ const generate = async (config) => {
   setColor('#777777', mapData)
   setTexture(textures.wall.roughcast[0], mapData)
   quad({ type: 'relative', coords: [-900, 0, 400] }, [378, 492], 90, mapData)
+  quad({ type: 'relative', coords: [900, 0, 400] }, [460, 245], -90, mapData)
+  quad({ type: 'relative', coords: [-100, -100, 900] }, [250, 265], 180, mapData)
+  quad({ type: 'relative', coords: [62, -100, -900] }, [560, 43], 0, mapData)
 
   // -------------------
 
