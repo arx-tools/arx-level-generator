@@ -23,7 +23,7 @@ import { hideMinimap } from '../shared/reset'
 import { createGungameController } from './gamemodes/gungame'
 import { createNPC, defineNPC } from './items/npc'
 import { createRespawnController } from './items/respawnController'
-import { quad } from './quad'
+import { quad } from '../../prefabs/base/quad'
 import { disableBumping } from '../../prefabs/plain'
 
 const createWelcomeMarker = (pos, config) => {
