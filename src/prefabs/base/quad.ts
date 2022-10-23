@@ -6,7 +6,7 @@ import { flipPolygon } from '../../helpers'
 
 const createPolygon = (
   pos: AbsoluteCoords,
-  facing: string,
+  angle: number,
   [sizeX, sizeY, sizeZ]: [number, number, number],
   [scaleU, scaleV]: [number, number],
   [offsetU, offsetV]: [number, number],
@@ -15,7 +15,7 @@ const createPolygon = (
 
   let vertices: Polygon
 
-  if (facing === 'left' || facing === 'right') {
+  if (angle === 90 || angle === 270) {
     vertices = [
       {
         posX: x - sizeX,
@@ -46,41 +46,51 @@ const createPolygon = (
         texV: offsetV + 1 / scaleV,
       },
     ]
+    if (angle === 270) {
+      vertices = flipPolygon(vertices)
+    }
+  } else if (angle === 0 || angle === 180) {
+    vertices = [
+      {
+        posX: x - sizeX,
+        posY: y - sizeY,
+        posZ: z - sizeZ,
+        texU: offsetU,
+        texV: offsetV,
+      },
+      {
+        posX: x - sizeX,
+        posY: y,
+        posZ: z - sizeZ,
+        texU: offsetU,
+        texV: offsetV + 1 / scaleV,
+      },
+      {
+        posX: x,
+        posY: y - sizeY,
+        posZ: z - sizeZ,
+        texU: offsetU + 1 / scaleU,
+        texV: offsetV,
+      },
+      {
+        posX: x,
+        posY: y,
+        posZ: z - sizeZ,
+        texU: offsetU + 1 / scaleU,
+        texV: offsetV + 1 / scaleV,
+      },
+    ]
+    if (angle === 0) {
+      vertices = flipPolygon(vertices)
+    }
   } else {
+    // TODO: implement arbitrary rotation
     vertices = [
-      {
-        posX: x - sizeX,
-        posY: y - sizeY,
-        posZ: z - sizeZ,
-        texU: offsetU,
-        texV: offsetV,
-      },
-      {
-        posX: x - sizeX,
-        posY: y,
-        posZ: z - sizeZ,
-        texU: offsetU,
-        texV: offsetV + 1 / scaleV,
-      },
-      {
-        posX: x,
-        posY: y - sizeY,
-        posZ: z - sizeZ,
-        texU: offsetU + 1 / scaleU,
-        texV: offsetV,
-      },
-      {
-        posX: x,
-        posY: y,
-        posZ: z - sizeZ,
-        texU: offsetU + 1 / scaleU,
-        texV: offsetV + 1 / scaleV,
-      },
+      { posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 },
+      { posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 },
+      { posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 },
+      { posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 },
     ]
-  }
-
-  if (facing === 'left' || facing === 'front') {
-    vertices = flipPolygon(vertices)
   }
 
   return vertices
@@ -89,14 +99,15 @@ const createPolygon = (
 // quasii wallX
 const wallOnTheZAxis = (
   pos: AbsoluteCoords,
-  facing: string,
+  angle: number,
   size: [number, number, number],
   scale: [number, number],
   offset: [number, number],
 ) => {
   return (mapData) => {
-    const vertices = createPolygon(pos, facing, size, scale, offset)
+    const vertices = createPolygon(pos, angle, size, scale, offset)
     const [sizeX, sizeY, sizeZ] = size
+    const area = sizeY * sizeZ // this is the only remaining part that is different from the other wall function
 
     const { texture } = mapData.state
 
@@ -113,7 +124,7 @@ const wallOnTheZAxis = (
       vertices,
       tex: useTexture(texture),
       transval: 0,
-      area: sizeY * sizeZ,
+      area: area,
       type: textureFlags,
       room: 1,
       paddy: 0,
@@ -124,14 +135,15 @@ const wallOnTheZAxis = (
 // quasii wallZ
 const wallOnTheXAxis = (
   pos: AbsoluteCoords,
-  facing: string,
+  angle: number,
   size: [number, number, number],
   scale: [number, number],
   offset: [number, number],
 ) => {
   return (mapData) => {
-    const vertices = createPolygon(pos, facing, size, scale, offset)
+    const vertices = createPolygon(pos, angle, size, scale, offset)
     const [sizeX, sizeY, sizeZ] = size
+    const area = sizeX * sizeY // this is the only remaining part that is different from the other wall function
 
     const { texture } = mapData.state
 
@@ -148,7 +160,7 @@ const wallOnTheXAxis = (
       vertices,
       tex: useTexture(texture),
       transval: 0,
-      area: sizeX * sizeY,
+      area: area,
       type: textureFlags,
       room: 1,
       paddy: 0,
@@ -191,7 +203,7 @@ export const quad = (
             type: 'absolute',
             coords: move(...positionOffset, move(...pos.coords, origin.coords)),
           },
-          angle === 90 ? 'right' : 'left',
+          angle,
           size,
           [scaleU, scaleV],
           [(1 / scaleU) * w - offsetUPercent / 100, (1 / scaleV) * h - offsetVPercent / 100],
@@ -202,7 +214,7 @@ export const quad = (
             type: 'absolute',
             coords: move(...flipAxis(positionOffset), move(...pos.coords, origin.coords)),
           },
-          angle === 0 ? 'front' : 'back',
+          angle,
           flipAxis(size),
           [scaleU, scaleV],
           [(1 / scaleU) * w - offsetUPercent / 100, (1 / scaleV) * h - offsetVPercent / 100],
@@ -223,7 +235,7 @@ export const quad = (
       if (angle === 90 || angle === 270) {
         wallOnTheZAxis(
           { type: 'absolute', coords: move(...positionOffset, move(...pos.coords, origin.coords)) },
-          angle === 90 ? 'right' : 'left',
+          angle,
           size,
           [scaleU, scaleV],
           [
@@ -234,7 +246,7 @@ export const quad = (
       } else if (angle === 0 || angle === 180) {
         wallOnTheXAxis(
           { type: 'absolute', coords: move(...flipAxis(positionOffset), move(...pos.coords, origin.coords)) },
-          angle === 0 ? 'front' : 'back',
+          angle,
           flipAxis(size),
           [scaleU, scaleV],
           [
@@ -265,7 +277,7 @@ export const quad = (
             type: 'absolute',
             coords: move(...positionOffset, move(...pos.coords, origin.coords)),
           },
-          angle === 90 ? 'right' : 'left',
+          angle,
           size,
           [scaleU, scaleV],
           [
@@ -279,7 +291,7 @@ export const quad = (
             type: 'absolute',
             coords: move(...flipAxis(positionOffset), move(...pos.coords, origin.coords)),
           },
-          angle === 0 ? 'front' : 'back',
+          angle,
           flipAxis(size),
           [scaleU, scaleV],
           [
@@ -306,7 +318,7 @@ export const quad = (
           type: 'absolute',
           coords: move(...positionOffset, move(...pos.coords, origin.coords)),
         },
-        angle === 90 ? 'right' : 'left',
+        angle,
         size,
         [scaleU, scaleV],
         [
@@ -320,7 +332,7 @@ export const quad = (
           type: 'absolute',
           coords: move(...flipAxis(positionOffset), move(...pos.coords, origin.coords)),
         },
-        angle === 0 ? 'front' : 'back',
+        angle,
         flipAxis(size),
         [scaleU, scaleV],
         [
