@@ -78,7 +78,7 @@ const wallOnTheZAxis = (
   }
 }
 
-export const quadX = (
+export const quad = (
   pos: RelativeCoords,
   [surfaceWidth, surfaceHeight]: [number, number],
   rawAngle: number,

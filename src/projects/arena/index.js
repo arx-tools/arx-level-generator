@@ -23,7 +23,7 @@ import { hideMinimap } from '../shared/reset'
 import { createGungameController } from './gamemodes/gungame'
 import { createNPC, defineNPC } from './items/npc'
 import { createRespawnController } from './items/respawnController'
-import { quadX } from './buildings'
+import { quad } from './quad'
 import { disableBumping } from '../../prefabs/plain'
 
 const createWelcomeMarker = (pos, config) => {
@@ -92,7 +92,7 @@ const generate = async (config) => {
 
   setColor('#777777', mapData)
   setTexture(textures.wall.roughcast[0], mapData)
-  quadX({ type: 'relative', coords: [-900, 0, 400] }, [378, 492], 90, mapData)
+  quad({ type: 'relative', coords: [-900, 0, 400] }, [378, 492], 90, mapData)
 
   // -------------------
 
