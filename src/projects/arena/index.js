@@ -96,6 +96,8 @@ const generate = async (config) => {
   quad({ type: 'relative', coords: [-100, -100, 900] }, [250, 265], 180, mapData)
   quad({ type: 'relative', coords: [62, -100, -900] }, [560, 43], 0, mapData)
 
+  // quad({ type: 'relative', coords: [-600, 0, 500] }, [150, 170], 180 - 45, mapData)
+
   // -------------------
 
   setColor('white', mapData)

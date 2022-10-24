@@ -14,12 +14,14 @@ const createPolygon = (
 
   let vertices: Polygon
 
+  const v0 = {
+    ...{ posX: x - sizeX, posY: y - sizeY, posZ: z - sizeZ },
+    ...{ texU: offsetU, texV: offsetV },
+  }
+
   if (b === 0) {
     vertices = [
-      {
-        ...{ posX: x - sizeX, posY: y - sizeY, posZ: z - sizeZ },
-        ...{ texU: offsetU, texV: offsetV },
-      },
+      v0,
       {
         ...{ posX: x, posY: y - sizeY, posZ: z - sizeZ },
         ...{ texU: offsetU + 1 / scaleU, texV: offsetV },
@@ -35,10 +37,7 @@ const createPolygon = (
     ]
   } else if (b === 90) {
     vertices = [
-      {
-        ...{ posX: x - sizeX, posY: y - sizeY, posZ: z - sizeZ },
-        ...{ texU: offsetU, texV: offsetV },
-      },
+      v0,
       {
         ...{ posX: x - sizeX, posY: y, posZ: z - sizeZ },
         ...{ texU: offsetU, texV: offsetV + 1 / scaleV },
@@ -54,10 +53,7 @@ const createPolygon = (
     ]
   } else if (b === 180) {
     vertices = [
-      {
-        ...{ posX: x - sizeX, posY: y - sizeY, posZ: z - sizeZ },
-        ...{ texU: offsetU, texV: offsetV },
-      },
+      v0,
       {
         ...{ posX: x - sizeX, posY: y, posZ: z - sizeZ },
         ...{ texU: offsetU, texV: offsetV + 1 / scaleV },
@@ -73,10 +69,7 @@ const createPolygon = (
     ]
   } else if (b === 270) {
     vertices = [
-      {
-        ...{ posX: x - sizeX, posY: y - sizeY, posZ: z - sizeZ },
-        ...{ texU: offsetU, texV: offsetV },
-      },
+      v0,
       {
         ...{ posX: x - sizeX, posY: y - sizeY, posZ: z },
         ...{ texU: offsetU + 1 / scaleU, texV: offsetV },
@@ -93,7 +86,7 @@ const createPolygon = (
   } else {
     // TODO: implement arbitrary rotation
     vertices = [
-      { posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 },
+      v0,
       { posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 },
       { posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 },
       { posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 },
@@ -115,9 +108,13 @@ const wall = (
     const [sizeX, sizeY, sizeZ] = size
 
     let area: number
-    if (angle.b === 0 || angle.b === 180) {
+    if (angle.b === 0) {
       area = sizeX * sizeY
-    } else if (angle.b === 90 || angle.b === 270) {
+    } else if (angle.b === 90) {
+      area = sizeY * sizeZ
+    } else if (angle.b === 180) {
+      area = sizeX * sizeY
+    } else if (angle.b === 270) {
       area = sizeY * sizeZ
     } else {
       // TODO: calculate size based on arbitrary rotation
@@ -145,10 +142,6 @@ const wall = (
       paddy: 0,
     })
   }
-}
-
-const flipAxis = ([x, y, z]: Vector3): Vector3 => {
-  return [z, y, x]
 }
 
 // ooooooc
@@ -180,131 +173,39 @@ export const quad = (
   // "o" blocks
   for (let h = 0; h < numberOfWholeTilesH; h++) {
     for (let w = 0; w < numberOfWholeTilesW; w++) {
-      const positionOffset: Vector3 = [0, -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight, w * 100]
-      const size: Vector3 = [0, 100, 100]
       const offset: [number, number] = [
         (1 / scaleU) * w - offsetUPercent / 100,
         (1 / scaleV) * h - offsetVPercent / 100,
       ]
-      if (angle === 90 || angle === 270) {
-        wall(
-          {
-            type: 'absolute',
-            coords: move(...positionOffset, move(...pos.coords, origin.coords)),
-          },
-          { a: 0, b: angle, g: 0 },
-          size,
-          [scaleU, scaleV],
-          offset,
-        )(mapData)
-      } else if (angle === 0 || angle === 180) {
-        wall(
-          {
-            type: 'absolute',
-            coords: move(...flipAxis(positionOffset), move(...pos.coords, origin.coords)),
-          },
-          { a: 0, b: angle, g: 0 },
-          flipAxis(size),
-          [scaleU, scaleV],
-          offset,
-        )(mapData)
+
+      let positionOffset: Vector3
+      if (angle === 0) {
+        positionOffset = [w * 100, -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight, 0]
+      } else if (angle === 90) {
+        positionOffset = [0, -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight, w * 100]
+      } else if (angle === 180) {
+        positionOffset = [w * 100, -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight, 0]
+      } else if (angle === 270) {
+        positionOffset = [0, -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight, w * 100]
       } else {
-        // TODO: calculate arbitrary rotation
+        // TODO: arbitrary rotation based on angle
+        positionOffset = [w * 100, -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight, 0]
       }
-    }
-  }
 
-  // "a" blocks
-  if (lastTileHeight > 0) {
-    const scaleU = (scaleUPercent / 100) * (surfaceWidth / 100)
-    const scaleV = ((scaleVPercent / 100) * (surfaceWidth / 100)) / (lastTileHeight / 100)
-
-    for (let w = 0; w < numberOfWholeTilesW; w++) {
-      const positionOffset: Vector3 = [0, 0, w * 100]
-      const size: Vector3 = [0, lastTileHeight, 100]
-      const offset: [number, number] = [
-        (1 / scaleU) * w - offsetUPercent / 100,
-        (1 / scaleV) * ((numberOfWholeTilesH * 100) / lastTileHeight) - offsetVPercent / 100,
-      ]
-      if (angle === 90 || angle === 270) {
-        wall(
-          { type: 'absolute', coords: move(...positionOffset, move(...pos.coords, origin.coords)) },
-          { a: 0, b: angle, g: 0 },
-          size,
-          [scaleU, scaleV],
-          offset,
-        )(mapData)
-      } else if (angle === 0 || angle === 180) {
-        wall(
-          { type: 'absolute', coords: move(...flipAxis(positionOffset), move(...pos.coords, origin.coords)) },
-          { a: 0, b: angle, g: 0 },
-          flipAxis(size),
-          [scaleU, scaleV],
-          offset,
-        )(mapData)
+      let size: Vector3
+      if (angle === 0) {
+        size = [100, 100, 0]
+      } else if (angle === 90) {
+        size = [0, 100, 100]
+      } else if (angle === 180) {
+        size = [100, 100, 0]
+      } else if (angle === 270) {
+        size = [0, 100, 100]
       } else {
-        // TODO: calculate arbitrary rotation
+        // TODO: arbitrary rotation based on angle
+        size = [0, 100, 100]
       }
-    }
-  }
 
-  // "c" blocks
-  if (lastTileWidth > 0) {
-    const scaleU = ((scaleUPercent / 100) * (surfaceWidth / 100)) / (lastTileWidth / 100)
-    const scaleV = (scaleVPercent / 100) * (surfaceWidth / 100)
-
-    for (let h = 0; h < numberOfWholeTilesH; h++) {
-      const positionOffset: Vector3 = [
-        0,
-        -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight,
-        (numberOfWholeTilesW - 1) * 100 + lastTileWidth,
-      ]
-      const size: Vector3 = [0, 100, lastTileWidth]
-      const offset: [number, number] = [
-        (1 / scaleU) * ((numberOfWholeTilesW * 100) / lastTileWidth) - offsetUPercent / 100,
-        (1 / scaleV) * h - offsetVPercent / 100,
-      ]
-      if (angle === 90 || angle === 270) {
-        wall(
-          {
-            type: 'absolute',
-            coords: move(...positionOffset, move(...pos.coords, origin.coords)),
-          },
-          { a: 0, b: angle, g: 0 },
-          size,
-          [scaleU, scaleV],
-          offset,
-        )(mapData)
-      } else if (angle === 0 || angle === 180) {
-        wall(
-          {
-            type: 'absolute',
-            coords: move(...flipAxis(positionOffset), move(...pos.coords, origin.coords)),
-          },
-          { a: 0, b: angle, g: 0 },
-          flipAxis(size),
-          [scaleU, scaleV],
-          offset,
-        )(mapData)
-      } else {
-        // TODO: calculate arbitrary rotation
-      }
-    }
-  }
-
-  // "x" block
-  if (lastTileWidth > 0 && lastTileHeight > 0) {
-    const scaleU = ((scaleUPercent / 100) * (surfaceWidth / 100)) / (lastTileWidth / 100)
-    const scaleV = ((scaleVPercent / 100) * (surfaceWidth / 100)) / (lastTileHeight / 100)
-
-    const positionOffset: Vector3 = [0, 0, lastTileWidth + (numberOfWholeTilesW - 1) * 100]
-    const size: Vector3 = [0, lastTileHeight, lastTileWidth]
-    const offset: [number, number] = [
-      (1 / scaleU) * ((numberOfWholeTilesW * 100) / lastTileWidth) - offsetUPercent / 100,
-      (1 / scaleV) * ((numberOfWholeTilesH * 100) / lastTileHeight) - offsetVPercent / 100,
-    ]
-
-    if (angle === 90 || angle === 270) {
       wall(
         {
           type: 'absolute',
@@ -315,19 +216,177 @@ export const quad = (
         [scaleU, scaleV],
         offset,
       )(mapData)
-    } else if (angle === 0 || angle === 180) {
+    }
+  }
+
+  // "a" blocks
+  if (lastTileHeight > 0) {
+    const scaleU = (scaleUPercent / 100) * (surfaceWidth / 100)
+    const scaleV = ((scaleVPercent / 100) * (surfaceWidth / 100)) / (lastTileHeight / 100)
+
+    for (let w = 0; w < numberOfWholeTilesW; w++) {
+      const offset: [number, number] = [
+        (1 / scaleU) * w - offsetUPercent / 100,
+        (1 / scaleV) * ((numberOfWholeTilesH * 100) / lastTileHeight) - offsetVPercent / 100,
+      ]
+
+      let positionOffset: Vector3
+      if (angle === 0) {
+        positionOffset = [w * 100, 0, 0]
+      } else if (angle === 90) {
+        positionOffset = [0, 0, w * 100]
+      } else if (angle === 180) {
+        positionOffset = [w * 100, 0, 0]
+      } else if (angle === 270) {
+        positionOffset = [0, 0, w * 100]
+      } else {
+        // TODO: arbitrary rotation based on angle
+        positionOffset = [w * 100, 0, 0]
+      }
+
+      let size: Vector3
+      if (angle === 0) {
+        size = [100, lastTileHeight, 0]
+      } else if (angle === 90) {
+        size = [0, lastTileHeight, 100]
+      } else if (angle === 180) {
+        size = [100, lastTileHeight, 0]
+      } else if (angle === 270) {
+        size = [0, lastTileHeight, 100]
+      } else {
+        // TODO: arbitrary rotation based on angle
+        size = [0, lastTileHeight, 100]
+      }
+
       wall(
-        {
-          type: 'absolute',
-          coords: move(...flipAxis(positionOffset), move(...pos.coords, origin.coords)),
-        },
+        { type: 'absolute', coords: move(...positionOffset, move(...pos.coords, origin.coords)) },
         { a: 0, b: angle, g: 0 },
-        flipAxis(size),
+        size,
         [scaleU, scaleV],
         offset,
       )(mapData)
-    } else {
-      // TODO: calculate arbitrary rotation
     }
+  }
+
+  // "c" blocks
+  if (lastTileWidth > 0) {
+    const scaleU = ((scaleUPercent / 100) * (surfaceWidth / 100)) / (lastTileWidth / 100)
+    const scaleV = (scaleVPercent / 100) * (surfaceWidth / 100)
+
+    for (let h = 0; h < numberOfWholeTilesH; h++) {
+      const offset: [number, number] = [
+        (1 / scaleU) * ((numberOfWholeTilesW * 100) / lastTileWidth) - offsetUPercent / 100,
+        (1 / scaleV) * h - offsetVPercent / 100,
+      ]
+
+      let positionOffset: Vector3
+      if (angle === 0) {
+        positionOffset = [
+          (numberOfWholeTilesW - 1) * 100 + lastTileWidth,
+          -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight,
+          0,
+        ]
+      } else if (angle === 90) {
+        positionOffset = [
+          0,
+          -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight,
+          (numberOfWholeTilesW - 1) * 100 + lastTileWidth,
+        ]
+      } else if (angle === 180) {
+        positionOffset = [
+          (numberOfWholeTilesW - 1) * 100 + lastTileWidth,
+          -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight,
+          0,
+        ]
+      } else if (angle === 270) {
+        positionOffset = [
+          0,
+          -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight,
+          (numberOfWholeTilesW - 1) * 100 + lastTileWidth,
+        ]
+      } else {
+        // TODO: arbitrary rotation based on angle
+        positionOffset = [
+          (numberOfWholeTilesW - 1) * 100 + lastTileWidth,
+          -(numberOfWholeTilesH - 1) * 100 + h * 100 - lastTileHeight,
+          0,
+        ]
+      }
+
+      let size: Vector3
+      if (angle === 0) {
+        size = [lastTileWidth, 100, 0]
+      } else if (angle === 90) {
+        size = [0, 100, lastTileWidth]
+      } else if (angle === 180) {
+        size = [lastTileWidth, 100, 0]
+      } else if (angle === 270) {
+        size = [0, 100, lastTileWidth]
+      } else {
+        // TODO: arbitrary rotation based on angle
+        size = [0, 100, lastTileWidth]
+      }
+
+      wall(
+        {
+          type: 'absolute',
+          coords: move(...positionOffset, move(...pos.coords, origin.coords)),
+        },
+        { a: 0, b: angle, g: 0 },
+        size,
+        [scaleU, scaleV],
+        offset,
+      )(mapData)
+    }
+  }
+
+  // "x" block
+  if (lastTileWidth > 0 && lastTileHeight > 0) {
+    const scaleU = ((scaleUPercent / 100) * (surfaceWidth / 100)) / (lastTileWidth / 100)
+    const scaleV = ((scaleVPercent / 100) * (surfaceWidth / 100)) / (lastTileHeight / 100)
+
+    const offset: [number, number] = [
+      (1 / scaleU) * ((numberOfWholeTilesW * 100) / lastTileWidth) - offsetUPercent / 100,
+      (1 / scaleV) * ((numberOfWholeTilesH * 100) / lastTileHeight) - offsetVPercent / 100,
+    ]
+
+    let positionOffset: Vector3
+    if (angle === 0) {
+      positionOffset = [lastTileWidth + (numberOfWholeTilesW - 1) * 100, 0, 0]
+    } else if (angle === 90) {
+      positionOffset = [0, 0, lastTileWidth + (numberOfWholeTilesW - 1) * 100]
+    } else if (angle === 180) {
+      positionOffset = [lastTileWidth + (numberOfWholeTilesW - 1) * 100, 0, 0]
+    } else if (angle === 270) {
+      positionOffset = [0, 0, lastTileWidth + (numberOfWholeTilesW - 1) * 100]
+    } else {
+      // TODO: arbitrary rotation based on angle
+      positionOffset = [lastTileWidth + (numberOfWholeTilesW - 1) * 100, 0, 0]
+    }
+
+    let size: Vector3
+    if (angle === 0) {
+      size = [lastTileWidth, lastTileHeight, 0]
+    } else if (angle === 90) {
+      size = [0, lastTileHeight, lastTileWidth]
+    } else if (angle === 180) {
+      size = [lastTileWidth, lastTileHeight, 0]
+    } else if (angle === 270) {
+      size = [0, lastTileHeight, lastTileWidth]
+    } else {
+      // TODO: arbitrary rotation based on angle
+      size = [0, lastTileHeight, lastTileWidth]
+    }
+
+    wall(
+      {
+        type: 'absolute',
+        coords: move(...positionOffset, move(...pos.coords, origin.coords)),
+      },
+      { a: 0, b: angle, g: 0 },
+      size,
+      [scaleU, scaleV],
+      offset,
+    )(mapData)
   }
 }
