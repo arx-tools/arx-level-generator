@@ -96,6 +96,7 @@ const createPolygon = (
   return vertices
 }
 
+// TODO: size should be 2D (width × height) and the angle should turn it into 3D
 const wall = (
   pos: AbsoluteCoords,
   angle: RotationVertex3,
