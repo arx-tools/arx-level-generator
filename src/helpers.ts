@@ -720,12 +720,12 @@ export const normalizeDegree = (degree: number) => {
   return Math.abs(normalizedDegree)
 }
 
-export const flipUVHorizontally = ([c, d, a, b]: UVQuad): UVQuad => {
-  return [a, b, c, d]
+export const flipUVHorizontally = ([a, b, c, d]: UVQuad): UVQuad => {
+  return [b, a, d, c]
 }
 
-export const flipUVVertically = ([c, d, a, b]: UVQuad): UVQuad => {
-  return [d, c, b, a]
+export const flipUVVertically = ([a, b, c, d]: UVQuad): UVQuad => {
+  return [c, d, a, b]
 }
 
 export const rotateUV = (

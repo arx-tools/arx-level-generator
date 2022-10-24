@@ -22,8 +22,9 @@ import { hideMinimap } from '../shared/reset'
 import { createGungameController } from './gamemodes/gungame'
 import { createNPC, defineNPC } from './items/npc'
 import { createRespawnController } from './items/respawnController'
-import { quad } from '../../prefabs/base/quad'
+import { surface } from '../../prefabs/base/quad'
 import { disableBumping, plain } from '../../prefabs/plain'
+import { createSmellyFlower } from '../alias-nightmare/items/smellyFlower'
 
 const createWelcomeMarker = (pos, config) => {
   const ref = createItem(items.marker)
@@ -91,14 +92,12 @@ const generate = async (config) => {
 
   setColor('#777777', mapData)
   setTexture(textures.wall.roughcast[0], mapData)
-  quad({ type: 'relative', coords: [-900, 0, 400] }, [378, 492], 90, mapData)
-  quad({ type: 'relative', coords: [900, 0, 400] }, [460, 245], -90, mapData)
-  quad({ type: 'relative', coords: [-100, -100, 900] }, [250, 265], 180, mapData)
-  quad({ type: 'relative', coords: [62, -100, -900] }, [560, 43], 0, mapData)
 
-  // quad({ type: 'relative', coords: [-600, 0, 500] }, [150, 170], 180 - 45, mapData)
+  surface({ type: 'relative', coords: [500, 0, 500] }, [342, 260], { a: -20, b: 180 + 37, g: 0 })(mapData)
 
   // -------------------
+
+  createSmellyFlower([0, 0, 0])
 
   setColor('white', mapData)
   circleOfVectors([0, -1000, 0], 1000, 3).forEach((pos) => {
