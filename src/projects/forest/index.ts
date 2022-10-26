@@ -82,7 +82,7 @@ const generate = async (config) => {
   const { origin } = config
 
   const mapData = generateBlankMapData(config)
-  mapData.meta.mapName = 'Palace'
+  mapData.meta.mapName = 'Forest'
 
   movePlayerTo(
     {
@@ -131,7 +131,7 @@ const generate = async (config) => {
     { a: 0, b: 180, g: 0 },
   )
 
-  setTexture(textures.palace.forest[2], mapData)
+  setTexture(textures.forest.forest[2], mapData)
   const forestHeight = 500
   surface({ type: 'relative', coords: [-600, 30, -900] }, [1400, forestHeight], { a: 0, b: 90, g: 0 }, [
     100 / (1400 / forestHeight),

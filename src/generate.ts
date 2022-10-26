@@ -3,7 +3,7 @@ import aliasNightmare from './projects/alias-nightmare/index'
 import theBackrooms from './projects/the-backrooms/index'
 import onTheIsland from './projects/on-the-island/index'
 import arena from './projects/arena/index'
-import palace from './projects/palace/index'
+import forest from './projects/forest/index'
 import { MapConfig } from './types'
 
 const seed: string = process.env.SEED ?? Math.floor(Math.random() * 1e20).toString()
@@ -66,8 +66,8 @@ const project: string = process.env.PROJECT ?? 'alias-nightmare'
       await arena({
         ...config,
       })
-    case 'palace':
-      await palace({
+    case 'forest':
+      await forest({
         ...config,
       })
   }

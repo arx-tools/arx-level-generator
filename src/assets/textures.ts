@@ -227,23 +227,23 @@ export const textures = {
       flags: POLY_QUAD | POLY_NO_SHADOW | POLY_WATER | POLY_TRANS,
     },
   },
-  palace: {
+  forest: {
     forest: [
       // source: https://www.textures.com/system/gallery/photos/Landscapes/Green/107589/LandscapesGreen0094_1_600.jpg?v=5
       {
-        path: 'projects/palace/textures',
+        path: 'projects/forest/textures',
         src: 'forest.bmp',
         native: false,
         flags: POLY_QUAD | POLY_NO_SHADOW,
       },
       {
-        path: 'projects/palace/textures',
+        path: 'projects/forest/textures',
         src: 'forest2.bmp',
         native: false,
         flags: POLY_QUAD | POLY_NO_SHADOW,
       },
       {
-        path: 'projects/palace/textures',
+        path: 'projects/forest/textures',
         src: 'forest3.bmp',
         native: false,
         flags: POLY_QUAD | POLY_NO_SHADOW,
