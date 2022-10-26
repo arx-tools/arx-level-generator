@@ -22,7 +22,7 @@ import { hideMinimap } from '../shared/reset'
 import { createGungameController } from './gamemodes/gungame'
 import { createNPC, defineNPC } from './items/npc'
 import { createRespawnController } from './items/respawnController'
-import { surface } from '../../prefabs/base/quad'
+import { surface } from '../../prefabs/base/surface'
 import { disableBumping, plain } from '../../prefabs/plain'
 import { createSmellyFlower } from '../alias-nightmare/items/smellyFlower'
 
@@ -87,15 +87,6 @@ const generate = async (config) => {
     textureRotation: pickRandom([0, 90, 180, 270]),
     textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
   }))(mapData)
-
-  // -------------------
-
-  setColor('#777777', mapData)
-  setTexture(textures.wall.roughcast[0], mapData)
-
-  surface({ type: 'relative', coords: [500, 0, 500] }, [342, 260], { a: -20, b: 180 + 37, g: 0 })(mapData)
-
-  // -------------------
 
   createSmellyFlower([0, 0, 0])
 

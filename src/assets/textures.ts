@@ -47,6 +47,10 @@ export const textures = {
         native: true,
       },
     ],
+    castle: {
+      src: '[STONE]_HUMAN_WALL8.jpg',
+      native: true,
+    },
   },
   window: {
     src: '[GLASS]_WINDOWS.jpg',
@@ -99,6 +103,12 @@ export const textures = {
       width: 256,
       height: 256,
     },
+    stone: [
+      {
+        src: '[STONE]_ROCK1_A.jpg',
+        native: true,
+      },
+    ],
   },
   skybox: {
     top: {
@@ -245,16 +255,12 @@ export const createTextureContainers = (mapData: any) => {
 
 export const exportTextures = (outputDir: string) => {
   const copyOfUsedTextures = clone(usedTextures)
-  const customTextures = copyOfUsedTextures.filter(
-    ({ native }) => native === false,
-  )
+  const customTextures = copyOfUsedTextures.filter(({ native }) => native === false)
   const texturesToBeExported = uniq(customTextures)
 
   return texturesToBeExported.reduce((files, texture) => {
     const filename = `${outputDir}/graph/obj3d/textures/${texture.src}`
-    files[filename] = `${getRootPath()}/assets/${
-      texture.path ?? 'graph/obj3d/textures'
-    }/${texture.src}`
+    files[filename] = `${getRootPath()}/assets/${texture.path ?? 'graph/obj3d/textures'}/${texture.src}`
 
     return files
   }, {} as Record<string, string>)
