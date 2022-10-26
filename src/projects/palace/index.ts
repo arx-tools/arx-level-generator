@@ -17,9 +17,12 @@ import {
   pickRandom,
   circleOfVectors,
   addLight,
+  move,
 } from '../../helpers'
 import { plain } from '../../prefabs/plain'
 import { addWall } from './addWall'
+import { addDoor } from './addDoor'
+import { surface } from '../../prefabs/base/surface'
 
 const createPlayerSpawn = (pos: RelativeCoords, config) => {
   const ref = createItem(items.marker)
@@ -83,13 +86,39 @@ const generate = async (config) => {
   setColor(colors.ground, mapData)
   setTexture(textures.gravel.ground1, mapData)
 
-  plain([0, 0, 0], [14, 30], 'floor', identity, () => ({
+  plain([0, 0, 500], [14, 30], 'floor', identity, () => ({
     quad: pickRandom([0, 1, 2, 3]),
     textureRotation: pickRandom([0, 90, 180, 270]),
     textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
   }))(mapData)
 
-  addWall({ type: 'relative', coords: [-600, 0, 200] }, [1200, 40], mapData)
+  const wallPos: RelativeCoords = { type: 'relative', coords: [-600, 0, 500] }
+  const holeOffset: number = 250
+  const wallThickness = 800
+
+  addWall(wallPos, [1200, wallThickness], holeOffset, [150, 220], mapData)
+  addDoor(
+    { type: 'relative', coords: move(150, 0, 20, move(holeOffset, 0, 0, wallPos.coords)) },
+    { a: 0, b: 270, g: 0 },
+  )
+  addDoor(
+    { type: 'relative', coords: move(150, 0, wallThickness - 20, move(holeOffset, 0, 0, wallPos.coords)) },
+    { a: 0, b: 270, g: 0 },
+  )
+
+  setTexture(textures.palace.forest, mapData)
+  surface({ type: 'relative', coords: [-600, 30, -900] }, [1400, 500], { a: 0, b: 90, g: 0 }, [
+    100 / (1400 / 500),
+    100 / (1400 / 500),
+  ])(mapData)
+  surface({ type: 'relative', coords: [600, 30, 500] }, [1400, 500], { a: 0, b: -90, g: 0 }, [
+    100 / (1400 / 500),
+    100 / (1400 / 500),
+  ])(mapData)
+  surface({ type: 'relative', coords: [600, 30, -900] }, [1200, 500], { a: 0, b: 0, g: 0 }, [
+    100 / (1200 / 500),
+    100 / (1200 / 500),
+  ])(mapData)
 
   setColor(colors.light, mapData)
   circleOfVectors([0, -1000, 0], 1000, 3).forEach((pos) => {

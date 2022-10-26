@@ -3,47 +3,47 @@ import { setTexture } from '../../helpers'
 import { evenAndRemainder, MapData, move } from '../../helpers'
 import { surface } from '../../prefabs/base/surface'
 import { RelativeCoords } from '../../types'
-import { addDoor } from './addDoor'
 
-export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number, number], mapData: MapData) => {
-  const doorPos: RelativeCoords = { type: 'relative', coords: [250, 0, thickness / 2] }
-  const [doorWidth, doorHeight] = [150, 220]
-
+export const addWall = (
+  wallPos: RelativeCoords,
+  [width, thickness]: [number, number],
+  holeOffset: number,
+  [holeWidth, holeHeight]: [number, number],
+  mapData: MapData,
+) => {
   const blueSquareHeight = 70
   const bricksHeight = 280
   const foundationHeight = 40
   const doorframeWidth = 10
 
-  addDoor({ type: 'relative', coords: move(doorWidth, 0, 0, move(...doorPos.coords, coords)) }, { a: 0, b: 270, g: 0 })
-
   setTexture(textures.stone.stone[0], mapData)
 
   surface(
-    { type: 'relative', coords: move(0, 0, -10, coords) },
-    [doorPos.coords[0] - doorframeWidth, foundationHeight - 10],
+    { type: 'relative', coords: move(0, 0, -10, wallPos.coords) },
+    [holeOffset - doorframeWidth, foundationHeight - 10],
     { a: 0, b: 180, g: 0 },
     [100, 100],
   )(mapData)
   surface(
-    { type: 'relative', coords: move(0, -(foundationHeight - 10), -10, coords) },
-    [doorPos.coords[0] - doorframeWidth, 10 * Math.SQRT2],
+    { type: 'relative', coords: move(0, -(foundationHeight - 10), -10, wallPos.coords) },
+    [holeOffset - doorframeWidth, 10 * Math.SQRT2],
     { a: -45, b: 180, g: 0 },
     [100, 100],
     [0, -(foundationHeight - 10)],
   )(mapData)
 
   surface(
-    { type: 'relative', coords: move(doorPos.coords[0] + doorWidth + doorframeWidth, 0, -10, coords) },
-    [width - doorPos.coords[0] - doorWidth - doorframeWidth, foundationHeight - 10],
+    { type: 'relative', coords: move(holeOffset + holeWidth + doorframeWidth, 0, -10, wallPos.coords) },
+    [width - holeOffset - holeWidth - doorframeWidth, foundationHeight - 10],
     { a: 0, b: 180, g: 0 },
     [100, 100],
   )(mapData)
   surface(
     {
       type: 'relative',
-      coords: move(doorPos.coords[0] + doorWidth + doorframeWidth, -(foundationHeight - 10), -10, coords),
+      coords: move(holeOffset + holeWidth + doorframeWidth, -(foundationHeight - 10), -10, wallPos.coords),
     },
-    [width - doorPos.coords[0] - doorWidth - doorframeWidth, 10 * Math.SQRT2],
+    [width - holeOffset - holeWidth - doorframeWidth, 10 * Math.SQRT2],
     { a: -45, b: 180, g: 0 },
     [100, 100],
     [0, -(foundationHeight - 10)],
@@ -52,35 +52,35 @@ export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number,
   surface(
     {
       type: 'relative',
-      coords: move(doorPos.coords[0] - doorframeWidth, 0, thickness + 10, coords),
+      coords: move(holeOffset - doorframeWidth, 0, thickness + 10, wallPos.coords),
     },
-    [doorPos.coords[0] - doorframeWidth, foundationHeight - 10],
+    [holeOffset - doorframeWidth, foundationHeight - 10],
     { a: 0, b: 0, g: 0 },
     [100, 100],
   )(mapData)
   surface(
     {
       type: 'relative',
-      coords: move(doorPos.coords[0] - doorframeWidth, -(foundationHeight - 10), thickness + 10, coords),
+      coords: move(holeOffset - doorframeWidth, -(foundationHeight - 10), thickness + 10, wallPos.coords),
     },
-    [doorPos.coords[0] - doorframeWidth, 10 * Math.SQRT2],
+    [holeOffset - doorframeWidth, 10 * Math.SQRT2],
     { a: 45, b: 0, g: 0 },
     [100, 100],
     [0, -(foundationHeight - 10)],
   )(mapData)
 
   surface(
-    { type: 'relative', coords: move(width, 0, thickness + 10, coords) },
-    [width - doorPos.coords[0] - doorWidth - doorframeWidth, foundationHeight - 10],
+    { type: 'relative', coords: move(width, 0, thickness + 10, wallPos.coords) },
+    [width - holeOffset - holeWidth - doorframeWidth, foundationHeight - 10],
     { a: 0, b: 0, g: 0 },
     [100, 100],
   )(mapData)
   surface(
     {
       type: 'relative',
-      coords: move(width, -(foundationHeight - 10), thickness + 10, coords),
+      coords: move(width, -(foundationHeight - 10), thickness + 10, wallPos.coords),
     },
-    [width - doorPos.coords[0] - doorWidth - doorframeWidth, 10 * Math.SQRT2],
+    [width - holeOffset - holeWidth - doorframeWidth, 10 * Math.SQRT2],
     { a: 45, b: 0, g: 0 },
     [100, 100],
     [0, -(foundationHeight - 10)],
@@ -91,42 +91,51 @@ export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number,
   setTexture(textures.wall.castle, mapData)
 
   surface(
-    { type: 'relative', coords: move(0, -foundationHeight, 0, coords) },
-    [doorPos.coords[0] - doorframeWidth, bricksHeight - foundationHeight],
+    { type: 'relative', coords: move(0, -foundationHeight, 0, wallPos.coords) },
+    [holeOffset - doorframeWidth, bricksHeight - foundationHeight],
     { a: 0, b: 180, g: 0 },
     [100, 100],
   )(mapData)
   surface(
-    { type: 'relative', coords: move(doorPos.coords[0] - doorframeWidth, -doorHeight - doorframeWidth, 0, coords) },
-    [doorWidth + 2 * doorframeWidth, bricksHeight - doorHeight - doorframeWidth],
+    {
+      type: 'relative',
+      coords: move(holeOffset - doorframeWidth, -holeHeight - doorframeWidth, 0, wallPos.coords),
+    },
+    [holeWidth + 2 * doorframeWidth, bricksHeight - holeHeight - doorframeWidth],
     { a: 0, b: 180, g: 0 },
     [100, 100],
   )(mapData)
   surface(
-    { type: 'relative', coords: move(doorPos.coords[0] + doorWidth + doorframeWidth, -foundationHeight, 0, coords) },
-    [width - doorPos.coords[0] - doorWidth - doorframeWidth, bricksHeight - foundationHeight],
+    {
+      type: 'relative',
+      coords: move(holeOffset + holeWidth + doorframeWidth, -foundationHeight, 0, wallPos.coords),
+    },
+    [width - holeOffset - holeWidth - doorframeWidth, bricksHeight - foundationHeight],
     { a: 0, b: 180, g: 0 },
     [100, 100],
   )(mapData)
 
   surface(
-    { type: 'relative', coords: move(width, -foundationHeight, thickness, coords) },
-    [width - doorPos.coords[0] - doorWidth - doorframeWidth, bricksHeight - foundationHeight],
+    { type: 'relative', coords: move(width, -foundationHeight, thickness, wallPos.coords) },
+    [width - holeOffset - holeWidth - doorframeWidth, bricksHeight - foundationHeight],
     { a: 0, b: 0, g: 0 },
     [100, 100],
   )(mapData)
   surface(
     {
       type: 'relative',
-      coords: move(doorPos.coords[0] + doorWidth + doorframeWidth, -doorHeight - doorframeWidth, thickness, coords),
+      coords: move(holeOffset + holeWidth + doorframeWidth, -holeHeight - doorframeWidth, thickness, wallPos.coords),
     },
-    [doorWidth + 2 * doorframeWidth, bricksHeight - doorHeight - doorframeWidth],
+    [holeWidth + 2 * doorframeWidth, bricksHeight - holeHeight - doorframeWidth],
     { a: 0, b: 0, g: 0 },
     [100, 100],
   )(mapData)
   surface(
-    { type: 'relative', coords: move(doorPos.coords[0] - doorframeWidth, -foundationHeight, thickness, coords) },
-    [doorPos.coords[0] - doorframeWidth, bricksHeight - foundationHeight],
+    {
+      type: 'relative',
+      coords: move(holeOffset - doorframeWidth, -foundationHeight, thickness, wallPos.coords),
+    },
+    [holeOffset - doorframeWidth, bricksHeight - foundationHeight],
     { a: 0, b: 0, g: 0 },
     [100, 100],
   )(mapData)
@@ -136,22 +145,22 @@ export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number,
   setTexture(textures.wood.logs, mapData)
 
   surface(
-    { type: 'relative', coords: move(doorPos.coords[0], 0, -doorframeWidth, coords) },
-    [thickness + 2 * doorframeWidth, doorHeight],
+    { type: 'relative', coords: move(holeOffset, 0, -doorframeWidth, wallPos.coords) },
+    [thickness + 2 * doorframeWidth, holeHeight],
     { a: 0, b: 90, g: 0 },
     [400, 400],
     [25, 0],
   )(mapData)
   surface(
-    { type: 'relative', coords: move(doorPos.coords[0], -doorHeight, -doorframeWidth, coords) },
-    [thickness + 2 * doorframeWidth, doorWidth],
+    { type: 'relative', coords: move(holeOffset, -holeHeight, -doorframeWidth, wallPos.coords) },
+    [thickness + 2 * doorframeWidth, holeWidth],
     { a: -90, b: 0, g: 90 },
     [400, 400],
     [25, 0],
   )(mapData)
   surface(
-    { type: 'relative', coords: move(doorPos.coords[0] + doorWidth, 0, thickness + doorframeWidth, coords) },
-    [thickness + 2 * doorframeWidth, doorHeight],
+    { type: 'relative', coords: move(holeOffset + holeWidth, 0, thickness + doorframeWidth, wallPos.coords) },
+    [thickness + 2 * doorframeWidth, holeHeight],
     { a: 0, b: -90, g: 0 },
     [400, 400],
     [25, 0],
@@ -160,9 +169,9 @@ export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number,
   surface(
     {
       type: 'relative',
-      coords: move(doorPos.coords[0] - doorframeWidth, -doorHeight - doorframeWidth, -doorframeWidth, coords),
+      coords: move(holeOffset - doorframeWidth, -holeHeight - doorframeWidth, -doorframeWidth, wallPos.coords),
     },
-    [doorframeWidth, doorWidth + 2 * doorframeWidth],
+    [doorframeWidth, holeWidth + 2 * doorframeWidth],
     { a: 0, b: 180, g: -90 },
     [400, 400],
     [25, 0],
@@ -171,13 +180,13 @@ export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number,
     {
       type: 'relative',
       coords: move(
-        doorPos.coords[0] + doorWidth + doorframeWidth,
-        -doorHeight - doorframeWidth,
+        holeOffset + holeWidth + doorframeWidth,
+        -holeHeight - doorframeWidth,
         thickness + doorframeWidth,
-        coords,
+        wallPos.coords,
       ),
     },
-    [doorframeWidth, doorWidth + 2 * doorframeWidth],
+    [doorframeWidth, holeWidth + 2 * doorframeWidth],
     { a: 0, b: 0, g: -90 },
     [400, 400],
     [25, 0],
@@ -186,9 +195,9 @@ export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number,
   surface(
     {
       type: 'relative',
-      coords: move(doorPos.coords[0] - doorframeWidth, -doorHeight - doorframeWidth, 0, coords),
+      coords: move(holeOffset - doorframeWidth, -holeHeight - doorframeWidth, 0, wallPos.coords),
     },
-    [doorframeWidth, doorWidth + 2 * doorframeWidth],
+    [doorframeWidth, holeWidth + 2 * doorframeWidth],
     { a: -90, b: 180, g: -90 },
     [400, 400],
     [25, 0],
@@ -196,32 +205,32 @@ export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number,
   surface(
     {
       type: 'relative',
-      coords: move(doorPos.coords[0] + doorWidth + doorframeWidth, -doorHeight - doorframeWidth, thickness, coords),
+      coords: move(holeOffset + holeWidth + doorframeWidth, -holeHeight - doorframeWidth, thickness, wallPos.coords),
     },
-    [doorframeWidth, doorWidth + 2 * doorframeWidth],
+    [doorframeWidth, holeWidth + 2 * doorframeWidth],
     { a: 90, b: 0, g: -90 },
     [400, 400],
     [25, 0],
   )(mapData)
 
   surface(
-    { type: 'relative', coords: move(doorPos.coords[0] - doorframeWidth, 0, -doorframeWidth, coords) },
-    [doorframeWidth, doorHeight],
+    { type: 'relative', coords: move(holeOffset - doorframeWidth, 0, -doorframeWidth, wallPos.coords) },
+    [doorframeWidth, holeHeight],
     { a: 0, b: 180, g: 0 },
     [400, 400],
     [25, 0],
   )(mapData)
   surface(
-    { type: 'relative', coords: move(doorPos.coords[0] + doorWidth, 0, -doorframeWidth, coords) },
-    [doorframeWidth, doorHeight],
+    { type: 'relative', coords: move(holeOffset + holeWidth, 0, -doorframeWidth, wallPos.coords) },
+    [doorframeWidth, holeHeight],
     { a: 0, b: 180, g: 0 },
     [400, 400],
     [25, 0],
   )(mapData)
 
   surface(
-    { type: 'relative', coords: move(doorPos.coords[0], 0, thickness + doorframeWidth, coords) },
-    [doorframeWidth, doorHeight],
+    { type: 'relative', coords: move(holeOffset, 0, thickness + doorframeWidth, wallPos.coords) },
+    [doorframeWidth, holeHeight],
     { a: 0, b: 0, g: 0 },
     [400, 400],
     [25, 0],
@@ -229,32 +238,38 @@ export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number,
   surface(
     {
       type: 'relative',
-      coords: move(doorPos.coords[0] + doorWidth + doorframeWidth, 0, thickness + doorframeWidth, coords),
+      coords: move(holeOffset + holeWidth + doorframeWidth, 0, thickness + doorframeWidth, wallPos.coords),
     },
-    [doorframeWidth, doorHeight],
+    [doorframeWidth, holeHeight],
     { a: 0, b: 0, g: 0 },
     [400, 400],
     [25, 0],
   )(mapData)
 
   surface(
-    { type: 'relative', coords: move(doorPos.coords[0] - doorframeWidth, 0, 0, coords) },
-    [doorframeWidth, doorHeight],
+    { type: 'relative', coords: move(holeOffset - doorframeWidth, 0, 0, wallPos.coords) },
+    [doorframeWidth, holeHeight],
     { a: 0, b: 270, g: 0 },
     [400, 400],
     [25, 0],
   )(mapData)
   surface(
-    { type: 'relative', coords: move(doorPos.coords[0] + doorWidth + doorframeWidth, 0, -doorframeWidth, coords) },
-    [doorframeWidth, doorHeight],
+    {
+      type: 'relative',
+      coords: move(holeOffset + holeWidth + doorframeWidth, 0, -doorframeWidth, wallPos.coords),
+    },
+    [doorframeWidth, holeHeight],
     { a: 0, b: 90, g: 0 },
     [400, 400],
     [25, 0],
   )(mapData)
 
   surface(
-    { type: 'relative', coords: move(doorPos.coords[0] - doorframeWidth, 0, thickness + doorframeWidth, coords) },
-    [doorframeWidth, doorHeight],
+    {
+      type: 'relative',
+      coords: move(holeOffset - doorframeWidth, 0, thickness + doorframeWidth, wallPos.coords),
+    },
+    [doorframeWidth, holeHeight],
     { a: 0, b: -90, g: 0 },
     [400, 400],
     [25, 0],
@@ -262,16 +277,19 @@ export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number,
   surface(
     {
       type: 'relative',
-      coords: move(doorPos.coords[0] + doorWidth + doorframeWidth, 0, thickness, coords),
+      coords: move(holeOffset + holeWidth + doorframeWidth, 0, thickness, wallPos.coords),
     },
-    [doorframeWidth, doorHeight],
+    [doorframeWidth, holeHeight],
     { a: 0, b: 90, g: 0 },
     [400, 400],
     [25, 0],
   )(mapData)
 
   surface(
-    { type: 'relative', coords: move(doorPos.coords[0] - doorframeWidth, -doorHeight - doorframeWidth, 0, coords) },
+    {
+      type: 'relative',
+      coords: move(holeOffset - doorframeWidth, -holeHeight - doorframeWidth, 0, wallPos.coords),
+    },
     [doorframeWidth, doorframeWidth],
     { a: 90, b: 270, g: 0 },
     [400, 400],
@@ -281,10 +299,10 @@ export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number,
     {
       type: 'relative',
       coords: move(
-        doorPos.coords[0] + doorWidth + doorframeWidth,
-        -doorHeight - doorframeWidth,
+        holeOffset + holeWidth + doorframeWidth,
+        -holeHeight - doorframeWidth,
         -doorframeWidth,
-        coords,
+        wallPos.coords,
       ),
     },
     [doorframeWidth, doorframeWidth],
@@ -297,10 +315,10 @@ export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number,
     {
       type: 'relative',
       coords: move(
-        doorPos.coords[0] - doorframeWidth,
-        -doorHeight - doorframeWidth,
+        holeOffset - doorframeWidth,
+        -holeHeight - doorframeWidth,
         thickness + doorframeWidth,
-        coords,
+        wallPos.coords,
       ),
     },
     [doorframeWidth, doorframeWidth],
@@ -311,7 +329,7 @@ export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number,
   surface(
     {
       type: 'relative',
-      coords: move(doorPos.coords[0] + doorWidth + doorframeWidth, -doorHeight - doorframeWidth, thickness, coords),
+      coords: move(holeOffset + holeWidth + doorframeWidth, -holeHeight - doorframeWidth, thickness, wallPos.coords),
     },
     [doorframeWidth, doorframeWidth],
     { a: -90, b: 90, g: 0 },
@@ -326,7 +344,7 @@ export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number,
   const [fullBlueSquares, partialBlueSquare] = evenAndRemainder(blueSquareHeight, width)
   for (let i = 0; i < fullBlueSquares; i++) {
     surface(
-      { type: 'relative', coords: move(i * blueSquareHeight, -bricksHeight, 0, coords) },
+      { type: 'relative', coords: move(i * blueSquareHeight, -bricksHeight, 0, wallPos.coords) },
       [blueSquareHeight, blueSquareHeight],
       { a: 0, b: 180, g: 0 },
       [200, 200],
@@ -335,7 +353,7 @@ export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number,
   }
   if (partialBlueSquare > 0) {
     surface(
-      { type: 'relative', coords: move(fullBlueSquares * blueSquareHeight, -bricksHeight, 0, coords) },
+      { type: 'relative', coords: move(fullBlueSquares * blueSquareHeight, -bricksHeight, 0, wallPos.coords) },
       [partialBlueSquare, blueSquareHeight],
       { a: 0, b: 180, g: 0 },
       [200 / (partialBlueSquare / blueSquareHeight), 200 / (partialBlueSquare / blueSquareHeight)],
@@ -347,7 +365,7 @@ export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number,
     surface(
       {
         type: 'relative',
-        coords: move(width - partialBlueSquare - i * blueSquareHeight, -bricksHeight, thickness, coords),
+        coords: move(width - partialBlueSquare - i * blueSquareHeight, -bricksHeight, thickness, wallPos.coords),
       },
       [blueSquareHeight, blueSquareHeight],
       { a: 0, b: 0, g: 0 },
@@ -357,7 +375,7 @@ export const addWall = ({ coords }: RelativeCoords, [width, thickness]: [number,
   }
   if (partialBlueSquare > 0) {
     surface(
-      { type: 'relative', coords: move(width, -bricksHeight, thickness, coords) },
+      { type: 'relative', coords: move(width, -bricksHeight, thickness, wallPos.coords) },
       [partialBlueSquare, blueSquareHeight],
       { a: 0, b: 0, g: 0 },
       [200 / (partialBlueSquare / blueSquareHeight), 200 / (partialBlueSquare / blueSquareHeight)],

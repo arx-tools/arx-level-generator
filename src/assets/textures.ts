@@ -227,6 +227,14 @@ export const textures = {
       flags: POLY_QUAD | POLY_NO_SHADOW | POLY_WATER | POLY_TRANS,
     },
   },
+  palace: {
+    forest: {
+      path: 'projects/palace/textures',
+      src: 'forest.bmp',
+      native: false,
+      flags: POLY_QUAD | POLY_NO_SHADOW,
+    },
+  },
 }
 
 let usedTextures: Texture[] = []
