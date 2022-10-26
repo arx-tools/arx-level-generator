@@ -1,7 +1,7 @@
 import { Euler, Vector3, MathUtils } from 'three'
 import { TextureDefinition, useTexture } from '../../assets/textures'
 import { POLY_QUAD, POLY_NO_SHADOW } from '../../constants'
-import { MapData } from '../../helpers'
+import { evenAndRemainder, MapData } from '../../helpers'
 import { Polygon, RelativeCoords, RotationVertex3 } from '../../types'
 
 const toAbsoluteCoords = (pos: RelativeCoords, mapData: MapData) => {
@@ -241,12 +241,8 @@ export const surface = (
       MathUtils.degToRad(rotation.g),
       'XYZ',
     )
-
-    const numberOfWholeTilesW = Math.floor(surfaceWidth / 100)
-    const lastTileWidth = surfaceWidth % 100
-
-    const numberOfWholeTilesH = Math.floor(surfaceHeight / 100)
-    const lastTileHeight = surfaceHeight % 100
+    const [numberOfWholeTilesW, lastTileWidth] = evenAndRemainder(100, surfaceWidth)
+    const [numberOfWholeTilesH, lastTileHeight] = evenAndRemainder(100, surfaceHeight)
 
     if (numberOfWholeTilesH > 0 && numberOfWholeTilesW > 0) {
       const scaleU = (scaleUPercent / 100) * (surfaceWidth / 100)

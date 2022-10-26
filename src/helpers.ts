@@ -749,3 +749,7 @@ export const rotateUV = (
       return [a, b, c, d]
   }
 }
+
+export const evenAndRemainder = (divisor: number, n: number): [number, number] => {
+  return [Math.floor(n / divisor), n % divisor]
+}
