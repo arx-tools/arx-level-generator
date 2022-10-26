@@ -201,6 +201,10 @@ export const items = {
       src: 'npc/human_base/human_base.teo',
       native: true,
     },
+    worm: {
+      src: 'npc/worm_big/worm_big.teo',
+      native: true,
+    },
   },
   shape: {
     cube: {

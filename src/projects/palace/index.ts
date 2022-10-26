@@ -2,7 +2,7 @@ import { addScript, createItem, items, markAsUsed, moveTo } from '../../assets/i
 import { HFLIP, VFLIP } from '../../constants'
 import { identity } from '../../faux-ramda'
 import { getInjections } from '../../scripting'
-import { RelativeCoords } from '../../types'
+import { RelativeCoords, RotationVertex3 } from '../../types'
 import { hideMinimap } from '../shared/reset'
 import { ambiences } from '../../assets/ambiences'
 import { textures } from '../../assets/textures'
@@ -23,6 +23,7 @@ import { plain } from '../../prefabs/plain'
 import { addWall } from './addWall'
 import { addDoor } from './addDoor'
 import { surface } from '../../prefabs/base/surface'
+import { createSmellyFlower } from '../alias-nightmare/items/smellyFlower'
 
 const createPlayerSpawn = (pos: RelativeCoords, config) => {
   const ref = createItem(items.marker)
@@ -51,8 +52,28 @@ ON CONTROLLEDZONE_ENTER {
   return ref
 }
 
+const addWorm = (pos: RelativeCoords, { a, b, g }: RotationVertex3) => {
+  const ref = createItem(items.npc.worm, { name: 'Jimmy' })
+
+  addScript((self) => {
+    return `
+// component: worm
+ON INIT {
+  ${getInjections('init', self)}
+  ACCEPT
+}
+    `
+  }, ref)
+
+  moveTo(pos, [a, b, g], ref)
+  markAsUsed(ref)
+
+  return ref
+}
+
 const colors: Record<string, string> = {
-  sky: '#223340',
+  //sky: '#223340',
+  sky: '#070707',
   ground: '#a7a7a7',
   light: 'white',
 }
@@ -79,7 +100,7 @@ const generate = async (config) => {
     },
     [100, 0, 100],
     'sky-color-setter',
-    ambiences.none,
+    ambiences.worm,
     5000,
   )(mapData)
 
@@ -105,19 +126,24 @@ const generate = async (config) => {
     { type: 'relative', coords: move(150, 0, wallThickness - 20, move(holeOffset, 0, 0, wallPos.coords)) },
     { a: 0, b: 270, g: 0 },
   )
+  addWorm(
+    { type: 'relative', coords: move(150 - 70, 0, wallThickness - 20 + 210, move(holeOffset, 0, 0, wallPos.coords)) },
+    { a: 0, b: 180, g: 0 },
+  )
 
-  setTexture(textures.palace.forest, mapData)
-  surface({ type: 'relative', coords: [-600, 30, -900] }, [1400, 500], { a: 0, b: 90, g: 0 }, [
-    100 / (1400 / 500),
-    100 / (1400 / 500),
+  setTexture(textures.palace.forest[2], mapData)
+  const forestHeight = 500
+  surface({ type: 'relative', coords: [-600, 30, -900] }, [1400, forestHeight], { a: 0, b: 90, g: 0 }, [
+    100 / (1400 / forestHeight),
+    100 / (1400 / forestHeight),
   ])(mapData)
-  surface({ type: 'relative', coords: [600, 30, 500] }, [1400, 500], { a: 0, b: -90, g: 0 }, [
-    100 / (1400 / 500),
-    100 / (1400 / 500),
+  surface({ type: 'relative', coords: [600, 30, 500] }, [1400, forestHeight], { a: 0, b: -90, g: 0 }, [
+    100 / (1400 / forestHeight),
+    100 / (1400 / forestHeight),
   ])(mapData)
-  surface({ type: 'relative', coords: [600, 30, -900] }, [1200, 500], { a: 0, b: 0, g: 0 }, [
-    100 / (1200 / 500),
-    100 / (1200 / 500),
+  surface({ type: 'relative', coords: [600, 30, -900] }, [1200, forestHeight], { a: 0, b: 0, g: 0 }, [
+    100 / (1200 / forestHeight),
+    100 / (1200 / forestHeight),
   ])(mapData)
 
   setColor(colors.light, mapData)
@@ -132,6 +158,14 @@ const generate = async (config) => {
       mapData,
     )
   })
+
+  createSmellyFlower([-300, 0, 200])
+  createSmellyFlower([120, 0, 300])
+  createSmellyFlower([-200, 0, -140])
+  createSmellyFlower([-400, 0, -200])
+  createSmellyFlower([300, 0, -330])
+  createSmellyFlower([-420, 0, -610])
+  createSmellyFlower([74, 0, -490])
 
   createPlayerSpawn({ type: 'relative', coords: [0, 0, 0] }, config)
 

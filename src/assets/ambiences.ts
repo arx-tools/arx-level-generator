@@ -18,6 +18,10 @@ export const ambiences = {
     name: 'ambient_noden',
     native: true,
   },
+  worm: {
+    name: 'ambient_cave_worm',
+    native: true,
+  },
   sirs: {
     name: 'ambient_sirs',
     tracks: ['sfx/ambiance/loop_sirs.wav'],
@@ -33,9 +37,7 @@ export const useAmbience = (ambience: AmbienceDefinition) => {
 
 export const exportAmbiences = (outputDir: string) => {
   const copyOfUsedAmbiences = clone(usedAmbiences)
-  const customAmbiences = copyOfUsedAmbiences.filter(
-    ({ native }) => native === false,
-  )
+  const customAmbiences = copyOfUsedAmbiences.filter(({ native }) => native === false)
   const ambiencesToBeExported = uniq(customAmbiences)
 
   return ambiencesToBeExported.reduce((files, { name, tracks }) => {
