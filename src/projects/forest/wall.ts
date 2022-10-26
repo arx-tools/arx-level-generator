@@ -4,7 +4,7 @@ import { evenAndRemainder, MapData, move } from '../../helpers'
 import { surface } from '../../prefabs/base/surface'
 import { RelativeCoords } from '../../types'
 
-export const addWall = (
+export const createWall = (
   wallPos: RelativeCoords,
   [width, thickness]: [number, number],
   holeOffset: number,

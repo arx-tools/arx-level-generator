@@ -20,10 +20,11 @@ import {
   move,
 } from '../../helpers'
 import { plain } from '../../prefabs/plain'
-import { addWall } from './addWall'
-import { addDoor } from './addDoor'
+import { createWall } from './wall'
+import { createDoor } from './door'
 import { surface } from '../../prefabs/base/surface'
 import { createSmellyFlower } from '../alias-nightmare/items/smellyFlower'
+import { createWorm } from './worm'
 
 const createPlayerSpawn = (pos: RelativeCoords, config) => {
   const ref = createItem(items.marker)
@@ -47,25 +48,6 @@ ON CONTROLLEDZONE_ENTER {
   }, ref)
 
   moveTo(pos, [0, 0, 0], ref)
-  markAsUsed(ref)
-
-  return ref
-}
-
-const addWorm = (pos: RelativeCoords, { a, b, g }: RotationVertex3) => {
-  const ref = createItem(items.npc.worm, { name: 'Jimmy' })
-
-  addScript((self) => {
-    return `
-// component: worm
-ON INIT {
-  ${getInjections('init', self)}
-  ACCEPT
-}
-    `
-  }, ref)
-
-  moveTo(pos, [a, b, g], ref)
   markAsUsed(ref)
 
   return ref
@@ -117,16 +99,16 @@ const generate = async (config) => {
   const holeOffset: number = 250
   const wallThickness = 800
 
-  addWall(wallPos, [1200, wallThickness], holeOffset, [150, 220], mapData)
-  addDoor(
+  createWall(wallPos, [1200, wallThickness], holeOffset, [150, 220], mapData)
+  createDoor(
     { type: 'relative', coords: move(150, 0, 20, move(holeOffset, 0, 0, wallPos.coords)) },
     { a: 0, b: 270, g: 0 },
   )
-  addDoor(
+  createDoor(
     { type: 'relative', coords: move(150, 0, wallThickness - 20, move(holeOffset, 0, 0, wallPos.coords)) },
     { a: 0, b: 270, g: 0 },
   )
-  addWorm(
+  createWorm(
     { type: 'relative', coords: move(150 - 70, 0, wallThickness - 20 + 210, move(holeOffset, 0, 0, wallPos.coords)) },
     { a: 0, b: 180, g: 0 },
   )

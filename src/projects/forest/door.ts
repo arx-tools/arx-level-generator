@@ -2,7 +2,7 @@ import { addScript, createItem, items, markAsUsed, moveTo } from '../../assets/i
 import { declare, FALSE, getInjections, TRUE } from '../../scripting'
 import { RelativeCoords, RotationVertex3 } from '../../types'
 
-export const addDoor = (pos: RelativeCoords, { a, b, g }: RotationVertex3) => {
+export const createDoor = (pos: RelativeCoords, { a, b, g }: RotationVertex3) => {
   const ref = createItem(items.doors.lightDoor, { name: 'door' })
 
   declare('bool', 'open', FALSE, ref)
