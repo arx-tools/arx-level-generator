@@ -15,6 +15,7 @@ export const createWall = (
   const bricksHeight = 280
   const foundationHeight = 40
   const doorframeWidth = 10
+  const topRowHeight = 50
 
   setTexture(textures.stone.stone[0], mapData)
 
@@ -382,4 +383,27 @@ export const createWall = (
       [50 * (partialBlueSquare / blueSquareHeight), 0],
     )(mapData)
   }
+
+  // --------------------------
+
+  setTexture(textures.wall.castle, mapData)
+
+  surface(
+    {
+      type: 'relative',
+      coords: move(0, -blueSquareHeight - bricksHeight, 0, wallPos.coords),
+    },
+    [width, topRowHeight],
+    { a: 0, b: 180, g: 0 },
+    [100, 100],
+  )(mapData)
+  surface(
+    {
+      type: 'relative',
+      coords: move(width, -blueSquareHeight - bricksHeight, thickness, wallPos.coords),
+    },
+    [width, topRowHeight],
+    { a: 0, b: 0, g: 0 },
+    [100, 100],
+  )(mapData)
 }
