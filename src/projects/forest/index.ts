@@ -23,7 +23,7 @@ import { plain } from '../../prefabs/plain'
 import { createWall } from './wall'
 import { createDoor } from './door'
 import { surface } from '../../prefabs/base/surface'
-import { createSmellyFlower } from '../alias-nightmare/items/smellyFlower'
+import { createFern } from '../alias-nightmare/items/fern'
 
 const createPlayerSpawn = (pos: RelativeCoords, config) => {
   const ref = createItem(items.marker)
@@ -53,7 +53,6 @@ ON CONTROLLEDZONE_ENTER {
 }
 
 const colors: Record<string, string> = {
-  //sky: '#223340',
   sky: '#010101',
   light: '#515151',
 }
@@ -141,13 +140,13 @@ const generate = async (config) => {
     )
   })
 
-  createSmellyFlower([-300, 0, 200])
-  createSmellyFlower([120, 0, 300])
-  createSmellyFlower([-200, 0, -140])
-  createSmellyFlower([-400, 0, -200])
-  createSmellyFlower([300, 0, -330])
-  createSmellyFlower([-420, 0, -610])
-  createSmellyFlower([74, 0, -490])
+  createFern([-300, 0, 200])
+  createFern([120, 0, 300])
+  createFern([-200, 0, -140])
+  createFern([-400, 0, -200])
+  createFern([300, 0, -330])
+  createFern([-420, 0, -610])
+  createFern([74, 0, -490])
 
   createPlayerSpawn({ type: 'relative', coords: [0, 0, 0] }, config)
 

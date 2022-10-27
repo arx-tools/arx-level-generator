@@ -18,7 +18,7 @@ import { ambiences } from '../../assets/ambiences'
 import { items, createItem, markAsUsed, moveTo, addScript, addDependencyAs } from '../../assets/items'
 import { declare, color, getInjections, FALSE, TRUE } from '../../scripting'
 import bridges from './bridges'
-import { createSmellyFlower } from './items/smellyFlower'
+import { createFern } from './items/fern'
 import { createStatue, defineStatue } from './items/statue'
 import { textures } from '../../assets/textures'
 import { MAP_MAX_WIDTH, MAP_MAX_HEIGHT, PATH_RGB } from '../../constants'
@@ -192,7 +192,7 @@ const generate = async (config) => {
   */
 
   circleOfVectors(islands[2].pos, 200, 9).forEach((pos) => {
-    createSmellyFlower(pos)
+    createFern(pos)
   })
 
   defineStatue()

@@ -24,7 +24,7 @@ import { createNPC, defineNPC } from './items/npc'
 import { createRespawnController } from './items/respawnController'
 import { surface } from '../../prefabs/base/surface'
 import { disableBumping, plain } from '../../prefabs/plain'
-import { createSmellyFlower } from '../alias-nightmare/items/smellyFlower'
+import { createFern } from '../alias-nightmare/items/fern'
 
 const createWelcomeMarker = (pos, config) => {
   const ref = createItem(items.marker)
@@ -88,7 +88,7 @@ const generate = async (config) => {
     textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
   }))(mapData)
 
-  createSmellyFlower([0, 0, 0])
+  createFern([0, 0, 0])
 
   setColor('white', mapData)
   circleOfVectors([0, -1000, 0], 1000, 3).forEach((pos) => {
