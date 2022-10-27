@@ -24,6 +24,7 @@ import { createWall } from './wall'
 import { createDoor } from './door'
 import { surface } from '../../prefabs/base/surface'
 import { createFern } from '../alias-nightmare/items/fern'
+import { createFountain } from './fountain'
 
 const createPlayerSpawn = (pos: RelativeCoords, config) => {
   const ref = createItem(items.marker)
@@ -101,6 +102,8 @@ const generate = async (config) => {
     textureRotation: pickRandom([0, 90, 180, 270]),
     textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
   }))(mapData)
+
+  await createFountain({ type: 'relative', coords: [0, 0, -300] }, mapData)
 
   createWall(wallPos, [1200, wallThickness], holeOffset, [150, 220], mapData)
   createDoor(
