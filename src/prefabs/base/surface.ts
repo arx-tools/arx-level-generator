@@ -220,6 +220,8 @@ const closingBlock = (
   )
 }
 
+// [scaleUPercent, scaleVPercent] scales UV in a way, that UV is set to fit horizontally into the surface
+// to change that use the uv scaling functions below
 export const surface = (
   pos: RelativeCoords,
   [surfaceWidth, surfaceHeight]: [number, number],
@@ -327,4 +329,27 @@ export const surface = (
       )
     }
   }
+}
+
+export const uvFitToHeight = ([surfaceWidth, surfaceHeight]: [number, number]): [number, number] => {
+  return [100 / (surfaceWidth / surfaceHeight), 100 / (surfaceWidth / surfaceHeight)]
+}
+
+// applies a scale to the given UV in percentages, ideal for scaling the results of uv scaling functions
+// scaleUV([100, 100], ...) -> no change
+// scaleUV([200, 200], ...) -> magnify the textures 2x (half of the texture will be visible)
+// scaleUV([50, 50], ...) -> shrinks the textures to 50% (2x more textures will be visible)
+// scaleUV(200, ...) -> same as scaleUV([200, 200], ...)
+export const scaleUV = (scale: number | [number, number], [u, v]: [number, number]): [number, number] => {
+  if (Array.isArray(scale)) {
+    const [scaleUPercent, scaleVPercent] = scale
+    return [(scaleUPercent / 100) * u, (scaleVPercent / 100) * v]
+  } else {
+    return [(scale / 100) * u, (scale / 100) * v]
+  }
+}
+
+//
+export const uvFixV = (height: number, uv: [number, number]): [number, number] => {
+  return scaleUV((100 / height) * 100, uv)
 }

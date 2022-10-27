@@ -1,7 +1,7 @@
 import { textures } from '../../assets/textures'
 import { setTexture } from '../../helpers'
 import { evenAndRemainder, MapData, move } from '../../helpers'
-import { surface } from '../../prefabs/base/surface'
+import { scaleUV, surface, uvFitToHeight, uvFixV } from '../../prefabs/base/surface'
 import { RelativeCoords } from '../../types'
 
 export const createWall = (
@@ -15,7 +15,6 @@ export const createWall = (
   const bricksHeight = 280
   const foundationHeight = 40
   const doorframeWidth = 10
-  const topRowHeight = 50
 
   setTexture(textures.stone.stone[0], mapData)
 
@@ -388,6 +387,8 @@ export const createWall = (
 
   setTexture(textures.wall.castle, mapData)
 
+  const topRowHeight = 50
+
   surface(
     {
       type: 'relative',
@@ -395,7 +396,7 @@ export const createWall = (
     },
     [width, topRowHeight],
     { a: 0, b: 180, g: 0 },
-    [100, 100],
+    scaleUV(200, uvFixV(topRowHeight, uvFitToHeight([width, topRowHeight]))),
   )(mapData)
   surface(
     {
@@ -404,6 +405,6 @@ export const createWall = (
     },
     [width, topRowHeight],
     { a: 0, b: 0, g: 0 },
-    [100, 100],
+    scaleUV(200, uvFixV(topRowHeight, uvFitToHeight([width, topRowHeight]))),
   )(mapData)
 }
