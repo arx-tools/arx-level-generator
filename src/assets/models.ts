@@ -1,8 +1,8 @@
 import fs from 'fs'
 import { PosVertex3, Vector3, RelativeCoords } from '../types'
-import { MapData, setTexture } from '../helpers'
+import { MapData } from '../helpers'
 import { POLY_NO_SHADOW, POLY_QUAD } from '../constants'
-import { textures, useTexture } from '../assets/textures'
+import { useTexture } from '../assets/textures'
 
 const EOL = /\r?\n/
 
