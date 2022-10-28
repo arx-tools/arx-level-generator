@@ -103,8 +103,6 @@ const generate = async (config) => {
     textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
   }))(mapData)
 
-  await createFountain({ type: 'relative', coords: [0, 0, -300] }, mapData)
-
   createWall(wallPos, [1200, wallThickness], holeOffset, [150, 220], mapData)
   createDoor(
     { type: 'relative', coords: move(150, 0, 20, move(holeOffset, 0, 0, wallPos.coords)) },
@@ -129,6 +127,9 @@ const generate = async (config) => {
     100 / (1200 / forestHeight),
     100 / (1200 / forestHeight),
   ])(mapData)
+
+  setColor('white', mapData)
+  await createFountain({ type: 'relative', coords: [0, -10, -300] }, 3, mapData)
 
   setColor(colors.light, mapData)
   circleOfVectors([0, -1000, 0], 1000, 3).forEach((pos) => {

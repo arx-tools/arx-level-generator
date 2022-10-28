@@ -1,5 +1,5 @@
 import fs from 'fs'
-import { Vector3 } from '../types'
+import { PosVertex3, Vector3 } from '../types'
 
 const EOL = /\r?\n/
 
@@ -29,7 +29,7 @@ const parseFace = (line: string) => {
 }
 
 export const loadObj = async (filename: string) => {
-  const polygons: any[] = []
+  const polygons: PosVertex3[][] = []
 
   let rows: string[]
 
@@ -68,10 +68,10 @@ export const loadObj = async (filename: string) => {
   })
 
   state.faces.forEach((vertices) => {
-    const polygon = vertices.map(([vIndex, tIndex, nIndex]) => {
+    const polygon: PosVertex3[] = vertices.map(([vIndex, tIndex, nIndex]) => {
       const [x, y, z] = state.vertices[vIndex]
       const [u, v, w] = state.textureCoords[tIndex]
-      const normals = state.normals[nIndex]
+      // const normals = state.normals[nIndex]
 
       return {
         posX: x,
