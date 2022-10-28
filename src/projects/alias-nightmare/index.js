@@ -186,13 +186,13 @@ const generate = async (config) => {
   const welcomeMarker = createWelcomeMarker(islands[0].pos, config)
 
   /*
-  createHangingCorpse([-300, -150, -200], [0, 145, 0], {
+  createHangingCorpse({ type: 'relative', coords: [-300, -150, -200]}, {a: 0, b: 145, g: 0]}, {
     name: "[public_falan_tomb]",
   });
   */
 
   circleOfVectors(islands[2].pos, 200, 9).forEach((pos) => {
-    createFern(pos)
+    createFern({ type: 'relative', coords: pos })
   })
 
   defineStatue()

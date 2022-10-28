@@ -18,14 +18,17 @@ import {
   circleOfVectors,
   addLight,
   move,
+  randomBetween,
+  isBetweenInclusive,
 } from '../../helpers'
 import { plain } from '../../prefabs/plain'
 import { createWall } from './wall'
 import { createDoor } from './door'
 import { surface } from '../../prefabs/base/surface'
 import { createFern } from '../alias-nightmare/items/fern'
-import { createFountain } from './fountain'
 import { createTree } from './tree'
+import { createHangingCorpse } from '../alias-nightmare/items/hangingCorpse'
+import { Vector3 } from 'three'
 
 const createPlayerSpawn = (pos: RelativeCoords, config) => {
   const ref = createItem(items.marker)
@@ -114,8 +117,8 @@ const generate = async (config) => {
     { a: 0, b: 270, g: 0 },
   )
 
-  setTexture(textures.forest.forest[2], mapData)
   const forestHeight = 500
+  setTexture(textures.forest.forest[2], mapData)
   surface({ type: 'relative', coords: [-600, 30, -900] }, [1400, forestHeight], { a: 0, b: 90, g: 0 }, [
     100 / (1400 / forestHeight),
     100 / (1400 / forestHeight),
@@ -131,7 +134,26 @@ const generate = async (config) => {
 
   // setColor('white', mapData)
   // await createFountain({ type: 'relative', coords: [0, -10, -300] }, 3, mapData)
+
   await createTree({ type: 'relative', coords: [0, 0, -300] }, 50, mapData)
+
+  let plantsToCreate = 20
+  const coords: Vector3[] = []
+  while (coords.length < plantsToCreate) {
+    const x = randomBetween(-600, 600)
+    const z = randomBetween(-800, 400)
+    if (isBetweenInclusive(-30, 30, x) || isBetweenInclusive(-30, 30, z)) {
+      continue
+    }
+    const newCoord = new Vector3(x, 0, z)
+    if (coords.find((coord) => coord.distanceTo(newCoord) < 150)) {
+      continue
+    }
+    coords.push(newCoord)
+    createFern({ type: 'relative', coords: newCoord.toArray() }, { a: 0, b: randomBetween(0, 360), g: 0 })
+  }
+
+  createHangingCorpse({ type: 'relative', coords: [290, -290, -80] }, { a: 0, b: 195, g: 0 })
 
   setColor(colors.light, mapData)
   circleOfVectors([0, -1000, 0], 1000, 3).forEach((pos) => {
@@ -145,14 +167,6 @@ const generate = async (config) => {
       mapData,
     )
   })
-
-  createFern([-300, 0, 200])
-  createFern([120, 0, 300])
-  createFern([-200, 0, -140])
-  createFern([-400, 0, -200])
-  createFern([300, 0, -330])
-  createFern([-420, 0, -610])
-  createFern([74, 0, -490])
 
   createPlayerSpawn({ type: 'relative', coords: [0, 0, 0] }, config)
 

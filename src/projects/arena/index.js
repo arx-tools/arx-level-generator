@@ -88,7 +88,7 @@ const generate = async (config) => {
     textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
   }))(mapData)
 
-  createFern([0, 0, 0])
+  createFern({ type: 'relative', coords: [0, 0, 0] })
 
   setColor('white', mapData)
   circleOfVectors([0, -1000, 0], 1000, 3).forEach((pos) => {
