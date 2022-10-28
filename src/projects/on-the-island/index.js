@@ -168,7 +168,7 @@ const generate = async (config) => {
   )(mapData)
 
   setColor('hsv(150, 37%, 70%)', mapData)
-  setTexture(textures.gravel.ground1, mapData)
+  setTexture(textures.ground.gravel, mapData)
   setPolygonGroup('island-1', mapData)
 
   plain([islandCenter.x, 0, islandCenter.z], [islandSizeInTiles, islandSizeInTiles], 'floor', identity, () => ({

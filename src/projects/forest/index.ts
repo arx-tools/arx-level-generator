@@ -24,7 +24,7 @@ import {
 import { plain } from '../../prefabs/plain'
 import { createWall } from './wall'
 import { createDoor } from './door'
-import { surface } from '../../prefabs/base/surface'
+import { surface, uvFitToHeight } from '../../prefabs/base/surface'
 import { createFern } from '../alias-nightmare/items/fern'
 import { createTree } from './tree'
 import { createHangingCorpse } from '../alias-nightmare/items/hangingCorpse'
@@ -89,7 +89,7 @@ const generate = async (config) => {
   )(mapData)
 
   setColor(colors.light, mapData)
-  setTexture(textures.gravel.ground1, mapData)
+  setTexture(textures.ground.moss, mapData)
 
   plain([0, 0, -200], [14, 16], 'floor', identity, () => ({
     quad: pickRandom([0, 1, 2, 3]),
@@ -101,19 +101,38 @@ const generate = async (config) => {
   const holeOffset: number = 250
   const wallThickness = 800
 
-  plain(move(300, 0, wallThickness / 2, wallPos.coords), [4, wallThickness / 100 + 2], 'floor', identity, () => ({
-    quad: pickRandom([0, 1, 2, 3]),
-    textureRotation: pickRandom([0, 90, 180, 270]),
-    textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
-  }))(mapData)
+  setTexture(textures.ground.mossBorder, mapData)
+  surface(
+    { type: 'relative', coords: move(holeOffset + 200 - 25, 0, 0, wallPos.coords) },
+    [200, 200],
+    {
+      a: 90,
+      b: 0,
+      g: -90,
+    },
+    uvFitToHeight([200, 200]),
+    [0, 0],
+  )(mapData)
+
+  setTexture(textures.ground.rock, mapData)
+  surface(
+    { type: 'relative', coords: move(holeOffset + 200 - 25, 0, 200, wallPos.coords) },
+    [wallThickness - 150, 200],
+    {
+      a: 90,
+      b: 0,
+      g: -90,
+    },
+    uvFitToHeight([wallThickness - 150, 200]),
+  )(mapData)
 
   createWall(wallPos, [1200, wallThickness], holeOffset, [150, 220], mapData)
   createDoor(
-    { type: 'relative', coords: move(150, 0, 20, move(holeOffset, 0, 0, wallPos.coords)) },
+    { type: 'relative', coords: move(150, 0, 40, move(holeOffset, 0, 0, wallPos.coords)) },
     { a: 0, b: 270, g: 0 },
   )
   createDoor(
-    { type: 'relative', coords: move(150, 0, wallThickness - 20, move(holeOffset, 0, 0, wallPos.coords)) },
+    { type: 'relative', coords: move(150, 0, wallThickness - 40, move(holeOffset, 0, 0, wallPos.coords)) },
     { a: 0, b: 270, g: 0 },
   )
 

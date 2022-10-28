@@ -16,9 +16,21 @@ export type Texture = TextureDefinition
 
 export const textures = {
   none: null,
-  gravel: {
-    ground1: {
+  ground: {
+    gravel: {
       src: 'L5_CAVES_[GRAVEL]_GROUND05',
+      native: true,
+    },
+    moss: {
+      src: 'L1_MOSS01',
+      native: true,
+    },
+    mossBorder: {
+      src: 'L1_MOSS_BORDER02',
+      native: true,
+    },
+    rock: {
+      src: 'L1_DRAGON_[STONE]_GROUND03',
       native: true,
     },
   },

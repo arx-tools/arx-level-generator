@@ -80,7 +80,7 @@ const generate = async (config) => {
   )(mapData)
 
   setColor('#a7a7a7', mapData)
-  setTexture(textures.gravel.ground1, mapData)
+  setTexture(textures.ground.gravel, mapData)
 
   plain([0, 0, 0], 20, 'floor', disableBumping, () => ({
     quad: pickRandom([0, 1, 2, 3]),
