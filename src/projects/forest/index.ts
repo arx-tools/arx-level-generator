@@ -152,7 +152,7 @@ const generate = async (config) => {
     100 / (1200 / forestHeight),
   ])(mapData)
 
-  await createFountain({ type: 'relative', coords: [0, -10, -500] }, 3, mapData)
+  // await createFountain({ type: 'relative', coords: [0, -10, -500] }, 3, mapData)
 
   await createTree({ type: 'relative', coords: [0, 0, -300] }, 50, mapData)
 
