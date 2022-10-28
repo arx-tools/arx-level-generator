@@ -18,19 +18,19 @@ export const textures = {
   none: null,
   ground: {
     gravel: {
-      src: 'L5_CAVES_[GRAVEL]_GROUND05',
+      src: 'L5_CAVES_[GRAVEL]_GROUND05.jpg',
       native: true,
     },
     moss: {
-      src: 'L1_MOSS01',
+      src: 'L1_MOSS01.jpg',
       native: true,
     },
     mossBorder: {
-      src: 'L1_MOSS_BORDER02',
+      src: 'L1_MOSS_BORDER02.jpg',
       native: true,
     },
     rock: {
-      src: 'L1_DRAGON_[STONE]_GROUND03',
+      src: 'L1_DRAGON_[STONE]_GROUND03.jpg',
       native: true,
     },
   },
@@ -121,6 +121,10 @@ export const textures = {
         native: true,
       },
     ],
+    bricks: {
+      src: 'L3_HUMAN_[STONE]_CEILING01.jpg',
+      native: true,
+    },
   },
   skybox: {
     top: {
