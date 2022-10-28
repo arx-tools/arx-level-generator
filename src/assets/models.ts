@@ -8,7 +8,7 @@ const EOL = /\r?\n/
 
 type Obj = {
   vertices: Vector3[]
-  normals: Vector3[]
+  // normals: Vector3[]
   textureCoords: Vector3[]
   faces: Vector3[][]
 }
@@ -45,7 +45,7 @@ export const loadObj = async (filename: string) => {
 
   const state: Obj = {
     vertices: [],
-    normals: [],
+    // normals: [],
     textureCoords: [],
     faces: [],
   }
@@ -57,9 +57,9 @@ export const loadObj = async (filename: string) => {
       state.vertices.push(parseVector3(line))
     }
 
-    if (line.startsWith('vn ')) {
-      state.normals.push(parseVector3(line))
-    }
+    // if (line.startsWith('vn ')) {
+    //   state.normals.push(parseVector3(line))
+    // }
 
     if (line.startsWith('vt ')) {
       state.textureCoords.push(parseVector3(line))
@@ -109,6 +109,10 @@ export const renderPolygonData = (polygons: PosVertex3[][], pos: RelativeCoords,
       flags = flags & ~POLY_QUAD
       vertices.push({ posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 })
     }
+
+    const tmp = vertices[0]
+    vertices[0] = vertices[1]
+    vertices[1] = tmp
 
     mapData.fts.polygons[mapData.state.polygonGroup].push({
       config: {
