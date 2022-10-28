@@ -1,5 +1,8 @@
 import fs from 'fs'
-import { PosVertex3, Vector3 } from '../types'
+import { PosVertex3, Vector3, RelativeCoords } from '../types'
+import { MapData, setTexture } from '../helpers'
+import { POLY_NO_SHADOW, POLY_QUAD } from '../constants'
+import { textures, useTexture } from '../assets/textures'
 
 const EOL = /\r?\n/
 
@@ -85,4 +88,41 @@ export const loadObj = async (filename: string) => {
   })
 
   return polygons
+}
+
+export const renderPolygonData = (polygons: PosVertex3[][], pos: RelativeCoords, scale: number, mapData: MapData) => {
+  const { texture } = mapData.state
+  const textureFlags = texture?.flags ?? POLY_QUAD | POLY_NO_SHADOW
+
+  mapData.fts.polygons[mapData.state.polygonGroup] = mapData.fts.polygons[mapData.state.polygonGroup] || []
+
+  polygons.forEach((vertices) => {
+    vertices = vertices.map((vertex, i) => {
+      vertex.posX = vertex.posX * scale + mapData.config.origin.coords[0] + pos.coords[0]
+      vertex.posY = vertex.posY * -1 * scale + mapData.config.origin.coords[1] + pos.coords[1]
+      vertex.posZ = vertex.posZ * scale + mapData.config.origin.coords[2] + pos.coords[2]
+      return vertex
+    })
+
+    let flags = textureFlags
+    if (vertices.length === 3) {
+      flags = flags & ~POLY_QUAD
+      vertices.push({ posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 })
+    }
+
+    mapData.fts.polygons[mapData.state.polygonGroup].push({
+      config: {
+        color: mapData.state.color,
+        isQuad: (flags & POLY_QUAD) > 0,
+        bumpable: true,
+      },
+      vertices,
+      tex: useTexture(texture),
+      transval: 0,
+      area: 1000,
+      type: flags,
+      room: 1,
+      paddy: 0,
+    })
+  })
 }

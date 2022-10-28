@@ -25,6 +25,7 @@ import { createDoor } from './door'
 import { surface } from '../../prefabs/base/surface'
 import { createFern } from '../alias-nightmare/items/fern'
 import { createFountain } from './fountain'
+import { createTree } from './tree'
 
 const createPlayerSpawn = (pos: RelativeCoords, config) => {
   const ref = createItem(items.marker)
@@ -128,8 +129,8 @@ const generate = async (config) => {
     100 / (1200 / forestHeight),
   ])(mapData)
 
-  setColor('white', mapData)
-  await createFountain({ type: 'relative', coords: [0, -10, -300] }, 3, mapData)
+  // await createFountain({ type: 'relative', coords: [0, -10, -300] }, 3, mapData)
+  await createTree({ type: 'relative', coords: [0, 0, -300] }, 50, mapData)
 
   setColor(colors.light, mapData)
   circleOfVectors([0, -1000, 0], 1000, 3).forEach((pos) => {
