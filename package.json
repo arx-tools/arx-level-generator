@@ -9,9 +9,9 @@
   },
   "scripts": {
     "dev": "npm run generate && npm run compile && npm run run",
-    "generate": "sh scripts/generate.sh",
-    "compile": "sh scripts/compile.sh",
-    "run": "sh scripts/run.sh",
+    "generate": "./scripts/generate.sh",
+    "compile": "./scripts/compile.sh",
+    "run": "./scripts/run.sh",
     "test:unit": "set FORCE_COLOR=true && mocha -r tsconfig-paths/register -r ts-node/register --timeout 5000 test/**/*.spec.ts",
     "test:unit:watch": "nodemon --exec \"npm run test:unit\" --watch test --watch src -e ts,js"
   },

@@ -1,6 +1,12 @@
 #!/bin/bash
 
-LEVEL=$(grep LEVEL .env | cut -d "=" -f2 | tr -d '"')
+REPO_ROOT="$(realpath $(dirname "$(realpath "${BASH_SOURCE:-$0}")")/../)/"
+
+if [ -f "${REPO_ROOT}.env" ]; then
+  set -a
+  source "${REPO_ROOT}.env"
+  set +a
+fi
 
 if [ "$LEVEL" = "" ]; then
   LEVEL=1

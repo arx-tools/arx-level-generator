@@ -1,0 +1,125 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0/linux-x64",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {},
+    ".NETCoreApp,Version=v6.0/linux-x64": {
+      "ArxLibertatisLightingCalculator/1.0.0": {
+        "dependencies": {
+          "ArxLibertatisEditorIO": "1.2.0",
+          "BepuPhysics": "2.3.3",
+          "Plexdata.ArgumentParser.NET": "1.0.7",
+          "System.Numerics.Vectors": "4.5.0"
+        },
+        "runtime": {
+          "ArxLibertatisLightingCalculator.dll": {}
+        }
+      },
+      "ArxLibertatisEditorIO/1.2.0": {
+        "dependencies": {
+          "System.Numerics.Vectors": "4.5.0"
+        },
+        "runtime": {
+          "lib/netstandard2.1/ArxLibertatisEditorIO.dll": {
+            "assemblyVersion": "1.2.0.0",
+            "fileVersion": "1.2.0.0"
+          }
+        }
+      },
+      "BepuPhysics/2.3.3": {
+        "dependencies": {
+          "BepuUtilities": "2.3.3"
+        },
+        "runtime": {
+          "lib/netstandard2.0/BepuPhysics.dll": {
+            "assemblyVersion": "2.3.3.0",
+            "fileVersion": "2.3.3.0"
+          }
+        }
+      },
+      "BepuUtilities/2.3.3": {
+        "dependencies": {
+          "System.Memory": "4.5.4",
+          "System.Numerics.Vectors": "4.5.0",
+          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/BepuUtilities.dll": {
+            "assemblyVersion": "2.3.3.0",
+            "fileVersion": "2.3.3.0"
+          }
+        }
+      },
+      "Plexdata.ArgumentParser.NET/1.0.7": {
+        "runtime": {
+          "lib/netstandard2.0/Plexdata.ArgumentParser.NET.dll": {
+            "assemblyVersion": "1.0.7.0",
+            "fileVersion": "1.0.7.0"
+          }
+        }
+      },
+      "System.Memory/4.5.4": {},
+      "System.Numerics.Vectors/4.5.0": {},
+      "System.Runtime.CompilerServices.Unsafe/6.0.0": {}
+    }
+  },
+  "libraries": {
+    "ArxLibertatisLightingCalculator/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ArxLibertatisEditorIO/1.2.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-gtrj7rLBaTxlPTJd1JdMAU/Al8CdOZ5+my2SeZOMrN9AH+ftynSxL3hsxBjrtHowJacpvycgvTuFXi+vE1nIyw==",
+      "path": "arxlibertatiseditorio/1.2.0",
+      "hashPath": "arxlibertatiseditorio.1.2.0.nupkg.sha512"
+    },
+    "BepuPhysics/2.3.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1IvvgSuCHuhEHBhz/z4UO/wBWdppJ9lI13NEfWS4vrC6BBDkIWvlwB3vLncCLm5Ixyr97zNxXcQ2l4n4ABV+Ow==",
+      "path": "bepuphysics/2.3.3",
+      "hashPath": "bepuphysics.2.3.3.nupkg.sha512"
+    },
+    "BepuUtilities/2.3.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-nJRHootMLPiEbuvrUx4RhcEuOAjhcEUBLBxn0gT7zyxRj9E394nUMf/hHcXAZEvTL3xwCkV+EOfwXSE/9sfmHQ==",
+      "path": "bepuutilities/2.3.3",
+      "hashPath": "bepuutilities.2.3.3.nupkg.sha512"
+    },
+    "Plexdata.ArgumentParser.NET/1.0.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-gBNh+taXQE3iaDXaWXkSr27AVkPQ2cH5TWl3TaTTJj0BlEnNvRsMMmPKwHX1F2IdTRteg8CwmgT5Q4PMjJJPAw==",
+      "path": "plexdata.argumentparser.net/1.0.7",
+      "hashPath": "plexdata.argumentparser.net.1.0.7.nupkg.sha512"
+    },
+    "System.Memory/4.5.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1MbJTHS1lZ4bS4FmsJjnuGJOu88ZzTT2rLvrhW7Ygic+pC0NWA+3hgAen0HRdsocuQXCkUTdFn9yHJJhsijDXw==",
+      "path": "system.memory/4.5.4",
+      "hashPath": "system.memory.4.5.4.nupkg.sha512"
+    },
+    "System.Numerics.Vectors/4.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-QQTlPTl06J/iiDbJCiepZ4H//BVraReU4O4EoRw1U02H5TLUIT7xn3GnDp9AXPSlJUDyFs4uWjWafNX6WrAojQ==",
+      "path": "system.numerics.vectors/4.5.0",
+      "hashPath": "system.numerics.vectors.4.5.0.nupkg.sha512"
+    },
+    "System.Runtime.CompilerServices.Unsafe/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/iUeP3tq1S0XdNNoMz5C9twLSrM/TH+qElHkXWaPvuNOt+99G75NrV0OS2EqHx5wMN7popYjpc8oTjC1y16DLg==",
+      "path": "system.runtime.compilerservices.unsafe/6.0.0",
+      "hashPath": "system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
+    }
+  }
+}
