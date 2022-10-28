@@ -1,6 +1,5 @@
 import path from 'path'
 import { loadObj, renderPolygonData } from '../../assets/models'
-import { textures } from '../../assets/textures'
 import { MapData, setTexture } from '../../helpers'
 import { RelativeCoords } from '../../types'
 
