@@ -1,8 +1,6 @@
 import { addScript, createItem, items, markAsUsed, moveTo } from '../../assets/items'
-import { HFLIP, VFLIP } from '../../constants'
-import { identity } from '../../faux-ramda'
 import { getInjections } from '../../scripting'
-import { RelativeCoords, RotationVertex3 } from '../../types'
+import { RelativeCoords } from '../../types'
 import { hideMinimap } from '../shared/reset'
 import { ambiences } from '../../assets/ambiences'
 import { textures } from '../../assets/textures'
@@ -14,22 +12,14 @@ import {
   setTexture,
   finalize,
   saveToDisk,
-  pickRandom,
   circleOfVectors,
   addLight,
   move,
-  randomBetween,
-  isBetweenInclusive,
 } from '../../helpers'
-import { plain } from '../../prefabs/plain'
 import { createWall } from './wall'
 import { createDoor } from './door'
 import { surface, uvFitToHeight } from '../../prefabs/base/surface'
-import { createFern } from '../alias-nightmare/items/fern'
-import { createTree } from './tree'
-import { createHangingCorpse } from '../alias-nightmare/items/hangingCorpse'
-import { Vector3 } from 'three'
-import { createFountain } from './fountain'
+import { createForestArea } from './areas/forest'
 
 const createPlayerSpawn = (pos: RelativeCoords, config) => {
   const ref = createItem(items.marker)
@@ -60,7 +50,7 @@ ON CONTROLLEDZONE_ENTER {
 
 const colors: Record<string, string> = {
   sky: '#010101',
-  light: '#515151',
+  general: '#515151',
 }
 
 const generate = async (config) => {
@@ -89,14 +79,7 @@ const generate = async (config) => {
     5000,
   )(mapData)
 
-  setColor(colors.light, mapData)
-  setTexture(textures.ground.moss, mapData)
-
-  plain([0, 0, -200], [14, 16], 'floor', identity, () => ({
-    quad: pickRandom([0, 1, 2, 3]),
-    textureRotation: pickRandom([0, 90, 180, 270]),
-    textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
-  }))(mapData)
+  setColor(colors.general, mapData)
 
   const wallPos: RelativeCoords = { type: 'relative', coords: [-600, 0, 500] }
   const holeOffset: number = 250
@@ -137,44 +120,6 @@ const generate = async (config) => {
     { a: 0, b: 270, g: 0 },
   )
 
-  const forestHeight = 500
-  setTexture(textures.forest.forest[2], mapData)
-  surface({ type: 'relative', coords: [-600, 30, -900] }, [1400, forestHeight], { a: 0, b: 90, g: 0 }, [
-    100 / (1400 / forestHeight),
-    100 / (1400 / forestHeight),
-  ])(mapData)
-  surface({ type: 'relative', coords: [600, 30, 500] }, [1400, forestHeight], { a: 0, b: -90, g: 0 }, [
-    100 / (1400 / forestHeight),
-    100 / (1400 / forestHeight),
-  ])(mapData)
-  surface({ type: 'relative', coords: [600, 30, -900] }, [1200, forestHeight], { a: 0, b: 0, g: 0 }, [
-    100 / (1200 / forestHeight),
-    100 / (1200 / forestHeight),
-  ])(mapData)
-
-  // await createFountain({ type: 'relative', coords: [0, -10, -500] }, 3, mapData)
-
-  await createTree({ type: 'relative', coords: [0, 0, -300] }, 50, mapData)
-
-  let plantsToCreate = 20
-  const coords: Vector3[] = []
-  while (coords.length < plantsToCreate) {
-    const x = randomBetween(-600, 600)
-    const z = randomBetween(-800, 400)
-    if (isBetweenInclusive(-30, 30, x) || isBetweenInclusive(-30, 30, z)) {
-      continue
-    }
-    const newCoord = new Vector3(x, 0, z)
-    if (coords.find((coord) => coord.distanceTo(newCoord) < 150)) {
-      continue
-    }
-    coords.push(newCoord)
-    createFern({ type: 'relative', coords: newCoord.toArray() }, { a: 0, b: randomBetween(0, 360), g: 0 })
-  }
-
-  createHangingCorpse({ type: 'relative', coords: [290, -290, -80] }, { a: 0, b: 195, g: 0 })
-
-  setColor(colors.light, mapData)
   circleOfVectors([0, -1000, 0], 1000, 3).forEach((pos) => {
     addLight(
       pos,
@@ -188,6 +133,8 @@ const generate = async (config) => {
   })
 
   createPlayerSpawn({ type: 'relative', coords: [0, 0, 0] }, config)
+
+  await createForestArea(mapData)
 
   const finalizedMapData = finalize(mapData)
   return saveToDisk(finalizedMapData)
