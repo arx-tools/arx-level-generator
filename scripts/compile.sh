@@ -12,19 +12,17 @@ if [ "$LEVEL" = "" ]; then
   LEVEL=1
 fi
 
-OUTPUTDIR=$(grep OUTPUTDIR .env | cut -d "=" -f2 | tr -d '"')
-
 if [ -z "$OUTPUTDIR" ]; then
-  OUTPUTDIR=$(pwd)/dist
+  OUTPUTDIR=$(pwd)/dist/
 fi
 
-cd "$OUTPUTDIR/game/graph/levels/level$LEVEL"
+cd "${OUTPUTDIR}game/graph/levels/level$LEVEL"
 
 echo "FTS"
 
 cat fast.fts.json | arx-convert --from=json --to=fts | implode -b -l --offset=280 --debug --output=fast.fts
 
-cd "$OUTPUTDIR/graph/levels/level$LEVEL"
+cd "${OUTPUTDIR}graph/levels/level$LEVEL"
 
 echo "LLF"
 
