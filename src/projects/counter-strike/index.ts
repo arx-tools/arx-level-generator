@@ -6,6 +6,7 @@ import { ambiences } from '../../assets/ambiences'
 import { generateBlankMapData, movePlayerTo, setColor, addZone, finalize, saveToDisk, setTexture } from '../../helpers'
 import { createCsItaly } from './maps/cs_italy'
 import { textures } from '../../assets/textures'
+import { createChicken, defineChicken } from './chicken'
 
 const createPlayerSpawn = (pos: RelativeCoords, config) => {
   const ref = createItem(items.marker)
@@ -69,8 +70,10 @@ const generate = async (config) => {
 
   createPlayerSpawn({ type: 'relative', coords: [-1000, 0, -(6000 - 2600)] }, config)
 
-  setTexture(textures.wood.aliciaRoomMur02, mapData)
   await createCsItaly({ type: 'relative', coords: [700, 3200, 5000] }, 2.5, mapData)
+
+  defineChicken()
+  createChicken({ type: 'relative', coords: [1180, -300, 165] }, { a: 0, b: 0, g: 0 })
 
   const finalizedMapData = finalize(mapData)
   return saveToDisk(finalizedMapData)

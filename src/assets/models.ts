@@ -146,8 +146,6 @@ export const renderPolygonData = (
   doSomethingWithTheVertices: (vertices: TexturedPolygon) => void = identity,
 ) => {
   return (mapData: MapData) => {
-    const textureFlags = mapData.state.texture?.flags ?? POLY_QUAD | POLY_NO_SHADOW
-
     mapData.fts.polygons[mapData.state.polygonGroup] = mapData.fts.polygons[mapData.state.polygonGroup] || []
 
     polygons.forEach(({ polygon, texture }) => {
@@ -158,12 +156,11 @@ export const renderPolygonData = (
         return vertex
       })
 
-      let flags = textureFlags
+      let isQuad = true
+
       if (polygon.length === 3) {
-        flags = flags & ~POLY_QUAD
+        isQuad = false
         polygon.push({ posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 })
-      } else {
-        flags = flags | POLY_QUAD
       }
 
       let tmp = polygon[0]
@@ -171,6 +168,15 @@ export const renderPolygonData = (
       polygon[1] = tmp
 
       doSomethingWithTheVertices({ polygon, texture })
+
+      const textureFlags = mapData.state.texture?.flags ?? POLY_QUAD | POLY_NO_SHADOW
+
+      let flags = textureFlags
+      if (isQuad) {
+        flags = flags | POLY_QUAD
+      } else {
+        flags = flags & ~POLY_QUAD
+      }
 
       mapData.fts.polygons[mapData.state.polygonGroup].push({
         config: {
@@ -180,7 +186,7 @@ export const renderPolygonData = (
         },
         vertices: polygon,
         tex: useTexture(mapData.state.texture),
-        transval: 0,
+        transval: 2,
         area: 1000,
         type: flags,
         room: 1,
