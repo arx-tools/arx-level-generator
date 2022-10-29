@@ -15,5 +15,10 @@ export const createFountain = async (pos: RelativeCoords, scale: number, mapData
     mapData,
   )
   flipPolygonAxis('y', polygons)
+  polygons.forEach(({ polygon }) => {
+    polygon.forEach((vertex) => {
+      vertex.texV *= -1
+    })
+  })
   renderPolygonData(polygons, pos, scale)(mapData)
 }
