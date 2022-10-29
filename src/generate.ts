@@ -67,10 +67,12 @@ const project: string = process.env.PROJECT ?? 'alias-nightmare'
       await arena({
         ...config,
       })
+      break
     case 'forest':
       await forest({
         ...config,
       })
+      break
     case 'counter-strike':
       await counterStrike({
         ...config,

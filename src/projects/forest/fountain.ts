@@ -1,5 +1,5 @@
 import path from 'path'
-import { loadObj, renderPolygonData } from '../../assets/models'
+import { flipPolygonAxis, loadObj, renderPolygonData } from '../../assets/models'
 import { MapData, setTexture } from '../../helpers'
 import { RelativeCoords } from '../../types'
 
@@ -14,5 +14,6 @@ export const createFountain = async (pos: RelativeCoords, scale: number, mapData
     },
     mapData,
   )
-  renderPolygonData(polygons, pos, scale, mapData)
+  flipPolygonAxis('y', polygons)
+  renderPolygonData(polygons, pos, scale)(mapData)
 }

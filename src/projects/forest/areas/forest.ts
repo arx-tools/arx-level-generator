@@ -15,20 +15,32 @@ import {
   TEXTURE_QUAD_TOP_RIGHT,
   VFLIP,
 } from '../../../constants'
+import { createFountain } from '../fountain'
 
 const addPlants = (plantsToCreate: number) => {
   const coords: Vector3[] = []
+  const excludedLocations = [
+    { pos: new Vector3(0, 0, -300), radius: 100 }, // tree
+    { pos: new Vector3(300, 0, 300), radius: 150 }, // fountain
+  ]
   while (coords.length < plantsToCreate) {
     const x = randomBetween(-600, 600)
     const z = randomBetween(-800, 400)
-    if (isBetweenInclusive(-30, 30, x) || isBetweenInclusive(-30, 30, z)) {
-      continue
-    }
+
     const newCoord = new Vector3(x, 0, z)
-    if (coords.find((coord) => coord.distanceTo(newCoord) < 150)) {
+
+    // distance to objects
+    if (excludedLocations.find(({ pos, radius }) => pos.distanceTo(newCoord) < radius)) {
       continue
     }
+
+    // distance to each other
+    if (coords.find((coord) => coord.distanceTo(newCoord) < 50)) {
+      continue
+    }
+
     coords.push(newCoord)
+
     createFern({ type: 'relative', coords: newCoord.toArray() }, { a: 0, b: randomBetween(0, 360), g: 0 })
   }
 }
@@ -74,9 +86,10 @@ const addForestFloor = (mapData: MapData) => {
 export const createForestArea = async (mapData: MapData) => {
   addForestFloor(mapData)
   addForestEdge(mapData)
-  addPlants(20)
+  addPlants(30)
 
   await createTree({ type: 'relative', coords: [0, 0, -300] }, 50, mapData)
+  await createFountain({ type: 'relative', coords: [300, -10, 300] }, 3, mapData)
 
   createHangingCorpse({ type: 'relative', coords: [290, -290, -80] }, { a: 0, b: 195, g: 0 })
 }

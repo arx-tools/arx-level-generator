@@ -8,5 +8,6 @@ import { RelativeCoords } from '../../types'
 export const createTree = async (pos: RelativeCoords, scale: number, mapData: MapData) => {
   const polygons = await loadObj(path.resolve('./assets/projects/forest/models/tree/tree.obj'))
   setTexture(textures.wood.logs, mapData)
-  renderPolygonData(flipPolygonAxis('y', polygons), pos, scale, mapData)
+  flipPolygonAxis('y', polygons)
+  renderPolygonData(polygons, pos, scale)(mapData)
 }
