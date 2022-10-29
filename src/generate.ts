@@ -4,6 +4,7 @@ import theBackrooms from './projects/the-backrooms/index'
 import onTheIsland from './projects/on-the-island/index'
 import arena from './projects/arena/index'
 import forest from './projects/forest/index'
+import counterStrike from './projects/counter-strike/index'
 import { MapConfig } from './types'
 
 const seed: string = process.env.SEED ?? Math.floor(Math.random() * 1e20).toString()
@@ -68,6 +69,10 @@ const project: string = process.env.PROJECT ?? 'alias-nightmare'
       })
     case 'forest':
       await forest({
+        ...config,
+      })
+    case 'counter-strike':
+      await counterStrike({
         ...config,
       })
   }

@@ -1,5 +1,5 @@
 import path from 'path'
-import { loadObj, renderPolygonData } from '../../assets/models'
+import { flipPolygonAxis, loadObj, renderPolygonData } from '../../assets/models'
 import { textures } from '../../assets/textures'
 import { MapData, setTexture } from '../../helpers'
 import { RelativeCoords } from '../../types'
@@ -8,5 +8,5 @@ import { RelativeCoords } from '../../types'
 export const createTree = async (pos: RelativeCoords, scale: number, mapData: MapData) => {
   const polygons = await loadObj(path.resolve('./assets/projects/forest/models/tree/tree.obj'))
   setTexture(textures.wood.logs, mapData)
-  renderPolygonData(polygons, pos, scale, mapData)
+  renderPolygonData(flipPolygonAxis('y', polygons), pos, scale, mapData)
 }
