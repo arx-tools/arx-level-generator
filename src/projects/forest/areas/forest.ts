@@ -2,7 +2,16 @@ import { createFern } from '../../alias-nightmare/items/fern'
 import { createTree } from '../tree'
 import { createHangingCorpse } from '../../alias-nightmare/items/hangingCorpse'
 import { Vector3 } from 'three'
-import { randomBetween, isBetweenInclusive, MapData, setTexture, pickRandom, setColor } from '../../../helpers'
+import {
+  randomBetween,
+  isBetweenInclusive,
+  MapData,
+  setTexture,
+  pickRandom,
+  setColor,
+  addLight,
+  circleOfVectors,
+} from '../../../helpers'
 import { surface, uvFitToHeight } from '../../../prefabs/base/surface'
 import { textures } from '../../../assets/textures'
 import { identity } from '../../../faux-ramda'
@@ -16,6 +25,7 @@ import {
   VFLIP,
 } from '../../../constants'
 import { createFountain } from '../fountain'
+import { createCrickets, defineCrickets } from '../crickets'
 
 const addPlants = (plantsToCreate: number) => {
   const coords: Vector3[] = []
@@ -41,12 +51,17 @@ const addPlants = (plantsToCreate: number) => {
 
     coords.push(newCoord)
 
-    createFern({ type: 'relative', coords: newCoord.toArray() }, { a: 0, b: randomBetween(0, 360), g: 0 })
+    createFern(
+      { type: 'relative', coords: newCoord.toArray() },
+      { a: 0, b: randomBetween(0, 360), g: 0 },
+      {
+        name: '[fern]',
+      },
+    )
   }
 }
 
-const addForestEdge = (mapData: MapData) => {
-  const forestHeight = 500
+const addForestEdge = (forestHeight: number, mapData: MapData) => {
   setTexture(textures.forest.forest[2], mapData)
   surface(
     { type: 'relative', coords: [-600, 30, -900] },
@@ -85,11 +100,38 @@ const addForestFloor = (mapData: MapData) => {
 
 export const createForestArea = async (mapData: MapData) => {
   addForestFloor(mapData)
-  addForestEdge(mapData)
+  addForestEdge(500, mapData)
   addPlants(30)
 
   await createTree({ type: 'relative', coords: [0, 0, -300] }, 50, mapData)
   await createFountain({ type: 'relative', coords: [300, -10, 300] }, 3, mapData)
 
-  createHangingCorpse({ type: 'relative', coords: [290, -290, -80] }, { a: 0, b: 195, g: 0 })
+  createHangingCorpse(
+    { type: 'relative', coords: [290, -290, -80] },
+    { a: 0, b: 195, g: 0 },
+    {
+      name: '[hanging-corpse]',
+    },
+  )
+
+  defineCrickets()
+
+  circleOfVectors([0, -100, -300], 1300, 7)
+    .filter(([, , z]) => z < 200)
+    .forEach((coords) => {
+      createCrickets({ type: 'relative', coords })
+    })
+
+  setColor('#161918', mapData)
+  circleOfVectors([0, -200, 0], 500, 5).forEach(([x, y, z]) => {
+    addLight(
+      [x, y, -z - 300],
+      {
+        fallstart: 1,
+        fallend: 1000,
+        intensity: 2.5,
+      },
+      mapData,
+    )
+  })
 }

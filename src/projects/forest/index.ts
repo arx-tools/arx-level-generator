@@ -12,14 +12,15 @@ import {
   setTexture,
   finalize,
   saveToDisk,
-  circleOfVectors,
-  addLight,
   move,
 } from '../../helpers'
 import { createWall } from './wall'
 import { createDoor } from './door'
 import { surface, uvFitToHeight } from '../../prefabs/base/surface'
 import { createForestArea } from './areas/forest'
+import { addTranslations } from '../../assets/i18n'
+import translations from './i18n.json'
+import { overridePlayerScript } from '../shared/player'
 
 const createPlayerSpawn = (pos: RelativeCoords, config) => {
   const ref = createItem(items.marker)
@@ -120,21 +121,12 @@ const generate = async (config) => {
     { a: 0, b: 270, g: 0 },
   )
 
-  circleOfVectors([0, -1000, 0], 1000, 3).forEach((pos) => {
-    addLight(
-      pos,
-      {
-        fallstart: 1,
-        fallend: 3000,
-        intensity: 3,
-      },
-      mapData,
-    )
-  })
-
+  overridePlayerScript()
   createPlayerSpawn({ type: 'relative', coords: [0, 0, 0] }, config)
 
   await createForestArea(mapData)
+
+  addTranslations(translations)
 
   const finalizedMapData = finalize(mapData)
   return saveToDisk(finalizedMapData)

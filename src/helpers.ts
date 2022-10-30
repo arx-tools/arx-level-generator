@@ -658,7 +658,7 @@ export const rotateVec3 = (point: Vector3, [a, b, g]: RotationVector3) => {
   return matrix3MulVec3(rotation, point)
 }
 
-export const circleOfVectors = (center, radius: number, division) => {
+export const circleOfVectors = (center: Vector3, radius: number, division: number) => {
   const angle = 360 / division
 
   const vectors: Vector3[] = []
