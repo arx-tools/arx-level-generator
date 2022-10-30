@@ -24,13 +24,13 @@ ON INITEND {
   IF ( ^$OBJONTOP != "NONE" ) {
     SET $tmp ^$OBJONTOP
     
-    HEROSAY $tmp
-    POP $obj1 $tmp
-    POP $obj2 $tmp
-    POP $obj3 $tmp
-    HEROSAY "1: ~$obj1~"
-    HEROSAY "2: ~$obj2~"
-    HEROSAY "3: ~$obj3~"
+    // HEROSAY $tmp
+    // POP $obj1 $tmp
+    // POP $obj2 $tmp
+    // POP $obj3 $tmp
+    // HEROSAY "1: ~$obj1~"
+    // HEROSAY "2: ~$obj2~"
+    // HEROSAY "3: ~$obj3~"
   }
 
   // IF ( ^$OBJONTOP == "NONE" ) {

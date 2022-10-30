@@ -1,9 +1,4 @@
-import {
-  addDependencyAs,
-  addScript,
-  createItem,
-  items,
-} from '../../../assets/items'
+import { addDependencyAs, addScript, createItem, items } from '../../../assets/items'
 import { declare, getInjections, SCRIPT_EOL } from '../../../scripting'
 
 const meshes = {
@@ -16,12 +11,7 @@ const fpsInMs = 1000 / FPS
 const raiseAnimMs = 1387
 const lowerAnimMs = 291
 
-const sounds = [
-  'portcullis-loop-raise',
-  'portcullis-loop-lower',
-  'portcullis-end-raise',
-  'portcullis-end-lower',
-]
+const sounds = ['portcullis-loop-raise', 'portcullis-loop-lower', 'portcullis-end-raise', 'portcullis-end-lower']
 
 export const createGate = (orientation, props = {}) => {
   const isWide = props.isWide ?? false
@@ -31,11 +21,7 @@ export const createGate = (orientation, props = {}) => {
   })
 
   sounds.forEach((filename) => {
-    addDependencyAs(
-      `projects/alias-nightmare/sfx/${filename}.wav`,
-      `sfx/${filename}.wav`,
-      ref,
-    )
+    addDependencyAs(`projects/alias-nightmare/sfx/${filename}.wav`, `sfx/${filename}.wav`, ref)
   })
 
   // TODO: handle props.isOpen
@@ -50,80 +36,76 @@ ON INIT {
   ${getInjections('init', self)}
   ACCEPT
 }
-ON INITEND {
-  ${getInjections('initend', self)}
-  COLLISION ON
-  ACCEPT
-}
+// ON INITEND {
+//   ${getInjections('initend', self)}
+//   COLLISION ON
+//   ACCEPT
+// }
 
-ON RAISE {
-  GOSUB STOPANIM
-  GOSUB STOPSOUND
-  GOSUB SOUND_LOOP_RAISE
-  TIMERend -m 1 ${raiseAnimMs} GOTO SOUND_END_RAISE
-  TIMERmove -m ${Math.ceil(
-    raiseAnimMs / fpsInMs,
-  )} ${fpsInMs} GOTO MOVE_STEP_RAISE
-  ACCEPT
-}
+// ON RAISE {
+//   GOSUB STOPANIM
+//   GOSUB STOPSOUND
+//   GOSUB SOUND_LOOP_RAISE
+//   TIMERend -m 1 ${raiseAnimMs} GOTO SOUND_END_RAISE
+//   TIMERmove -m ${Math.ceil(raiseAnimMs / fpsInMs)} ${fpsInMs} GOTO MOVE_STEP_RAISE
+//   ACCEPT
+// }
 
-ON LOWER {
-  GOSUB STOPANIM
-  GOSUB STOPSOUND
-  GOSUB SOUND_LOOP_LOWER
-  TIMERend -m 1 ${lowerAnimMs} GOTO SOUND_END_LOWER
-  TIMERmove -m ${Math.ceil(
-    lowerAnimMs / fpsInMs,
-  )} ${fpsInMs} GOTO MOVE_STEP_LOWER
-  ACCEPT
-}
+// ON LOWER {
+//   GOSUB STOPANIM
+//   GOSUB STOPSOUND
+//   GOSUB SOUND_LOOP_LOWER
+//   TIMERend -m 1 ${lowerAnimMs} GOTO SOUND_END_LOWER
+//   TIMERmove -m ${Math.ceil(lowerAnimMs / fpsInMs)} ${fpsInMs} GOTO MOVE_STEP_LOWER
+//   ACCEPT
+// }
 
->>MOVE_STEP_RAISE {
-  HEROSAY "move up"
-  MOVE 0 -10 0
-  ACCEPT
-}
+// >>MOVE_STEP_RAISE {
+//   HEROSAY "move up"
+//   MOVE 0 -10 0
+//   ACCEPT
+// }
 
->>MOVE_STEP_LOWER {
-  MOVE 0 10 0
-  ACCEPT
-}
+// >>MOVE_STEP_LOWER {
+//   MOVE 0 10 0
+//   ACCEPT
+// }
 
->>SOUND_LOOP_RAISE {
-  GOSUB STOPSOUND
-  PLAY -li "portcullis-loop-raise"
-  RETURN
-}
+// >>SOUND_LOOP_RAISE {
+//   GOSUB STOPSOUND
+//   PLAY -li "portcullis-loop-raise"
+//   RETURN
+// }
 
->>SOUND_LOOP_LOWER {
-  GOSUB STOPSOUND
-  PLAY -li "portcullis-loop-lower"
-  RETURN
-}
+// >>SOUND_LOOP_LOWER {
+//   GOSUB STOPSOUND
+//   PLAY -li "portcullis-loop-lower"
+//   RETURN
+// }
 
->>SOUND_END_RAISE {
-  HEROSAY "sound up"
-  GOSUB STOPSOUND
-  PLAY -i "portcullis-end-raise"
-  ACCEPT
-}
+// >>SOUND_END_RAISE {
+//   HEROSAY "sound up"
+//   GOSUB STOPSOUND
+//   PLAY -i "portcullis-end-raise"
+//   ACCEPT
+// }
 
->>SOUND_END_LOWER {
-  GOSUB STOPSOUND
-  PLAY -i "portcullis-end-lower"
-  ACCEPT
-}
+// >>SOUND_END_LOWER {
+//   GOSUB STOPSOUND
+//   PLAY -i "portcullis-end-lower"
+//   ACCEPT
+// }
 
->>STOPSOUND {
-  ${sounds.map((filename) => `PLAY -s "${filename}"`).join(SCRIPT_EOL)}
-  RETURN
-}
+// >>STOPSOUND {
+//   ${sounds.map((filename) => `PLAY -s "${filename}"`).join(SCRIPT_EOL)}
+//   RETURN
+// }
 
->>STOPANIM {
-  TIMERend OFF
-  TIMERmove OFF
-  RETURN
-}
+// >>STOPANIM {
+//   TIMERend OFF
+//   TIMERmove OFF
+//   RETURN
+// }
 `
   }, ref)
 

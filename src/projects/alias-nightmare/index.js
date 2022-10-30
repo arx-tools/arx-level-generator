@@ -185,35 +185,35 @@ const generate = async (config) => {
 
   const welcomeMarker = createWelcomeMarker(islands[0].pos, config)
 
-  /*
-  createHangingCorpse({ type: 'relative', coords: [-300, -150, -200]}, {a: 0, b: 145, g: 0]}, {
-    name: "[public_falan_tomb]",
-  });
-  */
+  // /*
+  // createHangingCorpse({ type: 'relative', coords: [-300, -150, -200]}, {a: 0, b: 145, g: 0]}, {
+  //   name: "[public_falan_tomb]",
+  // });
+  // */
 
-  circleOfVectors(islands[2].pos, 200, 9).forEach((pos) => {
-    createFern({ type: 'relative', coords: pos })
-  })
-
-  defineStatue()
-  createStatue(islands[2].pos)
-
-  createStone(move(-100, -10, 0, islands[0].pos), [0, 0, 0], {
-    weight: 1,
-    scale: 0.7,
-  })
-  createStone(move(-200, -10, 0, islands[0].pos), [0, 0, 0], {
-    weight: 3,
-    scale: 1.2,
-  })
-  // createStone(move(-200, -10, -100, islands[0].pos), [0, 0, 0], {
-  //   weight: 2,
-  //   scale: 0.9,
+  // circleOfVectors(islands[2].pos, 200, 9).forEach((pos) => {
+  //   createFern({ type: 'relative', coords: pos })
   // })
-  // createStone(move(-100, -10, -100, islands[0].pos), [0, 0, 0], {
+
+  // defineStatue()
+  // createStatue(islands[2].pos)
+
+  // createStone(move(-100, -10, 0, islands[0].pos), [0, 0, 0], {
   //   weight: 1,
-  //   scale: 0.8,
+  //   scale: 0.7,
   // })
+  // createStone(move(-200, -10, 0, islands[0].pos), [0, 0, 0], {
+  //   weight: 3,
+  //   scale: 1.2,
+  // })
+  // // createStone(move(-200, -10, -100, islands[0].pos), [0, 0, 0], {
+  // //   weight: 2,
+  // //   scale: 0.9,
+  // // })
+  // // createStone(move(-100, -10, -100, islands[0].pos), [0, 0, 0], {
+  // //   weight: 1,
+  // //   scale: 0.8,
+  // // })
 
   const mapData = generateBlankMapData(config)
 
@@ -238,22 +238,22 @@ const generate = async (config) => {
     5000,
   )(mapData)
 
-  setColor(colors.ambience[0], mapData)
+  // setColor(colors.ambience[0], mapData)
 
-  addZone(
-    { type: 'relative', coords: [0, 5000, 0] },
-    [MAP_MAX_WIDTH * 100, 1000, MAP_MAX_HEIGHT * 100],
-    `fall-detector`,
-    ambiences.none,
-    0,
-    PATH_RGB,
-  )(mapData)
+  // addZone(
+  //   { type: 'relative', coords: [0, 5000, 0] },
+  //   [MAP_MAX_WIDTH * 100, 1000, MAP_MAX_HEIGHT * 100],
+  //   `fall-detector`,
+  //   ambiences.none,
+  //   0,
+  //   PATH_RGB,
+  // )(mapData)
 
-  // createFallSaver(islands[0].pos, welcomeMarker)
-  // createGravityInducer(origin, mapData)
+  // // createFallSaver(islands[0].pos, welcomeMarker)
+  // // createGravityInducer(origin, mapData)
 
-  // setTexture(textures.stone.templeWall[2], mapData)
-  // pillars(islands[0].pos, 20, 5000, 1000, [200, 200, 0, 0], mapData)
+  // // setTexture(textures.stone.templeWall[2], mapData)
+  // // pillars(islands[0].pos, 20, 5000, 1000, [200, 200, 0, 0], mapData)
 
   islands.forEach((config, idx) => {
     island({ ...config, idx }, mapData)

@@ -1,13 +1,10 @@
 import { without } from '../../faux-ramda'
 import { NORTH, SOUTH, EAST, WEST } from './constants'
-import {
-  move,
-  magnitude,
-  subtractVec3,
-  radToDeg,
-  isBetweenInclusive,
-} from '../../helpers'
+import { move, magnitude, subtractVec3, radToDeg, isBetweenInclusive, setTexture } from '../../helpers'
 import { ISLAND_JOINT_LENGTH } from '../../constants'
+import { surface } from '../../prefabs/base/surface'
+import { textures } from '../../assets/textures'
+import { Euler, Quaternion, Vector3, MathUtils } from 'three'
 
 const jointOffset = (ISLAND_JOINT_LENGTH * 100) / 2 - 100
 
@@ -15,39 +12,19 @@ const getJoints = ({ pos, entrances, exits, width, height }) => {
   const joints = {}
 
   if ((exits | entrances) & NORTH) {
-    joints.north = move(
-      0,
-      0,
-      (height * 100) / 2 + jointOffset + (ISLAND_JOINT_LENGTH * 100) / 2,
-      pos,
-    )
+    joints.north = move(0, 0, (height * 100) / 2 + jointOffset + (ISLAND_JOINT_LENGTH * 100) / 2, pos)
   }
 
   if ((exits | entrances) & SOUTH) {
-    joints.south = move(
-      0,
-      0,
-      -((height * 100) / 2 + jointOffset + (ISLAND_JOINT_LENGTH * 100) / 2),
-      pos,
-    )
+    joints.south = move(0, 0, -((height * 100) / 2 + jointOffset + (ISLAND_JOINT_LENGTH * 100) / 2), pos)
   }
 
   if ((exits | entrances) & EAST) {
-    joints.east = move(
-      (width * 100) / 2 + jointOffset + (ISLAND_JOINT_LENGTH * 100) / 2,
-      0,
-      0,
-      pos,
-    )
+    joints.east = move((width * 100) / 2 + jointOffset + (ISLAND_JOINT_LENGTH * 100) / 2, 0, 0, pos)
   }
 
   if ((exits | entrances) & WEST) {
-    joints.west = move(
-      -((width * 100) / 2 + jointOffset + (ISLAND_JOINT_LENGTH * 100) / 2),
-      0,
-      0,
-      pos,
-    )
+    joints.west = move(-((width * 100) / 2 + jointOffset + (ISLAND_JOINT_LENGTH * 100) / 2), 0, 0, pos)
   }
 
   return joints
@@ -137,26 +114,41 @@ const bridges = (islands, mapData) => {
     }, [])
     .filter((pair, idx, pairs) => {
       // filter out pairs, which have no pair
-      return pairs
-        .map(JSON.stringify)
-        .includes(JSON.stringify([pair[1], pair[0]]))
+      return pairs.map(JSON.stringify).includes(JSON.stringify([pair[1], pair[0]]))
     })
     .reduce((acc, pair) => {
       // duplicates can now be safely reduce into single pairs
       const accStr = acc.map(JSON.stringify)
-      if (
-        accStr.includes(JSON.stringify(pair)) ||
-        accStr.includes(JSON.stringify([pair[1], pair[0]]))
-      ) {
+      if (accStr.includes(JSON.stringify(pair)) || accStr.includes(JSON.stringify([pair[1], pair[0]]))) {
         return acc
       }
       acc.push(pair)
       return acc
     }, [])
 
-  return pairs.reduce((mapData, [a, b], idx) => {
-    // TODO: render polygons between the 2 points
-    console.log('TODO: render bridge between', a, 'and', b)
+  return pairs.reduce((mapData, [aCoords, bCoords], idx) => {
+    const a = new Vector3(...aCoords)
+    const b = new Vector3(...bCoords)
+
+    const distance = a.distanceTo(b) + 1000
+
+    a.normalize()
+    b.normalize()
+
+    const quaternion = new Quaternion()
+    quaternion.setFromUnitVectors(a, b)
+
+    const euler = new Euler()
+    euler.setFromQuaternion(quaternion)
+
+    const rotation = {
+      a: MathUtils.radToDeg(euler.toArray()[0]) + 90,
+      b: MathUtils.radToDeg(euler.toArray()[1]),
+      g: MathUtils.radToDeg(euler.toArray()[2]) + 180,
+    }
+
+    setTexture(textures.ground.moss, mapData)
+    surface({ type: 'relative', coords: move(-150, 0, -500, aCoords) }, [300, distance], rotation)(mapData)
 
     return mapData
   }, mapData)

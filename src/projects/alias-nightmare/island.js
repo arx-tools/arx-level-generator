@@ -109,6 +109,7 @@ const island = (config, mapData) => {
     markAsUsed(eventBus)
   }
 
+  /*
   // TODO: moveTo the used gates + add small bridge segments
   if (exits & NORTH) {
     markAsUsed(gates.north)
@@ -154,6 +155,7 @@ const island = (config, mapData) => {
       gates.west,
     )
   }
+  */
 
   setColor(colors.terrain, mapData)
   setTexture(textures.stone.humanWall1, mapData)
