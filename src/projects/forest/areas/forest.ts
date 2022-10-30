@@ -112,9 +112,9 @@ const addLighting = (mapData: MapData) => {
 }
 
 export const createForestArea = async (mapData: MapData) => {
+  addLighting(mapData)
   addForestFloor(mapData)
   addForestEdge(500, mapData)
-  addPlants(30)
 
   await createTree({ type: 'relative', coords: [0, 0, -300] }, 50, mapData)
   await createFountain({ type: 'relative', coords: [300, -10, 300] }, 3, mapData)
@@ -125,6 +125,6 @@ export const createForestArea = async (mapData: MapData) => {
     { name: '[hanging-corpse]' },
   )
 
+  addPlants(30)
   addCrickets()
-  addLighting(mapData)
 }

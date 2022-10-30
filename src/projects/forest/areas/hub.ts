@@ -26,9 +26,12 @@ const addHubFloor = (mapData: MapData) => {
   }))(mapData)
 }
 
-export const createHub = async (mapData: MapData) => {
-  addHubFloor(mapData)
-
+const addLighting = (mapData: MapData) => {
   setColor('white', mapData)
   addLight([0, -1000, 2000], { fallstart: 1, fallend: 3000, intensity: 5 }, mapData)
+}
+
+export const createHub = async (mapData: MapData) => {
+  addLighting(mapData)
+  addHubFloor(mapData)
 }
