@@ -302,6 +302,19 @@ export const uninstall = async (dir) => {
   } catch (e) {}
 }
 
+// source: https://en.wikipedia.org/wiki/ISO/IEC_8859-15
+const latin9ToLatin1 = (str: string) => {
+  return str
+    .replace('€', '¤')
+    .replace('Š', '¦')
+    .replace('š', '¨')
+    .replace('Ž', '´')
+    .replace('ž', '¸')
+    .replace('Œ', '¼')
+    .replace('œ', '½')
+    .replace('Ÿ', '¾')
+}
+
 export const saveToDisk = async (finalizedMapData) => {
   const { levelIdx } = finalizedMapData.config
   const defaultOutputDir = resolve('./dist')
@@ -357,6 +370,7 @@ export const saveToDisk = async (finalizedMapData) => {
   // ------------
 
   for (let [filename, script] of Object.entries(scripts)) {
+    script = latin9ToLatin1(script)
     await fs.promises.writeFile(filename, script, 'latin1')
   }
 
