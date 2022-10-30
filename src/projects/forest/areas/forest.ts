@@ -2,16 +2,7 @@ import { createFern } from '../../alias-nightmare/items/fern'
 import { createTree } from '../tree'
 import { createHangingCorpse } from '../../alias-nightmare/items/hangingCorpse'
 import { Vector3 } from 'three'
-import {
-  randomBetween,
-  isBetweenInclusive,
-  MapData,
-  setTexture,
-  pickRandom,
-  setColor,
-  addLight,
-  circleOfVectors,
-} from '../../../helpers'
+import { randomBetween, MapData, setTexture, pickRandom, setColor, addLight, circleOfVectors } from '../../../helpers'
 import { surface, uvFitToHeight } from '../../../prefabs/base/surface'
 import { textures } from '../../../assets/textures'
 import { identity } from '../../../faux-ramda'
@@ -54,9 +45,7 @@ const addPlants = (plantsToCreate: number) => {
     createFern(
       { type: 'relative', coords: newCoord.toArray() },
       { a: 0, b: randomBetween(0, 360), g: 0 },
-      {
-        name: '[fern]',
-      },
+      { name: '[fern]' },
     )
   }
 }

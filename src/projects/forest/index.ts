@@ -3,24 +3,12 @@ import { getInjections } from '../../scripting'
 import { RelativeCoords } from '../../types'
 import { hideMinimap } from '../shared/reset'
 import { ambiences } from '../../assets/ambiences'
-import { textures } from '../../assets/textures'
-import {
-  generateBlankMapData,
-  movePlayerTo,
-  setColor,
-  addZone,
-  setTexture,
-  finalize,
-  saveToDisk,
-  move,
-} from '../../helpers'
-import { createWall } from './wall'
-import { createDoor } from './door'
-import { surface, uvFitToHeight } from '../../prefabs/base/surface'
+import { generateBlankMapData, movePlayerTo, setColor, addZone, finalize, saveToDisk } from '../../helpers'
 import { createForestArea } from './areas/forest'
 import { addTranslations } from '../../assets/i18n'
 import translations from './i18n.json'
 import { overridePlayerScript } from '../shared/player'
+import { createGateArea } from './areas/gate'
 
 const createPlayerSpawn = (pos: RelativeCoords, config) => {
   const ref = createItem(items.marker)
@@ -49,11 +37,6 @@ ON CONTROLLEDZONE_ENTER {
   return ref
 }
 
-const colors: Record<string, string> = {
-  sky: '#010101',
-  general: '#515151',
-}
-
 const generate = async (config) => {
   const { origin } = config
 
@@ -68,7 +51,7 @@ const generate = async (config) => {
     mapData,
   )
 
-  setColor(colors.sky, mapData)
+  setColor('#010101', mapData)
   addZone(
     {
       type: 'relative',
@@ -80,51 +63,11 @@ const generate = async (config) => {
     5000,
   )(mapData)
 
-  setColor(colors.general, mapData)
-
-  const wallPos: RelativeCoords = { type: 'relative', coords: [-600, 0, 500] }
-  const holeOffset: number = 250
-  const wallThickness = 800
-
-  setTexture(textures.ground.mossBorder, mapData)
-  surface(
-    { type: 'relative', coords: move(holeOffset + 200 - 25, 0, 0, wallPos.coords) },
-    [200, 200],
-    {
-      a: 90,
-      b: 0,
-      g: -90,
-    },
-    uvFitToHeight([200, 200]),
-    [0, 0],
-  )(mapData)
-
-  setTexture(textures.ground.rock, mapData)
-  surface(
-    { type: 'relative', coords: move(holeOffset + 200 - 25, 0, 200, wallPos.coords) },
-    [wallThickness - 150, 200],
-    {
-      a: 90,
-      b: 0,
-      g: -90,
-    },
-    uvFitToHeight([wallThickness - 150, 200]),
-  )(mapData)
-
-  createWall(wallPos, [1200, wallThickness], holeOffset, [150, 220], mapData)
-  createDoor(
-    { type: 'relative', coords: move(150, 0, 40, move(holeOffset, 0, 0, wallPos.coords)) },
-    { a: 0, b: 270, g: 0 },
-  )
-  createDoor(
-    { type: 'relative', coords: move(150, 0, wallThickness - 40, move(holeOffset, 0, 0, wallPos.coords)) },
-    { a: 0, b: 270, g: 0 },
-  )
-
   overridePlayerScript()
   createPlayerSpawn({ type: 'relative', coords: [0, 0, 0] }, config)
 
   await createForestArea(mapData)
+  await createGateArea(mapData)
 
   addTranslations(translations)
 
