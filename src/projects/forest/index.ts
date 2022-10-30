@@ -9,6 +9,7 @@ import { addTranslations } from '../../assets/i18n'
 import translations from './i18n.json'
 import { overridePlayerScript } from '../shared/player'
 import { createGateArea } from './areas/gate'
+import { createHub } from './areas/hub'
 
 const createPlayerSpawn = (pos: RelativeCoords, config) => {
   const ref = createItem(items.marker)
@@ -68,6 +69,7 @@ const generate = async (config) => {
 
   await createForestArea(mapData)
   await createGateArea(mapData)
+  await createHub(mapData)
 
   addTranslations(translations)
 

@@ -14,13 +14,14 @@ export const createWall = (
   const blueSquareHeight = 70
   const bricksHeight = 280
   const foundationHeight = 40
+  const foundationGrounding = 50
   const doorframeWidth = 10
 
   setTexture(textures.stone.stone[0], mapData)
 
   surface(
-    { type: 'relative', coords: move(0, 0, -10, wallPos.coords) },
-    [holeOffset - doorframeWidth, foundationHeight - 10],
+    { type: 'relative', coords: move(0, foundationGrounding, -10, wallPos.coords) },
+    [holeOffset - doorframeWidth, foundationHeight - 10 + foundationGrounding],
     { a: 0, b: 180, g: 0 },
     [100, 100],
   )(mapData)
@@ -33,8 +34,11 @@ export const createWall = (
   )(mapData)
 
   surface(
-    { type: 'relative', coords: move(holeOffset + holeWidth + doorframeWidth, 0, -10, wallPos.coords) },
-    [width - holeOffset - holeWidth - doorframeWidth, foundationHeight - 10],
+    {
+      type: 'relative',
+      coords: move(holeOffset + holeWidth + doorframeWidth, foundationGrounding, -10, wallPos.coords),
+    },
+    [width - holeOffset - holeWidth - doorframeWidth, foundationHeight - 10 + foundationGrounding],
     { a: 0, b: 180, g: 0 },
     [100, 100],
   )(mapData)
@@ -52,9 +56,9 @@ export const createWall = (
   surface(
     {
       type: 'relative',
-      coords: move(holeOffset - doorframeWidth, 0, thickness + 10, wallPos.coords),
+      coords: move(holeOffset - doorframeWidth, foundationGrounding, thickness + 10, wallPos.coords),
     },
-    [holeOffset - doorframeWidth, foundationHeight - 10],
+    [holeOffset - doorframeWidth, foundationHeight - 10 + foundationGrounding],
     { a: 0, b: 0, g: 0 },
     [100, 100],
   )(mapData)
@@ -70,8 +74,8 @@ export const createWall = (
   )(mapData)
 
   surface(
-    { type: 'relative', coords: move(width, 0, thickness + 10, wallPos.coords) },
-    [width - holeOffset - holeWidth - doorframeWidth, foundationHeight - 10],
+    { type: 'relative', coords: move(width, foundationGrounding, thickness + 10, wallPos.coords) },
+    [width - holeOffset - holeWidth - doorframeWidth, foundationHeight - 10 + foundationGrounding],
     { a: 0, b: 0, g: 0 },
     [100, 100],
   )(mapData)
