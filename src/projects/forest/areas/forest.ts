@@ -87,30 +87,16 @@ const addForestFloor = (mapData: MapData) => {
   }))(mapData)
 }
 
-export const createForestArea = async (mapData: MapData) => {
-  addForestFloor(mapData)
-  addForestEdge(500, mapData)
-  addPlants(30)
-
-  await createTree({ type: 'relative', coords: [0, 0, -300] }, 50, mapData)
-  await createFountain({ type: 'relative', coords: [300, -10, 300] }, 3, mapData)
-
-  createHangingCorpse(
-    { type: 'relative', coords: [290, -290, -80] },
-    { a: 0, b: 195, g: 0 },
-    {
-      name: '[hanging-corpse]',
-    },
-  )
-
+const addCrickets = () => {
   defineCrickets()
-
   circleOfVectors([0, -100, -300], 1300, 7)
     .filter(([, , z]) => z < 200)
     .forEach((coords) => {
       createCrickets({ type: 'relative', coords })
     })
+}
 
+const addLighting = (mapData: MapData) => {
   setColor('#161918', mapData)
   circleOfVectors([0, -200, 0], 500, 5).forEach(([x, y, z]) => {
     addLight(
@@ -123,4 +109,22 @@ export const createForestArea = async (mapData: MapData) => {
       mapData,
     )
   })
+}
+
+export const createForestArea = async (mapData: MapData) => {
+  addForestFloor(mapData)
+  addForestEdge(500, mapData)
+  addPlants(30)
+
+  await createTree({ type: 'relative', coords: [0, 0, -300] }, 50, mapData)
+  await createFountain({ type: 'relative', coords: [300, -10, 300] }, 3, mapData)
+
+  createHangingCorpse(
+    { type: 'relative', coords: [290, -290, -80] },
+    { a: 0, b: 195, g: 0 },
+    { name: '[hanging-corpse]' },
+  )
+
+  addCrickets()
+  addLighting(mapData)
 }
