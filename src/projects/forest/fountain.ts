@@ -1,5 +1,6 @@
 import path from 'path'
 import { flipPolygonAxis, loadObj, renderPolygonData } from '../../assets/models'
+import { POLY_STONE } from '../../constants'
 import { MapData, setTexture } from '../../helpers'
 import { RelativeCoords } from '../../types'
 
@@ -11,6 +12,7 @@ export const createFountain = async (pos: RelativeCoords, scale: number, mapData
       path: 'projects/forest/models/fountain',
       src: 'fountain-[stone].jpg',
       native: false,
+      flags: POLY_STONE,
     },
     mapData,
   )

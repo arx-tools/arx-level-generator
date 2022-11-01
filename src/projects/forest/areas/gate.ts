@@ -4,6 +4,11 @@ import { createDoor } from '../door'
 import { surface, uvFitToHeight } from '../../../prefabs/base/surface'
 import { textures } from '../../../assets/textures'
 import { RelativeCoords } from '../../../types'
+import { createLadder } from '../ladder'
+
+const addLadder = async (mapData: MapData) => {
+  await createLadder({ type: 'relative', coords: [20, -170, 1410] }, 20, mapData)
+}
 
 export const createGateArea = async (mapData: MapData) => {
   const wallLength = 1600
@@ -51,6 +56,9 @@ export const createGateArea = async (mapData: MapData) => {
   )(mapData)
 
   createWall(wallPos, [wallLength, wallThickness], holeOffset, [150, 220], mapData)
+
+  await addLadder(mapData)
+
   createDoor(
     { type: 'relative', coords: move(150, 0, 40, move(holeOffset, 0, 0, wallPos.coords)) },
     { a: 0, b: 270, g: 0 },

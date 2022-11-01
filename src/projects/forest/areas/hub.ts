@@ -14,7 +14,7 @@ import {
 const addHubFloor = (mapData: MapData) => {
   setColor('#515151', mapData)
   setTexture(textures.ground.moss, mapData)
-  plain([-200, 0, 1800], [16, 12], 'floor', identity, () => ({
+  plain([-200, 0, 2000], [16, 16], 'floor', identity, () => ({
     quad: pickRandom([
       TEXTURE_QUAD_TOP_LEFT,
       TEXTURE_QUAD_TOP_RIGHT,

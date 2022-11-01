@@ -47,6 +47,7 @@ export const loadObj = async (filename: string) => {
     const source = await fs.promises.readFile(filename, 'utf-8')
     rows = source.trim().split(EOL)
   } catch (e: unknown) {
+    console.error('loadObj: file not found')
     return polygons
   }
 
