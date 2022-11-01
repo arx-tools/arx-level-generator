@@ -350,9 +350,11 @@ export const scaleUV =
     }
   }
 
-//
-export const uvFixV =
-  (height: number) =>
-  (uv: [number, number]): [number, number] => {
-    return scaleUV((100 / height) * 100)(uv)
+export const uvFixPercentage = (scale: number | [number, number]) => (): [number, number] => {
+  if (Array.isArray(scale)) {
+    const [scaleUPercent, scaleVPercent] = scale
+    return [scaleUPercent / 100, scaleVPercent / 100]
+  } else {
+    return [scale / 100, scale / 100]
   }
+}

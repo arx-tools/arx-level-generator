@@ -1,7 +1,7 @@
 import { textures } from '../../assets/textures'
 import { setTexture } from '../../helpers'
 import { evenAndRemainder, MapData, move } from '../../helpers'
-import { scaleUV, surface, uvFitToHeight, uvFixV } from '../../prefabs/base/surface'
+import { scaleUV, surface, uvFitToHeight, uvFixPercentage } from '../../prefabs/base/surface'
 import { RelativeCoords } from '../../types'
 
 const blueSquareHeight = 70
@@ -23,13 +23,13 @@ const addFoundation = (
     { type: 'relative', coords: move(0, 0, -10, wallPos.coords) },
     [holeOffset - doorframeWidth, foundationHeight - 10 + 0],
     { a: 0, b: 180, g: 0 },
-    () => [100, 100],
+    uvFixPercentage(200),
   )(mapData)
   surface(
     { type: 'relative', coords: move(0, -(foundationHeight - 10), -10, wallPos.coords) },
     [holeOffset - doorframeWidth, 10 * Math.SQRT2],
     { a: -45, b: 180, g: 0 },
-    () => [100, 100],
+    uvFixPercentage(200),
     [0, -(foundationHeight - 10)],
   )(mapData)
 
@@ -40,7 +40,7 @@ const addFoundation = (
     },
     [width - holeOffset - holeWidth - doorframeWidth, foundationHeight - 10 + 0],
     { a: 0, b: 180, g: 0 },
-    () => [100, 100],
+    uvFixPercentage(200),
   )(mapData)
   surface(
     {
@@ -49,7 +49,7 @@ const addFoundation = (
     },
     [width - holeOffset - holeWidth - doorframeWidth, 10 * Math.SQRT2],
     { a: -45, b: 180, g: 0 },
-    () => [100, 100],
+    uvFixPercentage(200),
     [0, -(foundationHeight - 10)],
   )(mapData)
 
@@ -60,7 +60,7 @@ const addFoundation = (
     },
     [holeOffset - doorframeWidth, foundationHeight - 10 + 0],
     { a: 0, b: 0, g: 0 },
-    () => [100, 100],
+    uvFixPercentage(200),
   )(mapData)
   surface(
     {
@@ -69,7 +69,7 @@ const addFoundation = (
     },
     [holeOffset - doorframeWidth, 10 * Math.SQRT2],
     { a: 45, b: 0, g: 0 },
-    () => [100, 100],
+    uvFixPercentage(200),
     [0, -(foundationHeight - 10)],
   )(mapData)
 
@@ -77,7 +77,7 @@ const addFoundation = (
     { type: 'relative', coords: move(width, 0, thickness + 10, wallPos.coords) },
     [width - holeOffset - holeWidth - doorframeWidth, foundationHeight - 10 + 0],
     { a: 0, b: 0, g: 0 },
-    () => [100, 100],
+    uvFixPercentage(200),
   )(mapData)
   surface(
     {
@@ -86,7 +86,7 @@ const addFoundation = (
     },
     [width - holeOffset - holeWidth - doorframeWidth, 10 * Math.SQRT2],
     { a: 45, b: 0, g: 0 },
-    () => [100, 100],
+    uvFixPercentage(200),
     [0, -(foundationHeight - 10)],
   )(mapData)
 }
@@ -104,7 +104,7 @@ const addWall = (
     { type: 'relative', coords: move(0, -foundationHeight, 0, wallPos.coords) },
     [holeOffset - doorframeWidth, bricksHeight - foundationHeight],
     { a: 0, b: 180, g: 0 },
-    () => [100, 100],
+    uvFixPercentage(200),
   )(mapData)
   surface(
     {
@@ -113,7 +113,7 @@ const addWall = (
     },
     [holeWidth + 2 * doorframeWidth, bricksHeight - holeHeight - doorframeWidth],
     { a: 0, b: 180, g: 0 },
-    () => [100, 100],
+    uvFixPercentage(200),
   )(mapData)
   surface(
     {
@@ -122,14 +122,14 @@ const addWall = (
     },
     [width - holeOffset - holeWidth - doorframeWidth, bricksHeight - foundationHeight],
     { a: 0, b: 180, g: 0 },
-    () => [100, 100],
+    uvFixPercentage(200),
   )(mapData)
 
   surface(
     { type: 'relative', coords: move(width, -foundationHeight, thickness, wallPos.coords) },
     [width - holeOffset - holeWidth - doorframeWidth, bricksHeight - foundationHeight],
     { a: 0, b: 0, g: 0 },
-    () => [100, 100],
+    uvFixPercentage(200),
   )(mapData)
   surface(
     {
@@ -138,7 +138,7 @@ const addWall = (
     },
     [holeWidth + 2 * doorframeWidth, bricksHeight - holeHeight - doorframeWidth],
     { a: 0, b: 0, g: 0 },
-    () => [100, 100],
+    uvFixPercentage(200),
   )(mapData)
   surface(
     {
@@ -147,7 +147,7 @@ const addWall = (
     },
     [holeOffset - doorframeWidth, bricksHeight - foundationHeight],
     { a: 0, b: 0, g: 0 },
-    () => [100, 100],
+    uvFixPercentage(200),
   )(mapData)
 }
 
