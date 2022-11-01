@@ -56,19 +56,19 @@ const addForestEdge = (forestHeight: number, mapData: MapData) => {
     { type: 'relative', coords: [-600, 30, -900] },
     [1400, forestHeight],
     { a: 0, b: 90, g: 0 },
-    uvFitToHeight([1400, forestHeight]),
+    uvFitToHeight(),
   )(mapData)
   surface(
     { type: 'relative', coords: [600, 30, 500] },
     [1400, forestHeight],
     { a: 0, b: -90, g: 0 },
-    uvFitToHeight([1400, forestHeight]),
+    uvFitToHeight(),
   )(mapData)
   surface(
     { type: 'relative', coords: [600, 30, -900] },
     [1200, forestHeight],
     { a: 0, b: 0, g: 0 },
-    uvFitToHeight([1200, forestHeight]),
+    uvFitToHeight(),
   )(mapData)
 }
 

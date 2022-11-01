@@ -1,7 +1,7 @@
 import { MapData, move, setColor, setTexture } from '../../../helpers'
 import { createWall } from '../wall'
 import { createDoor } from '../door'
-import { surface, uvFitToHeight } from '../../../prefabs/base/surface'
+import { surface, uvFitToHeight, uvFitToWidth } from '../../../prefabs/base/surface'
 import { textures } from '../../../assets/textures'
 import { RelativeCoords } from '../../../types'
 import { createLadder } from '../ladder'
@@ -26,7 +26,8 @@ export const createGateArea = async (mapData: MapData) => {
       b: 0,
       g: -90,
     },
-    uvFitToHeight([200, 200]),
+    // uvFitToHeight()(uvFitToWidth()([200, 200])),
+    uvFitToWidth(),
     [0, 0],
   )(mapData)
 
@@ -39,7 +40,7 @@ export const createGateArea = async (mapData: MapData) => {
       b: 0,
       g: -90,
     },
-    uvFitToHeight([wallThickness - 400, 200]),
+    uvFitToWidth(),
   )(mapData)
 
   setTexture(textures.ground.mossBorder, mapData)
@@ -51,7 +52,7 @@ export const createGateArea = async (mapData: MapData) => {
       b: 0,
       g: 90,
     },
-    uvFitToHeight([200, 200]),
+    uvFitToWidth(),
     [0, 0],
   )(mapData)
 

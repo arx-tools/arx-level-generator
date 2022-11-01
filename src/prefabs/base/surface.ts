@@ -226,7 +226,7 @@ export const surface = (
   pos: RelativeCoords,
   [surfaceWidth, surfaceHeight]: [number, number],
   rotation: RotationVertex3,
-  [scaleUPercent, scaleVPercent]: [number, number] = [100, 100],
+  calculateScaleUV: ([surfaceWidth, surfaceHeight]: [number, number]) => [number, number] = () => [100, 100],
   [offsetUPercent, offsetVPercent]: [number, number] = [0, 0],
 ) => {
   return (mapData: MapData) => {
@@ -246,9 +246,9 @@ export const surface = (
     const [numberOfWholeTilesW, lastTileWidth] = evenAndRemainder(100, surfaceWidth)
     const [numberOfWholeTilesH, lastTileHeight] = evenAndRemainder(100, surfaceHeight)
 
+    const [scaleU, scaleV] = calculateScaleUV([surfaceWidth, surfaceHeight])
+
     if (numberOfWholeTilesH > 0 && numberOfWholeTilesW > 0) {
-      const scaleU = (scaleUPercent / 100) * (surfaceWidth / 100)
-      const scaleV = (scaleVPercent / 100) * (surfaceWidth / 100)
       for (let h = 0; h < numberOfWholeTilesH; h++) {
         for (let w = 0; w < numberOfWholeTilesW; w++) {
           fullBlock(
@@ -269,9 +269,6 @@ export const surface = (
     }
 
     if (lastTileHeight > 0) {
-      const scaleU = (scaleUPercent / 100) * (surfaceWidth / 100)
-      const scaleV = ((scaleVPercent / 100) * (surfaceWidth / 100)) / (lastTileHeight / 100)
-
       for (let w = 0; w < numberOfWholeTilesW; w++) {
         bottomBlock(
           xyz,
@@ -279,7 +276,7 @@ export const surface = (
           [numberOfWholeTilesW, lastTileWidth],
           [numberOfWholeTilesH, lastTileHeight],
           [w, 1],
-          [scaleU, scaleV],
+          [scaleU, scaleV / (lastTileHeight / 100)],
           [offsetUPercent, offsetVPercent],
           texture,
           textureFlags,
@@ -290,9 +287,6 @@ export const surface = (
     }
 
     if (lastTileWidth > 0) {
-      const scaleU = ((scaleUPercent / 100) * (surfaceWidth / 100)) / (lastTileWidth / 100)
-      const scaleV = (scaleVPercent / 100) * (surfaceWidth / 100)
-
       for (let h = 0; h < numberOfWholeTilesH; h++) {
         rightBlock(
           xyz,
@@ -300,7 +294,7 @@ export const surface = (
           [numberOfWholeTilesW, lastTileWidth],
           [numberOfWholeTilesH, lastTileHeight],
           [1, h],
-          [scaleU, scaleV],
+          [scaleU / (lastTileWidth / 100), scaleV],
           [offsetUPercent, offsetVPercent],
           texture,
           textureFlags,
@@ -311,16 +305,13 @@ export const surface = (
     }
 
     if (lastTileWidth > 0 && lastTileHeight > 0) {
-      const scaleU = ((scaleUPercent / 100) * (surfaceWidth / 100)) / (lastTileWidth / 100)
-      const scaleV = ((scaleVPercent / 100) * (surfaceWidth / 100)) / (lastTileHeight / 100)
-
       closingBlock(
         xyz,
         euler,
         [numberOfWholeTilesW, lastTileWidth],
         [numberOfWholeTilesH, lastTileHeight],
         [1, 1],
-        [scaleU, scaleV],
+        [scaleU / (lastTileWidth / 100), scaleV / (lastTileHeight / 100)],
         [offsetUPercent, offsetVPercent],
         texture,
         textureFlags,
@@ -331,25 +322,37 @@ export const surface = (
   }
 }
 
-export const uvFitToHeight = ([surfaceWidth, surfaceHeight]: [number, number]): [number, number] => {
-  return [100 / (surfaceWidth / surfaceHeight), 100 / (surfaceWidth / surfaceHeight)]
-}
+export const uvFitToWidth =
+  () =>
+  ([surfaceWidth, surfaceHeight]: [number, number]): [number, number] => {
+    return [surfaceWidth / 100, surfaceWidth / 100]
+  }
+
+export const uvFitToHeight =
+  () =>
+  ([surfaceWidth, surfaceHeight]: [number, number]): [number, number] => {
+    return [100 / (surfaceWidth / surfaceHeight), 100 / (surfaceWidth / surfaceHeight)]
+  }
 
 // applies a scale to the given UV in percentages, ideal for scaling the results of uv scaling functions
 // scaleUV([100, 100], ...) -> no change
 // scaleUV([200, 200], ...) -> magnify the textures 2x (half of the texture will be visible)
 // scaleUV([50, 50], ...) -> shrinks the textures to 50% (2x more textures will be visible)
 // scaleUV(200, ...) -> same as scaleUV([200, 200], ...)
-export const scaleUV = (scale: number | [number, number], [u, v]: [number, number]): [number, number] => {
-  if (Array.isArray(scale)) {
-    const [scaleUPercent, scaleVPercent] = scale
-    return [(scaleUPercent / 100) * u, (scaleVPercent / 100) * v]
-  } else {
-    return [(scale / 100) * u, (scale / 100) * v]
+export const scaleUV =
+  (scale: number | [number, number]) =>
+  ([u, v]: [number, number]): [number, number] => {
+    if (Array.isArray(scale)) {
+      const [scaleUPercent, scaleVPercent] = scale
+      return [(scaleUPercent / 100) * u, (scaleVPercent / 100) * v]
+    } else {
+      return [(scale / 100) * u, (scale / 100) * v]
+    }
   }
-}
 
 //
-export const uvFixV = (height: number, uv: [number, number]): [number, number] => {
-  return scaleUV((100 / height) * 100, uv)
-}
+export const uvFixV =
+  (height: number) =>
+  (uv: [number, number]): [number, number] => {
+    return scaleUV((100 / height) * 100)(uv)
+  }

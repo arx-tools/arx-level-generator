@@ -4,7 +4,7 @@ import { POLY_CLIMB } from '../../constants'
 import { MapData, setTexture } from '../../helpers'
 import { RelativeCoords } from '../../types'
 
-// source: https://www.turbosquid.com/de/3d-models/old-ladder-model-1508652
+// source: https://www.turbosquid.com/de/3d-models/free-obj-mode-wooden-staircase/932653
 export const createLadder = async (pos: RelativeCoords, scale: number, mapData: MapData) => {
   const polygons = await loadObj(path.resolve('./assets/projects/forest/models/ladder/ladder.obj'))
   setTexture(
