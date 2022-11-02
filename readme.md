@@ -15,3 +15,9 @@ jpg files should be saved without progressive option
 bmp files should only contain 3x8bit channels, alpha channel should be removed (24 bit, not 32)
 
 audio should be Microsoft ADCPM wav
+
+## Notable dependencies
+
+Fred's lighting calculator: https://github.com/fredlllll/ArxLibertatisLightingCalculator
+
+Requires dotnet framework 6.0 to be installed
