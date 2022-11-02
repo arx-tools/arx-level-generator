@@ -331,7 +331,7 @@ export const uvFitToWidth =
 export const uvFitToHeight =
   () =>
   ([surfaceWidth, surfaceHeight]: [number, number]): [number, number] => {
-    return [100 / (surfaceWidth / surfaceHeight), 100 / (surfaceWidth / surfaceHeight)]
+    return [surfaceHeight / 100, surfaceHeight / 100]
   }
 
 // applies a scale to the given UV in percentages, ideal for scaling the results of uv scaling functions
@@ -350,11 +350,13 @@ export const scaleUV =
     }
   }
 
-export const uvFixPercentage = (scale: number | [number, number]) => (): [number, number] => {
-  if (Array.isArray(scale)) {
-    const [scaleUPercent, scaleVPercent] = scale
-    return [scaleUPercent / 100, scaleVPercent / 100]
-  } else {
-    return [scale / 100, scale / 100]
+export const uvFixPercentage =
+  (scale: number | [number, number] = 100) =>
+  (): [number, number] => {
+    if (Array.isArray(scale)) {
+      const [scaleUPercent, scaleVPercent] = scale
+      return [scaleUPercent / 100, scaleVPercent / 100]
+    } else {
+      return [scale / 100, scale / 100]
+    }
   }
-}

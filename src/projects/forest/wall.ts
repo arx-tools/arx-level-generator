@@ -164,21 +164,21 @@ const addDoorFrame = (
     { type: 'relative', coords: move(holeOffset, 0, -doorframeWidth, wallPos.coords) },
     [thickness + 2 * doorframeWidth, holeHeight],
     { a: 0, b: 90, g: 0 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
   surface(
     { type: 'relative', coords: move(holeOffset, -holeHeight, -doorframeWidth, wallPos.coords) },
     [thickness + 2 * doorframeWidth, holeWidth],
     { a: -90, b: 0, g: 90 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
   surface(
     { type: 'relative', coords: move(holeOffset + holeWidth, 0, thickness + doorframeWidth, wallPos.coords) },
     [thickness + 2 * doorframeWidth, holeHeight],
     { a: 0, b: -90, g: 0 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
 
@@ -189,7 +189,7 @@ const addDoorFrame = (
     },
     [doorframeWidth, holeWidth + 2 * doorframeWidth],
     { a: 0, b: 180, g: -90 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
   surface(
@@ -204,7 +204,7 @@ const addDoorFrame = (
     },
     [doorframeWidth, holeWidth + 2 * doorframeWidth],
     { a: 0, b: 0, g: -90 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
 
@@ -215,7 +215,7 @@ const addDoorFrame = (
     },
     [doorframeWidth, holeWidth + 2 * doorframeWidth],
     { a: -90, b: 180, g: -90 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
   surface(
@@ -225,7 +225,7 @@ const addDoorFrame = (
     },
     [doorframeWidth, holeWidth + 2 * doorframeWidth],
     { a: 90, b: 0, g: -90 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
 
@@ -233,14 +233,14 @@ const addDoorFrame = (
     { type: 'relative', coords: move(holeOffset - doorframeWidth, 0, -doorframeWidth, wallPos.coords) },
     [doorframeWidth, holeHeight],
     { a: 0, b: 180, g: 0 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
   surface(
     { type: 'relative', coords: move(holeOffset + holeWidth, 0, -doorframeWidth, wallPos.coords) },
     [doorframeWidth, holeHeight],
     { a: 0, b: 180, g: 0 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
 
@@ -248,7 +248,7 @@ const addDoorFrame = (
     { type: 'relative', coords: move(holeOffset, 0, thickness + doorframeWidth, wallPos.coords) },
     [doorframeWidth, holeHeight],
     { a: 0, b: 0, g: 0 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
   surface(
@@ -258,7 +258,7 @@ const addDoorFrame = (
     },
     [doorframeWidth, holeHeight],
     { a: 0, b: 0, g: 0 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
 
@@ -266,7 +266,7 @@ const addDoorFrame = (
     { type: 'relative', coords: move(holeOffset - doorframeWidth, 0, 0, wallPos.coords) },
     [doorframeWidth, holeHeight],
     { a: 0, b: 270, g: 0 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
   surface(
@@ -276,7 +276,7 @@ const addDoorFrame = (
     },
     [doorframeWidth, holeHeight],
     { a: 0, b: 90, g: 0 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
 
@@ -287,7 +287,7 @@ const addDoorFrame = (
     },
     [doorframeWidth, holeHeight],
     { a: 0, b: -90, g: 0 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
   surface(
@@ -297,7 +297,7 @@ const addDoorFrame = (
     },
     [doorframeWidth, holeHeight],
     { a: 0, b: 90, g: 0 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
 
@@ -308,7 +308,7 @@ const addDoorFrame = (
     },
     [doorframeWidth, doorframeWidth],
     { a: 90, b: 270, g: 0 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
   surface(
@@ -323,7 +323,7 @@ const addDoorFrame = (
     },
     [doorframeWidth, doorframeWidth],
     { a: -90, b: 90, g: 0 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
 
@@ -339,7 +339,7 @@ const addDoorFrame = (
     },
     [doorframeWidth, doorframeWidth],
     { a: 90, b: -90, g: 0 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
   surface(
@@ -349,7 +349,7 @@ const addDoorFrame = (
     },
     [doorframeWidth, doorframeWidth],
     { a: -90, b: 90, g: 0 },
-    () => [400, 400],
+    uvFixPercentage(100),
     [25, 0],
   )(mapData)
 }
@@ -369,7 +369,7 @@ const addOrnament = (
       { type: 'relative', coords: move(i * blueSquareHeight, -bricksHeight, 0, wallPos.coords) },
       [blueSquareHeight, blueSquareHeight],
       { a: 0, b: 180, g: 0 },
-      () => [200, 200],
+      (dimensions: [number, number]) => scaleUV(200)(uvFitToHeight()(dimensions)),
       [50, 0],
     )(mapData)
   }
@@ -378,8 +378,7 @@ const addOrnament = (
       { type: 'relative', coords: move(fullBlueSquares * blueSquareHeight, -bricksHeight, 0, wallPos.coords) },
       [partialBlueSquare, blueSquareHeight],
       { a: 0, b: 180, g: 0 },
-      // scaleUV([200, 200], uvFitToHeight([partialBlueSquare, blueSquareHeight])),
-      () => [200, 200],
+      (dimensions: [number, number]) => scaleUV(200)(uvFitToHeight()(dimensions)),
       [50, 0],
     )(mapData)
   }
@@ -392,7 +391,7 @@ const addOrnament = (
       },
       [blueSquareHeight, blueSquareHeight],
       { a: 0, b: 0, g: 0 },
-      () => [200, 200],
+      (dimensions: [number, number]) => scaleUV(200)(uvFitToHeight()(dimensions)),
       [50, 0],
     )(mapData)
   }
@@ -401,8 +400,7 @@ const addOrnament = (
       { type: 'relative', coords: move(width, -bricksHeight, thickness, wallPos.coords) },
       [partialBlueSquare, blueSquareHeight],
       { a: 0, b: 0, g: 0 },
-      // scaleUV([200, 200], uvFitToHeight([partialBlueSquare, blueSquareHeight])),
-      () => [200, 200],
+      (dimensions: [number, number]) => scaleUV(200)(uvFitToHeight()(dimensions)),
       [50 * (partialBlueSquare / blueSquareHeight), 0],
     )(mapData)
   }
@@ -424,8 +422,7 @@ export const addAboveOrnamentWall = (
     },
     [width, topRowHeight],
     { a: 0, b: 180, g: 0 },
-    // scaleUV(200, uvFixV(topRowHeight, uvFitToHeight([width, topRowHeight]))),
-    () => [200, 200],
+    (dimensions: [number, number]) => scaleUV(200)(uvFixPercentage()()),
   )(mapData)
   surface(
     {
@@ -434,8 +431,7 @@ export const addAboveOrnamentWall = (
     },
     [width, topRowHeight],
     { a: 0, b: 0, g: 0 },
-    // scaleUV(200, uvFixV(topRowHeight, uvFitToHeight([width, topRowHeight]))),
-    () => [200, 200],
+    (dimensions: [number, number]) => scaleUV(200)(uvFixPercentage()()),
   )(mapData)
 }
 
