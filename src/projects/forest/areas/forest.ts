@@ -16,7 +16,7 @@ import {
   VFLIP,
 } from '../../../constants'
 import { createFountain } from '../fountain'
-import { createCrickets, defineCrickets } from '../crickets'
+import { createSoundPlayer, defineSoundPlayer } from '../../counter-strike/soundPlayer'
 
 const addPlants = (plantsToCreate: number) => {
   const coords: Vector3[] = []
@@ -88,11 +88,16 @@ const addForestFloor = (mapData: MapData) => {
 }
 
 const addCrickets = () => {
-  defineCrickets()
   circleOfVectors([0, -100, -300], 1300, 7)
     .filter(([, , z]) => z < 200)
     .forEach((coords) => {
-      createCrickets({ type: 'relative', coords })
+      createSoundPlayer(
+        { type: 'relative', coords },
+        {
+          filename: 'crickets',
+          pitchbend: true,
+        },
+      )
     })
 }
 
@@ -112,6 +117,10 @@ const addLighting = (mapData: MapData) => {
 }
 
 export const createForestArea = async (mapData: MapData) => {
+  defineSoundPlayer({
+    crickets: 'projects/forest/sounds/crickets.wav',
+  })
+
   addLighting(mapData)
   addForestFloor(mapData)
   addForestEdge(500, mapData)
