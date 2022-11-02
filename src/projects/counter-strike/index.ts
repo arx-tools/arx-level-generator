@@ -3,17 +3,7 @@ import { getInjections } from '../../scripting'
 import { RelativeCoords } from '../../types'
 import { hideMinimap } from '../shared/reset'
 import { ambiences } from '../../assets/ambiences'
-import {
-  generateBlankMapData,
-  movePlayerTo,
-  setColor,
-  addZone,
-  finalize,
-  saveToDisk,
-  // MapData,
-  // addLight,
-  // move,
-} from '../../helpers'
+import { generateBlankMapData, movePlayerTo, setColor, addZone, finalize, saveToDisk } from '../../helpers'
 import { createCsItaly } from './maps/cs_italy'
 import { createChicken, defineChicken } from './chicken'
 import { createSoundPlayer, defineSoundPlayer } from './soundPlayer'
@@ -44,19 +34,6 @@ ON CONTROLLEDZONE_ENTER {
 
   return ref
 }
-
-// const addLighting = (mapData: MapData) => {
-//   setColor('white', mapData)
-//   addLight(
-//     move(0, -3000, 0, mapData.config.origin.coords),
-//     {
-//       fallstart: 1,
-//       fallend: 20000,
-//       intensity: 3,
-//     },
-//     mapData,
-//   )
-// }
 
 const addGuitarSounds = (pos: RelativeCoords) => {
   createSoundPlayer(pos, {
@@ -105,8 +82,6 @@ const generate = async (config) => {
   setColor(colors.general, mapData)
 
   createPlayerSpawn({ type: 'relative', coords: [-1000, 0, -(6000 - 2600)] }, config)
-
-  // addLighting(mapData)
 
   await createCsItaly({ type: 'relative', coords: [700, 3200, 5000] }, 2.5, mapData)
 
