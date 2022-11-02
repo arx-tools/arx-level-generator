@@ -28,7 +28,7 @@ const addHubFloor = (mapData: MapData) => {
 
 const addLighting = (mapData: MapData) => {
   setColor('white', mapData)
-  addLight([0, -1000, 2000], { fallstart: 1, fallend: 3000, intensity: 5 }, mapData)
+  addLight([0, -1000, 2000], { fallstart: 1, fallend: 3000, intensity: 2 }, mapData)
 }
 
 export const createHub = async (mapData: MapData) => {
