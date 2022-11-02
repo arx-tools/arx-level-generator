@@ -32,9 +32,11 @@ echo "DLF"
 
 cat level$LEVEL.dlf.json | arx-convert --from=json --to=dlf | implode -b -l --offset=8520 --debug --output=level$LEVEL.dlf
 
-echo "Fred's lighting calculation"
+if [ "$CALCULATE_LIGHTING" == "1" ]; then
+  echo "Fred's lighting calculation"
 
-${REPO_ROOT}lib/fredlllll-lighting-calculator/linux/ArxLibertatisLightingCalculator --level "level${LEVEL}" --arx-data-dir $OUTPUTDIR --lighting-profile DistanceAngle
+  ${REPO_ROOT}lib/fredlllll-lighting-calculator/linux/ArxLibertatisLightingCalculator --level "level${LEVEL}" --arx-data-dir $OUTPUTDIR --lighting-profile DistanceAngle
+fi
 
 echo "done"
 
