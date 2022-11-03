@@ -7,8 +7,8 @@ import {
   rotatePolygonData,
 } from '../../../assets/models'
 import { POLY_GLOW, POLY_NO_SHADOW, POLY_STONE, POLY_TRANS } from '../../../constants'
-import { uniq } from '../../../faux-ramda'
-import { MapData, setTexture } from '../../../helpers'
+import { clone, uniq } from '../../../faux-ramda'
+import { MapData, setColor, setTexture } from '../../../helpers'
 import { PosVertex3, RelativeCoords } from '../../../types'
 
 const isFlatPolygon = (polygon: PosVertex3[]) => {
@@ -31,7 +31,7 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
 
   polygons = polygons.slice(10350, 10400)
 
-  polygons.forEach(({ polygon }, i) => {
+  polygons = polygons.flatMap(({ texture, polygon }, i) => {
     if (isFlatPolygon(polygon)) {
       if (polygon.length === 3) {
         // TODO: subdivide if larger than 100x100
@@ -39,6 +39,17 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
         // TODO: subdivide if larger than 100x100
       }
     }
+
+    return [
+      { texture, polygon },
+      {
+        texture,
+        polygon: clone(polygon).map((vertex) => {
+          vertex.posY -= 100
+          return vertex
+        }),
+      },
+    ]
   })
 
   // --------------------
