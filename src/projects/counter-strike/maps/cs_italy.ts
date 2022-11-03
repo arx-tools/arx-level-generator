@@ -7,8 +7,13 @@ import {
   rotatePolygonData,
 } from '../../../assets/models'
 import { POLY_GLOW, POLY_NO_SHADOW, POLY_STONE, POLY_TRANS } from '../../../constants'
+import { uniq } from '../../../faux-ramda'
 import { MapData, setTexture } from '../../../helpers'
-import { RelativeCoords } from '../../../types'
+import { PosVertex3, RelativeCoords } from '../../../types'
+
+const isFlatPolygon = (polygon: PosVertex3[]) => {
+  return uniq(polygon.map(({ posY }) => posY)).length === 1
+}
 
 // source: https://free3d.com/3d-model/cs-italy-64059.html
 export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData: MapData) => {
@@ -19,6 +24,24 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
   polygons.forEach(({ polygon }, i) => {
     polygons[i].polygon = polygon.reverse()
   })
+
+  // --------------------
+
+  // UNDER CONSTRUCTION
+
+  polygons = polygons.slice(10350, 10400)
+
+  polygons.forEach(({ polygon }, i) => {
+    if (isFlatPolygon(polygon)) {
+      if (polygon.length === 3) {
+        // TODO: subdivide if larger than 100x100
+      } else {
+        // TODO: subdivide if larger than 100x100
+      }
+    }
+  })
+
+  // --------------------
 
   willThePolygonDataFit('cs_italy.obj', polygons, pos, scale, mapData)
 
