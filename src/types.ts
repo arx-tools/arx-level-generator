@@ -18,6 +18,7 @@ export type PosVertex3 = {
   posZ: number
   texU: number
   texV: number
+  llfColorIdx?: number
 }
 
 export type Polygon = [PosVertex3, PosVertex3, PosVertex3, PosVertex3]

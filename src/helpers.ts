@@ -1,7 +1,7 @@
 import fs from 'fs'
 import rgba from 'color-rgba'
 import { createTextureContainers, textures, exportTextures, resetTextures, TextureDefinition } from './assets/textures'
-import { createDlfData, createFtsData, createLlfData, DlfData, FtsData, LlfData } from './blankMap'
+import { createDlfData, createFtsData, createLlfData, DlfData, FtsData, FtsPolygon, LlfData } from './blankMap'
 import { countBy, partition, repeat, clone } from './faux-ramda'
 import {
   POLY_QUAD,
@@ -51,6 +51,8 @@ export type MapData = {
   fts: FtsData
   llf: LlfData
 }
+
+export type FinalizedMapData = Record<string, any> // TODO
 
 export const normalize = (vector: Vector3): Vector3 => {
   const [x, y, z] = vector
@@ -114,43 +116,58 @@ export const isBetweenInclusive = (min: number, max: number, value: number) => {
   return value >= min && value <= max
 }
 
-const generateLights = (mapData: any) => {
+const getCellCoords = (isQuad: boolean, vertices: PosVertex3[]) => {
+  const v = vertices.slice(0, isQuad ? 4 : 3)
+
+  const x = Math.round(Math.min(...v.map(({ posX }) => posX)))
+  const z = Math.round(Math.min(...v.map(({ posZ }) => posZ)))
+
+  const cellX = Math.floor(x / 100)
+  const cellZ = Math.floor(z / 100) + 1
+
+  return [cellX, cellZ]
+}
+
+const generateLights = (mapData: FinalizedMapData) => {
   let colorIdx = 0
 
   const colors: RgbaBytes[] = []
+  const polygons: FtsPolygon[] = mapData.fts.polygons
 
-  const p = mapData.fts.polygons.reduce((acc, { vertices }: { vertices: PosVertex3[] }, idx) => {
-    const x = Math.min(...vertices.map(({ posX }) => posX))
-    const z = Math.min(...vertices.map(({ posZ }) => posZ))
+  const cells = polygons.reduce(
+    (acc, { vertices, config }: { vertices: PosVertex3[]; config: Record<string, any> }, idx) => {
+      const [x, z] = getCellCoords(config.isQuad, vertices)
 
-    const cellX = Math.floor(x / 100)
-    const cellZ = Math.floor(z / 100) + 1
+      if (!acc[`${z}-${x}`]) {
+        acc[`${z}-${x}`] = [idx]
+      } else {
+        acc[`${z}-${x}`].push(idx)
+      }
 
-    if (!acc[`${cellZ}-${cellX}`]) {
-      acc[`${cellZ}-${cellX}`] = [idx]
-    } else {
-      acc[`${cellZ}-${cellX}`].push(idx)
-    }
-
-    return acc
-  }, {})
+      return acc
+    },
+    {} as Record<string, number[]>,
+  )
 
   for (let z = 0; z < MAP_MAX_HEIGHT; z++) {
     for (let x = 0; x < MAP_MAX_WIDTH; x++) {
-      ;(p[`${z}-${x}`] || []).forEach((idx) => {
-        const { config, vertices } = mapData.fts.polygons[idx]
-        let { color, isQuad } = config
+      const cell = cells[`${z}-${x}`]
+      if (cell) {
+        cell.forEach((idx) => {
+          const { config, vertices } = polygons[idx]
+          let { color, isQuad } = config
 
-        colors.push(color, color, color)
-        vertices[0].llfColorIdx = colorIdx++
-        vertices[1].llfColorIdx = colorIdx++
-        vertices[2].llfColorIdx = colorIdx++
+          colors.push(color, color, color)
+          vertices[0].llfColorIdx = colorIdx++
+          vertices[1].llfColorIdx = colorIdx++
+          vertices[2].llfColorIdx = colorIdx++
 
-        if (isQuad) {
-          colors.push(color)
-          vertices[3].llfColorIdx = colorIdx++
-        }
-      })
+          if (isQuad) {
+            colors.push(color)
+            vertices[3].llfColorIdx = colorIdx++
+          }
+        })
+      }
     }
   }
 
@@ -191,7 +208,7 @@ const calculateNormals = (mapData: any) => {
 }
 
 export const finalize = (mapData: MapData) => {
-  const finalizedMapData: any = clone(mapData)
+  const finalizedMapData: FinalizedMapData = clone(mapData)
 
   const ungroupedPolygons = Object.values(mapData.fts.polygons).flat(1)
   const numberOfPolygons = ungroupedPolygons.length

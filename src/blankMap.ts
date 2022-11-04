@@ -1,5 +1,6 @@
+import { TextureDefinition } from './assets/textures'
 import { MAP_MAX_WIDTH, MAP_MAX_HEIGHT } from './constants'
-import { NullableVertex3, RotationVertex3, Vertex3 } from './types'
+import { NullableVertex3, PosVertex3, RgbaBytes, RotationVertex3, Vertex3 } from './types'
 
 export type Meta = {
   type: string
@@ -83,6 +84,21 @@ export type RoomDistance = {
   endPosition: NullableVertex3
 }
 
+export type FtsPolygon = {
+  config: {
+    color: RgbaBytes
+    isQuad: boolean
+    bumpable: boolean
+  }
+  vertices: PosVertex3[]
+  tex: number
+  transval: number
+  area: number
+  type: number
+  room: number
+  paddy: 0
+}
+
 export type FtsData = {
   meta: Meta
   header: {
@@ -97,7 +113,7 @@ export type FtsData = {
     playerPosition: Vertex3
     mScenePosition: Vertex3
   }
-  polygons: Record<string, any[]> & { global: any[] } // TODO
+  polygons: Record<string, FtsPolygon[]> & { global: FtsPolygon[] }
   textureContainers: any[] // TODO
   cells: { anchors: any[] }[] // TODO
   anchors: any[] // TODO
