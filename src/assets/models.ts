@@ -144,7 +144,7 @@ export const renderPolygonData = (
   polygons: TexturedPolygon[],
   pos: RelativeCoords,
   scale: number = 1,
-  doSomethingWithTheVertices: (vertices: TexturedPolygon) => void = identity,
+  doSomethingWithTheVertices: (vertices: TexturedPolygon & { isQuad: boolean }) => void = identity,
 ) => {
   return (mapData: MapData) => {
     mapData.fts.polygons[mapData.state.polygonGroup] = mapData.fts.polygons[mapData.state.polygonGroup] || []
@@ -168,7 +168,7 @@ export const renderPolygonData = (
       polygon[0] = polygon[1]
       polygon[1] = tmp
 
-      doSomethingWithTheVertices({ polygon, texture })
+      doSomethingWithTheVertices({ polygon, texture, isQuad })
 
       const textureFlags = mapData.state.texture?.flags ?? POLY_QUAD | POLY_NO_SHADOW
 
