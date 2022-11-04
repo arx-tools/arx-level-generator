@@ -7,6 +7,7 @@ import { generateBlankMapData, movePlayerTo, setColor, addZone, finalize, saveTo
 import { createCsItaly } from './maps/cs_italy'
 import { createChicken, defineChicken } from './chicken'
 import { createSoundPlayer, defineSoundPlayer } from './soundPlayer'
+import { createDeDust } from './maps/de_dust'
 
 const createPlayerSpawn = (pos: RelativeCoords, config) => {
   const ref = createItem(items.marker)
@@ -81,9 +82,11 @@ const generate = async (config) => {
 
   setColor(colors.general, mapData)
 
-  createPlayerSpawn({ type: 'relative', coords: [-1000, 0, -(6000 - 2600)] }, config)
+  // createPlayerSpawn({ type: 'relative', coords: [-1000, 0, -(6000 - 2600)] }, config)
+  createPlayerSpawn({ type: 'relative', coords: [0, 0, 0] }, config)
 
-  await createCsItaly({ type: 'relative', coords: [700, 3200, 5000] }, 2.5, mapData)
+  // await createCsItaly({ type: 'relative', coords: [700, 3200, 5000] }, 2.5, mapData)
+  await createDeDust({ type: 'relative', coords: [0, 0, 0] }, 1, mapData)
 
   defineSoundPlayer({
     guitar: 'projects/counter-strike/sounds/guit1.wav',

@@ -150,6 +150,11 @@ export const renderPolygonData = (
     mapData.fts.polygons[mapData.state.polygonGroup] = mapData.fts.polygons[mapData.state.polygonGroup] || []
 
     polygons.forEach(({ polygon, texture }) => {
+      if (polygon.length !== 4 && polygon.length !== 3) {
+        console.warn(`skipped rendering polygon with ${polygon.length} vertices`)
+        return
+      }
+
       polygon.forEach((vertex) => {
         vertex.posX = vertex.posX * scale + mapData.config.origin.coords[0] + pos.coords[0]
         vertex.posY = vertex.posY * scale + mapData.config.origin.coords[1] + pos.coords[1]
