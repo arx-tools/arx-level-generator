@@ -4,7 +4,7 @@ import { isBetween, MapData, roundToNDecimals } from '../helpers'
 import { POLY_NO_SHADOW, POLY_QUAD } from '../constants'
 import { useTexture } from '../assets/textures'
 import { Euler, MathUtils, Vector3 as TreeJsVector3 } from 'three'
-import { identity } from '../faux-ramda'
+import { clone, identity } from '../faux-ramda'
 
 const EOL = /\r?\n/
 
@@ -150,53 +150,62 @@ export const renderPolygonData = (
     mapData.fts.polygons[mapData.state.polygonGroup] = mapData.fts.polygons[mapData.state.polygonGroup] || []
 
     polygons.forEach(({ polygon, texture }) => {
-      if (polygon.length !== 4 && polygon.length !== 3) {
-        console.warn(`skipped rendering polygon with ${polygon.length} vertices`)
-        return
+      const subPolys: PosVertex3[][] = []
+
+      switch (polygon.length) {
+        case 3:
+        case 4:
+          subPolys.push(polygon)
+          break
+        default:
+          for (let i = 1; i <= polygon.length - 2; i++) {
+            subPolys.push([clone(polygon[0]), clone(polygon[i]), polygon[i + 1]])
+          }
       }
 
-      polygon.forEach((vertex) => {
-        vertex.posX = vertex.posX * scale + mapData.config.origin.coords[0] + pos.coords[0]
-        vertex.posY = vertex.posY * scale + mapData.config.origin.coords[1] + pos.coords[1]
-        vertex.posZ = vertex.posZ * scale + mapData.config.origin.coords[2] + pos.coords[2]
-        return vertex
-      })
+      subPolys.forEach((polygon) => {
+        polygon.forEach((vertex) => {
+          vertex.posX = vertex.posX * scale + mapData.config.origin.coords[0] + pos.coords[0]
+          vertex.posY = vertex.posY * scale + mapData.config.origin.coords[1] + pos.coords[1]
+          vertex.posZ = vertex.posZ * scale + mapData.config.origin.coords[2] + pos.coords[2]
+          return vertex
+        })
 
-      let isQuad = true
+        let isQuad = true
+        if (polygon.length === 3) {
+          isQuad = false
+          polygon.push({ posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 })
+        }
 
-      if (polygon.length === 3) {
-        isQuad = false
-        polygon.push({ posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 })
-      }
+        let tmp = polygon[0]
+        polygon[0] = polygon[1]
+        polygon[1] = tmp
 
-      let tmp = polygon[0]
-      polygon[0] = polygon[1]
-      polygon[1] = tmp
+        doSomethingWithTheVertices({ polygon, texture, isQuad })
 
-      doSomethingWithTheVertices({ polygon, texture, isQuad })
+        const textureFlags = mapData.state.texture?.flags ?? POLY_QUAD | POLY_NO_SHADOW
 
-      const textureFlags = mapData.state.texture?.flags ?? POLY_QUAD | POLY_NO_SHADOW
+        let flags = textureFlags
+        if (isQuad) {
+          flags = flags | POLY_QUAD
+        } else {
+          flags = flags & ~POLY_QUAD
+        }
 
-      let flags = textureFlags
-      if (isQuad) {
-        flags = flags | POLY_QUAD
-      } else {
-        flags = flags & ~POLY_QUAD
-      }
-
-      mapData.fts.polygons[mapData.state.polygonGroup].push({
-        config: {
-          color: mapData.state.color,
-          isQuad: (flags & POLY_QUAD) > 0,
-          bumpable: true,
-        },
-        vertices: polygon,
-        tex: useTexture(mapData.state.texture),
-        transval: 2,
-        area: 1000,
-        type: flags,
-        room: 1,
-        paddy: 0,
+        mapData.fts.polygons[mapData.state.polygonGroup].push({
+          config: {
+            color: mapData.state.color,
+            isQuad: (flags & POLY_QUAD) > 0,
+            bumpable: true,
+          },
+          vertices: polygon,
+          tex: useTexture(mapData.state.texture),
+          transval: 2,
+          area: 1000,
+          type: flags,
+          room: 1,
+          paddy: 0,
+        })
       })
     })
   }

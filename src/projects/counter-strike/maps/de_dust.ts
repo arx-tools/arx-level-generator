@@ -17,9 +17,9 @@ export const createDeDust = async (pos: RelativeCoords, scale: number, mapData: 
   flipPolygonAxis('xy', polygons)
   // rotatePolygonData({ a: 0, b: 180, g: 0 }, polygons)
 
-  // polygons.forEach(({ polygon }, i) => {
-  //   polygons[i].polygon = polygon.reverse()
-  // })
+  polygons.forEach(({ polygon }, i) => {
+    polygons[i].polygon = polygon.reverse()
+  })
 
   willThePolygonDataFit('de_dust.obj', polygons, pos, scale, mapData)
 

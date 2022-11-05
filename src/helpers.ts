@@ -238,7 +238,7 @@ export const finalize = (mapData: MapData) => {
     zone.header.pos.z -= spawn[2]
   })
 
-  finalizedMapData.dlf.header.angleEdit.b = spawnAngle
+  finalizedMapData.dlf.header.angleEdit.b = normalizeDegree(spawnAngle)
 
   createTextureContainers(finalizedMapData)
   exportUsedItems(finalizedMapData)

@@ -3,7 +3,16 @@ import { getInjections } from '../../scripting'
 import { RelativeCoords } from '../../types'
 import { hideMinimap } from '../shared/reset'
 import { ambiences } from '../../assets/ambiences'
-import { generateBlankMapData, movePlayerTo, setColor, addZone, finalize, saveToDisk } from '../../helpers'
+import {
+  generateBlankMapData,
+  movePlayerTo,
+  setColor,
+  addZone,
+  finalize,
+  saveToDisk,
+  addLight,
+  circleOfVectors,
+} from '../../helpers'
 import { createCsItaly } from './maps/cs_italy'
 import { createChicken, defineChicken } from './chicken'
 import { createSoundPlayer, defineSoundPlayer } from './soundPlayer'
@@ -82,25 +91,36 @@ const generate = async (config) => {
 
   setColor(colors.general, mapData)
 
-  // createPlayerSpawn({ type: 'relative', coords: [-1000, 0, -(6000 - 2600)] }, config)
-  createPlayerSpawn({ type: 'relative', coords: [0, 0, 0] }, config)
+  const mapName: string = 'de_dust'
 
-  // await createCsItaly({ type: 'relative', coords: [700, 3200, 5000] }, 2.5, mapData)
-  await createDeDust({ type: 'relative', coords: [0, 0, 0] }, 1, mapData)
+  switch (mapName) {
+    case 'de_dust':
+      createPlayerSpawn({ type: 'relative', coords: [-(6000 - 2809), 0, -(6000 - 1565)] }, config)
+      circleOfVectors([-1300, -2000, -500], 5000, 7).forEach((pos) => {
+        addLight(pos, { fallstart: 1, fallend: 5000, intensity: 1 }, mapData)
+      })
+      await createDeDust({ type: 'relative', coords: [0, 0, 2000] }, 40, mapData)
+      mapData.state.spawnAngle -= 90
+      break
+    case 'cs_italy':
+      createPlayerSpawn({ type: 'relative', coords: [-1000, 0, -(6000 - 2600)] }, config)
+      await createCsItaly({ type: 'relative', coords: [700, 3200, 5000] }, 2.5, mapData)
 
-  defineSoundPlayer({
-    guitar: 'projects/counter-strike/sounds/guit1.wav',
-    opera: 'projects/counter-strike/sounds/opera.wav',
-  })
+      defineSoundPlayer({
+        guitar: 'projects/counter-strike/sounds/guit1.wav',
+        opera: 'projects/counter-strike/sounds/opera.wav',
+      })
 
-  addGuitarSounds({
-    type: 'relative',
-    coords: [-origin.coords[0] + 3640, -origin.coords[1] + -100, -origin.coords[2] + 6850],
-  })
-  addOperaSound({ type: 'relative', coords: [3200, -700, 7200] })
+      addGuitarSounds({
+        type: 'relative',
+        coords: [-origin.coords[0] + 3640, -origin.coords[1] + -100, -origin.coords[2] + 6850],
+      })
+      addOperaSound({ type: 'relative', coords: [3200, -700, 7200] })
 
-  defineChicken()
-  createChicken({ type: 'relative', coords: [1180, -300, 165] }, { a: 0, b: 0, g: 0 })
+      defineChicken()
+      createChicken({ type: 'relative', coords: [1180, -300, 165] }, { a: 0, b: 0, g: 0 })
+      break
+  }
 
   const finalizedMapData = finalize(mapData)
   return saveToDisk(finalizedMapData)
