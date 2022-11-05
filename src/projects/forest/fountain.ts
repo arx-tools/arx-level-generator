@@ -17,10 +17,13 @@ export const createFountain = async (pos: RelativeCoords, scale: number, mapData
     mapData,
   )
   flipPolygonAxis('y', polygons)
+
+  // flipping textures upside down
   polygons.forEach(({ polygon }) => {
     polygon.forEach((vertex) => {
       vertex.texV *= -1
     })
   })
+
   renderPolygonData(polygons, pos, scale)(mapData)
 }

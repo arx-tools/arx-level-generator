@@ -60,7 +60,7 @@ const addOperaSound = (pos: RelativeCoords) => {
 
 const colors: Record<string, string> = {
   sky: '#b0d6f5',
-  general: '#515151',
+  general: '#a0a0a0',
 }
 
 const generate = async (config) => {
@@ -97,7 +97,7 @@ const generate = async (config) => {
     case 'de_dust':
       createPlayerSpawn({ type: 'relative', coords: [-(6000 - 2809), 0, -(6000 - 1565)] }, config)
       circleOfVectors([-1300, -2000, -500], 5000, 7).forEach((pos) => {
-        addLight(pos, { fallstart: 1, fallend: 5000, intensity: 1 }, mapData)
+        addLight(pos, { fallstart: 1, fallend: 5000, intensity: 3 }, mapData)
       })
       await createDeDust({ type: 'relative', coords: [0, 0, 2000] }, 40, mapData)
       mapData.state.spawnAngle -= 90

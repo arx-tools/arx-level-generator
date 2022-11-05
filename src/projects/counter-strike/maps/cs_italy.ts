@@ -7,7 +7,7 @@ import {
   rotatePolygonData,
 } from '../../../assets/models'
 import { textures } from '../../../assets/textures'
-import { POLY_GLOW, POLY_NO_SHADOW, POLY_STONE, POLY_TRANS } from '../../../constants'
+import { POLY_GLOW, POLY_NO_SHADOW, POLY_TRANS } from '../../../constants'
 import { clone, uniq } from '../../../faux-ramda'
 import { MapData, setColor, setTexture } from '../../../helpers'
 import { PosVertex3, RelativeCoords } from '../../../types'

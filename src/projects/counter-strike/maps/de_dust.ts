@@ -1,29 +1,55 @@
 import path from 'path'
-import {
-  flipPolygonAxis,
-  willThePolygonDataFit,
-  loadObj,
-  renderPolygonData,
-  rotatePolygonData,
-} from '../../../assets/models'
+import { flipPolygonAxis, willThePolygonDataFit, loadObj, renderPolygonData } from '../../../assets/models'
 import { textures } from '../../../assets/textures'
-import { MapData, setTexture } from '../../../helpers'
-import { RelativeCoords } from '../../../types'
+import { POLY_GLOW, POLY_NO_SHADOW, POLY_TRANS } from '../../../constants'
+import { flipUVVertically, MapData, setTexture } from '../../../helpers'
+import { Polygon, RelativeCoords } from '../../../types'
 
 // source: https://sketchfab.com/3d-models/de-dust-b34e959814ae40549142bca18f4a4caf
 export const createDeDust = async (pos: RelativeCoords, scale: number, mapData: MapData) => {
   let polygons = await loadObj(path.resolve('./assets/projects/counter-strike/models/de_dust/de_dust.obj'))
 
   flipPolygonAxis('xy', polygons)
-  // rotatePolygonData({ a: 0, b: 180, g: 0 }, polygons)
 
   polygons.forEach(({ polygon }, i) => {
     polygons[i].polygon = polygon.reverse()
+
+    // flipping the texture upside down
+    polygon.forEach((vertex) => {
+      vertex.texV *= -1
+    })
   })
 
   willThePolygonDataFit('de_dust.obj', polygons, pos, scale, mapData)
 
-  setTexture(textures.wood.aliciaRoomMur02, mapData)
+  renderPolygonData(polygons, pos, scale, ({ polygon, texture, isQuad }) => {
+    const textureIdx = parseInt(texture.split('_')[1])
 
-  renderPolygonData(polygons, pos, scale)(mapData)
+    let flags = POLY_NO_SHADOW
+
+    if (textureIdx === 19) {
+      flags |= POLY_GLOW
+    }
+
+    if (textureIdx === 19) {
+      // no texture for material 19
+      setTexture(
+        {
+          ...textures.wood.aliciaRoomMur02,
+          flags,
+        },
+        mapData,
+      )
+    } else {
+      setTexture(
+        {
+          path: 'projects/counter-strike/models/de_dust/textures',
+          src: `de_dust_texture_${textureIdx}.jpg`,
+          native: false,
+          flags,
+        },
+        mapData,
+      )
+    }
+  })(mapData)
 }
