@@ -1,9 +1,9 @@
 import path from 'path'
 import { flipPolygonAxis, willThePolygonDataFit, loadObj, renderPolygonData } from '../../../assets/models'
 import { textures } from '../../../assets/textures'
-import { POLY_GLOW, POLY_NO_SHADOW, POLY_TRANS } from '../../../constants'
-import { flipUVVertically, MapData, setTexture } from '../../../helpers'
-import { Polygon, RelativeCoords } from '../../../types'
+import { POLY_GLOW, POLY_NO_SHADOW } from '../../../constants'
+import { MapData, setTexture } from '../../../helpers'
+import { RelativeCoords } from '../../../types'
 
 // source: https://sketchfab.com/3d-models/de-dust-b34e959814ae40549142bca18f4a4caf
 export const createDeDust = async (pos: RelativeCoords, scale: number, mapData: MapData) => {

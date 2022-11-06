@@ -17,6 +17,7 @@ import { createCsItaly } from './maps/cs_italy'
 import { createChicken, defineChicken } from './chicken'
 import { createSoundPlayer, defineSoundPlayer } from './soundPlayer'
 import { createDeDust } from './maps/de_dust'
+import floor from '../../prefabs/base/floor'
 
 const createPlayerSpawn = (pos: RelativeCoords, config) => {
   const ref = createItem(items.marker)
@@ -91,7 +92,7 @@ const generate = async (config) => {
 
   setColor(colors.general, mapData)
 
-  const mapName: string = 'de_dust'
+  const mapName: string = 'cs_italy'
 
   switch (mapName) {
     case 'de_dust':
