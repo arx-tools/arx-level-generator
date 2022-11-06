@@ -39,11 +39,6 @@ export class Triangle2 extends Triangle {
     return Math.max(this.abLength, this.bcLength, this.caLength)
   }
 
-  getHeight() {
-    const base = this.getLongestSide()
-    return (2 * this.getArea()) / base
-  }
-
   to2DShape() {
     const origin = new Vector2(0, 0)
 
@@ -70,33 +65,24 @@ export class Triangle2 extends Triangle {
     const squareSideLength = longestSide / Math.SQRT2
 
     if (longestSide === this.abLength) {
-      console.log(this.aAngle, this.bAngle)
-      /*
-      if (this.bcLength + this.caLength <= squareSideLength * 2) {
+      if (this.aAngle <= 45 + Number.EPSILON && this.bAngle <= 45 + Number.EPSILON) {
         return squareSideLength
       }
-      */
     }
     if (longestSide === this.bcLength) {
-      console.log(this.bAngle, this.cAngle)
-      /*
-      if (this.caLength + this.abLength <= squareSideLength * 2) {
+      if (this.bAngle <= 45 + Number.EPSILON && this.cAngle <= 45 + Number.EPSILON) {
         return squareSideLength
       }
-      */
     }
     if (longestSide === this.caLength) {
-      console.log(this.cAngle, this.aAngle)
-      /*
-      if (this.abLength + this.bcLength <= squareSideLength * 2) {
+      if (this.cAngle <= 45 + Number.EPSILON && this.aAngle <= 45 + Number.EPSILON) {
         return squareSideLength
       }
-      */
     }
 
     // const [a, b, c] = this.to2DShape()
 
-    // otherwise you must solve a trigonometric equation
+    // TODO: you must solve a trigonometric equation
 
     return 1000
   }
@@ -108,7 +94,6 @@ export class Triangle2 extends Triangle {
       return false
     }
 
-    // return this.getSmallestEnclosingSquareSideLength() <= cellSize
-    return true
+    return this.getSmallestEnclosingSquareSideLength() <= cellSize
   }
 }
