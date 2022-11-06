@@ -248,6 +248,14 @@ export const willThePolygonDataFit = (
   }
 }
 
+const isBasically0 = (n: number) => {
+  return Math.abs(n) < Number.EPSILON
+}
+
+const isBasically90 = (n: number) => {
+  return Math.abs(90 - n) < 90 * Number.EPSILON
+}
+
 export const removeInvisiblePolygons = (polygons: TexturedPolygon[]) => {
   return polygons.filter(({ polygon }) => {
     const isQuad = polygon.length === 4
@@ -256,15 +264,22 @@ export const removeInvisiblePolygons = (polygons: TexturedPolygon[]) => {
       return true
     }
 
-    const [a, b, c] = polygon.slice(0, 3)
+    const [a, b, c] = polygon
 
-    const triangle = new Triangle2(
+    const { aAngle, bAngle, cAngle } = new Triangle2(
       new TreeJsVector3(a.posX, a.posY, a.posZ),
       new TreeJsVector3(b.posX, b.posY, b.posZ),
       new TreeJsVector3(c.posX, c.posY, c.posZ),
     )
 
-    if (triangle.aAngle === 0 || triangle.bAngle === 0 || triangle.cAngle === 0) {
+    if (
+      isBasically0(aAngle) ||
+      isBasically90(aAngle) ||
+      isBasically0(bAngle) ||
+      isBasically90(bAngle) ||
+      isBasically0(cAngle) ||
+      isBasically90(cAngle)
+    ) {
       return false
     }
 
