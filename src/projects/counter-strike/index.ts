@@ -108,8 +108,8 @@ const generate = async (config) => {
       await createCsItaly({ type: 'relative', coords: [700, 3200, 5000] }, 2.5, mapData)
 
       defineSoundPlayer({
-        guitar: 'projects/counter-strike/sounds/guit1.wav',
-        opera: 'projects/counter-strike/sounds/opera.wav',
+        guitar: 'projects/counter-strike/sounds/guit1.wav', // Rossiniana No. 2, Op. 120
+        opera: 'projects/counter-strike/sounds/opera.wav', // E'Il Sol Dell' Anima (from Verdi's Rigoletto)
       })
 
       addGuitarSounds({
