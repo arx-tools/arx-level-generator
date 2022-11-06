@@ -18,10 +18,7 @@ export const createDeDust = async (pos: RelativeCoords, scale: number, mapData: 
 
   flipPolygonAxis('xy', polygons)
   turnPolygonDataInsideOut(polygons)
-
-  polygons.forEach(({ polygon }, i) => {
-    flipTextureUpsideDown(polygon)
-  })
+  flipTextureUpsideDown(polygons)
 
   willThePolygonDataFit('de_dust.obj', polygons, pos, scale, mapData)
 

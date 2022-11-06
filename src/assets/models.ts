@@ -286,8 +286,10 @@ export const turnPolygonDataInsideOut = (polygons: TexturedPolygon[]) => {
   })
 }
 
-export const flipTextureUpsideDown = (polygon: PosVertex3[]) => {
-  polygon.forEach((vertex) => {
-    vertex.texV *= -1
+export const flipTextureUpsideDown = (polygons: TexturedPolygon[]) => {
+  polygons.forEach(({ polygon }) => {
+    polygon.forEach((vertex) => {
+      vertex.texV *= -1
+    })
   })
 }

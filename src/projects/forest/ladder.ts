@@ -1,5 +1,11 @@
 import path from 'path'
-import { flipPolygonAxis, loadObj, renderPolygonData, rotatePolygonData } from '../../assets/models'
+import {
+  flipPolygonAxis,
+  flipTextureUpsideDown,
+  loadObj,
+  renderPolygonData,
+  rotatePolygonData,
+} from '../../assets/models'
 import { POLY_CLIMB } from '../../constants'
 import { MapData, setTexture } from '../../helpers'
 import { RelativeCoords, RotationVertex3 } from '../../types'
@@ -20,11 +26,7 @@ export const createLadder =
     )
     flipPolygonAxis('y', polygons)
     rotatePolygonData(rotation, polygons)
-    polygons.forEach(({ polygon }) => {
-      polygon.forEach((vertex) => {
-        vertex.texV *= -1
-      })
-    })
+    flipTextureUpsideDown(polygons)
 
     renderPolygonData(polygons, pos, scale)(mapData)
   }

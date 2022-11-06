@@ -1,5 +1,5 @@
 import path from 'path'
-import { flipPolygonAxis, loadObj, renderPolygonData } from '../../assets/models'
+import { flipPolygonAxis, flipTextureUpsideDown, loadObj, renderPolygonData } from '../../assets/models'
 import { POLY_STONE } from '../../constants'
 import { MapData, setTexture } from '../../helpers'
 import { RelativeCoords } from '../../types'
@@ -17,13 +17,7 @@ export const createFountain = async (pos: RelativeCoords, scale: number, mapData
     mapData,
   )
   flipPolygonAxis('y', polygons)
-
-  // flipping textures upside down
-  polygons.forEach(({ polygon }) => {
-    polygon.forEach((vertex) => {
-      vertex.texV *= -1
-    })
-  })
+  flipTextureUpsideDown(polygons)
 
   renderPolygonData(polygons, pos, scale)(mapData)
 }
