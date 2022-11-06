@@ -1,5 +1,12 @@
 import path from 'path'
-import { flipPolygonAxis, willThePolygonDataFit, loadObj, renderPolygonData } from '../../../assets/models'
+import {
+  flipPolygonAxis,
+  willThePolygonDataFit,
+  loadObj,
+  renderPolygonData,
+  turnPolygonDataInsideOut,
+  flipTextureUpsideDown,
+} from '../../../assets/models'
 import { textures } from '../../../assets/textures'
 import { POLY_GLOW, POLY_NO_SHADOW } from '../../../constants'
 import { MapData, setTexture } from '../../../helpers'
@@ -10,14 +17,10 @@ export const createDeDust = async (pos: RelativeCoords, scale: number, mapData: 
   let polygons = await loadObj(path.resolve('./assets/projects/counter-strike/models/de_dust/de_dust.obj'))
 
   flipPolygonAxis('xy', polygons)
+  turnPolygonDataInsideOut(polygons)
 
   polygons.forEach(({ polygon }, i) => {
-    polygons[i].polygon = polygon.reverse()
-
-    // flipping the texture upside down
-    polygon.forEach((vertex) => {
-      vertex.texV *= -1
-    })
+    flipTextureUpsideDown(polygon)
   })
 
   willThePolygonDataFit('de_dust.obj', polygons, pos, scale, mapData)

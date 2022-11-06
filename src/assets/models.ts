@@ -5,6 +5,7 @@ import { POLY_NO_SHADOW, POLY_QUAD } from '../constants'
 import { useTexture } from '../assets/textures'
 import { Euler, MathUtils, Vector3 as TreeJsVector3 } from 'three'
 import { clone, identity } from '../faux-ramda'
+import { Triangle2 } from '../Triangle2'
 
 const EOL = /\r?\n/
 
@@ -168,12 +169,10 @@ export const renderPolygonData = (
           vertex.posX = vertex.posX * scale + mapData.config.origin.coords[0] + pos.coords[0]
           vertex.posY = vertex.posY * scale + mapData.config.origin.coords[1] + pos.coords[1]
           vertex.posZ = vertex.posZ * scale + mapData.config.origin.coords[2] + pos.coords[2]
-          return vertex
         })
 
-        let isQuad = true
-        if (polygon.length === 3) {
-          isQuad = false
+        const isQuad = polygon.length === 4
+        if (!isQuad) {
           polygon.push({ posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 })
         }
 
@@ -247,4 +246,48 @@ export const willThePolygonDataFit = (
   if (!isBetween(0, 16000, maxZ)) {
     throw new Error(`"${name}" doesn't fit into the level, the maximum value on the Z axis is ${maxZ}`)
   }
+}
+
+export const removeInvisiblePolygons = (polygons: TexturedPolygon[]) => {
+  return polygons.filter(({ polygon }) => {
+    const isQuad = polygon.length === 4
+
+    if (isQuad) {
+      return true
+    }
+
+    const [a, b, c] = polygon.slice(0, 3)
+
+    const triangle = new Triangle2(
+      new TreeJsVector3(a.posX, a.posY, a.posZ),
+      new TreeJsVector3(b.posX, b.posY, b.posZ),
+      new TreeJsVector3(c.posX, c.posY, c.posZ),
+    )
+
+    if (triangle.aAngle === 0 || triangle.bAngle === 0 || triangle.cAngle === 0) {
+      return false
+    }
+
+    return true
+  })
+}
+
+export const toTriangle2 = ([a, b, c]: PosVertex3[]) => {
+  return new Triangle2(
+    new TreeJsVector3(a.posX, a.posY, a.posZ),
+    new TreeJsVector3(b.posX, b.posY, b.posZ),
+    new TreeJsVector3(c.posX, c.posY, c.posZ),
+  )
+}
+
+export const turnPolygonDataInsideOut = (polygons: TexturedPolygon[]) => {
+  polygons.forEach(({ polygon }, i) => {
+    polygons[i].polygon = polygon.reverse()
+  })
+}
+
+export const flipTextureUpsideDown = (polygon: PosVertex3[]) => {
+  polygon.forEach((vertex) => {
+    vertex.texV *= -1
+  })
 }
