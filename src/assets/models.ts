@@ -252,8 +252,8 @@ const isBasically0 = (n: number) => {
   return Math.abs(n) < Number.EPSILON
 }
 
-const isBasically90 = (n: number) => {
-  return Math.abs(90 - n) < 90 * Number.EPSILON
+const isBasically180 = (n: number) => {
+  return Math.abs(180 - n) < 180 * Number.EPSILON
 }
 
 export const removeInvisiblePolygons = (polygons: TexturedPolygon[]) => {
@@ -274,11 +274,11 @@ export const removeInvisiblePolygons = (polygons: TexturedPolygon[]) => {
 
     if (
       isBasically0(aAngle) ||
-      isBasically90(aAngle) ||
+      isBasically180(aAngle) ||
       isBasically0(bAngle) ||
-      isBasically90(bAngle) ||
+      isBasically180(bAngle) ||
       isBasically0(cAngle) ||
-      isBasically90(cAngle)
+      isBasically180(cAngle)
     ) {
       return false
     }
