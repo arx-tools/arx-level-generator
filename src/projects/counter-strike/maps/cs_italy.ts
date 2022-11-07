@@ -6,7 +6,7 @@ import {
   renderPolygonData,
   rotatePolygonData,
   removeInvisiblePolygons,
-  toTriangle2,
+  toTriangleHelper,
   turnPolygonDataInsideOut,
 } from '../../../assets/models'
 import { textures } from '../../../assets/textures'
@@ -73,7 +73,7 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
     if (isQuad) {
       setColor('black', mapData)
     } else {
-      const triangle = toTriangle2(polygon)
+      const triangle = toTriangleHelper(polygon)
 
       if (triangle.doesItFitIntoACell(100)) {
         setColor('green', mapData)
@@ -82,18 +82,6 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
         setColor('red', mapData)
         tooLarge++
       }
-
-      /*
-      if (triangle.isAcute()) {
-        setColor('blue', mapData)
-      }
-      if (triangle.isRight()) {
-        setColor('green', mapData)
-      }
-      if (triangle.isObtuse()) {
-        setColor('red', mapData)
-      }
-      */
     }
 
     let flags = POLY_NO_SHADOW

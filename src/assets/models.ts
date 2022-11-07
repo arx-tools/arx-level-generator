@@ -3,9 +3,9 @@ import { PosVertex3, Vector3, RelativeCoords, RotationVertex3 } from '../types'
 import { isBetween, MapData, roundToNDecimals } from '../helpers'
 import { POLY_NO_SHADOW, POLY_QUAD } from '../constants'
 import { useTexture } from '../assets/textures'
-import { Euler, MathUtils, Vector3 as TreeJsVector3 } from 'three'
+import { Euler, MathUtils, Triangle, Vector3 as TreeJsVector3 } from 'three'
 import { clone, identity } from '../faux-ramda'
-import { Triangle2 } from '../Triangle2'
+import { TriangleHelper } from '../TriangleHelper'
 
 const EOL = /\r?\n/
 
@@ -252,10 +252,6 @@ const isBasically0 = (n: number) => {
   return Math.abs(n) < Number.EPSILON
 }
 
-const isBasically180 = (n: number) => {
-  return Math.abs(180 - n) < 180 * Number.EPSILON
-}
-
 export const removeInvisiblePolygons = (polygons: TexturedPolygon[]) => {
   return polygons.filter(({ polygon }) => {
     const isQuad = polygon.length === 4
@@ -264,22 +260,9 @@ export const removeInvisiblePolygons = (polygons: TexturedPolygon[]) => {
       return true
     }
 
-    const [a, b, c] = polygon
+    const { aAngle, bAngle, cAngle } = toTriangleHelper(polygon)
 
-    const { aAngle, bAngle, cAngle } = new Triangle2(
-      new TreeJsVector3(a.posX, a.posY, a.posZ),
-      new TreeJsVector3(b.posX, b.posY, b.posZ),
-      new TreeJsVector3(c.posX, c.posY, c.posZ),
-    )
-
-    if (
-      isBasically0(aAngle) ||
-      isBasically180(aAngle) ||
-      isBasically0(bAngle) ||
-      isBasically180(bAngle) ||
-      isBasically0(cAngle) ||
-      isBasically180(cAngle)
-    ) {
+    if (isBasically0(aAngle) || isBasically0(bAngle) || isBasically0(cAngle)) {
       return false
     }
 
@@ -287,11 +270,13 @@ export const removeInvisiblePolygons = (polygons: TexturedPolygon[]) => {
   })
 }
 
-export const toTriangle2 = ([a, b, c]: PosVertex3[]) => {
-  return new Triangle2(
-    new TreeJsVector3(a.posX, a.posY, a.posZ),
-    new TreeJsVector3(b.posX, b.posY, b.posZ),
-    new TreeJsVector3(c.posX, c.posY, c.posZ),
+export const toTriangleHelper = ([a, b, c]: PosVertex3[]) => {
+  return new TriangleHelper(
+    new Triangle(
+      new TreeJsVector3(a.posX, a.posY, a.posZ),
+      new TreeJsVector3(b.posX, b.posY, b.posZ),
+      new TreeJsVector3(c.posX, c.posY, c.posZ),
+    ),
   )
 }
 
