@@ -63,23 +63,34 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
 
   setTexture(textures.wood.aliciaRoomMur02, mapData)
 
-  let fits = 0
-  let tooLarge = 0
+  let fits3 = 0
+  let tooLarge3 = 0
+  let fits4 = 0
+  let tooLarge4 = 0
 
   renderPolygonData(polygons, pos, scale, ({ polygon, texture, isQuad }) => {
     const textureIdx = parseInt(texture.split('_')[1])
 
     if (isQuad) {
       let doesItFit = false
+
       if (doesItFit) {
-        fits++
-        setColor('green', mapData)
+        fits4++
+        setColor('#030', mapData)
       } else {
-        tooLarge++
-        setColor('red', mapData)
+        tooLarge4++
+        setColor('#300', mapData)
       }
     } else {
-      setColor('black', mapData)
+      const triangle = toTriangleHelper(polygon)
+
+      if (triangle.doesItFitIntoACell(100)) {
+        fits3++
+        setColor('green', mapData)
+      } else {
+        tooLarge3++
+        setColor('red', mapData)
+      }
     }
 
     let flags = POLY_NO_SHADOW
@@ -103,5 +114,5 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
     // )
   })(mapData)
 
-  console.log({ fits, tooLarge })
+  console.log({ fits3, tooLarge3, fits4, tooLarge4 })
 }
