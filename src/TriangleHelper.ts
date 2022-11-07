@@ -1,4 +1,6 @@
-import { Triangle, Vector3, MathUtils } from 'three'
+import { Vector3, MathUtils } from 'three'
+
+const basically45 = 45 + 45 * Number.EPSILON
 
 export class TriangleHelper {
   a: Vector3
@@ -11,7 +13,7 @@ export class TriangleHelper {
   aAngle: number
   bAngle: number
 
-  constructor({ a, b, c }: Triangle) {
+  constructor(a: Vector3, b: Vector3, c: Vector3) {
     this.a = a
     this.b = b
     this.c = c
@@ -35,13 +37,10 @@ export class TriangleHelper {
 
   // source: https://www.geogebra.org/m/kFQdmJYb and https://www.geogebra.org/m/Q7m8ngqj
   getSmallestEnclosingSquareSideLength() {
+    // if the angles of the longest side are both <= 45, then the longest side is the square's diagonal
+
     const longestSide = this.getLongestSide()
     const squareSideLength = longestSide / Math.SQRT2
-
-    // if the third vertex is in the square with the greatest side as diagonal then this is the required square
-    // ( in the square = angles of the longest side are both <= 45 )
-
-    const basically45 = 45 + Number.EPSILON
 
     if (longestSide === this.abLength) {
       if (this.aAngle <= basically45 && this.bAngle <= basically45) {
@@ -57,39 +56,57 @@ export class TriangleHelper {
       }
     }
 
-    // ------------------
+    // else:
+    // 1) get the 2 angles of the triangle's shortest side, the point at the smaller angle will be the corner of the square
+    // 2) the triangle's other line from the corner will be the hypotenuse of a right triangle
+    // 3) the right triangle's adjacent side will be the square's side
+    //    the adjacent side can be calculated by multiplying the hypotenuse with the sine of opposing angle
+    //    the opposing angle is the same as the original triangle's smaller angle
 
-    // 1) get the 2 angles of the triangle's shortest side, the point at the smaller angle will be corner1 of the square
-    // 2) create a line perpendicular to the triangle's shortest side starting from the square's corner
-    // 3) create a line parallel to the triangle's shortest side, but move it so it touches the triangle's opposing point
-    // 4) intersect lines created at 2) and 3), that will be corner2 of the square
-
-    let corner1: Vector3
-    let corner2: Vector3
+    let hypotenuse: number
+    let opposingExterialAngle: number
 
     const shortestSide = this.getShortestSide()
     if (shortestSide === this.abLength) {
-      corner1 = this.aAngle < this.bAngle ? this.a : this.b
+      if (this.aAngle < this.bAngle) {
+        hypotenuse = this.caLength
+        opposingExterialAngle = this.aAngle
+      } else {
+        hypotenuse = this.bcLength
+        opposingExterialAngle = this.bAngle
+      }
     } else if (shortestSide === this.bcLength) {
-      corner1 = this.bAngle < this.cAngle ? this.b : this.c
+      if (this.bAngle < this.cAngle) {
+        hypotenuse = this.abLength
+        opposingExterialAngle = this.bAngle
+      } else {
+        hypotenuse = this.caLength
+        opposingExterialAngle = this.cAngle
+      }
     } else {
-      corner1 = this.cAngle < this.aAngle ? this.c : this.a
+      if (this.cAngle < this.aAngle) {
+        hypotenuse = this.bcLength
+        opposingExterialAngle = this.cAngle
+      } else {
+        hypotenuse = this.abLength
+        opposingExterialAngle = this.aAngle
+      }
     }
 
-    console.log(corner1)
-
-    // ------------------
-
-    return 1000
+    return hypotenuse * Math.sin(MathUtils.degToRad(opposingExterialAngle))
   }
 
   doesItFitIntoACell(cellSize: number) {
     const cellDigonalSize = cellSize * Math.SQRT2
 
-    if (this.abLength > cellDigonalSize || this.bcLength > cellDigonalSize || this.caLength > cellDigonalSize) {
+    if (
+      this.abLength > cellDigonalSize + cellDigonalSize * Number.EPSILON ||
+      this.bcLength > cellDigonalSize + cellDigonalSize * Number.EPSILON ||
+      this.caLength > cellDigonalSize + cellDigonalSize * Number.EPSILON
+    ) {
       return false
     }
 
-    return this.getSmallestEnclosingSquareSideLength() <= cellSize
+    return this.getSmallestEnclosingSquareSideLength() <= cellSize + cellSize * Number.EPSILON
   }
 }

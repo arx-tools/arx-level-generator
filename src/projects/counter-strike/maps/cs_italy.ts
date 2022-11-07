@@ -12,7 +12,7 @@ import {
 import { textures } from '../../../assets/textures'
 import { POLY_GLOW, POLY_NO_SHADOW, POLY_TRANS } from '../../../constants'
 import { MapData, setColor, setTexture } from '../../../helpers'
-import { RelativeCoords } from '../../../types'
+import { RelativeCoords, PosVertex3 } from '../../../types'
 
 // source: https://free3d.com/3d-model/cs-italy-64059.html
 export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData: MapData) => {
@@ -29,34 +29,33 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
 
   // polygons = polygons.slice(10390, 10550)
 
-  /*
   polygons = polygons.flatMap(({ texture, polygon }, i) => {
     const isQuad = polygon.length === 4
 
-    // if (!isTooLargePolygon(isQuad, polygon)) {
-    //   return [{ texture, polygon }]
-    // }
-
-    // ------------------
-
     if (isQuad) {
-      // TODO: subdivide if larger than 100x100
+      // measure whether the polygon(quad) fits into a 100x100 square
+
+      // if (it fits) {
+      return [{ texture, polygon }]
+      // }
     } else {
-      // TODO: subdivide if larger than 100x100
+      const triangle = toTriangleHelper(polygon)
+
+      if (triangle.doesItFitIntoACell(100)) {
+        return [{ texture, polygon }]
+      }
     }
 
-    return [
-      { texture, polygon },
-      // {
-      //   texture,
-      //   polygon: clone(polygon).map((vertex) => {
-      //     vertex.posY -= 100
-      //     return vertex
-      //   }),
-      // },
-    ]
+    // TODO: subdivide polygon
+
+    const subPolys: PosVertex3[][] = []
+
+    subPolys.push(polygon)
+
+    return subPolys.map((polygon) => {
+      return { texture, polygon }
+    })
   })
-  */
 
   // --------------------
 
@@ -71,17 +70,16 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
     const textureIdx = parseInt(texture.split('_')[1])
 
     if (isQuad) {
-      setColor('black', mapData)
-    } else {
-      const triangle = toTriangleHelper(polygon)
-
-      if (triangle.doesItFitIntoACell(100)) {
-        setColor('green', mapData)
+      let doesItFit = false
+      if (doesItFit) {
         fits++
+        setColor('green', mapData)
       } else {
-        setColor('red', mapData)
         tooLarge++
+        setColor('red', mapData)
       }
+    } else {
+      setColor('black', mapData)
     }
 
     let flags = POLY_NO_SHADOW
@@ -105,5 +103,5 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
     // )
   })(mapData)
 
-  console.log(fits, tooLarge)
+  console.log({ fits, tooLarge })
 }

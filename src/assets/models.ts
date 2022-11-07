@@ -272,11 +272,9 @@ export const removeInvisiblePolygons = (polygons: TexturedPolygon[]) => {
 
 export const toTriangleHelper = ([a, b, c]: PosVertex3[]) => {
   return new TriangleHelper(
-    new Triangle(
-      new TreeJsVector3(a.posX, a.posY, a.posZ),
-      new TreeJsVector3(b.posX, b.posY, b.posZ),
-      new TreeJsVector3(c.posX, c.posY, c.posZ),
-    ),
+    new TreeJsVector3(a.posX, a.posY, a.posZ),
+    new TreeJsVector3(b.posX, b.posY, b.posZ),
+    new TreeJsVector3(c.posX, c.posY, c.posZ),
   )
 }
 
