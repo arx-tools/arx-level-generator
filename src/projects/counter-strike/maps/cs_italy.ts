@@ -12,8 +12,8 @@ import {
 import { textures } from '../../../assets/textures'
 import { POLY_GLOW, POLY_NO_SHADOW, POLY_TRANS } from '../../../constants'
 import { MapData, setColor, setTexture } from '../../../helpers'
-import { doesPolygonFitIntoACell, toTriangleHelper } from '../../../subdivisionHelper'
-import { RelativeCoords, PosVertex3 } from '../../../types'
+import { doesPolygonFitIntoACell } from '../../../subdivisionHelper'
+import { RelativeCoords } from '../../../types'
 
 // source: https://free3d.com/3d-model/cs-italy-64059.html
 export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData: MapData) => {
@@ -69,15 +69,7 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
   let tooLarge3 = 0
   let tooLarge4 = 0
 
-  let isFirst = true
-
   renderPolygonData(polygons, pos, ({ polygon, texture, isQuad }) => {
-    if (isFirst) {
-      isFirst = false
-
-      console.log(polygon)
-    }
-
     const textureIdx = parseInt(texture.split('_')[1])
 
     if (doesPolygonFitIntoACell(polygon, isQuad)) {

@@ -186,12 +186,12 @@ export const renderPolygonData = (
           polygon.push({ posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 })
         }
 
-        // TODO: why is this needed, what's the difference between polygon order
+        doSomethingWithTheVertices({ polygon, texture, isQuad })
+
+        // last minute fixing the vertices
         let tmp = polygon[0]
         polygon[0] = polygon[1]
         polygon[1] = tmp
-
-        doSomethingWithTheVertices({ polygon, texture, isQuad })
 
         const textureFlags = mapData.state.texture?.flags ?? POLY_QUAD | POLY_NO_SHADOW
 
@@ -227,14 +227,8 @@ export const willThePolygonDataFit = (
   pos: RelativeCoords,
   mapData: MapData,
 ) => {
-  const xs = polygons
-    .map(({ polygon }) => polygon)
-    .flat(1)
-    .map(({ posX }) => posX)
-  const zs = polygons
-    .map(({ polygon }) => polygon)
-    .flat(1)
-    .map(({ posZ }) => posZ)
+  const xs = polygons.flatMap(({ polygon }) => polygon).map(({ posX }) => posX)
+  const zs = polygons.flatMap(({ polygon }) => polygon).map(({ posZ }) => posZ)
 
   const minX = roundToNDecimals(3, Math.min(...xs) + pos.coords[0] + mapData.config.origin.coords[0])
   const maxX = roundToNDecimals(3, Math.max(...xs) + pos.coords[0] + mapData.config.origin.coords[0])
