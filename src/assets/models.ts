@@ -182,11 +182,12 @@ export const renderPolygonData = (
         })
 
         const isQuad = polygon.length === 4
+
+        doSomethingWithTheVertices({ polygon, texture, isQuad })
+
         if (!isQuad) {
           polygon.push({ posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 })
         }
-
-        doSomethingWithTheVertices({ polygon, texture, isQuad })
 
         // last minute fixing the vertices
         let tmp = polygon[0]
