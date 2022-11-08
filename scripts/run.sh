@@ -18,10 +18,10 @@ fi
 
 # windows
 if [ -e "${OUTPUTDIR}arx.exe" ]; then
-  $("${OUTPUTDIR}arx.exe" --loadlevel "$LEVEL")
+  $OUTPUTDIR/arx.exe --loadlevel $LEVEL
 fi
 
 # linux
 if [ -e "${OUTPUTDIR}arx" ]; then
-  $("${OUTPUTDIR}arx" --loadlevel "$LEVEL")
+  $OUTPUTDIR/arx --loadlevel $LEVEL
 fi
