@@ -6,60 +6,61 @@ import {
   renderPolygonData,
   rotatePolygonData,
   removeInvisiblePolygons,
-  toTriangleHelper,
   turnPolygonDataInsideOut,
+  scalePolygonData,
 } from '../../../assets/models'
 import { textures } from '../../../assets/textures'
 import { POLY_GLOW, POLY_NO_SHADOW, POLY_TRANS } from '../../../constants'
 import { MapData, setColor, setTexture } from '../../../helpers'
+import { doesPolygonFitIntoACell, toTriangleHelper } from '../../../subdivisionHelper'
 import { RelativeCoords, PosVertex3 } from '../../../types'
 
 // source: https://free3d.com/3d-model/cs-italy-64059.html
 export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData: MapData) => {
   let polygons = await loadObj(path.resolve('./assets/projects/counter-strike/models/cs_italy/cs_italy.obj'))
+
+  polygons = removeInvisiblePolygons(polygons)
+
   flipPolygonAxis('xy', polygons)
   rotatePolygonData({ a: 0, b: 180, g: 0 }, polygons)
   turnPolygonDataInsideOut(polygons)
-
-  polygons = removeInvisiblePolygons(polygons)
+  scalePolygonData(scale, polygons)
 
   // --------------------
 
   // UNDER CONSTRUCTION
 
-  // polygons = polygons.slice(10390, 10550)
+  // polygons = polygons.slice(10250, 10280)
 
-  polygons = polygons.flatMap(({ texture, polygon }, i) => {
-    const isQuad = polygon.length === 4
+  // polygons = polygons.flatMap(({ texture, polygon }, i) => {
+  //   const isQuad = polygon.length === 4
 
-    if (isQuad) {
-      // measure whether the polygon(quad) fits into a 100x100 square
+  //   /*
+  //   if (!isQuad) {
+  //     const triangle = toTriangleHelper(polygon)
+  //     const x = triangle.getSmallestEnclosingSquareSideLength()
+  //     console.log(x)
+  //   }
+  //   */
 
-      // if (it fits) {
-      return [{ texture, polygon }]
-      // }
-    } else {
-      const triangle = toTriangleHelper(polygon)
+  //   if (doesPolygonFitIntoACell(polygon, isQuad)) {
+  //     return [{ texture, polygon }]
+  //   }
 
-      if (triangle.doesItFitIntoACell(100)) {
-        return [{ texture, polygon }]
-      }
-    }
+  //   // TODO: subdivide polygon
 
-    // TODO: subdivide polygon
+  //   const subPolys: PosVertex3[][] = []
 
-    const subPolys: PosVertex3[][] = []
+  //   subPolys.push(polygon)
 
-    subPolys.push(polygon)
-
-    return subPolys.map((polygon) => {
-      return { texture, polygon }
-    })
-  })
+  //   return subPolys.map((polygon) => {
+  //     return { texture, polygon }
+  //   })
+  // })
 
   // --------------------
 
-  willThePolygonDataFit('cs_italy.obj', polygons, pos, scale, mapData)
+  willThePolygonDataFit('cs_italy.obj', polygons, pos, mapData)
 
   setTexture(textures.wood.aliciaRoomMur02, mapData)
 
@@ -68,25 +69,21 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
   let fits4 = 0
   let tooLarge4 = 0
 
-  renderPolygonData(polygons, pos, scale, ({ polygon, texture, isQuad }) => {
+  renderPolygonData(polygons, pos, ({ polygon, texture, isQuad }) => {
     const textureIdx = parseInt(texture.split('_')[1])
 
-    if (isQuad) {
-      let doesItFit = false
-
-      if (doesItFit) {
+    if (doesPolygonFitIntoACell(polygon, isQuad)) {
+      if (isQuad) {
         fits4++
         setColor('#030', mapData)
       } else {
-        tooLarge4++
-        setColor('#300', mapData)
-      }
-    } else {
-      const triangle = toTriangleHelper(polygon)
-
-      if (triangle.doesItFitIntoACell(100)) {
         fits3++
         setColor('green', mapData)
+      }
+    } else {
+      if (isQuad) {
+        tooLarge4++
+        setColor('#300', mapData)
       } else {
         tooLarge3++
         setColor('red', mapData)

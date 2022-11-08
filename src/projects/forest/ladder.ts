@@ -5,6 +5,7 @@ import {
   loadObj,
   renderPolygonData,
   rotatePolygonData,
+  scalePolygonData,
 } from '../../assets/models'
 import { POLY_CLIMB } from '../../constants'
 import { MapData, setTexture } from '../../helpers'
@@ -15,6 +16,12 @@ export const createLadder =
   (pos: RelativeCoords, scale: number, rotation: RotationVertex3 = { a: 0, b: 0, g: 0 }) =>
   async (mapData: MapData) => {
     const polygons = await loadObj(path.resolve('./assets/projects/forest/models/ladder/ladder.obj'))
+
+    flipPolygonAxis('y', polygons)
+    rotatePolygonData(rotation, polygons)
+    flipTextureUpsideDown(polygons)
+    scalePolygonData(scale, polygons)
+
     setTexture(
       {
         path: 'projects/forest/models/ladder',
@@ -24,9 +31,5 @@ export const createLadder =
       },
       mapData,
     )
-    flipPolygonAxis('y', polygons)
-    rotatePolygonData(rotation, polygons)
-    flipTextureUpsideDown(polygons)
-
-    renderPolygonData(polygons, pos, scale)(mapData)
+    renderPolygonData(polygons, pos)(mapData)
   }

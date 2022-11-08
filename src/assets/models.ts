@@ -3,9 +3,9 @@ import { PosVertex3, Vector3, RelativeCoords, RotationVertex3 } from '../types'
 import { isBetween, MapData, roundToNDecimals } from '../helpers'
 import { POLY_NO_SHADOW, POLY_QUAD } from '../constants'
 import { useTexture } from '../assets/textures'
-import { Euler, MathUtils, Triangle, Vector3 as TreeJsVector3 } from 'three'
+import { Euler, MathUtils, Vector3 as TreeJsVector3 } from 'three'
 import { clone, identity } from '../faux-ramda'
-import { TriangleHelper } from '../TriangleHelper'
+import { isPolygonVisible } from '../subdivisionHelper'
 
 const EOL = /\r?\n/
 
@@ -141,10 +141,19 @@ export const rotatePolygonData = ({ a, b, g }: RotationVertex3, polygons: Textur
   })
 }
 
+export const scalePolygonData = (scale: number, polygons: TexturedPolygon[]) => {
+  polygons.forEach(({ polygon }) => {
+    polygon.forEach((vertex) => {
+      vertex.posX = vertex.posX * scale
+      vertex.posY = vertex.posY * scale
+      vertex.posZ = vertex.posZ * scale
+    })
+  })
+}
+
 export const renderPolygonData = (
   polygons: TexturedPolygon[],
   pos: RelativeCoords,
-  scale: number = 1,
   doSomethingWithTheVertices: (vertices: TexturedPolygon & { isQuad: boolean }) => void = identity,
 ) => {
   return (mapData: MapData) => {
@@ -166,9 +175,9 @@ export const renderPolygonData = (
 
       subPolys.forEach((polygon) => {
         polygon.forEach((vertex) => {
-          vertex.posX = vertex.posX * scale + mapData.config.origin.coords[0] + pos.coords[0]
-          vertex.posY = vertex.posY * scale + mapData.config.origin.coords[1] + pos.coords[1]
-          vertex.posZ = vertex.posZ * scale + mapData.config.origin.coords[2] + pos.coords[2]
+          vertex.posX = vertex.posX + mapData.config.origin.coords[0] + pos.coords[0]
+          vertex.posY = vertex.posY + mapData.config.origin.coords[1] + pos.coords[1]
+          vertex.posZ = vertex.posZ + mapData.config.origin.coords[2] + pos.coords[2]
         })
 
         const isQuad = polygon.length === 4
@@ -214,7 +223,6 @@ export const willThePolygonDataFit = (
   name: string,
   polygons: TexturedPolygon[],
   pos: RelativeCoords,
-  scale: number,
   mapData: MapData,
 ) => {
   const xs = polygons
@@ -226,10 +234,10 @@ export const willThePolygonDataFit = (
     .flat(1)
     .map(({ posZ }) => posZ)
 
-  const minX = roundToNDecimals(3, Math.min(...xs) * scale + pos.coords[0] + mapData.config.origin.coords[0])
-  const maxX = roundToNDecimals(3, Math.max(...xs) * scale + pos.coords[0] + mapData.config.origin.coords[0])
-  const minZ = roundToNDecimals(3, Math.min(...zs) * scale + pos.coords[2] + mapData.config.origin.coords[2])
-  const maxZ = roundToNDecimals(3, Math.max(...zs) * scale + pos.coords[2] + mapData.config.origin.coords[2])
+  const minX = roundToNDecimals(3, Math.min(...xs) + pos.coords[0] + mapData.config.origin.coords[0])
+  const maxX = roundToNDecimals(3, Math.max(...xs) + pos.coords[0] + mapData.config.origin.coords[0])
+  const minZ = roundToNDecimals(3, Math.min(...zs) + pos.coords[2] + mapData.config.origin.coords[2])
+  const maxZ = roundToNDecimals(3, Math.max(...zs) + pos.coords[2] + mapData.config.origin.coords[2])
 
   if (!isBetween(0, 16000, minX)) {
     throw new Error(`"${name}" doesn't fit into the level, the minimum value on the X axis is ${minX}`)
@@ -248,34 +256,11 @@ export const willThePolygonDataFit = (
   }
 }
 
-const isBasically0 = (n: number) => {
-  return Math.abs(n) < Number.EPSILON
-}
-
 export const removeInvisiblePolygons = (polygons: TexturedPolygon[]) => {
   return polygons.filter(({ polygon }) => {
     const isQuad = polygon.length === 4
-
-    if (isQuad) {
-      return true
-    }
-
-    const { aAngle, bAngle, cAngle } = toTriangleHelper(polygon)
-
-    if (isBasically0(aAngle) || isBasically0(bAngle) || isBasically0(cAngle)) {
-      return false
-    }
-
-    return true
+    return isPolygonVisible(polygon, isQuad)
   })
-}
-
-export const toTriangleHelper = ([a, b, c]: PosVertex3[]) => {
-  return new TriangleHelper(
-    new TreeJsVector3(a.posX, a.posY, a.posZ),
-    new TreeJsVector3(b.posX, b.posY, b.posZ),
-    new TreeJsVector3(c.posX, c.posY, c.posZ),
-  )
 }
 
 export const turnPolygonDataInsideOut = (polygons: TexturedPolygon[]) => {

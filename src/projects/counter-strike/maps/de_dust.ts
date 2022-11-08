@@ -6,6 +6,7 @@ import {
   renderPolygonData,
   turnPolygonDataInsideOut,
   flipTextureUpsideDown,
+  scalePolygonData,
 } from '../../../assets/models'
 import { textures } from '../../../assets/textures'
 import { POLY_GLOW, POLY_NO_SHADOW } from '../../../constants'
@@ -19,10 +20,11 @@ export const createDeDust = async (pos: RelativeCoords, scale: number, mapData: 
   flipPolygonAxis('xy', polygons)
   turnPolygonDataInsideOut(polygons)
   flipTextureUpsideDown(polygons)
+  scalePolygonData(scale, polygons)
 
-  willThePolygonDataFit('de_dust.obj', polygons, pos, scale, mapData)
+  willThePolygonDataFit('de_dust.obj', polygons, pos, mapData)
 
-  renderPolygonData(polygons, pos, scale, ({ polygon, texture, isQuad }) => {
+  renderPolygonData(polygons, pos, ({ polygon, texture, isQuad }) => {
     const textureIdx = parseInt(texture.split('_')[1])
 
     let flags = POLY_NO_SHADOW
