@@ -129,7 +129,15 @@ export const isPolygonVisible = (polygon: PosVertex3[], isQuad: boolean) => {
 
 export const doesPolygonFitIntoACell = (polygon: PosVertex3[], isQuad: boolean) => {
   if (isQuad) {
-    return false
+    if (!doesPolygonFitIntoACell(polygon.slice(0, 3), false)) {
+      return false
+    }
+
+    if (!doesPolygonFitIntoACell(polygon.slice(1, 4), false)) {
+      return false
+    }
+
+    return true
   } else {
     const triangle = toTriangleHelper(polygon)
 

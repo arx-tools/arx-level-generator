@@ -39,6 +39,7 @@ const parseFace = (line: string) => {
   })
 }
 
+// source: https://en.wikipedia.org/wiki/Wavefront_.obj_file
 export const loadObj = async (filename: string) => {
   const polygons: TexturedPolygon[] = []
 
@@ -185,6 +186,7 @@ export const renderPolygonData = (
           polygon.push({ posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 })
         }
 
+        // TODO: why is this needed, what's the difference between polygon order
         let tmp = polygon[0]
         polygon[0] = polygon[1]
         polygon[1] = tmp

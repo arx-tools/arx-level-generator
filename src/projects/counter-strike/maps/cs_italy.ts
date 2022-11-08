@@ -30,7 +30,7 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
 
   // UNDER CONSTRUCTION
 
-  // polygons = polygons.slice(10250, 10280)
+  // polygons = polygons.slice(10000, 10500)
 
   // polygons = polygons.flatMap(({ texture, polygon }, i) => {
   //   const isQuad = polygon.length === 4
@@ -65,11 +65,19 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
   setTexture(textures.wood.aliciaRoomMur02, mapData)
 
   let fits3 = 0
-  let tooLarge3 = 0
   let fits4 = 0
+  let tooLarge3 = 0
   let tooLarge4 = 0
 
+  let isFirst = true
+
   renderPolygonData(polygons, pos, ({ polygon, texture, isQuad }) => {
+    if (isFirst) {
+      isFirst = false
+
+      console.log(polygon)
+    }
+
     const textureIdx = parseInt(texture.split('_')[1])
 
     if (doesPolygonFitIntoACell(polygon, isQuad)) {
