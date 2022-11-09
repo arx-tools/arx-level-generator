@@ -4,7 +4,7 @@ import { isBetween, MapData, roundToNDecimals } from '../helpers'
 import { MAP_MAX_HEIGHT, MAP_MAX_WIDTH, POLY_NO_SHADOW, POLY_QUAD } from '../constants'
 import { useTexture } from '../assets/textures'
 import { Euler, MathUtils, Vector3 as TreeJsVector3 } from 'three'
-import { clone, identity } from '../faux-ramda'
+import { clone, identity, max, min, partition } from '../faux-ramda'
 import { doesPolygonFitIntoACell, isPolygonVisible, toTriangleHelper } from '../subdivisionHelper'
 
 const EOL = /\r?\n/
@@ -152,62 +152,74 @@ export const scalePolygonData = (scale: number, polygons: TexturedPolygon[]) => 
   })
 }
 
+const toTriangles = (polygons: TexturedPolygon[]) => {
+  return polygons.flatMap(({ polygon, texture }) => {
+    if (polygon.length === 3) {
+      return [{ polygon, texture }]
+    }
+
+    const subPolys: TexturedPolygon[] = []
+
+    for (let i = 0; i < polygon.length - 2; i++) {
+      subPolys.push({ polygon: [clone(polygon[0]), clone(polygon[i + 1]), polygon[i + 2]], texture })
+    }
+
+    return subPolys
+  })
+}
+
 const createPointHalfwayBetween = (a: TreeJsVector3, b: TreeJsVector3) => {
   return b.clone().sub(a).divideScalar(2).add(a)
 }
 
 export const subdividePolygons = (polygons: TexturedPolygon[], round: number = 0) => {
-  const dividedPolygons = polygons.flatMap(({ polygon, texture }) => {
+  if (round === 0) {
+    polygons = toTriangles(polygons)
+  }
+
+  const [fits, tooLarge] = partition(({ polygon }) => doesPolygonFitIntoACell(polygon), polygons)
+
+  if (tooLarge.length === 0) {
+    return fits
+  }
+
+  const dividedPolygons = tooLarge.flatMap(({ polygon, texture }) => {
+    const triangle = toTriangleHelper(polygon)
+    const longestSide = triangle.getLongestSide()
+    const [a, b, c] = polygon
+
     const subPolys: TexturedPolygon[] = []
 
-    if (polygon.length === 3) {
-      subPolys.push({ polygon, texture })
+    if (longestSide === triangle.abLength) {
+      // TODO: calculate the point and UV halfway between a and b
+      const midpoint = createPointHalfwayBetween(triangle.a, triangle.b)
+      const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU: 0, texV: 0 }
+      subPolys.push(
+        { polygon: [clone(a), clone(m), clone(c)], texture },
+        { polygon: [clone(m), clone(b), clone(c)], texture },
+      )
+    } else if (longestSide === triangle.bcLength) {
+      // TODO: calculate the point and UV halfway between b and c
+      const midpoint = createPointHalfwayBetween(triangle.b, triangle.c)
+      const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU: 0, texV: 0 }
+      subPolys.push(
+        { polygon: [clone(a), clone(b), clone(m)], texture },
+        { polygon: [clone(a), clone(m), clone(c)], texture },
+      )
     } else {
-      for (let i = 0; i < polygon.length - 2; i++) {
-        subPolys.push({ polygon: [clone(polygon[0]), clone(polygon[i + 1]), polygon[i + 2]], texture })
-      }
+      // TODO: calculate the point and UV halfway between c and a
+      const midpoint = createPointHalfwayBetween(triangle.c, triangle.a)
+      const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU: 0, texV: 0 }
+      subPolys.push(
+        { polygon: [clone(m), clone(b), clone(c)], texture },
+        { polygon: [clone(a), clone(b), clone(m)], texture },
+      )
     }
 
-    return subPolys.flatMap(({ polygon, texture }) => {
-      if (doesPolygonFitIntoACell(polygon)) {
-        return [{ polygon, texture }]
-      }
-
-      const subPolys: TexturedPolygon[] = []
-
-      const triangle = toTriangleHelper(polygon)
-      const longestSide = triangle.getLongestSide()
-
-      const [a, b, c] = polygon
-      if (longestSide === triangle.abLength) {
-        // TODO: calculate the point and UV halfway between a and b
-        const midpoint = createPointHalfwayBetween(triangle.a, triangle.b)
-        const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU: 0, texV: 0 }
-        subPolys.push({ polygon: [clone(a), clone(m), clone(c)], texture })
-        subPolys.push({ polygon: [clone(m), clone(b), clone(c)], texture })
-      } else if (longestSide === triangle.bcLength) {
-        // TODO: calculate the point and UV halfway between b and c
-        const midpoint = createPointHalfwayBetween(triangle.b, triangle.c)
-        const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU: 0, texV: 0 }
-        subPolys.push({ polygon: [clone(a), clone(b), clone(m)], texture })
-        subPolys.push({ polygon: [clone(a), clone(m), clone(c)], texture })
-      } else {
-        // TODO: calculate the point and UV halfway between c and a
-        const midpoint = createPointHalfwayBetween(triangle.c, triangle.a)
-        const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU: 0, texV: 0 }
-        subPolys.push({ polygon: [clone(m), clone(b), clone(c)], texture })
-        subPolys.push({ polygon: [clone(a), clone(b), clone(m)], texture })
-      }
-
-      return subPolys
-    })
+    return subPolys
   })
 
-  if (round < 4) {
-    return subdividePolygons(dividedPolygons, round + 1)
-  } else {
-    return dividedPolygons
-  }
+  return [...fits, ...subdividePolygons(dividedPolygons, round + 1)]
 }
 
 export const renderPolygonData = (
@@ -263,10 +275,10 @@ export const willThePolygonDataFit = (
   const xs = polygons.flatMap(({ polygon }) => polygon).map(({ posX }) => posX)
   const zs = polygons.flatMap(({ polygon }) => polygon).map(({ posZ }) => posZ)
 
-  const minX = roundToNDecimals(3, Math.min(...xs) + pos.coords[0] + mapData.config.origin.coords[0])
-  const maxX = roundToNDecimals(3, Math.max(...xs) + pos.coords[0] + mapData.config.origin.coords[0])
-  const minZ = roundToNDecimals(3, Math.min(...zs) + pos.coords[2] + mapData.config.origin.coords[2])
-  const maxZ = roundToNDecimals(3, Math.max(...zs) + pos.coords[2] + mapData.config.origin.coords[2])
+  const minX = roundToNDecimals(3, min(xs) + pos.coords[0] + mapData.config.origin.coords[0])
+  const maxX = roundToNDecimals(3, max(xs) + pos.coords[0] + mapData.config.origin.coords[0])
+  const minZ = roundToNDecimals(3, min(zs) + pos.coords[2] + mapData.config.origin.coords[2])
+  const maxZ = roundToNDecimals(3, max(zs) + pos.coords[2] + mapData.config.origin.coords[2])
 
   if (!isBetween(0, MAP_MAX_WIDTH * 100, minX)) {
     throw new Error(`"${name}" doesn't fit into the level, the minimum value on the X axis is ${minX}`)

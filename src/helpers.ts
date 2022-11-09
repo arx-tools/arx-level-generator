@@ -2,7 +2,7 @@ import fs from 'fs'
 import rgba from 'color-rgba'
 import { createTextureContainers, textures, exportTextures, resetTextures, TextureDefinition } from './assets/textures'
 import { createDlfData, createFtsData, createLlfData, DlfData, FtsData, FtsPolygon, LlfData } from './blankMap'
-import { countBy, partition, repeat, clone } from './faux-ramda'
+import { countBy, partition, repeat, clone, min } from './faux-ramda'
 import {
   POLY_QUAD,
   MAP_MAX_HEIGHT,
@@ -119,8 +119,8 @@ export const isBetweenInclusive = (min: number, max: number, value: number) => {
 const getCellCoords = (isQuad: boolean, vertices: PosVertex3[]) => {
   const v = vertices.slice(0, isQuad ? 4 : 3)
 
-  const x = Math.round(Math.min(...v.map(({ posX }) => posX)))
-  const z = Math.round(Math.min(...v.map(({ posZ }) => posZ)))
+  const x = Math.round(min(v.map(({ posX }) => posX)))
+  const z = Math.round(min(v.map(({ posZ }) => posZ)))
 
   const cellX = Math.floor(x / 100)
   const cellZ = Math.floor(z / 100) + 1

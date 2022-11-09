@@ -36,6 +36,7 @@ const findClosestJoint = (a, bx) => {
   }
 
   const distances = bx.map((b) => Math.abs(magnitude(subtractVec3(a, b))))
+
   return bx[distances.indexOf(Math.min(...distances))]
 }
 
