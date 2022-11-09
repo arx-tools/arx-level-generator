@@ -8,12 +8,13 @@ import {
   removeInvisiblePolygons,
   turnPolygonDataInsideOut,
   scalePolygonData,
+  subdividePolygonData,
 } from '../../../assets/models'
 import { textures } from '../../../assets/textures'
 import { POLY_GLOW, POLY_NO_SHADOW, POLY_TRANS } from '../../../constants'
 import { MapData, setColor, setTexture } from '../../../helpers'
 import { doesPolygonFitIntoACell } from '../../../subdivisionHelper'
-import { RelativeCoords, PosVertex3 } from '../../../types'
+import { RelativeCoords } from '../../../types'
 
 // source: https://free3d.com/3d-model/cs-italy-64059.html
 export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData: MapData) => {
@@ -26,64 +27,24 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
   turnPolygonDataInsideOut(polygons)
   scalePolygonData(scale, polygons)
 
-  // --------------------
-
-  // subdividing large polygons
-  polygons = polygons.flatMap(({ texture, polygon }, i) => {
-    const isQuad = polygon.length === 4
-
-    // temporarily we don't care about quads
-    if (isQuad) {
-      return [{ texture, polygon }]
-    }
-
-    if (doesPolygonFitIntoACell(polygon, isQuad)) {
-      return [{ texture, polygon }]
-    }
-
-    // TODO: subdivide polygon
-
-    const subPolys: PosVertex3[][] = []
-
-    subPolys.push(polygon)
-
-    return subPolys.map((polygon) => {
-      return { texture, polygon }
-    })
-  })
-
-  // --------------------
+  polygons = subdividePolygonData(polygons)
 
   willThePolygonDataFit('cs_italy.obj', polygons, pos, mapData)
 
   setTexture(textures.wood.aliciaRoomMur02, mapData)
 
-  let fits3 = 0
-  let fits4 = 0
-  let tooLarge3 = 0
-  let tooLarge4 = 0
+  let fits = 0
+  let tooLarge = 0
 
-  renderPolygonData(polygons, pos, ({ polygon, texture, isQuad }) => {
+  renderPolygonData(polygons, pos, ({ polygon, texture }) => {
     const textureIdx = parseInt(texture.split('_')[1])
 
-    if (doesPolygonFitIntoACell(polygon, isQuad)) {
-      if (isQuad) {
-        fits4++
-        // setColor('#030', mapData)
-        setColor('#333', mapData)
-      } else {
-        fits3++
-        setColor('green', mapData)
-      }
+    if (doesPolygonFitIntoACell(polygon)) {
+      fits++
+      setColor('green', mapData)
     } else {
-      if (isQuad) {
-        tooLarge4++
-        // setColor('#300', mapData)
-        setColor('#333', mapData)
-      } else {
-        tooLarge3++
-        setColor('red', mapData)
-      }
+      tooLarge++
+      setColor('red', mapData)
     }
 
     let flags = POLY_NO_SHADOW
@@ -107,5 +68,5 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
     // )
   })(mapData)
 
-  console.log({ fits3, tooLarge3, fits4, tooLarge4 })
+  console.log({ fits, tooLarge })
 }

@@ -17,7 +17,6 @@ import { createCsItaly } from './maps/cs_italy'
 import { createChicken, defineChicken } from './chicken'
 import { createSoundPlayer, defineSoundPlayer } from './soundPlayer'
 import { createDeDust } from './maps/de_dust'
-import floor from '../../prefabs/base/floor'
 
 const createPlayerSpawn = (pos: RelativeCoords, config) => {
   const ref = createItem(items.marker)

@@ -7,6 +7,8 @@ import {
   turnPolygonDataInsideOut,
   flipTextureUpsideDown,
   scalePolygonData,
+  subdividePolygonData,
+  removeInvisiblePolygons,
 } from '../../../assets/models'
 import { textures } from '../../../assets/textures'
 import { POLY_GLOW, POLY_NO_SHADOW } from '../../../constants'
@@ -17,14 +19,18 @@ import { RelativeCoords } from '../../../types'
 export const createDeDust = async (pos: RelativeCoords, scale: number, mapData: MapData) => {
   let polygons = await loadObj(path.resolve('./assets/projects/counter-strike/models/de_dust/de_dust.obj'))
 
+  polygons = removeInvisiblePolygons(polygons)
+
   flipPolygonAxis('xy', polygons)
   turnPolygonDataInsideOut(polygons)
   flipTextureUpsideDown(polygons)
   scalePolygonData(scale, polygons)
 
+  polygons = subdividePolygonData(polygons)
+
   willThePolygonDataFit('de_dust.obj', polygons, pos, mapData)
 
-  renderPolygonData(polygons, pos, ({ polygon, texture, isQuad }) => {
+  renderPolygonData(polygons, pos, ({ polygon, texture }) => {
     const textureIdx = parseInt(texture.split('_')[1])
 
     let flags = POLY_NO_SHADOW

@@ -152,71 +152,61 @@ export const scalePolygonData = (scale: number, polygons: TexturedPolygon[]) => 
   })
 }
 
+export const subdividePolygonData = (polygons: TexturedPolygon[]) => {
+  return polygons.flatMap(({ polygon, texture }) => {
+    if (polygon.length === 3) {
+      return [{ polygon, texture }]
+    }
+
+    const subPolys: TexturedPolygon[] = []
+
+    for (let i = 0; i < polygon.length - 2; i++) {
+      subPolys.push({ polygon: [clone(polygon[0]), clone(polygon[i + 1]), polygon[i + 2]], texture })
+    }
+
+    return subPolys
+  })
+}
+
 export const renderPolygonData = (
   polygons: TexturedPolygon[],
   pos: RelativeCoords,
-  doSomethingWithTheVertices: (vertices: TexturedPolygon & { isQuad: boolean }) => void = identity,
+  doSomethingWithTheVertices: (vertices: TexturedPolygon) => void = identity,
 ) => {
   return (mapData: MapData) => {
     mapData.fts.polygons[mapData.state.polygonGroup] = mapData.fts.polygons[mapData.state.polygonGroup] || []
 
     polygons.forEach(({ polygon, texture }) => {
-      const subPolys: PosVertex3[][] = []
+      polygon.forEach((vertex) => {
+        vertex.posX = vertex.posX + mapData.config.origin.coords[0] + pos.coords[0]
+        vertex.posY = vertex.posY + mapData.config.origin.coords[1] + pos.coords[1]
+        vertex.posZ = vertex.posZ + mapData.config.origin.coords[2] + pos.coords[2]
+      })
 
-      switch (polygon.length) {
-        case 3:
-        case 4:
-          subPolys.push(polygon)
-          break
-        default:
-          for (let i = 1; i <= polygon.length - 2; i++) {
-            subPolys.push([clone(polygon[0]), clone(polygon[i]), polygon[i + 1]])
-          }
-      }
+      doSomethingWithTheVertices({ polygon, texture })
 
-      subPolys.forEach((polygon) => {
-        polygon.forEach((vertex) => {
-          vertex.posX = vertex.posX + mapData.config.origin.coords[0] + pos.coords[0]
-          vertex.posY = vertex.posY + mapData.config.origin.coords[1] + pos.coords[1]
-          vertex.posZ = vertex.posZ + mapData.config.origin.coords[2] + pos.coords[2]
-        })
+      // last minute fixing the vertices
+      let tmp = polygon[0]
+      polygon[0] = polygon[1]
+      polygon[1] = tmp
 
-        const isQuad = polygon.length === 4
+      polygon.push({ posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 })
 
-        doSomethingWithTheVertices({ polygon, texture, isQuad })
+      const textureFlags = mapData.state.texture?.flags ?? POLY_NO_SHADOW
 
-        if (!isQuad) {
-          polygon.push({ posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 })
-        }
-
-        // last minute fixing the vertices
-        let tmp = polygon[0]
-        polygon[0] = polygon[1]
-        polygon[1] = tmp
-
-        const textureFlags = mapData.state.texture?.flags ?? POLY_QUAD | POLY_NO_SHADOW
-
-        let flags = textureFlags
-        if (isQuad) {
-          flags = flags | POLY_QUAD
-        } else {
-          flags = flags & ~POLY_QUAD
-        }
-
-        mapData.fts.polygons[mapData.state.polygonGroup].push({
-          config: {
-            color: mapData.state.color,
-            isQuad: (flags & POLY_QUAD) > 0,
-            bumpable: true,
-          },
-          vertices: polygon,
-          tex: useTexture(mapData.state.texture),
-          transval: 2,
-          area: 1000,
-          type: flags,
-          room: 1,
-          paddy: 0,
-        })
+      mapData.fts.polygons[mapData.state.polygonGroup].push({
+        config: {
+          color: mapData.state.color,
+          isQuad: false,
+          bumpable: true,
+        },
+        vertices: polygon,
+        tex: useTexture(mapData.state.texture),
+        transval: 2,
+        area: 1000,
+        type: textureFlags & ~POLY_QUAD,
+        room: 1,
+        paddy: 0,
       })
     })
   }
