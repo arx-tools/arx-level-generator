@@ -152,7 +152,7 @@ export const scalePolygonData = (scale: number, polygons: TexturedPolygon[]) => 
   })
 }
 
-const toTriangles = (polygons: TexturedPolygon[]) => {
+export const toTriangles = (polygons: TexturedPolygon[]) => {
   return polygons.flatMap(({ polygon, texture }) => {
     if (polygon.length === 3) {
       return [{ polygon, texture }]
@@ -172,11 +172,7 @@ const createPointHalfwayBetween = (a: TreeJsVector3, b: TreeJsVector3) => {
   return b.clone().sub(a).divideScalar(2).add(a)
 }
 
-export const subdividePolygons = (polygons: TexturedPolygon[], round: number = 0) => {
-  if (round === 0) {
-    polygons = toTriangles(polygons)
-  }
-
+export const subdivideTriangles = (polygons: TexturedPolygon[]) => {
   const [fits, tooLarge] = partition(({ polygon }) => doesPolygonFitIntoACell(polygon), polygons)
 
   if (tooLarge.length === 0) {
@@ -222,7 +218,7 @@ export const subdividePolygons = (polygons: TexturedPolygon[], round: number = 0
     return subPolys
   })
 
-  return [...fits, ...subdividePolygons(dividedPolygons, round + 1)]
+  return [...fits, ...subdivideTriangles(dividedPolygons)]
 }
 
 export const renderPolygonData = (
@@ -285,6 +281,10 @@ export const willThePolygonDataFit = (
   pos: RelativeCoords,
   mapData: MapData,
 ) => {
+  if (polygons.length === 0) {
+    return
+  }
+
   const vertices = polygons.flatMap(({ polygon }) => polygon)
   const xs = vertices.map(({ posX }) => posX)
   const zs = vertices.map(({ posZ }) => posZ)
@@ -313,8 +313,15 @@ export const willThePolygonDataFit = (
 
 export const removeInvisiblePolygons = (polygons: TexturedPolygon[]) => {
   return polygons.filter(({ polygon }) => {
-    const isQuad = polygon.length === 4
-    return isPolygonVisible(polygon, isQuad)
+    switch (polygon.length) {
+      case 3:
+        return isPolygonVisible(polygon, false)
+      case 4:
+        return isPolygonVisible(polygon, true)
+      default:
+        // TODO: decide whether a polygon with 4+ vertices is visible or not
+        return true
+    }
   })
 }
 

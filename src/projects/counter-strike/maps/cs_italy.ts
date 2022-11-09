@@ -8,7 +8,8 @@ import {
   removeInvisiblePolygons,
   turnPolygonDataInsideOut,
   scalePolygonData,
-  subdividePolygons,
+  subdivideTriangles,
+  toTriangles,
 } from '../../../assets/models'
 import { POLY_GLOW, POLY_NO_SHADOW, POLY_TRANS } from '../../../constants'
 import { MapData, setTexture } from '../../../helpers'
@@ -25,11 +26,9 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
   turnPolygonDataInsideOut(polygons)
   scalePolygonData(scale, polygons)
 
-  polygons = polygons.slice(10000) // TODO: remove
-
-  polygons = subdividePolygons(polygons)
-
   willThePolygonDataFit('cs_italy.obj', polygons, pos, mapData)
+
+  polygons = subdivideTriangles(toTriangles(polygons))
 
   renderPolygonData(polygons, pos, ({ polygon, texture }) => {
     const textureIdx = parseInt(texture.split('_')[1])

@@ -182,13 +182,17 @@ const vectorToXYZ = ([x, y, z]: Vector3): Vertex3 => {
   return { x, y, z }
 }
 
-const calculateNormals = (mapData: any) => {
+export const calculateNormal = ([a, b, c]: Vector3[]) => {
+  return vectorToXYZ(normalize(cross(subtractVec3(b, a), subtractVec3(c, a))))
+}
+
+const calculateNormals = (mapData: FinalizedMapData) => {
   // https://computergraphics.stackexchange.com/questions/4031/programmatically-generating-vertex-normals
 
   mapData.fts.polygons.forEach((polygon) => {
     const { vertices, config } = polygon
 
-    const points = vertices.map(posVertexToVector)
+    const points: Vector3[] = vertices.map(posVertexToVector)
 
     // vertices are laid down in a russian i shape (И):
     // a c
@@ -201,7 +205,7 @@ const calculateNormals = (mapData: any) => {
       polygon.norm2 = vectorToXYZ([0, 0, 0])
     }
 
-    polygon.norm = vectorToXYZ(normalize(cross(subtractVec3(b, a), subtractVec3(c, a))))
+    polygon.norm = calculateNormal(points)
 
     polygon.normals = [polygon.norm, polygon.norm, polygon.norm, polygon.norm2]
   })

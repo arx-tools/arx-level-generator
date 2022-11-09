@@ -118,11 +118,11 @@ export const toTriangleHelper = ([a, b, c]: PosVertex3[]) => {
 
 export const isPolygonVisible = (polygon: PosVertex3[], isQuad: boolean) => {
   if (isQuad) {
-    // TODO: check if the 2 adjacent triangles are both flat
-    return true
+    const triangle1 = toTriangleHelper(polygon.slice(0, 3))
+    const triangle2 = toTriangleHelper(polygon.slice(1, 4))
+    return !triangle1.isFlat() || !triangle2.isFlat()
   } else {
     const triangle = toTriangleHelper(polygon)
-
     return !triangle.isFlat()
   }
 }
