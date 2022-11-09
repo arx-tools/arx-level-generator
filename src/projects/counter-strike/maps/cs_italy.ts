@@ -25,6 +25,8 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
   turnPolygonDataInsideOut(polygons)
   scalePolygonData(scale, polygons)
 
+  polygons = polygons.slice(10000) // TODO: remove
+
   polygons = subdividePolygons(polygons)
 
   willThePolygonDataFit('cs_italy.obj', polygons, pos, mapData)

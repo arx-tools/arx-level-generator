@@ -191,25 +191,28 @@ export const subdividePolygons = (polygons: TexturedPolygon[], round: number = 0
     const subPolys: TexturedPolygon[] = []
 
     if (longestSide === triangle.abLength) {
-      // TODO: calculate the point and UV halfway between a and b
       const midpoint = createPointHalfwayBetween(triangle.a, triangle.b)
-      const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU: 0, texV: 0 }
+      const texU = (a.texU + b.texU) / 2
+      const texV = (a.texV + b.texV) / 2
+      const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU, texV }
       subPolys.push(
         { polygon: [clone(a), clone(m), clone(c)], texture },
         { polygon: [clone(m), clone(b), clone(c)], texture },
       )
     } else if (longestSide === triangle.bcLength) {
-      // TODO: calculate the point and UV halfway between b and c
       const midpoint = createPointHalfwayBetween(triangle.b, triangle.c)
-      const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU: 0, texV: 0 }
+      const texU = (b.texU + c.texU) / 2
+      const texV = (b.texV + c.texV) / 2
+      const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU, texV }
       subPolys.push(
         { polygon: [clone(a), clone(b), clone(m)], texture },
         { polygon: [clone(a), clone(m), clone(c)], texture },
       )
     } else {
-      // TODO: calculate the point and UV halfway between c and a
       const midpoint = createPointHalfwayBetween(triangle.c, triangle.a)
-      const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU: 0, texV: 0 }
+      const texU = (c.texU + a.texU) / 2
+      const texV = (c.texV + a.texV) / 2
+      const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU, texV }
       subPolys.push(
         { polygon: [clone(m), clone(b), clone(c)], texture },
         { polygon: [clone(a), clone(b), clone(m)], texture },
@@ -244,7 +247,9 @@ export const renderPolygonData = (
       polygon[0] = polygon[1]
       polygon[1] = tmp
 
-      polygon.push({ posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 })
+      if (polygon.length === 3) {
+        polygon.push({ posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 })
+      }
 
       const textureFlags = mapData.state.texture?.flags ?? POLY_NO_SHADOW
 
