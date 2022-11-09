@@ -27,11 +27,11 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
   turnPolygonDataInsideOut(polygons)
   scalePolygonData(scale, polygons)
 
+  polygons = polygons.slice(10000) // TODO: remove
+
   polygons = subdividePolygons(polygons)
 
   willThePolygonDataFit('cs_italy.obj', polygons, pos, mapData)
-
-  setTexture(textures.wood.aliciaRoomMur02, mapData)
 
   let fits = 0
   let tooLarge = 0
@@ -56,6 +56,8 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
     if (textureIdx === 32 || textureIdx === 43) {
       flags |= POLY_GLOW
     }
+
+    setTexture(textures.wood.aliciaRoomMur02, mapData)
 
     // setTexture(
     //   {

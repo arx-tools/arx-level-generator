@@ -5,7 +5,7 @@ import { MAP_MAX_HEIGHT, MAP_MAX_WIDTH, POLY_NO_SHADOW, POLY_QUAD } from '../con
 import { useTexture } from '../assets/textures'
 import { Euler, MathUtils, Vector3 as TreeJsVector3 } from 'three'
 import { clone, identity } from '../faux-ramda'
-import { isPolygonVisible } from '../subdivisionHelper'
+import { doesPolygonFitIntoACell, isPolygonVisible, toTriangleHelper } from '../subdivisionHelper'
 
 const EOL = /\r?\n/
 
@@ -152,20 +152,62 @@ export const scalePolygonData = (scale: number, polygons: TexturedPolygon[]) => 
   })
 }
 
-export const subdividePolygons = (polygons: TexturedPolygon[]) => {
-  return polygons.flatMap(({ polygon, texture }) => {
-    if (polygon.length === 3) {
-      return [{ polygon, texture }]
-    }
+const createPointHalfwayBetween = (a: TreeJsVector3, b: TreeJsVector3) => {
+  return b.clone().sub(a).divideScalar(2).add(a)
+}
 
+export const subdividePolygons = (polygons: TexturedPolygon[], round: number = 0) => {
+  const dividedPolygons = polygons.flatMap(({ polygon, texture }) => {
     const subPolys: TexturedPolygon[] = []
 
-    for (let i = 0; i < polygon.length - 2; i++) {
-      subPolys.push({ polygon: [clone(polygon[0]), clone(polygon[i + 1]), polygon[i + 2]], texture })
+    if (polygon.length === 3) {
+      subPolys.push({ polygon, texture })
+    } else {
+      for (let i = 0; i < polygon.length - 2; i++) {
+        subPolys.push({ polygon: [clone(polygon[0]), clone(polygon[i + 1]), polygon[i + 2]], texture })
+      }
     }
 
-    return subPolys
+    return subPolys.flatMap(({ polygon, texture }) => {
+      if (doesPolygonFitIntoACell(polygon)) {
+        return [{ polygon, texture }]
+      }
+
+      const subPolys: TexturedPolygon[] = []
+
+      const triangle = toTriangleHelper(polygon)
+      const longestSide = triangle.getLongestSide()
+
+      const [a, b, c] = polygon
+      if (longestSide === triangle.abLength) {
+        // TODO: calculate the point and UV halfway between a and b
+        const midpoint = createPointHalfwayBetween(triangle.a, triangle.b)
+        const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU: 0, texV: 0 }
+        subPolys.push({ polygon: [clone(a), clone(m), clone(c)], texture })
+        subPolys.push({ polygon: [clone(m), clone(b), clone(c)], texture })
+      } else if (longestSide === triangle.bcLength) {
+        // TODO: calculate the point and UV halfway between b and c
+        const midpoint = createPointHalfwayBetween(triangle.b, triangle.c)
+        const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU: 0, texV: 0 }
+        subPolys.push({ polygon: [clone(a), clone(b), clone(m)], texture })
+        subPolys.push({ polygon: [clone(a), clone(m), clone(c)], texture })
+      } else {
+        // TODO: calculate the point and UV halfway between c and a
+        const midpoint = createPointHalfwayBetween(triangle.c, triangle.a)
+        const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU: 0, texV: 0 }
+        subPolys.push({ polygon: [clone(m), clone(b), clone(c)], texture })
+        subPolys.push({ polygon: [clone(a), clone(b), clone(m)], texture })
+      }
+
+      return subPolys
+    })
   })
+
+  if (round < 4) {
+    return subdividePolygons(dividedPolygons, round + 1)
+  } else {
+    return dividedPolygons
+  }
 }
 
 export const renderPolygonData = (
