@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { PosVertex3, Vector3, RelativeCoords, RotationVertex3 } from '../types'
 import { isBetween, MapData, roundToNDecimals } from '../helpers'
-import { POLY_NO_SHADOW, POLY_QUAD } from '../constants'
+import { MAP_MAX_HEIGHT, MAP_MAX_WIDTH, POLY_NO_SHADOW, POLY_QUAD } from '../constants'
 import { useTexture } from '../assets/textures'
 import { Euler, MathUtils, Vector3 as TreeJsVector3 } from 'three'
 import { clone, identity } from '../faux-ramda'
@@ -152,7 +152,7 @@ export const scalePolygonData = (scale: number, polygons: TexturedPolygon[]) => 
   })
 }
 
-export const subdividePolygonData = (polygons: TexturedPolygon[]) => {
+export const subdividePolygons = (polygons: TexturedPolygon[]) => {
   return polygons.flatMap(({ polygon, texture }) => {
     if (polygon.length === 3) {
       return [{ polygon, texture }]
@@ -226,19 +226,19 @@ export const willThePolygonDataFit = (
   const minZ = roundToNDecimals(3, Math.min(...zs) + pos.coords[2] + mapData.config.origin.coords[2])
   const maxZ = roundToNDecimals(3, Math.max(...zs) + pos.coords[2] + mapData.config.origin.coords[2])
 
-  if (!isBetween(0, 16000, minX)) {
+  if (!isBetween(0, MAP_MAX_WIDTH * 100, minX)) {
     throw new Error(`"${name}" doesn't fit into the level, the minimum value on the X axis is ${minX}`)
   }
 
-  if (!isBetween(0, 16000, maxX)) {
+  if (!isBetween(0, MAP_MAX_WIDTH * 100, maxX)) {
     throw new Error(`"${name}" doesn't fit into the level, the maximum value on the X axis is ${maxX}`)
   }
 
-  if (!isBetween(0, 16000, minZ)) {
+  if (!isBetween(0, MAP_MAX_HEIGHT * 100, minZ)) {
     throw new Error(`"${name}" doesn't fit into the level, the minimum value on the Z axis is ${minZ}`)
   }
 
-  if (!isBetween(0, 16000, maxZ)) {
+  if (!isBetween(0, MAP_MAX_HEIGHT * 100, maxZ)) {
     throw new Error(`"${name}" doesn't fit into the level, the maximum value on the Z axis is ${maxZ}`)
   }
 }

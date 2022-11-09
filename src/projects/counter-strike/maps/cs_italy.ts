@@ -8,7 +8,7 @@ import {
   removeInvisiblePolygons,
   turnPolygonDataInsideOut,
   scalePolygonData,
-  subdividePolygonData,
+  subdividePolygons,
 } from '../../../assets/models'
 import { textures } from '../../../assets/textures'
 import { POLY_GLOW, POLY_NO_SHADOW, POLY_TRANS } from '../../../constants'
@@ -27,7 +27,7 @@ export const createCsItaly = async (pos: RelativeCoords, scale: number, mapData:
   turnPolygonDataInsideOut(polygons)
   scalePolygonData(scale, polygons)
 
-  polygons = subdividePolygonData(polygons)
+  polygons = subdividePolygons(polygons)
 
   willThePolygonDataFit('cs_italy.obj', polygons, pos, mapData)
 

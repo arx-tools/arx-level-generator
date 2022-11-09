@@ -7,7 +7,7 @@ import {
   turnPolygonDataInsideOut,
   flipTextureUpsideDown,
   scalePolygonData,
-  subdividePolygonData,
+  subdividePolygons,
   removeInvisiblePolygons,
 } from '../../../assets/models'
 import { textures } from '../../../assets/textures'
@@ -26,7 +26,7 @@ export const createDeDust = async (pos: RelativeCoords, scale: number, mapData: 
   flipTextureUpsideDown(polygons)
   scalePolygonData(scale, polygons)
 
-  polygons = subdividePolygonData(polygons)
+  polygons = subdividePolygons(polygons)
 
   willThePolygonDataFit('de_dust.obj', polygons, pos, mapData)
 
