@@ -17,6 +17,7 @@ import { createCsItaly } from './maps/cs_italy'
 import { createChicken, defineChicken } from './chicken'
 import { createSoundPlayer, defineSoundPlayer } from './soundPlayer'
 import { createDeDust } from './maps/de_dust'
+import { createDoor } from '../forest/door'
 
 const createPlayerSpawn = (pos: RelativeCoords, config) => {
   const ref = createItem(items.marker)
@@ -118,7 +119,22 @@ const generate = async (config) => {
       addOperaSound({ type: 'relative', coords: [3200, -700, 7200] })
 
       defineChicken()
-      createChicken({ type: 'relative', coords: [1180, -300, 165] }, { a: 0, b: 0, g: 0 })
+      createChicken({ type: 'relative', coords: [1180, 80, 165] }, { a: 0, b: 0, g: 0 })
+
+      const doorProps = { scale: 1.08, isLocked: true }
+
+      createDoor({ type: 'relative', coords: [1260, 88, -625] }, { a: 0, b: 90, g: 0 }, doorProps)
+      createDoor({ type: 'relative', coords: [2300, 88, -544] }, { a: 0, b: 90, g: 0 }, doorProps)
+      createDoor({ type: 'relative', coords: [3042, 88, 79] }, { a: 0, b: 180, g: 0 }, doorProps)
+      createDoor({ type: 'relative', coords: [1037, 87, 1679] }, { a: 0, b: 0, g: 0 }, doorProps)
+      createDoor({ type: 'relative', coords: [800, 87, 2939] }, { a: 0, b: 90, g: 0 }, doorProps)
+      createDoor({ type: 'relative', coords: [83, 93, -401] }, { a: 0, b: 180, g: 0 }, doorProps)
+      createDoor({ type: 'relative', coords: [-2083, 88, -81] }, { a: 0, b: 0, g: 0 }, doorProps)
+      createDoor({ type: 'relative', coords: [-2223, 88, 939] }, { a: 0, b: 0, g: 0 }, doorProps)
+      createDoor({ type: 'relative', coords: [-153, -315, 7519] }, { a: 0, b: 0, g: 0 }, doorProps)
+      createDoor({ type: 'relative', coords: [2400, 67, 3039] }, { a: 0, b: 0, g: 0 }, doorProps)
+      createDoor({ type: 'relative', coords: [3320, 186, 3199] }, { a: 0, b: 180, g: 0 }, doorProps)
+
       break
   }
 

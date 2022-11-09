@@ -1,12 +1,18 @@
-import { addScript, createItem, items, markAsUsed, moveTo } from '../../assets/items'
+import { addScript, createItem, InjectableProps, items, markAsUsed, moveTo } from '../../assets/items'
 import { declare, FALSE, getInjections, TRUE } from '../../scripting'
 import { RelativeCoords, RotationVertex3 } from '../../types'
 
-export const createDoor = (pos: RelativeCoords, { a, b, g }: RotationVertex3) => {
-  const ref = createItem(items.doors.lightDoor, { name: 'door' })
+type DoorSpecificProps = { isLocked?: boolean }
+
+export const createDoor = (
+  pos: RelativeCoords,
+  { a, b, g }: RotationVertex3,
+  { isLocked, ...props }: InjectableProps & DoorSpecificProps = { isLocked: false },
+) => {
+  const ref = createItem(items.doors.lightDoor, { name: 'door', ...props })
 
   declare('bool', 'open', FALSE, ref)
-  declare('bool', 'unlock', TRUE, ref)
+  declare('bool', 'unlock', isLocked ? FALSE : TRUE, ref)
 
   addScript((self) => {
     return `
