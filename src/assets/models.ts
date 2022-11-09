@@ -235,9 +235,9 @@ export const renderPolygonData = (
 
     polygons.forEach(({ polygon, texture }) => {
       polygon.forEach((vertex) => {
-        vertex.posX = vertex.posX + mapData.config.origin.coords[0] + pos.coords[0]
-        vertex.posY = vertex.posY + mapData.config.origin.coords[1] + pos.coords[1]
-        vertex.posZ = vertex.posZ + mapData.config.origin.coords[2] + pos.coords[2]
+        vertex.posX += mapData.config.origin.coords[0] + pos.coords[0]
+        vertex.posY += mapData.config.origin.coords[1] + pos.coords[1]
+        vertex.posZ += mapData.config.origin.coords[2] + pos.coords[2]
       })
 
       doSomethingWithTheVertices({ polygon, texture })
@@ -247,23 +247,31 @@ export const renderPolygonData = (
       polygon[0] = polygon[1]
       polygon[1] = tmp
 
-      if (polygon.length === 3) {
+      const isQuad = polygon.length === 4
+
+      if (!isQuad) {
         polygon.push({ posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 })
       }
 
-      const textureFlags = mapData.state.texture?.flags ?? POLY_NO_SHADOW
+      let textureFlags = mapData.state.texture?.flags ?? POLY_NO_SHADOW
+
+      if (isQuad) {
+        textureFlags |= POLY_QUAD
+      } else {
+        textureFlags &= ~POLY_QUAD
+      }
 
       mapData.fts.polygons[mapData.state.polygonGroup].push({
         config: {
           color: mapData.state.color,
-          isQuad: false,
+          isQuad,
           bumpable: true,
         },
         vertices: polygon,
         tex: useTexture(mapData.state.texture),
         transval: 2,
         area: 1000,
-        type: textureFlags & ~POLY_QUAD,
+        type: textureFlags,
         room: 1,
         paddy: 0,
       })
@@ -277,8 +285,9 @@ export const willThePolygonDataFit = (
   pos: RelativeCoords,
   mapData: MapData,
 ) => {
-  const xs = polygons.flatMap(({ polygon }) => polygon).map(({ posX }) => posX)
-  const zs = polygons.flatMap(({ polygon }) => polygon).map(({ posZ }) => posZ)
+  const vertices = polygons.flatMap(({ polygon }) => polygon)
+  const xs = vertices.map(({ posX }) => posX)
+  const zs = vertices.map(({ posZ }) => posZ)
 
   const minX = roundToNDecimals(3, min(xs) + pos.coords[0] + mapData.config.origin.coords[0])
   const maxX = roundToNDecimals(3, max(xs) + pos.coords[0] + mapData.config.origin.coords[0])
