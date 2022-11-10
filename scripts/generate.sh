@@ -10,7 +10,6 @@ esbuild ./src/generate.ts\
   --sourcemap\
   --external:arx-level-json-converter\
   --external:color-rgba\
-  --external:nanoid\
   --external:node-pkware\
   --external:seedrandom\
   --external:tiny-glob
