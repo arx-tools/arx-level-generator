@@ -31,7 +31,7 @@ import {
 import { defineCeilingLamp, createCeilingLamp } from './items/ceilingLamp'
 import { EXTRAS_SEMIDYNAMIC, EXTRAS_EXTINGUISHABLE, EXTRAS_STARTEXTINGUISHED, EXTRAS_NO_IGNIT } from '../../constants'
 import { markAsUsed, moveTo, addScript, createItem, items, addDependencyAs } from '../../assets/items'
-import { getInjections, declare, color, FALSE, TRUE } from '../../scripting'
+import { getInjections, declare, color, FALSE, TRUE, SCRIPT_EOL } from '../../scripting'
 import {
   generateGrid,
   addRoom,
@@ -659,7 +659,7 @@ ON INIT {
     .map(({ ref }) => {
       return `inventory addfromscene "${ref}"`
     })
-    .join('  \n')}
+    .join('  ' + SCRIPT_EOL)}
 
   ACCEPT
 }

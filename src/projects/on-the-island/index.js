@@ -19,7 +19,7 @@ import {
   unsetPolygonGroup,
 } from '../../helpers'
 import { disableBumping, connectToNearPolygons, plain } from '../../prefabs/plain'
-import { getInjections } from '../../scripting'
+import { getInjections, SCRIPT_EOL } from '../../scripting'
 import { createCampfire } from './items/campfire'
 import { createGoblin } from './items/goblin'
 import { overridePlayerScript } from '../shared/player'
@@ -70,7 +70,7 @@ ${contents
   .map(({ ref }) => {
     return `inventory addfromscene "${ref}"`
   })
-  .join('  \n')}
+  .join('  ' + SCRIPT_EOL)}
 
 ACCEPT
 }

@@ -1,4 +1,5 @@
 import rgba from 'color-rgba'
+import { ItemRef, RenderedInjectableProps } from './assets/items'
 import { roundToNDecimals } from './helpers'
 
 export const SCRIPT_EOL = '\r\n'
@@ -7,21 +8,39 @@ export const TRUE = 1
 export const FALSE = 0
 export const UNDEFINED = -1
 
-const toFloat = (colorChannel) => {
+const toFloat = (colorChannel: number) => {
   return roundToNDecimals(6, colorChannel / 256)
 }
 
-export const color = (colorDefinition) => {
-  const [r, g, b] = rgba(colorDefinition)
+export const color = (colorDefinition: string) => {
+  const parsedColor = rgba(colorDefinition)
+  if (typeof parsedColor === 'undefined') {
+    return '0 0 0'
+  }
+
+  const [r, g, b] = parsedColor
   return `${toFloat(r)} ${toFloat(g)} ${toFloat(b)}`
 }
 
-const globalScope = {
+type VariableType =
+  | 'bool'
+  | 'int'
+  | 'float'
+  | 'string'
+  | 'public bool'
+  | 'public int'
+  | 'public float'
+  | 'public string'
+
+const globalScope: ItemRef = {
+  src: '',
+  id: 0,
   state: {},
   injections: {},
+  ref: 'global',
 }
 
-export const declare = (type, name, initialValue, scope) => {
+export const declare = (type: VariableType, name: string, initialValue: any, scope: ItemRef | 'global') => {
   let value = initialValue
   if (scope === 'global') {
     switch (type) {
@@ -77,9 +96,9 @@ export const declare = (type, name, initialValue, scope) => {
   return scope
 }
 
-export const getInjections = (eventName, scope) => {
+export const getInjections = (eventName: keyof RenderedInjectableProps, scope) => {
   if (scope === 'global') {
-    return (globalScope.injections[eventName] ?? []).join('\n ')
+    return (globalScope.injections[eventName] ?? []).join(SCRIPT_EOL + ' ')
   }
-  return (scope.injections[eventName] ?? []).join('\n ')
+  return (scope.injections[eventName] ?? []).join(SCRIPT_EOL + ' ')
 }

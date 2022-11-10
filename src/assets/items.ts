@@ -10,7 +10,7 @@ import weapons from './items/weapons'
 export type RenderedInjectableProps = {
   init?: string[]
   initend?: string[]
-}
+} & Record<string, string[]>
 
 export type Materials = 'stone' | 'wood' | 'metal' | 'cloth' | 'flesh' | 'ice' | 'glass' | 'earth' | 'weapon'
 
@@ -278,14 +278,19 @@ const propsToInjections = (props: InjectableProps): RenderedInjectableProps => {
     initend.push(`USEMESH "${props.mesh}"`)
   }
   if (props.variant) {
-    const tmpScope = {
+    const tmpScope: ItemRef = {
+      src: '',
+      id: -1,
       state: {},
       injections: {
         init: [],
       },
+      ref: '',
     }
     declare('string', 'type', props.variant, tmpScope)
-    init.push(...tmpScope.injections.init)
+    if (tmpScope.injections.init) {
+      init.push(...tmpScope.injections.init)
+    }
   }
 
   const result: Record<string, string[]> = {}
