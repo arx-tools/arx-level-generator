@@ -8,7 +8,16 @@ import {
   markAsUsed,
   moveTo,
 } from '../../assets/items'
-import { declare, FALSE, getInjections, TRUE } from '../../scripting'
+import {
+  declare,
+  FALSE,
+  getInjections,
+  playSound,
+  PLAY_LOOP,
+  PLAY_UNIQUE,
+  PLAY_VARY_PITCH,
+  TRUE,
+} from '../../scripting'
 import { RelativeCoords } from '../../types'
 
 const soundPlayerDesc: ItemDefinition = {
@@ -38,9 +47,9 @@ ON INITEND {
   IF (${rootRef.state.filename} != "") {
     // [l] = loop, [i] = unique, [p] = variable pitch
     IF (${rootRef.state.pitchbend} == ${TRUE}) {
-      PLAY -lip ${rootRef.state.filename}
+      ${playSound(rootRef.state.filename, PLAY_LOOP | PLAY_UNIQUE | PLAY_VARY_PITCH)}
     } ELSE {
-      PLAY -li ${rootRef.state.filename}
+      ${playSound(rootRef.state.filename, PLAY_LOOP | PLAY_UNIQUE)}
     }
   }
   ACCEPT

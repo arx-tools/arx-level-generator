@@ -1,5 +1,5 @@
 import { addDependencyAs, addScript, createItem, items, markAsUsed, moveTo } from '../../../assets/items'
-import { color, declare, FALSE, getInjections, TRUE } from '../../../scripting'
+import { color, declare, FALSE, getInjections, playSound, PLAY_FROM_PLAYER, TRUE } from '../../../scripting'
 
 export const createFallSaver = (pos, target) => {
   const ref = createItem(items.marker)
@@ -28,7 +28,7 @@ ON CONTROLLEDZONE_ENTER {
 
 >>FADEOUT {
   WORLDFADE OUT 300 ${color('black')}
-  PLAY -o "uru-link"
+  ${playSound('uru-link', PLAY_FROM_PLAYER)}
   RETURN
 }
 

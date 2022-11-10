@@ -31,7 +31,20 @@ import {
 import { defineCeilingLamp, createCeilingLamp } from './items/ceilingLamp'
 import { EXTRAS_SEMIDYNAMIC, EXTRAS_EXTINGUISHABLE, EXTRAS_STARTEXTINGUISHED, EXTRAS_NO_IGNIT } from '../../constants'
 import { markAsUsed, moveTo, addScript, createItem, items, addDependencyAs } from '../../assets/items'
-import { getInjections, declare, color, FALSE, TRUE, SCRIPT_EOL } from '../../scripting'
+import {
+  getInjections,
+  declare,
+  color,
+  FALSE,
+  TRUE,
+  SCRIPT_EOL,
+  playSound,
+  PLAY_FROM_PLAYER,
+  PLAY_VARY_PITCH,
+  PLAY_LOOP,
+  PLAY_UNIQUE,
+  stopSound,
+} from '../../scripting'
 import {
   generateGrid,
   addRoom,
@@ -197,14 +210,14 @@ ON GOT_RUNE {
 }
 
 >>WELCOME_MESSAGE {
-  PLAY -o "system"
+  ${playSound('system', PLAY_FROM_PLAYER)}
   HEROSAY [tutorial--welcome]
   QUEST [tutorial--welcome]
   RETURN
 }
 
 >>TUTORIAL_LIGHT {
-  PLAY -o "system"
+  ${playSound('system', PLAY_FROM_PLAYER)}
   HEROSAY [tutorial--lighting]
   QUEST [tutorial--lighting]
   RETURN
@@ -336,8 +349,8 @@ ON OPEN {
 }
 
 ON POWEROUT {
-  PLAY -p "sfx_electric"
-  PLAY -o power_down
+  ${playSound('sfx_electric', PLAY_VARY_PITCH)}
+  ${playSound('power_down', PLAY_FROM_PLAYER)}
 
   SENDEVENT SAVE ${lampCtrl.ref} NOP
   SENDEVENT OFF ${lampCtrl.ref} NOP
@@ -402,9 +415,9 @@ ON POWEROUT {
 
 >>BABY {
   SET ${self.state.isWhisperEnabled} ${FALSE}
-  PLAY -o "magic_spell_slow_down"
-  PLAY -o "strange_noise1"
-  PLAY -oil "player_heartb"
+  ${playSound('magic_spell_slow_down', PLAY_FROM_PLAYER)}
+  ${playSound('strange_noise1', PLAY_FROM_PLAYER)}
+  ${playSound('player_heartb', PLAY_FROM_PLAYER | PLAY_LOOP | PLAY_UNIQUE)}
   SENDEVENT SAVE ${lampCtrl.ref} NOP
   SENDEVENT SETSPEED player 0.3
   WORLDFADE OUT 10 ${color(COLORS.BLOOD)}
@@ -417,9 +430,9 @@ ON POWEROUT {
 
   TIMERpowerOff -m 1 100 SET #powerOn 0
 
-  TIMERbaby -m 1 2000 PLAY -o "baby"
+  TIMERbaby -m 1 2000 ${playSound('baby', PLAY_FROM_PLAYER)}
 
-  TIMERstopheartbeat -m 1 15000 PLAY -s "player_heartb"
+  TIMERstopheartbeat -m 1 15000 ${stopSound('player_heartb')}
 
   TIMERambOff1 -m 1 15000 SENDEVENT OFF ${ambientLights.ceiling.ref} NOP
 
@@ -437,14 +450,14 @@ ON POWEROUT {
   PLAYERINTERFACE HIDE
   SETPLAYERCONTROLS OFF
   TIMERfadeout -m 1 700 WORLDFADE OUT 300 ${color('khaki')}
-  PLAY -o "backrooms-outro" // [o] = emit from player
+  ${playSound('backrooms-outro', PLAY_FROM_PLAYER)}
   TIMERfadeout2 -m 1 18180 WORLDFADE OUT 0 ${color('black')}
   TIMERendgame -m 1 20000 END_GAME
   RETURN
 }
 
 >>TUTORIAL_POWEROUT {
-  PLAY -o "system"
+  ${playSound('system', PLAY_FROM_PLAYER)}
   HEROSAY [tutorial--powerout]
   QUEST [tutorial--powerout]
   RETURN
@@ -593,7 +606,7 @@ ON INVENTORYIN {
 }
 
 ON INVENTORYUSE {
-  PLAY "drink"
+  ${playSound('drink')}
 
   // TODO: make sure to handle effects, which have duration from running parallel
 
@@ -612,21 +625,21 @@ ON INVENTORYUSE {
   }
 
   IF (${self.state.variant} == "slow") {
-    PLAY -o "magic_spell_slow_down"
-    PLAY -oil "player_heartb"
+    ${playSound('magic_spell_slow_down', PLAY_FROM_PLAYER)}
+    ${playSound('player_heartb', PLAY_FROM_PLAYER | PLAY_UNIQUE | PLAY_LOOP)}
     SENDEVENT SETSPEED player 0.5
     TIMERpenalty -m 1 7000 SENDEVENT SETSPEED player 1
-    TIMERend -m 1 7000 PLAY -o "magic_spell_slow_down_end"
-    TIMERstopheartbeat -m 1 7000 PLAY -s "player_heartb"
+    TIMERend -m 1 7000 ${playSound('magic_spell_slow_down_end', PLAY_FROM_PLAYER)}
+    TIMERstopheartbeat -m 1 7000 ${stopSound('player_heartb')}
   }
 
   IF (${self.state.variant} == "speed") {
-    PLAY -o "magic_spell_speedstart"
-    PLAY -oil "player_heartb"
+    ${playSound('magic_spell_speedstart', PLAY_FROM_PLAYER)}
+    ${playSound('player_heartb', PLAY_FROM_PLAYER | PLAY_UNIQUE | PLAY_LOOP)}
     SENDEVENT SETSPEED player 2
     TIMERbonusend -m 1 10000 SENDEVENT SETSPEED player 1
-    TIMERend -m 1 10000 PLAY -o "magic_spell_speedend"
-    TIMERstopheartbeat -m 1 10000 PLAY -s "player_heartb"
+    TIMERend -m 1 10000 ${playSound('magic_spell_speedend', PLAY_FROM_PLAYER)}
+    TIMERstopheartbeat -m 1 10000 ${stopSound('player_heartb')}
   }
 
   OBJECT_HIDE SELF YES

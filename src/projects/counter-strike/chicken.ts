@@ -1,5 +1,5 @@
 import { addScript, createItem, createRootItem, items, markAsUsed, moveTo, InjectableProps } from '../../assets/items'
-import { getInjections } from '../../scripting'
+import { getInjections, playSound, PLAY_VARY_PITCH } from '../../scripting'
 import { RelativeCoords, RotationVertex3 } from '../../types'
 
 export const defineChicken = (config: InjectableProps = {}) => {
@@ -187,7 +187,7 @@ ON MISC_REFLECTION {
   }
   
   SET §last_misc §sound
-  PLAY -p ~£misc~~§sound~
+  ${playSound('~£misc~~§sound~', PLAY_VARY_PITCH, true)}
   ACCEPT
 }
 
@@ -204,13 +204,13 @@ ON DIE {
 
   IF (§explode_count == 100) {
     INVENTORY DESTROY
-    TIMERdeath 1 6 PLAY ~£dying~ SPAWN ITEM "provisions\\roast_chicken\\roast_chicken.teo" ME
+    TIMERdeath 1 6 ${playSound('~£dying~', 0, true)} SPAWN ITEM "provisions\\roast_chicken\\roast_chicken.teo" ME
     SPECIALFX YLSIDE_DEATH
     ACCEPT
   }
 
   IF (£dying != "none") {
-    PLAY -p ~£dying~
+    ${playSound('~£dying~', PLAY_VARY_PITCH, true)}
   }
 
   FORCEANIM DIE
@@ -223,7 +223,7 @@ ON FIRE_AFFRAID {
   }
 
   SET §flee 1
-  PLAY -p ~£dying~
+  ${playSound('~£dying~', PLAY_VARY_PITCH, true)}
 
   IF (§enemy == 0) {
     BEHAVIOR STACK
@@ -245,7 +245,7 @@ ON FIRE_AFFRAID {
 
 ON CHAT {
   IF (§explode_count > 5) {
-    PLAY -p chicken_cot
+    ${playSound('chicken_cot', PLAY_VARY_PITCH)}
   }
 
   IF (§explode_count == 100) {

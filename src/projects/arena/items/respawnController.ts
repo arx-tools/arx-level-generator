@@ -1,5 +1,5 @@
 import { addScript, createItem, items, moveTo, markAsUsed, ItemRef, ItemDefinition } from '../../../assets/items'
-import { declare, FALSE, getInjections, SCRIPT_EOL, TRUE } from '../../../scripting'
+import { declare, FALSE, getInjections, playSound, PLAY_FROM_PLAYER, SCRIPT_EOL, TRUE } from '../../../scripting'
 import { Vector3 } from '../../../types'
 
 const SPAWN_PROTECT_TIME = 3000
@@ -44,7 +44,6 @@ ON KILLED {
     }
   } ELSE {
     sendevent died gameCtrl "~£victimID~ ~£killerID~"
-    PLAY -o "system"
 
     INC ${self.state.respawnQueueSize} 1
     SET "£respawnQueueItem~${self.state.respawnQueueSize}~" £victimID

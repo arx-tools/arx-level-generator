@@ -108,7 +108,7 @@ export const PLAY_LOOP = 0x2
 export const PLAY_UNIQUE = 0x4
 export const PLAY_VARY_PITCH = 0x8
 
-export const play = (sound: string, flags: number = 0) => {
+export const playSound = (sound: string, flags: number = 0, fromVariable = false) => {
   // [o] = emit from player
   // [l] = loop
   // [i] = unique
@@ -129,9 +129,16 @@ export const play = (sound: string, flags: number = 0) => {
     switches += 'p'
   }
 
-  return `PLAY ${switches ? '-' + switches : ''} ${sound}`
+  if (!fromVariable) {
+    sound = `"${sound}"`
+  }
+
+  if (sound) return `PLAY ${switches ? '-' + switches : ''} ${sound}`
 }
 
-export const stop = (sound: string) => {
+export const stopSound = (sound: string, fromVariable = false) => {
+  if (!fromVariable) {
+    sound = `"${sound}"`
+  }
   return `PLAY -s ${sound}`
 }

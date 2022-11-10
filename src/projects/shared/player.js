@@ -1,10 +1,5 @@
-import {
-  markAsUsed,
-  addScript,
-  createRootItem,
-  items,
-} from '../../assets/items'
-import { getInjections, declare } from '../../scripting'
+import { markAsUsed, addScript, createRootItem, items } from '../../assets/items'
+import { getInjections, declare, playSound } from '../../scripting'
 
 export const overridePlayerScript = (props = {}) => {
   declare('int', 'TUTORIAL_MAGIC', 100, 'global') // disable magic related tutorial messages in rune_aam.asl
@@ -169,7 +164,7 @@ ON OUCH {
 
 ON DIE {
   ${getInjections('die', self)}
-  PLAY "player_death"
+  ${playSound('player_death')}
   SET #TMP ^RND_10
   INC #TMP 1
   IF (#TMP < 3) {

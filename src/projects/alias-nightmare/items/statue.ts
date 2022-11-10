@@ -8,13 +8,13 @@ import {
   addDependency,
   InjectableProps,
 } from '../../../assets/items'
-import { getInjections, declare } from '../../../scripting'
+import { getInjections, declare, playSound, PLAY_VARY_PITCH } from '../../../scripting'
 import { RotationVector3 } from '../../../types'
 
 export const defineStatue = () => {
   const ref = createRootItem(items.npc.statue, {
     name: '...redacted...',
-    speed: 3,
+    speed: 1.5,
     hp: 1000,
   })
 
@@ -66,19 +66,19 @@ ON IDLE {
   }
   
   IF (${self.state.idleSoundIdx} == 1) {
-    PLAY -p "statue_idle1"
+    ${playSound('statue_idle1', PLAY_VARY_PITCH)}
   }
 
   IF (${self.state.idleSoundIdx} == 2) {
-    PLAY -p "statue_idle2"
+    ${playSound('statue_idle2', PLAY_VARY_PITCH)}
   }
   
   IF (${self.state.idleSoundIdx} == 3) {
-    PLAY -p "statue_idle1"
+    ${playSound('statue_idle1', PLAY_VARY_PITCH)}
   }
   
   IF (${self.state.idleSoundIdx} == 3) {
-    PLAY -p "statue_idle3"
+    ${playSound('statue_idle3', PLAY_VARY_PITCH)}
   }
 
   ACCEPT
@@ -93,16 +93,16 @@ ON HEAR {
     SET ${self.state.idle} 0
 
     IF (${self.state.idleSoundIdx} == 1) {
-      PLAY -p "statue_jumpscare1"
+      ${playSound('statue_jumpscare1', PLAY_VARY_PITCH)}
     }
     IF (${self.state.idleSoundIdx} == 2) {
-      PLAY -p "statue_jumpscare2"
+      ${playSound('statue_jumpscare2', PLAY_VARY_PITCH)}
     }
     IF (${self.state.idleSoundIdx} == 3) {
-      PLAY -p "statue_jumpscare1"
+      ${playSound('statue_jumpscare1', PLAY_VARY_PITCH)}
     }
     IF (${self.state.idleSoundIdx} == 4) {
-      PLAY -p "statue_jumpscare2"
+      ${playSound('statue_jumpscare2', PLAY_VARY_PITCH)}
     }
   }
   
@@ -113,16 +113,16 @@ ON DETECTPLAYER {
   >>PLAYER_DETECTED
   
   IF (§idleSoundIdx == 1) {
-    PLAY -p "statue_jumpscare1"
+    ${playSound('statue_jumpscare1', PLAY_VARY_PITCH)}
   }
   IF (§idleSoundIdx == 2) {
-    PLAY -p "statue_jumpscare2"
+    ${playSound('statue_jumpscare2', PLAY_VARY_PITCH)}
   }
   IF (§idleSoundIdx == 3) {
-    PLAY -p "statue_jumpscare1"
+    ${playSound('statue_jumpscare1', PLAY_VARY_PITCH)}
   }
   IF (§idleSoundIdx == 4) {
-    PLAY -p "statue_jumpscare2"
+    ${playSound('statue_jumpscare2', PLAY_VARY_PITCH)}
   }
   
   GOTO ATTACK_PLAYER

@@ -8,7 +8,16 @@ import {
   InjectableProps,
 } from '../../../assets/items'
 import { useTexture, textures } from '../../../assets/textures'
-import { declare, getInjections } from '../../../scripting'
+import {
+  declare,
+  getInjections,
+  playSound,
+  PLAY_FROM_PLAYER,
+  PLAY_LOOP,
+  PLAY_UNIQUE,
+  PLAY_VARY_PITCH,
+  stopSound,
+} from '../../../scripting'
 import { RotationVector3 } from '../../../types'
 
 const wallPlugDesc: ItemDefinition = {
@@ -122,18 +131,18 @@ ON ACTION {
     RETURN
   }
 
-  PLAY -p "thief_bag"
+  ${playSound('thief_bag', PLAY_VARY_PITCH)}
 
   RETURN
 }
 
 >>ELECTROCUTE {
   DODAMAGE -n player ^player_mana
-  PLAY -p "sfx_spark"
+  ${playSound('sfx_spark', PLAY_VARY_PITCH)}
   QUAKE 300 500 10
   SPEAK -op "player_ouch_medium"
-  PLAY -oil "player_heartb"
-  TIMERstopheartbeat -m 1 1700 PLAY -s "player_heartb"
+  ${playSound('player_heartb', PLAY_FROM_PLAYER | PLAY_UNIQUE | PLAY_LOOP)}
+  TIMERstopheartbeat -m 1 1700 ${stopSound('player_heartb')}
   RETURN
 }
 

@@ -9,7 +9,18 @@ import {
   ItemDefinition,
 } from '../../../assets/items'
 import { useTexture, textures } from '../../../assets/textures'
-import { getInjections, declare, FALSE, TRUE, UNDEFINED } from '../../../scripting'
+import {
+  getInjections,
+  declare,
+  FALSE,
+  TRUE,
+  UNDEFINED,
+  playSound,
+  PLAY_LOOP,
+  PLAY_UNIQUE,
+  PLAY_VARY_PITCH,
+  stopSound,
+} from '../../../scripting'
 import { RotationVector3 } from '../../../types'
 
 const ceilingLampDesc: ItemDefinition = {
@@ -65,7 +76,7 @@ ON INITEND {
   if (${self.state.isOn} == ${TRUE}) {
     TWEAK SKIN "[metal]_dwarf_grid" "backrooms-[metal]-light-on"
     if (${self.state.muted} == ${FALSE}) {
-      PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
+      ${playSound('fluorescent-lamp-hum', PLAY_LOOP | PLAY_UNIQUE | PLAY_VARY_PITCH)}
     }
   } else {
     TWEAK SKIN "[metal]_dwarf_grid" "backrooms-[metal]-light-off"
@@ -202,7 +213,7 @@ ON HIT {
 >>TURN_ON_START {
   SPELLCAST -smfx 1 IGNIT self // [s] = no anim, [m] = no draw, [f] = no mana required, [x] = no sound
   if (${self.state.muted} == ${FALSE}) {
-    PLAY "fluorescent-lamp-startup"
+    ${playSound('fluorescent-lamp-startup')}
   }
   RETURN
 }
@@ -210,8 +221,8 @@ ON HIT {
 >>TURN_ON_END {
   TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-on"
   if (${self.state.muted} == ${FALSE}) {
-    PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
-    PLAY "fluorescent-lamp-plink"
+    ${playSound('fluorescent-lamp-hum', PLAY_LOOP | PLAY_UNIQUE | PLAY_VARY_PITCH)}
+    ${playSound('fluorescent-lamp-plink')}
   }
   RETURN
 }
@@ -224,14 +235,14 @@ ON HIT {
 >>TURN_OFF_END {
   TWEAK SKIN "[stone]_ground_caves_wet05" "backrooms-[metal]-light-off"
   if (${self.state.muted} == ${FALSE}) {
-    PLAY -s "fluorescent-lamp-hum" // [s] = stop (only if unique)
+    ${stopSound('fluorescent-lamp-hum')}
     SET #TMP ^RND_100
     IF (#TMP < 33) {
-      PLAY "glass-pop-1"
+      ${playSound('glass-pop-1')}
     } ELSE IF (#TMP < 66) {
-      PLAY "glass-pop-2"
+      ${playSound('glass-pop-2')}
     } ELSE {
-      PLAY "glass-pop-3"
+      ${playSound('glass-pop-3')}
     }
   }
   RETURN
@@ -274,16 +285,16 @@ ON UNMUTE {
 }
 
 >>MUTE {
-  PLAY -s "fluorescent-lamp-hum"
-  PLAY -s "fluorescent-lamp-startup"
-  PLAY -s "fluorescent-lamp-plink"
+  ${stopSound('fluorescent-lamp-hum')}
+  ${stopSound('fluorescent-lamp-startup')}
+  ${stopSound('fluorescent-lamp-plink')}
 
   RETURN
 }
 
 >>UNMUTE {
   IF (${self.state.isOn} == ${TRUE}) {
-    PLAY -lip "fluorescent-lamp-hum" // [l] = loop, [i] = unique, [p] = variable pitch
+    ${playSound('fluorescent-lamp-hum', PLAY_LOOP | PLAY_UNIQUE | PLAY_VARY_PITCH)}
   }
 
   RETURN

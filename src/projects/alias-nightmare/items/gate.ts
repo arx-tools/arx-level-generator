@@ -1,5 +1,5 @@
 import { addDependencyAs, addScript, createItem, InjectableProps, items } from '../../../assets/items'
-import { declare, getInjections, SCRIPT_EOL } from '../../../scripting'
+import { declare, getInjections, playSound, PLAY_LOOP, PLAY_UNIQUE, SCRIPT_EOL, stopSound } from '../../../scripting'
 
 const meshes = {
   wide: 'L2_Gobel_portcullis_big\\L2_Gobel_portcullis_big.teo',
@@ -76,31 +76,31 @@ ON INIT {
 
 // >>SOUND_LOOP_RAISE {
 //   GOSUB STOPSOUND
-//   PLAY -li "portcullis-loop-raise"
+//   ${playSound('portcullis-loop-raise', PLAY_LOOP | PLAY_UNIQUE)}
 //   RETURN
 // }
 
 // >>SOUND_LOOP_LOWER {
 //   GOSUB STOPSOUND
-//   PLAY -li "portcullis-loop-lower"
+//   ${playSound('portcullis-loop-lower', PLAY_LOOP | PLAY_UNIQUE)}
 //   RETURN
 // }
 
 // >>SOUND_END_RAISE {
 //   HEROSAY "sound up"
 //   GOSUB STOPSOUND
-//   PLAY -i "portcullis-end-raise"
+//   ${playSound('portcullis-end-raise', PLAY_UNIQUE)}
 //   ACCEPT
 // }
 
 // >>SOUND_END_LOWER {
 //   GOSUB STOPSOUND
-//   PLAY -i "portcullis-end-lower"
+//   ${playSound('portcullis-end-lower', PLAY_UNIQUE)}
 //   ACCEPT
 // }
 
 // >>STOPSOUND {
-//   ${sounds.map((filename) => `PLAY -s "${filename}"`).join(SCRIPT_EOL)}
+//   ${sounds.map((filename) => stopSound(filename)).join(SCRIPT_EOL)}
 //   RETURN
 // }
 
