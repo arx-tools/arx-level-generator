@@ -1,4 +1,6 @@
-const weapons = {
+import { ItemDefinition } from '../items'
+
+const weapons: Record<string, ItemDefinition> = {
   bone: {
     src: 'items/weapons/bone/bone.teo',
     native: true,

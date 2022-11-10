@@ -4,11 +4,14 @@ import {
   markAsUsed,
   moveTo,
   createRootItem,
+  ItemDefinition,
+  InjectableProps,
 } from '../../../assets/items'
 import { useTexture, textures } from '../../../assets/textures'
 import { declare, getInjections } from '../../../scripting'
+import { RotationVector3 } from '../../../types'
 
-const itemDesc = {
+const wallPlugDesc: ItemDefinition = {
   src: 'fix_inter/wall_plug/wall_plug.teo',
   native: true,
 }
@@ -18,7 +21,7 @@ export const defineWallPlug = () => {
   useTexture(textures.backrooms.socket.broken)
   useTexture(textures.backrooms.socket.old)
 
-  const ref = createRootItem(itemDesc, {
+  const ref = createRootItem(wallPlugDesc, {
     name: '[item--wallplug]',
     interactive: true,
     scale: 0.2,
@@ -44,24 +47,27 @@ ON INITEND {
   return ref
 }
 
+type WallPlugSpecificProps = {
+  variant?: 'clean' | 'old' | 'broken'
+}
+
 export const createWallPlug = (
   pos,
-  angle = [0, 0, 0],
-  config = {},
+  angle: RotationVector3 = [0, 0, 0],
+  { variant, ...props }: InjectableProps & WallPlugSpecificProps,
   jumpscareCtrl,
 ) => {
-  const variant = config.variant ?? 'clean'
-  const ref = createItem(itemDesc, {
+  const ref = createItem(wallPlugDesc, {
     name:
       variant === 'old'
         ? '[item--wallplug-old]'
         : variant === 'broken'
         ? '[item--wallplug-broken]'
         : '[item--wallplug]',
-    ...config,
+    ...props,
   })
 
-  declare('string', 'variant', variant, ref)
+  declare('string', 'variant', variant ?? 'clean', ref)
 
   addScript((self) => {
     return `

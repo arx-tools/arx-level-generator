@@ -1,7 +1,14 @@
-import { addScript, createItem, items } from '../../../assets/items'
-import { declare, getInjections } from '../../../scripting'
+import { addScript, createItem, ItemRef, items } from '../../../assets/items'
+import { getInjections } from '../../../scripting'
 
-export const createEventBus = (gates) => {
+type Gates = {
+  north: ItemRef
+  south: ItemRef
+  west: ItemRef
+  east: ItemRef
+}
+
+export const createEventBus = (gates: Gates) => {
   const ref = createItem(items.marker)
 
   addScript((self) => {
@@ -11,7 +18,7 @@ export const createEventBus = (gates) => {
     ${getInjections('init', self)}
     ACCEPT
   }
-  
+
   ON CUSTOM {
     if ("pp0." isin ^$PARAM1) {
       if ("pressed" isin ^$PARAM1) {
@@ -22,7 +29,7 @@ export const createEventBus = (gates) => {
         sendevent lower ${gates.west.ref} nop
       }
     }
-  
+
     if ("pp1." isin ^$PARAM1) {
       if ("pressed" isin ^$PARAM1) {
         sendevent raise ${gates.north.ref} nop
@@ -32,7 +39,7 @@ export const createEventBus = (gates) => {
         sendevent lower ${gates.east.ref} nop
       }
     }
-  
+
     if ("pp2." isin ^$PARAM1) {
       if ("pressed" isin ^$PARAM1) {
         sendevent raise ${gates.south.ref} nop
@@ -42,7 +49,7 @@ export const createEventBus = (gates) => {
         sendevent lower ${gates.west.ref} nop
       }
     }
-  
+
     if ("pp3." isin ^$PARAM1) {
       if ("pressed" isin ^$PARAM1) {
         sendevent raise ${gates.south.ref} nop

@@ -1,7 +1,7 @@
-import { addScript, createItem, items } from '../../../assets/items'
+import { addScript, createItem, ItemRef, items } from '../../../assets/items'
 import { declare, FALSE, getInjections, TRUE } from '../../../scripting'
 
-export const createPressurePlate = (id, eventBus) => {
+export const createPressurePlate = (id: string, eventBus: ItemRef) => {
   const ref = createItem(items.mechanisms.pressurePlate)
 
   declare('bool', 'onMe', FALSE, ref)

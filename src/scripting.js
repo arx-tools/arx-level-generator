@@ -40,9 +40,7 @@ export const declare = (type, name, initialValue, scope) => {
 
     if (value !== undefined) {
       globalScope.injections.init = globalScope.injections.init || []
-      globalScope.injections.init.push(
-        `SET ${globalScope.state[name]} ${value}`,
-      )
+      globalScope.injections.init.push(`SET ${globalScope.state[name]} ${value}`)
     }
   } else {
     switch (type) {

@@ -11,7 +11,6 @@ import {
   generateBlankMapData,
   movePlayerTo,
   pickRandom,
-  randomBetween,
   saveToDisk,
   setColor,
   setTexture,
@@ -22,8 +21,7 @@ import { hideMinimap } from '../shared/reset'
 import { createGungameController } from './gamemodes/gungame'
 import { createNPC, defineNPC } from './items/npc'
 import { createRespawnController } from './items/respawnController'
-import { surface } from '../../prefabs/base/surface'
-import { disableBumping, plain } from '../../prefabs/plain'
+import { plain } from '../../prefabs/plain'
 import { createFern } from '../alias-nightmare/items/fern'
 
 const createWelcomeMarker = (pos, config) => {
@@ -82,7 +80,7 @@ const generate = async (config) => {
   setColor('#a7a7a7', mapData)
   setTexture(textures.ground.gravel, mapData)
 
-  plain([0, 0, 0], 20, 'floor', disableBumping, () => ({
+  plain([0, 0, 0], 20, 'floor', identity, () => ({
     quad: pickRandom([0, 1, 2, 3]),
     textureRotation: pickRandom([0, 90, 180, 270]),
     textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),

@@ -5,17 +5,14 @@ import {
   moveTo,
   createRootItem,
   addDependencyAs,
+  InjectableProps,
+  ItemDefinition,
 } from '../../../assets/items'
 import { useTexture, textures } from '../../../assets/textures'
-import {
-  getInjections,
-  declare,
-  FALSE,
-  TRUE,
-  UNDEFINED,
-} from '../../../scripting'
+import { getInjections, declare, FALSE, TRUE, UNDEFINED } from '../../../scripting'
+import { RotationVector3 } from '../../../types'
 
-const itemDesc = {
+const ceilingLampDesc: ItemDefinition = {
   src: 'fix_inter/ceiling-lamp/ceiling-lamp.ftl',
   native: true,
 }
@@ -26,7 +23,7 @@ export const defineCeilingLamp = () => {
 
   declare('bool', 'powerOn', TRUE, 'global')
 
-  const ref = createRootItem(itemDesc, {
+  const ref = createRootItem(ceilingLampDesc, {
     interactive: false,
     // mesh: 'polytrans/polytrans.teo',
   })
@@ -45,36 +42,12 @@ export const defineCeilingLamp = () => {
     ref,
   )
 
-  addDependencyAs(
-    'projects/the-backrooms/sfx/fluorescent-lamp-plink.wav',
-    'sfx/fluorescent-lamp-plink.wav',
-    ref,
-  )
-  addDependencyAs(
-    'projects/the-backrooms/sfx/fluorescent-lamp-startup.wav',
-    'sfx/fluorescent-lamp-startup.wav',
-    ref,
-  )
-  addDependencyAs(
-    'projects/the-backrooms/sfx/fluorescent-lamp-hum.wav',
-    'sfx/fluorescent-lamp-hum.wav',
-    ref,
-  )
-  addDependencyAs(
-    'projects/the-backrooms/sfx/glass-pop-1.wav',
-    'sfx/glass-pop-1.wav',
-    ref,
-  )
-  addDependencyAs(
-    'projects/the-backrooms/sfx/glass-pop-2.wav',
-    'sfx/glass-pop-2.wav',
-    ref,
-  )
-  addDependencyAs(
-    'projects/the-backrooms/sfx/glass-pop-3.wav',
-    'sfx/glass-pop-3.wav',
-    ref,
-  )
+  addDependencyAs('projects/the-backrooms/sfx/fluorescent-lamp-plink.wav', 'sfx/fluorescent-lamp-plink.wav', ref)
+  addDependencyAs('projects/the-backrooms/sfx/fluorescent-lamp-startup.wav', 'sfx/fluorescent-lamp-startup.wav', ref)
+  addDependencyAs('projects/the-backrooms/sfx/fluorescent-lamp-hum.wav', 'sfx/fluorescent-lamp-hum.wav', ref)
+  addDependencyAs('projects/the-backrooms/sfx/glass-pop-1.wav', 'sfx/glass-pop-1.wav', ref)
+  addDependencyAs('projects/the-backrooms/sfx/glass-pop-2.wav', 'sfx/glass-pop-2.wav', ref)
+  addDependencyAs('projects/the-backrooms/sfx/glass-pop-3.wav', 'sfx/glass-pop-3.wav', ref)
 
   addScript((self) => {
     return `
@@ -321,11 +294,20 @@ ON UNMUTE {
   return ref
 }
 
-export const createCeilingLamp = (pos, angle = [0, 0, 0], config = {}) => {
-  const ref = createItem(itemDesc, {})
+type CeilingLampSpecificProps = {
+  muted?: boolean
+  on?: boolean
+}
 
-  declare('bool', 'muted', config.muted ?? false ? TRUE : FALSE, ref)
-  declare('bool', 'isOn', config.on ?? false ? TRUE : FALSE, ref)
+export const createCeilingLamp = (
+  pos,
+  angle: RotationVector3 = [0, 0, 0],
+  { muted, on, ...props }: InjectableProps & CeilingLampSpecificProps = {},
+) => {
+  const ref = createItem(ceilingLampDesc, { ...props })
+
+  declare('bool', 'muted', muted ?? false ? TRUE : FALSE, ref)
+  declare('bool', 'isOn', on ?? false ? TRUE : FALSE, ref)
 
   addScript((self) => {
     return `

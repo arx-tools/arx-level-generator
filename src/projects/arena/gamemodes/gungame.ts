@@ -6,13 +6,7 @@
 // score board?
 // whoever kills 2 with bare hands will win
 
-import {
-  addScript,
-  createItem,
-  items,
-  markAsUsed,
-  moveTo,
-} from '../../../assets/items'
+import { addScript, createItem, items, markAsUsed, moveTo } from '../../../assets/items'
 import { getInjections } from '../../../scripting'
 import { RelativeCoords } from '../../../types'
 

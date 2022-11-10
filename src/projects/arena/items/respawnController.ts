@@ -1,18 +1,5 @@
-import {
-  addScript,
-  createItem,
-  items,
-  moveTo,
-  markAsUsed,
-  ItemRef,
-} from '../../../assets/items'
-import {
-  declare,
-  FALSE,
-  getInjections,
-  SCRIPT_EOL,
-  TRUE,
-} from '../../../scripting'
+import { addScript, createItem, items, moveTo, markAsUsed, ItemRef, ItemDefinition } from '../../../assets/items'
+import { declare, FALSE, getInjections, SCRIPT_EOL, TRUE } from '../../../scripting'
 import { Vector3 } from '../../../types'
 
 const SPAWN_PROTECT_TIME = 3000
@@ -21,11 +8,7 @@ const SPAWN_PROTECT_TIME = 3000
 // TODO: find a way to fake player's death animation without triggering the fadeout (immediately respawn him)
 const DEATHCAM_TIME = 5000
 
-export const createRespawnController = (
-  pos: Vector3,
-  numberOfBots: number,
-  gameCtrl: ItemRef,
-) => {
+export const createRespawnController = (pos: Vector3, numberOfBots: number, gameCtrl: ItemRef) => {
   const ref = createItem(items.marker, {})
 
   declare('bool', 'ignoreNextKillEvent', FALSE, ref)
@@ -61,7 +44,8 @@ ON KILLED {
     }
   } ELSE {
     sendevent died gameCtrl "~£victimID~ ~£killerID~"
-    
+    PLAY -o "system"
+
     INC ${self.state.respawnQueueSize} 1
     SET "£respawnQueueItem~${self.state.respawnQueueSize}~" £victimID
     TIMER -m 1 ${DEATHCAM_TIME} GOTO RESURRECT_NPC
@@ -75,9 +59,7 @@ ON KILLED {
     sendevent respawn £respawnQueueItem1 nop
 
     INC ${self.state.spawnProtectQueueSize} 1
-    SET "£spawnProtectQueueItem~${
-      self.state.spawnProtectQueueSize
-    }~" £respawnQueueItem1
+    SET "£spawnProtectQueueItem~${self.state.spawnProtectQueueSize}~" £respawnQueueItem1
 
     // move respawn queue to the left
 ${[...Array(numberOfBots).keys()]
@@ -107,9 +89,7 @@ ${[...Array(numberOfBots).keys()]
     if (i === numberOfBots - 1) {
       return `    SET £spawnProtectQueueItem${i + 1} ""`
     } else {
-      return `    SET £spawnProtectQueueItem${i + 1} £spawnProtectQueueItem${
-        i + 2
-      }`
+      return `    SET £spawnProtectQueueItem${i + 1} £spawnProtectQueueItem${i + 2}`
     }
   })
   .join(SCRIPT_EOL)}

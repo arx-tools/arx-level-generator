@@ -4,11 +4,14 @@ import {
   createRootItem,
   moveTo,
   markAsUsed,
+  ItemDefinition,
+  InjectableProps,
 } from '../../../assets/items'
 import { useTexture, textures } from '../../../assets/textures'
 import { getInjections } from '../../../scripting'
+import { RotationVector3 } from '../../../types'
 
-const itemDesc = {
+const ceilingDiffuserDesc: ItemDefinition = {
   src: 'fix_inter/ceiling_diffuser/ceiling_diffuser.teo',
   native: true,
 }
@@ -16,7 +19,7 @@ const itemDesc = {
 export const defineCeilingDiffuser = () => {
   useTexture(textures.backrooms.ceilingDiffuser)
 
-  const ref = createRootItem(itemDesc, {
+  const ref = createRootItem(ceilingDiffuserDesc, {
     interactive: false,
     scale: 0.6,
     mesh: 'polytrans/polytrans.teo',
@@ -41,8 +44,14 @@ ON INITEND {
   return ref
 }
 
-export const createCeilingDiffuser = (pos, angle = [0, 0, 0], config = {}) => {
-  const ref = createItem(itemDesc, {})
+type CeilingDiffuserSpecificProps = {}
+
+export const createCeilingDiffuser = (
+  pos,
+  angle: RotationVector3 = [0, 0, 0],
+  config: InjectableProps & CeilingDiffuserSpecificProps = {},
+) => {
+  const ref = createItem(ceilingDiffuserDesc, { ...config })
 
   addScript((self) => {
     return `

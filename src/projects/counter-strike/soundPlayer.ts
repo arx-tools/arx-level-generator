@@ -1,14 +1,23 @@
-import { addDependencyAs, addScript, createItem, createRootItem, markAsUsed, moveTo } from '../../assets/items'
+import {
+  addDependencyAs,
+  addScript,
+  createItem,
+  createRootItem,
+  InjectableProps,
+  ItemDefinition,
+  markAsUsed,
+  moveTo,
+} from '../../assets/items'
 import { declare, FALSE, getInjections, TRUE } from '../../scripting'
 import { RelativeCoords } from '../../types'
 
-const soundPlayerDefinition = {
+const soundPlayerDesc: ItemDefinition = {
   src: 'fix_inter/sound_player/sound_player.teo',
   native: true,
 }
 
 export const defineSoundPlayer = (sounds: Record<string, string>) => {
-  const rootRef = createRootItem(soundPlayerDefinition, {
+  const rootRef = createRootItem(soundPlayerDesc, {
     name: 'sound-player',
     interactive: false,
     mesh: 'polytrans/polytrans.teo',
@@ -46,11 +55,16 @@ ON INITEND {
   return rootRef
 }
 
+type SoundPlayerSpecificProps = {
+  filename: string
+  pitchbend: boolean
+}
+
 export const createSoundPlayer = (
   pos: RelativeCoords,
-  { filename, pitchbend }: { filename: string; pitchbend: boolean },
+  { filename, pitchbend, ...props }: InjectableProps & SoundPlayerSpecificProps,
 ) => {
-  const ref = createItem(soundPlayerDefinition)
+  const ref = createItem(soundPlayerDesc, { ...props })
 
   declare('string', 'filename', filename, ref)
   declare('bool', 'pitchbend', pitchbend ? TRUE : FALSE, ref)

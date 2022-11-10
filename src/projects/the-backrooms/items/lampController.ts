@@ -1,13 +1,8 @@
-import {
-  markAsUsed,
-  moveTo,
-  addScript,
-  createItem,
-  items,
-} from '../../../assets/items'
-import { declare, getInjections } from '../../../scripting'
+import { markAsUsed, moveTo, addScript, createItem, items, ItemRef } from '../../../assets/items'
+import { getInjections } from '../../../scripting'
+import { Vector3 } from '../../../types'
 
-export const createLampController = (pos, lamps) => {
+export const createLampController = (pos: Vector3, lamps: ItemRef[]) => {
   const ref = createItem(items.marker)
 
   addScript((self) => {

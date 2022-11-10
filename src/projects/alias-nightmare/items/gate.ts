@@ -1,4 +1,4 @@
-import { addDependencyAs, addScript, createItem, items } from '../../../assets/items'
+import { addDependencyAs, addScript, createItem, InjectableProps, items } from '../../../assets/items'
 import { declare, getInjections, SCRIPT_EOL } from '../../../scripting'
 
 const meshes = {
@@ -13,11 +13,14 @@ const lowerAnimMs = 291
 
 const sounds = ['portcullis-loop-raise', 'portcullis-loop-lower', 'portcullis-end-raise', 'portcullis-end-lower']
 
-export const createGate = (orientation, props = {}) => {
-  const isWide = props.isWide ?? false
+type GateSpecificProps = {
+  isWide?: boolean
+}
 
+export const createGate = (orientation, { isWide, ...props }: InjectableProps & GateSpecificProps = {}) => {
   const ref = createItem(items.doors.portcullis, {
     mesh: isWide ? meshes.wide : meshes.narrow,
+    ...props,
   })
 
   sounds.forEach((filename) => {

@@ -10,7 +10,7 @@ import {
 import { declare, getInjections, SCRIPT_EOL } from '../../../scripting'
 import { RelativeCoords, RotationVector3 } from '../../../types'
 
-const itemDesc: ItemDefinition = {
+const npcDesc: ItemDefinition = {
   src: 'npc/npc/npc.teo',
   native: true,
 }
@@ -18,7 +18,7 @@ const itemDesc: ItemDefinition = {
 export type NPC_TYPE = 'arx guard' | 'rebel guard'
 
 export const defineNPC = (config: InjectableProps = {}) => {
-  const ref = createRootItem(itemDesc, {
+  const ref = createRootItem(npcDesc, {
     ...config,
     hp: 10,
     material: 'flesh',
@@ -285,7 +285,7 @@ export const createNPC = (
   angle: RotationVector3 = [0, 0, 0],
   config: NPCProps = { type: 'arx guard', groups: ['bot'] },
 ) => {
-  const ref = createItem(itemDesc, {})
+  const ref = createItem(npcDesc, {})
 
   declare('string', 'type', config.type, ref)
 
