@@ -102,3 +102,36 @@ export const getInjections = (eventName: keyof RenderedInjectableProps, scope) =
   }
   return (scope.injections[eventName] ?? []).join(SCRIPT_EOL + ' ')
 }
+
+export const PLAY_FROM_PLAYER = 0x1
+export const PLAY_LOOP = 0x2
+export const PLAY_UNIQUE = 0x4
+export const PLAY_VARY_PITCH = 0x8
+
+export const play = (sound: string, flags: number = 0) => {
+  // [o] = emit from player
+  // [l] = loop
+  // [i] = unique
+  // [p] = variable pitch
+  // [s] = stop (only if unique)
+
+  let switches = ''
+  if (flags & PLAY_FROM_PLAYER) {
+    switches += 'o'
+  }
+  if (flags & PLAY_LOOP) {
+    switches += 'l'
+  }
+  if (flags & PLAY_UNIQUE) {
+    switches += 'i'
+  }
+  if (flags & PLAY_VARY_PITCH) {
+    switches += 'p'
+  }
+
+  return `PLAY ${switches ? '-' + switches : ''} ${sound}`
+}
+
+export const stop = (sound: string) => {
+  return `PLAY -s ${sound}`
+}
