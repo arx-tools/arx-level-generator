@@ -11,13 +11,14 @@ import {
   setPolygonGroup,
   unsetPolygonGroup,
   move,
+  MapData,
 } from '../../helpers'
 import island from './island'
 import { colors, NONE, ALL, NORTH, EAST, SOUTH, WEST } from './constants'
 import { ambiences } from '../../assets/ambiences'
 import { items, createItem, markAsUsed, moveTo, addScript, addDependencyAs } from '../../assets/items'
 import { declare, color, getInjections, FALSE, TRUE } from '../../scripting'
-import bridges from './bridges'
+import bridges, { Island } from './bridges'
 import { createFern } from './items/fern'
 import { createStatue, defineStatue } from './items/statue'
 import { textures } from '../../assets/textures'
@@ -26,8 +27,9 @@ import { plain, disableBumping } from '../../prefabs/plain'
 import { createStone } from './items/stone'
 import { overridePlayerScript } from '../shared/player'
 import { createFallSaver } from './items/fallSaver'
+import { AbsoluteCoords, MapConfig, Vector3 } from '../../types'
 
-const createWelcomeMarker = (pos, config) => {
+const createWelcomeMarker = (pos: Vector3, config: MapConfig) => {
   const ref = createItem(items.marker)
 
   declare('bool', 'hadIntro', FALSE, ref)
@@ -78,7 +80,7 @@ const generateAtLeastOneExit = () => {
 }
 
 // creates a large flat plane for the player to fall onto
-const createGravityInducer = (origin, mapData) => {
+const createGravityInducer = (origin: AbsoluteCoords, mapData: MapData) => {
   const divider = 4
 
   setColor('white', mapData)
@@ -100,15 +102,14 @@ const createGravityInducer = (origin, mapData) => {
       unsetPolygonGroup(mapData)
     }
   }
-  return mapData
 }
 
-const generate = async (config) => {
+const generate = async (config: MapConfig) => {
   const { origin } = config
 
   overridePlayerScript()
 
-  const islands = [
+  const islands: Island[] = [
     {
       pos: [0, 0, 0],
       entrances: EAST,
@@ -211,8 +212,8 @@ const generate = async (config) => {
   // // setTexture(textures.stone.templeWall[2], mapData)
   // // pillars(islands[0].pos, 20, 5000, 1000, [200, 200, 0, 0], mapData)
 
-  islands.forEach((config, idx) => {
-    island({ ...config, idx }, mapData)
+  islands.forEach((config) => {
+    island(config, mapData)
   })
 
   bridges(islands, mapData)

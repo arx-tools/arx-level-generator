@@ -1,10 +1,11 @@
 import { times, repeat, clamp, uniq, isEven } from '../../faux-ramda'
 import { textures } from '../../assets/textures'
-import { HFLIP, VFLIP } from '../../constants'
-import { setTexture, pickRandom, move, setColor } from '../../helpers'
+import { HFLIP, TEXTURE_FULL_SCALE, VFLIP } from '../../constants'
+import { setTexture, pickRandom, move, setColor, MapData } from '../../helpers'
 import { plain, disableBumping } from '../../prefabs/plain'
 import { UNIT } from './constants'
 import wall from '../../prefabs/wall'
+import { Vector3 } from '../../types'
 
 export const OCCUPIED = 1 << 0
 export const CONNECT_LEFT = 1 << 1
@@ -18,7 +19,9 @@ export const CONNECT_Y = CONNECT_TOP | CONNECT_BOTTOM
 export const CONNECT_Z = CONNECT_FRONT | CONNECT_BACK
 export const CONNECT_ALL = CONNECT_X | CONNECT_Y | CONNECT_Z
 
-export const getRadius = (grid) => {
+export type Grid = number[][][]
+
+export const getRadius = (grid: Grid): [number, number, number] => {
   const sizeX = (grid[0][0].length - 1) / 2
   const sizeY = (grid[0].length - 1) / 2
   const sizeZ = (grid.length - 1) / 2
@@ -26,14 +29,14 @@ export const getRadius = (grid) => {
 }
 
 const insertRoom = (
-  originX,
-  originY,
-  originZ,
-  width,
-  height,
-  depth,
-  connectivity,
-  grid,
+  originX: number,
+  originY: number,
+  originZ: number,
+  width: number,
+  height: number,
+  depth: number,
+  connectivity: number,
+  grid: Grid,
 ) => {
   for (let z = 0; z < depth; z++) {
     for (let y = 0; y < height; y++) {
@@ -44,7 +47,7 @@ const insertRoom = (
   }
 }
 
-const addFirstRoom = (width, height, depth, connectivity, grid) => {
+const addFirstRoom = (width: number, height: number, depth: number, connectivity: number, grid: Grid) => {
   const [radiusX, radiusY, radiusZ] = getRadius(grid)
 
   width = clamp(1, radiusX * 2 + 1, width)
@@ -55,25 +58,15 @@ const addFirstRoom = (width, height, depth, connectivity, grid) => {
   const originY = radiusY - Math.floor(height / 2)
   const originZ = radiusZ - Math.floor(depth / 2)
 
-  insertRoom(
-    originX,
-    originY,
-    originZ,
-    width,
-    height,
-    depth,
-    connectivity,
-    grid,
-  )
+  insertRoom(originX, originY, originZ, width, height, depth, connectivity, grid)
 }
 
-const isEveryCellEmpty = (grid) => {
+const isEveryCellEmpty = (grid: Grid) => {
   const elementsInGrid = uniq(grid.flat(2))
   return elementsInGrid.length === 1 && elementsInGrid[0] === 0
 }
 
-// is the x/z position of the grid === 1 ?
-export const isOccupied = (x, y, z, grid) => {
+export const isOccupied = (x: number, y: number, z: number, grid: Grid) => {
   if (typeof grid[z] === 'undefined') {
     return null
   }
@@ -89,14 +82,14 @@ export const isOccupied = (x, y, z, grid) => {
 
 // starting from originX/originY/originZ does a width/height/depth sized rectangle only occupy 0 slots?
 const canFitRoom = (
-  originX,
-  originY,
-  originZ,
-  width,
-  height,
-  depth,
-  connectivity,
-  grid,
+  originX: number,
+  originY: number,
+  originZ: number,
+  width: number,
+  height: number,
+  depth: number,
+  connectivity: number,
+  grid: Grid,
 ) => {
   for (let z = originZ; z < originZ + depth; z++) {
     for (let y = originY; y < originY + height; y++) {
@@ -108,7 +101,7 @@ const canFitRoom = (
     }
   }
 
-  if (!(connectivity & CONNECT_LEFT)) {
+  if ((connectivity & CONNECT_LEFT) === 0) {
     for (let z = originZ; z < originZ + depth; z++) {
       for (let y = originY; y < originY + height; y++) {
         if (isOccupied(originX - 1, y, z, grid)) {
@@ -118,7 +111,7 @@ const canFitRoom = (
     }
   }
 
-  if (!(connectivity & CONNECT_RIGHT)) {
+  if ((connectivity & CONNECT_RIGHT) === 0) {
     for (let z = originZ; z < originZ + depth; z++) {
       for (let y = originY; y < originY + height; y++) {
         if (isOccupied(originX + width, y, z, grid)) {
@@ -128,7 +121,7 @@ const canFitRoom = (
     }
   }
 
-  if (!(connectivity & CONNECT_TOP)) {
+  if ((connectivity & CONNECT_TOP) === 0) {
     for (let z = originZ; z < originZ + depth; z++) {
       for (let x = originX; x < originX + width; x++) {
         if (isOccupied(x, originY - 1, z, grid)) {
@@ -138,7 +131,7 @@ const canFitRoom = (
     }
   }
 
-  if (!(connectivity & CONNECT_BOTTOM)) {
+  if ((connectivity & CONNECT_BOTTOM) === 0) {
     for (let z = originZ; z < originZ + depth; z++) {
       for (let x = originX; x < originX + width; x++) {
         if (isOccupied(x, originY + height, z, grid)) {
@@ -148,7 +141,7 @@ const canFitRoom = (
     }
   }
 
-  if (!(connectivity & CONNECT_FRONT)) {
+  if ((connectivity & CONNECT_FRONT) === 0) {
     for (let y = originY; y < originY + height; y++) {
       for (let x = originX; x < originX + width; x++) {
         if (isOccupied(x, y, originZ - 1, grid)) {
@@ -158,7 +151,7 @@ const canFitRoom = (
     }
   }
 
-  if (!(connectivity & CONNECT_BACK)) {
+  if ((connectivity & CONNECT_BACK) === 0) {
     for (let y = originY; y < originY + height; y++) {
       for (let x = originX; x < originX + width; x++) {
         if (isOccupied(x, y, originZ + depth, grid)) {
@@ -173,22 +166,20 @@ const canFitRoom = (
 
 // is there a variation of a width/height/depth sized rectangle containing the position x/y/z which
 // can occupy only 0 slots?
-const canFitRoomAtPos = (x, y, z, width, height, depth, connectivity, grid) => {
+const canFitRoomAtPos = (
+  x: number,
+  y: number,
+  z: number,
+  width: number,
+  height: number,
+  depth: number,
+  connectivity: number,
+  grid: Grid,
+) => {
   for (let k = 0; k < depth; k++) {
     for (let j = 0; j < height; j++) {
       for (let i = 0; i < width; i++) {
-        if (
-          canFitRoom(
-            x - i,
-            y - j,
-            z - k,
-            width,
-            height,
-            depth,
-            connectivity,
-            grid,
-          )
-        ) {
+        if (canFitRoom(x - i, y - j, z - k, width, height, depth, connectivity, grid)) {
           return true
         }
       }
@@ -200,56 +191,33 @@ const canFitRoomAtPos = (x, y, z, width, height, depth, connectivity, grid) => {
 
 // is the x/y/z slot surrounded by at least 1 slot containing > 0?
 // (north/south/east/west/top/bottom, no diagonals)
-const isConnected = (x, y, z, connectivity, grid) => {
+const isConnected = (x: number, y: number, z: number, connectivity: number, grid: Grid) => {
   return (
-    (isOccupied(x - 1, y, z, grid) &&
-      connectivity & CONNECT_RIGHT &&
-      grid[z][y][x - 1] & CONNECT_LEFT) ||
-    (isOccupied(x + 1, y, z, grid) &&
-      connectivity & CONNECT_LEFT &&
-      grid[z][y][x + 1] & CONNECT_RIGHT) ||
-    (isOccupied(x, y - 1, z, grid) &&
-      connectivity & CONNECT_BOTTOM &&
-      grid[z][y - 1][x] & CONNECT_TOP) ||
-    (isOccupied(x, y + 1, z, grid) &&
-      connectivity & CONNECT_TOP &&
-      grid[z][y + 1][x] & CONNECT_BOTTOM) ||
-    (isOccupied(x, y, z - 1, grid) &&
-      connectivity & CONNECT_BACK &&
-      grid[z - 1][y][x] & CONNECT_FRONT) ||
-    (isOccupied(x, y, z + 1, grid) &&
-      connectivity & CONNECT_FRONT &&
-      grid[z + 1][y][x] & CONNECT_BACK)
+    (isOccupied(x - 1, y, z, grid) && connectivity & CONNECT_RIGHT && grid[z][y][x - 1] & CONNECT_LEFT) ||
+    (isOccupied(x + 1, y, z, grid) && connectivity & CONNECT_LEFT && grid[z][y][x + 1] & CONNECT_RIGHT) ||
+    (isOccupied(x, y - 1, z, grid) && connectivity & CONNECT_BOTTOM && grid[z][y - 1][x] & CONNECT_TOP) ||
+    (isOccupied(x, y + 1, z, grid) && connectivity & CONNECT_TOP && grid[z][y + 1][x] & CONNECT_BOTTOM) ||
+    (isOccupied(x, y, z - 1, grid) && connectivity & CONNECT_BACK && grid[z - 1][y][x] & CONNECT_FRONT) ||
+    (isOccupied(x, y, z + 1, grid) && connectivity & CONNECT_FRONT && grid[z + 1][y][x] & CONNECT_BACK)
   )
 }
 
 const getFittingVariants = (
-  x,
-  y,
-  z,
-  width,
-  height,
-  depth,
-  connectivity,
-  grid,
+  x: number,
+  y: number,
+  z: number,
+  width: number,
+  height: number,
+  depth: number,
+  connectivity: number,
+  grid: Grid,
 ) => {
-  const variations = []
+  const variations: [number, number, number][] = []
 
   for (let k = 0; k < depth; k++) {
     for (let j = 0; j < height; j++) {
       for (let i = 0; i < width; i++) {
-        if (
-          canFitRoom(
-            x - i,
-            y - j,
-            z - k,
-            width,
-            height,
-            depth,
-            connectivity,
-            grid,
-          )
-        ) {
+        if (canFitRoom(x - i, y - j, z - k, width, height, depth, connectivity, grid)) {
           variations.push([x - i, y - j, z - k])
         }
       }
@@ -259,7 +227,7 @@ const getFittingVariants = (
   return variations
 }
 
-export const generateGrid = (sizeX, sizeY, sizeZ) => {
+export const generateGrid = (sizeX: number, sizeY: number, sizeZ: number): Grid => {
   if (isEven(sizeX)) {
     sizeX++
   }
@@ -273,13 +241,13 @@ export const generateGrid = (sizeX, sizeY, sizeZ) => {
   return times(() => times(() => repeat(0, sizeX), sizeY), sizeZ)
 }
 
-export const addRoom = (width, height, depth, connectivity, grid) => {
+export const addRoom = (width: number, height: number, depth: number, connectivity: number, grid: Grid) => {
   if (isEveryCellEmpty(grid)) {
     addFirstRoom(width, height, depth, connectivity, grid)
     return true
   }
 
-  let candidates = []
+  let candidates: [number, number, number][] = []
 
   for (let z = 0; z < grid.length; z++) {
     for (let y = 0; y < grid[z].length; y++) {
@@ -303,16 +271,7 @@ export const addRoom = (width, height, depth, connectivity, grid) => {
 
   const [candidateX, candidateY, candidateZ] = pickRandom(candidates)
 
-  const variants = getFittingVariants(
-    candidateX,
-    candidateY,
-    candidateZ,
-    width,
-    height,
-    depth,
-    connectivity,
-    grid,
-  )
+  const variants = getFittingVariants(candidateX, candidateY, candidateZ, width, height, depth, connectivity, grid)
 
   const [startX, startY, startZ] = pickRandom(variants)
 
@@ -440,7 +399,7 @@ const getBackWalls = (wallSegments) => {
 }
 */
 
-export const renderGrid = (grid, mapData) => {
+export const renderGrid = (grid: Grid, mapData: MapData) => {
   const [radiusX, radiusY, radiusZ] = getRadius(grid)
   const originX = -radiusX * UNIT + UNIT / 2
   const originY = -radiusY * UNIT + UNIT / 2
@@ -525,28 +484,21 @@ export const renderGrid = (grid, mapData) => {
           if (isOccupied(x, y - 1, z, grid) !== true) {
             setTexture(textures.backrooms.carpetDirty, mapData)
             plain(
-              [
-                originX + x * UNIT,
-                -(originY + y * UNIT),
-                -(originZ + z * UNIT),
-              ],
+              [originX + x * UNIT, -(originY + y * UNIT), -(originZ + z * UNIT)],
               [UNIT / 100, UNIT / 100],
               'floor',
               disableBumping,
               () => ({
                 textureRotation: pickRandom([0, 90, 180, 270]),
                 textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+                quad: TEXTURE_FULL_SCALE,
               }),
             )(mapData)
           }
           if (isOccupied(x, y + 1, z, grid) !== true) {
             setTexture(textures.backrooms.ceiling, mapData)
             plain(
-              [
-                originX + x * UNIT,
-                -(originY + (y + 1) * UNIT),
-                -(originZ + z * UNIT),
-              ],
+              [originX + x * UNIT, -(originY + (y + 1) * UNIT), -(originZ + z * UNIT)],
               [UNIT / 100, UNIT / 100],
               'ceiling',
               disableBumping,
@@ -556,7 +508,7 @@ export const renderGrid = (grid, mapData) => {
           setTexture(textures.backrooms.wall, mapData)
           // setColor('red', mapData)
           if (isOccupied(x + 1, y, z, grid) !== true) {
-            const coords = [
+            const coords: Vector3 = [
               originX + x * UNIT + UNIT / 2,
               -(originY + y * UNIT),
               -(originZ + (z + 1) * UNIT) - UNIT / 2,
@@ -566,7 +518,7 @@ export const renderGrid = (grid, mapData) => {
 
           // setColor('yellow', mapData)
           if (isOccupied(x - 1, y, z, grid) !== true) {
-            const coords = [
+            const coords: Vector3 = [
               originX + x * UNIT - UNIT / 2,
               -(originY + y * UNIT),
               -(originZ + (z + 1) * UNIT) - UNIT / 2,
@@ -576,7 +528,7 @@ export const renderGrid = (grid, mapData) => {
 
           // setColor('blue', mapData)
           if (isOccupied(x, y, z + 1, grid) !== true) {
-            const coords = [
+            const coords: Vector3 = [
               originX + (x - 1) * UNIT - UNIT / 2,
               -(originY + y * UNIT),
               -(originZ + (z + 1) * UNIT) + UNIT / 2,
@@ -585,7 +537,7 @@ export const renderGrid = (grid, mapData) => {
           }
           // setColor('green', mapData)
           if (isOccupied(x, y, z - 1, grid) !== true) {
-            const coords = [
+            const coords: Vector3 = [
               originX + (x - 1) * UNIT - UNIT / 2,
               -(originY + y * UNIT),
               -(originZ + z * UNIT) + UNIT / 2,

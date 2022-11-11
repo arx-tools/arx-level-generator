@@ -8,20 +8,22 @@ import {
   setPolygonGroup,
   unsetPolygonGroup,
   pickRandom,
+  MapData,
 } from '../../helpers'
 import { colors, NORTH, SOUTH, WEST, EAST, NONE } from './constants'
 import { plain, connectToNearPolygons, disableBumping } from '../../prefabs/plain'
-import { moveTo, markAsUsed } from '../../assets/items'
+import { moveTo, markAsUsed, ItemRef } from '../../assets/items'
 import { textures } from '../../assets/textures'
 import { nanoid } from 'nanoid'
-import { ISLAND_JOINT_LENGTH, ISLAND_JOINT_WIDTH, HFLIP, VFLIP } from '../../constants'
+import { ISLAND_JOINT_LENGTH, ISLAND_JOINT_WIDTH, HFLIP, VFLIP, TEXTURE_FULL_SCALE } from '../../constants'
 import { createPressurePlate } from './items/pressurePlate'
 import { createEventBus } from './items/eventBus'
 import { createGate } from './items/gate'
+import { Island } from './bridges'
 
 // PP = pressure plate
 
-const getPPIndices = (exits) => {
+const getPPIndices = (exits: number) => {
   // [0 1]
   // [2 3]
   switch (exits) {
@@ -54,7 +56,7 @@ const getPPIndices = (exits) => {
   }
 }
 
-const createPressurePlates = (eventBus) => {
+const createPressurePlates = (eventBus: ItemRef): [ItemRef, ItemRef, ItemRef, ItemRef] => {
   return [
     createPressurePlate('pp0', eventBus),
     createPressurePlate('pp1', eventBus),
@@ -72,7 +74,7 @@ const createGates = () => {
   }
 }
 
-const island = (config, mapData) => {
+const island = (config: Island, mapData: MapData) => {
   const id = nanoid(6)
   const { pos, entrances = NONE, width, height } = config
   // exits are locked connection points, entrances are not
@@ -193,6 +195,7 @@ const island = (config, mapData) => {
   plain(move(0, 100, 0, pos), [width, height], 'ceiling', connectToNearPolygons(`${id}-island-top`), () => ({
     textureRotation: pickRandom([0, 90, 180, 270]),
     textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+    quad: TEXTURE_FULL_SCALE,
   }))(mapData)
 
   if ((exits | entrances) & NORTH) {
@@ -216,6 +219,7 @@ const island = (config, mapData) => {
       () => ({
         textureRotation: pickRandom([0, 90, 180, 270]),
         textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+        quad: TEXTURE_FULL_SCALE,
       }),
     )(mapData)
   }
@@ -240,6 +244,7 @@ const island = (config, mapData) => {
       () => ({
         textureRotation: pickRandom([0, 90, 180, 270]),
         textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+        quad: TEXTURE_FULL_SCALE,
       }),
     )(mapData)
   }
@@ -260,6 +265,7 @@ const island = (config, mapData) => {
       () => ({
         textureRotation: pickRandom([0, 90, 180, 270]),
         textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+        quad: TEXTURE_FULL_SCALE,
       }),
     )(mapData)
   }
@@ -284,6 +290,7 @@ const island = (config, mapData) => {
       () => ({
         textureRotation: pickRandom([0, 90, 180, 270]),
         textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+        quad: TEXTURE_FULL_SCALE,
       }),
     )(mapData)
   }

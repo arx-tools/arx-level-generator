@@ -31,7 +31,7 @@ export const clone = <T>(data: T): T => {
   return JSON.parse(JSON.stringify(data))
 }
 
-export const props = <T>(keys: string[], obj: Record<string, T>) => {
+export const props = <T>(keys: (number | string)[], obj: Record<string, T> | T[]) => {
   return keys.reduce((acc, key) => {
     acc.push(obj[key])
     return acc
