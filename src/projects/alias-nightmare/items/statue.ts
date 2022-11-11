@@ -9,7 +9,7 @@ import {
   InjectableProps,
 } from '../../../assets/items'
 import { getInjections, declare, playSound, PLAY_VARY_PITCH } from '../../../scripting'
-import { RotationVector3 } from '../../../types'
+import { RotationVector3, Vector3 } from '../../../types'
 
 export const defineStatue = () => {
   const ref = createRootItem(items.npc.statue, {
@@ -218,7 +218,7 @@ ON COLLIDE_NPC {
 type StatueSpecificProps = {}
 
 export const createStatue = (
-  pos,
+  pos: Vector3,
   angle: RotationVector3 = [0, 0, 0],
   { ...props }: InjectableProps & StatueSpecificProps = {},
 ) => {

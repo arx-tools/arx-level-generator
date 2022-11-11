@@ -1,7 +1,8 @@
-import { addDependencyAs, addScript, createItem, items, markAsUsed, moveTo } from '../../../assets/items'
+import { addDependencyAs, addScript, createItem, ItemRef, items, markAsUsed, moveTo } from '../../../assets/items'
 import { color, declare, FALSE, getInjections, playSound, PLAY_FROM_PLAYER, TRUE } from '../../../scripting'
+import { Vector3 } from '../../../types'
 
-export const createFallSaver = (pos, target) => {
+export const createFallSaver = (pos: Vector3, teleportHereAfterFall: ItemRef) => {
   const ref = createItem(items.marker)
 
   declare('bool', 'isCatching', FALSE, ref)
@@ -33,7 +34,7 @@ ON CONTROLLEDZONE_ENTER {
 }
 
 >>FADEIN {
-  TELEPORT -p ${target.ref}
+  TELEPORT -p ${teleportHereAfterFall.ref}
   SET ${self.state.isCatching} ${FALSE}
   TIMERfadein -m 1 2000 WORLDFADE IN 1000
   RETURN

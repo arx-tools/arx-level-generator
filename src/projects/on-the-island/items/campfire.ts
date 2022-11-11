@@ -6,19 +6,12 @@ import {
   EXTRAS_SPAWNSMOKE,
   EXTRAS_STARTEXTINGUISHED,
 } from '../../../constants'
-import { addCoords, addLight, addZone, setColor } from '../../../helpers'
+import { addCoords, addLight, addZone, MapData, setColor } from '../../../helpers'
 import { declare, getInjections } from '../../../scripting'
 import { RelativeCoords, RotationVector3 } from '../../../types'
-import {
-  markAsUsed,
-  createItem,
-  items,
-  moveTo,
-  InjectableProps,
-  addScript,
-} from '../../../assets/items'
+import { markAsUsed, createItem, items, moveTo, InjectableProps, addScript } from '../../../assets/items'
 
-const createCampfireFlames = (pos: RelativeCoords, mapData) => {
+const createCampfireFlames = (pos: RelativeCoords, mapData: MapData) => {
   setColor('white', mapData)
   addLight(
     pos.coords,
@@ -38,29 +31,17 @@ const createCampfireFlames = (pos: RelativeCoords, mapData) => {
       exSpeed: 0.65, // how fast the flame particles travel upwards
       exFlareSize: 80,
       extras:
-        EXTRAS_SEMIDYNAMIC |
-        EXTRAS_EXTINGUISHABLE |
-        EXTRAS_STARTEXTINGUISHED |
-        EXTRAS_SPAWNFIRE |
-        EXTRAS_SPAWNSMOKE,
+        EXTRAS_SEMIDYNAMIC | EXTRAS_EXTINGUISHABLE | EXTRAS_STARTEXTINGUISHED | EXTRAS_SPAWNFIRE | EXTRAS_SPAWNSMOKE,
     },
     mapData,
   )
 }
 
-const createCampfireCookZone = (
-  pos: RelativeCoords,
-  zoneName: string = 'cookzone',
-  mapData,
-) => {
+const createCampfireCookZone = (pos: RelativeCoords, zoneName: string = 'cookzone', mapData: MapData) => {
   addZone(pos, [100, 0, 100], zoneName, ambiences.none, 0, 0)(mapData)
 }
 
-const createCampfireCookMarker = (
-  pos: RelativeCoords,
-  zoneName: string,
-  props: InjectableProps = {},
-) => {
+const createCampfireCookMarker = (pos: RelativeCoords, zoneName: string, props: InjectableProps = {}) => {
   const cookMarker = createItem(items.marker, props)
   moveTo(pos, [0, 0, 0], cookMarker)
   markAsUsed(cookMarker)
@@ -135,11 +116,7 @@ ON SPELLCAST {
   return cookMarker
 }
 
-export const createCampfire = (
-  pos: RelativeCoords,
-  angle: RotationVector3 = [0, 0, 0],
-  mapData,
-) => {
+export const createCampfire = (pos: RelativeCoords, angle: RotationVector3 = [0, 0, 0], mapData: MapData) => {
   const campfire = createItem(items.misc.campfire)
 
   moveTo(pos, angle, campfire)

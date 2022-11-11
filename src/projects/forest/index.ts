@@ -1,6 +1,6 @@
 import { addScript, createItem, items, markAsUsed, moveTo } from '../../assets/items'
 import { getInjections } from '../../scripting'
-import { RelativeCoords } from '../../types'
+import { MapConfig, RelativeCoords } from '../../types'
 import { hideMinimap } from '../shared/reset'
 import { ambiences } from '../../assets/ambiences'
 import { generateBlankMapData, movePlayerTo, setColor, addZone, finalize, saveToDisk } from '../../helpers'
@@ -11,7 +11,7 @@ import { overridePlayerScript } from '../shared/player'
 import { createGateArea } from './areas/gate'
 import { createHub } from './areas/hub'
 
-const createPlayerSpawn = (pos: RelativeCoords, config) => {
+const createPlayerSpawn = (pos: RelativeCoords, config: MapConfig) => {
   const ref = createItem(items.marker)
 
   hideMinimap(config.levelIdx, ref)
@@ -38,7 +38,7 @@ ON CONTROLLEDZONE_ENTER {
   return ref
 }
 
-const generate = async (config) => {
+const generate = async (config: MapConfig) => {
   const { origin } = config
 
   const mapData = generateBlankMapData(config)

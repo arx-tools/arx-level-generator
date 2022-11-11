@@ -9,7 +9,7 @@ import {
 } from '../../../assets/items'
 import { useTexture, textures } from '../../../assets/textures'
 import { getInjections } from '../../../scripting'
-import { RotationVector3 } from '../../../types'
+import { RotationVector3, Vector3 } from '../../../types'
 
 const ceilingDiffuserDesc: ItemDefinition = {
   src: 'fix_inter/ceiling_diffuser/ceiling_diffuser.teo',
@@ -47,7 +47,7 @@ ON INITEND {
 type CeilingDiffuserSpecificProps = {}
 
 export const createCeilingDiffuser = (
-  pos,
+  pos: Vector3,
   angle: RotationVector3 = [0, 0, 0],
   config: InjectableProps & CeilingDiffuserSpecificProps = {},
 ) => {

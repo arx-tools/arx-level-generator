@@ -1,6 +1,6 @@
 import { POLY_QUAD, POLY_NO_SHADOW, HFLIP, VFLIP, TEXTURE_CUSTOM_UV } from '../../constants'
 import { useTexture } from '../../assets/textures'
-import { flipPolygon, flipUVHorizontally, flipUVVertically, rotateUV } from '../../helpers'
+import { flipPolygon, flipUVHorizontally, flipUVVertically, MapData, rotateUV } from '../../helpers'
 import { AbsoluteCoords, Polygon, TextureQuad } from '../../types'
 
 const floor =
@@ -18,7 +18,7 @@ const floor =
       d: { u: 0, v: 1 },
     },
   ) =>
-  (mapData) => {
+  (mapData: MapData) => {
     const [x, y, z] = position.coords
     const { texture } = mapData.state
     let texU = 0

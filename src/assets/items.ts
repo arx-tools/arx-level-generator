@@ -372,7 +372,7 @@ export const createRootItem = (item: ItemDefinition, props: InjectableProps = {}
   }
 }
 
-export const addDependency = (dependency, itemRef: ItemRef) => {
+export const addDependency = (dependency: Dependency, itemRef: ItemRef) => {
   const { src, id } = itemRef
 
   if (usedItems[src]) {
@@ -524,7 +524,7 @@ export const exportScripts = (outputDir: string) => {
   }, {} as Record<string, string>)
 }
 
-const resolveGlob = async (source, target) => {
+const resolveGlob = async (source: string, target: string): Promise<[string, string][]> => {
   const sources = await glob(source, { absolute: true })
   if (sources.length === 0) {
     return []
@@ -534,7 +534,7 @@ const resolveGlob = async (source, target) => {
     return [[source, target]]
   }
 
-  const root = source.match(/^[^*{]*/)[0].replace(/\/$/, '')
+  const root = (source.match(/^[^*{]*/) as string[])[0].replace(/\/$/, '')
 
   return sources.map((source) => {
     return [source, source.replace(root, target)]

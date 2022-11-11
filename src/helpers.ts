@@ -174,7 +174,7 @@ const generateLights = (mapData: FinalizedMapData) => {
   mapData.llf.colors = colors
 }
 
-export const posVertexToVector = ({ posX, posY, posZ }): Vector3 => {
+export const posVertexToVector = ({ posX, posY, posZ }: PosVertex3): Vector3 => {
   return [posX, posY, posZ]
 }
 

@@ -23,7 +23,7 @@ import { getInjections } from '../../scripting'
 import { createCampfire } from './items/campfire'
 import { createGoblin } from './items/goblin'
 import { overridePlayerScript } from '../shared/player'
-import { RelativeCoords } from '../../types'
+import { MapConfig, RelativeCoords } from '../../types'
 import { createBarrel } from './items/barrel'
 import { createFishSpawn } from './items/fishSpawn'
 import { createCards } from './items/cards'
@@ -53,7 +53,7 @@ ON CONTROLLEDZONE_ENTER {
   return ref
 }
 
-const generate = async (config) => {
+const generate = async (config: MapConfig) => {
   const { origin } = config
 
   const islandSizeInTiles = 8

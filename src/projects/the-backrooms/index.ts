@@ -27,6 +27,7 @@ import {
   sortByDistance,
   pickRandomIdx,
   pickRandom,
+  MapData,
 } from '../../helpers'
 import { defineCeilingLamp, createCeilingLamp, CeilingLampSpecificProps } from './items/ceilingLamp'
 import { EXTRAS_SEMIDYNAMIC, EXTRAS_EXTINGUISHABLE, EXTRAS_STARTEXTINGUISHED, EXTRAS_NO_IGNIT } from '../../constants'
@@ -79,7 +80,7 @@ import { hideHealthbar, hideMinimap, hideStealthIndicator, removeSound, useWillo
 import { MapConfig, RotationVector3, Vector3 } from '../../types'
 
 const addLamp = (pos: Vector3, angle: RotationVector3, config: InjectableProps & CeilingLampSpecificProps = {}) => {
-  return (mapData) => {
+  return (mapData: MapData) => {
     const isOn = config.on ?? false
     const lampEntity = createCeilingLamp(pos, angle, { on: isOn })
 
@@ -108,8 +109,17 @@ type AmbientLightProps = {
   radius?: number
 }
 
+type AmbientLights = {
+  floor: ItemRef
+  ceiling: ItemRef
+  right: ItemRef
+  left: ItemRef
+  front: ItemRef
+  back: ItemRef
+}
+
 const addAmbientLight = (pos: Vector3, config: AmbientLightProps = {}) => {
-  return (mapData) => {
+  return (mapData: MapData): AmbientLights => {
     const isOn = config.on ?? false
     const lightColor = config.color ?? 'red'
     const radius = config.radius ?? 10000
@@ -160,7 +170,7 @@ const addAmbientLight = (pos: Vector3, config: AmbientLightProps = {}) => {
   }
 }
 
-const createWelcomeMarker = (pos: Vector3, config) => {
+const createWelcomeMarker = (pos: Vector3, config: MapConfig) => {
   const ref = createItem(items.marker)
 
   hideMinimap(config.levelIdx, ref)
@@ -246,7 +256,12 @@ ON GOT_RUNE {
   return ref
 }
 
-const createJumpscareController = (pos, lampCtrl, ambientLights, config) => {
+const createJumpscareController = (
+  pos: Vector3,
+  lampCtrl: ItemRef,
+  ambientLights: AmbientLights,
+  config: MapConfig & BackroomsSpecifigConfig,
+) => {
   const ref = createItem(items.marker)
 
   addDependencyAs(
@@ -486,7 +501,13 @@ ON POWEROUT {
   return ref
 }
 
-const createExit = (originX, originZ, wallSegment, key, jumpscareController) => {
+const createExit = (
+  originX: number,
+  originZ: number,
+  wallSegment: [number, number, number, 'left' | 'right' | 'back' | 'front'],
+  keyThatOpensTheDoor: ItemRef,
+  jumpscareController: ItemRef,
+) => {
   const [wallX, wallY, wallZ, wallFace] = wallSegment
 
   let translate: Vector3 = [0, 0, 0]
@@ -518,7 +539,7 @@ const createExit = (originX, originZ, wallSegment, key, jumpscareController) => 
 
   declare('int', 'lockpickability', 100, ref)
   declare('string', 'type', 'Door_Ylsides', ref)
-  declare('string', 'key', key.ref, ref)
+  declare('string', 'key', keyThatOpensTheDoor.ref, ref)
   declare('bool', 'open', FALSE, ref)
   declare('bool', 'unlock', FALSE, ref)
   addDependencyAs('projects/the-backrooms/sfx/backrooms-outro.wav', 'sfx/backrooms-outro.wav', ref)
@@ -591,7 +612,7 @@ const createAlmondWater = (
   pos: Vector3,
   angle: RotationVector3 = [0, 0, 0],
   variant: 'xp' | 'mana' | 'slow' | 'speed' = 'mana',
-  jumpscareCtrl,
+  jumpscareCtrl: ItemRef,
 ) => {
   const ref = createItem(items.magic.potion.mana, {
     name: `[item--almond-water]`,
@@ -708,7 +729,7 @@ ON INIT {
 const placeWallPlug = (
   originX: number,
   originZ: number,
-  wallSegment,
+  wallSegment: [number, number, number, 'left' | 'right' | 'back' | 'front'],
   config: InjectableProps & WallPlugSpecificProps,
   jumpscareCtrl: ItemRef,
 ) => {

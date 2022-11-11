@@ -18,7 +18,10 @@ type GateSpecificProps = {
   isOpen?: boolean
 }
 
-export const createGate = (orientation, { isWide, isOpen, ...props }: InjectableProps & GateSpecificProps = {}) => {
+export const createGate = (
+  orientation: 'north' | 'south' | 'east' | 'west',
+  { isWide, isOpen, ...props }: InjectableProps & GateSpecificProps = {},
+) => {
   const ref = createItem(items.doors.portcullis, {
     mesh: isWide ? meshes.wide : meshes.narrow,
     ...props,

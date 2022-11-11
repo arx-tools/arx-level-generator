@@ -6,6 +6,7 @@ import {
   createRootItem,
   ItemDefinition,
   InjectableProps,
+  ItemRef,
 } from '../../../assets/items'
 import { useTexture, textures } from '../../../assets/textures'
 import {
@@ -18,7 +19,7 @@ import {
   PLAY_VARY_PITCH,
   stopSound,
 } from '../../../scripting'
-import { RotationVector3 } from '../../../types'
+import { RotationVector3, Vector3 } from '../../../types'
 
 const wallPlugDesc: ItemDefinition = {
   src: 'fix_inter/wall_plug/wall_plug.teo',
@@ -61,10 +62,10 @@ export type WallPlugSpecificProps = {
 }
 
 export const createWallPlug = (
-  pos,
+  pos: Vector3,
   angle: RotationVector3 = [0, 0, 0],
   { variant, ...props }: InjectableProps & WallPlugSpecificProps,
-  jumpscareCtrl,
+  jumpscareCtrl: ItemRef,
 ) => {
   const ref = createItem(wallPlugDesc, {
     name:

@@ -1,13 +1,13 @@
 import { addScript, createItem, InjectableProps, items, markAsUsed, moveTo } from '../../../assets/items'
 import { declare, getInjections } from '../../../scripting'
-import { RotationVector3 } from '../../../types'
+import { RotationVector3, Vector3 } from '../../../types'
 
 type StoneSpecificProps = {
   weight?: number
 }
 
 export const createStone = (
-  pos,
+  pos: Vector3,
   angle: RotationVector3 = [0, 0, 0],
   { weight, ...props }: InjectableProps & StoneSpecificProps = {},
 ) => {

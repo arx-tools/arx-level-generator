@@ -21,7 +21,7 @@ import {
   PLAY_VARY_PITCH,
   stopSound,
 } from '../../../scripting'
-import { RotationVector3 } from '../../../types'
+import { RotationVector3, Vector3 } from '../../../types'
 
 const ceilingLampDesc: ItemDefinition = {
   src: 'fix_inter/ceiling-lamp/ceiling-lamp.ftl',
@@ -311,7 +311,7 @@ export type CeilingLampSpecificProps = {
 }
 
 export const createCeilingLamp = (
-  pos,
+  pos: Vector3,
   angle: RotationVector3 = [0, 0, 0],
   { muted, on, ...props }: InjectableProps & CeilingLampSpecificProps = {},
 ) => {

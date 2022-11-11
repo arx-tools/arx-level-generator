@@ -1,6 +1,6 @@
 import { addScript, createItem, items, markAsUsed, moveTo } from '../../assets/items'
 import { getInjections } from '../../scripting'
-import { RelativeCoords } from '../../types'
+import { MapConfig, RelativeCoords } from '../../types'
 import { hideMinimap } from '../shared/reset'
 import { ambiences } from '../../assets/ambiences'
 import {
@@ -19,7 +19,7 @@ import { createSoundPlayer, defineSoundPlayer } from './soundPlayer'
 import { createDeDust } from './maps/de_dust'
 import { createDoor } from '../forest/door'
 
-const createPlayerSpawn = (pos: RelativeCoords, config) => {
+const createPlayerSpawn = (pos: RelativeCoords, config: MapConfig) => {
   const ref = createItem(items.marker)
 
   hideMinimap(config.levelIdx, ref)
@@ -64,7 +64,7 @@ const colors: Record<string, string> = {
   general: '#a0a0a0',
 }
 
-const generate = async (config) => {
+const generate = async (config: MapConfig) => {
   const { origin } = config
 
   const mapData = generateBlankMapData(config)

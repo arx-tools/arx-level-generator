@@ -172,7 +172,7 @@ const createPointHalfwayBetween = (a: TreeJsVector3, b: TreeJsVector3) => {
   return b.clone().sub(a).divideScalar(2).add(a)
 }
 
-export const subdivideTriangles = (polygons: TexturedPolygon[]) => {
+export const subdivideTriangles = (polygons: TexturedPolygon[]): TexturedPolygon[] => {
   const [fits, tooLarge] = partition(({ polygon }) => doesPolygonFitIntoACell(polygon), polygons)
 
   if (tooLarge.length === 0) {

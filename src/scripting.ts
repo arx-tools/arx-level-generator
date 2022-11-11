@@ -96,7 +96,7 @@ export const declare = (type: VariableType, name: string, initialValue: any, sco
   return scope
 }
 
-export const getInjections = (eventName: keyof RenderedInjectableProps, scope) => {
+export const getInjections = (eventName: keyof RenderedInjectableProps, scope: ItemRef | 'global') => {
   if (scope === 'global') {
     return (globalScope.injections[eventName] ?? []).join(SCRIPT_EOL + ' ')
   }

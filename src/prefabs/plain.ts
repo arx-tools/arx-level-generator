@@ -12,8 +12,9 @@ import {
   MapData,
 } from '../helpers'
 import { identity, clamp } from '../faux-ramda'
-import { AbsoluteCoords, PosVertex3, TextureQuad, Vector3 } from '../types'
+import { AbsoluteCoords, PosVertex3, TextureQuad, Vector3, Vertex3 } from '../types'
 import { TEXTURE_FULL_SCALE } from '../constants'
+import { FtsPolygon } from '../blankMap'
 
 export type AdjustablePosVertex3 = PosVertex3 & { haveBeenAdjusted?: boolean }
 
@@ -29,32 +30,26 @@ export const plain = (
   pos: Vector3,
   size: number | [number, number],
   facing: 'floor' | 'ceiling' = 'floor',
-  onBeforeBumping: (polygons: any[], mapData: MapData) => any[] = identity,
+  onBeforeBumping: (polygons: FtsPolygon[], mapData: MapData) => FtsPolygon[] = identity,
   getConfig: () => {
     textureRotation?: number
     textureFlags?: number
     quad: TextureQuad
   } = () => ({ quad: TEXTURE_FULL_SCALE }),
 ) => {
-  return (mapData) => {
+  return (mapData: MapData) => {
     const { origin } = mapData.config
 
     const [x, y, z] = move(...pos, origin.coords)
 
-    let sizeX = size
-    let sizeZ = size
+    const [sizeX, sizeZ] = Array.isArray(size) ? size : [size, size]
 
-    if (Array.isArray(size)) {
-      sizeX = size[0]
-      sizeZ = size[1]
-    }
-
-    const dummyMapData = {
+    const dummyMapData: MapData = {
       config: mapData.config,
       state: mapData.state,
       fts: {
         polygons: {
-          [mapData.state.polygonGroup]: [],
+          [mapData.state.polygonGroup]: [] as FtsPolygon[],
         },
       },
     }
@@ -64,11 +59,7 @@ export const plain = (
         const config = getConfig()
         const position: AbsoluteCoords = {
           type: 'absolute',
-          coords: [
-            x + 100 * i - ((sizeX as number) * 100) / 2 + 100 / 2,
-            y,
-            z + 100 * j - ((sizeZ as number) * 100) / 2 + 100 / 2,
-          ],
+          coords: [x + 100 * i - (sizeX * 100) / 2 + 100 / 2, y, z + 100 * j - (sizeZ * 100) / 2 + 100 / 2],
         }
 
         floor(position, facing, config.quad, config.textureRotation ?? 90, 100, config.textureFlags ?? 0)(dummyMapData)
@@ -83,7 +74,7 @@ export const plain = (
       const nonBumpableVertices = nonBumpablePolygons.reduce((acc, { vertices }) => {
         acc.push(...vertices.map(({ posX, posY, posZ }) => `${posX}|${posY}|${posZ}`))
         return acc
-      }, [])
+      }, [] as string[])
 
       let { corners, edges, middles } = categorizeVertices(polygons)
 
