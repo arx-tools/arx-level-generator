@@ -305,7 +305,7 @@ ON UNMUTE {
   return ref
 }
 
-type CeilingLampSpecificProps = {
+export type CeilingLampSpecificProps = {
   muted?: boolean
   on?: boolean
 }

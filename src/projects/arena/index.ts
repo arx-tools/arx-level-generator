@@ -23,8 +23,9 @@ import { createNPC, defineNPC } from './items/npc'
 import { createRespawnController } from './items/respawnController'
 import { plain } from '../../prefabs/plain'
 import { createFern } from '../alias-nightmare/items/fern'
+import { MapConfig, Vector3 } from '../../types'
 
-const createWelcomeMarker = (pos, config) => {
+const createWelcomeMarker = (pos: Vector3, config: MapConfig) => {
   const ref = createItem(items.marker)
 
   hideMinimap(config.levelIdx, ref)
@@ -51,7 +52,7 @@ ON CONTROLLEDZONE_ENTER {
   return ref
 }
 
-const generate = async (config) => {
+const generate = async (config: MapConfig) => {
   const { origin } = config
 
   const mapData = generateBlankMapData(config)

@@ -28,9 +28,18 @@ import {
   pickRandomIdx,
   pickRandom,
 } from '../../helpers'
-import { defineCeilingLamp, createCeilingLamp } from './items/ceilingLamp'
+import { defineCeilingLamp, createCeilingLamp, CeilingLampSpecificProps } from './items/ceilingLamp'
 import { EXTRAS_SEMIDYNAMIC, EXTRAS_EXTINGUISHABLE, EXTRAS_STARTEXTINGUISHED, EXTRAS_NO_IGNIT } from '../../constants'
-import { markAsUsed, moveTo, addScript, createItem, items, addDependencyAs } from '../../assets/items'
+import {
+  markAsUsed,
+  moveTo,
+  addScript,
+  createItem,
+  items,
+  addDependencyAs,
+  ItemRef,
+  InjectableProps,
+} from '../../assets/items'
 import {
   getInjections,
   declare,
@@ -65,10 +74,11 @@ import { UNIT, COLORS } from './constants'
 import { createRune } from '../../items/createRune'
 import { addTranslations } from '../../assets/i18n'
 import translations from './i18n.json'
-import { defineWallPlug, createWallPlug } from './items/wallPlug'
+import { defineWallPlug, createWallPlug, WallPlugSpecificProps } from './items/wallPlug'
 import { hideHealthbar, hideMinimap, hideStealthIndicator, removeSound, useWillowModifiedFont } from '../shared/reset'
+import { MapConfig, RotationVector3, Vector3 } from '../../types'
 
-const addLamp = (pos, angle, config = {}) => {
+const addLamp = (pos: Vector3, angle: RotationVector3, config: InjectableProps & CeilingLampSpecificProps = {}) => {
   return (mapData) => {
     const isOn = config.on ?? false
     const lampEntity = createCeilingLamp(pos, angle, { on: isOn })
@@ -92,7 +102,13 @@ const addLamp = (pos, angle, config = {}) => {
   }
 }
 
-const addAmbientLight = (pos, config = {}) => {
+type AmbientLightProps = {
+  on?: boolean
+  color?: string
+  radius?: number
+}
+
+const addAmbientLight = (pos: Vector3, config: AmbientLightProps = {}) => {
   return (mapData) => {
     const isOn = config.on ?? false
     const lightColor = config.color ?? 'red'
@@ -144,7 +160,7 @@ const addAmbientLight = (pos, config = {}) => {
   }
 }
 
-const createWelcomeMarker = (pos, config) => {
+const createWelcomeMarker = (pos: Vector3, config) => {
   const ref = createItem(items.marker)
 
   hideMinimap(config.levelIdx, ref)
@@ -157,7 +173,7 @@ const createWelcomeMarker = (pos, config) => {
 
   useWillowModifiedFont(ref)
 
-  const uiTheme = 'vhs' // vhs | steampunk
+  const uiTheme: 'vhs' | 'steampunk' = 'vhs'
 
   addDependencyAs(`projects/the-backrooms/ui/${uiTheme}/graph/**/*.{jpg,bmp}`, 'graph', ref)
 
@@ -473,8 +489,8 @@ ON POWEROUT {
 const createExit = (originX, originZ, wallSegment, key, jumpscareController) => {
   const [wallX, wallY, wallZ, wallFace] = wallSegment
 
-  let translate = [0, 0, 0]
-  let rotate = [0, 0, 0]
+  let translate: Vector3 = [0, 0, 0]
+  let rotate: RotationVector3 = [0, 0, 0]
 
   switch (wallFace) {
     case 'left':
@@ -541,7 +557,7 @@ ON ACTION {
   return ref
 }
 
-const createKey = (pos, angle = [0, 0, 0], jumpscareCtrl) => {
+const createKey = (pos: Vector3, angle: RotationVector3 = [0, 0, 0], jumpscareCtrl: ItemRef) => {
   const ref = createItem(items.keys.oliverQuest, { name: '[key--exit]' })
 
   declare('bool', 'hadBeenPickedUp', FALSE, ref)
@@ -571,7 +587,12 @@ ON INVENTORYIN {
   return ref
 }
 
-const createAlmondWater = (pos, angle = [0, 0, 0], variant = 'mana', jumpscareCtrl) => {
+const createAlmondWater = (
+  pos: Vector3,
+  angle: RotationVector3 = [0, 0, 0],
+  variant: 'xp' | 'mana' | 'slow' | 'speed' = 'mana',
+  jumpscareCtrl,
+) => {
   const ref = createItem(items.magic.potion.mana, {
     name: `[item--almond-water]`,
   })
@@ -657,7 +678,7 @@ ON INVENTORYUSE {
   return ref
 }
 
-const createSpawnContainer = (pos, angle, contents = []) => {
+const createSpawnContainer = (pos: Vector3, angle: RotationVector3, contents: ItemRef[] = []) => {
   const ref = createItem(items.containers.barrel, {
     scale: 0.75,
   })
@@ -684,11 +705,17 @@ ON INIT {
   return ref
 }
 
-const placeWallPlug = (originX, originZ, wallSegment, config = {}, jumpscareCtrl) => {
+const placeWallPlug = (
+  originX: number,
+  originZ: number,
+  wallSegment,
+  config: InjectableProps & WallPlugSpecificProps,
+  jumpscareCtrl: ItemRef,
+) => {
   const [wallX, wallY, wallZ, wallFace] = wallSegment
 
-  let translate = [0, 0, 0]
-  let rotate = [0, 0, 0]
+  let translate: Vector3 = [0, 0, 0]
+  let rotate: RotationVector3 = [0, 0, 0]
 
   const wallOffset = 91
 
@@ -717,7 +744,12 @@ const placeWallPlug = (originX, originZ, wallSegment, config = {}, jumpscareCtrl
   return createWallPlug(pos, angle, config, jumpscareCtrl)
 }
 
-const generate = async (config) => {
+type BackroomsSpecifigConfig = {
+  numberOfRooms: number
+  percentOfLightsOn: number
+}
+
+const generate = async (config: MapConfig & BackroomsSpecifigConfig) => {
   const { origin } = config
 
   defineWallPlug()
@@ -752,9 +784,9 @@ const generate = async (config) => {
 
   let roomCounter = 1
 
-  const rooms = pickWeightedRandoms(config.numberOfRooms, roomTypes, true)
+  const rooms: any[] = pickWeightedRandoms(config.numberOfRooms, roomTypes, true)
 
-  const notFittingCombos = []
+  const notFittingCombos: string[] = []
   for (let i = 0; i < config.numberOfRooms; i++) {
     const room = rooms[i]
     const [width, height, depth] = room.dimensions
@@ -770,7 +802,6 @@ const generate = async (config) => {
     }
   }
 
-  config.originalNumberOfRooms = config.numberOfRooms
   config.numberOfRooms = roomCounter
 
   const mapData = generateBlankMapData(config)

@@ -56,7 +56,7 @@ ON INITEND {
   return ref
 }
 
-type WallPlugSpecificProps = {
+export type WallPlugSpecificProps = {
   variant?: 'clean' | 'old' | 'broken'
 }
 
