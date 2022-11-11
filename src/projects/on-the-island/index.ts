@@ -3,7 +3,7 @@ import { identity, uniq } from '../../faux-ramda'
 import { ambiences } from '../../assets/ambiences'
 import { items, createItem, moveTo, markAsUsed, addScript } from '../../assets/items'
 import { textures } from '../../assets/textures'
-import { HFLIP, VFLIP } from '../../constants'
+import { HFLIP, TEXTURE_FULL_SCALE, VFLIP } from '../../constants'
 import {
   saveToDisk,
   finalize,
@@ -19,12 +19,16 @@ import {
   unsetPolygonGroup,
 } from '../../helpers'
 import { disableBumping, connectToNearPolygons, plain } from '../../prefabs/plain'
-import { getInjections, SCRIPT_EOL } from '../../scripting'
+import { getInjections } from '../../scripting'
 import { createCampfire } from './items/campfire'
 import { createGoblin } from './items/goblin'
 import { overridePlayerScript } from '../shared/player'
+import { RelativeCoords } from '../../types'
+import { createBarrel } from './items/barrel'
+import { createFishSpawn } from './items/fishSpawn'
+import { createCards } from './items/cards'
 
-const createWelcomeMarker = (pos) => {
+const createWelcomeMarker = (pos: RelativeCoords) => {
   const ref = createItem(items.marker)
 
   addScript((self) => {
@@ -44,47 +48,8 @@ ON CONTROLLEDZONE_ENTER {
   }, ref)
 
   markAsUsed(ref)
-  moveTo({ type: 'relative', coords: pos }, [0, 0, 0], ref)
+  moveTo(pos, [0, 0, 0], ref)
 
-  return ref
-}
-
-const createFishSpawn = (pos) => {
-  const ref = createItem(items.fishSpawn)
-  moveTo({ type: 'relative', coords: pos }, [0, 0, 0], ref)
-  markAsUsed(ref)
-  return ref
-}
-
-const createBarrel = (pos, angle, contents = []) => {
-  const ref = createItem(items.containers.barrel, {
-    scale: 0.7,
-  })
-  addScript((self) => {
-    return `
-// component: barrel
-ON INIT {
-${getInjections('init', self)}
-
-${contents
-  .map(({ ref }) => {
-    return `inventory addfromscene "${ref}"`
-  })
-  .join('  ' + SCRIPT_EOL)}
-
-ACCEPT
-}
-    `
-  }, ref)
-  moveTo({ type: 'relative', coords: pos }, angle, ref)
-  markAsUsed(ref)
-  return ref
-}
-
-const createCards = (pos, angle = [0, 0, 0], props = {}) => {
-  const ref = createItem(items.misc.deckOfCards, props)
-  moveTo({ type: 'relative', coords: pos }, angle, ref)
-  markAsUsed(ref)
   return ref
 }
 
@@ -101,14 +66,17 @@ const generate = async (config) => {
     mesh: 'goblin_base/goblin_base.teo',
   })
 
-  createWelcomeMarker([islandCenter.x, 0, islandCenter.z + islandRadius * 0.5])
+  createWelcomeMarker({ type: 'relative', coords: [islandCenter.x, 0, islandCenter.z + islandRadius * 0.5] })
 
   createGoblin(
-    [islandCenter.x - islandRadius + islandEdgeOffset, 0, islandCenter.z - islandRadius + islandEdgeOffset],
+    {
+      type: 'relative',
+      coords: [islandCenter.x - islandRadius + islandEdgeOffset, 0, islandCenter.z - islandRadius + islandEdgeOffset],
+    },
     [0, 135, 0],
   )
 
-  const fishSpawnCoords = []
+  const fishSpawnCoords: [number, number][] = []
 
   const distanceBetweenSpawns = 800
 
@@ -130,7 +98,7 @@ const generate = async (config) => {
   }
 
   uniq(fishSpawnCoords).forEach(([x, z]) => {
-    createFishSpawn([x, 50, z])
+    createFishSpawn({ type: 'relative', coords: [x, 50, z] })
   })
 
   const startingLoot = [
@@ -140,8 +108,15 @@ const generate = async (config) => {
     markAsUsed(createRune('yok')),
   ]
 
-  createBarrel([islandCenter.x - islandRadius + islandEdgeOffset, 0, islandCenter.z], [0, 0, 0], startingLoot)
-  createCards([islandCenter.x - islandRadius + islandEdgeOffset, -90, islandCenter.z + 30])
+  createBarrel(
+    { type: 'relative', coords: [islandCenter.x - islandRadius + islandEdgeOffset, 0, islandCenter.z] },
+    [0, 0, 0],
+    startingLoot,
+  )
+  createCards({
+    type: 'relative',
+    coords: [islandCenter.x - islandRadius + islandEdgeOffset, -90, islandCenter.z + 30],
+  })
 
   const mapData = generateBlankMapData(config)
 
@@ -174,6 +149,7 @@ const generate = async (config) => {
   plain([islandCenter.x, 0, islandCenter.z], [islandSizeInTiles, islandSizeInTiles], 'floor', identity, () => ({
     textureRotation: pickRandom([0, 90, 180, 270]),
     textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+    quad: TEXTURE_FULL_SCALE,
   }))(mapData)
 
   setPolygonGroup('island-2', mapData)
@@ -186,6 +162,7 @@ const generate = async (config) => {
     () => ({
       textureRotation: pickRandom([0, 90, 180, 270]),
       textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+      quad: TEXTURE_FULL_SCALE,
     }),
   )(mapData)
 
@@ -199,6 +176,7 @@ const generate = async (config) => {
     () => ({
       textureRotation: pickRandom([0, 90, 180, 270]),
       textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+      quad: TEXTURE_FULL_SCALE,
     }),
   )(mapData)
 
@@ -217,6 +195,7 @@ const generate = async (config) => {
     () => ({
       textureRotation: pickRandom([0, 90, 180, 270]),
       textureFlags: pickRandom([0, HFLIP, VFLIP, HFLIP | VFLIP]),
+      quad: TEXTURE_FULL_SCALE,
     }),
   )(mapData)
 

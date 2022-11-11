@@ -1,19 +1,17 @@
-import {
-  addScript,
-  items,
-  createItem,
-  markAsUsed,
-  moveTo,
-} from '../../../assets/items'
+import { addScript, items, createItem, markAsUsed, moveTo, InjectableProps } from '../../../assets/items'
 import { getInjections } from '../../../scripting'
-import { RotationVector3 } from '../../../types'
+import { RelativeCoords, RotationVector3 } from '../../../types'
+
+type GoblinSpecificProps = {}
 
 export const createGoblin = (
-  pos,
+  pos: RelativeCoords,
   angle: RotationVector3 = [0, 0, 0],
-  props = {},
+  { ...props }: InjectableProps & GoblinSpecificProps = {},
 ) => {
-  const ref = createItem(items.npc.goblin, props)
+  const ref = createItem(items.npc.goblin, {
+    ...props,
+  })
 
   addScript((self) => {
     return `
@@ -25,7 +23,7 @@ ON INIT {
     `
   }, ref)
 
-  moveTo({ type: 'relative', coords: pos }, angle, ref)
+  moveTo(pos, angle, ref)
   markAsUsed(ref)
 
   return ref
