@@ -1,8 +1,10 @@
 import wallX from './base/wallX'
 import wallZ from './base/wallZ'
 import { HFLIP, TEXTURE_CUSTOM_UV } from '../constants'
+import { Vector3 } from '../types'
+import { MapData } from '../helpers'
 
-const segment = (x, y, z, size) => (mapData) => {
+const segment = ([x, y, z]: Vector3, size: number, mapData: MapData) => {
   const height = 500
 
   const uv = {
@@ -18,9 +20,9 @@ const segment = (x, y, z, size) => (mapData) => {
   wallZ([x - size / 2, y, z + size / 2], 'front', TEXTURE_CUSTOM_UV, 0, [size, height, size], HFLIP, uv)(mapData)
 }
 
-const pillar = (x, y, z, diameter) => (mapData) => {
+const pillar = ([x, y, z]: Vector3, diameter: number, mapData: MapData) => {
   for (let i = -10; i < 10; i++) {
-    segment(x, y + i * 500, z, diameter)(mapData)
+    segment([x, y + i * 500, z], diameter, mapData)
   }
 }
 

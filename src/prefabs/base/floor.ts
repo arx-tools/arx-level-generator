@@ -9,7 +9,7 @@ const floor =
     facing: 'floor' | 'ceiling' = 'floor',
     quad: TextureQuad = 0,
     textureRotation = 0,
-    size = 100,
+    size: number | [number, number, number] = 100,
     flags = 0,
     _uv = {
       a: { u: 1, v: 0 },
@@ -23,12 +23,7 @@ const floor =
     const { texture } = mapData.state
     let texU = 0
     let texV = 0
-    let sizeX = size
-    let sizeZ = size
-    if (Array.isArray(size)) {
-      sizeX = size[0]
-      sizeZ = size[2]
-    }
+    const [sizeX, sizeY, sizeZ] = Array.isArray(size) ? size : [size, size, size]
 
     let a = { u: 0.5, v: 0 }
     let b = { u: 0.5, v: 0.5 }

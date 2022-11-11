@@ -11,15 +11,15 @@ import {
   TEXTURE_CUSTOM_UV,
   TEXTURE_CUSTOM_SCALE,
 } from '../../constants'
-import { useTexture } from '../../assets/textures'
-import { flipPolygon, flipUVHorizontally, flipUVVertically, rotateUV } from '../../helpers'
-import { Polygon, TextureQuad, UV } from '../../types'
+import { TextureDefinition, useTexture } from '../../assets/textures'
+import { flipPolygon, flipUVHorizontally, flipUVVertically, MapData, rotateUV } from '../../helpers'
+import { Polygon, TextureQuad, UV, Vector3 } from '../../types'
 
 // [x, y, z] are absolute coordinates,
 // not relative to origin
 const wallX =
   (
-    [x, y, z],
+    [x, y, z]: Vector3,
     facing: 'left' | 'right' = 'left',
     quad: TextureQuad = TEXTURE_FULL_SCALE,
     textureRotation = 0,
@@ -33,8 +33,8 @@ const wallX =
     rotateCenterU: number = 0.5,
     rotateCenterV: number = 0.5,
   ) =>
-  (mapData) => {
-    const { texture } = mapData.state
+  (mapData: MapData) => {
+    const texture = mapData.state.texture as TextureDefinition
 
     const [sizeX, sizeY, sizeZ] = Array.isArray(size) ? size : [size, size, size]
 

@@ -5,8 +5,8 @@ export const uniq = <T>(values: T[]) => {
   })
 }
 
-export const times = <T>(fn: () => T, repetitions: number): T[] => {
-  return [...Array(repetitions)].map(() => fn())
+export const times = <T>(fn: (index: number) => T, repetitions: number): T[] => {
+  return [...Array(repetitions)].map((value, index) => fn(index))
 }
 
 export const repeat = <T>(value: T, repetitions: number): T[] => {

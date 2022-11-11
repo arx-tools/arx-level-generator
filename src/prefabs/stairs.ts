@@ -2,8 +2,9 @@ import { nanoid } from 'nanoid'
 import floor from './base/floor'
 import wallZ from './base/wallZ'
 import { textures } from '../assets/textures'
-import { setPolygonGroup, unsetPolygonGroup, setTexture, move } from '../helpers'
+import { setPolygonGroup, unsetPolygonGroup, setTexture, move, MapData } from '../helpers'
 import { HFLIP, TEXTURE_CUSTOM_UV, VFLIP } from '../constants'
+import { Vector3 } from '../types'
 
 const STEP = {
   WIDTH: 180,
@@ -13,7 +14,7 @@ const STEP = {
 
 const PIXEL = 1 / textures.stone.stairs.height
 
-const stairTopLeft = (pos, isLeftFlipped, areSidesFlipped, mapData) => {
+const stairTopLeft = (pos: Vector3, isLeftFlipped: boolean, areSidesFlipped: boolean, mapData: MapData) => {
   return floor(
     {
       type: 'absolute',
@@ -23,7 +24,7 @@ const stairTopLeft = (pos, isLeftFlipped, areSidesFlipped, mapData) => {
     TEXTURE_CUSTOM_UV,
     STEP.WIDTH / 2,
     [STEP.WIDTH / 2, 0, STEP.DEPTH],
-    HFLIP | isLeftFlipped ? 0 : VFLIP,
+    isLeftFlipped ? HFLIP : VFLIP | HFLIP,
     {
       a: { u: 0.5, v: PIXEL * 160 },
       b: { u: 0.5, v: PIXEL * 222 },
@@ -33,7 +34,7 @@ const stairTopLeft = (pos, isLeftFlipped, areSidesFlipped, mapData) => {
   )(mapData)
 }
 
-const stairTopRight = (pos, isRightFlipped, areSidesFlipped, mapData) => {
+const stairTopRight = (pos: Vector3, isRightFlipped: boolean, areSidesFlipped: boolean, mapData: MapData) => {
   return floor(
     {
       type: 'absolute',
@@ -43,7 +44,7 @@ const stairTopRight = (pos, isRightFlipped, areSidesFlipped, mapData) => {
     TEXTURE_CUSTOM_UV,
     STEP.WIDTH / 2,
     [STEP.WIDTH / 2, 0, STEP.DEPTH],
-    HFLIP | isRightFlipped ? 0 : VFLIP,
+    isRightFlipped ? HFLIP : VFLIP | HFLIP,
     {
       a: { u: 1, v: PIXEL * 160 },
       b: { u: 1, v: PIXEL * 222 },
@@ -53,7 +54,7 @@ const stairTopRight = (pos, isRightFlipped, areSidesFlipped, mapData) => {
   )(mapData)
 }
 
-const stairFrontRight = (pos, isRightFlipped, areSidesFlipped, mapData) => {
+const stairFrontRight = (pos: Vector3, isRightFlipped: boolean, areSidesFlipped: boolean, mapData: MapData) => {
   wallZ(
     move(areSidesFlipped ? -STEP.WIDTH / 4 : STEP.WIDTH / 4, -STEP.HEIGHT / 2, 0, pos),
     'back',
@@ -70,7 +71,7 @@ const stairFrontRight = (pos, isRightFlipped, areSidesFlipped, mapData) => {
   )(mapData)
 }
 
-const stairFrontLeft = (pos, isLeftFlipped, areSidesFlipped, mapData) => {
+const stairFrontLeft = (pos: Vector3, isLeftFlipped: boolean, areSidesFlipped: boolean, mapData: MapData) => {
   wallZ(
     move(areSidesFlipped ? STEP.WIDTH / 4 : -STEP.WIDTH / 4, -STEP.HEIGHT / 2, 0, pos),
     'back',
@@ -87,7 +88,13 @@ const stairFrontLeft = (pos, isLeftFlipped, areSidesFlipped, mapData) => {
   )(mapData)
 }
 
-const stairStep = (pos, isLeftFlipped, isRightFlipped, areSidesFlipped, mapData) => {
+const stairStep = (
+  pos: Vector3,
+  isLeftFlipped: boolean,
+  isRightFlipped: boolean,
+  areSidesFlipped: boolean,
+  mapData: MapData,
+) => {
   stairFrontLeft(pos, isLeftFlipped, areSidesFlipped, mapData)
   stairFrontRight(pos, isRightFlipped, areSidesFlipped, mapData)
   stairTopLeft(pos, isLeftFlipped, areSidesFlipped, mapData)
@@ -96,7 +103,7 @@ const stairStep = (pos, isLeftFlipped, isRightFlipped, areSidesFlipped, mapData)
   return mapData
 }
 
-const stairs = (pos) => (mapData) => {
+const stairs = (pos: Vector3) => (mapData: MapData) => {
   const id = nanoid(6)
   const { origin } = mapData.config
 
@@ -104,15 +111,15 @@ const stairs = (pos) => (mapData) => {
 
   setPolygonGroup(`${id}-stairs`, mapData)
   setTexture(textures.stone.stairs, mapData)
-  ;[...Array(15).keys()].forEach((idx) => {
+  for (let i = 0; i < 15; i++) {
     stairStep(
-      move(0, -STEP.HEIGHT * idx, STEP.DEPTH * idx, absPos),
+      move(0, -STEP.HEIGHT * i, STEP.DEPTH * i, absPos),
       Math.random() > 0.5,
       Math.random() > 0.5,
       Math.random() > 0.5,
       mapData,
     )
-  })
+  }
 
   unsetPolygonGroup(mapData)
 

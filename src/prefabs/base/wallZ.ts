@@ -1,17 +1,17 @@
 import { POLY_QUAD, POLY_NO_SHADOW, HFLIP, VFLIP, TEXTURE_CUSTOM_UV } from '../../constants'
-import { useTexture } from '../../assets/textures'
-import { flipPolygon, flipUVHorizontally, flipUVVertically, rotateUV } from '../../helpers'
-import { Polygon, TextureQuad } from '../../types'
+import { TextureDefinition, useTexture } from '../../assets/textures'
+import { flipPolygon, flipUVHorizontally, flipUVVertically, MapData, rotateUV } from '../../helpers'
+import { Polygon, TextureQuad, Vector3 } from '../../types'
 
 // [x, y, z] are absolute coordinates,
 // not relative to origin
 const wallZ =
   (
-    [x, y, z],
+    [x, y, z]: Vector3,
     facing: 'front' | 'back' = 'front',
     quad: TextureQuad = 0,
     textureRotation = 0,
-    size = 100,
+    size: number | [number, number, number] = 100,
     flags = 0,
     _uv = {
       a: { u: 1, v: 0 },
@@ -20,16 +20,12 @@ const wallZ =
       d: { u: 0, v: 1 },
     },
   ) =>
-  (mapData) => {
-    const { texture } = mapData.state
+  (mapData: MapData) => {
+    const texture = mapData.state.texture as TextureDefinition
     let texU = 0
     let texV = 0
-    let sizeX = size
-    let sizeY = size
-    let sizeZ = size
-    if (Array.isArray(size)) {
-      ;[sizeX, sizeY, sizeZ] = size
-    }
+
+    const [sizeX, sizeY, sizeZ] = Array.isArray(size) ? size : [size, size, size]
 
     let a = { u: 0.5, v: 0 }
     let b = { u: 0.5, v: 0.5 }
