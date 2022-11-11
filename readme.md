@@ -1,6 +1,6 @@
 # Arx Fatalis level generator
 
-A launcher that generates randomized maps for the video game Arx Fatalis
+Generates maps for the video game Arx Fatalis and Arx Libertatis
 
 ## Known issues with the stack so far
 
