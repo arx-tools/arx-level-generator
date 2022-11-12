@@ -194,7 +194,7 @@ const calculateNormals = (mapData: FinalizedMapData) => {
 
     const points: Vector3[] = vertices.map(posVertexToVector)
 
-    // vertices are laid down in a russian i shape (И):
+    // vertices are laid down in a cyrillic i shape (И):
     // a c
     // b d
     const [a, b, c, d] = points
@@ -632,7 +632,7 @@ export const addZone = (
 }
 
 export const flipPolygon = ([a, b, c, d]: Polygon): Polygon => {
-  // vertices are laid down in a russian i shape (И):
+  // vertices are laid down in a cyrillic i shape (И):
   // a c
   // b d
   // to flip both triangles I'm flipping the middle 2 vertices
@@ -646,9 +646,9 @@ export const sortByDistance = (fromPoint: Vector3) => (a: Vector3, b: Vector3) =
   return distanceA - distanceB
 }
 
-// [ a, b, c  [ x      [ ax + by + cz
-//   d, e, f    y    =   dx + ey + fz
-//   g, h, i ]  z ]      gx + hy + iz ]
+// [ a, b, c   [ x     [ ax + by + cz
+//   d, e, f     y   =   dx + ey + fz
+//   g, h, i ]   z ]     gx + hy + iz ]
 const matrix3MulVec3: (matrix: number[], vector: Vector3) => Vector3 = ([a, b, c, d, e, f, g, h, i], [x, y, z]) => {
   return [a * x + b * y + c * z, d * x + e * y + f * z, g * x + h * y + i * z]
 }
