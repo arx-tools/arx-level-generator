@@ -479,7 +479,11 @@ export const raiseByMagnitude = (magnitude: number) => (vertex: PosVertex3) => {
   return vertex
 }
 
-export const adjustVertexBy = (ref: { posX: number; posY: number; posZ: number }, fn, polygons: FtsPolygon[]) => {
+export const adjustVertexBy = (
+  ref: { posX: number; posY: number; posZ: number },
+  fn: (v: PosVertex3, p: FtsPolygon) => PosVertex3,
+  polygons: FtsPolygon[],
+) => {
   polygons.forEach((polygon) => {
     polygon.vertices = polygon.vertices.map((vertex) => {
       if (vertex.posX === ref.posX && vertex.posY === ref.posY && vertex.posZ === ref.posZ) {

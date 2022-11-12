@@ -98,7 +98,7 @@ export type FtsPolygon = {
   paddy: 0
   norm?: Vertex3
   norm2?: Vertex3
-  normals: [Vertex3, Vertex3, Vertex3, Vertex3]
+  normals?: [Vertex3, Vertex3, Vertex3, Vertex3]
 }
 
 export type FtsData = {
