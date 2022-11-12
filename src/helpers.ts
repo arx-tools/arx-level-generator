@@ -189,7 +189,7 @@ export const calculateNormal = ([a, b, c]: Vector3[]) => {
 const calculateNormals = (mapData: FinalizedMapData) => {
   // https://computergraphics.stackexchange.com/questions/4031/programmatically-generating-vertex-normals
 
-  mapData.fts.polygons.forEach((polygon) => {
+  mapData.fts.polygons.forEach((polygon: FtsPolygon) => {
     const { vertices, config } = polygon
 
     const points: Vector3[] = vertices.map(posVertexToVector)
@@ -280,7 +280,7 @@ const timestampToDate = (timestamp: number) => {
   return date.toUTCString()
 }
 
-export const generateBlankMapData = (config) => {
+export const generateBlankMapData = (config: MapConfig) => {
   const now = Math.floor(Date.now() / 1000)
   const generatorVersion = require('../package.json').version as string
 
@@ -311,7 +311,7 @@ export const generateBlankMapData = (config) => {
   return mapData
 }
 
-export const uninstall = async (dir) => {
+export const uninstall = async (dir: string) => {
   try {
     const manifest = require(`${dir}/manifest.json`)
     for (let file of manifest.files) {
@@ -336,7 +336,7 @@ const latin9ToLatin1 = (str: string) => {
     .replace('Ÿ', '¾')
 }
 
-export const saveToDisk = async (finalizedMapData) => {
+export const saveToDisk = async (finalizedMapData: FinalizedMapData) => {
   const { levelIdx } = finalizedMapData.config
   const defaultOutputDir = resolve('./dist')
 
@@ -428,11 +428,11 @@ export const setColor = (color: string, mapData: MapData) => {
   mapData.state.color = toRgba(color)
 }
 
-export const setTexture = (texture, mapData: MapData) => {
+export const setTexture = (texture: TextureDefinition | null, mapData: MapData) => {
   mapData.state.texture = clone(texture)
 }
 
-export const setPolygonGroup = (group, mapData: MapData) => {
+export const setPolygonGroup = (group: string, mapData: MapData) => {
   mapData.state.polygonGroup = group
 }
 
@@ -440,22 +440,21 @@ export const unsetPolygonGroup = (mapData: MapData) => {
   mapData.state.polygonGroup = 'global'
 }
 
-const unpackCoords = (coords: any[]) => {
-  return coords.map((coord) => {
-    const [posX, posY, posZ] = coord[0].split('|').map((x) => parseInt(x))
+const unpackCoords = (coords: [string, number][]) => {
+  return coords.map(([hash, amount]) => {
+    const [posX, posY, posZ] = hash.split('|').map((x) => parseInt(x))
     return { posX, posY, posZ }
   })
 }
 
-export const categorizeVertices = (polygons) => {
+export const categorizeVertices = (polygons: FtsPolygon[]) => {
   const vertices = polygons.flatMap(({ vertices }) => {
-    return vertices.flatMap(({ posX, posY, posZ }) => ({ posX, posY, posZ }))
+    return vertices.flatMap((vertex) => {
+      return clone(vertex)
+    })
   })
 
-  const summary: Record<string, number> = countBy(
-    ({ posX, posY, posZ }: PosVertex3) => `${posX}|${posY}|${posZ}`,
-    vertices,
-  )
+  const summary = countBy(({ posX, posY, posZ }) => `${posX}|${posY}|${posZ}`, vertices)
 
   const [corner, tmp] = partition(
     ([hash, amount]: [string, number]) => amount === 1 || amount === 3,
@@ -471,7 +470,7 @@ export const categorizeVertices = (polygons) => {
   }
 }
 
-export const bumpByMagnitude = (magnitude) => (vertex) => {
+export const raiseByMagnitude = (magnitude: number) => (vertex: PosVertex3) => {
   if (!vertex.modified) {
     vertex.posY -= magnitude
     vertex.modified = true
@@ -480,7 +479,7 @@ export const bumpByMagnitude = (magnitude) => (vertex) => {
   return vertex
 }
 
-export const adjustVertexBy = (ref, fn, polygons) => {
+export const adjustVertexBy = (ref: { posX: number; posY: number; posZ: number }, fn, polygons: FtsPolygon[]) => {
   polygons.forEach((polygon) => {
     polygon.vertices = polygon.vertices.map((vertex) => {
       if (vertex.posX === ref.posX && vertex.posY === ref.posY && vertex.posZ === ref.posZ) {
@@ -539,7 +538,7 @@ export const distance = (a: Vector3, b: Vector3) => {
 }
 
 // source: https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/barycentric-coordinates
-const isPointInTriangle = (p: Vector3, a, b, c) => {
+const isPointInTriangle = (p: Vector3, a: Vector3, b: Vector3, c: Vector3) => {
   const area = triangleArea(a, b, c)
 
   const u = triangleArea(c, a, p) / area
@@ -549,7 +548,7 @@ const isPointInTriangle = (p: Vector3, a, b, c) => {
   return isBetweenInclusive(0, 1, u) && isBetweenInclusive(0, 1, v) && isBetweenInclusive(0, 1, w) && u + v + w === 1
 }
 
-export const isPointInPolygon = (point: Vector3, polygon) => {
+export const isPointInPolygon = (point: Vector3, polygon: FtsPolygon) => {
   const [a, b, c, d] = polygon.vertices.map(posVertexToVector)
 
   if (polygon.config.isQuad) {
@@ -586,13 +585,13 @@ export const addLight = (pos: Vector3, props = {}, mapData: MapData) => {
 
 export const addZone = (
   pos: RelativeCoords,
-  size,
-  name,
+  size: [number, number, number],
+  name: string,
   ambience: AmbienceDefinition = ambiences.none,
   drawDistance = 2000,
   flags = PATH_RGB | PATH_AMBIANCE | PATH_FARCLIP,
 ) => {
-  return (mapData) => {
+  return (mapData: MapData) => {
     let [x, y, z] = pos.coords
 
     useAmbience(ambience)

@@ -1,7 +1,7 @@
 import floor from './base/floor'
 import {
   categorizeVertices,
-  bumpByMagnitude,
+  raiseByMagnitude,
   adjustVertexBy,
   randomBetween,
   pickRandoms,
@@ -84,7 +84,7 @@ export const plain = (
           const magnitude = 5 * mapData.config.bumpFactor
           adjustVertexBy(
             corner,
-            bumpByMagnitude(randomBetween(-magnitude, magnitude) + (facing === 'floor' ? -80 : 80)),
+            raiseByMagnitude(randomBetween(-magnitude, magnitude) + (facing === 'floor' ? -80 : 80)),
             polygons,
           )
         })
@@ -95,7 +95,7 @@ export const plain = (
           const magnitude = 5 * mapData.config.bumpFactor
           adjustVertexBy(
             edge,
-            bumpByMagnitude(randomBetween(-magnitude, magnitude) + (facing === 'floor' ? -40 : 40)),
+            raiseByMagnitude(randomBetween(-magnitude, magnitude) + (facing === 'floor' ? -40 : 40)),
             polygons,
           )
         })
@@ -105,7 +105,7 @@ export const plain = (
         const magnitude = 10 * mapData.config.bumpFactor
         adjustVertexBy(
           middle,
-          bumpByMagnitude(
+          raiseByMagnitude(
             facing === 'floor'
               ? clamp(-50, Infinity, randomBetween(-magnitude, magnitude))
               : clamp(
@@ -129,7 +129,7 @@ export const plain = (
   }
 }
 
-export const disableBumping = (polygons) => {
+export const disableBumping = (polygons: FtsPolygon[]) => {
   polygons.forEach((polygon) => {
     polygon.config.bumpable = false
   })
@@ -137,7 +137,7 @@ export const disableBumping = (polygons) => {
 }
 
 export const connectToNearPolygons = (targetGroup: string, distanceThreshold: number = 100) => {
-  return (polygons, mapData) => {
+  return (polygons: FtsPolygon[], mapData: MapData) => {
     const target = categorizeVertices(mapData.fts.polygons[targetGroup] || [])
     const targetVertices: Vector3[] = [...target.corners, ...target.edges].map(posVertexToVector)
 

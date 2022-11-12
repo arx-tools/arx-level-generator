@@ -31,11 +31,22 @@ export const clone = <T>(data: T): T => {
   return JSON.parse(JSON.stringify(data))
 }
 
-export const props = <T>(keys: (number | string)[], obj: Record<string, T> | T[]) => {
-  return keys.reduce((acc, key) => {
-    acc.push(obj[key])
-    return acc
-  }, [] as T[])
+export const props = <T>(keys: number[] | string[], obj: Record<string, T> | T[]) => {
+  if (keys.length === 0) {
+    return []
+  }
+
+  if (Array.isArray(obj)) {
+    return (keys as number[]).reduce((acc, key) => {
+      acc.push(obj[key])
+      return acc
+    }, [] as T[])
+  } else {
+    return (keys as string[]).reduce((acc, key) => {
+      acc.push(obj[key])
+      return acc
+    }, [] as T[])
+  }
 }
 
 export const any = <T>(fn: (value: T) => boolean, values: T[]) => {
@@ -61,8 +72,8 @@ export const countBy = <T>(fn: (value: T) => string, values: T[]) => {
   }, {} as Record<string, number>)
 }
 
-const complement = (fn) => {
-  return (...args) => !fn(...args)
+const complement = (fn: (...args: any[]) => boolean) => {
+  return (...args: any[]) => !fn(...args)
 }
 
 export const partition = <T>(fn: (arg: T) => boolean, values: T[]): [T[], T[]] => {
