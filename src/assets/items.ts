@@ -479,21 +479,19 @@ export const exportUsedItems = (mapData: any) => {
       return used === true
     })
 
-  mapData.dlf.interactiveObjects = itemsToBeExported.map(
-    ({ filename, pos, angle, identifier, flags }): DlfInteractiveObject => {
-      return {
-        name: 'C:\\ARX\\Graph\\Obj3D\\Interactive\\' + arxifyFilename(filename),
-        pos: {
-          x: pos.x - spawn[0],
-          y: pos.y - spawn[1] - PLAYER_HEIGHT_ADJUSTMENT,
-          z: pos.z - spawn[2],
-        },
-        angle,
-        identifier,
-        flags,
-      }
-    },
-  )
+  mapData.dlf.interactiveObjects = itemsToBeExported.map(({ filename, pos, angle, identifier, flags }) => {
+    return {
+      name: 'C:\\ARX\\Graph\\Obj3D\\Interactive\\' + arxifyFilename(filename),
+      pos: {
+        x: pos.x - spawn[0],
+        y: pos.y - spawn[1] - PLAYER_HEIGHT_ADJUSTMENT,
+        z: pos.z - spawn[2],
+      },
+      angle,
+      identifier,
+      flags,
+    } as DlfInteractiveObject
+  })
 }
 
 export const exportScripts = (outputDir: string) => {

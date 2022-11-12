@@ -10,6 +10,7 @@ import {
   distance,
   isBetween,
   MapData,
+  generateBlankMapData,
 } from '../helpers'
 import { identity, clamp } from '../faux-ramda'
 import { AbsoluteCoords, PosVertex3, TextureQuad, Vector3, Vertex3 } from '../types'
@@ -19,7 +20,7 @@ import { FtsPolygon } from '../blankMap'
 export type AdjustablePosVertex3 = PosVertex3 & { haveBeenAdjusted?: boolean }
 
 export type Candidate = {
-  polygon: any // TODO
+  polygon: FtsPolygon
   vertex: AdjustablePosVertex3
   distance: number
   coordinates: Vector3
@@ -44,15 +45,17 @@ export const plain = (
 
     const [sizeX, sizeZ] = Array.isArray(size) ? size : [size, size]
 
-    const dummyMapData: MapData = {
-      config: mapData.config,
-      state: mapData.state,
-      fts: {
-        polygons: {
-          [mapData.state.polygonGroup]: [] as FtsPolygon[],
-        },
-      },
-    }
+    const dummyMapData = generateBlankMapData({
+      origin: { type: 'absolute', coords: [0, 0, 0] },
+      levelIdx: 1,
+      seed: '',
+      lootTable: [],
+      bumpFactor: 0,
+    })
+
+    dummyMapData.config = mapData.config
+    dummyMapData.state = mapData.state
+    dummyMapData.fts.polygons[mapData.state.polygonGroup] = []
 
     for (let j = 0; j < sizeZ; j++) {
       for (let i = 0; i < sizeX; i++) {
@@ -139,7 +142,7 @@ export const disableBumping = (polygons: FtsPolygon[]) => {
 export const connectToNearPolygons = (targetGroup: string, distanceThreshold: number = 100) => {
   return (polygons: FtsPolygon[], mapData: MapData) => {
     const target = categorizeVertices(mapData.fts.polygons[targetGroup] || [])
-    const targetVertices: Vector3[] = [...target.corners, ...target.edges].map(posVertexToVector)
+    const targetVertices = [...target.corners, ...target.edges].map(posVertexToVector)
 
     if (targetVertices.length === 0) {
       return polygons

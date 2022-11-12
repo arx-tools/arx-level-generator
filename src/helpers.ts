@@ -1,7 +1,17 @@
 import fs from 'fs'
 import rgba from 'color-rgba'
 import { createTextureContainers, textures, exportTextures, resetTextures, TextureDefinition } from './assets/textures'
-import { createDlfData, createFtsData, createLlfData, DlfData, FtsData, FtsPolygon, LlfData } from './blankMap'
+import {
+  createDlfData,
+  createFtsData,
+  createLlfData,
+  DlfData,
+  FtsData,
+  FtsPolygon,
+  LightData,
+  LlfData,
+  ZoneData,
+} from './blankMap'
 import { countBy, partition, repeat, clone, min } from './faux-ramda'
 import {
   POLY_QUAD,
@@ -226,13 +236,13 @@ export const finalize = (mapData: MapData) => {
   const [x, y, z] = move(0, PLAYER_HEIGHT_ADJUSTMENT, 0, move(...mapData.config.origin.coords, spawn))
   finalizedMapData.fts.sceneHeader.mScenePosition = { x, y, z }
 
-  finalizedMapData.llf.lights.forEach((light) => {
+  finalizedMapData.llf.lights.forEach((light: LightData) => {
     light.pos.x -= spawn[0]
     light.pos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT
     light.pos.z -= spawn[2]
   })
 
-  finalizedMapData.dlf.paths.forEach((zone) => {
+  finalizedMapData.dlf.paths.forEach((zone: ZoneData) => {
     zone.header.initPos.x -= spawn[0]
     zone.header.initPos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT
     zone.header.initPos.z -= spawn[2]
@@ -443,7 +453,7 @@ export const unsetPolygonGroup = (mapData: MapData) => {
 const unpackCoords = (coords: [string, number][]) => {
   return coords.map(([hash, amount]) => {
     const [posX, posY, posZ] = hash.split('|').map((x) => parseInt(x))
-    return { posX, posY, posZ }
+    return { posX, posY, posZ } as PosVertex3
   })
 }
 
@@ -562,29 +572,23 @@ export const isPointInPolygon = (point: Vector3, polygon: FtsPolygon) => {
   }
 }
 
-export const addLight = (pos: Vector3, props = {}, mapData: MapData) => {
-  let [x, y, z] = pos
-
+export const addLight = ([x, y, z]: Vector3, props: Partial<LightData>, mapData: MapData) => {
   mapData.llf.lights.push({
-    ...{
-      pos: { x, y, z },
-      rgb: toFloatRgb(mapData.state.color),
-      fallstart: 100,
-      fallend: 180,
-      intensity: 1.3,
-      i: 0,
-      exFlicker: toFloatRgb(toRgba('black')), // this gets subtracted from light.rgb when flickering
-      exRadius: 0,
-      exFrequency: 0.01,
-      exSize: 0,
-      exSpeed: 0,
-      exFlareSize: 0,
-      extras: 0,
-    },
+    pos: { x, y, z },
+    rgb: toFloatRgb(mapData.state.color),
+    fallstart: 100,
+    fallend: 180,
+    intensity: 1.3,
+    i: 0,
+    exFlicker: toFloatRgb(toRgba('black')), // this gets subtracted from light.rgb when flickering
+    exRadius: 0,
+    exFrequency: 0.01,
+    exSize: 0,
+    exSpeed: 0,
+    exFlareSize: 0,
+    extras: 0,
     ...props,
   })
-
-  return mapData
 }
 
 export const addZone = (
@@ -600,7 +604,7 @@ export const addZone = (
 
     useAmbience(ambience)
 
-    const zoneData = {
+    const zoneData: ZoneData = {
       header: {
         name,
         idx: 0,

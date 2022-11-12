@@ -1,9 +1,33 @@
+import { DlfInteractiveObject } from './assets/items'
 import { MAP_MAX_WIDTH, MAP_MAX_HEIGHT } from './constants'
-import { NullableVertex3, PosVertex3, RgbaBytes, RotationVertex3, Vertex3 } from './types'
+import { FloatRgb, NullableVertex3, PosVertex3, RgbaBytes, RotationVertex3, Vertex3 } from './types'
 
 export type Meta = {
   type: string
   numberOfLeftoverBytes: number
+}
+
+type Pathway = {
+  rpos: Vertex3
+  flag: number
+  time: number
+}
+
+export type ZoneData = {
+  header: {
+    name: string
+    idx: number
+    flags: number
+    initPos: Vertex3
+    pos: Vertex3
+    rgb: FloatRgb
+    farClip: number
+    reverb: number
+    ambianceMaxVolume: number
+    height: number
+    ambiance: string
+  }
+  pathways: Pathway[]
 }
 
 export type DlfData = {
@@ -27,11 +51,11 @@ export type DlfData = {
   scene: {
     name: string
   }
-  interactiveObjects: any[] // TODO
+  interactiveObjects: DlfInteractiveObject[]
   colors: null
   lights: any[] // TODO
   fogs: any[] // TODO
-  paths: any[] // TODO
+  paths: ZoneData[] // TODO
 }
 
 export const createDlfData = (level: number, now: number): DlfData => ({
@@ -221,6 +245,22 @@ export const createFtsData = (level: number) => {
   return fts
 }
 
+export type LightData = {
+  pos: Vertex3
+  rgb: FloatRgb
+  fallstart: number
+  fallend: number
+  intensity: number
+  i: 0
+  exFlicker: FloatRgb
+  exRadius: number
+  exFrequency: number
+  exSize: number
+  exSpeed: number
+  exFlareSize: number
+  extras: number
+}
+
 export type LlfData = {
   meta: Meta
   header: {
@@ -232,8 +272,8 @@ export type LlfData = {
     numberOfIgnoredPolygons: number
     numberOfBackgroundPolygons: number
   }
-  lights: any[] // TODO
-  colors: any[] // TODO
+  lights: LightData[]
+  colors: RgbaBytes[]
 }
 
 export const createLlfData = (now: number): LlfData => ({
