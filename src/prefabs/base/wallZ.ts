@@ -22,8 +22,8 @@ const wallZ =
   ) =>
   (mapData: MapData) => {
     const texture = mapData.state.texture as TextureDefinition
-    let texU = 0
-    let texV = 0
+    let u = 0
+    let v = 0
 
     const [sizeX, sizeY, sizeZ] = Array.isArray(size) ? size : [size, size, size]
 
@@ -40,20 +40,20 @@ const wallZ =
     } else {
       switch (quad) {
         case 0:
-          texU = 0
-          texV = 0
+          u = 0
+          v = 0
           break
         case 1:
-          texU = 0.5
-          texV = 0
+          u = 0.5
+          v = 0
           break
         case 2:
-          texU = 0.5
-          texV = 0.5
+          u = 0.5
+          v = 0.5
           break
         case 3:
-          texU = 0
-          texV = 0.5
+          u = 0
+          v = 0.5
           break
       }
     }
@@ -72,32 +72,32 @@ const wallZ =
 
     let vertices: Polygon = [
       {
-        posX: x - sizeX / 2,
-        posY: y - sizeY / 2,
-        posZ: z - sizeZ / 2,
-        texU: texU + uv[0].u,
-        texV: texV + uv[0].v,
+        x: x - sizeX / 2,
+        y: y - sizeY / 2,
+        z: z - sizeZ / 2,
+        u: u + uv[0].u,
+        v: v + uv[0].v,
       },
       {
-        posX: x - sizeX / 2,
-        posY: y + sizeY / 2,
-        posZ: z - sizeZ / 2,
-        texU: texU + uv[1].u,
-        texV: texV + uv[1].v,
+        x: x - sizeX / 2,
+        y: y + sizeY / 2,
+        z: z - sizeZ / 2,
+        u: u + uv[1].u,
+        v: v + uv[1].v,
       },
       {
-        posX: x + sizeX / 2,
-        posY: y - sizeY / 2,
-        posZ: z - sizeZ / 2,
-        texU: texU + uv[2].u,
-        texV: texV + uv[2].v,
+        x: x + sizeX / 2,
+        y: y - sizeY / 2,
+        z: z - sizeZ / 2,
+        u: u + uv[2].u,
+        v: v + uv[2].v,
       },
       {
-        posX: x + sizeX / 2,
-        posY: y + sizeY / 2,
-        posZ: z - sizeZ / 2,
-        texU: texU + uv[3].u,
-        texV: texV + uv[3].v,
+        x: x + sizeX / 2,
+        y: y + sizeY / 2,
+        z: z - sizeZ / 2,
+        u: u + uv[3].u,
+        v: v + uv[3].v,
       },
     ]
 

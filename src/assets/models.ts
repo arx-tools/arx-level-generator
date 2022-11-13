@@ -92,13 +92,7 @@ export const loadObj = async (filename: string) => {
       const [u, v, w] = state.textureCoords[tIndex]
       // const normals = state.normals[nIndex]
 
-      return {
-        posX: x,
-        posY: y,
-        posZ: z,
-        texU: u,
-        texV: v,
-      }
+      return { x, y, z, u, v }
     })
 
     polygons.push({
@@ -114,15 +108,15 @@ export const flipPolygonAxis = (axis: string, polygons: TexturedPolygon[]) => {
   polygons.forEach(({ polygon }) => {
     polygon.forEach((vertex) => {
       if (axis.includes('x')) {
-        vertex.posX *= -1
+        vertex.x *= -1
       }
 
       if (axis.includes('y')) {
-        vertex.posY *= -1
+        vertex.y *= -1
       }
 
       if (axis.includes('z')) {
-        vertex.posZ *= -1
+        vertex.z *= -1
       }
     })
   })
@@ -133,11 +127,11 @@ export const rotatePolygonData = ({ a, b, g }: RotationVertex3, polygons: Textur
 
   polygons.forEach(({ polygon }) => {
     polygon.forEach((vertex) => {
-      const v = new TreeJsVector3(vertex.posX, vertex.posY, vertex.posZ)
+      const v = new TreeJsVector3(vertex.x, vertex.y, vertex.z)
       v.applyEuler(rotation)
-      vertex.posX = v.x
-      vertex.posY = v.y
-      vertex.posZ = v.z
+      vertex.x = v.x
+      vertex.y = v.y
+      vertex.z = v.z
     })
   })
 }
@@ -145,9 +139,9 @@ export const rotatePolygonData = ({ a, b, g }: RotationVertex3, polygons: Textur
 export const scalePolygonData = (scale: number, polygons: TexturedPolygon[]) => {
   polygons.forEach(({ polygon }) => {
     polygon.forEach((vertex) => {
-      vertex.posX = vertex.posX * scale
-      vertex.posY = vertex.posY * scale
-      vertex.posZ = vertex.posZ * scale
+      vertex.x = vertex.x * scale
+      vertex.y = vertex.y * scale
+      vertex.z = vertex.z * scale
     })
   })
 }
@@ -188,27 +182,27 @@ export const subdivideTriangles = (polygons: TexturedPolygon[]): TexturedPolygon
 
     if (longestSide === triangle.abLength) {
       const midpoint = createPointHalfwayBetween(triangle.a, triangle.b)
-      const texU = (a.texU + b.texU) / 2
-      const texV = (a.texV + b.texV) / 2
-      const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU, texV }
+      const u = (a.u + b.u) / 2
+      const v = (a.v + b.v) / 2
+      const m: PosVertex3 = { x: midpoint.x, y: midpoint.y, z: midpoint.z, u, v }
       subPolys.push(
         { polygon: [clone(a), clone(m), clone(c)], texture },
         { polygon: [clone(m), clone(b), clone(c)], texture },
       )
     } else if (longestSide === triangle.bcLength) {
       const midpoint = createPointHalfwayBetween(triangle.b, triangle.c)
-      const texU = (b.texU + c.texU) / 2
-      const texV = (b.texV + c.texV) / 2
-      const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU, texV }
+      const u = (b.u + c.u) / 2
+      const v = (b.v + c.v) / 2
+      const m: PosVertex3 = { x: midpoint.x, y: midpoint.y, z: midpoint.z, u, v }
       subPolys.push(
         { polygon: [clone(a), clone(b), clone(m)], texture },
         { polygon: [clone(a), clone(m), clone(c)], texture },
       )
     } else {
       const midpoint = createPointHalfwayBetween(triangle.c, triangle.a)
-      const texU = (c.texU + a.texU) / 2
-      const texV = (c.texV + a.texV) / 2
-      const m: PosVertex3 = { posX: midpoint.x, posY: midpoint.y, posZ: midpoint.z, texU, texV }
+      const u = (c.u + a.u) / 2
+      const v = (c.v + a.v) / 2
+      const m: PosVertex3 = { x: midpoint.x, y: midpoint.y, z: midpoint.z, u, v }
       subPolys.push(
         { polygon: [clone(m), clone(b), clone(c)], texture },
         { polygon: [clone(a), clone(b), clone(m)], texture },
@@ -231,9 +225,9 @@ export const renderPolygonData = (
 
     polygons.forEach(({ polygon, texture }) => {
       polygon.forEach((vertex) => {
-        vertex.posX += mapData.config.origin.coords[0] + pos.coords[0]
-        vertex.posY += mapData.config.origin.coords[1] + pos.coords[1]
-        vertex.posZ += mapData.config.origin.coords[2] + pos.coords[2]
+        vertex.x += mapData.config.origin.coords[0] + pos.coords[0]
+        vertex.y += mapData.config.origin.coords[1] + pos.coords[1]
+        vertex.z += mapData.config.origin.coords[2] + pos.coords[2]
       })
 
       doSomethingWithTheVertices({ polygon, texture })
@@ -246,7 +240,7 @@ export const renderPolygonData = (
       const isQuad = polygon.length === 4
 
       if (!isQuad) {
-        polygon.push({ posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 })
+        polygon.push({ x: 0, y: 0, z: 0, u: 0, v: 0 })
       }
 
       let textureFlags = mapData.state.texture?.flags ?? POLY_NO_SHADOW
@@ -286,8 +280,8 @@ export const willThePolygonDataFit = (
   }
 
   const vertices = polygons.flatMap(({ polygon }) => polygon)
-  const xs = vertices.map(({ posX }) => posX)
-  const zs = vertices.map(({ posZ }) => posZ)
+  const xs = vertices.map(({ x }) => x)
+  const zs = vertices.map(({ z }) => z)
 
   const minX = roundToNDecimals(3, min(xs) + pos.coords[0] + mapData.config.origin.coords[0])
   const maxX = roundToNDecimals(3, max(xs) + pos.coords[0] + mapData.config.origin.coords[0])
@@ -334,7 +328,7 @@ export const turnPolygonDataInsideOut = (polygons: TexturedPolygon[]) => {
 export const flipTextureUpsideDown = (polygons: TexturedPolygon[]) => {
   polygons.forEach(({ polygon }) => {
     polygon.forEach((vertex) => {
-      vertex.texV *= -1
+      vertex.v *= -1
     })
   })
 }

@@ -109,11 +109,7 @@ class TriangleHelper {
 }
 
 export const toTriangleHelper = ([a, b, c]: PosVertex3[]) => {
-  return new TriangleHelper(
-    new Vector3(a.posX, a.posY, a.posZ),
-    new Vector3(b.posX, b.posY, b.posZ),
-    new Vector3(c.posX, c.posY, c.posZ),
-  )
+  return new TriangleHelper(new Vector3(a.x, a.y, a.z), new Vector3(b.x, b.y, b.z), new Vector3(c.x, c.y, c.z))
 }
 
 export const isPolygonVisible = (polygon: PosVertex3[], isQuad: boolean) => {

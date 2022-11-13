@@ -129,8 +129,8 @@ export const isBetweenInclusive = (min: number, max: number, value: number) => {
 const getCellCoords = (isQuad: boolean, vertices: PosVertex3[]) => {
   const v = vertices.slice(0, isQuad ? 4 : 3)
 
-  const x = Math.round(min(v.map(({ posX }) => posX)))
-  const z = Math.round(min(v.map(({ posZ }) => posZ)))
+  const x = Math.round(min(v.map(({ x }) => x)))
+  const z = Math.round(min(v.map(({ z }) => z)))
 
   const cellX = Math.floor(x / 100)
   const cellZ = Math.floor(z / 100) + 1
@@ -184,8 +184,8 @@ const generateLights = (mapData: FinalizedMapData) => {
   mapData.llf.colors = colors
 }
 
-export const posVertexToVector = ({ posX, posY, posZ }: PosVertex3): Vector3 => {
-  return [posX, posY, posZ]
+export const posVertexToVector = ({ x, y, z }: PosVertex3): Vector3 => {
+  return [x, y, z]
 }
 
 const vectorToXYZ = ([x, y, z]: Vector3): Vertex3 => {
@@ -270,10 +270,10 @@ const addOriginPolygon = (mapData: MapData) => {
       bumpable: false,
     },
     vertices: [
-      { posX: 0, posY: 0, posZ: 0, texU: 0, texV: 0 },
-      { posX: 1, posY: 0, posZ: 0, texU: 0, texV: 1 },
-      { posX: 0, posY: 0, posZ: 1, texU: 1, texV: 0 },
-      { posX: 1, posY: 0, posZ: 1, texU: 1, texV: 1 },
+      { x: 0, y: 0, z: 0, u: 0, v: 0 },
+      { x: 1, y: 0, z: 0, u: 0, v: 1 },
+      { x: 0, y: 0, z: 1, u: 1, v: 0 },
+      { x: 1, y: 0, z: 1, u: 1, v: 1 },
     ],
     tex: 0, // no texture at all!
     transval: 0,
@@ -452,8 +452,8 @@ export const unsetPolygonGroup = (mapData: MapData) => {
 
 const unpackCoords = (coords: [string, number][]) => {
   return coords.map(([hash, amount]) => {
-    const [posX, posY, posZ] = hash.split('|').map((x) => parseInt(x))
-    return { posX, posY, posZ } as PosVertex3
+    const [x, y, z] = hash.split('|').map((x) => parseInt(x))
+    return { x, y, z } as PosVertex3
   })
 }
 
@@ -464,7 +464,7 @@ export const categorizeVertices = (polygons: FtsPolygon[]) => {
     })
   })
 
-  const summary = countBy(({ posX, posY, posZ }) => `${posX}|${posY}|${posZ}`, vertices)
+  const summary = countBy(({ x, y, z }) => `${x}|${y}|${z}`, vertices)
 
   const [corner, tmp] = partition(
     ([hash, amount]: [string, number]) => amount === 1 || amount === 3,
@@ -482,7 +482,7 @@ export const categorizeVertices = (polygons: FtsPolygon[]) => {
 
 export const raiseByMagnitude = (magnitude: number) => (vertex: PosVertex3) => {
   if (!vertex.modified) {
-    vertex.posY -= magnitude
+    vertex.y -= magnitude
     vertex.modified = true
   }
 
@@ -490,13 +490,13 @@ export const raiseByMagnitude = (magnitude: number) => (vertex: PosVertex3) => {
 }
 
 export const adjustVertexBy = (
-  ref: { posX: number; posY: number; posZ: number },
+  ref: { x: number; y: number; z: number },
   fn: (v: PosVertex3, p: FtsPolygon) => PosVertex3,
   polygons: FtsPolygon[],
 ) => {
   polygons.forEach((polygon) => {
     polygon.vertices = polygon.vertices.map((vertex) => {
-      if (vertex.posX === ref.posX && vertex.posY === ref.posY && vertex.posZ === ref.posZ) {
+      if (vertex.x === ref.x && vertex.y === ref.y && vertex.z === ref.z) {
         return fn(vertex, polygon)
       }
 

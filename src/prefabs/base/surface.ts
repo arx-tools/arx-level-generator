@@ -37,20 +37,20 @@ const generalBlock = (
 
   const vertices: Polygon = [
     {
-      ...{ posX: v0.x, posY: v0.y, posZ: v0.z },
-      ...{ texU: offsetU + 1 / scaleU, texV: offsetV },
+      ...{ x: v0.x, y: v0.y, z: v0.z },
+      ...{ u: offsetU + 1 / scaleU, v: offsetV },
     },
     {
-      ...{ posX: v1.x, posY: v1.y, posZ: v1.z },
-      ...{ texU: offsetU, texV: offsetV },
+      ...{ x: v1.x, y: v1.y, z: v1.z },
+      ...{ u: offsetU, v: offsetV },
     },
     {
-      ...{ posX: v2.x, posY: v2.y, posZ: v2.z },
-      ...{ texU: offsetU + 1 / scaleU, texV: offsetV + 1 / scaleV },
+      ...{ x: v2.x, y: v2.y, z: v2.z },
+      ...{ u: offsetU + 1 / scaleU, v: offsetV + 1 / scaleV },
     },
     {
-      ...{ posX: v3.x, posY: v3.y, posZ: v3.z },
-      ...{ texU: offsetU, texV: offsetV + 1 / scaleV },
+      ...{ x: v3.x, y: v3.y, z: v3.z },
+      ...{ u: offsetU, v: offsetV + 1 / scaleV },
     },
   ]
 

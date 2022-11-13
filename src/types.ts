@@ -13,11 +13,11 @@ export type Vector3 = [number, number, number]
 export type RotationVector3 = [number, number, number]
 
 export type PosVertex3 = {
-  posX: number
-  posY: number
-  posZ: number
-  texU: number
-  texV: number
+  x: number
+  y: number
+  z: number
+  u: number
+  v: number
   llfColorIdx?: number
   modified?: boolean
 }
