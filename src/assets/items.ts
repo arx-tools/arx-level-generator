@@ -6,7 +6,7 @@ import { getRootPath } from '../rootpath'
 import { PLAYER_HEIGHT_ADJUSTMENT } from '../constants'
 import glob from 'tiny-glob'
 import weapons from './items/weapons'
-import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
+import { ArxRotation, ArxVector3 } from 'arx-level-json-converter/types/binary/BinaryIO'
 
 export type RenderedInjectableProps = {
   init?: string[]
@@ -67,7 +67,7 @@ export type ItemDefinition = {
 // TODO: this should come from arx-level-json-converter
 export type DlfInteractiveObject = {
   name: string
-  pos: Vertex3
+  pos: ArxVector3
   angle: ArxRotation
   identifier: number
   flags: number

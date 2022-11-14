@@ -12,29 +12,26 @@ export type Vector3 = [number, number, number]
 
 export type RotationVector3 = [number, number, number]
 
-export type PosVertex3 = {
-  x: number
-  y: number
-  z: number
-  u: number
-  v: number
-  llfColorIdx?: number
-  modified?: boolean
-}
-
-export type Polygon = [PosVertex3, PosVertex3, PosVertex3, PosVertex3]
-
 export type Vertex3 = {
   x: number
   y: number
   z: number
 }
 
-export type NullableVertex3 = {
-  x: number | null
-  y: number | null
-  z: number | null
+export type UV = {
+  u: number
+  v: number
 }
+
+export type UVQuad = [UV, UV, UV, UV]
+
+export type PosVertex3 = Vertex3 &
+  UV & {
+    llfColorIdx?: number
+    modified?: boolean
+  }
+
+export type Polygon = [PosVertex3, PosVertex3, PosVertex3, PosVertex3]
 
 export type AbsoluteCoords = {
   type: 'absolute'
@@ -69,13 +66,6 @@ export type RgbaBytes = {
   b: number
   a: number
 }
-
-export type UV = {
-  u: number
-  v: number
-}
-
-export type UVQuad = [UV, UV, UV, UV]
 
 export type TextureQuad =
   | typeof TEXTURE_CUSTOM_SCALE

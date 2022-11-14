@@ -1,7 +1,7 @@
 import { DlfInteractiveObject } from './assets/items'
 import { MAP_MAX_WIDTH, MAP_MAX_HEIGHT } from './constants'
-import { NullableVertex3, PosVertex3, RgbaBytes, Vertex3 } from './types'
-import { ArxColor, ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
+import { PosVertex3, RgbaBytes } from './types'
+import { ArxColor, ArxRotation, ArxVector3 } from 'arx-level-json-converter/types/binary/BinaryIO'
 
 export type Meta = {
   type: string
@@ -9,7 +9,7 @@ export type Meta = {
 }
 
 type Pathway = {
-  rpos: Vertex3
+  rpos: ArxVector3
   flag: number
   time: number
 }
@@ -19,8 +19,8 @@ export type ZoneData = {
     name: string
     idx: number
     flags: number
-    initPos: Vertex3
-    pos: Vertex3
+    initPos: ArxVector3
+    pos: ArxVector3
     rgb: ArxColor
     farClip: number
     reverb: number
@@ -38,7 +38,7 @@ export type DlfData = {
     identifier: 'DANAE_FILE'
     lastUser: string
     time: number
-    posEdit: Vertex3
+    posEdit: ArxVector3
     angleEdit: ArxRotation
     numberOfNodes: number
     numberOfNodeLinks: number
@@ -47,7 +47,7 @@ export type DlfData = {
     numberOfBackgroundPolygons: number
     numberOfIgnoredPolygons: number
     numberOfChildPolygons: number
-    offset: Vertex3
+    offset: ArxVector3
   }
   scene: {
     name: string
@@ -104,8 +104,8 @@ export const createDlfData = (level: number, now: number): DlfData => ({
 
 export type RoomDistance = {
   distance: number
-  startPosition: NullableVertex3
-  endPosition: NullableVertex3
+  startPosition: ArxVector3
+  endPosition: ArxVector3
 }
 
 export type FtsPolygon = {
@@ -121,9 +121,9 @@ export type FtsPolygon = {
   type: number
   room: number
   paddy: 0
-  norm?: Vertex3
-  norm2?: Vertex3
-  normals?: [Vertex3, Vertex3, Vertex3, Vertex3]
+  norm?: ArxVector3
+  norm2?: ArxVector3
+  normals?: [ArxVector3, ArxVector3, ArxVector3, ArxVector3]
 }
 
 export type FtsData = {
@@ -137,8 +137,8 @@ export type FtsData = {
     version: number
     sizeX: number
     sizeZ: number
-    playerPosition: Vertex3
-    mScenePosition: Vertex3
+    playerPosition: ArxVector3
+    mScenePosition: ArxVector3
   }
   polygons: Record<string, FtsPolygon[]> & { global: FtsPolygon[] }
   textureContainers: any[] // TODO
@@ -193,7 +193,7 @@ export const createFtsData = (level: number) => {
         },
         endPosition: {
           x: 1,
-          y: null,
+          y: 0,
           z: 0,
         },
       },
@@ -207,7 +207,7 @@ export const createFtsData = (level: number) => {
         endPosition: {
           x: 0,
           y: 1,
-          z: null,
+          z: 0,
         },
       },
       {
@@ -247,7 +247,7 @@ export const createFtsData = (level: number) => {
 }
 
 export type LightData = {
-  pos: Vertex3
+  pos: ArxVector3
   rgb: ArxColor
   fallstart: number
   fallend: number
