@@ -16,6 +16,10 @@ if [ -z "$OUTPUTDIR" ]; then
   OUTPUTDIR=$(pwd)/dist/
 fi
 
+arx-convert --version
+
+implode --version
+
 cd "${OUTPUTDIR}game/graph/levels/level$LEVEL"
 
 echo "FTS"
@@ -33,7 +37,7 @@ echo "DLF"
 cat level$LEVEL.dlf.json | arx-convert --from=json --to=dlf | implode -b -l --offset=8520 --debug --output=level$LEVEL.dlf
 
 if [ "$CALCULATE_LIGHTING" == "1" ]; then
-  echo "Fred's lighting calculation"
+  echo "Fredlllll's lighting calculation"
 
   ${REPO_ROOT}lib/fredlllll-lighting-calculator/linux/ArxLibertatisLightingCalculator --level "level${LEVEL}" --arx-data-dir $OUTPUTDIR --lighting-profile DistanceAngle
 fi

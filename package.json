@@ -26,10 +26,10 @@
   },
   "homepage": "https://github.com/meszaros-lajos-gyorgy/arx-level-generator#readme",
   "dependencies": {
-    "arx-level-json-converter": "^3.0.0",
+    "arx-level-json-converter": "^3.0.1",
     "color-rgba": "^2.4.0",
     "nanoid": "^4.0.0",
-    "node-pkware": "^1.0.1",
+    "node-pkware": "^1.0.2",
     "seedrandom": "^3.0.5",
     "three": "^0.146.0",
     "tiny-glob": "^0.2.9"
