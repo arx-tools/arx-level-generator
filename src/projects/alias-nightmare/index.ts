@@ -68,7 +68,7 @@ const createWelcomeMarker = (pos: Vector3, config: MapConfig) => {
   `
   }, ref)
 
-  moveTo({ type: 'relative', coords: pos }, [0, 0, 0], ref)
+  moveTo({ type: 'relative', coords: pos }, { a: 0, b: 0, g: 0 }, ref)
 
   markAsUsed(ref)
 

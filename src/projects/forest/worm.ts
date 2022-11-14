@@ -3,7 +3,7 @@ import { getInjections } from '../../scripting'
 import { RelativeCoords } from '../../types'
 import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 
-export const createWorm = (pos: RelativeCoords, { a, b, g }: ArxRotation) => {
+export const createWorm = (pos: RelativeCoords, angle: ArxRotation) => {
   const ref = createItem(items.npc.worm, { name: 'Jimmy' })
 
   addScript((self) => {
@@ -16,7 +16,7 @@ ON INIT {
     `
   }, ref)
 
-  moveTo(pos, [a, b, g], ref)
+  moveTo(pos, angle, ref)
   markAsUsed(ref)
 
   return ref

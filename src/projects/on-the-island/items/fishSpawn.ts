@@ -4,7 +4,7 @@ import { RelativeCoords } from '../../../types'
 export const createFishSpawn = (pos: RelativeCoords) => {
   const ref = createItem(items.fishSpawn)
 
-  moveTo(pos, [0, 0, 0], ref)
+  moveTo(pos, { a: 0, b: 0, g: 0 }, ref)
   markAsUsed(ref)
 
   return ref

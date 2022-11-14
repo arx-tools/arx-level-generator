@@ -8,8 +8,9 @@ import {
 } from '../../../constants'
 import { addCoords, addLight, addZone, MapData, setColor } from '../../../helpers'
 import { declare, getInjections } from '../../../scripting'
-import { RelativeCoords, RotationVector3 } from '../../../types'
+import { RelativeCoords } from '../../../types'
 import { markAsUsed, createItem, items, moveTo, InjectableProps, addScript } from '../../../assets/items'
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 
 const createCampfireFlames = (pos: RelativeCoords, mapData: MapData) => {
   setColor('white', mapData)
@@ -43,7 +44,7 @@ const createCampfireCookZone = (pos: RelativeCoords, zoneName: string = 'cookzon
 
 const createCampfireCookMarker = (pos: RelativeCoords, zoneName: string, props: InjectableProps = {}) => {
   const cookMarker = createItem(items.marker, props)
-  moveTo(pos, [0, 0, 0], cookMarker)
+  moveTo(pos, { a: 0, b: 0, g: 0 }, cookMarker)
   markAsUsed(cookMarker)
 
   declare('int', 'ignit', 1, cookMarker)
@@ -116,7 +117,7 @@ ON SPELLCAST {
   return cookMarker
 }
 
-export const createCampfire = (pos: RelativeCoords, angle: RotationVector3 = [0, 0, 0], mapData: MapData) => {
+export const createCampfire = (pos: RelativeCoords, angle: ArxRotation = { a: 0, b: 0, g: 0 }, mapData: MapData) => {
   const campfire = createItem(items.misc.campfire)
 
   moveTo(pos, angle, campfire)

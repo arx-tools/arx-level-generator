@@ -1,3 +1,4 @@
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 import {
   addScript,
   createItem,
@@ -9,7 +10,7 @@ import {
   InjectableProps,
 } from '../../../assets/items'
 import { getInjections, declare, playSound, PLAY_VARY_PITCH } from '../../../scripting'
-import { RotationVector3, Vector3 } from '../../../types'
+import { Vector3 } from '../../../types'
 
 export const defineStatue = () => {
   const ref = createRootItem(items.npc.statue, {
@@ -219,7 +220,7 @@ type StatueSpecificProps = {}
 
 export const createStatue = (
   pos: Vector3,
-  angle: RotationVector3 = [0, 0, 0],
+  angle: ArxRotation = { a: 0, b: 0, g: 0 },
   { ...props }: InjectableProps & StatueSpecificProps = {},
 ) => {
   const ref = createItem(items.npc.statue, { ...props })

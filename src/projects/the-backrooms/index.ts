@@ -77,9 +77,10 @@ import { addTranslations } from '../../assets/i18n'
 import translations from './i18n.json'
 import { defineWallPlug, createWallPlug, WallPlugSpecificProps } from './items/wallPlug'
 import { hideHealthbar, hideMinimap, hideStealthIndicator, removeSound, useWillowModifiedFont } from '../shared/reset'
-import { MapConfig, RotationVector3, Vector3 } from '../../types'
+import { MapConfig, Vector3 } from '../../types'
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 
-const addLamp = (pos: Vector3, angle: RotationVector3, config: InjectableProps & CeilingLampSpecificProps = {}) => {
+const addLamp = (pos: Vector3, angle: ArxRotation, config: InjectableProps & CeilingLampSpecificProps = {}) => {
   return (mapData: MapData) => {
     const isOn = config.on ?? false
     const lampEntity = createCeilingLamp(pos, angle, { on: isOn })
@@ -132,30 +133,54 @@ const addAmbientLight = (pos: Vector3, config: AmbientLightProps = {}) => {
     }
 
     const lampEntities = {
-      floor: createCeilingLamp(move(0, -radius, 0, pos), [0, 0, 0], {
-        on: isOn,
-        muted: true,
-      }),
-      ceiling: createCeilingLamp(move(0, radius, 0, pos), [0, 0, 0], {
-        on: isOn,
-        muted: true,
-      }),
-      right: createCeilingLamp(move(-radius, 0, 0, pos), [0, 0, 0], {
-        on: isOn,
-        muted: true,
-      }),
-      left: createCeilingLamp(move(radius, 0, 0, pos), [0, 0, 0], {
-        on: isOn,
-        muted: true,
-      }),
-      front: createCeilingLamp(move(0, 0, -radius, pos), [0, 0, 0], {
-        on: isOn,
-        muted: true,
-      }),
-      back: createCeilingLamp(move(0, 0, radius, pos), [0, 0, 0], {
-        on: isOn,
-        muted: true,
-      }),
+      floor: createCeilingLamp(
+        move(0, -radius, 0, pos),
+        { a: 0, b: 0, g: 0 },
+        {
+          on: isOn,
+          muted: true,
+        },
+      ),
+      ceiling: createCeilingLamp(
+        move(0, radius, 0, pos),
+        { a: 0, b: 0, g: 0 },
+        {
+          on: isOn,
+          muted: true,
+        },
+      ),
+      right: createCeilingLamp(
+        move(-radius, 0, 0, pos),
+        { a: 0, b: 0, g: 0 },
+        {
+          on: isOn,
+          muted: true,
+        },
+      ),
+      left: createCeilingLamp(
+        move(radius, 0, 0, pos),
+        { a: 0, b: 0, g: 0 },
+        {
+          on: isOn,
+          muted: true,
+        },
+      ),
+      front: createCeilingLamp(
+        move(0, 0, -radius, pos),
+        { a: 0, b: 0, g: 0 },
+        {
+          on: isOn,
+          muted: true,
+        },
+      ),
+      back: createCeilingLamp(
+        move(0, 0, radius, pos),
+        { a: 0, b: 0, g: 0 },
+        {
+          on: isOn,
+          muted: true,
+        },
+      ),
     }
 
     setColor(lightColor, mapData)
@@ -251,7 +276,7 @@ ON GOT_RUNE {
     `
   }, ref)
 
-  moveTo({ type: 'relative', coords: pos }, [0, 0, 0], ref)
+  moveTo({ type: 'relative', coords: pos }, { a: 0, b: 0, g: 0 }, ref)
   markAsUsed(ref)
   return ref
 }
@@ -495,7 +520,7 @@ ON POWEROUT {
 }
     `
   }, ref)
-  moveTo({ type: 'relative', coords: pos }, [0, 0, 0], ref)
+  moveTo({ type: 'relative', coords: pos }, { a: 0, b: 0, g: 0 }, ref)
   markAsUsed(ref)
 
   return ref
@@ -511,29 +536,28 @@ const createExit = (
   const [wallX, wallY, wallZ, wallFace] = wallSegment
 
   let translate: Vector3 = [0, 0, 0]
-  let rotate: RotationVector3 = [0, 0, 0]
+  let angle: ArxRotation
 
   switch (wallFace) {
     case 'left':
       translate = [-80, 0, -75]
-      rotate = [0, 180, 0]
+      angle = { a: 0, b: 180, g: 0 }
       break
     case 'right':
       translate = [80, 0, 75]
-      rotate = [0, 0, 0]
+      angle = { a: 0, b: 0, g: 0 }
       break
     case 'back':
       translate = [75, 0, -80]
-      rotate = [0, 270, 0]
+      angle = { a: 0, b: 270, g: 0 }
       break
     case 'front':
       translate = [-75, 0, 80]
-      rotate = [0, 90, 0]
+      angle = { a: 0, b: 90, g: 0 }
       break
   }
 
   const pos = move(...translate, [originX + wallX * UNIT, 0, -(originZ + wallZ * UNIT)])
-  const angle = rotate
 
   const ref = createItem(items.doors.lightDoor, { name: '[door--exit]' })
 
@@ -578,7 +602,7 @@ ON ACTION {
   return ref
 }
 
-const createKey = (pos: Vector3, angle: RotationVector3 = [0, 0, 0], jumpscareCtrl: ItemRef) => {
+const createKey = (pos: Vector3, angle: ArxRotation = { a: 0, b: 0, g: 0 }, jumpscareCtrl: ItemRef) => {
   const ref = createItem(items.keys.oliverQuest, { name: '[key--exit]' })
 
   declare('bool', 'hadBeenPickedUp', FALSE, ref)
@@ -610,7 +634,7 @@ ON INVENTORYIN {
 
 const createAlmondWater = (
   pos: Vector3,
-  angle: RotationVector3 = [0, 0, 0],
+  angle: ArxRotation = { a: 0, b: 0, g: 0 },
   variant: 'xp' | 'mana' | 'slow' | 'speed' = 'mana',
   jumpscareCtrl: ItemRef,
 ) => {
@@ -699,7 +723,7 @@ ON INVENTORYUSE {
   return ref
 }
 
-const createSpawnContainer = (pos: Vector3, angle: RotationVector3, contents: ItemRef[] = []) => {
+const createSpawnContainer = (pos: Vector3, angle: ArxRotation, contents: ItemRef[] = []) => {
   const ref = createItem(items.containers.barrel, {
     scale: 0.75,
   })
@@ -736,31 +760,30 @@ const placeWallPlug = (
   const [wallX, wallY, wallZ, wallFace] = wallSegment
 
   let translate: Vector3 = [0, 0, 0]
-  let rotate: RotationVector3 = [0, 0, 0]
+  let angle: ArxRotation
 
   const wallOffset = 91
 
   switch (wallFace) {
     case 'left':
       translate = [-wallOffset, -50, -0]
-      rotate = [0, 180, 0]
+      angle = { a: 0, b: 180, g: 0 }
       break
     case 'right':
       translate = [wallOffset, -50, 0]
-      rotate = [0, 0, 0]
+      angle = { a: 0, b: 0, g: 0 }
       break
     case 'back':
       translate = [0, -50, -wallOffset]
-      rotate = [0, 270, 0]
+      angle = { a: 0, b: 270, g: 0 }
       break
     case 'front':
       translate = [-0, -50, wallOffset]
-      rotate = [0, 90, 0]
+      angle = { a: 0, b: 90, g: 0 }
       break
   }
 
   const pos = move(...translate, [originX + wallX * UNIT, 0, -(originZ + wallZ * UNIT)])
-  const angle = rotate
 
   return createWallPlug(pos, angle, config, jumpscareCtrl)
 }
@@ -851,7 +874,7 @@ const generate = async (config: MapConfig & BackroomsSpecifigConfig) => {
   setColor('#777777', mapData)
   renderGrid(grid, mapData)
 
-  // addLamp([150, -200, 50], [0, 0, 0], { on: true })(mapData)
+  // addLamp([150, -200, 50], {a:0, b:0, g:0}, { on: true })(mapData)
 
   /*
   const radius = getRadius(grid)
@@ -943,7 +966,7 @@ const generate = async (config: MapConfig & BackroomsSpecifigConfig) => {
   })
 
   const lamps = lampsToBeCreated.reduce((lamps, { pos, config }) => {
-    lamps.push(addLamp(pos, [0, 0, 0], config)(mapData))
+    lamps.push(addLamp(pos, {a:0, b:0, g:0}, config)(mapData))
     return lamps
   }, [])
 

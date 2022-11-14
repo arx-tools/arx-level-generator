@@ -10,8 +10,6 @@ import {
 
 export type Vector3 = [number, number, number]
 
-export type RotationVector3 = [number, number, number]
-
 export type Vertex3 = {
   x: number
   y: number

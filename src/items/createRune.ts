@@ -1,6 +1,7 @@
-import { RotationVector3, Vector3 } from '../types'
+import { Vector3 } from '../types'
 import { items, moveTo, createItem, addScript, ItemRef } from '../assets/items'
 import { getInjections, declare } from '../scripting'
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 
 // source: https://wiki.arx-libertatis.org/Category:Runes
 type Rune =
@@ -28,7 +29,7 @@ type Rune =
 export const createRune = (
   runeName: Rune,
   pos: Vector3 | null = null,
-  angle: RotationVector3 = [0, 0, 0],
+  angle: ArxRotation = { a: 0, b: 0, g: 0 },
   onEquipTarget?: ItemRef,
 ) => {
   const ref = createItem(items.magic.rune)

@@ -21,7 +21,8 @@ import {
   PLAY_VARY_PITCH,
   stopSound,
 } from '../../../scripting'
-import { RotationVector3, Vector3 } from '../../../types'
+import { Vector3 } from '../../../types'
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 
 const ceilingLampDesc: ItemDefinition = {
   src: 'fix_inter/ceiling-lamp/ceiling-lamp.ftl',
@@ -312,7 +313,7 @@ export type CeilingLampSpecificProps = {
 
 export const createCeilingLamp = (
   pos: Vector3,
-  angle: RotationVector3 = [0, 0, 0],
+  angle: ArxRotation = { a: 0, b: 0, g: 0 },
   { muted, on, ...props }: InjectableProps & CeilingLampSpecificProps = {},
 ) => {
   const ref = createItem(ceilingLampDesc, { ...props })

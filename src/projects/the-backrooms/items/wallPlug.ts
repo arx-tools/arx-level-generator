@@ -1,3 +1,4 @@
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 import {
   addScript,
   createItem,
@@ -19,7 +20,7 @@ import {
   PLAY_VARY_PITCH,
   stopSound,
 } from '../../../scripting'
-import { RotationVector3, Vector3 } from '../../../types'
+import { Vector3 } from '../../../types'
 
 const wallPlugDesc: ItemDefinition = {
   src: 'fix_inter/wall_plug/wall_plug.teo',
@@ -63,7 +64,7 @@ export type WallPlugSpecificProps = {
 
 export const createWallPlug = (
   pos: Vector3,
-  angle: RotationVector3 = [0, 0, 0],
+  angle: ArxRotation = { a: 0, b: 0, g: 0 },
   { variant, ...props }: InjectableProps & WallPlugSpecificProps,
   jumpscareCtrl: ItemRef,
 ) => {

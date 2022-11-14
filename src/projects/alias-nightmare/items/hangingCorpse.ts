@@ -5,7 +5,7 @@ import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 
 export const createHangingCorpse = (
   pos: RelativeCoords,
-  { a, b, g }: ArxRotation = { a: 0, b: 0, g: 0 },
+  angle: ArxRotation = { a: 0, b: 0, g: 0 },
   props: InjectableProps = {},
 ) => {
   const ref = createItem(items.corpse.hanging, {
@@ -23,7 +23,7 @@ ON INIT {
     `
   }, ref)
 
-  moveTo(pos, [a, b, g], ref)
+  moveTo(pos, angle, ref)
   markAsUsed(ref)
 
   return ref

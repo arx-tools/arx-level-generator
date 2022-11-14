@@ -33,13 +33,12 @@ import {
   PosVertex3,
   RelativeCoords,
   RgbaBytes,
-  RotationVector3,
   UVQuad,
   Vector3,
   Vertex3,
 } from './types'
 import { exportTranslations, resetTranslations } from './assets/i18n'
-import { ArxColor } from 'arx-level-json-converter/types/binary/BinaryIO'
+import { ArxColor, ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 
 export type MapData = {
   meta: {
@@ -664,7 +663,7 @@ const matrix3MulVec3: (matrix: number[], vector: Vector3) => Vector3 = ([a, b, c
 export const degToRad = (deg: number) => (deg * Math.PI) / 180
 export const radToDeg = (rad: number) => rad * (180 / Math.PI)
 
-export const rotateVec3 = (point: Vector3, [a, b, g]: RotationVector3) => {
+export const rotateVec3 = (point: Vector3, { a, b, g }: ArxRotation) => {
   a = degToRad(a)
   b = degToRad(b)
   g = degToRad(g)
@@ -693,7 +692,7 @@ export const circleOfVectors = (center: Vector3, radius: number, division: numbe
 
   for (let i = 0; i < division; i++) {
     const point: Vector3 = [0, 0, 1 * radius]
-    const rotation: RotationVector3 = [0, angle * i, 0]
+    const rotation: ArxRotation = { a: 0, b: angle * i, g: 0 }
     vectors.push(move(...rotateVec3(point, rotation), center))
   }
 

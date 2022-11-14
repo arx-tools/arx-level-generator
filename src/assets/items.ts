@@ -1,7 +1,7 @@
 import path from 'path'
 import { clone, uniq } from '../faux-ramda'
 import { declare, SCRIPT_EOL } from '../scripting'
-import { RelativeCoords, RotationVector3, Vertex3 } from '../types'
+import { RelativeCoords, Vertex3 } from '../types'
 import { getRootPath } from '../rootpath'
 import { PLAYER_HEIGHT_ADJUSTMENT } from '../constants'
 import glob from 'tiny-glob'
@@ -429,13 +429,13 @@ export const addScript = (script: string | ((self: ItemRef) => string), itemRef:
   }
 }
 
-export const moveTo = ({ coords: [x, y, z] }: RelativeCoords, [a, b, g]: RotationVector3, itemRef: ItemRef) => {
+export const moveTo = ({ coords: [x, y, z] }: RelativeCoords, angle: ArxRotation, itemRef: ItemRef) => {
   const { src, id } = itemRef
 
   if (usedItems[src] && id !== 'root') {
     const instance = usedItems[src].instances[id]
     instance.pos = { x, y, z }
-    instance.angle = { a, b, g }
+    instance.angle = angle
   }
 }
 

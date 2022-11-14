@@ -46,7 +46,7 @@ ON CONTROLLEDZONE_ENTER {
     `
   }, ref)
 
-  moveTo({ type: 'relative', coords: pos }, [0, 0, 0], ref)
+  moveTo({ type: 'relative', coords: pos }, { a: 0, b: 0, g: 0 }, ref)
   markAsUsed(ref)
 
   return ref
@@ -126,10 +126,14 @@ const generate = async (config: MapConfig) => {
   const welcomeMaker = createWelcomeMarker([0, 0, 0], config)
 
   const bots = circleOfVectors([0, 0, 0], 300, numberOfBots).map((pos, i) => {
-    return createNPC({ type: 'relative', coords: pos }, [0, 180 - i * Math.floor(360 / numberOfBots), 0], {
-      type: pickRandom(['rebel guard', 'arx guard']),
-      groups: ['bot'],
-    })
+    return createNPC(
+      { type: 'relative', coords: pos },
+      { a: 0, b: 180 - i * Math.floor(360 / numberOfBots), g: 0 },
+      {
+        type: pickRandom(['rebel guard', 'arx guard']),
+        groups: ['bot'],
+      },
+    )
   })
 
   const finalizedMapData = finalize(mapData)

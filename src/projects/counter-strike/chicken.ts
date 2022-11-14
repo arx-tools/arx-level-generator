@@ -300,7 +300,7 @@ ON GAME_READY {
   return rootRef
 }
 
-export const createChicken = (pos: RelativeCoords, { a, b, g }: ArxRotation) => {
+export const createChicken = (pos: RelativeCoords, angle: ArxRotation) => {
   const ref = createItem(items.npc.chicken)
 
   addScript((self) => {
@@ -313,7 +313,7 @@ ON INIT {
     `
   }, ref)
 
-  moveTo(pos, [a, b, g], ref)
+  moveTo(pos, angle, ref)
   markAsUsed(ref)
 
   return ref

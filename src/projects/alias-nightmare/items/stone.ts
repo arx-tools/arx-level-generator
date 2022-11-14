@@ -1,6 +1,7 @@
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 import { addScript, createItem, InjectableProps, items, markAsUsed, moveTo } from '../../../assets/items'
 import { declare, getInjections } from '../../../scripting'
-import { RotationVector3, Vector3 } from '../../../types'
+import { Vector3 } from '../../../types'
 
 type StoneSpecificProps = {
   weight?: number
@@ -8,7 +9,7 @@ type StoneSpecificProps = {
 
 export const createStone = (
   pos: Vector3,
-  angle: RotationVector3 = [0, 0, 0],
+  angle: ArxRotation = { a: 0, b: 0, g: 0 },
   { weight, ...props }: InjectableProps & StoneSpecificProps = {},
 ) => {
   const ref = createItem(items.misc.stone, {

@@ -48,7 +48,7 @@ ON CONTROLLEDZONE_ENTER {
   }, ref)
 
   markAsUsed(ref)
-  moveTo(pos, [0, 0, 0], ref)
+  moveTo(pos, { a: 0, b: 0, g: 0 }, ref)
 
   return ref
 }
@@ -73,7 +73,7 @@ const generate = async (config: MapConfig) => {
       type: 'relative',
       coords: [islandCenter.x - islandRadius + islandEdgeOffset, 0, islandCenter.z - islandRadius + islandEdgeOffset],
     },
-    [0, 135, 0],
+    { a: 0, b: 135, g: 0 },
   )
 
   const fishSpawnCoords: [number, number][] = []
@@ -110,7 +110,7 @@ const generate = async (config: MapConfig) => {
 
   createBarrel(
     { type: 'relative', coords: [islandCenter.x - islandRadius + islandEdgeOffset, 0, islandCenter.z] },
-    [0, 0, 0],
+    { a: 0, b: 0, g: 0 },
     startingLoot,
   )
   createCards({
@@ -210,7 +210,7 @@ const generate = async (config: MapConfig) => {
       type: 'relative',
       coords: [islandCenter.x, -20, islandCenter.z],
     },
-    [0, 0, 0],
+    { a: 0, b: 0, g: 0 },
     mapData,
   )
   setColor('white', mapData)

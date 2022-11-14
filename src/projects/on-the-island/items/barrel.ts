@@ -1,8 +1,9 @@
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 import { createItem, items, ItemRef, addScript, moveTo, markAsUsed } from '../../../assets/items'
 import { getInjections, SCRIPT_EOL } from '../../../scripting'
-import { RelativeCoords, RotationVector3 } from '../../../types'
+import { RelativeCoords } from '../../../types'
 
-export const createBarrel = (pos: RelativeCoords, angle: RotationVector3, contents: ItemRef[] = []) => {
+export const createBarrel = (pos: RelativeCoords, angle: ArxRotation, contents: ItemRef[] = []) => {
   const ref = createItem(items.containers.barrel, {
     scale: 0.7,
   })

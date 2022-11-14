@@ -1,3 +1,4 @@
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 import {
   addScript,
   createItem,
@@ -8,7 +9,7 @@ import {
   moveTo,
 } from '../../../assets/items'
 import { declare, getInjections, SCRIPT_EOL } from '../../../scripting'
-import { RelativeCoords, RotationVector3 } from '../../../types'
+import { RelativeCoords } from '../../../types'
 
 const npcDesc: ItemDefinition = {
   src: 'npc/npc/npc.teo',
@@ -282,7 +283,7 @@ type NPCProps = {
 
 export const createNPC = (
   pos: RelativeCoords,
-  angle: RotationVector3 = [0, 0, 0],
+  angle: ArxRotation = { a: 0, b: 0, g: 0 },
   config: NPCProps = { type: 'arx guard', groups: ['bot'] },
 ) => {
   const ref = createItem(npcDesc, {})

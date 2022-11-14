@@ -7,7 +7,7 @@ type DoorSpecificProps = { isLocked?: boolean }
 
 export const createDoor = (
   pos: RelativeCoords,
-  { a, b, g }: ArxRotation,
+  angle: ArxRotation,
   { isLocked, ...props }: InjectableProps & DoorSpecificProps = { isLocked: false },
 ) => {
   const ref = createItem(items.doors.lightDoor, { name: 'door', ...props })
@@ -25,7 +25,7 @@ ON INIT {
     `
   }, ref)
 
-  moveTo(pos, [a, b, g], ref)
+  moveTo(pos, angle, ref)
   markAsUsed(ref)
 
   return ref

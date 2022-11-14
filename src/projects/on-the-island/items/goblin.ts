@@ -1,12 +1,13 @@
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 import { addScript, items, createItem, markAsUsed, moveTo, InjectableProps } from '../../../assets/items'
 import { getInjections } from '../../../scripting'
-import { RelativeCoords, RotationVector3 } from '../../../types'
+import { RelativeCoords } from '../../../types'
 
 type GoblinSpecificProps = {}
 
 export const createGoblin = (
   pos: RelativeCoords,
-  angle: RotationVector3 = [0, 0, 0],
+  angle: ArxRotation = { a: 0, b: 0, g: 0 },
   { ...props }: InjectableProps & GoblinSpecificProps = {},
 ) => {
   const ref = createItem(items.npc.goblin, {
