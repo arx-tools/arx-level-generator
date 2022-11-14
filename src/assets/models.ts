@@ -1,11 +1,12 @@
 import fs from 'fs'
-import { PosVertex3, Vector3, RelativeCoords, RotationVertex3 } from '../types'
+import { PosVertex3, Vector3, RelativeCoords } from '../types'
 import { isBetween, MapData, roundToNDecimals } from '../helpers'
 import { MAP_MAX_HEIGHT, MAP_MAX_WIDTH, POLY_NO_SHADOW, POLY_QUAD } from '../constants'
 import { useTexture } from '../assets/textures'
 import { Euler, MathUtils, Vector3 as TreeJsVector3 } from 'three'
 import { clone, identity, max, min, partition } from '../faux-ramda'
 import { doesPolygonFitIntoACell, isPolygonVisible, toTriangleHelper } from '../subdivisionHelper'
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 
 const EOL = /\r?\n/
 
@@ -122,7 +123,7 @@ export const flipPolygonAxis = (axis: string, polygons: TexturedPolygon[]) => {
   })
 }
 
-export const rotatePolygonData = ({ a, b, g }: RotationVertex3, polygons: TexturedPolygon[]) => {
+export const rotatePolygonData = ({ a, b, g }: ArxRotation, polygons: TexturedPolygon[]) => {
   const rotation = new Euler(MathUtils.degToRad(a), MathUtils.degToRad(b), MathUtils.degToRad(g), 'XYZ')
 
   polygons.forEach(({ polygon }) => {

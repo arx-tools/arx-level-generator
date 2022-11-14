@@ -36,12 +36,6 @@ export type NullableVertex3 = {
   z: number | null
 }
 
-export type RotationVertex3 = {
-  a: number
-  b: number
-  g: number
-}
-
 export type AbsoluteCoords = {
   type: 'absolute'
   coords: Vector3

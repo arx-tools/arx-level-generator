@@ -1,12 +1,13 @@
 import { addScript, createItem, InjectableProps, items, markAsUsed, moveTo } from '../../assets/items'
 import { declare, FALSE, getInjections, TRUE } from '../../scripting'
-import { RelativeCoords, RotationVertex3 } from '../../types'
+import { RelativeCoords } from '../../types'
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 
 type DoorSpecificProps = { isLocked?: boolean }
 
 export const createDoor = (
   pos: RelativeCoords,
-  { a, b, g }: RotationVertex3,
+  { a, b, g }: ArxRotation,
   { isLocked, ...props }: InjectableProps & DoorSpecificProps = { isLocked: false },
 ) => {
   const ref = createItem(items.doors.lightDoor, { name: 'door', ...props })

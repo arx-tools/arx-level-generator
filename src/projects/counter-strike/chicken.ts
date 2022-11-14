@@ -1,6 +1,7 @@
 import { addScript, createItem, createRootItem, items, markAsUsed, moveTo, InjectableProps } from '../../assets/items'
 import { getInjections, playSound, PLAY_VARY_PITCH } from '../../scripting'
-import { RelativeCoords, RotationVertex3 } from '../../types'
+import { RelativeCoords } from '../../types'
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 
 export const defineChicken = (config: InjectableProps = {}) => {
   const rootRef = createRootItem(items.npc.chicken, {
@@ -299,7 +300,7 @@ ON GAME_READY {
   return rootRef
 }
 
-export const createChicken = (pos: RelativeCoords, { a, b, g }: RotationVertex3) => {
+export const createChicken = (pos: RelativeCoords, { a, b, g }: ArxRotation) => {
   const ref = createItem(items.npc.chicken)
 
   addScript((self) => {

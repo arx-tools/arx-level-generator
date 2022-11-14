@@ -1,7 +1,7 @@
 import { DlfInteractiveObject } from './assets/items'
 import { MAP_MAX_WIDTH, MAP_MAX_HEIGHT } from './constants'
-import { NullableVertex3, PosVertex3, RgbaBytes, RotationVertex3, Vertex3 } from './types'
-import { ArxColor } from 'arx-level-json-converter/types/binary/BinaryIO'
+import { NullableVertex3, PosVertex3, RgbaBytes, Vertex3 } from './types'
+import { ArxColor, ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 
 export type Meta = {
   type: string
@@ -39,7 +39,7 @@ export type DlfData = {
     lastUser: string
     time: number
     posEdit: Vertex3
-    angleEdit: RotationVertex3
+    angleEdit: ArxRotation
     numberOfNodes: number
     numberOfNodeLinks: number
     numberOfZones: number

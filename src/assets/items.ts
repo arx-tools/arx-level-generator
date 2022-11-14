@@ -1,11 +1,12 @@
 import path from 'path'
 import { clone, uniq } from '../faux-ramda'
 import { declare, SCRIPT_EOL } from '../scripting'
-import { RelativeCoords, RotationVector3, RotationVertex3, Vertex3 } from '../types'
+import { RelativeCoords, RotationVector3, Vertex3 } from '../types'
 import { getRootPath } from '../rootpath'
 import { PLAYER_HEIGHT_ADJUSTMENT } from '../constants'
 import glob from 'tiny-glob'
 import weapons from './items/weapons'
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 
 export type RenderedInjectableProps = {
   init?: string[]
@@ -50,7 +51,7 @@ export type Item = {
   used: boolean
   identifier: number
   pos: Vertex3
-  angle: RotationVertex3
+  angle: ArxRotation
   script: string
   flags: number
   dependencies: Dependency[]
@@ -67,7 +68,7 @@ export type ItemDefinition = {
 export type DlfInteractiveObject = {
   name: string
   pos: Vertex3
-  angle: RotationVertex3
+  angle: ArxRotation
   identifier: number
   flags: number
 }

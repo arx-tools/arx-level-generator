@@ -1,8 +1,9 @@
 import { addScript, createItem, items, markAsUsed, moveTo } from '../../assets/items'
 import { getInjections } from '../../scripting'
-import { RelativeCoords, RotationVertex3 } from '../../types'
+import { RelativeCoords } from '../../types'
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 
-export const createWorm = (pos: RelativeCoords, { a, b, g }: RotationVertex3) => {
+export const createWorm = (pos: RelativeCoords, { a, b, g }: ArxRotation) => {
   const ref = createItem(items.npc.worm, { name: 'Jimmy' })
 
   addScript((self) => {

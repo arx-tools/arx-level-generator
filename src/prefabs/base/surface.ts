@@ -2,7 +2,8 @@ import { Euler, Vector3, MathUtils } from 'three'
 import { TextureDefinition, useTexture } from '../../assets/textures'
 import { POLY_QUAD, POLY_NO_SHADOW } from '../../constants'
 import { evenAndRemainder, MapData } from '../../helpers'
-import { Polygon, RelativeCoords, RotationVertex3 } from '../../types'
+import { Polygon, RelativeCoords } from '../../types'
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 
 const toAbsoluteCoords = (pos: RelativeCoords, mapData: MapData) => {
   const coords = new Vector3()
@@ -225,7 +226,7 @@ const closingBlock = (
 export const surface = (
   pos: RelativeCoords,
   [surfaceWidth, surfaceHeight]: [number, number],
-  rotation: RotationVertex3,
+  rotation: ArxRotation,
   calculateScaleUV: ([surfaceWidth, surfaceHeight]: [number, number]) => [number, number] = () => [100, 100],
   [offsetUPercent, offsetVPercent]: [number, number] = [0, 0],
 ) => {

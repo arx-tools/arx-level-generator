@@ -1,10 +1,11 @@
 import { addScript, createItem, InjectableProps, items, markAsUsed, moveTo } from '../../../assets/items'
 import { getInjections } from '../../../scripting'
-import { RelativeCoords, RotationVertex3 } from '../../../types'
+import { RelativeCoords } from '../../../types'
+import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
 
 export const createFern = (
   pos: RelativeCoords,
-  { a, b, g }: RotationVertex3 = { a: 0, b: 0, g: 0 },
+  { a, b, g }: ArxRotation = { a: 0, b: 0, g: 0 },
   props: InjectableProps = {},
 ) => {
   const ref = createItem(items.plants.fern, {
