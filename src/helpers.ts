@@ -28,7 +28,6 @@ import { ambiences, exportAmbiences, useAmbience, resetAmbiences, AmbienceDefini
 import { dirname, resolve } from 'path'
 import {
   AbsoluteCoords,
-  FloatRgb,
   MapConfig,
   Polygon,
   PosVertex3,
@@ -40,6 +39,7 @@ import {
   Vertex3,
 } from './types'
 import { exportTranslations, resetTranslations } from './assets/i18n'
+import { ArxColor } from 'arx-level-json-converter/types/binary/BinaryIO'
 
 export type MapData = {
   meta: {
@@ -108,7 +108,7 @@ export const toRgba = (cssColor: string): RgbaBytes => {
 }
 
 // { r: 127, g: 0, b: 0, a: 1 } -> { r: [0.0..1.0], g: [0.0..1.0], b: [0.0..1.0] }
-export const toFloatRgb = (color: RgbaBytes): FloatRgb => {
+export const toArxColor = (color: RgbaBytes): ArxColor => {
   const { r, g, b } = color
   return { r: r / 256, g: g / 256, b: b / 256 }
 }
@@ -575,12 +575,12 @@ export const isPointInPolygon = (point: Vector3, polygon: FtsPolygon) => {
 export const addLight = ([x, y, z]: Vector3, props: Partial<LightData>, mapData: MapData) => {
   mapData.llf.lights.push({
     pos: { x, y, z },
-    rgb: toFloatRgb(mapData.state.color),
+    rgb: toArxColor(mapData.state.color),
     fallstart: 100,
     fallend: 180,
     intensity: 1.3,
     i: 0,
-    exFlicker: toFloatRgb(toRgba('black')), // this gets subtracted from light.rgb when flickering
+    exFlicker: toArxColor(toRgba('black')), // this gets subtracted from light.rgb when flickering
     exRadius: 0,
     exFrequency: 0.01,
     exSize: 0,
@@ -611,7 +611,7 @@ export const addZone = (
         flags,
         initPos: { x, y, z },
         pos: { x, y, z },
-        rgb: toFloatRgb(mapData.state.color),
+        rgb: toArxColor(mapData.state.color),
         farClip: drawDistance,
         reverb: 0,
         ambianceMaxVolume: 100,

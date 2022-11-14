@@ -76,12 +76,6 @@ export type RgbaBytes = {
   a: number
 }
 
-export type FloatRgb = {
-  r: number
-  g: number
-  b: number
-}
-
 export type UV = {
   u: number
   v: number

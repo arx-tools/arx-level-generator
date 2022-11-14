@@ -1,6 +1,7 @@
 import { DlfInteractiveObject } from './assets/items'
 import { MAP_MAX_WIDTH, MAP_MAX_HEIGHT } from './constants'
-import { FloatRgb, NullableVertex3, PosVertex3, RgbaBytes, RotationVertex3, Vertex3 } from './types'
+import { NullableVertex3, PosVertex3, RgbaBytes, RotationVertex3, Vertex3 } from './types'
+import { ArxColor } from 'arx-level-json-converter/types/binary/BinaryIO'
 
 export type Meta = {
   type: string
@@ -20,7 +21,7 @@ export type ZoneData = {
     flags: number
     initPos: Vertex3
     pos: Vertex3
-    rgb: FloatRgb
+    rgb: ArxColor
     farClip: number
     reverb: number
     ambianceMaxVolume: number
@@ -247,12 +248,12 @@ export const createFtsData = (level: number) => {
 
 export type LightData = {
   pos: Vertex3
-  rgb: FloatRgb
+  rgb: ArxColor
   fallstart: number
   fallend: number
   intensity: number
   i: 0
-  exFlicker: FloatRgb
+  exFlicker: ArxColor
   exRadius: number
   exFrequency: number
   exSize: number
