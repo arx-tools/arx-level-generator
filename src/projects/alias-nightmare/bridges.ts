@@ -1,6 +1,6 @@
 import { without } from '../../faux-ramda'
 import { NORTH, SOUTH, EAST, WEST } from './constants'
-import { move, magnitude, subtractVec3, radToDeg, isBetweenInclusive, setTexture, MapData } from '../../helpers'
+import { move, magnitude, subtractVec3, isBetweenInclusive, setTexture, MapData } from '../../helpers'
 import { ISLAND_JOINT_LENGTH } from '../../constants'
 import { surface } from '../../prefabs/base/surface'
 import { textures } from '../../assets/textures'
@@ -70,7 +70,7 @@ const bridges = (islands: Island[], mapData: MapData) => {
           .map(({ south }) => south)
           .filter((south) => {
             const [x, y, z] = subtractVec3(joint.north as Vector3, south as Vector3)
-            const angle = radToDeg(Math.atan2(x, z))
+            const angle = MathUtils.radToDeg(Math.atan2(x, z))
             return isBetweenInclusive(-viewAngle, viewAngle, angle)
           })
         if (souths.length) {
@@ -83,7 +83,7 @@ const bridges = (islands: Island[], mapData: MapData) => {
           .map(({ north }) => north)
           .filter((north) => {
             const [x, y, z] = subtractVec3(joint.south as Vector3, north as Vector3)
-            const angle = (radToDeg(Math.atan2(x, z)) + 180) % 360
+            const angle = (MathUtils.radToDeg(Math.atan2(x, z)) + 180) % 360
             return isBetweenInclusive(-viewAngle, viewAngle, angle)
           })
         if (norths.length) {
@@ -96,7 +96,7 @@ const bridges = (islands: Island[], mapData: MapData) => {
           .map(({ west }) => west)
           .filter((west) => {
             const [x, y, z] = subtractVec3(joint.east as Vector3, west as Vector3)
-            const angle = radToDeg(Math.atan2(x, z)) - 90
+            const angle = MathUtils.radToDeg(Math.atan2(x, z)) - 90
             return isBetweenInclusive(-viewAngle, viewAngle, angle)
           })
         if (wests.length) {
@@ -109,7 +109,7 @@ const bridges = (islands: Island[], mapData: MapData) => {
           .map(({ east }) => east)
           .filter((east) => {
             const [x, y, z] = subtractVec3(joint.west as Vector3, east as Vector3)
-            const angle = radToDeg(Math.atan2(x, z)) + 90
+            const angle = MathUtils.radToDeg(Math.atan2(x, z)) + 90
             return isBetweenInclusive(-viewAngle, viewAngle, angle)
           })
         if (easts.length) {

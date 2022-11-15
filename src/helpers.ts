@@ -38,7 +38,8 @@ import {
   Vertex3,
 } from './types'
 import { exportTranslations, resetTranslations } from './assets/i18n'
-import { ArxColor, ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
+import { ArxColor } from 'arx-level-json-converter/types/binary/BinaryIO'
+import { Euler, Vector3 as ThreeJsVector3 } from 'three'
 
 export type MapData = {
   meta: {
@@ -649,51 +650,19 @@ export const flipPolygon = ([a, b, c, d]: Polygon): Polygon => {
 export const sortByDistance = (fromPoint: Vector3) => (a: Vector3, b: Vector3) => {
   const distanceA = distance(fromPoint, a)
   const distanceB = distance(fromPoint, b)
-
   return distanceA - distanceB
 }
 
-// [ a, b, c   [ x     [ ax + by + cz
-//   d, e, f     y   =   dx + ey + fz
-//   g, h, i ]   z ]     gx + hy + iz ]
-const matrix3MulVec3: (matrix: number[], vector: Vector3) => Vector3 = ([a, b, c, d, e, f, g, h, i], [x, y, z]) => {
-  return [a * x + b * y + c * z, d * x + e * y + f * z, g * x + h * y + i * z]
-}
-
-export const degToRad = (deg: number) => (deg * Math.PI) / 180
-export const radToDeg = (rad: number) => rad * (180 / Math.PI)
-
-export const rotateVec3 = (point: Vector3, { a, b, g }: ArxRotation) => {
-  a = degToRad(a)
-  b = degToRad(b)
-  g = degToRad(g)
-
-  const { sin, cos } = Math
-
-  const rotation = [
-    cos(a) * cos(b),
-    cos(a) * sin(b) * sin(g) - sin(a) * cos(g),
-    cos(a) * sin(b) * cos(g) + sin(a) * sin(g),
-    sin(a) * cos(b),
-    sin(a) * sin(b) * sin(g) + cos(a) * cos(g),
-    sin(a) * sin(b) * cos(g) - cos(a) * sin(g),
-    -sin(b),
-    cos(b) * sin(g),
-    cos(b) * cos(g),
-  ]
-
-  return matrix3MulVec3(rotation, point)
-}
-
 export const circleOfVectors = (center: Vector3, radius: number, division: number) => {
-  const angle = 360 / division
+  const angle = (2 * Math.PI) / division
 
   const vectors: Vector3[] = []
 
   for (let i = 0; i < division; i++) {
-    const point: Vector3 = [0, 0, 1 * radius]
-    const rotation: ArxRotation = { a: 0, b: angle * i, g: 0 }
-    vectors.push(move(...rotateVec3(point, rotation), center))
+    const point = new ThreeJsVector3(0, 0, 1 * radius)
+    const rotation = new Euler(0, angle * i, 0, 'XYZ')
+    point.applyEuler(rotation)
+    vectors.push(move(point.x, point.y, point.z, center))
   }
 
   return vectors
