@@ -1,8 +1,9 @@
 #!/bin/bash
 
+# creates tsconfig.tsbuildinfo -> needed for esbuild in the next step
 tsc --project ./tsconfig.json
 
-esbuild ./src/generate.ts\
+esbuild ./src/index.ts\
   --bundle\
   --platform=node\
   --minify\
@@ -14,4 +15,4 @@ esbuild ./src/generate.ts\
   --external:seedrandom\
   --external:tiny-glob
 
-node --require dotenv/config --enable-source-maps ./build/generate.js
+node --require dotenv/config --enable-source-maps ./build/index.js
