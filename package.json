@@ -26,27 +26,27 @@
   },
   "homepage": "https://github.com/meszaros-lajos-gyorgy/arx-level-generator#readme",
   "dependencies": {
-    "arx-level-json-converter": "^3.0.2",
+    "arx-level-json-converter": "^4.0.0",
     "color-rgba": "^2.4.0",
     "nanoid": "^4.0.0",
-    "node-pkware": "^1.0.2",
+    "node-pkware": "^2.0.0",
     "seedrandom": "^3.0.5",
-    "three": "^0.146.0",
+    "three": "^0.147.0",
     "tiny-glob": "^0.2.9"
   },
   "devDependencies": {
     "@types/color-rgba": "^2.1.0",
-    "@types/mocha": "^10.0.0",
-    "@types/node": "^18.11.9",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.11.10",
     "@types/seedrandom": "^3.0.2",
     "@types/three": "^0.146.0",
     "dotenv": "^16.0.3",
-    "esbuild": "^0.15.13",
+    "esbuild": "^0.15.16",
     "mocha": "^10.1.0",
     "nodemon": "^2.0.20",
     "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.1.0",
-    "typescript": "^4.8.4"
+    "tsconfig-paths": "^4.1.1",
+    "typescript": "^4.9.3"
   },
   "keywords": [
     "arx-fatalis"
