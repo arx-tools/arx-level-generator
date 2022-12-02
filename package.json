@@ -4,8 +4,8 @@
   "description": "A tool to generate random Arx Fatalis maps",
   "main": "build/generate.js",
   "engines": {
-    "npm": ">=7.0.0",
-    "node": ">=16.0.0"
+    "npm": ">=8.0.0",
+    "node": ">=18.0.0"
   },
   "scripts": {
     "dev": "npm run generate && npm run compile && npm run run",
