@@ -10,14 +10,10 @@ const { OUTPUTDIR = path.resolve('./dist'), LEVEL = 1 } = process.env
 
 const fts: ArxFTS = {
   header: {
-    path: `C:\\ARX\\Game\\Graph\\Levels\\level${LEVEL}\\`,
-    version: 0.141,
+    levelIdx: LEVEL,
   },
   uniqueHeaders: [],
   sceneHeader: {
-    version: 0.141,
-    sizeX: 160,
-    sizeZ: 160,
     numberOfPolygons: 0,
     playerPosition: { x: 0, y: 0, z: 0 },
     mScenePosition: { x: 0, y: 0, z: 0 },
@@ -53,6 +49,7 @@ const fts: ArxFTS = {
 }
 
 // -------------------
+// addOriginPolygon
 
 const isQuad = true
 const polygonVertices: [ArxVertex, ArxVertex, ArxVertex, ArxVertex] = [
@@ -75,16 +72,23 @@ if (isQuad) {
 }
 
 const NO_TEXTURE = 0
-
+fts.sceneHeader.numberOfPolygons += 1
 fts.polygons.push({
   vertices: polygonVertices,
   tex: NO_TEXTURE,
   norm: norm.toArxVector3(),
   norm2: norm2.toArxVector3(),
-  normals: [norm.toArxVector3(), norm.toArxVector3(), norm.toArxVector3(), norm2.toArxVector3()],
   transval: 0,
   area: 1,
   type: ArxPolygonFlags.Quad | ArxPolygonFlags.NoDraw,
   room: 1,
-  paddy: 0,
 })
+
+// -------------------
+// saveToDisk
+
+const files = {
+  fts: `${OUTPUTDIR}/game/graph/levels/level${LEVEL}/fast.fts.json`,
+  // dlf: `${OUTPUTDIR}/graph/levels/level${LEVEL}/level${LEVEL}.dlf.json`,
+  // llf: `${OUTPUTDIR}/graph/levels/level${LEVEL}/level${LEVEL}.llf.json`,
+}
