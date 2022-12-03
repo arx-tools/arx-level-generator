@@ -38,8 +38,8 @@ import {
   Vertex3,
 } from './types'
 import { exportTranslations, resetTranslations } from './assets/i18n'
-import { ArxColor } from 'arx-level-json-converter/types/binary/BinaryIO'
 import { Euler, Vector3 as ThreeJsVector3 } from 'three'
+import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
 
 export type MapData = {
   meta: {
@@ -107,10 +107,9 @@ export const toRgba = (cssColor: string): RgbaBytes => {
   }
 }
 
-// { r: 127, g: 0, b: 0, a: 1 } -> { r: [0.0..1.0], g: [0.0..1.0], b: [0.0..1.0] }
 export const toArxColor = (color: RgbaBytes): ArxColor => {
-  const { r, g, b } = color
-  return { r: r / 256, g: g / 256, b: b / 256 }
+  const { r, g, b, a } = color
+  return { r, g, b, a }
 }
 
 export const movePlayerTo = (pos: RelativeCoords, mapData: MapData) => {
@@ -210,12 +209,12 @@ const calculateNormals = (mapData: FinalizedMapData) => {
     const [a, b, c, d] = points
 
     if (config.isQuad) {
-      polygon.norm2 = vectorToXYZ(normalize(cross(subtractVec3(c, d), subtractVec3(b, d))))
+      polygon.norm2 = calculateNormal([d, b, c])
     } else {
       polygon.norm2 = vectorToXYZ([0, 0, 0])
     }
 
-    polygon.norm = calculateNormal(points)
+    polygon.norm = calculateNormal([a, b, c])
 
     polygon.normals = [polygon.norm, polygon.norm, polygon.norm, polygon.norm2]
   })
