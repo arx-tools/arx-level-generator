@@ -1,94 +1,201 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import { ArxFTS } from 'arx-level-json-converter/dist/fts/FTS'
-import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
-import { ArxPolygonFlags } from 'arx-level-json-converter/dist/common/constants'
-import path from 'path'
+import { getCellCoords } from 'arx-level-json-converter/dist/common/helpers'
+import { ArxPolygonFlags, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS } from 'arx-level-json-converter/dist/common/constants'
 import { times } from './faux-ramda'
 import { Triangle } from 'three'
 import { Vector3 } from './Vector3'
+import { ArxLLF } from 'arx-level-json-converter/dist/llf/LLF'
+import { NO_TEXTURE } from './constants'
+import { getPackageVersion, uninstall } from './helpers'
+import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
+;(async () => {
+  const { OUTPUTDIR = path.resolve('./dist'), LEVEL = 1 } = process.env
 
-const { OUTPUTDIR = path.resolve('./dist'), LEVEL = 1 } = process.env
+  const now = Math.floor(Date.now() / 1000)
 
-const fts: ArxFTS = {
-  header: {
-    levelIdx: LEVEL,
-  },
-  uniqueHeaders: [],
-  sceneHeader: {
-    numberOfPolygons: 0,
-    playerPosition: { x: 0, y: 0, z: 0 },
-    mScenePosition: { x: 0, y: 0, z: 0 },
-  },
-  textureContainers: [],
-  cells: times((): { anchors: number[] } => ({ anchors: [] }), 160 * 160),
-  polygons: [],
-  anchors: [],
-  portals: [],
-  rooms: [],
-  roomDistances: [
-    {
-      distance: -1,
-      startPosition: { x: 0, y: 0, z: 0 },
-      endPosition: { x: 1, y: 0, z: 0 },
+  const fts: ArxFTS = {
+    header: {
+      levelIdx: LEVEL,
     },
-    {
-      distance: -1,
-      startPosition: { x: 0, y: 0, z: 0 },
-      endPosition: { x: 0, y: 1, z: 0 },
+    uniqueHeaders: [],
+    sceneHeader: {
+      playerPosition: { x: 0, y: 0, z: 0 },
+      mScenePosition: { x: 0, y: 0, z: 0 },
     },
-    {
-      distance: -1,
-      startPosition: { x: 0.984375, y: 0.984375, z: 0 },
-      endPosition: { x: 0, y: 0, z: 0 },
+    textureContainers: [],
+    cells: times((): { anchors: number[] } => ({ anchors: [] }), 160 * 160),
+    polygons: [],
+    anchors: [],
+    portals: [],
+    rooms: [],
+    roomDistances: [
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 1, y: 0, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 0, y: 1, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0.984375, y: 0.984375, z: 0 },
+        endPosition: { x: 0, y: 0, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 0, y: 0, z: 0 },
+      },
+    ],
+  }
+
+  const llf: ArxLLF = {
+    header: {
+      lastUser: `Arx Level Generator - version ${await getPackageVersion()}`,
+      time: now,
+      numberOfShadowPolygons: 0,
+      numberOfIgnoredPolygons: 0,
+      numberOfBackgroundPolygons: 0,
     },
-    {
-      distance: -1,
-      startPosition: { x: 0, y: 0, z: 0 },
-      endPosition: { x: 0, y: 0, z: 0 },
-    },
-  ],
-}
+    lights: [],
+    colors: [],
+  }
 
-// -------------------
-// addOriginPolygon
+  // -------------------
+  // addOriginPolygon
 
-const isQuad = true
-const polygonVertices: [ArxVertex, ArxVertex, ArxVertex, ArxVertex] = [
-  { x: 0, y: 0, z: 0, u: 0, v: 0 },
-  { x: 1, y: 0, z: 0, u: 0, v: 1 },
-  { x: 0, y: 0, z: 1, u: 1, v: 0 },
-  { x: 1, y: 0, z: 1, u: 1, v: 1 },
-]
+  fts.polygons.push({
+    vertices: [
+      { x: 0, y: 0, z: 0, u: 0, v: 0 },
+      { x: 1, y: 0, z: 0, u: 0, v: 1 },
+      { x: 0, y: 0, z: 1, u: 1, v: 0 },
+      { x: 1, y: 0, z: 1, u: 1, v: 1 },
+    ],
+    tex: NO_TEXTURE,
+    norm: { x: 0, y: 0, z: 0 },
+    norm2: { x: 0, y: 0, z: 0 },
+    transval: 0,
+    area: 1,
+    type: ArxPolygonFlags.Quad | ArxPolygonFlags.NoDraw,
+    room: 1,
+  })
 
-const [a, b, c, d] = polygonVertices
+  // -------------------
+  // finalize
 
-const triangle = new Triangle(new Vector3(a.x, a.y, a.z), new Vector3(b.x, b.y, b.z), new Vector3(c.x, c.y, c.z))
-const norm = new Vector3()
-triangle.getNormal(norm)
+  // dlf.header.numberOfBackgroundPolygons = fts.polygons.length
+  llf.header.numberOfBackgroundPolygons = fts.polygons.length
 
-const norm2: Vector3 = new Vector3(0, 0, 0)
-if (isQuad) {
-  const triangle2 = new Triangle(new Vector3(d.x, d.y, d.z), new Vector3(b.x, b.y, b.z), new Vector3(c.x, c.y, c.z))
-  triangle2.getNormal(norm2)
-}
+  // -------------------
+  // calculateNormals
 
-const NO_TEXTURE = 0
-fts.sceneHeader.numberOfPolygons += 1
-fts.polygons.push({
-  vertices: polygonVertices,
-  tex: NO_TEXTURE,
-  norm: norm.toArxVector3(),
-  norm2: norm2.toArxVector3(),
-  transval: 0,
-  area: 1,
-  type: ArxPolygonFlags.Quad | ArxPolygonFlags.NoDraw,
-  room: 1,
-})
+  fts.polygons.forEach((polygon) => {
+    const [a, b, c, d] = polygon.vertices
+    const isQuad = (polygon.type & ArxPolygonFlags.Quad) > 0
 
-// -------------------
-// saveToDisk
+    const norm = new Vector3(0, 0, 0)
+    const triangle = new Triangle(new Vector3(a.x, a.y, a.z), new Vector3(b.x, b.y, b.z), new Vector3(c.x, c.y, c.z))
+    triangle.getNormal(norm)
 
-const files = {
-  fts: `${OUTPUTDIR}/game/graph/levels/level${LEVEL}/fast.fts.json`,
-  // dlf: `${OUTPUTDIR}/graph/levels/level${LEVEL}/level${LEVEL}.dlf.json`,
-  // llf: `${OUTPUTDIR}/graph/levels/level${LEVEL}/level${LEVEL}.llf.json`,
-}
+    const norm2 = new Vector3(0, 0, 0)
+    if (isQuad) {
+      const triangle2 = new Triangle(new Vector3(d.x, d.y, d.z), new Vector3(b.x, b.y, b.z), new Vector3(c.x, c.y, c.z))
+      triangle2.getNormal(norm2)
+    }
+
+    polygon.norm = norm.toArxVector3()
+    polygon.norm2 = norm2.toArxVector3()
+  })
+
+  // -------------------
+  // genereateLight
+
+  let colorIdx = 0
+
+  const colors: ArxColor[] = []
+  const cells: Record<string, number[]> = {}
+
+  fts.polygons.forEach((polygon, idx) => {
+    const [cellX, cellZ] = getCellCoords(polygon.vertices)
+    const key = `${cellZ}--${cellX}`
+
+    if (key in cells) {
+      cells[key].push(idx)
+    } else {
+      cells[key] = [idx]
+    }
+  })
+
+  for (let z = 0; z < MAP_DEPTH_IN_CELLS; z++) {
+    for (let x = 0; x < MAP_WIDTH_IN_CELLS; x++) {
+      const cell = cells[`${z}-${x}`]
+      if (cell) {
+        cell.forEach((idx) => {
+          const polygon = fts.polygons[idx]
+          const isQuad = (polygon.type & ArxPolygonFlags.Quad) > 0
+
+          // TODO: light is gonna be white for now
+          const color: ArxColor = { r: 255, g: 255, b: 255, a: 1 }
+
+          colors.push(color, color, color)
+          polygon.vertices[0].llfColorIdx = colorIdx++
+          polygon.vertices[1].llfColorIdx = colorIdx++
+          polygon.vertices[2].llfColorIdx = colorIdx++
+
+          if (isQuad) {
+            colors.push(color)
+            polygon.vertices[3].llfColorIdx = colorIdx++
+          }
+        })
+      }
+    }
+  }
+
+  // -------------------
+  // saveToDisk
+
+  const defaultOutputDir = path.resolve('./dist')
+
+  console.log('output directory:', OUTPUTDIR)
+
+  if (OUTPUTDIR === defaultOutputDir) {
+    try {
+      await fs.promises.rm('dist', { recursive: true })
+    } catch (e) {}
+  } else {
+    await uninstall(OUTPUTDIR)
+  }
+
+  const files = {
+    // dlf: `${OUTPUTDIR}graph/levels/level${LEVEL}/level${LEVEL}.dlf.json`,
+    fts: `${OUTPUTDIR}game/graph/levels/level${LEVEL}/fast.fts.json`,
+    llf: `${OUTPUTDIR}graph/levels/level${LEVEL}/level${LEVEL}.llf.json`,
+  }
+
+  const manifest = {
+    files: [
+      // files.dlf.replace('.dlf.json', '.dlf'),
+      files.fts.replace('.fts.json', '.fts'),
+      files.llf.replace('.llf.json', '.llf'),
+    ],
+  }
+
+  const tasks = manifest.files.map((filename) => {
+    return fs.promises.mkdir(path.dirname(filename), { recursive: true })
+  })
+
+  for (let task of tasks) {
+    await task
+  }
+
+  // await fs.promises.writeFile(files.dlf, JSON.stringify(dlf))
+  await fs.promises.writeFile(files.fts, JSON.stringify(fts))
+  await fs.promises.writeFile(files.llf, JSON.stringify(llf))
+
+  await fs.promises.writeFile(`${OUTPUTDIR}manifest.json`, JSON.stringify(manifest, null, 2))
+})()
