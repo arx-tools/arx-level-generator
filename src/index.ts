@@ -10,10 +10,35 @@ import { ArxLLF } from 'arx-level-json-converter/dist/llf/LLF'
 import { NO_TEXTURE } from './constants'
 import { getPackageVersion, uninstall } from './helpers'
 import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
+import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
 ;(async () => {
   const { OUTPUTDIR = path.resolve('./dist'), LEVEL = 1 } = process.env
 
   const now = Math.floor(Date.now() / 1000)
+  const generatorId = `Arx Level Generator - version ${await getPackageVersion()}`
+
+  const dlf: ArxDLF = {
+    header: {
+      lastUser: generatorId,
+      time: now,
+      posEdit: { x: 0, y: 0, z: 0 },
+      angleEdit: { a: 0, b: 0, g: 0 },
+      numberOfNodes: 0,
+      numberOfNodeLinks: 0,
+      numberOfZones: 0,
+      numberOfBackgroundPolygons: 0,
+      numberOfIgnoredPolygons: 0,
+      numberOfChildPolygons: 0,
+      offset: { x: 0, y: 0, z: 0 },
+    },
+    scene: {
+      levelIdx: LEVEL,
+    },
+    interactiveObjects: [],
+    lights: [],
+    fogs: [],
+    paths: [],
+  }
 
   const fts: ArxFTS = {
     header: {
@@ -56,7 +81,7 @@ import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
 
   const llf: ArxLLF = {
     header: {
-      lastUser: `Arx Level Generator - version ${await getPackageVersion()}`,
+      lastUser: generatorId,
       time: now,
       numberOfShadowPolygons: 0,
       numberOfIgnoredPolygons: 0,
@@ -88,7 +113,7 @@ import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
   // -------------------
   // finalize
 
-  // dlf.header.numberOfBackgroundPolygons = fts.polygons.length
+  dlf.header.numberOfBackgroundPolygons = fts.polygons.length
   llf.header.numberOfBackgroundPolygons = fts.polygons.length
 
   // -------------------
@@ -172,14 +197,14 @@ import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
   }
 
   const files = {
-    // dlf: `${OUTPUTDIR}graph/levels/level${LEVEL}/level${LEVEL}.dlf.json`,
+    dlf: `${OUTPUTDIR}graph/levels/level${LEVEL}/level${LEVEL}.dlf.json`,
     fts: `${OUTPUTDIR}game/graph/levels/level${LEVEL}/fast.fts.json`,
     llf: `${OUTPUTDIR}graph/levels/level${LEVEL}/level${LEVEL}.llf.json`,
   }
 
   const manifest = {
     files: [
-      // files.dlf.replace('.dlf.json', '.dlf'),
+      files.dlf.replace('.dlf.json', '.dlf'),
       files.fts.replace('.fts.json', '.fts'),
       files.llf.replace('.llf.json', '.llf'),
     ],
@@ -193,9 +218,9 @@ import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
     await task
   }
 
-  // await fs.promises.writeFile(files.dlf, JSON.stringify(dlf))
+  await fs.promises.writeFile(files.dlf, JSON.stringify(dlf))
   await fs.promises.writeFile(files.fts, JSON.stringify(fts))
   await fs.promises.writeFile(files.llf, JSON.stringify(llf))
 
-  await fs.promises.writeFile(`${OUTPUTDIR}manifest.json`, JSON.stringify(manifest, null, 2))
+  await fs.promises.writeFile(`${OUTPUTDIR}arx-level-generator-manifest.json`, JSON.stringify(manifest, null, 2))
 })()
