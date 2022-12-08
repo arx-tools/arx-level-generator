@@ -2,7 +2,7 @@
 
 - Sirs (Sergey Vershinin)
 - Interval (Gleb Rodin)
-- Michel
+- Michel Mohr
 - NotHere
 
 ## Credits
@@ -20,7 +20,7 @@
 - `assets/project/the-backrooms/socket-old.bmp`
 - `assets/project/the-backrooms/socket-dirty.bmp`
 
-### Michel
+### Michel Mohr
 
 - `graph/obj3d/textures/npc_human_base_lali_head.bmp`
 
