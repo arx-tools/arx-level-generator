@@ -12,7 +12,7 @@ import { getPackageVersion, uninstall } from './helpers'
 import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
 import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
 ;(async () => {
-  const { OUTPUTDIR = path.resolve('./dist'), LEVEL = 1 } = process.env
+  const { OUTPUTDIR = path.resolve('./dist'), LEVEL = '1' } = process.env
 
   const now = Math.floor(Date.now() / 1000)
   const generatorId = `Arx Level Generator - version ${await getPackageVersion()}`
@@ -32,7 +32,7 @@ import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
       offset: { x: 0, y: 0, z: 0 },
     },
     scene: {
-      levelIdx: LEVEL,
+      levelIdx: parseInt(LEVEL),
     },
     interactiveObjects: [],
     lights: [],
@@ -42,7 +42,7 @@ import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
 
   const fts: ArxFTS = {
     header: {
-      levelIdx: LEVEL,
+      levelIdx: parseInt(LEVEL),
     },
     uniqueHeaders: [],
     sceneHeader: {
@@ -50,11 +50,14 @@ import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
       mScenePosition: { x: 0, y: 0, z: 0 },
     },
     textureContainers: [],
-    cells: times((): { anchors: number[] } => ({ anchors: [] }), 160 * 160),
+    cells: times(() => ({}), 160 * 160),
     polygons: [],
     anchors: [],
     portals: [],
-    rooms: [],
+    rooms: [
+      { portals: [], polygons: [] },
+      { portals: [], polygons: [] },
+    ],
     roomDistances: [
       {
         distance: -1,
