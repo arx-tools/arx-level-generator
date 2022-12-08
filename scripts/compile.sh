@@ -20,21 +20,26 @@ arx-convert --version
 
 implode --version
 
+echo ""
+
 cd "${OUTPUTDIR}game/graph/levels/level$LEVEL"
 
-echo "FTS"
+echo ""
+echo "compiling FTS"
 
-cat fast.fts.json | arx-convert --from=json --to=fts | implode -b -l --offset=280 > fast.fts
+cat fast.fts.json | arx-convert --from=json --to=fts | implode -b -l --offset=280 --output=fast.fts --verbose
 
 cd "${OUTPUTDIR}graph/levels/level$LEVEL"
 
-echo "LLF"
+echo ""
+echo "compiling LLF"
 
-cat level$LEVEL.llf.json | arx-convert --from=json --to=llf | implode -b -l --offset=0 > level$LEVEL.llf
+cat level$LEVEL.llf.json | arx-convert --from=json --to=llf | implode -b -l --offset=0 --output=level$LEVEL.llf --verbose
 
-echo "DLF"
+echo ""
+echo "compiling DLF"
 
-cat level$LEVEL.dlf.json | arx-convert --from=json --to=dlf | implode -b -l --offset=8520 > level$LEVEL.dlf
+cat level$LEVEL.dlf.json | arx-convert --from=json --to=dlf | implode -b -l --offset=8520 --output=level$LEVEL.dlf --verbose
 
 if [ "$CALCULATE_LIGHTING" == "1" ]; then
   echo "Fredlllll's lighting calculation"
@@ -42,4 +47,5 @@ if [ "$CALCULATE_LIGHTING" == "1" ]; then
   ${REPO_ROOT}lib/fredlllll-lighting-calculator/linux/ArxLibertatisLightingCalculator --level "level${LEVEL}" --arx-data-dir $OUTPUTDIR --lighting-profile DistanceAngle
 fi
 
+echo ""
 echo "done"

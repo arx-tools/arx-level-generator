@@ -116,6 +116,8 @@ import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
   dlf.header.numberOfBackgroundPolygons = fts.polygons.length
   llf.header.numberOfBackgroundPolygons = fts.polygons.length
 
+  fts.sceneHeader.mScenePosition = { x: 6000, y: -140, z: 6000 }
+
   // -------------------
   // calculateNormals
 
@@ -142,7 +144,6 @@ import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
 
   let colorIdx = 0
 
-  const colors: ArxColor[] = []
   const cells: Record<string, number[]> = {}
 
   fts.polygons.forEach((polygon, idx) => {
@@ -158,7 +159,7 @@ import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
 
   for (let z = 0; z < MAP_DEPTH_IN_CELLS; z++) {
     for (let x = 0; x < MAP_WIDTH_IN_CELLS; x++) {
-      const cell = cells[`${z}-${x}`]
+      const cell = cells[`${z}--${x}`]
       if (cell) {
         cell.forEach((idx) => {
           const polygon = fts.polygons[idx]
@@ -167,13 +168,13 @@ import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
           // TODO: light is gonna be white for now
           const color: ArxColor = { r: 255, g: 255, b: 255, a: 1 }
 
-          colors.push(color, color, color)
+          llf.colors.push(color, color, color)
           polygon.vertices[0].llfColorIdx = colorIdx++
           polygon.vertices[1].llfColorIdx = colorIdx++
           polygon.vertices[2].llfColorIdx = colorIdx++
 
           if (isQuad) {
-            colors.push(color)
+            llf.colors.push(color)
             polygon.vertices[3].llfColorIdx = colorIdx++
           }
         })
@@ -218,9 +219,9 @@ import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
     await task
   }
 
-  await fs.promises.writeFile(files.dlf, JSON.stringify(dlf))
-  await fs.promises.writeFile(files.fts, JSON.stringify(fts))
-  await fs.promises.writeFile(files.llf, JSON.stringify(llf))
+  await fs.promises.writeFile(files.dlf, JSON.stringify(dlf, null, 2))
+  await fs.promises.writeFile(files.fts, JSON.stringify(fts, null, 2))
+  await fs.promises.writeFile(files.llf, JSON.stringify(llf, null, 2))
 
   await fs.promises.writeFile(`${OUTPUTDIR}arx-level-generator-manifest.json`, JSON.stringify(manifest, null, 2))
 })()
