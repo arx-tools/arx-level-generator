@@ -27,7 +27,9 @@ cd "${OUTPUTDIR}game/graph/levels/level$LEVEL"
 echo ""
 echo "compiling FTS"
 
-cat fast.fts.json | arx-convert --from=json --to=fts | implode -b -l --offset=280 --output=fast.fts --verbose
+cat fast.fts.json | arx-convert --from=json --to=fts > fast.fts.repacked
+cat fast.fts.repacked | implode -b -l --offset=$(arx-header-size fast.fts.repacked --format=fts) --output=fast.fts --verbose
+rm fast.fts.repacked
 
 cd "${OUTPUTDIR}graph/levels/level$LEVEL"
 
@@ -39,7 +41,9 @@ cat level$LEVEL.llf.json | arx-convert --from=json --to=llf | implode -b -l --of
 echo ""
 echo "compiling DLF"
 
-cat level$LEVEL.dlf.json | arx-convert --from=json --to=dlf | implode -b -l --offset=8520 --output=level$LEVEL.dlf --verbose
+cat level$LEVEL.dlf.json | arx-convert --from=json --to=dlf > level$LEVEL.dlf.repacked
+cat level$LEVEL.dlf.repacked | implode -b -l --offset=$(arx-header-size level$LEVEL.dlf.repacked --format=dlf) --output=level$LEVEL.dlf --verbose
+rm level$LEVEL.dlf.repacked
 
 if [ "$CALCULATE_LIGHTING" == "1" ]; then
   echo "Fredlllll's lighting calculation"

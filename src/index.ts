@@ -11,12 +11,23 @@ import { NO_TEXTURE } from './constants'
 import { getPackageVersion, uninstall } from './helpers'
 import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
 import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
+import { ArxVector3 } from 'arx-level-json-converter/dist/types'
 ;(async () => {
   const { OUTPUTDIR = path.resolve('./dist'), LEVEL = '1' } = process.env
 
   const now = Math.floor(Date.now() / 1000)
   const generatorId = `Arx Level Generator - version ${await getPackageVersion()}`
 
+  const rawDlf = await fs.promises.readFile(path.resolve(__dirname, '../assets/levels/level1/level1.dlf.json'), 'utf-8')
+  const dlf = JSON.parse(rawDlf) as ArxDLF
+
+  const rawFts = await fs.promises.readFile(path.resolve(__dirname, '../assets/levels/level1/fast.fts.json'), 'utf-8')
+  const fts = JSON.parse(rawFts) as ArxFTS
+
+  const rawLlf = await fs.promises.readFile(path.resolve(__dirname, '../assets/levels/level1/level1.llf.json'), 'utf-8')
+  const llf = JSON.parse(rawLlf) as ArxLLF
+
+  /*
   const dlf: ArxDLF = {
     header: {
       lastUser: generatorId,
@@ -112,6 +123,7 @@ import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
     type: ArxPolygonFlags.Quad | ArxPolygonFlags.NoDraw,
     room: 1,
   })
+  */
 
   // -------------------
   // finalize
@@ -119,7 +131,8 @@ import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
   dlf.header.numberOfBackgroundPolygons = fts.polygons.length
   llf.header.numberOfBackgroundPolygons = fts.polygons.length
 
-  fts.sceneHeader.mScenePosition = { x: 6000, y: -140, z: 6000 }
+  // const playerSpawn: ArxVector3 = { x: 6000, y: -140, z: 6000 }
+  // fts.sceneHeader.mScenePosition = playerSpawn
 
   // -------------------
   // calculateNormals
@@ -168,8 +181,8 @@ import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
           const polygon = fts.polygons[idx]
           const isQuad = (polygon.type & ArxPolygonFlags.Quad) > 0
 
-          // TODO: light is gonna be white for now
-          const color: ArxColor = { r: 255, g: 255, b: 255, a: 1 }
+          // TODO: light is gonna be red for now
+          const color: ArxColor = { r: 255, g: 0, b: 0, a: 1 }
 
           llf.colors.push(color, color, color)
           polygon.vertices[0].llfColorIdx = colorIdx++
