@@ -1,6 +1,5 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { ArxFTS } from 'arx-level-json-converter/dist/fts/FTS'
 import { getCellCoords } from 'arx-level-json-converter/dist/common/helpers'
 import { ArxPolygonFlags, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS } from 'arx-level-json-converter/dist/common/constants'
 import { times } from './faux-ramda'
@@ -11,22 +10,7 @@ import { NO_TEXTURE } from './constants'
 import { getPackageVersion, uninstall } from './helpers'
 import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
 import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
-import { ArxVector3 } from 'arx-level-json-converter/dist/types'
-import { ArxPolygon } from 'arx-level-json-converter/dist/fts/Polygon'
-import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
-
-type ExtendedArxVertex = ArxVertex & {
-  color?: ArxColor
-}
-
-type ExtendedArxPolygon = Omit<ArxPolygon, 'vertices'> & {
-  vertices: [ExtendedArxVertex, ExtendedArxVertex, ExtendedArxVertex, ExtendedArxVertex]
-  normalsCalculated?: boolean
-}
-
-type ExtendedArxFTS = Omit<ArxFTS, 'polygons'> & {
-  polygons: ExtendedArxPolygon[]
-}
+import { ExtendedArxFTS } from './types'
 
 // ....
 ;(async () => {
@@ -34,6 +18,7 @@ type ExtendedArxFTS = Omit<ArxFTS, 'polygons'> & {
 
   const now = Math.floor(Date.now() / 1000)
   const generatorId = `Arx Level Generator - version ${await getPackageVersion()}`
+  const levelIdx = parseInt(LEVEL)
 
   // -------------------
   // load existing level
@@ -65,7 +50,6 @@ type ExtendedArxFTS = Omit<ArxFTS, 'polygons'> & {
 
   llf.header.lastUser = generatorId
   llf.header.time = now
-
   llf.colors = []
 
   /*
@@ -87,7 +71,7 @@ type ExtendedArxFTS = Omit<ArxFTS, 'polygons'> & {
       offset: { x: 0, y: 0, z: 0 },
     },
     scene: {
-      levelIdx: parseInt(LEVEL),
+      levelIdx,
     },
     interactiveObjects: [],
     lights: [],
@@ -95,9 +79,9 @@ type ExtendedArxFTS = Omit<ArxFTS, 'polygons'> & {
     paths: [],
   }
 
-  const fts: ArxFTS = {
+  const fts: ExtendedArxFTS = {
     header: {
-      levelIdx: parseInt(LEVEL),
+      levelIdx,
     },
     uniqueHeaders: [],
     sceneHeader: {
@@ -211,8 +195,6 @@ type ExtendedArxFTS = Omit<ArxFTS, 'polygons'> & {
   // -------------------
   // genereateLight
 
-  let colorIdx = 0
-
   const cells: Record<string, number[]> = {}
 
   fts.polygons.forEach((polygon, idx) => {
@@ -226,6 +208,9 @@ type ExtendedArxFTS = Omit<ArxFTS, 'polygons'> & {
     }
   })
 
+  let colorIdx = 0
+  const fallbackColor: ArxColor = { r: 255, g: 255, b: 255, a: 1 }
+
   for (let z = 0; z < MAP_DEPTH_IN_CELLS; z++) {
     for (let x = 0; x < MAP_WIDTH_IN_CELLS; x++) {
       const cell = cells[`${z}--${x}`]
@@ -233,20 +218,10 @@ type ExtendedArxFTS = Omit<ArxFTS, 'polygons'> & {
         cell.forEach((idx) => {
           const polygon = fts.polygons[idx]
           const isQuad = (polygon.type & ArxPolygonFlags.Quad) > 0
-          const fallbackColor: ArxColor = { r: 255, g: 255, b: 255, a: 1 }
 
-          llf.colors.push(
-            polygon.vertices[0]?.color ?? fallbackColor,
-            polygon.vertices[1]?.color ?? fallbackColor,
-            polygon.vertices[2]?.color ?? fallbackColor,
-          )
-          polygon.vertices[0].llfColorIdx = colorIdx++
-          polygon.vertices[1].llfColorIdx = colorIdx++
-          polygon.vertices[2].llfColorIdx = colorIdx++
-
-          if (isQuad) {
-            llf.colors.push(polygon.vertices[3]?.color ?? fallbackColor)
-            polygon.vertices[3].llfColorIdx = colorIdx++
+          for (let i = 0; i < (isQuad ? 4 : 3); i++) {
+            llf.colors.push(polygon.vertices[i]?.color ?? fallbackColor)
+            polygon.vertices[i].llfColorIdx = colorIdx++
           }
         })
       }
@@ -269,9 +244,9 @@ type ExtendedArxFTS = Omit<ArxFTS, 'polygons'> & {
   }
 
   const files = {
-    dlf: `${OUTPUTDIR}graph/levels/level${LEVEL}/level${LEVEL}.dlf.json`,
-    fts: `${OUTPUTDIR}game/graph/levels/level${LEVEL}/fast.fts.json`,
-    llf: `${OUTPUTDIR}graph/levels/level${LEVEL}/level${LEVEL}.llf.json`,
+    dlf: `${OUTPUTDIR}graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`,
+    fts: `${OUTPUTDIR}game/graph/levels/level${levelIdx}/fast.fts.json`,
+    llf: `${OUTPUTDIR}graph/levels/level${levelIdx}/level${levelIdx}.llf.json`,
   }
 
   const manifest = {
