@@ -12,22 +12,66 @@ import { getPackageVersion, uninstall } from './helpers'
 import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
 import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
 import { ArxVector3 } from 'arx-level-json-converter/dist/types'
+import { ArxPolygon } from 'arx-level-json-converter/dist/fts/Polygon'
+import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
+
+type ExtendedArxVertex = ArxVertex & {
+  color?: ArxColor
+}
+
+type ExtendedArxPolygon = Omit<ArxPolygon, 'vertices'> & {
+  vertices: [ExtendedArxVertex, ExtendedArxVertex, ExtendedArxVertex, ExtendedArxVertex]
+  normalsCalculated?: boolean
+}
+
+type ExtendedArxFTS = Omit<ArxFTS, 'polygons'> & {
+  polygons: ExtendedArxPolygon[]
+}
+
+// ....
 ;(async () => {
   const { OUTPUTDIR = path.resolve('./dist'), LEVEL = '1' } = process.env
 
   const now = Math.floor(Date.now() / 1000)
   const generatorId = `Arx Level Generator - version ${await getPackageVersion()}`
 
+  // -------------------
+  // load existing level
+
   const rawDlf = await fs.promises.readFile(path.resolve(__dirname, '../assets/levels/level1/level1.dlf.json'), 'utf-8')
   const dlf = JSON.parse(rawDlf) as ArxDLF
 
   const rawFts = await fs.promises.readFile(path.resolve(__dirname, '../assets/levels/level1/fast.fts.json'), 'utf-8')
-  const fts = JSON.parse(rawFts) as ArxFTS
+  const fts = JSON.parse(rawFts) as ExtendedArxFTS
 
   const rawLlf = await fs.promises.readFile(path.resolve(__dirname, '../assets/levels/level1/level1.llf.json'), 'utf-8')
   const llf = JSON.parse(rawLlf) as ArxLLF
 
+  // -------------------
+  // reset stuff in loaded level
+
+  dlf.header.lastUser = generatorId
+  dlf.header.time = now
+
+  fts.polygons.forEach((polygon) => {
+    polygon.normalsCalculated = true
+    polygon.vertices.forEach((vertex) => {
+      if (typeof vertex.llfColorIdx === 'number') {
+        vertex.color = llf.colors[vertex.llfColorIdx]
+        delete vertex.llfColorIdx
+      }
+    })
+  })
+
+  llf.header.lastUser = generatorId
+  llf.header.time = now
+
+  llf.colors = []
+
   /*
+  // -------------------
+  // generate blank level
+
   const dlf: ArxDLF = {
     header: {
       lastUser: generatorId,
@@ -126,6 +170,11 @@ import { ArxVector3 } from 'arx-level-json-converter/dist/types'
   */
 
   // -------------------
+  // adding stuff to the level
+
+  // TODO
+
+  // -------------------
   // finalize
 
   dlf.header.numberOfBackgroundPolygons = fts.polygons.length
@@ -138,6 +187,10 @@ import { ArxVector3 } from 'arx-level-json-converter/dist/types'
   // calculateNormals
 
   fts.polygons.forEach((polygon) => {
+    if (polygon?.normalsCalculated === true) {
+      return
+    }
+
     const [a, b, c, d] = polygon.vertices
     const isQuad = (polygon.type & ArxPolygonFlags.Quad) > 0
 
@@ -180,17 +233,19 @@ import { ArxVector3 } from 'arx-level-json-converter/dist/types'
         cell.forEach((idx) => {
           const polygon = fts.polygons[idx]
           const isQuad = (polygon.type & ArxPolygonFlags.Quad) > 0
+          const fallbackColor: ArxColor = { r: 255, g: 255, b: 255, a: 1 }
 
-          // TODO: light is gonna be red for now
-          const color: ArxColor = { r: 255, g: 0, b: 0, a: 1 }
-
-          llf.colors.push(color, color, color)
+          llf.colors.push(
+            polygon.vertices[0]?.color ?? fallbackColor,
+            polygon.vertices[1]?.color ?? fallbackColor,
+            polygon.vertices[2]?.color ?? fallbackColor,
+          )
           polygon.vertices[0].llfColorIdx = colorIdx++
           polygon.vertices[1].llfColorIdx = colorIdx++
           polygon.vertices[2].llfColorIdx = colorIdx++
 
           if (isQuad) {
-            llf.colors.push(color)
+            llf.colors.push(polygon.vertices[3]?.color ?? fallbackColor)
             polygon.vertices[3].llfColorIdx = colorIdx++
           }
         })
