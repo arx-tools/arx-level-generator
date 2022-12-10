@@ -81,6 +81,8 @@ export class ArxMap {
     // mScenePosition + posEdit = 8177.17 / 2837.37 / 9356.72
 
     // actual center ~= 9259.16 / 2928.28 / 6772.25
+
+    // mini offset for level1 = 1 / 10
   }
 
   private static async getGeneratorId() {
