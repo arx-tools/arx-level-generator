@@ -2,28 +2,61 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { getCellCoords } from 'arx-level-json-converter/dist/common/helpers'
 import { ArxPolygonFlags, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS } from 'arx-level-json-converter/dist/common/constants'
-import { max, min, times } from './faux-ramda'
+import { times } from './faux-ramda'
 import { Triangle } from 'three'
 import { Vector3 } from './Vector3'
 import { ArxLLF } from 'arx-level-json-converter/dist/llf/LLF'
 import { NO_TEXTURE } from './constants'
 import { getPackageVersion, uninstall } from './helpers'
-import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
 import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
-import { ExtendedArxFTS } from './types'
-import { ArxVector3 } from 'arx-level-json-converter/dist/types'
+import { ArxFTS } from 'arx-level-json-converter/dist/fts/FTS'
+import { ExtendedArxPolygon, ExtendedArxVertex } from './types'
+import { Vertex } from './Vertex'
+import { transparent } from './Color'
+import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
 
 export class ArxMap {
   private dlf: ArxDLF
-  private fts: ExtendedArxFTS
+  private fts: ArxFTS
   private llf: ArxLLF
-  private playerSpawn: Vector3
+  private polygons: ExtendedArxPolygon[]
 
-  private constructor(dlf: ArxDLF, fts: ExtendedArxFTS, llf: ArxLLF) {
+  private constructor(dlf: ArxDLF, fts: ArxFTS, llf: ArxLLF, normalsCalculated = false) {
     this.dlf = dlf
     this.fts = fts
     this.llf = llf
-    this.playerSpawn = new Vector3(0, 0, 0)
+    this.polygons = []
+
+    this.deserializePolygons(normalsCalculated)
+  }
+
+  private deserializePolygons(normalsCalculated: boolean) {
+    this.polygons = this.fts.polygons.map(({ vertices, norm, norm2, ...polygonData }): ExtendedArxPolygon => {
+      const extendedVertices = vertices.map(({ llfColorIdx, ...vertex }) => {
+        const extendedVertex: ExtendedArxVertex = vertex
+        if (typeof llfColorIdx === 'number') {
+          extendedVertex.color = this.llf.colors[llfColorIdx]
+        }
+        return Vertex.fromArxVertex(extendedVertex)
+      })
+
+      return {
+        ...polygonData,
+        vertices: extendedVertices as [Vertex, Vertex, Vertex, Vertex],
+        normalsCalculated,
+        norm: Vector3.fromArxVector3(norm),
+        norm2: Vector3.fromArxVector3(norm2),
+      }
+    })
+
+    this.fts.polygons = []
+    this.llf.colors = []
+  }
+
+  private serializePolygons() {
+    // TODO: split this.polygons into fts.polygons and llf.colors
+
+    this.polygons = []
   }
 
   static async loadLevel(levelIdx: number) {
@@ -33,56 +66,21 @@ export class ArxMap {
     const dlf = JSON.parse(rawDlf) as ArxDLF
 
     const rawFts = await fs.promises.readFile(path.resolve(folder, `fast.fts.json`), 'utf-8')
-    const fts = JSON.parse(rawFts) as ExtendedArxFTS
+    const fts = JSON.parse(rawFts) as ArxFTS
 
     const rawLlf = await fs.promises.readFile(path.resolve(folder, `level${levelIdx}.llf.json`), 'utf-8')
     const llf = JSON.parse(rawLlf) as ArxLLF
 
-    const map = new this(dlf, fts, llf)
-
-    await map.cleanupLoadedLevel()
-
-    return map
-  }
-
-  private async cleanupLoadedLevel() {
     const now = Math.floor(Date.now() / 1000)
     const generatorId = await ArxMap.getGeneratorId()
 
-    this.dlf.header.lastUser = generatorId
-    this.dlf.header.time = now
+    dlf.header.lastUser = generatorId
+    dlf.header.time = now
 
-    this.fts.polygons.forEach((polygon) => {
-      polygon.normalsCalculated = true
-      polygon.vertices.forEach((vertex) => {
-        if (typeof vertex.llfColorIdx === 'number') {
-          vertex.color = this.llf.colors[vertex.llfColorIdx]
-          delete vertex.llfColorIdx
-        }
-      })
-    })
+    llf.header.lastUser = generatorId
+    llf.header.time = now
 
-    this.llf.header.lastUser = generatorId
-    this.llf.header.time = now
-    this.llf.colors = []
-
-    const xs = this.fts.polygons.flatMap(({ vertices }) => vertices).flatMap(({ x }) => x)
-    const zs = this.fts.polygons.flatMap(({ vertices }) => vertices).flatMap(({ z }) => z)
-
-    // max(xs) = 13650.30078125
-    // max(zs) = 12150.646484375
-    // console.log(max(xs) / 2, '/', max(zs) / 2) // 6825.150390625 / 6075.3232421875
-
-    // console.log(this.fts.sceneHeader.mScenePosition) // { x: 16250, y: 3105.0791015625, z: 5550 }
-    // console.log(this.fts.sceneHeader.playerPosition) // { x: 8650, y: 3105.0791015625, z: 8550 }
-    // console.log(this.dlf.header.posEdit) // { x: -8072.8330078125, y: -267.7666015625, z: 3806.7236328125 }
-    // console.log(this.dlf.header.offset) // { x: 0, y: 0, z: 0 }
-
-    // mScenePosition + posEdit = 8177.17 / 2837.37 / 9356.72
-
-    // actual center ~= 9259.16 / 2928.28 / 6772.25
-
-    // mini offset for level1 = 1 / 10
+    return new ArxMap(dlf, fts, llf, true)
   }
 
   private static async getGeneratorId() {
@@ -116,7 +114,7 @@ export class ArxMap {
       paths: [],
     }
 
-    const fts: ExtendedArxFTS = {
+    const fts: ArxFTS = {
       header: {
         levelIdx: 1,
       },
@@ -178,18 +176,17 @@ export class ArxMap {
   }
 
   private alignMinimapWithPolygons() {
-    const transparent: ArxColor = { r: 0, g: 0, b: 0, a: 0 }
-
-    this.fts.polygons.push({
+    this.polygons.push({
       vertices: [
-        { x: 0, y: 0, z: 0, u: 0, v: 0, color: transparent },
-        { x: 1, y: 0, z: 0, u: 0, v: 1, color: transparent },
-        { x: 0, y: 0, z: 1, u: 1, v: 0, color: transparent },
-        { x: 1, y: 0, z: 1, u: 1, v: 1, color: transparent },
+        new Vertex(0, 0, 0, 0, 0, transparent),
+        new Vertex(1, 0, 0, 0, 1, transparent),
+        new Vertex(0, 0, 1, 1, 0, transparent),
+        new Vertex(1, 0, 1, 1, 1, transparent),
       ],
+      normalsCalculated: false,
       tex: NO_TEXTURE,
-      norm: { x: 0, y: 0, z: 0 },
-      norm2: { x: 0, y: 0, z: 0 },
+      norm: new Vector3(),
+      norm2: new Vector3(),
       transval: 0,
       area: 1,
       type: ArxPolygonFlags.Quad | ArxPolygonFlags.NoDraw,
@@ -198,8 +195,12 @@ export class ArxMap {
   }
 
   public finalize() {
-    this.dlf.header.numberOfBackgroundPolygons = this.fts.polygons.length
-    this.llf.header.numberOfBackgroundPolygons = this.fts.polygons.length
+    this.dlf.header.numberOfBackgroundPolygons = this.polygons.length
+    this.llf.header.numberOfBackgroundPolygons = this.polygons.length
+
+    this.calculateNormals()
+    this.generateLights()
+    this.serializePolygons()
   }
 
   public getPlayerSpawn() {
@@ -212,39 +213,31 @@ export class ArxMap {
     this.fts.sceneHeader.mScenePosition = playerSpawn.sub(posEdit).toArxVector3()
   }
 
-  public calculateNormals() {
-    this.fts.polygons.forEach((polygon) => {
-      if (polygon?.normalsCalculated === true) {
+  private calculateNormals() {
+    this.polygons.forEach((polygon) => {
+      if (polygon.normalsCalculated === true) {
         return
       }
 
-      const [a, b, c, d] = polygon.vertices
       const isQuad = (polygon.type & ArxPolygonFlags.Quad) > 0
-      const aVector = new Vector3(a.x, a.y, a.z)
-      const bVector = new Vector3(b.x, b.y, b.z)
-      const cVector = new Vector3(c.x, c.y, c.z)
-      const dVector = new Vector3(d.x, d.y, d.z)
+      const [a, b, c, d] = polygon.vertices
 
-      const norm = new Vector3(0, 0, 0)
-      const triangle = new Triangle(aVector, bVector, cVector)
-      triangle.getNormal(norm)
+      const triangle = new Triangle(a, b, c)
+      triangle.getNormal(polygon.norm)
 
-      const norm2 = new Vector3(0, 0, 0)
       if (isQuad) {
-        const triangle2 = new Triangle(dVector, bVector, cVector)
-        triangle2.getNormal(norm2)
+        const triangle2 = new Triangle(d, b, c)
+        triangle2.getNormal(polygon.norm2)
       }
-
-      polygon.norm = norm.toArxVector3()
-      polygon.norm2 = norm2.toArxVector3()
     })
   }
 
-  public generateLights() {
+  private generateLights() {
     const cells: Record<string, number[]> = {}
 
-    this.fts.polygons.forEach((polygon, idx) => {
-      const [cellX, cellZ] = getCellCoords(polygon.vertices)
+    this.polygons.forEach((polygon, idx) => {
+      const vertices = polygon.vertices.map((vertex) => vertex.toArxVertex())
+      const [cellX, cellZ] = getCellCoords(vertices as [ArxVertex, ArxVertex, ArxVertex, ArxVertex])
       const key = `${cellZ}--${cellX}`
 
       if (key in cells) {
@@ -255,18 +248,18 @@ export class ArxMap {
     })
 
     let colorIdx = 0
-    const fallbackColor: ArxColor = { r: 255, g: 255, b: 255, a: 1 }
 
     for (let z = 0; z < MAP_DEPTH_IN_CELLS; z++) {
       for (let x = 0; x < MAP_WIDTH_IN_CELLS; x++) {
         const cell = cells[`${z}--${x}`]
         if (cell) {
           cell.forEach((idx) => {
-            const polygon = this.fts.polygons[idx]
+            const polygon = this.polygons[idx]
             const isQuad = (polygon.type & ArxPolygonFlags.Quad) > 0
 
             for (let i = 0; i < (isQuad ? 4 : 3); i++) {
-              this.llf.colors.push(polygon.vertices[i]?.color ?? fallbackColor)
+              const color = polygon.vertices[i]?.color ?? transparent
+              this.llf.colors.push(color.toArxColor())
               polygon.vertices[i].llfColorIdx = colorIdx++
             }
           })

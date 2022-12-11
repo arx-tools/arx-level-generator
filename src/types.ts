@@ -1,17 +1,16 @@
 import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
-import { ArxFTS } from 'arx-level-json-converter/dist/fts/FTS'
 import { ArxPolygon } from 'arx-level-json-converter/dist/fts/Polygon'
 import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
+import { Vector3 } from './Vector3'
+import { Vertex } from './Vertex'
 
 export type ExtendedArxVertex = ArxVertex & {
   color?: ArxColor
 }
 
-export type ExtendedArxPolygon = Omit<ArxPolygon, 'vertices'> & {
-  vertices: [ExtendedArxVertex, ExtendedArxVertex, ExtendedArxVertex, ExtendedArxVertex]
-  normalsCalculated?: boolean
-}
-
-export type ExtendedArxFTS = Omit<ArxFTS, 'polygons'> & {
-  polygons: ExtendedArxPolygon[]
+export type ExtendedArxPolygon = Omit<ArxPolygon, 'vertices' | 'norm' | 'norm2'> & {
+  vertices: [Vertex, Vertex, Vertex, Vertex]
+  normalsCalculated: boolean
+  norm: Vector3
+  norm2: Vector3
 }
