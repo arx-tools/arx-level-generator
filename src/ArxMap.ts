@@ -194,7 +194,7 @@ export class ArxMap {
     })
   }
 
-  public finalize() {
+  finalize() {
     this.dlf.header.numberOfBackgroundPolygons = this.polygons.length
     this.llf.header.numberOfBackgroundPolygons = this.polygons.length
 
@@ -203,12 +203,12 @@ export class ArxMap {
     this.serializePolygons()
   }
 
-  public getPlayerSpawn() {
+  getPlayerSpawn() {
     const posEdit = Vector3.fromArxVector3(this.dlf.header.posEdit)
     return Vector3.fromArxVector3(this.fts.sceneHeader.mScenePosition).add(posEdit)
   }
 
-  public setPlayerSpawn(playerSpawn: Vector3) {
+  setPlayerSpawn(playerSpawn: Vector3) {
     const posEdit = Vector3.fromArxVector3(this.dlf.header.posEdit)
     this.fts.sceneHeader.mScenePosition = playerSpawn.sub(posEdit).toArxVector3()
   }
@@ -268,7 +268,7 @@ export class ArxMap {
     }
   }
 
-  public async saveToDisk(outputDir: string, levelIdx: number, prettify: boolean = false) {
+  async saveToDisk(outputDir: string, levelIdx: number, prettify: boolean = false) {
     const defaultOutputDir = path.resolve('./dist')
 
     console.log('output directory:', outputDir)
