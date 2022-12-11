@@ -71,12 +71,12 @@ export class ArxMap {
 
     // max(xs) = 13650.30078125
     // max(zs) = 12150.646484375
-    console.log(max(xs) / 2, '/', max(zs) / 2) // 6825.150390625 / 6075.3232421875
+    // console.log(max(xs) / 2, '/', max(zs) / 2) // 6825.150390625 / 6075.3232421875
 
-    console.log(this.fts.sceneHeader.mScenePosition) // { x: 16250, y: 3105.0791015625, z: 5550 }
-    console.log(this.fts.sceneHeader.playerPosition) // { x: 8650, y: 3105.0791015625, z: 8550 }
-    console.log(this.dlf.header.posEdit) // { x: -8072.8330078125, y: -267.7666015625, z: 3806.7236328125 }
-    console.log(this.dlf.header.offset) // { x: 0, y: 0, z: 0 }
+    // console.log(this.fts.sceneHeader.mScenePosition) // { x: 16250, y: 3105.0791015625, z: 5550 }
+    // console.log(this.fts.sceneHeader.playerPosition) // { x: 8650, y: 3105.0791015625, z: 8550 }
+    // console.log(this.dlf.header.posEdit) // { x: -8072.8330078125, y: -267.7666015625, z: 3806.7236328125 }
+    // console.log(this.dlf.header.offset) // { x: 0, y: 0, z: 0 }
 
     // mScenePosition + posEdit = 8177.17 / 2837.37 / 9356.72
 
@@ -179,27 +179,6 @@ export class ArxMap {
 
   private alignMinimapWithPolygons() {
     const transparent: ArxColor = { r: 0, g: 0, b: 0, a: 0 }
-
-    const mapWidth = 13333
-    const mapHeight = 11166
-
-    // this.dlf.header.posEdit = { x: mapWidth / 2, y: 0, z: mapHeight / 2 }
-
-    // this.fts.polygons.push({
-    //   vertices: [
-    //     { x: mapWidth, y: 0, z: mapHeight, u: 0, v: 0, color: transparent },
-    //     { x: mapWidth + 1, y: 0, z: mapHeight, u: 0, v: 1, color: transparent },
-    //     { x: mapWidth, y: 0, z: mapHeight + 1, u: 1, v: 0, color: transparent },
-    //     { x: mapWidth + 1, y: 0, z: mapHeight + 1, u: 1, v: 1, color: transparent },
-    //   ],
-    //   tex: NO_TEXTURE,
-    //   norm: { x: 0, y: 0, z: 0 },
-    //   norm2: { x: 0, y: 0, z: 0 },
-    //   transval: 0,
-    //   area: 1,
-    //   type: ArxPolygonFlags.Quad | ArxPolygonFlags.NoDraw,
-    //   room: 1,
-    // })
 
     this.fts.polygons.push({
       vertices: [
