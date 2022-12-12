@@ -15,17 +15,44 @@ import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
 import { Polygon } from './Polygon'
 import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
 
+export type OriginalLevel =
+  | 0
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 10
+  | 11
+  | 12
+  | 13
+  | 14
+  | 15
+  | 16
+  | 17
+  | 18
+  | 19
+  | 20
+  | 21
+  | 22
+  | 23
+
 export class ArxMap {
   dlf: ArxDLF
   fts: ArxFTS
   llf: ArxLLF
   polygons: Polygon[]
+  finalized: boolean
 
   private constructor(dlf: ArxDLF, fts: ArxFTS, llf: ArxLLF, normalsCalculated = false) {
     this.dlf = dlf
     this.fts = fts
     this.llf = llf
     this.polygons = []
+    this.finalized = false
 
     this.deserializePolygons(normalsCalculated)
   }
@@ -47,7 +74,7 @@ export class ArxMap {
     this.polygons = []
   }
 
-  static async loadLevel(levelIdx: number) {
+  static async loadLevel(levelIdx: OriginalLevel) {
     const folder = path.resolve(__dirname, `../assets/levels/level${levelIdx}`)
 
     const rawDlf = await fs.promises.readFile(path.resolve(folder, `level${levelIdx}.dlf.json`), 'utf-8')
@@ -187,6 +214,12 @@ export class ArxMap {
   }
 
   finalize() {
+    if (this.finalized) {
+      throw new Error('attempting to finalize a map that have already been finalized')
+    }
+
+    this.finalized = true
+
     this.dlf.header.numberOfBackgroundPolygons = this.polygons.length
     this.llf.header.numberOfBackgroundPolygons = this.polygons.length
 
@@ -250,6 +283,10 @@ export class ArxMap {
   }
 
   async saveToDisk(outputDir: string, levelIdx: number, prettify: boolean = false) {
+    if (!this.finalized) {
+      throw new Error('attempting to save a non-finalized map to disk')
+    }
+
     const defaultOutputDir = path.resolve('./dist')
 
     console.log('output directory:', outputDir)
