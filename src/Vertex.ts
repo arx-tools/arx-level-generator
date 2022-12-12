@@ -23,11 +23,17 @@ export class Vertex extends Vector3 {
     return new Vertex(x, y, z, u, v, Color.fromArxColor(color))
   }
 
-  toArxVertex(): ArxVertex {
-    return {
+  toArxVertex() {
+    const vertex: ArxVertex = {
       ...this.toArxVector3(),
       u: this.uv.x,
       v: this.uv.y,
     }
+
+    if (typeof this.llfColorIdx !== 'undefined') {
+      vertex.llfColorIdx = this.llfColorIdx
+    }
+
+    return vertex
   }
 }

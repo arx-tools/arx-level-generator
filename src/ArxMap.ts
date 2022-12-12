@@ -54,7 +54,18 @@ export class ArxMap {
   }
 
   private serializePolygons() {
-    // TODO: split this.polygons into fts.polygons and llf.colors
+    this.polygons.forEach(({ vertices, norm, norm2, ...polygon }) => {
+      const arxVertices = vertices.map((vertex) => {
+        return vertex.toArxVertex()
+      })
+
+      this.fts.polygons.push({
+        ...polygon,
+        vertices: arxVertices as [ArxVertex, ArxVertex, ArxVertex, ArxVertex],
+        norm: norm.toArxVector3(),
+        norm2: norm.toArxVector3(),
+      })
+    })
 
     this.polygons = []
   }
