@@ -14,14 +14,14 @@ import { ArxVertexWithColor } from './types'
 import { Vertex } from './Vertex'
 import { transparent } from './Color'
 import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
-import { Polygon } from './Polygon'
+import { _Polygon } from './Polygon'
 import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
 
 export class ArxMap {
   private dlf: ArxDLF
   private fts: ArxFTS
   private llf: ArxLLF
-  private polygons: Polygon[]
+  private polygons: _Polygon[]
 
   private constructor(dlf: ArxDLF, fts: ArxFTS, llf: ArxLLF, normalsCalculated = false) {
     this.dlf = dlf
@@ -33,7 +33,7 @@ export class ArxMap {
   }
 
   private deserializePolygons(normalsCalculated: boolean) {
-    this.polygons = this.fts.polygons.map(({ vertices, norm, norm2, ...polygonData }): Polygon => {
+    this.polygons = this.fts.polygons.map(({ vertices, norm, norm2, ...polygonData }): _Polygon => {
       const extendedVertices = vertices.map(({ llfColorIdx, ...vertex }) => {
         const extendedVertex: ArxVertexWithColor = vertex
         if (typeof llfColorIdx === 'number') {
