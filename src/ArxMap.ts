@@ -3,14 +3,12 @@ import path from 'node:path'
 import { getCellCoords } from 'arx-level-json-converter/dist/common/helpers'
 import { ArxPolygonFlags, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS } from 'arx-level-json-converter/dist/common/constants'
 import { times } from './faux-ramda'
-import { Triangle } from 'three'
 import { Vector3 } from './Vector3'
 import { ArxLLF } from 'arx-level-json-converter/dist/llf/LLF'
 import { NO_TEXTURE } from './constants'
 import { getPackageVersion, uninstall } from './helpers'
 import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
 import { ArxFTS } from 'arx-level-json-converter/dist/fts/FTS'
-import { ArxVertexWithColor } from './types'
 import { Vertex } from './Vertex'
 import { transparent } from './Color'
 import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
@@ -18,10 +16,10 @@ import { Polygon } from './Polygon'
 import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
 
 export class ArxMap {
-  private dlf: ArxDLF
-  private fts: ArxFTS
-  private llf: ArxLLF
-  private polygons: Polygon[]
+  dlf: ArxDLF
+  fts: ArxFTS
+  llf: ArxLLF
+  polygons: Polygon[]
 
   private constructor(dlf: ArxDLF, fts: ArxFTS, llf: ArxLLF, normalsCalculated = false) {
     this.dlf = dlf
