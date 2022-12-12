@@ -7,7 +7,6 @@ import { Vector3 } from './Vector3'
 export class Vertex extends Vector3 {
   uv: Vector2
   color: Color
-  llfColorIdx?: number
 
   constructor(x: number, y: number, z: number, u: number = 0, v: number = 0, color: Color = transparent) {
     super(x, y, z)
@@ -23,17 +22,11 @@ export class Vertex extends Vector3 {
     return new Vertex(x, y, z, u, v, Color.fromArxColor(color))
   }
 
-  toArxVertex() {
-    const vertex: ArxVertex = {
+  toArxVertex(): ArxVertex {
+    return {
       ...this.toArxVector3(),
       u: this.uv.x,
       v: this.uv.y,
     }
-
-    if (typeof this.llfColorIdx !== 'undefined') {
-      vertex.llfColorIdx = this.llfColorIdx
-    }
-
-    return vertex
   }
 }

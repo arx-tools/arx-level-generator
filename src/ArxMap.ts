@@ -10,10 +10,12 @@ import { NO_TEXTURE } from './constants'
 import { getPackageVersion, uninstall } from './helpers'
 import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
 import { ArxFTS } from 'arx-level-json-converter/dist/fts/FTS'
-import { Polygon, ArxVertexWithColor } from './types'
+import { ArxVertexWithColor } from './types'
 import { Vertex } from './Vertex'
 import { transparent } from './Color'
 import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
+import { Polygon } from './Polygon'
+import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
 
 export class ArxMap {
   private dlf: ArxDLF
@@ -210,7 +212,7 @@ export class ArxMap {
     this.llf.header.numberOfBackgroundPolygons = this.polygons.length
 
     this.calculateNormals()
-    this.generateLights()
+    this.llf.colors = this.getVertexColors()
     this.serializePolygons()
   }
 
@@ -243,7 +245,7 @@ export class ArxMap {
     })
   }
 
-  private generateLights() {
+  private getVertexColors() {
     const cells: Record<string, number[]> = {}
 
     this.polygons.forEach((polygon, idx) => {
@@ -258,7 +260,7 @@ export class ArxMap {
       }
     })
 
-    let colorIdx = 0
+    const colors: ArxColor[] = []
 
     for (let z = 0; z < MAP_DEPTH_IN_CELLS; z++) {
       for (let x = 0; x < MAP_WIDTH_IN_CELLS; x++) {
@@ -270,13 +272,14 @@ export class ArxMap {
 
             for (let i = 0; i < (isQuad ? 4 : 3); i++) {
               const color = polygon.vertices[i]?.color ?? transparent
-              this.llf.colors.push(color.toArxColor())
-              polygon.vertices[i].llfColorIdx = colorIdx++
+              colors.push(color.toArxColor())
             }
           })
         }
       }
     }
+
+    return colors
   }
 
   async saveToDisk(outputDir: string, levelIdx: number, prettify: boolean = false) {
