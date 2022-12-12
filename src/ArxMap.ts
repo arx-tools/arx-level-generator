@@ -14,14 +14,14 @@ import { ArxVertexWithColor } from './types'
 import { Vertex } from './Vertex'
 import { transparent } from './Color'
 import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
-import { _Polygon } from './Polygon'
+import { Polygon } from './Polygon'
 import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
 
 export class ArxMap {
   private dlf: ArxDLF
   private fts: ArxFTS
   private llf: ArxLLF
-  private polygons: _Polygon[]
+  private polygons: Polygon[]
 
   private constructor(dlf: ArxDLF, fts: ArxFTS, llf: ArxLLF, normalsCalculated = false) {
     this.dlf = dlf
@@ -33,22 +33,8 @@ export class ArxMap {
   }
 
   private deserializePolygons(normalsCalculated: boolean) {
-    this.polygons = this.fts.polygons.map(({ vertices, norm, norm2, ...polygonData }): _Polygon => {
-      const extendedVertices = vertices.map(({ llfColorIdx, ...vertex }) => {
-        const extendedVertex: ArxVertexWithColor = vertex
-        if (typeof llfColorIdx === 'number') {
-          extendedVertex.color = this.llf.colors[llfColorIdx]
-        }
-        return Vertex.fromArxVertex(extendedVertex)
-      })
-
-      return {
-        ...polygonData,
-        vertices: extendedVertices as [Vertex, Vertex, Vertex, Vertex],
-        normalsCalculated,
-        norm: Vector3.fromArxVector3(norm),
-        norm2: Vector3.fromArxVector3(norm2),
-      }
+    this.polygons = this.fts.polygons.map((polygon) => {
+      return Polygon.fromArxPolygon(polygon, this.llf.colors, normalsCalculated)
     })
 
     this.fts.polygons = []
@@ -56,17 +42,8 @@ export class ArxMap {
   }
 
   private serializePolygons() {
-    this.polygons.forEach(({ vertices, norm, norm2, ...polygon }) => {
-      const arxVertices = vertices.map((vertex) => {
-        return vertex.toArxVertex()
-      })
-
-      this.fts.polygons.push({
-        ...polygon,
-        vertices: arxVertices as [ArxVertex, ArxVertex, ArxVertex, ArxVertex],
-        norm: norm.toArxVector3(),
-        norm2: norm.toArxVector3(),
-      })
+    this.fts.polygons = this.polygons.map((polygon) => {
+      return polygon.toArxPolygon()
     })
 
     this.polygons = []
@@ -189,22 +166,26 @@ export class ArxMap {
   }
 
   private alignMinimapWithPolygons() {
-    this.polygons.push({
-      vertices: [
-        new Vertex(0, 0, 0, 0, 0, transparent),
-        new Vertex(1, 0, 0, 0, 1, transparent),
-        new Vertex(0, 0, 1, 1, 0, transparent),
-        new Vertex(1, 0, 1, 1, 1, transparent),
-      ],
-      normalsCalculated: false,
-      tex: NO_TEXTURE,
-      norm: new Vector3(),
-      norm2: new Vector3(),
-      transval: 0,
-      area: 1,
-      type: ArxPolygonFlags.Quad | ArxPolygonFlags.NoDraw,
-      room: 1,
-    })
+    this.polygons.push(
+      new Polygon({
+        vertices: [
+          new Vertex(0, 0, 0, 0, 0, transparent),
+          new Vertex(1, 0, 0, 0, 1, transparent),
+          new Vertex(0, 0, 1, 1, 0, transparent),
+          new Vertex(1, 0, 1, 1, 1, transparent),
+        ],
+        norm: new Vector3(),
+        norm2: new Vector3(),
+        normalsCalculated: false,
+        polygonData: {
+          tex: NO_TEXTURE,
+          transval: 0,
+          area: 1,
+          type: ArxPolygonFlags.Quad | ArxPolygonFlags.NoDraw,
+          room: 1,
+        },
+      }),
+    )
   }
 
   finalize() {
@@ -228,20 +209,7 @@ export class ArxMap {
 
   private calculateNormals() {
     this.polygons.forEach((polygon) => {
-      if (polygon.normalsCalculated === true) {
-        return
-      }
-
-      const isQuad = (polygon.type & ArxPolygonFlags.Quad) > 0
-      const [a, b, c, d] = polygon.vertices
-
-      const triangle = new Triangle(a, b, c)
-      triangle.getNormal(polygon.norm)
-
-      if (isQuad) {
-        const triangle2 = new Triangle(d, b, c)
-        triangle2.getNormal(polygon.norm2)
-      }
+      polygon.calculateNormals()
     })
   }
 
@@ -271,9 +239,8 @@ export class ArxMap {
 
         cell.forEach((idx) => {
           const polygon = this.polygons[idx]
-          const isQuad = (polygon.type & ArxPolygonFlags.Quad) > 0
 
-          for (let i = 0; i < (isQuad ? 4 : 3); i++) {
+          for (let i = 0; i < (polygon.isQuad() ? 4 : 3); i++) {
             const color = polygon.vertices[i]?.color ?? transparent
             colors.push(color.toArxColor())
           }

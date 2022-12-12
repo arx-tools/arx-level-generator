@@ -1,52 +1,87 @@
+import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
+import { ArxPolygonFlags } from 'arx-level-json-converter/dist/common/constants'
 import { ArxPolygon } from 'arx-level-json-converter/dist/fts/Polygon'
+import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
+import { Triangle } from 'three'
+import { ArxVertexWithColor } from './types'
 import { Vector3 } from './Vector3'
 import { Vertex } from './Vertex'
-
-export type _Polygon = Omit<ArxPolygon, 'vertices' | 'norm' | 'norm2'> & {
-  vertices: [Vertex, Vertex, Vertex, Vertex]
-  normalsCalculated: boolean
-  norm: Vector3
-  norm2: Vector3
-}
 
 type PolygonContructorProps = {
   vertices: [Vertex, Vertex, Vertex, Vertex]
   norm: Vector3
   norm2: Vector3
-  tex: number
-  transval: number
-  area: number
-  type: number
-  room: number
+  polygonData: Omit<ArxPolygon, 'vertices' | 'norm' | 'norm2'>
   normalsCalculated: boolean
-  normals?: [Vector3, Vector3, Vector3, Vector3]
-  paddy?: number
 }
 
 export class Polygon {
   vertices: [Vertex, Vertex, Vertex, Vertex]
   norm: Vector3
   norm2: Vector3
-  tex: number
-  transval: number
-  area: number
-  type: number
-  room: number
+  polygonData: Omit<ArxPolygon, 'vertices' | 'norm' | 'norm2'>
   normalsCalculated: boolean
-  normals?: [Vector3, Vector3, Vector3, Vector3]
-  paddy?: number
 
   constructor(props: PolygonContructorProps) {
     this.vertices = props.vertices
     this.norm = props.norm
     this.norm2 = props.norm2
-    this.tex = props.tex
-    this.transval = props.transval
-    this.area = props.area
-    this.type = props.type
-    this.room = props.room
+    this.polygonData = props.polygonData
     this.normalsCalculated = props.normalsCalculated
-    this.normals = props.normals
-    this.paddy = props.paddy
+  }
+
+  static fromArxPolygon(
+    { vertices, norm, norm2, ...polygonData }: ArxPolygon,
+    colors: ArxColor[],
+    normalsCalculated: boolean,
+  ) {
+    const extendedVertices = vertices.map(({ llfColorIdx, ...vertex }) => {
+      const extendedVertex: ArxVertexWithColor = vertex
+      if (typeof llfColorIdx === 'number') {
+        extendedVertex.color = colors[llfColorIdx]
+      }
+      return Vertex.fromArxVertex(extendedVertex)
+    })
+
+    return new Polygon({
+      polygonData,
+      vertices: extendedVertices as [Vertex, Vertex, Vertex, Vertex],
+      normalsCalculated,
+      norm: Vector3.fromArxVector3(norm),
+      norm2: Vector3.fromArxVector3(norm2),
+    })
+  }
+
+  toArxPolygon() {
+    const arxVertices = this.vertices.map((vertex) => {
+      return vertex.toArxVertex()
+    })
+
+    return {
+      ...this.polygonData,
+      vertices: arxVertices as [ArxVertex, ArxVertex, ArxVertex, ArxVertex],
+      norm: this.norm.toArxVector3(),
+      norm2: this.norm.toArxVector3(),
+    }
+  }
+
+  isQuad() {
+    return (this.polygonData.type & ArxPolygonFlags.Quad) > 0
+  }
+
+  calculateNormals() {
+    if (this.normalsCalculated === true) {
+      return
+    }
+
+    const [a, b, c, d] = this.vertices
+
+    const triangle = new Triangle(a, b, c)
+    triangle.getNormal(this.norm)
+
+    if (this.isQuad()) {
+      const triangle2 = new Triangle(d, b, c)
+      triangle2.getNormal(this.norm2)
+    }
   }
 }
