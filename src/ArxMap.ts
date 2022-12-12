@@ -264,18 +264,20 @@ export class ArxMap {
 
     for (let z = 0; z < MAP_DEPTH_IN_CELLS; z++) {
       for (let x = 0; x < MAP_WIDTH_IN_CELLS; x++) {
-        const cell = cells[`${z}--${x}`]
-        if (cell) {
-          cell.forEach((idx) => {
-            const polygon = this.polygons[idx]
-            const isQuad = (polygon.type & ArxPolygonFlags.Quad) > 0
-
-            for (let i = 0; i < (isQuad ? 4 : 3); i++) {
-              const color = polygon.vertices[i]?.color ?? transparent
-              colors.push(color.toArxColor())
-            }
-          })
+        const cell = cells[`${z}--${x}`] as number[] | undefined
+        if (typeof cell === 'undefined') {
+          continue
         }
+
+        cell.forEach((idx) => {
+          const polygon = this.polygons[idx]
+          const isQuad = (polygon.type & ArxPolygonFlags.Quad) > 0
+
+          for (let i = 0; i < (isQuad ? 4 : 3); i++) {
+            const color = polygon.vertices[i]?.color ?? transparent
+            colors.push(color.toArxColor())
+          }
+        })
       }
     }
 
