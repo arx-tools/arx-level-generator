@@ -4,11 +4,11 @@ import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
 import { Vector3 } from './Vector3'
 import { Vertex } from './Vertex'
 
-export type ExtendedArxVertex = ArxVertex & {
+export type ArxVertexWithColor = ArxVertex & {
   color?: ArxColor
 }
 
-export type ExtendedArxPolygon = Omit<ArxPolygon, 'vertices' | 'norm' | 'norm2'> & {
+export type Polygon = Omit<ArxPolygon, 'vertices' | 'norm' | 'norm2'> & {
   vertices: [Vertex, Vertex, Vertex, Vertex]
   normalsCalculated: boolean
   norm: Vector3

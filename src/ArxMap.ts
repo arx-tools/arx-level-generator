@@ -10,7 +10,7 @@ import { NO_TEXTURE } from './constants'
 import { getPackageVersion, uninstall } from './helpers'
 import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
 import { ArxFTS } from 'arx-level-json-converter/dist/fts/FTS'
-import { ExtendedArxPolygon, ExtendedArxVertex } from './types'
+import { Polygon, ArxVertexWithColor } from './types'
 import { Vertex } from './Vertex'
 import { transparent } from './Color'
 import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
@@ -19,7 +19,7 @@ export class ArxMap {
   private dlf: ArxDLF
   private fts: ArxFTS
   private llf: ArxLLF
-  private polygons: ExtendedArxPolygon[]
+  private polygons: Polygon[]
 
   private constructor(dlf: ArxDLF, fts: ArxFTS, llf: ArxLLF, normalsCalculated = false) {
     this.dlf = dlf
@@ -31,9 +31,9 @@ export class ArxMap {
   }
 
   private deserializePolygons(normalsCalculated: boolean) {
-    this.polygons = this.fts.polygons.map(({ vertices, norm, norm2, ...polygonData }): ExtendedArxPolygon => {
+    this.polygons = this.fts.polygons.map(({ vertices, norm, norm2, ...polygonData }): Polygon => {
       const extendedVertices = vertices.map(({ llfColorIdx, ...vertex }) => {
-        const extendedVertex: ExtendedArxVertex = vertex
+        const extendedVertex: ArxVertexWithColor = vertex
         if (typeof llfColorIdx === 'number') {
           extendedVertex.color = this.llf.colors[llfColorIdx]
         }

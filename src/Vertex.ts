@@ -1,7 +1,7 @@
 import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
 import { Vector2 } from 'three'
 import { Color, transparent } from './Color'
-import { ExtendedArxVertex } from './types'
+import { ArxVertexWithColor } from './types'
 import { Vector3 } from './Vector3'
 
 export class Vertex extends Vector3 {
@@ -15,7 +15,7 @@ export class Vertex extends Vector3 {
     this.color = color
   }
 
-  static fromArxVertex({ x, y, z, u, v, color }: ExtendedArxVertex) {
+  static fromArxVertex({ x, y, z, u, v, color }: ArxVertexWithColor) {
     if (typeof color === 'undefined') {
       return new Vertex(x, y, z, u, v)
     }
