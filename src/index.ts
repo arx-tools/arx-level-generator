@@ -1,17 +1,23 @@
 import path from 'node:path'
 import { ArxMap } from './ArxMap'
+// import { Vector3 } from './Vector3'
 
 // ....
 ;(async () => {
-  const { OUTPUTDIR = path.resolve('./dist'), LEVEL = '1' } = process.env
+  const { OUTPUTDIR = path.resolve(__dirname, './dist'), LEVEL = '1' } = process.env
 
-  const level1 = await ArxMap.loadLevel(1)
+  const map = await ArxMap.loadLevel(8)
+
+  map.dlf.interactiveObjects = []
+
+  // TODO: this isn't working
+  // map.setPlayerSpawn(new Vector3(2000, 0, 2000))
 
   // -------------------
 
-  level1.removePortals()
+  map.removePortals()
 
-  level1.finalize()
+  map.finalize()
 
-  level1.saveToDisk(OUTPUTDIR, parseInt(LEVEL))
+  map.saveToDisk(OUTPUTDIR, parseInt(LEVEL))
 })()

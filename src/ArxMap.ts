@@ -14,31 +14,8 @@ import { transparent } from './Color'
 import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
 import { Polygon } from './Polygon'
 import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
-
-export type OriginalLevel =
-  | 0
-  | 1
-  | 2
-  | 3
-  | 4
-  | 5
-  | 6
-  | 7
-  | 8
-  | 10
-  | 11
-  | 12
-  | 13
-  | 14
-  | 15
-  | 16
-  | 17
-  | 18
-  | 19
-  | 20
-  | 21
-  | 22
-  | 23
+import { OriginalLevel } from './types'
+import { LevelLoader } from './LevelLoader'
 
 export class ArxMap {
   dlf: ArxDLF
@@ -75,16 +52,11 @@ export class ArxMap {
   }
 
   static async loadLevel(levelIdx: OriginalLevel) {
-    const folder = path.resolve(__dirname, `../assets/levels/level${levelIdx}`)
+    const loader = new LevelLoader(levelIdx)
 
-    const rawDlf = await fs.promises.readFile(path.resolve(folder, `level${levelIdx}.dlf.json`), 'utf-8')
-    const dlf = JSON.parse(rawDlf) as ArxDLF
-
-    const rawFts = await fs.promises.readFile(path.resolve(folder, `fast.fts.json`), 'utf-8')
-    const fts = JSON.parse(rawFts) as ArxFTS
-
-    const rawLlf = await fs.promises.readFile(path.resolve(folder, `level${levelIdx}.llf.json`), 'utf-8')
-    const llf = JSON.parse(rawLlf) as ArxLLF
+    const dlf = await loader.readDlf()
+    const fts = await loader.readFts()
+    const llf = await loader.readLlf()
 
     const now = Math.floor(Date.now() / 1000)
     const generatorId = await ArxMap.getGeneratorId()

@@ -27,3 +27,7 @@ export const max = (arr: number[]) => {
 export const sum = (numbers: number[]) => {
   return numbers.reduce((sum, n) => sum + n, 0)
 }
+
+export const clone = <T>(data: T): T => {
+  return JSON.parse(JSON.stringify(data))
+}

@@ -2,6 +2,11 @@
 
 Generates maps for the video game Arx Fatalis and Arx Libertatis
 
+Required extra packages: [pkware-test-files](https://github.com/meszaros-lajos-gyorgy/pkware-test-files)
+as it contains all the arx fatalis levels readily unpacked. The level generator expects the levels to be
+inside `../pkware-test-files` relative to where you have installed the `arx-level-generator` (the 2 packages
+should be in the same folder next to each other)
+
 ## Known issues with the stack so far
 
 https://github.com/evanw/esbuild/issues/1975
