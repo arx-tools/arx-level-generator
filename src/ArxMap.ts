@@ -225,6 +225,9 @@ export class ArxMap {
 
     this.calculateNormals()
     this.llf.colors = this.getVertexColors()
+
+    this.calculateRoomData()
+
     this.serializePolygons()
   }
 
@@ -280,6 +283,82 @@ export class ArxMap {
     }
 
     return colors
+  }
+
+  removePortals() {
+    if (this.finalized) {
+      throw new Error('attempting to remove portals of a finalized map')
+    }
+
+    this.fts.portals = []
+
+    this.fts.rooms.forEach((room) => {
+      room.portals = []
+    })
+
+    this.movePolygonsToSameRoom()
+  }
+
+  private movePolygonsToSameRoom() {
+    this.polygons.forEach((polygon) => {
+      if (polygon.polygonData.room < 1) {
+        return
+      }
+
+      polygon.polygonData.room = 1
+    })
+
+    this.fts.rooms = this.fts.rooms.slice(0, 2)
+
+    this.fts.roomDistances = [
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 1, y: 0, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 0, y: 1, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0.984375, y: 0.984375, z: 0 },
+        endPosition: { x: 0, y: 0, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 0, y: 0, z: 0 },
+      },
+    ]
+  }
+
+  private calculateRoomData = () => {
+    this.fts.rooms.forEach((room) => {
+      room.polygons = []
+    })
+
+    const polygonsPerCellCounter: Record<string, number> = {}
+
+    this.polygons.forEach((polygon) => {
+      const { room } = polygon.polygonData
+      if (room < 1) {
+        return
+      }
+
+      const vertices = polygon.vertices.map((vertex) => vertex.toArxVertex())
+      const [cellX, cellZ] = getCellCoords(vertices as [ArxVertex, ArxVertex, ArxVertex, ArxVertex])
+
+      const key = `${cellX}|${cellZ}`
+      if (key in polygonsPerCellCounter) {
+        polygonsPerCellCounter[key] += 1
+      } else {
+        polygonsPerCellCounter[key] = 0
+      }
+
+      this.fts.rooms[room].polygons.push({ px: cellX, py: cellZ, idx: polygonsPerCellCounter[key] })
+    })
   }
 
   async saveToDisk(outputDir: string, levelIdx: number, prettify: boolean = false) {
