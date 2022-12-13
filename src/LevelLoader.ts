@@ -7,19 +7,6 @@ import { OriginalLevel } from './types'
 
 const { LEVELFILES = path.resolve(__dirname, '../pkware-test-files') } = process.env
 
-const CACHE_FOLDER = path.resolve(__dirname, '../.cache')
-
-/*
-const rawDlf = await fs.promises.readFile(path.resolve(jsonFolder, `./level${levelIdx}.dlf.json`), 'utf-8')
-const dlf = JSON.parse(rawDlf) as ArxDLF
-
-const rawFts = await fs.promises.readFile(path.resolve(jsonFolder, `./fast.fts.json`), 'utf-8')
-const fts = JSON.parse(rawFts) as ArxFTS
-
-const rawLlf = await fs.promises.readFile(path.resolve(jsonFolder, `./level${levelIdx}.llf.json`), 'utf-8')
-const llf = JSON.parse(rawLlf) as ArxLLF
-*/
-
 export class LevelLoader {
   levelIdx: OriginalLevel
 
