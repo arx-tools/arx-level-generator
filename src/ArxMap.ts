@@ -250,7 +250,7 @@ export class ArxMap {
     this.polygons.forEach((polygon, idx) => {
       const vertices = polygon.vertices.map((vertex) => vertex.toArxVertex())
       const [cellX, cellZ] = getCellCoords(vertices as [ArxVertex, ArxVertex, ArxVertex, ArxVertex])
-      const key = `${cellZ}--${cellX}`
+      const key = `${cellZ}|${cellX}`
 
       if (key in cells) {
         cells[key].push(idx)
@@ -263,7 +263,7 @@ export class ArxMap {
 
     for (let z = 0; z < MAP_DEPTH_IN_CELLS; z++) {
       for (let x = 0; x < MAP_WIDTH_IN_CELLS; x++) {
-        const cell = cells[`${z}--${x}`] as number[] | undefined
+        const cell = cells[`${z}|${x}`] as number[] | undefined
         if (typeof cell === 'undefined') {
           continue
         }

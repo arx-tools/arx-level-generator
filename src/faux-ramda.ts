@@ -23,3 +23,7 @@ export const max = (arr: number[]) => {
 
   return max
 }
+
+export const sum = (numbers: number[]) => {
+  return numbers.reduce((sum, n) => sum + n, 0)
+}
