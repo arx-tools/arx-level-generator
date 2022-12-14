@@ -15,18 +15,21 @@ export class LevelLoader {
   }
 
   async readDlf() {
-    return this.readData<ArxDLF>('dlf')
+    return this.readData('dlf')
   }
 
   async readFts() {
-    return this.readData<ArxFTS>('fts')
+    return this.readData('fts')
   }
 
   async readLlf() {
-    return this.readData<ArxLLF>('llf')
+    return this.readData('llf')
   }
 
-  async readData<T extends ArxDLF | ArxFTS | ArxLLF>(format: 'dlf' | 'fts' | 'llf') {
+  async readData(format: 'dlf'): Promise<ArxDLF>
+  async readData(format: 'fts'): Promise<ArxFTS>
+  async readData(format: 'llf'): Promise<ArxLLF>
+  async readData(format: 'dlf' | 'fts' | 'llf'): Promise<ArxDLF | ArxFTS | ArxLLF> {
     await this.createCacheFolderIfNotExists()
 
     const parser = this.getParser(format)
@@ -34,11 +37,11 @@ export class LevelLoader {
     const jsonFolder = this.getJsonFolder()
     const jsonFilename = path.resolve(jsonFolder, './' + this.getFilename(format) + '.json')
 
-    let data: T
+    let data: ArxDLF | ArxFTS | ArxLLF
 
     try {
       const jsonData = await fs.promises.readFile(jsonFilename, 'utf-8')
-      data = JSON.parse(jsonData) as T
+      data = JSON.parse(jsonData)
     } catch (e: unknown) {
       const binaryFolder = this.getBinaryFolder()
       const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename(format) + '.unpacked')
@@ -50,7 +53,7 @@ export class LevelLoader {
       }
 
       const binaryData = await fs.promises.readFile(binaryFilename)
-      data = parser.load(binaryData) as T
+      data = parser.load(binaryData)
       await fs.promises.writeFile(jsonFilename, JSON.stringify(data), 'utf-8')
     }
 
