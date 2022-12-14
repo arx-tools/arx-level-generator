@@ -32,10 +32,7 @@ export class LevelLoader {
     const parser = format === 'dlf' ? DLF : format === 'fts' ? FTS : LLF
 
     const jsonFolder = this.getJsonFolder()
-    const jsonFilename = path.resolve(
-      jsonFolder,
-      format === 'fts' ? `./fast.${format}.json` : `./level${this.levelIdx}.${format}.json`,
-    )
+    const jsonFilename = path.resolve(jsonFolder, './' + this.getFilename(format) + '.json')
 
     let data: T
 
@@ -44,10 +41,7 @@ export class LevelLoader {
       data = JSON.parse(jsonData) as T
     } catch (e: unknown) {
       const binaryFolder = this.getBinaryFolder()
-      const binaryFilename = path.resolve(
-        binaryFolder,
-        format === 'fts' ? `./fast.${format}.unpacked` : `./level${this.levelIdx}.${format}.unpacked`,
-      )
+      const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename(format) + '.unpacked')
 
       try {
         await fs.promises.access(binaryFolder, fs.promises.constants.R_OK | fs.promises.constants.W_OK)
@@ -61,6 +55,14 @@ export class LevelLoader {
     }
 
     return data
+  }
+
+  private getFilename(format: 'dlf' | 'fts' | 'llf') {
+    if (format === 'fts') {
+      return 'fast.fts'
+    }
+
+    return `level${this.levelIdx}.${format}`
   }
 
   private getJsonFolder() {
