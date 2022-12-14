@@ -7,6 +7,10 @@ as it contains all the arx fatalis levels readily unpacked. The level generator 
 inside `../pkware-test-files` relative to where you have installed the `arx-level-generator` (the 2 packages
 should be in the same folder next to each other)
 
+The packages caches levels that are loaded from the original game into the `.cache` folder. If you update
+`arx-convert` and it changes the format of the json structure, then just delete the `.cache` folder and you're
+good to go.
+
 ## Known issues with the stack so far
 
 https://github.com/evanw/esbuild/issues/1975

@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/meszaros-lajos-gyorgy/arx-level-generator#readme",
   "dependencies": {
-    "arx-level-json-converter": "^4.6.2",
+    "arx-convert": "^5.0.0",
     "color-rgba": "^2.4.0",
     "nanoid": "^4.0.0",
     "node-pkware": "^2.0.0",

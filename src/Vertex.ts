@@ -1,4 +1,4 @@
-import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
+import { ArxVertex } from 'arx-convert/types'
 import { Vector2 } from 'three'
 import { Color, transparent } from './Color'
 import { ArxVertexWithColor } from './types'

@@ -3,7 +3,7 @@
     "noEmit": true,
     "skipLibCheck": true,
     "target": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "allowJs": true,
     "noImplicitAny": true,
     "strict": true,

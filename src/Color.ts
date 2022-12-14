@@ -1,5 +1,5 @@
+import { ArxColor } from 'arx-convert/types'
 import rgba from 'color-rgba'
-import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
 
 export class Color {
   readonly r: number

@@ -1,19 +1,14 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { getCellCoords } from 'arx-level-json-converter/dist/common/helpers'
-import { ArxPolygonFlags, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS } from 'arx-level-json-converter/dist/common/constants'
+import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf } from 'arx-convert/utils'
+import { ArxColor, ArxDLF, ArxFTS, ArxLLF, ArxPolygonFlags, ArxVertex } from 'arx-convert/types'
 import { times } from './faux-ramda'
 import { Vector3 } from './Vector3'
-import { ArxLLF } from 'arx-level-json-converter/dist/llf/LLF'
 import { NO_TEXTURE } from './constants'
 import { getPackageVersion, uninstall } from './helpers'
-import { ArxDLF } from 'arx-level-json-converter/dist/dlf/DLF'
-import { ArxFTS } from 'arx-level-json-converter/dist/fts/FTS'
 import { Vertex } from './Vertex'
 import { transparent } from './Color'
-import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
 import { Polygon } from './Polygon'
-import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
 import { OriginalLevel } from './types'
 import { LevelLoader } from './LevelLoader'
 
@@ -175,10 +170,10 @@ export class ArxMap {
         norm2: new Vector3(),
         normalsCalculated: false,
         polygonData: {
-          tex: NO_TEXTURE,
+          textureContainerId: NO_TEXTURE,
           transval: 0,
           area: 1,
-          type: ArxPolygonFlags.Quad | ArxPolygonFlags.NoDraw,
+          flags: ArxPolygonFlags.Quad | ArxPolygonFlags.NoDraw,
           room: 1,
         },
       }),
@@ -224,7 +219,7 @@ export class ArxMap {
 
     this.polygons.forEach((polygon, idx) => {
       const vertices = polygon.vertices.map((vertex) => vertex.toArxVertex())
-      const [cellX, cellZ] = getCellCoords(vertices as [ArxVertex, ArxVertex, ArxVertex, ArxVertex])
+      const [cellX, cellZ] = getCellCoords(vertices as QuadrupleOf<ArxVertex>)
       const key = `${cellZ}|${cellX}`
 
       if (key in cells) {
@@ -320,16 +315,16 @@ export class ArxMap {
       }
 
       const vertices = polygon.vertices.map((vertex) => vertex.toArxVertex())
-      const [cellX, cellZ] = getCellCoords(vertices as [ArxVertex, ArxVertex, ArxVertex, ArxVertex])
+      const [cellX, cellY] = getCellCoords(vertices as [ArxVertex, ArxVertex, ArxVertex, ArxVertex])
 
-      const key = `${cellX}|${cellZ}`
+      const key = `${cellX}|${cellY}`
       if (key in polygonsPerCellCounter) {
         polygonsPerCellCounter[key] += 1
       } else {
         polygonsPerCellCounter[key] = 0
       }
 
-      this.fts.rooms[room].polygons.push({ px: cellX, py: cellZ, idx: polygonsPerCellCounter[key] })
+      this.fts.rooms[room].polygons.push({ cellX, cellY, polygonIdx: polygonsPerCellCounter[key] })
     })
   }
 

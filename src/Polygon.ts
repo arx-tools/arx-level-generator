@@ -1,7 +1,5 @@
-import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
-import { ArxPolygonFlags } from 'arx-level-json-converter/dist/common/constants'
-import { ArxPolygon } from 'arx-level-json-converter/dist/fts/Polygon'
-import { ArxVertex } from 'arx-level-json-converter/dist/fts/Vertex'
+import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxVertex } from 'arx-convert/types'
+import { QuadrupleOf } from 'arx-convert/utils'
 import { Triangle } from 'three'
 import { ArxVertexWithColor } from './types'
 import { Vector3 } from './Vector3'
@@ -59,14 +57,14 @@ export class Polygon {
 
     return {
       ...this.polygonData,
-      vertices: arxVertices as [ArxVertex, ArxVertex, ArxVertex, ArxVertex],
+      vertices: arxVertices as QuadrupleOf<ArxVertex>,
       norm: this.norm.toArxVector3(),
       norm2: this.norm.toArxVector3(),
     }
   }
 
   isQuad() {
-    return (this.polygonData.type & ArxPolygonFlags.Quad) > 0
+    return (this.polygonData.flags & ArxPolygonFlags.Quad) > 0
   }
 
   calculateNormals() {
