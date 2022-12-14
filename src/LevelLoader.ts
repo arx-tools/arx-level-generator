@@ -26,10 +26,10 @@ export class LevelLoader {
     return this.readData<ArxLLF>('llf')
   }
 
-  async readData<T>(format: 'dlf' | 'fts' | 'llf') {
+  async readData<T extends ArxDLF | ArxFTS | ArxLLF>(format: 'dlf' | 'fts' | 'llf') {
     await this.createCacheFolderIfNotExists()
 
-    const parser = format === 'dlf' ? DLF : format === 'fts' ? FTS : LLF
+    const parser = this.getParser(format)
 
     const jsonFolder = this.getJsonFolder()
     const jsonFilename = path.resolve(jsonFolder, './' + this.getFilename(format) + '.json')
@@ -55,6 +55,18 @@ export class LevelLoader {
     }
 
     return data
+  }
+
+  private getParser(format: 'dlf' | 'fts' | 'llf') {
+    if (format === 'dlf') {
+      return DLF
+    }
+
+    if (format === 'fts') {
+      return FTS
+    }
+
+    return LLF
   }
 
   private getFilename(format: 'dlf' | 'fts' | 'llf') {
