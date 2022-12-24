@@ -6,7 +6,7 @@ import { ArxMap } from './ArxMap'
 ;(async () => {
   const { OUTPUTDIR = path.resolve(__dirname, './dist'), LEVEL = '1' } = process.env
 
-  const map = await ArxMap.loadLevel(8)
+  const map = await ArxMap.loadLevel(1)
 
   map.dlf.interactiveObjects = []
 
