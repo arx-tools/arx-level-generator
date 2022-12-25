@@ -84,7 +84,6 @@ export class ArxMap {
         numberOfBackgroundPolygons: 0,
         numberOfIgnoredPolygons: 0,
         numberOfChildPolygons: 0,
-        offset: { x: 0, y: 0, z: 0 },
       },
       scene: {
         levelIdx: 1,
@@ -104,7 +103,7 @@ export class ArxMap {
         mScenePosition: { x: 0, y: 0, z: 0 },
       },
       textureContainers: [],
-      cells: times(() => ({}), 160 * 160),
+      cells: times(() => ({}), MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS),
       polygons: [],
       anchors: [],
       portals: [],
@@ -393,8 +392,6 @@ export class ArxMap {
         vertex.add(offset)
       })
     })
-
-    // TODO: move interactive items, lights, fogs, etc
   }
 
   add(map: ArxMap) {
@@ -410,7 +407,19 @@ export class ArxMap {
       this.llf.lights.push(light)
     })
 
-    // TODO: copy interactive items, lights, fogs, etc
+    map.dlf.fogs.forEach((fog) => {
+      this.dlf.fogs.push(fog)
+    })
+
+    map.dlf.interactiveObjects.forEach((obj) => {
+      this.dlf.interactiveObjects.push(obj)
+    })
+
+    map.dlf.paths.forEach((zone) => {
+      this.dlf.paths.push(zone)
+    })
+
+    // TODO: copy pathways
 
     // TODO: adjust texture containers
   }

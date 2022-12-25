@@ -12,7 +12,7 @@ import { Vector3 } from './Vector3'
   map2.move(new Vector3(0, 160, 1800))
   map.add(map2)
 
-  map.dlf.interactiveObjects = []
+  // map.dlf.interactiveObjects = []
 
   map.removePortals()
 
