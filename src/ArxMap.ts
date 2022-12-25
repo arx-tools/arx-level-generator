@@ -11,6 +11,7 @@ import { transparent } from './Color'
 import { Polygon } from './Polygon'
 import { OriginalLevel } from './types'
 import { LevelLoader } from './LevelLoader'
+import { MapFinalizedError, MapNotFinalizedError } from './errors'
 
 export class ArxMap {
   dlf: ArxDLF
@@ -89,7 +90,6 @@ export class ArxMap {
         levelIdx: 1,
       },
       interactiveObjects: [],
-      lights: [],
       fogs: [],
       paths: [],
     }
@@ -180,7 +180,7 @@ export class ArxMap {
 
   finalize() {
     if (this.finalized) {
-      throw new Error('attempting to finalize a map that have already been finalized')
+      throw new MapFinalizedError()
     }
 
     this.finalized = true
@@ -252,7 +252,7 @@ export class ArxMap {
 
   removePortals() {
     if (this.finalized) {
-      throw new Error('attempting to remove portals of a finalized map')
+      throw new MapFinalizedError()
     }
 
     this.fts.portals = []
@@ -326,10 +326,17 @@ export class ArxMap {
     })
   }
 
+  setLevelIdx(levelIdx: number) {
+    this.dlf.scene.levelIdx = levelIdx
+    this.fts.header.levelIdx = levelIdx
+  }
+
   async saveToDisk(outputDir: string, levelIdx: number, prettify: boolean = false) {
     if (!this.finalized) {
-      throw new Error('attempting to save a non-finalized map to disk')
+      throw new MapNotFinalizedError()
     }
+
+    this.setLevelIdx(levelIdx)
 
     const defaultOutputDir = path.resolve('./dist')
 
@@ -374,5 +381,37 @@ export class ArxMap {
     await fs.promises.writeFile(files.llf, llf)
 
     await fs.promises.writeFile(`${outputDir}arx-level-generator-manifest.json`, JSON.stringify(manifest, null, 2))
+  }
+
+  move(offset: Vector3) {
+    if (this.finalized) {
+      throw new MapFinalizedError()
+    }
+
+    this.polygons.forEach((polygon) => {
+      polygon.vertices.forEach((vertex) => {
+        vertex.add(offset)
+      })
+    })
+
+    // TODO: move interactive items, lights, fogs, etc
+  }
+
+  add(map: ArxMap) {
+    if (this.finalized) {
+      throw new MapFinalizedError()
+    }
+
+    map.polygons.forEach((polygon) => {
+      this.polygons.push(polygon)
+    })
+
+    map.llf.lights.forEach((light) => {
+      this.llf.lights.push(light)
+    })
+
+    // TODO: copy interactive items, lights, fogs, etc
+
+    // TODO: adjust texture containers
   }
 }

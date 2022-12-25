@@ -27,3 +27,7 @@ export const uninstall = async (dir: string) => {
     await fs.promises.rm(`${dir}/arx-level-generator-manifest.json`)
   } catch (e) {}
 }
+
+export const randomBetween = (min: number, max: number) => {
+  return Math.random() * (max - min) + min
+}
