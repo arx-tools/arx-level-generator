@@ -29,7 +29,7 @@
     "arx-convert": "^5.0.0",
     "color-rgba": "^2.4.0",
     "nanoid": "^4.0.0",
-    "node-pkware": "^3.0.3",
+    "node-pkware": "^3.0.4",
     "seedrandom": "^3.0.5",
     "three": "^0.148.0",
     "tiny-glob": "^0.2.9"
