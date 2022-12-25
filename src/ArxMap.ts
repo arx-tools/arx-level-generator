@@ -16,15 +16,13 @@ export class ArxMap {
   dlf: ArxDLF
   fts: ArxFTS
   llf: ArxLLF
-  polygons: Polygon[]
-  finalized: boolean
+  polygons: Polygon[] = []
+  finalized: boolean = false
 
   private constructor(dlf: ArxDLF, fts: ArxFTS, llf: ArxLLF, normalsCalculated = false) {
     this.dlf = dlf
     this.fts = fts
     this.llf = llf
-    this.polygons = []
-    this.finalized = false
 
     this.deserializePolygons(normalsCalculated)
   }
