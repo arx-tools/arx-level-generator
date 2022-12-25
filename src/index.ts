@@ -1,6 +1,5 @@
 import path from 'node:path'
 import { ArxMap } from './ArxMap'
-import { Vector3 } from './Vector3'
 
 // ....
 ;(async () => {
@@ -9,10 +8,12 @@ import { Vector3 } from './Vector3'
   const map = await ArxMap.loadLevel(2)
   const map2 = await ArxMap.loadLevel(15)
 
-  map2.move(new Vector3(0, 160, 1800))
+  // TODO: move all polygons via scenePosition when loading?
+
+  map2.move(map.scenePosition.clone().sub(map2.scenePosition))
   map.add(map2)
 
-  // map.dlf.interactiveObjects = []
+  // TODO: porticullis_0085.move 80 0 0
 
   map.removePortals()
 

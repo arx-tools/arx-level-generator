@@ -19,6 +19,7 @@ export class ArxMap {
   llf: ArxLLF
   polygons: Polygon[] = []
   finalized: boolean = false
+  scenePosition: Vector3 = new Vector3(0, 0, 0)
 
   private constructor(dlf: ArxDLF, fts: ArxFTS, llf: ArxLLF, normalsCalculated = false) {
     this.dlf = dlf
@@ -35,9 +36,13 @@ export class ArxMap {
 
     this.fts.polygons = []
     this.llf.colors = []
+
+    this.scenePosition = Vector3.fromArxVector3(this.fts.sceneHeader.mScenePosition)
   }
 
   private serializePolygons() {
+    this.fts.sceneHeader.mScenePosition = this.scenePosition.toArxVector3()
+
     this.fts.polygons = this.polygons.map((polygon) => {
       return polygon.toArxPolygon()
     })
