@@ -19,30 +19,25 @@ export class ArxMap {
   llf: ArxLLF
   polygons: Polygon[] = []
   finalized: boolean = false
-  scenePosition: Vector3 = new Vector3(0, 0, 0)
 
   private constructor(dlf: ArxDLF, fts: ArxFTS, llf: ArxLLF, normalsCalculated = false) {
     this.dlf = dlf
     this.fts = fts
     this.llf = llf
 
-    this.deserializePolygons(normalsCalculated)
+    this.deserializeArxData(normalsCalculated)
   }
 
-  private deserializePolygons(normalsCalculated: boolean) {
+  private deserializeArxData(normalsCalculated: boolean) {
     this.polygons = this.fts.polygons.map((polygon) => {
       return Polygon.fromArxPolygon(polygon, this.llf.colors, normalsCalculated)
     })
 
     this.fts.polygons = []
     this.llf.colors = []
-
-    this.scenePosition = Vector3.fromArxVector3(this.fts.sceneHeader.mScenePosition)
   }
 
   private serializePolygons() {
-    this.fts.sceneHeader.mScenePosition = this.scenePosition.toArxVector3()
-
     this.fts.polygons = this.polygons.map((polygon) => {
       return polygon.toArxPolygon()
     })
@@ -387,7 +382,14 @@ export class ArxMap {
     await fs.promises.writeFile(`${outputDir}arx-level-generator-manifest.json`, JSON.stringify(manifest, null, 2))
   }
 
-  move(offset: Vector3) {
+  alignPolygonsTo(map: ArxMap) {
+    const offset = Vector3.fromArxVector3(map.fts.sceneHeader.mScenePosition).sub(
+      Vector3.fromArxVector3(this.fts.sceneHeader.mScenePosition),
+    )
+    this.movePolygons(offset)
+  }
+
+  movePolygons(offset: Vector3) {
     if (this.finalized) {
       throw new MapFinalizedError()
     }
@@ -399,33 +401,89 @@ export class ArxMap {
     })
   }
 
+  moveEntities(offset: Vector3) {
+    if (this.finalized) {
+      throw new MapFinalizedError()
+    }
+
+    // lights
+    this.llf.lights.forEach((light) => {
+      light.pos.x += offset.x
+      light.pos.y += offset.y
+      light.pos.z += offset.z
+    })
+
+    // fogs
+    this.dlf.fogs.forEach((fog) => {
+      fog.pos.x += offset.x
+      fog.pos.y += offset.y
+      fog.pos.z += offset.z
+    })
+
+    // entities
+    this.dlf.interactiveObjects.forEach((obj) => {
+      obj.pos.x += offset.x
+      obj.pos.y += offset.y
+      obj.pos.z += offset.z
+    })
+
+    // zones
+    this.dlf.paths.forEach((zone) => {
+      zone.header.pos.x += offset.x
+      zone.header.pos.y += offset.y
+      zone.header.pos.z += offset.z
+    })
+
+    // paths
+    this.fts.anchors.forEach((anchor) => {
+      anchor.data.pos.x += offset.x
+      anchor.data.pos.y += offset.y
+      anchor.data.pos.z += offset.z
+    })
+  }
+
+  move(offset: Vector3) {
+    this.movePolygons(offset)
+    this.moveEntities(offset)
+  }
+
   add(map: ArxMap) {
     if (this.finalized) {
       throw new MapFinalizedError()
     }
 
+    // polygons
     map.polygons.forEach((polygon) => {
       this.polygons.push(polygon)
     })
 
+    // lights
     map.llf.lights.forEach((light) => {
       this.llf.lights.push(light)
     })
 
+    // fogs
     map.dlf.fogs.forEach((fog) => {
       this.dlf.fogs.push(fog)
     })
 
+    // entities
     map.dlf.interactiveObjects.forEach((obj) => {
       this.dlf.interactiveObjects.push(obj)
     })
 
+    // zones
     map.dlf.paths.forEach((zone) => {
       this.dlf.paths.push(zone)
     })
 
-    // TODO: copy pathways
+    // paths
+    // map.fts.anchors.forEach((anchor) => {
+    //   this.fts.anchors.push(anchor)
+    // })
 
-    // TODO: adjust texture containers
+    // TODO: adjust fts anchor linked anchor indices
+
+    // TODO: adjust fts polygon texture container ids
   }
 }
