@@ -20,12 +20,22 @@ export class ArxMap {
   llf: ArxLLF
   polygons: Polygon[] = []
   lights: Light[] = []
-  isFinalized: boolean = false
+  fogs: any[] = []
+  entities: any[] = []
+  zones: any[] = []
+  paths: any[] = []
+  config: {
+    isFinalized: boolean
+  }
 
   private constructor(dlf: ArxDLF, fts: ArxFTS, llf: ArxLLF, normalsCalculated = false) {
     this.dlf = dlf
     this.fts = fts
     this.llf = llf
+
+    this.config = {
+      isFinalized: false,
+    }
 
     this.deserializeArxData(normalsCalculated)
   }
@@ -173,11 +183,11 @@ export class ArxMap {
   }
 
   finalize() {
-    if (this.isFinalized) {
+    if (this.config.isFinalized) {
       throw new MapFinalizedError()
     }
 
-    this.isFinalized = true
+    this.config.isFinalized = true
 
     this.dlf.header.numberOfBackgroundPolygons = this.polygons.length
     this.llf.header.numberOfBackgroundPolygons = this.polygons.length
@@ -245,7 +255,7 @@ export class ArxMap {
   }
 
   removePortals() {
-    if (this.isFinalized) {
+    if (this.config.isFinalized) {
       throw new MapFinalizedError()
     }
 
@@ -326,7 +336,7 @@ export class ArxMap {
   }
 
   async saveToDisk(outputDir: string, levelIdx: number, prettify: boolean = false) {
-    if (!this.isFinalized) {
+    if (!this.config.isFinalized) {
       throw new MapNotFinalizedError()
     }
 
@@ -385,7 +395,7 @@ export class ArxMap {
   }
 
   movePolygons(offset: Vector3) {
-    if (this.isFinalized) {
+    if (this.config.isFinalized) {
       throw new MapFinalizedError()
     }
 
@@ -397,7 +407,7 @@ export class ArxMap {
   }
 
   moveEntities(offset: Vector3) {
-    if (this.isFinalized) {
+    if (this.config.isFinalized) {
       throw new MapFinalizedError()
     }
 
@@ -443,7 +453,7 @@ export class ArxMap {
   }
 
   add(map: ArxMap) {
-    if (this.isFinalized) {
+    if (this.config.isFinalized) {
       throw new MapFinalizedError()
     }
 
