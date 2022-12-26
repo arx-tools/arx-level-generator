@@ -12,13 +12,15 @@ import { Polygon } from './Polygon'
 import { OriginalLevel } from './types'
 import { LevelLoader } from './LevelLoader'
 import { MapFinalizedError, MapNotFinalizedError } from './errors'
+import { Light } from './Light'
 
 export class ArxMap {
   dlf: ArxDLF
   fts: ArxFTS
   llf: ArxLLF
   polygons: Polygon[] = []
-  finalized: boolean = false
+  lights: Light[] = []
+  isFinalized: boolean = false
 
   private constructor(dlf: ArxDLF, fts: ArxFTS, llf: ArxLLF, normalsCalculated = false) {
     this.dlf = dlf
@@ -78,12 +80,7 @@ export class ArxMap {
         time: now,
         posEdit: { x: 0, y: 0, z: 0 },
         angleEdit: { a: 0, b: 0, g: 0 },
-        numberOfNodes: 0,
-        numberOfNodeLinks: 0,
-        numberOfZones: 0,
         numberOfBackgroundPolygons: 0,
-        numberOfIgnoredPolygons: 0,
-        numberOfChildPolygons: 0,
       },
       scene: {
         levelIdx: 1,
@@ -139,8 +136,6 @@ export class ArxMap {
       header: {
         lastUser: generatorId,
         time: now,
-        numberOfShadowPolygons: 0,
-        numberOfIgnoredPolygons: 0,
         numberOfBackgroundPolygons: 0,
       },
       lights: [],
@@ -178,11 +173,11 @@ export class ArxMap {
   }
 
   finalize() {
-    if (this.finalized) {
+    if (this.isFinalized) {
       throw new MapFinalizedError()
     }
 
-    this.finalized = true
+    this.isFinalized = true
 
     this.dlf.header.numberOfBackgroundPolygons = this.polygons.length
     this.llf.header.numberOfBackgroundPolygons = this.polygons.length
@@ -250,7 +245,7 @@ export class ArxMap {
   }
 
   removePortals() {
-    if (this.finalized) {
+    if (this.isFinalized) {
       throw new MapFinalizedError()
     }
 
@@ -331,7 +326,7 @@ export class ArxMap {
   }
 
   async saveToDisk(outputDir: string, levelIdx: number, prettify: boolean = false) {
-    if (!this.finalized) {
+    if (!this.isFinalized) {
       throw new MapNotFinalizedError()
     }
 
@@ -390,7 +385,7 @@ export class ArxMap {
   }
 
   movePolygons(offset: Vector3) {
-    if (this.finalized) {
+    if (this.isFinalized) {
       throw new MapFinalizedError()
     }
 
@@ -402,7 +397,7 @@ export class ArxMap {
   }
 
   moveEntities(offset: Vector3) {
-    if (this.finalized) {
+    if (this.isFinalized) {
       throw new MapFinalizedError()
     }
 
@@ -448,7 +443,7 @@ export class ArxMap {
   }
 
   add(map: ArxMap) {
-    if (this.finalized) {
+    if (this.isFinalized) {
       throw new MapFinalizedError()
     }
 
