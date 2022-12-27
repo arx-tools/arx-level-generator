@@ -25,25 +25,134 @@ export class ArxMap {
     isFinalized: boolean
   }
 
-  private constructor(dlf: ArxDLF, fts: ArxFTS, llf: ArxLLF, normalsCalculated = false) {
+  constructor(dlf?: ArxDLF, fts?: ArxFTS, llf?: ArxLLF, normalsCalculated = false) {
     this.config = {
       isFinalized: false,
     }
 
-    this.polygons = fts.polygons.map((polygon) => {
-      return Polygon.fromArxPolygon(polygon, llf.colors, normalsCalculated)
-    })
+    if (typeof dlf !== 'undefined' && typeof fts !== 'undefined' && typeof llf !== 'undefined') {
+      this.polygons = fts.polygons.map((polygon) => {
+        // a Polygon should also store it's texture
+        return Polygon.fromArxPolygon(polygon, llf.colors, normalsCalculated)
+      })
+
+      this.lights = llf.lights.map((light) => {
+        return Light.fromArxLight(light)
+      })
+    }
+
+    /*
+      dlf = {
+        header: {
+          lastUser: '',
+          time: 0,
+          posEdit: { x: 0, y: 0, z: 0 },
+          angleEdit: { a: 0, b: 0, g: 0 },
+          numberOfBackgroundPolygons: 0,
+        },
+        scene: {
+          levelIdx: 1,
+        },
+        interactiveObjects: [],
+        fogs: [],
+        paths: [],
+      }
+
+      fts = {
+        header: {
+          levelIdx: 1,
+        },
+        uniqueHeaders: [],
+        sceneHeader: {
+          playerPosition: { x: 0, y: 0, z: 0 },
+          mScenePosition: { x: 0, y: 0, z: 0 },
+        },
+        textureContainers: [],
+        cells: times(() => ({}), MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS),
+        polygons: [],
+        anchors: [],
+        portals: [],
+        rooms: [
+          { portals: [], polygons: [] },
+          { portals: [], polygons: [] },
+        ],
+        roomDistances: [
+          {
+            distance: -1,
+            startPosition: { x: 0, y: 0, z: 0 },
+            endPosition: { x: 1, y: 0, z: 0 },
+          },
+          {
+            distance: -1,
+            startPosition: { x: 0, y: 0, z: 0 },
+            endPosition: { x: 0, y: 1, z: 0 },
+          },
+          {
+            distance: -1,
+            startPosition: { x: 0.984375, y: 0.984375, z: 0 },
+            endPosition: { x: 0, y: 0, z: 0 },
+          },
+          {
+            distance: -1,
+            startPosition: { x: 0, y: 0, z: 0 },
+            endPosition: { x: 0, y: 0, z: 0 },
+          },
+        ],
+      }
+    */
   }
 
-  private toArxData() {
-    const dlf: ArxDLF = {}
-    const fts: ArxFTS = {}
-    const llf: ArxLLF = {}
+  private async toArxData(levelIdx: number) {
+    const now = Math.floor(Date.now() / 1000)
+    const generatorId = await ArxMap.getGeneratorId()
 
-    dlf.header.numberOfBackgroundPolygons = this.polygons.length
-    llf.header.numberOfBackgroundPolygons = this.polygons.length
+    const dlf: ArxDLF = {
+      header: {
+        lastUser: generatorId,
+        time: now,
+        // posEdit: ?.toArxVector3(),
+        // angleEdit: { a: 0, b: 0, g: 0 }, // this.player.rotation maybe?
+        numberOfBackgroundPolygons: this.polygons.length,
+      },
+      scene: {
+        levelIdx,
+      },
+      // interactiveObjects : this.entities.map(...),
+      // fogs: this.fogs.map(...),
+      // paths: this.zones.map(...),
+    }
 
-    llf.colors = this.getVertexColors()
+    const fts: ArxFTS = {
+      header: {
+        levelIdx,
+      },
+      // uniqueHeaders: [] // TODO: store this somewhere
+      sceneHeader: {
+        // mScenePosition: ?.toArxVector3()
+        // playerPosition: ?.toArxVector3()
+      },
+      // textureContainers: // TODO: extract textures from this.polygons
+      // cells: [] // TODO: store this somewhere
+      polygons: this.polygons.map((polygon) => {
+        return polygon.toArxPolygon()
+      }),
+      // anchors: [] // TODO: store this somewhere
+      // portals: [] // TODO: store this somewhere
+      // rooms: [] // TODO: store this somewhere
+      // roomDistances: [] // TODO: store this somewhere
+    }
+
+    const llf: ArxLLF = {
+      header: {
+        lastUser: generatorId,
+        time: now,
+        numberOfBackgroundPolygons: this.polygons.length,
+      },
+      colors: this.getVertexColors(),
+      lights: this.lights.map((light) => {
+        return light.toArxPolygon()
+      }),
+    }
 
     return {
       dlf,
@@ -52,6 +161,12 @@ export class ArxMap {
     }
   }
 
+  /**
+   * Loads one of the levels found in the original game
+   *
+   * Requires the pkware-test-files repo
+   * @see https://github.com/meszaros-lajos-gyorgy/pkware-test-files
+   */
   static async loadLevel(levelIdx: OriginalLevel) {
     const loader = new LevelLoader(levelIdx)
 
@@ -59,122 +174,11 @@ export class ArxMap {
     const fts = await loader.readFts()
     const llf = await loader.readLlf()
 
-    const now = Math.floor(Date.now() / 1000)
-    const generatorId = await ArxMap.getGeneratorId()
-
-    dlf.header.lastUser = generatorId
-    dlf.header.time = now
-
-    llf.header.lastUser = generatorId
-    llf.header.time = now
-
     return new ArxMap(dlf, fts, llf, true)
   }
 
   private static async getGeneratorId() {
     return `Arx Level Generator - version ${await getPackageVersion()}`
-  }
-
-  static async createBlankMap() {
-    const now = Math.floor(Date.now() / 1000)
-    const generatorId = await ArxMap.getGeneratorId()
-
-    const dlf: ArxDLF = {
-      header: {
-        lastUser: generatorId,
-        time: now,
-        posEdit: { x: 0, y: 0, z: 0 },
-        angleEdit: { a: 0, b: 0, g: 0 },
-        numberOfBackgroundPolygons: 0,
-      },
-      scene: {
-        levelIdx: 1,
-      },
-      interactiveObjects: [],
-      fogs: [],
-      paths: [],
-    }
-
-    const fts: ArxFTS = {
-      header: {
-        levelIdx: 1,
-      },
-      uniqueHeaders: [],
-      sceneHeader: {
-        playerPosition: { x: 0, y: 0, z: 0 },
-        mScenePosition: { x: 0, y: 0, z: 0 },
-      },
-      textureContainers: [],
-      cells: times(() => ({}), MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS),
-      polygons: [],
-      anchors: [],
-      portals: [],
-      rooms: [
-        { portals: [], polygons: [] },
-        { portals: [], polygons: [] },
-      ],
-      roomDistances: [
-        {
-          distance: -1,
-          startPosition: { x: 0, y: 0, z: 0 },
-          endPosition: { x: 1, y: 0, z: 0 },
-        },
-        {
-          distance: -1,
-          startPosition: { x: 0, y: 0, z: 0 },
-          endPosition: { x: 0, y: 1, z: 0 },
-        },
-        {
-          distance: -1,
-          startPosition: { x: 0.984375, y: 0.984375, z: 0 },
-          endPosition: { x: 0, y: 0, z: 0 },
-        },
-        {
-          distance: -1,
-          startPosition: { x: 0, y: 0, z: 0 },
-          endPosition: { x: 0, y: 0, z: 0 },
-        },
-      ],
-    }
-
-    const llf: ArxLLF = {
-      header: {
-        lastUser: generatorId,
-        time: now,
-        numberOfBackgroundPolygons: 0,
-      },
-      lights: [],
-      colors: [],
-    }
-
-    const map = new ArxMap(dlf, fts, llf)
-
-    map.alignMinimapWithPolygons()
-
-    return map
-  }
-
-  private alignMinimapWithPolygons() {
-    this.polygons.push(
-      new Polygon({
-        vertices: [
-          new Vertex(0, 0, 0, 0, 0, transparent),
-          new Vertex(1, 0, 0, 0, 1, transparent),
-          new Vertex(0, 0, 1, 1, 0, transparent),
-          new Vertex(1, 0, 1, 1, 1, transparent),
-        ],
-        norm: new Vector3(),
-        norm2: new Vector3(),
-        normalsCalculated: false,
-        polygonData: {
-          textureContainerId: NO_TEXTURE,
-          transval: 0,
-          area: 1,
-          flags: ArxPolygonFlags.Quad | ArxPolygonFlags.NoDraw,
-          room: 1,
-        },
-      }),
-    )
   }
 
   finalize() {
@@ -186,16 +190,6 @@ export class ArxMap {
     this.calculateRoomData()
 
     this.config.isFinalized = true
-  }
-
-  getPlayerSpawn() {
-    // const posEdit = Vector3.fromArxVector3(this.dlf.header.posEdit)
-    // return Vector3.fromArxVector3(this.fts.sceneHeader.mScenePosition).add(posEdit)
-  }
-
-  setPlayerSpawn(playerSpawn: Vector3) {
-    // const posEdit = Vector3.fromArxVector3(this.dlf.header.posEdit)
-    // this.fts.sceneHeader.mScenePosition = playerSpawn.sub(posEdit).toArxVector3()
   }
 
   private calculateNormals() {
@@ -307,19 +301,10 @@ export class ArxMap {
     // })
   }
 
-  setLevelIdx(levelIdx: number) {
-    // this.dlf.scene.levelIdx = levelIdx
-    // this.fts.header.levelIdx = levelIdx
-  }
-
   async saveToDisk(outputDir: string, levelIdx: number, prettify: boolean = false) {
     if (!this.config.isFinalized) {
       throw new MapNotFinalizedError()
     }
-
-    const { dlf, fts, llf } = this.toArxData()
-
-    this.setLevelIdx(levelIdx)
 
     const defaultOutputDir = path.resolve('./dist')
 
@@ -354,6 +339,8 @@ export class ArxMap {
     for (let task of tasks) {
       await task
     }
+
+    const { dlf, fts, llf } = await this.toArxData(levelIdx)
 
     const stringifiedDlf = prettify ? JSON.stringify(dlf, null, 2) : JSON.stringify(dlf)
     const stringifiedFts = prettify ? JSON.stringify(fts, null, 2) : JSON.stringify(fts)
