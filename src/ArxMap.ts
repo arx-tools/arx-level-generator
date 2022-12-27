@@ -15,9 +15,6 @@ import { MapFinalizedError, MapNotFinalizedError } from './errors'
 import { Light } from './Light'
 
 export class ArxMap {
-  dlf: ArxDLF
-  fts: ArxFTS
-  llf: ArxLLF
   polygons: Polygon[] = []
   lights: Light[] = []
   fogs: any[] = []
@@ -29,32 +26,30 @@ export class ArxMap {
   }
 
   private constructor(dlf: ArxDLF, fts: ArxFTS, llf: ArxLLF, normalsCalculated = false) {
-    this.dlf = dlf
-    this.fts = fts
-    this.llf = llf
-
     this.config = {
       isFinalized: false,
     }
 
-    this.deserializeArxData(normalsCalculated)
+    this.polygons = fts.polygons.map((polygon) => {
+      return Polygon.fromArxPolygon(polygon, llf.colors, normalsCalculated)
+    })
   }
 
-  private deserializeArxData(normalsCalculated: boolean) {
-    this.polygons = this.fts.polygons.map((polygon) => {
-      return Polygon.fromArxPolygon(polygon, this.llf.colors, normalsCalculated)
-    })
+  private toArxData() {
+    const dlf: ArxDLF = {}
+    const fts: ArxFTS = {}
+    const llf: ArxLLF = {}
 
-    this.fts.polygons = []
-    this.llf.colors = []
-  }
+    dlf.header.numberOfBackgroundPolygons = this.polygons.length
+    llf.header.numberOfBackgroundPolygons = this.polygons.length
 
-  private serializePolygons() {
-    this.fts.polygons = this.polygons.map((polygon) => {
-      return polygon.toArxPolygon()
-    })
+    llf.colors = this.getVertexColors()
 
-    this.polygons = []
+    return {
+      dlf,
+      fts,
+      llf,
+    }
   }
 
   static async loadLevel(levelIdx: OriginalLevel) {
@@ -187,27 +182,20 @@ export class ArxMap {
       throw new MapFinalizedError()
     }
 
-    this.config.isFinalized = true
-
-    this.dlf.header.numberOfBackgroundPolygons = this.polygons.length
-    this.llf.header.numberOfBackgroundPolygons = this.polygons.length
-
     this.calculateNormals()
-    this.llf.colors = this.getVertexColors()
-
     this.calculateRoomData()
 
-    this.serializePolygons()
+    this.config.isFinalized = true
   }
 
   getPlayerSpawn() {
-    const posEdit = Vector3.fromArxVector3(this.dlf.header.posEdit)
-    return Vector3.fromArxVector3(this.fts.sceneHeader.mScenePosition).add(posEdit)
+    // const posEdit = Vector3.fromArxVector3(this.dlf.header.posEdit)
+    // return Vector3.fromArxVector3(this.fts.sceneHeader.mScenePosition).add(posEdit)
   }
 
   setPlayerSpawn(playerSpawn: Vector3) {
-    const posEdit = Vector3.fromArxVector3(this.dlf.header.posEdit)
-    this.fts.sceneHeader.mScenePosition = playerSpawn.sub(posEdit).toArxVector3()
+    // const posEdit = Vector3.fromArxVector3(this.dlf.header.posEdit)
+    // this.fts.sceneHeader.mScenePosition = playerSpawn.sub(posEdit).toArxVector3()
   }
 
   private calculateNormals() {
@@ -255,90 +243,81 @@ export class ArxMap {
   }
 
   removePortals() {
-    if (this.config.isFinalized) {
-      throw new MapFinalizedError()
-    }
-
-    this.fts.portals = []
-
-    this.fts.rooms.forEach((room) => {
-      room.portals = []
-    })
-
-    this.movePolygonsToSameRoom()
+    // if (this.config.isFinalized) {
+    //   throw new MapFinalizedError()
+    // }
+    // this.fts.portals = []
+    // this.fts.rooms.forEach((room) => {
+    //   room.portals = []
+    // })
+    // this.movePolygonsToSameRoom()
   }
 
   private movePolygonsToSameRoom() {
-    this.polygons.forEach((polygon) => {
-      if (polygon.polygonData.room < 1) {
-        return
-      }
-
-      polygon.polygonData.room = 1
-    })
-
-    this.fts.rooms = this.fts.rooms.slice(0, 2)
-
-    this.fts.roomDistances = [
-      {
-        distance: -1,
-        startPosition: { x: 0, y: 0, z: 0 },
-        endPosition: { x: 1, y: 0, z: 0 },
-      },
-      {
-        distance: -1,
-        startPosition: { x: 0, y: 0, z: 0 },
-        endPosition: { x: 0, y: 1, z: 0 },
-      },
-      {
-        distance: -1,
-        startPosition: { x: 0.984375, y: 0.984375, z: 0 },
-        endPosition: { x: 0, y: 0, z: 0 },
-      },
-      {
-        distance: -1,
-        startPosition: { x: 0, y: 0, z: 0 },
-        endPosition: { x: 0, y: 0, z: 0 },
-      },
-    ]
+    // this.polygons.forEach((polygon) => {
+    //   if (polygon.polygonData.room < 1) {
+    //     return
+    //   }
+    //   polygon.polygonData.room = 1
+    // })
+    // this.fts.rooms = this.fts.rooms.slice(0, 2)
+    // this.fts.roomDistances = [
+    //   {
+    //     distance: -1,
+    //     startPosition: { x: 0, y: 0, z: 0 },
+    //     endPosition: { x: 1, y: 0, z: 0 },
+    //   },
+    //   {
+    //     distance: -1,
+    //     startPosition: { x: 0, y: 0, z: 0 },
+    //     endPosition: { x: 0, y: 1, z: 0 },
+    //   },
+    //   {
+    //     distance: -1,
+    //     startPosition: { x: 0.984375, y: 0.984375, z: 0 },
+    //     endPosition: { x: 0, y: 0, z: 0 },
+    //   },
+    //   {
+    //     distance: -1,
+    //     startPosition: { x: 0, y: 0, z: 0 },
+    //     endPosition: { x: 0, y: 0, z: 0 },
+    //   },
+    // ]
   }
 
   private calculateRoomData = () => {
-    this.fts.rooms.forEach((room) => {
-      room.polygons = []
-    })
-
-    const polygonsPerCellCounter: Record<string, number> = {}
-
-    this.polygons.forEach((polygon) => {
-      const { room } = polygon.polygonData
-      if (room < 1) {
-        return
-      }
-
-      const vertices = polygon.vertices.map((vertex) => vertex.toArxVertex())
-      const [cellX, cellY] = getCellCoords(vertices as [ArxVertex, ArxVertex, ArxVertex, ArxVertex])
-
-      const key = `${cellX}|${cellY}`
-      if (key in polygonsPerCellCounter) {
-        polygonsPerCellCounter[key] += 1
-      } else {
-        polygonsPerCellCounter[key] = 0
-      }
-
-      this.fts.rooms[room].polygons.push({ cellX, cellY, polygonIdx: polygonsPerCellCounter[key] })
-    })
+    // this.fts.rooms.forEach((room) => {
+    //   room.polygons = []
+    // })
+    // const polygonsPerCellCounter: Record<string, number> = {}
+    // this.polygons.forEach((polygon) => {
+    //   const { room } = polygon.polygonData
+    //   if (room < 1) {
+    //     return
+    //   }
+    //   const vertices = polygon.vertices.map((vertex) => vertex.toArxVertex())
+    //   const [cellX, cellY] = getCellCoords(vertices as [ArxVertex, ArxVertex, ArxVertex, ArxVertex])
+    //   const key = `${cellX}|${cellY}`
+    //   if (key in polygonsPerCellCounter) {
+    //     polygonsPerCellCounter[key] += 1
+    //   } else {
+    //     polygonsPerCellCounter[key] = 0
+    //   }
+    //   this.fts.rooms[room].polygons.push({ cellX, cellY, polygonIdx: polygonsPerCellCounter[key] })
+    // })
   }
 
   setLevelIdx(levelIdx: number) {
-    this.dlf.scene.levelIdx = levelIdx
-    this.fts.header.levelIdx = levelIdx
+    // this.dlf.scene.levelIdx = levelIdx
+    // this.fts.header.levelIdx = levelIdx
   }
 
   async saveToDisk(outputDir: string, levelIdx: number, prettify: boolean = false) {
     if (!this.config.isFinalized) {
       throw new MapNotFinalizedError()
     }
+
+    const { dlf, fts, llf } = this.toArxData()
 
     this.setLevelIdx(levelIdx)
 
@@ -376,22 +355,22 @@ export class ArxMap {
       await task
     }
 
-    const dlf = prettify ? JSON.stringify(this.dlf, null, 2) : JSON.stringify(this.dlf)
-    const fts = prettify ? JSON.stringify(this.fts, null, 2) : JSON.stringify(this.fts)
-    const llf = prettify ? JSON.stringify(this.llf, null, 2) : JSON.stringify(this.llf)
+    const stringifiedDlf = prettify ? JSON.stringify(dlf, null, 2) : JSON.stringify(dlf)
+    const stringifiedFts = prettify ? JSON.stringify(fts, null, 2) : JSON.stringify(fts)
+    const stringifiedLlf = prettify ? JSON.stringify(llf, null, 2) : JSON.stringify(llf)
 
-    await fs.promises.writeFile(files.dlf, dlf)
-    await fs.promises.writeFile(files.fts, fts)
-    await fs.promises.writeFile(files.llf, llf)
+    await fs.promises.writeFile(files.dlf, stringifiedDlf)
+    await fs.promises.writeFile(files.fts, stringifiedFts)
+    await fs.promises.writeFile(files.llf, stringifiedLlf)
 
     await fs.promises.writeFile(`${outputDir}arx-level-generator-manifest.json`, JSON.stringify(manifest, null, 2))
   }
 
   alignPolygonsTo(map: ArxMap) {
-    const offset = Vector3.fromArxVector3(map.fts.sceneHeader.mScenePosition).sub(
-      Vector3.fromArxVector3(this.fts.sceneHeader.mScenePosition),
-    )
-    this.movePolygons(offset)
+    // const offset = Vector3.fromArxVector3(map.fts.sceneHeader.mScenePosition).sub(
+    //   Vector3.fromArxVector3(this.fts.sceneHeader.mScenePosition),
+    // )
+    // this.movePolygons(offset)
   }
 
   movePolygons(offset: Vector3) {
@@ -411,40 +390,40 @@ export class ArxMap {
       throw new MapFinalizedError()
     }
 
-    // lights
-    this.llf.lights.forEach((light) => {
-      light.pos.x += offset.x
-      light.pos.y += offset.y
-      light.pos.z += offset.z
-    })
+    // // lights
+    // this.llf.lights.forEach((light) => {
+    //   light.pos.x += offset.x
+    //   light.pos.y += offset.y
+    //   light.pos.z += offset.z
+    // })
 
-    // fogs
-    this.dlf.fogs.forEach((fog) => {
-      fog.pos.x += offset.x
-      fog.pos.y += offset.y
-      fog.pos.z += offset.z
-    })
+    // // fogs
+    // this.dlf.fogs.forEach((fog) => {
+    //   fog.pos.x += offset.x
+    //   fog.pos.y += offset.y
+    //   fog.pos.z += offset.z
+    // })
 
-    // entities
-    this.dlf.interactiveObjects.forEach((obj) => {
-      obj.pos.x += offset.x
-      obj.pos.y += offset.y
-      obj.pos.z += offset.z
-    })
+    // // entities
+    // this.dlf.interactiveObjects.forEach((obj) => {
+    //   obj.pos.x += offset.x
+    //   obj.pos.y += offset.y
+    //   obj.pos.z += offset.z
+    // })
 
-    // zones
-    this.dlf.paths.forEach((zone) => {
-      zone.header.pos.x += offset.x
-      zone.header.pos.y += offset.y
-      zone.header.pos.z += offset.z
-    })
+    // // zones
+    // this.dlf.paths.forEach((zone) => {
+    //   zone.header.pos.x += offset.x
+    //   zone.header.pos.y += offset.y
+    //   zone.header.pos.z += offset.z
+    // })
 
-    // paths
-    this.fts.anchors.forEach((anchor) => {
-      anchor.data.pos.x += offset.x
-      anchor.data.pos.y += offset.y
-      anchor.data.pos.z += offset.z
-    })
+    // // paths
+    // this.fts.anchors.forEach((anchor) => {
+    //   anchor.data.pos.x += offset.x
+    //   anchor.data.pos.y += offset.y
+    //   anchor.data.pos.z += offset.z
+    // })
   }
 
   move(offset: Vector3) {
@@ -453,42 +432,34 @@ export class ArxMap {
   }
 
   add(map: ArxMap) {
-    if (this.config.isFinalized) {
-      throw new MapFinalizedError()
-    }
-
-    // polygons
-    map.polygons.forEach((polygon) => {
-      this.polygons.push(polygon)
-    })
-
-    // lights
-    map.llf.lights.forEach((light) => {
-      this.llf.lights.push(light)
-    })
-
-    // fogs
-    map.dlf.fogs.forEach((fog) => {
-      this.dlf.fogs.push(fog)
-    })
-
-    // entities
-    map.dlf.interactiveObjects.forEach((obj) => {
-      this.dlf.interactiveObjects.push(obj)
-    })
-
-    // zones
-    map.dlf.paths.forEach((zone) => {
-      this.dlf.paths.push(zone)
-    })
-
+    // if (this.config.isFinalized) {
+    //   throw new MapFinalizedError()
+    // }
+    // // polygons
+    // map.polygons.forEach((polygon) => {
+    //   this.polygons.push(polygon)
+    // })
+    // // lights
+    // map.llf.lights.forEach((light) => {
+    //   this.llf.lights.push(light)
+    // })
+    // // fogs
+    // map.dlf.fogs.forEach((fog) => {
+    //   this.dlf.fogs.push(fog)
+    // })
+    // // entities
+    // map.dlf.interactiveObjects.forEach((obj) => {
+    //   this.dlf.interactiveObjects.push(obj)
+    // })
+    // // zones
+    // map.dlf.paths.forEach((zone) => {
+    //   this.dlf.paths.push(zone)
+    // })
     // paths
     // map.fts.anchors.forEach((anchor) => {
     //   this.fts.anchors.push(anchor)
     // })
-
     // TODO: adjust fts anchor linked anchor indices
-
     // TODO: adjust fts polygon texture container ids
   }
 }
