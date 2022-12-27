@@ -31,10 +31,41 @@ export class ArxMap {
     }
 
     if (typeof dlf !== 'undefined' && typeof fts !== 'undefined' && typeof llf !== 'undefined') {
+      // dlf.header.angleEdit
+      // Vector3.fromArxVector3(dlf.header.posEdit)
+
+      this.entities = dlf.interactiveObjects.map((entity) => {
+        // TODO
+      })
+
+      this.fogs = dlf.fogs.map((fog) => {
+        // TODO
+      })
+
+      this.zones = dlf.paths.map((zone) => {
+        // TODO
+      })
+
+      // fts
+
+      // fts.uniqueHeaders - TODO: store this somewhere
+
+      // Vector3.fromArxVector3(fts.sceneHeader.mScenePosition)
+      // Vector3.fromArxVector3(fts.sceneHeader.playerPosition)
+
+      // fts.cells - TODO: store this somewhere
+
       this.polygons = fts.polygons.map((polygon) => {
-        // a Polygon should also store it's texture
+        // a Polygon should also store it's texture (fts.textureContainers)
         return Polygon.fromArxPolygon(polygon, llf.colors, normalsCalculated)
       })
+
+      // fts.anchors - TODO: store this somewhere
+      // fts.portals - TODO: store this somewhere
+      // fts.rooms - TODO: store this somewhere
+      // fts.roomDistances - TODO: store this somewhere
+
+      // llf
 
       this.lights = llf.lights.map((light) => {
         return Light.fromArxLight(light)
