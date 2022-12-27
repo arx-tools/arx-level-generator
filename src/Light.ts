@@ -31,6 +31,7 @@ export class Light {
     return {
       ...this.lightData,
       pos: this.pos.toArxVector3(),
+      color: this.color.toArxColor(),
     }
   }
 }
