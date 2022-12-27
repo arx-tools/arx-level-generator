@@ -6,7 +6,7 @@ import { Vector3 } from './Vector3'
 import { Vertex } from './Vertex'
 
 type PolygonContructorProps = {
-  vertices: [Vertex, Vertex, Vertex, Vertex]
+  vertices: QuadrupleOf<Vertex>
   norm: Vector3
   norm2: Vector3
   polygonData: Omit<ArxPolygon, 'vertices' | 'norm' | 'norm2'>
@@ -43,7 +43,7 @@ export class Polygon {
 
     return new Polygon({
       polygonData,
-      vertices: extendedVertices as [Vertex, Vertex, Vertex, Vertex],
+      vertices: extendedVertices as QuadrupleOf<Vertex>,
       normalsCalculated,
       norm: Vector3.fromArxVector3(norm),
       norm2: Vector3.fromArxVector3(norm2),
