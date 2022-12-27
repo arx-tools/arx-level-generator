@@ -4,7 +4,6 @@ import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf } fr
 import { ArxColor, ArxDLF, ArxFTS, ArxLLF, ArxPolygonFlags, ArxVertex } from 'arx-convert/types'
 import { times } from './faux-ramda'
 import { Vector3 } from './Vector3'
-import { NO_TEXTURE } from './constants'
 import { getPackageVersion, uninstall } from './helpers'
 import { Vertex } from './Vertex'
 import { transparent } from './Color'
@@ -56,8 +55,7 @@ export class ArxMap {
       // fts.cells - TODO: store this somewhere
 
       this.polygons = fts.polygons.map((polygon) => {
-        // a Polygon should also store it's texture (fts.textureContainers)
-        return Polygon.fromArxPolygon(polygon, llf.colors, normalsCalculated)
+        return Polygon.fromArxPolygon(polygon, llf.colors, fts.textureContainers, normalsCalculated)
       })
 
       // fts.anchors - TODO: store this somewhere
