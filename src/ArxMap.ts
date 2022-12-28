@@ -14,6 +14,7 @@ import { MapFinalizedError, MapNotFinalizedError } from './errors'
 import { Light } from './Light'
 import { Player } from './Player'
 import { Rotation } from './Rotation'
+import { Entity } from './Entity'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -23,7 +24,7 @@ export class ArxMap {
   polygons: Polygon[] = []
   lights: Light[] = []
   fogs: any[] = []
-  entities: any[] = []
+  entities: Entity[] = []
   zones: any[] = []
   paths: any[] = []
   player: Player = new Player()
@@ -38,7 +39,7 @@ export class ArxMap {
       // Vector3.fromArxVector3(dlf.header.posEdit)
 
       this.entities = dlf.interactiveObjects.map((entity) => {
-        // TODO
+        return Entity.fromArxInteractiveObject(entity)
       })
 
       this.fogs = dlf.fogs.map((fog) => {
