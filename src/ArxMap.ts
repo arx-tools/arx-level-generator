@@ -33,7 +33,7 @@ export class ArxMap {
 
   constructor(dlf?: ArxDLF, fts?: ArxFTS, llf?: ArxLLF, normalsCalculated = false) {
     if (typeof dlf !== 'undefined' && typeof fts !== 'undefined' && typeof llf !== 'undefined') {
-      this.player.rotation = Rotation.fromArxRotation(dlf.header.angleEdit)
+      this.player.orientation = Rotation.fromArxRotation(dlf.header.angleEdit)
 
       // Vector3.fromArxVector3(dlf.header.posEdit)
 
@@ -90,7 +90,7 @@ export class ArxMap {
         time: now,
         // posEdit: ?.toArxVector3(),
         // angleEdit: { a: 0, b: 0, g: 0 }, // this.player.rotation maybe?
-        angleEdit: this.player.rotation.toArxRotation(),
+        angleEdit: this.player.orientation.toArxRotation(),
         numberOfBackgroundPolygons: this.polygons.length,
       },
       scene: {

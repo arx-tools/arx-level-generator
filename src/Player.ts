@@ -1,9 +1,9 @@
 import { Rotation } from './Rotation'
 
 export class Player {
-  rotation: Rotation
+  orientation: Rotation
 
   constructor() {
-    this.rotation = new Rotation(0, 0, 0)
+    this.orientation = new Rotation(0, 0, 0)
   }
 }
