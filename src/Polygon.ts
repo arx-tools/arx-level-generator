@@ -1,4 +1,4 @@
-import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVertex } from 'arx-convert/types'
+import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVector3, ArxVertex } from 'arx-convert/types'
 import { QuadrupleOf } from 'arx-convert/utils'
 import { Triangle } from 'three'
 import { Texture } from './Texture'
@@ -6,42 +6,60 @@ import { ArxVertexWithColor } from './types'
 import { Vector3 } from './Vector3'
 import { Vertex } from './Vertex'
 
+type PolygonConfig = {
+  areNormalsCalculated: boolean
+}
+
 type PolygonContructorProps = {
   vertices: QuadrupleOf<Vertex>
   norm: Vector3
   norm2: Vector3
-  polygonData: Omit<ArxPolygon, 'vertices' | 'norm' | 'norm2' | 'textureContainerId' | 'flags'>
   texture?: Texture
   flags: ArxPolygonFlags
-  normalsCalculated: boolean
+  normals?: QuadrupleOf<Vector3>
+  transval: number
+  area: number
+  room: number
+  paddy?: number
+  config: PolygonConfig
 }
 
 export class Polygon {
-  vertices: [Vertex, Vertex, Vertex, Vertex]
+  vertices: QuadrupleOf<Vertex>
   norm: Vector3
   norm2: Vector3
-  polygonData: Omit<ArxPolygon, 'vertices' | 'norm' | 'norm2' | 'textureContainerId' | 'flags'>
   texture?: Texture
   flags: ArxPolygonFlags
-  normalsCalculated: boolean
+  normals?: QuadrupleOf<Vector3>
+  transval: number
+  area: number
+  room: number
+  paddy?: number
+  config: PolygonConfig = {
+    areNormalsCalculated: false,
+  }
 
   constructor(props: PolygonContructorProps) {
     this.vertices = props.vertices
     this.norm = props.norm
     this.norm2 = props.norm2
-    this.polygonData = props.polygonData
     this.texture = props?.texture
     this.flags = props.flags
-    this.normalsCalculated = props.normalsCalculated
+    this.normals = props.normals
+    this.transval = props.transval
+    this.area = props.area
+    this.room = props.room
+    this.paddy = props.paddy
+    this.config = props.config
   }
 
   static fromArxPolygon(
-    { vertices, norm, norm2, textureContainerId, flags, ...polygonData }: ArxPolygon,
+    polygon: ArxPolygon,
     colors: ArxColor[],
     textures: ArxTextureContainer[],
-    normalsCalculated: boolean,
+    areNormalsCalculated: boolean,
   ) {
-    const extendedVertices = vertices.map(({ llfColorIdx, ...vertex }) => {
+    const extendedVertices = polygon.vertices.map(({ llfColorIdx, ...vertex }) => {
       const extendedVertex: ArxVertexWithColor = vertex
       if (typeof llfColorIdx === 'number') {
         extendedVertex.color = colors[llfColorIdx]
@@ -49,31 +67,59 @@ export class Polygon {
       return Vertex.fromArxVertex(extendedVertex)
     })
 
-    const textureContainer = textures.find((texture) => {
-      return texture.id === textureContainerId
-    })
+    let texture: Texture | undefined = undefined
+    const textureContainer = textures.find(({ id }) => id === polygon.textureContainerId)
+    if (textureContainer) {
+      texture = Texture.fromArxTextureContainer(textureContainer)
+    }
+
+    let normals: QuadrupleOf<Vector3> | undefined = undefined
+    if (polygon.normals) {
+      normals = polygon.normals.map(Vector3.fromArxVector3) as QuadrupleOf<Vector3>
+    }
 
     return new Polygon({
-      polygonData,
-      flags,
       vertices: extendedVertices as QuadrupleOf<Vertex>,
-      normalsCalculated,
-      norm: Vector3.fromArxVector3(norm),
-      norm2: Vector3.fromArxVector3(norm2),
-      texture: textureContainer ? Texture.fromArxTextureContainer(textureContainer) : undefined,
+      norm: Vector3.fromArxVector3(polygon.norm),
+      norm2: Vector3.fromArxVector3(polygon.norm2),
+      texture,
+      flags: polygon.flags,
+      normals,
+      transval: polygon.transval,
+      area: polygon.area,
+      room: polygon.room,
+      paddy: polygon.paddy,
+      config: {
+        areNormalsCalculated,
+      },
     })
   }
 
-  toArxPolygon() {
-    const arxVertices = this.vertices.map((vertex) => {
+  toArxPolygon(): ArxPolygon {
+    const vertices = this.vertices.map((vertex) => {
       return vertex.toArxVertex()
-    })
+    }) as QuadrupleOf<ArxVertex>
+
+    let textureContainerId = 0 // TODO
+
+    let normals: QuadrupleOf<ArxVector3> | undefined = undefined
+    if (this.normals) {
+      normals = this.normals.map((normal) => {
+        return normal.toArxVector3()
+      }) as QuadrupleOf<Vector3>
+    }
 
     return {
-      ...this.polygonData,
-      vertices: arxVertices as QuadrupleOf<ArxVertex>,
+      vertices,
       norm: this.norm.toArxVector3(),
       norm2: this.norm.toArxVector3(),
+      textureContainerId,
+      flags: this.flags,
+      normals,
+      transval: this.transval,
+      area: this.area,
+      room: this.room,
+      paddy: this.paddy,
     }
   }
 
@@ -82,7 +128,7 @@ export class Polygon {
   }
 
   calculateNormals() {
-    if (this.normalsCalculated === true) {
+    if (this.config.areNormalsCalculated === true) {
       return
     }
 

@@ -27,7 +27,7 @@ export class Light {
     })
   }
 
-  toArxPolygon() {
+  toArxLight(): ArxLight {
     return {
       ...this.lightData,
       pos: this.pos.toArxVector3(),

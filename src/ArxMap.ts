@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf } from 'arx-convert/utils'
-import { ArxColor, ArxDLF, ArxFTS, ArxLLF, ArxPolygonFlags, ArxVertex } from 'arx-convert/types'
+import { ArxColor, ArxDLF, ArxFTS, ArxLLF, ArxPolygon, ArxPolygonFlags, ArxVertex } from 'arx-convert/types'
 import { times } from './faux-ramda'
 import { Vector3 } from './Vector3'
 import { getPackageVersion, uninstall } from './helpers'
@@ -38,9 +38,7 @@ export class ArxMap {
 
       // Vector3.fromArxVector3(dlf.header.posEdit)
 
-      this.entities = dlf.interactiveObjects.map((entity) => {
-        return Entity.fromArxInteractiveObject(entity)
-      })
+      this.entities = dlf.interactiveObjects.map(Entity.fromArxInteractiveObject)
 
       this.fogs = dlf.fogs.map((fog) => {
         // TODO
@@ -75,9 +73,7 @@ export class ArxMap {
       // fts.roomDistances - TODO: store this somewhere
       // TODO: check to see what the existing levels have for room distances
 
-      this.lights = llf.lights.map((light) => {
-        return Light.fromArxLight(light)
-      })
+      this.lights = llf.lights.map(Light.fromArxLight)
     }
   }
 
@@ -102,6 +98,12 @@ export class ArxMap {
       // paths: this.zones.map(...),
     }
 
+    // TODO: extract texture containers
+    const textureContainers: ArxTextureContainer[] = []
+    const polygons: ArxPolygon[] = this.polygons.map((polygon) => {
+      return polygon.toArxPolygon()
+    })
+
     const fts: ArxFTS = {
       header: {
         levelIdx,
@@ -111,11 +113,9 @@ export class ArxMap {
         // mScenePosition: ?.toArxVector3()
         // playerPosition: ?.toArxVector3()
       },
-      // textureContainers: // TODO: extract textures from this.polygons
+      textureContainers,
       // cells: [] // TODO: store this somewhere
-      polygons: this.polygons.map((polygon) => {
-        return polygon.toArxPolygon()
-      }),
+      polygons,
       // anchors: [] // TODO: store this somewhere
       // portals: [] // TODO: store this somewhere
       // rooms: [] // TODO: store this somewhere
@@ -130,7 +130,7 @@ export class ArxMap {
       },
       colors: this.getVertexColors(),
       lights: this.lights.map((light) => {
-        return light.toArxPolygon()
+        return light.toArxLight()
       }),
     }
 
