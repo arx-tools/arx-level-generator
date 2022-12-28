@@ -12,6 +12,12 @@ import { OriginalLevel } from './types'
 import { LevelLoader } from './LevelLoader'
 import { MapFinalizedError, MapNotFinalizedError } from './errors'
 import { Light } from './Light'
+import { Player } from './Player'
+import { Rotation } from './Rotation'
+
+type ArxMapConfig = {
+  isFinalized: boolean
+}
 
 export class ArxMap {
   polygons: Polygon[] = []
@@ -20,17 +26,15 @@ export class ArxMap {
   entities: any[] = []
   zones: any[] = []
   paths: any[] = []
-  config: {
-    isFinalized: boolean
+  player: Player = new Player()
+  config: ArxMapConfig = {
+    isFinalized: false,
   }
 
   constructor(dlf?: ArxDLF, fts?: ArxFTS, llf?: ArxLLF, normalsCalculated = false) {
-    this.config = {
-      isFinalized: false,
-    }
-
     if (typeof dlf !== 'undefined' && typeof fts !== 'undefined' && typeof llf !== 'undefined') {
-      // dlf.header.angleEdit
+      this.player.rotation = Rotation.fromArxRotation(dlf.header.angleEdit)
+
       // Vector3.fromArxVector3(dlf.header.posEdit)
 
       this.entities = dlf.interactiveObjects.map((entity) => {
@@ -86,6 +90,7 @@ export class ArxMap {
         time: now,
         // posEdit: ?.toArxVector3(),
         // angleEdit: { a: 0, b: 0, g: 0 }, // this.player.rotation maybe?
+        angleEdit: this.player.rotation.toArxRotation(),
         numberOfBackgroundPolygons: this.polygons.length,
       },
       scene: {
