@@ -45,90 +45,35 @@ export class ArxMap {
         // TODO
       })
 
-      // fts
-
       // fts.uniqueHeaders - TODO: store this somewhere
 
       // Vector3.fromArxVector3(fts.sceneHeader.mScenePosition)
       // Vector3.fromArxVector3(fts.sceneHeader.playerPosition)
 
       // fts.cells - TODO: store this somewhere
+      // fts.cells = times(() => ({}), MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS)
 
       this.polygons = fts.polygons.map((polygon) => {
         return Polygon.fromArxPolygon(polygon, llf.colors, fts.textureContainers, normalsCalculated)
       })
 
       // fts.anchors - TODO: store this somewhere
-      // fts.portals - TODO: store this somewhere
-      // fts.rooms - TODO: store this somewhere
-      // fts.roomDistances - TODO: store this somewhere
 
-      // llf
+      // fts.portals - TODO: store this somewhere
+
+      // fts.rooms - TODO: store this somewhere
+      // fts.rooms = [
+      //   { portals: [], polygons: [] },
+      //   { portals: [], polygons: [] },
+      // ]
+
+      // fts.roomDistances - TODO: store this somewhere
+      // TODO: check to see what the existing levels have for room distances
 
       this.lights = llf.lights.map((light) => {
         return Light.fromArxLight(light)
       })
     }
-
-    /*
-      dlf = {
-        header: {
-          lastUser: '',
-          time: 0,
-          posEdit: { x: 0, y: 0, z: 0 },
-          angleEdit: { a: 0, b: 0, g: 0 },
-          numberOfBackgroundPolygons: 0,
-        },
-        scene: {
-          levelIdx: 1,
-        },
-        interactiveObjects: [],
-        fogs: [],
-        paths: [],
-      }
-
-      fts = {
-        header: {
-          levelIdx: 1,
-        },
-        uniqueHeaders: [],
-        sceneHeader: {
-          playerPosition: { x: 0, y: 0, z: 0 },
-          mScenePosition: { x: 0, y: 0, z: 0 },
-        },
-        textureContainers: [],
-        cells: times(() => ({}), MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS),
-        polygons: [],
-        anchors: [],
-        portals: [],
-        rooms: [
-          { portals: [], polygons: [] },
-          { portals: [], polygons: [] },
-        ],
-        roomDistances: [
-          {
-            distance: -1,
-            startPosition: { x: 0, y: 0, z: 0 },
-            endPosition: { x: 1, y: 0, z: 0 },
-          },
-          {
-            distance: -1,
-            startPosition: { x: 0, y: 0, z: 0 },
-            endPosition: { x: 0, y: 1, z: 0 },
-          },
-          {
-            distance: -1,
-            startPosition: { x: 0.984375, y: 0.984375, z: 0 },
-            endPosition: { x: 0, y: 0, z: 0 },
-          },
-          {
-            distance: -1,
-            startPosition: { x: 0, y: 0, z: 0 },
-            endPosition: { x: 0, y: 0, z: 0 },
-          },
-        ],
-      }
-    */
   }
 
   private async toArxData(levelIdx: number) {
