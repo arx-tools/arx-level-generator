@@ -1,7 +1,16 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf } from 'arx-convert/utils'
-import { ArxColor, ArxDLF, ArxFTS, ArxLLF, ArxPolygon, ArxPolygonFlags, ArxVertex } from 'arx-convert/types'
+import {
+  ArxColor,
+  ArxDLF,
+  ArxFTS,
+  ArxLLF,
+  ArxPolygon,
+  ArxPolygonFlags,
+  ArxTextureContainer,
+  ArxVertex,
+} from 'arx-convert/types'
 import { times } from './faux-ramda'
 import { Vector3 } from './Vector3'
 import { getPackageVersion, uninstall } from './helpers'
@@ -86,7 +95,6 @@ export class ArxMap {
         lastUser: generatorId,
         time: now,
         // posEdit: ?.toArxVector3(),
-        // angleEdit: { a: 0, b: 0, g: 0 }, // this.player.rotation maybe?
         angleEdit: this.player.orientation.toArxRotation(),
         numberOfBackgroundPolygons: this.polygons.length,
       },
