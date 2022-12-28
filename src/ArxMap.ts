@@ -33,7 +33,7 @@ type ArxMapConfig = {
 export class ArxMap {
   polygons: Polygon[] = []
   lights: Light[] = []
-  fogs: any[] = []
+  fogs: Fog[] = []
   entities: Entity[] = []
   zones: any[] = []
   paths: any[] = []
@@ -46,7 +46,7 @@ export class ArxMap {
     if (typeof dlf !== 'undefined' && typeof fts !== 'undefined' && typeof llf !== 'undefined') {
       this.player.orientation = Rotation.fromArxRotation(dlf.header.angleEdit)
 
-      // Vector3.fromArxVector3(dlf.header.posEdit)
+      // ? = Vector3.fromArxVector3(dlf.header.posEdit)
 
       this.entities = dlf.interactiveObjects.map(Entity.fromArxInteractiveObject)
 
@@ -58,8 +58,8 @@ export class ArxMap {
 
       // fts.uniqueHeaders - TODO: store this somewhere
 
-      // Vector3.fromArxVector3(fts.sceneHeader.mScenePosition)
-      // Vector3.fromArxVector3(fts.sceneHeader.playerPosition)
+      // ? = Vector3.fromArxVector3(fts.sceneHeader.mScenePosition)
+      // ? = Vector3.fromArxVector3(fts.sceneHeader.playerPosition)
 
       // fts.cells - TODO: store this somewhere
       // fts.cells = times(() => ({}), MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS)
@@ -100,8 +100,12 @@ export class ArxMap {
       scene: {
         levelIdx,
       },
-      // interactiveObjects : this.entities.map(...),
-      // fogs: this.fogs.map(...),
+      interactiveObjects: this.entities.map((entity) => {
+        return entity.toArxInteractiveObject()
+      }),
+      fogs: this.fogs.map((fog) => {
+        return fog.toArxFog()
+      }),
       // paths: this.zones.map(...),
     }
 
