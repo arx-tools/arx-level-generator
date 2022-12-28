@@ -1,6 +1,9 @@
 import { ArxColor } from 'arx-convert/types'
 import rgba from 'color-rgba'
 
+/**
+ * Three JS's color is not being used as it doesn't come with an alpha channel
+ */
 export class Color {
   readonly r: number
   readonly g: number

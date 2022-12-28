@@ -2,6 +2,9 @@ import { ArxLight } from 'arx-convert/types'
 import { Color } from './Color'
 import { Vector3 } from './Vector3'
 
+// TODO: Three JS comes with a bunch of Light classes, might worth investigating
+// https://threejs.org/docs/#api/en/lights/Light
+
 type LightConstructorProps = {
   pos: Vector3
   color: Color

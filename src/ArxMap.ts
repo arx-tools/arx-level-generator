@@ -24,6 +24,7 @@ import { Light } from './Light'
 import { Player } from './Player'
 import { Rotation } from './Rotation'
 import { Entity } from './Entity'
+import { Fog } from './Fog'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -49,9 +50,7 @@ export class ArxMap {
 
       this.entities = dlf.interactiveObjects.map(Entity.fromArxInteractiveObject)
 
-      this.fogs = dlf.fogs.map((fog) => {
-        // TODO
-      })
+      this.fogs = dlf.fogs.map(Fog.fromArxFog)
 
       this.zones = dlf.paths.map((zone) => {
         // TODO

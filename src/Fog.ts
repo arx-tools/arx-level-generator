@@ -3,6 +3,9 @@ import { Color } from './Color'
 import { Rotation } from './Rotation'
 import { Vector3 } from './Vector3'
 
+// TODO: Three JS also has a Fog class
+// https://r105.threejsfundamentals.org/threejs/lessons/threejs-fog.html
+
 type FogConstructorProps = {
   position: Vector3
   orientation: Rotation
