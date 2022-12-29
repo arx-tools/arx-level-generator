@@ -1,75 +1,85 @@
-import { ArxPath, ArxZoneFlags } from 'arx-convert/types'
+import { ArxZoneFlags, ArxZone, ArxZonePointType } from 'arx-convert/types'
 import { Ambience } from './Ambience'
 import { Color } from './Color'
 import { Vector3 } from './Vector3'
+
+export type ZonePoint = {
+  position: Vector3
+  type: ArxZonePointType
+  time: number
+}
 
 type ZoneConstructorProps = {
   name: string
   idx: number
   flags: ArxZoneFlags
-  position: Vector3
-  initialPosition: Vector3
   height: number
   color: Color
   farClip: number
   ambience: Ambience
+  points: ZonePoint[]
 }
 
 export class Zone {
   name: string
   idx: number
   flags: ArxZoneFlags
-  position: Vector3
-  initialPosition: Vector3
   height: number
   color: Color
   farClip: number
   ambience: Ambience
+  points: ZonePoint[]
 
   constructor(props: ZoneConstructorProps) {
     this.name = props.name
     this.idx = props.idx
     this.flags = props.flags
-    this.position = props.position
-    this.initialPosition = props.initialPosition
     this.height = props.height
     this.color = props.color
     this.farClip = props.farClip
     this.ambience = props.ambience
+    this.points = props.points
   }
 
-  static fromArxZone(zone: ArxPath) {
-    const { ambiance, ambianceMaxVolume, reverb } = zone.header
+  static fromArxZone(zone: ArxZone) {
+    const { ambiance, ambianceMaxVolume, reverb } = zone
 
     return new Zone({
-      name: zone.header.name,
-      idx: zone.header.idx,
-      flags: zone.header.flags,
-      position: Vector3.fromArxVector3(zone.header.pos),
-      initialPosition: Vector3.fromArxVector3(zone.header.initPos),
-      height: zone.header.height === -1 ? Infinity : zone.header.height,
-      color: Color.fromArxColor(zone.header.color),
-      farClip: zone.header.farClip,
+      name: zone.name,
+      idx: zone.idx,
+      flags: zone.flags,
+      height: zone.height === -1 ? Infinity : zone.height,
+      color: Color.fromArxColor(zone.color),
+      farClip: zone.farClip,
       ambience: new Ambience({ src: ambiance, maxVolume: ambianceMaxVolume, reverb }),
+      points: zone.points.map((point) => {
+        return {
+          position: Vector3.fromArxVector3(point.pos),
+          type: point.type,
+          time: point.time,
+        }
+      }),
     })
   }
 
-  toArxZone(): ArxPath {
+  toArxZone(): ArxZone {
     return {
-      header: {
-        name: this.name,
-        idx: this.idx,
-        flags: this.flags,
-        initPos: this.initialPosition.toArxVector3(),
-        pos: this.position.toArxVector3(),
-        color: this.color.toArxColor(),
-        farClip: this.farClip,
-        reverb: this.ambience.reverb,
-        ambianceMaxVolume: this.ambience.maxVolume,
-        height: this.height === Infinity ? -1 : this.height,
-        ambiance: this.ambience.src,
-      },
-      pathways: [],
+      name: this.name,
+      idx: this.idx,
+      flags: this.flags,
+      color: this.color.toArxColor(),
+      farClip: this.farClip,
+      reverb: this.ambience.reverb,
+      ambianceMaxVolume: this.ambience.maxVolume,
+      height: this.height === Infinity ? -1 : this.height,
+      ambiance: this.ambience.src,
+      points: this.points.map((point) => {
+        return {
+          pos: point.position.toArxVector3(),
+          type: point.type,
+          time: point.time,
+        }
+      }),
     }
   }
 }

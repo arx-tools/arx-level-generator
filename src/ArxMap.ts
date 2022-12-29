@@ -53,7 +53,7 @@ export class ArxMap {
 
       this.fogs = dlf.fogs.map(Fog.fromArxFog)
 
-      this.zones = dlf.paths.map(Zone.fromArxZone)
+      this.zones = dlf.zones.map(Zone.fromArxZone)
 
       // fts.uniqueHeaders - TODO: store this somewhere
 
