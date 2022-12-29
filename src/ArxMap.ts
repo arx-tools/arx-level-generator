@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf } from 'arx-convert/utils'
 import {
+  ArxCell,
   ArxColor,
   ArxDLF,
   ArxFTS,
@@ -9,6 +10,7 @@ import {
   ArxPolygon,
   ArxPolygonFlags,
   ArxTextureContainer,
+  ArxUniqueHeader,
   ArxVertex,
 } from 'arx-convert/types'
 import { times } from './faux-ramda'
@@ -31,6 +33,13 @@ type ArxMapConfig = {
   isFinalized: boolean
 }
 
+type ToBeSortedLater = {
+  uniqueHeaders: ArxUniqueHeader[]
+  mScenePosition: Vector3
+  posEdit: Vector3
+  cells: Omit<ArxCell, 'polygons'>[]
+}
+
 export class ArxMap {
   polygons: Polygon[] = []
   lights: Light[] = []
@@ -42,12 +51,17 @@ export class ArxMap {
   config: ArxMapConfig = {
     isFinalized: false,
   }
+  todo: ToBeSortedLater = {
+    uniqueHeaders: [],
+    mScenePosition: new Vector3(0, 0, 0),
+    posEdit: new Vector3(0, 0, 0),
+    cells: times(() => ({}), MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS),
+  }
 
   constructor(dlf?: ArxDLF, fts?: ArxFTS, llf?: ArxLLF, normalsCalculated = false) {
     if (typeof dlf !== 'undefined' && typeof fts !== 'undefined' && typeof llf !== 'undefined') {
       this.player.orientation = Rotation.fromArxRotation(dlf.header.angleEdit)
-
-      // ? = Vector3.fromArxVector3(dlf.header.posEdit)
+      this.player.position = Vector3.fromArxVector3(fts.sceneHeader.playerPosition)
 
       this.entities = dlf.interactiveObjects.map(Entity.fromArxInteractiveObject)
 
@@ -55,17 +69,17 @@ export class ArxMap {
 
       this.zones = dlf.zones.map(Zone.fromArxZone)
 
-      // fts.uniqueHeaders - TODO: store this somewhere
-
-      // ? = Vector3.fromArxVector3(fts.sceneHeader.mScenePosition)
-      // ? = Vector3.fromArxVector3(fts.sceneHeader.playerPosition)
-
-      // fts.cells - TODO: store this somewhere
-      // fts.cells = times(() => ({}), MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS)
-
       this.polygons = fts.polygons.map((polygon) => {
         return Polygon.fromArxPolygon(polygon, llf.colors, fts.textureContainers, normalsCalculated)
       })
+
+      this.lights = llf.lights.map(Light.fromArxLight)
+
+      // TODO: deal with these stuff later
+      this.todo.uniqueHeaders = fts.uniqueHeaders
+      this.todo.mScenePosition = Vector3.fromArxVector3(fts.sceneHeader.mScenePosition)
+      this.todo.posEdit = Vector3.fromArxVector3(dlf.header.posEdit)
+      this.todo.cells = fts.cells
 
       // fts.anchors - TODO: store this somewhere
 
@@ -78,9 +92,6 @@ export class ArxMap {
       // ]
 
       // fts.roomDistances - TODO: store this somewhere
-      // TODO: check to see what the existing levels have for room distances
-
-      this.lights = llf.lights.map(Light.fromArxLight)
     }
   }
 
@@ -92,7 +103,7 @@ export class ArxMap {
       header: {
         lastUser: generatorId,
         time: now,
-        // posEdit: ?.toArxVector3(),
+        posEdit: this.todo.posEdit.toArxVector3(),
         angleEdit: this.player.orientation.toArxRotation(),
         numberOfBackgroundPolygons: this.polygons.length,
       },
@@ -105,7 +116,7 @@ export class ArxMap {
       fogs: this.fogs.map((fog) => {
         return fog.toArxFog()
       }),
-      paths: this.zones.map((zone) => {
+      zones: this.zones.map((zone) => {
         return zone.toArxZone()
       }),
     }
@@ -120,10 +131,10 @@ export class ArxMap {
       header: {
         levelIdx,
       },
-      // uniqueHeaders: [] // TODO: store this somewhere
+      uniqueHeaders: this.todo.uniqueHeaders,
       sceneHeader: {
-        // mScenePosition: ?.toArxVector3()
-        // playerPosition: ?.toArxVector3()
+        mScenePosition: this.todo.mScenePosition.toArxVector3(),
+        playerPosition: this.player.position.toArxVector3(),
       },
       textureContainers,
       // cells: [] // TODO: store this somewhere
