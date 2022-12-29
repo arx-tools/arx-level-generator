@@ -25,6 +25,7 @@ import { Player } from './Player'
 import { Rotation } from './Rotation'
 import { Entity } from './Entity'
 import { Fog } from './Fog'
+import { Zone } from './Zone'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -35,7 +36,7 @@ export class ArxMap {
   lights: Light[] = []
   fogs: Fog[] = []
   entities: Entity[] = []
-  zones: any[] = []
+  zones: Zone[] = []
   paths: any[] = []
   player: Player = new Player()
   config: ArxMapConfig = {
@@ -52,9 +53,7 @@ export class ArxMap {
 
       this.fogs = dlf.fogs.map(Fog.fromArxFog)
 
-      this.zones = dlf.paths.map((zone) => {
-        // TODO
-      })
+      this.zones = dlf.paths.map(Zone.fromArxZone)
 
       // fts.uniqueHeaders - TODO: store this somewhere
 
@@ -106,7 +105,9 @@ export class ArxMap {
       fogs: this.fogs.map((fog) => {
         return fog.toArxFog()
       }),
-      // paths: this.zones.map(...),
+      paths: this.zones.map((zone) => {
+        return zone.toArxZone()
+      }),
     }
 
     // TODO: extract texture containers
