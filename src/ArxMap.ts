@@ -28,6 +28,7 @@ import { Rotation } from './Rotation'
 import { Entity } from './Entity'
 import { Fog } from './Fog'
 import { Zone } from './Zone'
+import { Portal } from './Portal'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -38,6 +39,9 @@ type ToBeSortedLater = {
   mScenePosition: Vector3
   posEdit: Vector3
   cells: Omit<ArxCell, 'polygons'>[]
+  // portals:
+  // rooms:
+  // roomDistances:
 }
 
 export class ArxMap {
@@ -46,8 +50,9 @@ export class ArxMap {
   fogs: Fog[] = []
   entities: Entity[] = []
   zones: Zone[] = []
-  paths: any[] = []
+  paths: any[] = [] // Anchors
   player: Player = new Player()
+  portals: Portal[] = []
   config: ArxMapConfig = {
     isFinalized: false,
   }
@@ -72,6 +77,8 @@ export class ArxMap {
       this.polygons = fts.polygons.map((polygon) => {
         return Polygon.fromArxPolygon(polygon, llf.colors, fts.textureContainers, normalsCalculated)
       })
+
+      this.portals = fts.portals.map(Portal.fromArxPortal)
 
       this.lights = llf.lights.map(Light.fromArxLight)
 
@@ -137,10 +144,12 @@ export class ArxMap {
         playerPosition: this.player.position.toArxVector3(),
       },
       textureContainers,
-      // cells: [] // TODO: store this somewhere
+      cells: this.todo.cells,
       polygons,
       // anchors: [] // TODO: store this somewhere
-      // portals: [] // TODO: store this somewhere
+      portals: this.portals.map((portal) => {
+        return portal.toArxPortal()
+      }),
       // rooms: [] // TODO: store this somewhere
       // roomDistances: [] // TODO: store this somewhere
     }

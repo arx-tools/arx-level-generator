@@ -17,7 +17,6 @@ type FogConstructorProps = {
   speed: number
   rotateSpeed: number
   toLive: number
-  blend: number
   frequency: number
 }
 
@@ -32,7 +31,6 @@ export class Fog {
   speed: number
   rotateSpeed: number
   toLive: number
-  blend: number
   frequency: number
 
   constructor(props: FogConstructorProps) {
@@ -46,7 +44,6 @@ export class Fog {
     this.speed = props.speed
     this.rotateSpeed = props.rotateSpeed
     this.toLive = props.toLive
-    this.blend = props.blend
     this.frequency = props.frequency
   }
 
@@ -62,7 +59,6 @@ export class Fog {
       speed: fog.speed,
       rotateSpeed: fog.rotateSpeed,
       toLive: fog.toLive,
-      blend: fog.blend,
       frequency: fog.frequency,
     })
   }
@@ -79,7 +75,6 @@ export class Fog {
       speed: this.speed,
       rotateSpeed: this.rotateSpeed,
       toLive: this.toLive,
-      blend: this.blend,
       frequency: this.frequency,
     }
   }
