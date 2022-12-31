@@ -41,7 +41,6 @@ type ToBeSortedLater = {
   posEdit: Vector3
   cells: Omit<ArxCell, 'polygons'>[]
   // anchors:
-  // portals:
   // rooms:
   // roomDistances:
 }
@@ -92,8 +91,6 @@ export class ArxMap {
       this.todo.cells = fts.cells
 
       // fts.anchors - TODO: store this somewhere
-
-      // fts.portals - TODO: store this somewhere
 
       // fts.rooms - TODO: store this somewhere
       // fts.rooms = [
