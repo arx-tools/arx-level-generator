@@ -317,25 +317,31 @@ export class ArxMap {
   }
 
   private calculateRoomData = () => {
-    // this.fts.rooms.forEach((room) => {
-    //   room.polygons = []
-    // })
-    // const polygonsPerCellCounter: Record<string, number> = {}
-    // this.polygons.forEach((polygon) => {
-    //   const { room } = polygon.polygonData
-    //   if (room < 1) {
-    //     return
-    //   }
-    //   const vertices = polygon.vertices.map((vertex) => vertex.toArxVertex())
-    //   const [cellX, cellY] = getCellCoords(vertices as [ArxVertex, ArxVertex, ArxVertex, ArxVertex])
-    //   const key = `${cellX}|${cellY}`
-    //   if (key in polygonsPerCellCounter) {
-    //     polygonsPerCellCounter[key] += 1
-    //   } else {
-    //     polygonsPerCellCounter[key] = 0
-    //   }
-    //   this.fts.rooms[room].polygons.push({ cellX, cellY, polygonIdx: polygonsPerCellCounter[key] })
-    // })
+    this.todo.rooms.forEach((room) => {
+      room.polygons = []
+    })
+
+    const polygonsPerCellCounter: Record<string, number> = {}
+
+    this.polygons.forEach((polygon) => {
+      if (polygon.room < 1) {
+        return
+      }
+
+      const vertices = polygon.vertices.map((vertex) => vertex.toArxVertex())
+
+      const [cellX, cellY] = getCellCoords(vertices as QuadrupleOf<ArxVertex>)
+
+      const key = `${cellX}|${cellY}`
+
+      if (key in polygonsPerCellCounter) {
+        polygonsPerCellCounter[key] += 1
+      } else {
+        polygonsPerCellCounter[key] = 0
+      }
+
+      this.todo.rooms[polygon.room].polygons.push({ cellX, cellY, polygonIdx: polygonsPerCellCounter[key] })
+    })
   }
 
   async saveToDisk(outputDir: string, levelIdx: number, prettify: boolean = false) {

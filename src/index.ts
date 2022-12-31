@@ -1,16 +1,11 @@
 import path from 'node:path'
 import { ArxMap } from './ArxMap'
-import { OriginalLevel } from './types'
 
 // ....
 ;(async () => {
-  const ix = [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+  const { OUTPUTDIR = path.resolve(__dirname, './dist'), LEVEL = '1' } = process.env
 
-  for (let i of ix) {
-    const level = await ArxMap.loadLevel(i as OriginalLevel)
-  }
-
-  // const { OUTPUTDIR = path.resolve(__dirname, './dist'), LEVEL = '1' } = process.env
+  const map = await ArxMap.loadLevel(8)
 
   // const map = await ArxMap.loadLevel(2)
 
@@ -28,7 +23,7 @@ import { OriginalLevel } from './types'
 
   // map.removePortals()
 
-  // map.finalize()
+  map.finalize()
 
-  // map.saveToDisk(OUTPUTDIR, parseInt(LEVEL))
+  map.saveToDisk(OUTPUTDIR, parseInt(LEVEL))
 })()
