@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf } from 'arx-convert/utils'
 import {
+  ArxAnchor,
   ArxCell,
   ArxColor,
   ArxDLF,
@@ -9,6 +10,8 @@ import {
   ArxLLF,
   ArxPolygon,
   ArxPolygonFlags,
+  ArxRoom,
+  ArxRoomDistance,
   ArxTextureContainer,
   ArxUniqueHeader,
   ArxVertex,
@@ -40,9 +43,9 @@ type ToBeSortedLater = {
   mScenePosition: Vector3
   posEdit: Vector3
   cells: Omit<ArxCell, 'polygons'>[]
-  // anchors:
-  // rooms:
-  // roomDistances:
+  anchors: ArxAnchor[]
+  rooms: ArxRoom[]
+  roomDistances: ArxRoomDistance[]
 }
 
 export class ArxMap {
@@ -62,6 +65,12 @@ export class ArxMap {
     mScenePosition: new Vector3(0, 0, 0),
     posEdit: new Vector3(0, 0, 0),
     cells: times(() => ({}), MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS),
+    anchors: [],
+    rooms: [
+      { portals: [], polygons: [] },
+      { portals: [], polygons: [] },
+    ],
+    roomDistances: [],
   }
 
   constructor(dlf?: ArxDLF, fts?: ArxFTS, llf?: ArxLLF, normalsCalculated = false) {
@@ -89,16 +98,9 @@ export class ArxMap {
       this.todo.mScenePosition = Vector3.fromArxVector3(fts.sceneHeader.mScenePosition)
       this.todo.posEdit = Vector3.fromArxVector3(dlf.header.posEdit)
       this.todo.cells = fts.cells
-
-      // fts.anchors - TODO: store this somewhere
-
-      // fts.rooms - TODO: store this somewhere
-      // fts.rooms = [
-      //   { portals: [], polygons: [] },
-      //   { portals: [], polygons: [] },
-      // ]
-
-      // fts.roomDistances - TODO: store this somewhere
+      this.todo.anchors = fts.anchors
+      this.todo.rooms = fts.rooms
+      this.todo.roomDistances = fts.roomDistances
     }
   }
 
