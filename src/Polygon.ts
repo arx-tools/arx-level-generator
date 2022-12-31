@@ -1,10 +1,12 @@
 import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVector3, ArxVertex } from 'arx-convert/types'
 import { QuadrupleOf } from 'arx-convert/utils'
 import { Triangle } from 'three'
-import { Texture } from './Texture'
+import { NO_TEXTURE, Texture } from './Texture'
 import { ArxVertexWithColor } from './types'
 import { Vector3 } from './Vector3'
 import { Vertex } from './Vertex'
+
+export type NindexType = 'opaque' | 'multiplicative' | 'additive' | 'blended' | 'subtractive'
 
 type PolygonConfig = {
   areNormalsCalculated: boolean
@@ -100,7 +102,7 @@ export class Polygon {
       return vertex.toArxVertex()
     }) as QuadrupleOf<ArxVertex>
 
-    let textureContainerId = 0 // TODO
+    let textureContainerId = NO_TEXTURE
 
     let normals: QuadrupleOf<ArxVector3> | undefined = undefined
     if (this.normals) {
@@ -127,6 +129,10 @@ export class Polygon {
     return (this.flags & ArxPolygonFlags.Quad) > 0
   }
 
+  isTransparent() {
+    return (this.flags & ArxPolygonFlags.Transparent) > 0
+  }
+
   calculateNormals() {
     if (this.config.areNormalsCalculated === true) {
       return
@@ -141,5 +147,35 @@ export class Polygon {
       const triangle2 = new Triangle(d, b, c)
       triangle2.getNormal(this.norm2)
     }
+  }
+
+  /**
+   * @see https://github.com/arx/ArxLibertatis/blob/1.2.1/src/graphics/data/Mesh.cpp#L1100
+   */
+  getNindices() {
+    return this.isQuad() ? 6 : 3
+  }
+
+  /**
+   * @see https://github.com/arx/ArxLibertatis/blob/1.2.1/src/graphics/data/Mesh.cpp#L1102
+   */
+  getNindexType(): NindexType {
+    if (!this.isTransparent()) {
+      return 'opaque'
+    }
+
+    if (this.transval >= 2) {
+      return 'multiplicative'
+    }
+
+    if (this.transval >= 1) {
+      return 'additive'
+    }
+
+    if (this.transval > 0) {
+      return 'blended'
+    }
+
+    return 'subtractive'
   }
 }

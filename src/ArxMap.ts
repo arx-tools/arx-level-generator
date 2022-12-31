@@ -21,7 +21,7 @@ import { Vector3 } from './Vector3'
 import { getPackageVersion, uninstall } from './helpers'
 import { Vertex } from './Vertex'
 import { transparent } from './Color'
-import { Polygon } from './Polygon'
+import { Polygon, NindexType } from './Polygon'
 import { OriginalLevel } from './types'
 import { LevelLoader } from './LevelLoader'
 import { MapFinalizedError, MapNotFinalizedError } from './errors'
@@ -133,8 +133,28 @@ export class ArxMap {
       }),
     }
 
-    // TODO: extract texture containers
     const textureContainers: ArxTextureContainer[] = []
+    const textureCounter: Record<string, Record<NindexType, number>> = {}
+    this.polygons.forEach((polygon) => {
+      if (typeof polygon.texture === 'undefined') {
+        return
+      }
+
+      if (typeof textureCounter[polygon.texture.filename] === 'undefined') {
+        textureCounter[polygon.texture.filename] = {
+          additive: 0,
+          blended: 0,
+          multiplicative: 0,
+          opaque: 0,
+          subtractive: 0,
+        }
+      }
+
+      textureCounter[polygon.texture.filename][polygon.getNindexType()] += polygon.getNindices()
+    })
+
+    console.log(textureCounter)
+
     const polygons: ArxPolygon[] = this.polygons.map((polygon) => {
       return polygon.toArxPolygon()
     })

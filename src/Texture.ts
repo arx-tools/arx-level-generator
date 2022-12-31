@@ -14,3 +14,5 @@ export class Texture {
     return new Texture(texture.filename)
   }
 }
+
+export const NO_TEXTURE = 0
