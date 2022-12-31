@@ -6,25 +6,25 @@ import { Vector3 } from './Vector3'
 // https://threejs.org/docs/#api/en/lights/Light
 
 type LightConstructorProps = {
-  pos: Vector3
+  position: Vector3
   color: Color
   lightData: Omit<ArxLight, 'pos' | 'color'>
 }
 
 export class Light {
-  pos: Vector3
+  position: Vector3
   color: Color
   lightData: Omit<ArxLight, 'pos' | 'color'>
 
   constructor(props: LightConstructorProps) {
-    this.pos = props.pos
+    this.position = props.position
     this.color = props.color
     this.lightData = props.lightData
   }
 
   static fromArxLight({ pos, color, ...lightData }: ArxLight) {
     return new Light({
-      pos: Vector3.fromArxVector3(pos),
+      position: Vector3.fromArxVector3(pos),
       color: Color.fromArxColor(color),
       lightData,
     })
@@ -33,7 +33,7 @@ export class Light {
   toArxLight(): ArxLight {
     return {
       ...this.lightData,
-      pos: this.pos.toArxVector3(),
+      pos: this.position.toArxVector3(),
       color: this.color.toArxColor(),
     }
   }

@@ -71,35 +71,35 @@ export class ArxMap {
     roomDistances: [],
   }
 
-  constructor(dlf?: ArxDLF, fts?: ArxFTS, llf?: ArxLLF, normalsCalculated = false) {
-    if (typeof dlf !== 'undefined' && typeof fts !== 'undefined' && typeof llf !== 'undefined') {
-      this.player.orientation = Rotation.fromArxRotation(dlf.header.angleEdit)
-      this.player.position = Vector3.fromArxVector3(fts.sceneHeader.playerPosition)
-
-      this.entities = dlf.interactiveObjects.map(Entity.fromArxInteractiveObject)
-
-      this.fogs = dlf.fogs.map(Fog.fromArxFog)
-
-      this.zones = dlf.zones.map(Zone.fromArxZone)
-      this.paths = dlf.paths.map(Path.fromArxPath)
-
-      this.polygons = fts.polygons.map((polygon) => {
-        return Polygon.fromArxPolygon(polygon, llf.colors, fts.textureContainers, normalsCalculated)
-      })
-
-      this.portals = fts.portals.map(Portal.fromArxPortal)
-
-      this.lights = llf.lights.map(Light.fromArxLight)
-
-      // TODO: deal with these stuff later
-      this.todo.uniqueHeaders = fts.uniqueHeaders
-      this.todo.mScenePosition = Vector3.fromArxVector3(fts.sceneHeader.mScenePosition)
-      this.todo.posEdit = Vector3.fromArxVector3(dlf.header.posEdit)
-      this.todo.cells = fts.cells
-      this.todo.anchors = fts.anchors
-      this.todo.rooms = fts.rooms
-      this.todo.roomDistances = fts.roomDistances
+  constructor(dlf?: ArxDLF, fts?: ArxFTS, llf?: ArxLLF, areNormalsCalculated = false) {
+    if (typeof dlf === 'undefined' || typeof fts === 'undefined' || typeof llf === 'undefined') {
+      return
     }
+
+    this.player.orientation = Rotation.fromArxRotation(dlf.header.angleEdit)
+    this.player.position = Vector3.fromArxVector3(fts.sceneHeader.playerPosition)
+
+    this.entities = dlf.interactiveObjects.map(Entity.fromArxInteractiveObject)
+
+    this.fogs = dlf.fogs.map(Fog.fromArxFog)
+    this.zones = dlf.zones.map(Zone.fromArxZone)
+    this.paths = dlf.paths.map(Path.fromArxPath)
+
+    this.polygons = fts.polygons.map((polygon) => {
+      return Polygon.fromArxPolygon(polygon, llf.colors, fts.textureContainers, areNormalsCalculated)
+    })
+
+    this.portals = fts.portals.map(Portal.fromArxPortal)
+    this.lights = llf.lights.map(Light.fromArxLight)
+
+    // TODO: deal with these stuff later
+    this.todo.uniqueHeaders = fts.uniqueHeaders
+    this.todo.mScenePosition = Vector3.fromArxVector3(fts.sceneHeader.mScenePosition)
+    this.todo.posEdit = Vector3.fromArxVector3(dlf.header.posEdit)
+    this.todo.cells = fts.cells
+    this.todo.anchors = fts.anchors
+    this.todo.rooms = fts.rooms
+    this.todo.roomDistances = fts.roomDistances
   }
 
   private async toArxData(levelIdx: number) {
@@ -300,46 +300,51 @@ export class ArxMap {
   }
 
   removePortals() {
-    // if (this.config.isFinalized) {
-    //   throw new MapFinalizedError()
-    // }
-    // this.fts.portals = []
-    // this.fts.rooms.forEach((room) => {
-    //   room.portals = []
-    // })
-    // this.movePolygonsToSameRoom()
+    if (this.config.isFinalized) {
+      throw new MapFinalizedError()
+    }
+
+    this.portals = []
+
+    this.todo.rooms.forEach((room) => {
+      room.portals = []
+    })
+
+    this.movePolygonsToSameRoom()
   }
 
   private movePolygonsToSameRoom() {
-    // this.polygons.forEach((polygon) => {
-    //   if (polygon.polygonData.room < 1) {
-    //     return
-    //   }
-    //   polygon.polygonData.room = 1
-    // })
-    // this.fts.rooms = this.fts.rooms.slice(0, 2)
-    // this.fts.roomDistances = [
-    //   {
-    //     distance: -1,
-    //     startPosition: { x: 0, y: 0, z: 0 },
-    //     endPosition: { x: 1, y: 0, z: 0 },
-    //   },
-    //   {
-    //     distance: -1,
-    //     startPosition: { x: 0, y: 0, z: 0 },
-    //     endPosition: { x: 0, y: 1, z: 0 },
-    //   },
-    //   {
-    //     distance: -1,
-    //     startPosition: { x: 0.984375, y: 0.984375, z: 0 },
-    //     endPosition: { x: 0, y: 0, z: 0 },
-    //   },
-    //   {
-    //     distance: -1,
-    //     startPosition: { x: 0, y: 0, z: 0 },
-    //     endPosition: { x: 0, y: 0, z: 0 },
-    //   },
-    // ]
+    this.polygons.forEach((polygon) => {
+      if (polygon.room < 1) {
+        return
+      }
+
+      polygon.room = 1
+    })
+
+    this.todo.rooms = this.todo.rooms.slice(0, 2)
+    this.todo.roomDistances = [
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 1, y: 0, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 0, y: 1, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0.984375, y: 0.984375, z: 0 },
+        endPosition: { x: 0, y: 0, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 0, y: 0, z: 0 },
+      },
+    ]
   }
 
   private calculateRoomData = () => {
@@ -423,10 +428,8 @@ export class ArxMap {
   }
 
   alignPolygonsTo(map: ArxMap) {
-    // const offset = Vector3.fromArxVector3(map.fts.sceneHeader.mScenePosition).sub(
-    //   Vector3.fromArxVector3(this.fts.sceneHeader.mScenePosition),
-    // )
-    // this.movePolygons(offset)
+    const offset = map.todo.mScenePosition.clone().sub(this.todo.mScenePosition)
+    this.movePolygons(offset)
   }
 
   movePolygons(offset: Vector3) {
@@ -446,40 +449,36 @@ export class ArxMap {
       throw new MapFinalizedError()
     }
 
-    // // lights
-    // this.llf.lights.forEach((light) => {
-    //   light.pos.x += offset.x
-    //   light.pos.y += offset.y
-    //   light.pos.z += offset.z
-    // })
+    this.lights.forEach((light) => {
+      light.position.add(offset)
+    })
 
-    // // fogs
-    // this.dlf.fogs.forEach((fog) => {
-    //   fog.pos.x += offset.x
-    //   fog.pos.y += offset.y
-    //   fog.pos.z += offset.z
-    // })
+    this.fogs.forEach((fog) => {
+      fog.position.add(offset)
+    })
 
-    // // entities
-    // this.dlf.interactiveObjects.forEach((obj) => {
-    //   obj.pos.x += offset.x
-    //   obj.pos.y += offset.y
-    //   obj.pos.z += offset.z
-    // })
+    this.entities.forEach((entity) => {
+      entity.position.add(offset)
+    })
 
-    // // zones
-    // this.dlf.paths.forEach((zone) => {
-    //   zone.header.pos.x += offset.x
-    //   zone.header.pos.y += offset.y
-    //   zone.header.pos.z += offset.z
-    // })
+    this.paths.forEach((path) => {
+      path.points.forEach((point) => {
+        point.position.add(offset)
+      })
+    })
 
-    // // paths
-    // this.fts.anchors.forEach((anchor) => {
-    //   anchor.data.pos.x += offset.x
-    //   anchor.data.pos.y += offset.y
-    //   anchor.data.pos.z += offset.z
-    // })
+    this.zones.forEach((zone) => {
+      zone.points.forEach((point) => {
+        point.position.add(offset)
+      })
+    })
+
+    // anchors
+    this.todo.anchors.forEach((anchor) => {
+      anchor.data.pos.x += offset.x
+      anchor.data.pos.y += offset.y
+      anchor.data.pos.z += offset.z
+    })
   }
 
   move(offset: Vector3) {
@@ -488,32 +487,36 @@ export class ArxMap {
   }
 
   add(map: ArxMap) {
-    // if (this.config.isFinalized) {
-    //   throw new MapFinalizedError()
-    // }
-    // // polygons
-    // map.polygons.forEach((polygon) => {
-    //   this.polygons.push(polygon)
-    // })
-    // // lights
-    // map.llf.lights.forEach((light) => {
-    //   this.llf.lights.push(light)
-    // })
-    // // fogs
-    // map.dlf.fogs.forEach((fog) => {
-    //   this.dlf.fogs.push(fog)
-    // })
-    // // entities
-    // map.dlf.interactiveObjects.forEach((obj) => {
-    //   this.dlf.interactiveObjects.push(obj)
-    // })
-    // // zones
-    // map.dlf.paths.forEach((zone) => {
-    //   this.dlf.paths.push(zone)
-    // })
-    // paths
-    // map.fts.anchors.forEach((anchor) => {
-    //   this.fts.anchors.push(anchor)
+    if (this.config.isFinalized) {
+      throw new MapFinalizedError()
+    }
+
+    map.polygons.forEach((polygon) => {
+      this.polygons.push(polygon)
+    })
+
+    map.lights.forEach((light) => {
+      this.lights.push(light)
+    })
+
+    map.fogs.forEach((fog) => {
+      this.fogs.push(fog)
+    })
+
+    map.entities.forEach((entity) => {
+      this.entities.push(entity)
+    })
+
+    map.paths.forEach((path) => {
+      this.paths.push(path)
+    })
+
+    map.zones.forEach((zone) => {
+      this.zones.push(zone)
+    })
+
+    // map.anchors.forEach((anchor) => {
+    //   this.anchors.push(anchor)
     // })
     // TODO: adjust fts anchor linked anchor indices
     // TODO: adjust fts polygon texture container ids

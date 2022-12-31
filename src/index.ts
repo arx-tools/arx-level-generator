@@ -1,29 +1,28 @@
 import path from 'node:path'
 import { ArxMap } from './ArxMap'
+import { Vector3 } from './Vector3'
 
 // ....
 ;(async () => {
   const { OUTPUTDIR = path.resolve(__dirname, './dist'), LEVEL = '1' } = process.env
 
-  const map = await ArxMap.loadLevel(8)
+  const map = await ArxMap.loadLevel(2)
 
-  map.entities = []
+  const map2 = await ArxMap.loadLevel(15)
+  map2.alignPolygonsTo(map)
+  map.add(map2)
 
-  // const map = await ArxMap.loadLevel(2)
+  map.zones = []
 
-  // const map2 = await ArxMap.loadLevel(15)
-  // map2.alignPolygonsTo(map)
-  // map.add(map2)
+  // porticullis_0085.move 80 0 0
+  const portcullis = map.entities.find((entity) => {
+    return entity.name.toLowerCase().includes('porticullis') && entity.id === 85
+  })
+  if (typeof portcullis !== 'undefined') {
+    portcullis.position.add(new Vector3(80, 0, 0))
+  }
 
-  // // porticullis_0085.move 80 0 0
-  // const portcullis = map.dlf.interactiveObjects.find((entity) => {
-  //   return entity.name.toLowerCase().includes('porticullis') && entity.identifier === 85
-  // })
-  // if (typeof portcullis !== 'undefined') {
-  //   portcullis.pos.x += 80
-  // }
-
-  // map.removePortals()
+  map.removePortals()
 
   map.finalize()
 
