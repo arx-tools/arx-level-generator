@@ -29,6 +29,7 @@ import { Entity } from './Entity'
 import { Fog } from './Fog'
 import { Zone } from './Zone'
 import { Portal } from './Portal'
+import { Path } from './Path'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -39,6 +40,7 @@ type ToBeSortedLater = {
   mScenePosition: Vector3
   posEdit: Vector3
   cells: Omit<ArxCell, 'polygons'>[]
+  // anchors:
   // portals:
   // rooms:
   // roomDistances:
@@ -50,7 +52,7 @@ export class ArxMap {
   fogs: Fog[] = []
   entities: Entity[] = []
   zones: Zone[] = []
-  paths: any[] = [] // Anchors
+  paths: Path[] = []
   player: Player = new Player()
   portals: Portal[] = []
   config: ArxMapConfig = {
@@ -73,6 +75,7 @@ export class ArxMap {
       this.fogs = dlf.fogs.map(Fog.fromArxFog)
 
       this.zones = dlf.zones.map(Zone.fromArxZone)
+      this.paths = dlf.paths.map(Path.fromArxPath)
 
       this.polygons = fts.polygons.map((polygon) => {
         return Polygon.fromArxPolygon(polygon, llf.colors, fts.textureContainers, normalsCalculated)
@@ -122,6 +125,9 @@ export class ArxMap {
       }),
       fogs: this.fogs.map((fog) => {
         return fog.toArxFog()
+      }),
+      paths: this.paths.map((path) => {
+        return path.toArxPath()
       }),
       zones: this.zones.map((zone) => {
         return zone.toArxZone()

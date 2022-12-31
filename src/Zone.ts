@@ -1,57 +1,51 @@
-import { ArxZoneFlags, ArxZone, ArxZonePointType, ArxZonePoint } from 'arx-convert/types'
+import { ArxZone, ArxZoneAndPathPointType, ArxZoneAndPathPoint } from 'arx-convert/types'
 import { Ambience } from './Ambience'
 import { Color } from './Color'
 import { Vector3 } from './Vector3'
 
 export type ZonePoint = {
   position: Vector3
-  type: ArxZonePointType
+  type: ArxZoneAndPathPointType
   time: number
 }
 
 type ZoneConstructorProps = {
   name: string
-  idx: number
-  flags: ArxZoneFlags
   height: number
-  color: Color
-  farClip: number
-  ambience: Ambience
   points: ZonePoint[]
+  backgroundColor?: Color
+  drawDistance?: number
+  ambience?: Ambience
 }
 
 export class Zone {
   name: string
-  idx: number
-  flags: ArxZoneFlags
   height: number
-  color: Color
-  farClip: number
-  ambience: Ambience
   points: ZonePoint[]
+  backgroundColor?: Color
+  drawDistance?: number
+  ambience?: Ambience
 
   constructor(props: ZoneConstructorProps) {
     this.name = props.name
-    this.idx = props.idx
-    this.flags = props.flags
     this.height = props.height
-    this.color = props.color
-    this.farClip = props.farClip
+    this.backgroundColor = props.backgroundColor
+    this.drawDistance = props.drawDistance
     this.ambience = props.ambience
     this.points = props.points
   }
 
   static fromArxZone(zone: ArxZone) {
-    const { ambiance, ambianceMaxVolume, reverb } = zone
-
     return new Zone({
       name: zone.name,
-      idx: zone.idx,
-      flags: zone.flags,
       height: zone.height === -1 ? Infinity : zone.height,
-      color: Color.fromArxColor(zone.color),
-      farClip: zone.farClip,
-      ambience: new Ambience({ src: ambiance, maxVolume: ambianceMaxVolume, reverb }),
+      backgroundColor:
+        typeof zone.backgroundColor !== 'undefined' ? Color.fromArxColor(zone.backgroundColor) : undefined,
+      drawDistance: zone.drawDistance,
+      ambience:
+        typeof zone.ambience !== 'undefined' && typeof zone.ambienceMaxVolume !== 'undefined'
+          ? new Ambience({ src: zone.ambience, maxVolume: zone.ambienceMaxVolume })
+          : undefined,
       points: zone.points.map((point): ZonePoint => {
         return {
           position: Vector3.fromArxVector3(point.pos),
@@ -65,15 +59,12 @@ export class Zone {
   toArxZone(): ArxZone {
     return {
       name: this.name,
-      idx: this.idx,
-      flags: this.flags,
-      color: this.color.toArxColor(),
-      farClip: this.farClip,
-      reverb: this.ambience.reverb,
-      ambianceMaxVolume: this.ambience.maxVolume,
+      backgroundColor: this.backgroundColor?.toArxColor(),
+      drawDistance: this.drawDistance,
+      ambienceMaxVolume: this.ambience?.maxVolume,
       height: this.height === Infinity ? -1 : this.height,
-      ambiance: this.ambience.src,
-      points: this.points.map((point): ArxZonePoint => {
+      ambience: this.ambience?.src,
+      points: this.points.map((point): ArxZoneAndPathPoint => {
         return {
           pos: point.position.toArxVector3(),
           type: point.type,
