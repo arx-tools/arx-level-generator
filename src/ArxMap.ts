@@ -9,7 +9,6 @@ import {
   ArxFTS,
   ArxLLF,
   ArxPolygon,
-  ArxPolygonFlags,
   ArxRoom,
   ArxRoomDistance,
   ArxTextureContainer,
@@ -19,7 +18,6 @@ import {
 import { times } from './faux-ramda'
 import { Vector3 } from './Vector3'
 import { evenAndRemainder, getPackageVersion, uninstall } from './helpers'
-import { Vertex } from './Vertex'
 import { transparent } from './Color'
 import { Polygon, NindexType } from './Polygon'
 import { OriginalLevel } from './types'
@@ -133,13 +131,10 @@ export class ArxMap {
       }),
     }
 
-    const textureContainers: ArxTextureContainer[] = []
-
-    // TODO
-    this.getTextureContainers()
+    const textureContainers = this.getTextureContainers()
 
     const polygons: ArxPolygon[] = this.polygons.map((polygon) => {
-      return polygon.toArxPolygon()
+      return polygon.toArxPolygon(textureContainers)
     })
 
     const fts: ArxFTS = {
@@ -151,7 +146,9 @@ export class ArxMap {
         mScenePosition: this.todo.mScenePosition.toArxVector3(),
         playerPosition: this.player.position.toArxVector3(),
       },
-      textureContainers,
+      textureContainers: textureContainers.map(({ id, filename }): ArxTextureContainer => {
+        return { id, filename }
+      }),
       cells: this.todo.cells,
       polygons,
       anchors: this.todo.anchors,
@@ -206,25 +203,25 @@ export class ArxMap {
   }
 
   getTextureContainers() {
+    const textureContainers: (ArxTextureContainer & { remaining: number })[] = []
+
+    let cntr = 0
+
     const nindices = this.countNindices()
 
-    console.log(nindices)
-
-    /*
     Object.entries(nindices).forEach(([filename, nindices]) => {
       const maxNindices = Math.max(...Object.values(nindices))
 
       const [wholeBlocks, remainder] = evenAndRemainder(65535, maxNindices)
 
       times(() => {
-        textureBlocks.push({ filename, remaining: 65535 })
+        textureContainers.push({ id: ++cntr, filename, remaining: 65535 })
       }, wholeBlocks)
 
-      textureBlocks.push({ filename, remaining: remainder })
+      textureContainers.push({ id: ++cntr, filename, remaining: remainder })
     })
 
-    console.log(textureBlocks)
-    */
+    return textureContainers
   }
 
   /**

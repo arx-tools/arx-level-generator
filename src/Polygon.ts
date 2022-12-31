@@ -97,12 +97,23 @@ export class Polygon {
     })
   }
 
-  toArxPolygon(): ArxPolygon {
+  toArxPolygon(textureContainers: (ArxTextureContainer & { remaining: number })[]): ArxPolygon {
     const vertices = this.vertices.map((vertex) => {
       return vertex.toArxVertex()
     }) as QuadrupleOf<ArxVertex>
 
     let textureContainerId = NO_TEXTURE
+    if (typeof this.texture !== 'undefined') {
+      const texture = this.texture
+      const nindices = this.getNindices()
+      const textureContainer = textureContainers.find(({ filename, remaining }) => {
+        return remaining - nindices >= 0 && filename === texture.filename
+      })
+      if (typeof textureContainer !== 'undefined') {
+        textureContainer.remaining -= nindices
+        textureContainerId = textureContainer.id
+      }
+    }
 
     let normals: QuadrupleOf<ArxVector3> | undefined = undefined
     if (this.normals) {
