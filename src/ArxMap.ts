@@ -151,12 +151,12 @@ export class ArxMap {
       textureContainers,
       cells: this.todo.cells,
       polygons,
-      // anchors: [] // TODO: store this somewhere
+      anchors: this.todo.anchors,
       portals: this.portals.map((portal) => {
         return portal.toArxPortal()
       }),
-      // rooms: [] // TODO: store this somewhere
-      // roomDistances: [] // TODO: store this somewhere
+      rooms: this.todo.rooms,
+      roomDistances: this.todo.roomDistances,
     }
 
     const llf: ArxLLF = {
