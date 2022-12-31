@@ -31,3 +31,7 @@ export const uninstall = async (dir: string) => {
 export const randomBetween = (min: number, max: number) => {
   return Math.random() * (max - min) + min
 }
+
+export const evenAndRemainder = (divisor: number, n: number): [number, number] => {
+  return [Math.floor(n / divisor), n % divisor]
+}

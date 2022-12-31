@@ -7,6 +7,8 @@ import { ArxMap } from './ArxMap'
 
   const map = await ArxMap.loadLevel(8)
 
+  map.entities = []
+
   // const map = await ArxMap.loadLevel(2)
 
   // const map2 = await ArxMap.loadLevel(15)

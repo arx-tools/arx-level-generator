@@ -18,7 +18,7 @@ import {
 } from 'arx-convert/types'
 import { times } from './faux-ramda'
 import { Vector3 } from './Vector3'
-import { getPackageVersion, uninstall } from './helpers'
+import { evenAndRemainder, getPackageVersion, uninstall } from './helpers'
 import { Vertex } from './Vertex'
 import { transparent } from './Color'
 import { Polygon, NindexType } from './Polygon'
@@ -134,26 +134,9 @@ export class ArxMap {
     }
 
     const textureContainers: ArxTextureContainer[] = []
-    const textureCounter: Record<string, Record<NindexType, number>> = {}
-    this.polygons.forEach((polygon) => {
-      if (typeof polygon.texture === 'undefined') {
-        return
-      }
 
-      if (typeof textureCounter[polygon.texture.filename] === 'undefined') {
-        textureCounter[polygon.texture.filename] = {
-          additive: 0,
-          blended: 0,
-          multiplicative: 0,
-          opaque: 0,
-          subtractive: 0,
-        }
-      }
-
-      textureCounter[polygon.texture.filename][polygon.getNindexType()] += polygon.getNindices()
-    })
-
-    console.log(textureCounter)
+    // TODO
+    this.getTextureContainers()
 
     const polygons: ArxPolygon[] = this.polygons.map((polygon) => {
       return polygon.toArxPolygon()
@@ -196,6 +179,52 @@ export class ArxMap {
       fts,
       llf,
     }
+  }
+
+  countNindices() {
+    const nindices: Record<string, Record<NindexType, number>> = {}
+
+    this.polygons.forEach((polygon) => {
+      if (typeof polygon.texture === 'undefined') {
+        return
+      }
+
+      if (!(polygon.texture.filename in nindices)) {
+        nindices[polygon.texture.filename] = {
+          additive: 0,
+          blended: 0,
+          multiplicative: 0,
+          opaque: 0,
+          subtractive: 0,
+        }
+      }
+
+      nindices[polygon.texture.filename][polygon.getNindexType()] += polygon.getNindices()
+    })
+
+    return nindices
+  }
+
+  getTextureContainers() {
+    const nindices = this.countNindices()
+
+    console.log(nindices)
+
+    /*
+    Object.entries(nindices).forEach(([filename, nindices]) => {
+      const maxNindices = Math.max(...Object.values(nindices))
+
+      const [wholeBlocks, remainder] = evenAndRemainder(65535, maxNindices)
+
+      times(() => {
+        textureBlocks.push({ filename, remaining: 65535 })
+      }, wholeBlocks)
+
+      textureBlocks.push({ filename, remaining: remainder })
+    })
+
+    console.log(textureBlocks)
+    */
   }
 
   /**
