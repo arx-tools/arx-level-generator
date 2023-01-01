@@ -18,7 +18,7 @@ import {
 import { times } from './faux-ramda'
 import { Vector3 } from './Vector3'
 import { evenAndRemainder, getPackageVersion, uninstall } from './helpers'
-import { transparent } from './Color'
+import { Color } from './Color'
 import { Polygon, NindexType } from './Polygon'
 import { OriginalLevel } from './types'
 import { LevelLoader } from './LevelLoader'
@@ -285,7 +285,7 @@ export class ArxMap {
           const polygon = this.polygons[idx]
 
           for (let i = 0; i < (polygon.isQuad() ? 4 : 3); i++) {
-            const color = polygon.vertices[i]?.color ?? transparent
+            const color = polygon.vertices[i]?.color ?? Color.transparent
             colors.push(color.toArxColor())
           }
         })

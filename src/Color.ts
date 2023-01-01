@@ -10,6 +10,9 @@ export class Color {
   readonly b: number
   readonly a: number
 
+  static red = Color.fromCSS('red')
+  static transparent = new Color(0, 0, 0, 0)
+
   constructor(r: number, g: number, b: number, a: number) {
     this.r = r
     this.g = g
@@ -34,6 +37,3 @@ export class Color {
     return { r: this.r, g: this.g, b: this.b, a: this.a }
   }
 }
-
-export const transparent = new Color(0, 0, 0, 0)
-export const red = Color.fromCSS('red')

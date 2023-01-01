@@ -1,7 +1,7 @@
 import { ArxPolygonFlags } from 'arx-convert/types'
 import path from 'node:path'
 import { ArxMap } from './ArxMap'
-import { red } from './Color'
+import { Color } from './Color'
 import { Polygon } from './Polygon'
 import { Texture } from './Texture'
 import { Vector3 } from './Vector3'
@@ -40,10 +40,10 @@ import { Vertex } from './Vertex'
     norm: new Vector3(0, 0, 0),
     norm2: new Vector3(0, 0, 0),
     vertices: [
-      new Vertex(0, 0, 0, 0, 0, red),
-      new Vertex(100, 0, 0, 1, 0, red),
-      new Vertex(0, 0, 100, 0, 1, red),
-      new Vertex(100, 0, 100, 1, 1, red),
+      new Vertex(0, 0, 0, 0, 0, Color.red),
+      new Vertex(100, 0, 0, 1, 0, Color.red),
+      new Vertex(0, 0, 100, 0, 1, Color.red),
+      new Vertex(100, 0, 100, 1, 1, Color.red),
     ],
     texture: new Texture({
       filename: 'GRAPH\\OBJ3D\\TEXTURES\\[STONE]_HUMAN_PAVING1.BMP',
