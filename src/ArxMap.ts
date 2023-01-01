@@ -77,7 +77,6 @@ export class ArxMap {
     }
 
     this.player.orientation = Rotation.fromArxRotation(dlf.header.angleEdit)
-    this.player.position = Vector3.fromArxVector3(fts.sceneHeader.playerPosition)
 
     this.entities = dlf.interactiveObjects.map(Entity.fromArxInteractiveObject)
 
@@ -144,7 +143,6 @@ export class ArxMap {
       uniqueHeaders: this.todo.uniqueHeaders,
       sceneHeader: {
         mScenePosition: this.todo.mScenePosition.toArxVector3(),
-        playerPosition: this.player.position.toArxVector3(),
       },
       textureContainers: textureContainers.map(({ id, filename }): ArxTextureContainer => {
         return { id, filename }
