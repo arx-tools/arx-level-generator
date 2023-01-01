@@ -39,7 +39,6 @@ type ArxMapConfig = {
 type ToBeSortedLater = {
   uniqueHeaders: ArxUniqueHeader[]
   mScenePosition: Vector3
-  posEdit: Vector3
   cells: Omit<ArxCell, 'polygons'>[]
   anchors: ArxAnchor[]
   rooms: ArxRoom[]
@@ -61,7 +60,6 @@ export class ArxMap {
   todo: ToBeSortedLater = {
     uniqueHeaders: [],
     mScenePosition: new Vector3(0, 0, 0),
-    posEdit: new Vector3(0, 0, 0),
     cells: times(() => ({}), MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS),
     anchors: [],
     rooms: [
@@ -77,6 +75,7 @@ export class ArxMap {
     }
 
     this.player.orientation = Rotation.fromArxRotation(dlf.header.angleEdit)
+    this.player.position = Vector3.fromArxVector3(dlf.header.posEdit)
 
     this.entities = dlf.interactiveObjects.map(Entity.fromArxInteractiveObject)
 
@@ -94,7 +93,6 @@ export class ArxMap {
     // TODO: deal with these stuff later
     this.todo.uniqueHeaders = fts.uniqueHeaders
     this.todo.mScenePosition = Vector3.fromArxVector3(fts.sceneHeader.mScenePosition)
-    this.todo.posEdit = Vector3.fromArxVector3(dlf.header.posEdit)
     this.todo.cells = fts.cells
     this.todo.anchors = fts.anchors
     this.todo.rooms = fts.rooms
@@ -109,7 +107,7 @@ export class ArxMap {
       header: {
         lastUser: generatorId,
         time: now,
-        posEdit: this.todo.posEdit.toArxVector3(),
+        posEdit: this.player.position.toArxVector3(),
         angleEdit: this.player.orientation.toArxRotation(),
         numberOfBackgroundPolygons: this.polygons.length,
       },
