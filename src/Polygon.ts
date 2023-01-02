@@ -13,17 +13,18 @@ type PolygonConfig = {
 }
 
 type PolygonContructorProps = {
+  isQuad?: boolean
   vertices: QuadrupleOf<Vertex>
-  norm: Vector3
-  norm2: Vector3
+  norm?: Vector3
+  norm2?: Vector3
   texture?: Texture
-  flags: ArxPolygonFlags
+  flags?: ArxPolygonFlags
   normals?: QuadrupleOf<Vector3>
-  transval: number
-  area: number
-  room: number
+  transval?: number
+  area?: number
+  room?: number
   paddy?: number
-  config: PolygonConfig
+  config?: Partial<PolygonConfig>
 }
 
 export class Polygon {
@@ -43,16 +44,19 @@ export class Polygon {
 
   constructor(props: PolygonContructorProps) {
     this.vertices = props.vertices
-    this.norm = props.norm
-    this.norm2 = props.norm2
-    this.texture = props?.texture
-    this.flags = props.flags
+    this.norm = props.norm ?? new Vector3(0, 0, 0)
+    this.norm2 = props.norm2 ?? new Vector3(0, 0, 0)
+    this.texture = props.texture
+    this.flags = props.flags ?? ArxPolygonFlags.None
+    if (props.isQuad === true) {
+      this.flags = this.flags | ArxPolygonFlags.Quad
+    }
     this.normals = props.normals
-    this.transval = props.transval
-    this.area = props.area
-    this.room = props.room
+    this.transval = props.transval ?? 0
+    this.area = props.area ?? 0
+    this.room = props.room ?? 1
     this.paddy = props.paddy
-    this.config = props.config
+    this.config = { ...this.config, ...(props.config ?? {}) }
   }
 
   static fromArxPolygon(

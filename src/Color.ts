@@ -10,8 +10,9 @@ export class Color {
   readonly b: number
   readonly a: number
 
-  static red = Color.fromCSS('red')
-  static transparent = new Color(0, 0, 0, 0)
+  static readonly red = Color.fromCSS('red')
+  static readonly white = Color.fromCSS('white')
+  static readonly transparent = Color.fromCSS('transparent')
 
   constructor(r: number, g: number, b: number, a: number) {
     this.r = r
