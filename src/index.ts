@@ -1,4 +1,3 @@
-import { ArxPolygonFlags } from 'arx-convert/types'
 import path from 'node:path'
 import { ArxMap } from './ArxMap'
 import { Color } from './Color'
@@ -36,10 +35,10 @@ import { Vertex } from './Vertex'
   const polygon = new Polygon({
     isQuad: true,
     vertices: [
-      new Vertex(0, 0, 0, 0, 0, Color.red),
-      new Vertex(100, 0, 0, 1, 0, Color.white),
-      new Vertex(0, 0, 100, 0, 1, Color.white),
-      new Vertex(100, 0, 100, 1, 1, Color.white),
+      new Vertex(0, 0, 0, 1, 0, Color.white),
+      new Vertex(100, 0, 0, 1, 1, Color.white),
+      new Vertex(0, 0, 100, 0, 0, Color.white),
+      new Vertex(100, 0, 100, 0, 1, Color.white),
     ],
     texture: Texture.humanPaving1,
   })
