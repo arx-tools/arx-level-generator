@@ -137,11 +137,11 @@ export class Polygon {
   }
 
   isQuad() {
-    return (this.flags & ArxPolygonFlags.Quad) > 0
+    return (this.flags & ArxPolygonFlags.Quad) !== 0
   }
 
   isTransparent() {
-    return (this.flags & ArxPolygonFlags.Transparent) > 0
+    return (this.flags & ArxPolygonFlags.Transparent) !== 0
   }
 
   calculateNormals() {
