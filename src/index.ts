@@ -28,6 +28,8 @@ import { Vertex } from './Vertex'
   //   portcullis.position.add(new Vector3(80, 0, 0))
   // }
 
+  // map.removePortals()
+
   // --------------
 
   const map = new ArxMap()
@@ -46,8 +48,6 @@ import { Vertex } from './Vertex'
   map.polygons.push(polygon)
 
   map.player.position = new Vector3(50, -200, 50)
-
-  map.removePortals()
 
   map.finalize()
 

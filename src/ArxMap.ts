@@ -66,7 +66,28 @@ export class ArxMap {
       { portals: [], polygons: [] },
       { portals: [], polygons: [] },
     ],
-    roomDistances: [],
+    roomDistances: [
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 1, y: 0, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 0, y: 1, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0.984375, y: 0.984375, z: 0 },
+        endPosition: { x: 0, y: 0, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 0, y: 0, z: 0 },
+      },
+    ],
   }
 
   constructor(dlf?: ArxDLF, fts?: ArxFTS, llf?: ArxLLF, areNormalsCalculated = false) {
@@ -303,6 +324,28 @@ export class ArxMap {
     this.todo.rooms.forEach((room) => {
       room.portals = []
     })
+    this.todo.roomDistances = [
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 1, y: 0, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 0, y: 1, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0.984375, y: 0.984375, z: 0 },
+        endPosition: { x: 0, y: 0, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 0, y: 0, z: 0 },
+      },
+    ]
 
     this.movePolygonsToSameRoom()
   }
