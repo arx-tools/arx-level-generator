@@ -189,4 +189,40 @@ export class Polygon {
 
     return 'subtractive'
   }
+
+  /**
+   * Quote from Dscharrer:
+   *
+   * Looks like this is the "correct" formula for trinagles:
+   * @see https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/EERIE/EERIEPoly.cpp#L3134
+   *
+   * And for quads:
+   * @see https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/EERIE/EERIEDraw.cpp#L267
+   *
+   * At least the triangle formula looks like it was supposed to be the actual area but it only works for
+   * specific kinds of triangles. The quad "area" is probably annoying or impossible to replicate as it will
+   * depend on the order of the vertices in the triangle before they were reordered when merging into the quad.
+   *
+   * AFAICT the area value is only used for collisions to to do additional checks for larger polygons.
+   * I don't think the exact value matters in practice.
+   */
+  calculateArea() {
+    this.area = this.getHalfPolygonArea(false) + this.getHalfPolygonArea(true)
+  }
+
+  /**
+   * assuming the order of vertices taking up a russian i (И) shape:
+   * ```
+   * 0 2
+   * 1 3
+   * ```
+   * `isQuadPart` = false is calculating the area of 0-1-2
+   * whereas `isQuadPart` = true is calculating the area of 1-2-3
+   */
+  private getHalfPolygonArea(isQuadPart: boolean) {
+    const [i, j, k] = isQuadPart ? [0, 1, 2] : [1, 2, 3]
+    const a = this.vertices[i].clone().add(this.vertices[j]).divideScalar(2).distanceTo(this.vertices[k])
+    const b = this.vertices[isQuadPart ? i : k].distanceTo(this.vertices[j])
+    return (a * b) / 2
+  }
 }

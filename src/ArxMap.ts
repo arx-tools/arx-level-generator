@@ -245,16 +245,14 @@ export class ArxMap {
       throw new MapFinalizedError()
     }
 
-    this.calculateNormals()
+    this.polygons.forEach((polygon) => {
+      polygon.calculateNormals()
+      polygon.calculateArea()
+    })
+
     this.calculateRoomData()
 
     this.config.isFinalized = true
-  }
-
-  private calculateNormals() {
-    this.polygons.forEach((polygon) => {
-      polygon.calculateNormals()
-    })
   }
 
   private getVertexColors() {
