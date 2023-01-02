@@ -4,7 +4,7 @@
     "skipLibCheck": true,
     "target": "esnext",
     "moduleResolution": "nodenext",
-    "allowJs": true,
+    "allowJs": false,
     "noImplicitAny": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
