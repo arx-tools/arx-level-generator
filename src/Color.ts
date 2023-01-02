@@ -5,14 +5,14 @@ import rgba from 'color-rgba'
  * Three JS's color is not being used as it doesn't come with an alpha channel
  */
 export class Color {
-  readonly r: number
-  readonly g: number
-  readonly b: number
-  readonly a: number
+  r: number
+  g: number
+  b: number
+  a: number
 
-  static readonly red = Color.fromCSS('red')
-  static readonly white = Color.fromCSS('white')
-  static readonly transparent = Color.fromCSS('transparent')
+  static red = Object.freeze(Color.fromCSS('red'))
+  static white = Object.freeze(Color.fromCSS('white'))
+  static transparent = Object.freeze(Color.fromCSS('transparent'))
 
   constructor(r: number, g: number, b: number, a: number) {
     this.r = r
@@ -36,5 +36,9 @@ export class Color {
 
   toArxColor(): ArxColor {
     return { r: this.r, g: this.g, b: this.b, a: this.a }
+  }
+
+  clone() {
+    return new Color(this.r, this.g, this.b, this.a)
   }
 }

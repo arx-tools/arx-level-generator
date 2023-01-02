@@ -41,9 +41,7 @@ import { Vertex } from './Vertex'
       new Vertex(0, 0, 100, 0, 1, Color.white),
       new Vertex(100, 0, 100, 1, 1, Color.white),
     ],
-    texture: new Texture({
-      filename: 'GRAPH\\OBJ3D\\TEXTURES\\[STONE]_HUMAN_PAVING1.BMP',
-    }),
+    texture: Texture.humanPaving1,
   })
 
   map.polygons.push(polygon)

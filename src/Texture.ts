@@ -10,13 +10,19 @@ type TextureConstructorProps = {
 export class Texture {
   filename: string
 
+  static humanPaving1 = Object.freeze(
+    new Texture({
+      filename: 'GRAPH\\OBJ3D\\TEXTURES\\[STONE]_HUMAN_PAVING1.BMP',
+    }),
+  )
+
   constructor(props: TextureConstructorProps) {
     this.filename = props.filename
   }
 
   static fromArxTextureContainer(texture: ArxTextureContainer) {
     return new Texture({
-      filename: texture.filename
+      filename: texture.filename,
     })
   }
 }
