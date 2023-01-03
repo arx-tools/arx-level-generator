@@ -4,6 +4,7 @@ import path from 'node:path'
 import { BoxGeometry, BufferAttribute, ConeGeometry, Mesh } from 'three'
 import { ArxMap } from './ArxMap'
 import { Color } from './Color'
+import { randomBetween } from './helpers'
 import { Polygon } from './Polygon'
 import { Texture } from './Texture'
 import { Vector3 } from './Vector3'
@@ -41,19 +42,28 @@ import { Vertex } from './Vertex'
   //  create mesh
   // -------------
 
-  // const geometry = new BoxGeometry(300, 100, 300, 3, 1, 3)
-  // const geometry = new BoxGeometry(100, 100, 100, 1, 1, 1)
-  const geometry = new ConeGeometry(50, 100, 10)
+  const geometry = new BoxGeometry(300, 100, 300, 3, 1, 3)
+  // const geometry = new ConeGeometry(50, 100, 10)
 
   const mesh = new Mesh(geometry, Color.white.toBasicMaterial())
   mesh.position.add(new Vector3(1000, 0, 1000))
+
+  // -----------
+  //  add bumps
+  // -----------
+
+  let idx = mesh.geometry.getIndex() as BufferAttribute
+  let coords = mesh.geometry.getAttribute('position')
+  for (let i = 0; i < idx.count; i++) {
+    coords.setY(i, coords.getY(i) + randomBetween(-10, 10))
+  }
 
   // ----------
   //  add mesh
   // ----------
 
-  const idx = mesh.geometry.getIndex() as BufferAttribute
-  const coords = mesh.geometry.getAttribute('position')
+  idx = mesh.geometry.getIndex() as BufferAttribute
+  coords = mesh.geometry.getAttribute('position')
 
   const vertices: Vertex[] = []
   for (let i = 0; i < idx.count; i++) {
