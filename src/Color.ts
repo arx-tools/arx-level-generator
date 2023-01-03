@@ -1,6 +1,11 @@
 import { ArxColor } from 'arx-convert/types'
 import rgba from 'color-rgba'
-import { MeshBasicMaterial } from 'three'
+import { MeshBasicMaterial, Color as ThreeJsColor } from 'three'
+
+export enum Alpha {
+  Transparent = 0,
+  Opaque = 1,
+}
 
 /**
  * Three JS's color is not being used as it doesn't come with an alpha channel
@@ -15,7 +20,7 @@ export class Color {
   static white = Object.freeze(Color.fromCSS('white'))
   static transparent = Object.freeze(Color.fromCSS('transparent'))
 
-  constructor(r: number, g: number, b: number, a: number) {
+  constructor(r: number, g: number, b: number, a: number = Alpha.Opaque) {
     this.r = r
     this.g = g
     this.b = b
@@ -33,6 +38,10 @@ export class Color {
 
   static fromArxColor({ r, g, b, a }: ArxColor) {
     return new Color(r, g, b, a)
+  }
+
+  static fromThreeJsColor({ r, g, b }: ThreeJsColor) {
+    return new Color(r * 255, g * 255, b * 255)
   }
 
   toArxColor(): ArxColor {

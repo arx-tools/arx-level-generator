@@ -211,7 +211,7 @@ export class Polygon {
    * I don't think the exact value matters in practice.
    */
   calculateArea() {
-    this.area = this.getHalfPolygonArea(false) + this.getHalfPolygonArea(true)
+    this.area = this.getHalfPolygonArea(false) + (this.isQuad() ? this.getHalfPolygonArea(true) : 0)
   }
 
   /**

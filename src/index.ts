@@ -1,6 +1,7 @@
-import { QuadrupleOf, TripleOf } from 'arx-convert/utils'
+import { ArxPolygonFlags } from 'arx-convert/types'
+import { QuadrupleOf } from 'arx-convert/utils'
 import path from 'node:path'
-import { BoxGeometry, BufferAttribute, BufferGeometry, Mesh } from 'three'
+import { BoxGeometry, BufferAttribute, ConeGeometry, Mesh } from 'three'
 import { ArxMap } from './ArxMap'
 import { Color } from './Color'
 import { Polygon } from './Polygon'
@@ -36,58 +37,49 @@ import { Vertex } from './Vertex'
 
   const map = new ArxMap()
 
-  /*
-  const geometry = new BufferGeometry()
-  // prettier-ignore
-  geometry.setAttribute('position', new BufferAttribute(new Float32Array([
-    0, 0, 0,
-    100, 0, 0,
-    0, 0, 100,
-    100, 0, 100
-  ]), 3))
-  */
-  const geometry = new BoxGeometry(100, 100, 100)
-  const mesh = new Mesh(geometry, Color.red.toBasicMaterial())
-  mesh.position.add(new Vector3(0, 200, 0))
+  // -------------
+  //  create mesh
+  // -------------
 
-  const { array, itemSize, count } = mesh.geometry.attributes.position
-  const coords = Array.from(array)
+  // const geometry = new BoxGeometry(300, 100, 300, 3, 1, 3)
+  // const geometry = new BoxGeometry(100, 100, 100, 1, 1, 1)
+  const geometry = new ConeGeometry(50, 100, 10)
+
+  const mesh = new Mesh(geometry, Color.white.toBasicMaterial())
+  mesh.position.add(new Vector3(1000, 0, 1000))
+
+  // ----------
+  //  add mesh
+  // ----------
+
+  const idx = mesh.geometry.getIndex() as BufferAttribute
+  const coords = mesh.geometry.getAttribute('position')
 
   const vertices: Vertex[] = []
-  for (let i = 0; i < count; i++) {
-    const [x, y, z] = coords.slice(i * itemSize, (i + 1) * itemSize)
+  for (let i = 0; i < idx.count; i++) {
     const v = new Vertex(
-      x,
-      y,
-      z,
-      0,
-      0,
-      new Color(mesh.material.color.r, mesh.material.color.g, mesh.material.color.b, 0),
+      coords.getX(idx.array[i]),
+      coords.getY(idx.array[i]) * -1,
+      coords.getZ(idx.array[i]),
+      [0, 1, 0][i % 3], // TODO: calculate U
+      [0, 1, 1][i % 3], // TODO: calculate V
+      Color.fromThreeJsColor(mesh.material.color),
     )
     v.add(mesh.position)
     vertices.push(v)
   }
 
   for (let i = 0; i < vertices.length; i += 3) {
-    const vvv = vertices.slice(i * 3, (i + 1) * 3)
-    vvv.push(new Vertex(0, 0, 0))
     map.polygons.push(
       new Polygon({
-        vertices: vvv as QuadrupleOf<Vertex>,
-        /*
-        vertices: [
-          new Vertex(0, 0, 0, 1, 0, Color.white),
-          new Vertex(100, 0, 0, 1, 1, Color.white),
-          new Vertex(0, 0, 100, 0, 0, Color.white),
-          new Vertex(100, 0, 100, 0, 1, Color.white),
-        ],
-        */
+        flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided,
+        vertices: [...vertices.slice(i, i + 3), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
         texture: Texture.humanPaving1,
       }),
     )
   }
 
-  map.player.position = new Vector3(50, -200, 50)
+  map.player.position = new Vector3(1000, -200, 1000)
 
   map.finalize()
 
