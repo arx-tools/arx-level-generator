@@ -1,5 +1,6 @@
 import { ArxColor } from 'arx-convert/types'
 import rgba from 'color-rgba'
+import { MeshBasicMaterial } from 'three'
 
 /**
  * Three JS's color is not being used as it doesn't come with an alpha channel
@@ -40,5 +41,13 @@ export class Color {
 
   clone() {
     return new Color(this.r, this.g, this.b, this.a)
+  }
+
+  getHex() {
+    return (this.r << 16) + (this.g << 8) + this.b
+  }
+
+  toBasicMaterial() {
+    return new MeshBasicMaterial({ color: this.getHex() })
   }
 }
