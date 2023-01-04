@@ -17,6 +17,8 @@ export class Color {
   a: number
 
   static red = Object.freeze(Color.fromCSS('red'))
+  static green = Object.freeze(Color.fromCSS('green'))
+  static blue = Object.freeze(Color.fromCSS('blue'))
   static white = Object.freeze(Color.fromCSS('white'))
   static transparent = Object.freeze(Color.fromCSS('transparent'))
 
