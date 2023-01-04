@@ -11,9 +11,7 @@
     "dev": "npm run generate && npm run compile && npm run run",
     "generate": "./scripts/generate.sh",
     "compile": "./scripts/compile.sh",
-    "run": "./scripts/run.sh",
-    "test:unit": "set FORCE_COLOR=true && mocha -r tsconfig-paths/register -r ts-node/register --timeout 5000 test/**/*.spec.ts",
-    "test:unit:watch": "nodemon --exec \"npm run test:unit\" --watch test --watch src -e ts,js"
+    "run": "./scripts/run.sh"
   },
   "repository": {
     "type": "git",
@@ -36,16 +34,12 @@
   },
   "devDependencies": {
     "@types/color-rgba": "^2.1.0",
-    "@types/mocha": "^10.0.1",
     "@types/node": "^18.11.18",
     "@types/seedrandom": "^3.0.4",
     "@types/three": "^0.147.1",
     "arx-header-size": "^2.0.0",
     "dotenv": "^16.0.3",
     "esbuild": "^0.16.12",
-    "mocha": "^10.2.0",
-    "nodemon": "^2.0.20",
-    "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.1",
     "typescript": "^4.9.4"
   },
