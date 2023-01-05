@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { Mesh } from 'three'
 
 export const getPackageVersion = async () => {
   try {
@@ -34,4 +35,15 @@ export const randomBetween = (min: number, max: number) => {
 
 export const evenAndRemainder = (divisor: number, n: number): [number, number] => {
   return [Math.floor(n / divisor), n % divisor]
+}
+
+export const applyTransformations = (mesh: Mesh) => {
+  mesh.updateMatrix()
+
+  mesh.geometry.applyMatrix4(mesh.matrix)
+
+  mesh.position.set(0, 0, 0)
+  mesh.rotation.set(0, 0, 0)
+  mesh.scale.set(1, 1, 1)
+  mesh.updateMatrix()
 }

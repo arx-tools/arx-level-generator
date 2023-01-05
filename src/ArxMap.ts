@@ -17,7 +17,7 @@ import {
 } from 'arx-convert/types'
 import { times } from './faux-ramda'
 import { Vector3 } from './Vector3'
-import { evenAndRemainder, getPackageVersion, uninstall } from './helpers'
+import { applyTransformations, evenAndRemainder, getPackageVersion, uninstall } from './helpers'
 import { Color } from './Color'
 import { Polygon, NindexType } from './Polygon'
 import { OriginalLevel } from './types'
@@ -31,6 +31,9 @@ import { Fog } from './Fog'
 import { Zone } from './Zone'
 import { Portal } from './Portal'
 import { Path } from './Path'
+import { BufferAttribute, Mesh, Color as ThreeJsColor } from 'three'
+import { Vertex } from './Vertex'
+import { Texture } from './Texture'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -247,7 +250,7 @@ export class ArxMap {
    * Requires the pkware-test-files repo
    * @see https://github.com/meszaros-lajos-gyorgy/pkware-test-files
    */
-  static async loadLevel(levelIdx: OriginalLevel) {
+  static async fromOriginalLevel(levelIdx: OriginalLevel) {
     const loader = new LevelLoader(levelIdx)
 
     const dlf = await loader.readDlf()
@@ -255,6 +258,50 @@ export class ArxMap {
     const llf = await loader.readLlf()
 
     return new ArxMap(dlf, fts, llf, true)
+  }
+
+  static fromThreeJsMesh(mesh: Mesh) {
+    const map = new ArxMap()
+
+    applyTransformations(mesh)
+
+    const index = mesh.geometry.getIndex()
+    const coords = mesh.geometry.getAttribute('position')
+    const uv = mesh.geometry.getAttribute('uv')
+    const vertices: Vertex[] = []
+
+    const color = 'color' in mesh.material ? Color.fromThreeJsColor(mesh.material.color as ThreeJsColor) : Color.white
+
+    if (index === null) {
+      for (let idx = 0; idx < coords.count; idx += coords.itemSize) {
+        vertices.push(
+          // TODO: check if params correctly fetched
+          new Vertex(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx), uv.getX(idx), uv.getY(idx), color),
+        )
+      }
+    } else {
+      for (let i = 0; i < index.count; i++) {
+        const idx = index.array[i]
+        vertices.push(
+          new Vertex(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx), uv.getX(idx), uv.getY(idx), color),
+        )
+      }
+    }
+
+    for (let i = 0; i < vertices.length; i += 3) {
+      map.polygons.push(
+        new Polygon({
+          vertices: [
+            // reverse is needed to flip winding
+            ...vertices.slice(i, i + 3).reverse(),
+            new Vertex(0, 0, 0),
+          ] as QuadrupleOf<Vertex>,
+          texture: Texture.humanPaving1,
+        }),
+      )
+    }
+
+    return map
   }
 
   private static async getGeneratorId() {
@@ -523,9 +570,13 @@ export class ArxMap {
     this.moveEntities(offset)
   }
 
-  add(map: ArxMap) {
+  add(map: ArxMap, alignPolygons: boolean = false) {
     if (this.config.isFinalized) {
       throw new MapFinalizedError()
+    }
+
+    if (alignPolygons) {
+      map.alignPolygonsTo(this)
     }
 
     map.polygons.forEach((polygon) => {

@@ -1,7 +1,7 @@
 import { ArxPolygonFlags } from 'arx-convert/types'
 import { QuadrupleOf } from 'arx-convert/utils'
 import path from 'node:path'
-import { BoxGeometry, BufferAttribute, ConeGeometry, Group, MathUtils, Mesh } from 'three'
+import { BoxGeometry, ConeGeometry, PlaneGeometry, MathUtils, Mesh } from 'three'
 import { ArxMap } from './ArxMap'
 import { Color } from './Color'
 import { randomBetween } from './helpers'
@@ -17,9 +17,9 @@ import { Vertex } from './Vertex'
 
   // --------------
 
-  // const map = await ArxMap.loadLevel(2)
+  // const map = await ArxMap.fromOriginalLevel(2)
 
-  // const map2 = await ArxMap.loadLevel(15)
+  // const map2 = await ArxMap.fromOriginalLevel(15)
   // map2.alignPolygonsTo(map)
   // map.add(map2)
 
@@ -37,83 +37,24 @@ import { Vertex } from './Vertex'
 
   // --------------
 
+  const plane = new PlaneGeometry(1200, 600, 12, 6)
+  const planeMesh = new Mesh(plane, Color.red.toBasicMaterial())
+  planeMesh.rotateX(MathUtils.degToRad(-90))
+
+  const cone = new ConeGeometry(50, 600, 10, 6, true)
+  cone.translate(-200, 300, 0)
+  const coneMesh = new Mesh(cone, Color.green.lighten(60).toBasicMaterial())
+  coneMesh.rotateOnAxis(new Vector3(0.4, 0, 0.3), MathUtils.degToRad(20))
+
   const map = new ArxMap()
+  map.todo.mScenePosition = new Vector3(1000, 0, 1000)
+  map.add(ArxMap.fromThreeJsMesh(planeMesh), true)
+  map.add(ArxMap.fromThreeJsMesh(coneMesh), true)
+  coneMesh.translateX(-300).rotateY(MathUtils.degToRad(-96))
+  coneMesh.geometry.scale(1, 0.3, 1)
+  map.add(ArxMap.fromThreeJsMesh(coneMesh), true)
 
-  // -------------
-  //  create mesh
-  // -------------
-
-  const box = new BoxGeometry(300, 100, 300, 3, 1, 3)
-  const boxMesh = new Mesh(box, Color.red.toBasicMaterial())
-
-  const cone = new ConeGeometry(50, 600, 10, 6)
-  cone.translate(-200, 0, 0)
-  const coneMesh = new Mesh(cone, Color.green.toBasicMaterial())
-
-  const mesh = boxMesh
-  mesh.position.add(new Vector3(1000, 0, 1000))
-  mesh.rotateOnAxis(new Vector3(0.4, 0, 0.3), MathUtils.degToRad(20))
-
-  const group = new Group()
-  group.add(boxMesh)
-  group.add(coneMesh)
-  // TODO: add the whole group to ArxMap, not just a single mesh
-
-  // ----------------------------
-  //  apply mesh transformations
-  // ----------------------------
-
-  mesh.updateMatrix()
-
-  mesh.geometry.applyMatrix4(mesh.matrix)
-
-  mesh.position.set(0, 0, 0)
-  mesh.rotation.set(0, 0, 0)
-  mesh.scale.set(1, 1, 1)
-  mesh.updateMatrix()
-
-  // -------------------
-  //  add bumps to mesh
-  // -------------------
-
-  let idx = mesh.geometry.getIndex() as BufferAttribute
-  let coords = mesh.geometry.getAttribute('position')
-  for (let i = 0; i < idx.count; i++) {
-    coords.setY(i, coords.getY(i) + randomBetween(-10, 10))
-  }
-
-  // ---------------------
-  //  add mesh to arx map
-  // ---------------------
-
-  idx = mesh.geometry.getIndex() as BufferAttribute
-  coords = mesh.geometry.getAttribute('position')
-  const uv = mesh.geometry.getAttribute('uv')
-
-  const vertices: Vertex[] = []
-  for (let i = 0; i < idx.count; i++) {
-    vertices.push(
-      new Vertex(
-        coords.getX(idx.array[i]),
-        coords.getY(idx.array[i]) * -1,
-        coords.getZ(idx.array[i]),
-        uv.getX(idx.array[i]) * 2,
-        uv.getY(idx.array[i]) * 2,
-        Color.fromThreeJsColor(mesh.material.color),
-      ),
-    )
-  }
-
-  for (let i = 0; i < vertices.length; i += 3) {
-    map.polygons.push(
-      new Polygon({
-        vertices: [...vertices.slice(i, i + 3).reverse(), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
-        texture: Texture.humanPaving1,
-      }),
-    )
-  }
-
-  map.player.position = new Vector3(1000, -200, 1000)
+  map.player.position = new Vector3(0, -200, 0)
 
   map.finalize()
 
