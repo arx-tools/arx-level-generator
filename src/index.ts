@@ -37,26 +37,36 @@ import { Vertex } from './Vertex'
 
   // --------------
 
-  const plane = new PlaneGeometry(1200, 600, 12, 6)
+  const level8 = await ArxMap.fromOriginalLevel(8)
+
+  const map = new ArxMap()
+  map.config.offset = new Vector3(1000, 0, 1000)
+
+  const plane = new PlaneGeometry(100, 600, 1, 6)
   const planeMesh = new Mesh(plane, Color.red.toBasicMaterial())
   planeMesh.rotateX(MathUtils.degToRad(-90))
+  map.add(ArxMap.fromThreeJsMesh(planeMesh), true)
 
   const cone = new ConeGeometry(50, 600, 10, 6, true)
   cone.translate(-200, 300, 0)
   const coneMesh = new Mesh(cone, Color.green.lighten(60).toBasicMaterial())
   coneMesh.rotateOnAxis(new Vector3(0.4, 0, 0.3), MathUtils.degToRad(20))
-
-  const map = new ArxMap()
-  map.config.offset = new Vector3(1000, 0, 1000)
-  map.add(ArxMap.fromThreeJsMesh(planeMesh), true)
   map.add(ArxMap.fromThreeJsMesh(coneMesh), true)
+
   coneMesh.translateX(-300).rotateY(MathUtils.degToRad(-96))
   coneMesh.geometry.scale(1, 0.3, 1)
   map.add(ArxMap.fromThreeJsMesh(coneMesh), true)
 
-  map.player.position = new Vector3(0, -200, 0)
+  map.move(new Vector3(-2000, -1, 7500))
 
-  map.finalize()
+  level8.add(map, true)
 
-  map.saveToDisk(OUTPUTDIR, parseInt(LEVEL))
+  level8.entities = []
+
+  level8.player.position.adjustToPlayerHeight()
+  level8.player.orientation.y += MathUtils.degToRad(180)
+
+  level8.finalize()
+
+  level8.saveToDisk(OUTPUTDIR, parseInt(LEVEL))
 })()
