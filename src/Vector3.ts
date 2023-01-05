@@ -11,7 +11,7 @@ export class Vector3 extends ThreeJsVector3 {
   }
 
   adjustToPlayerHeight() {
-    this.y -= 140
+    this.y -= 180
     return this
   }
 }

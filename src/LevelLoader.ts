@@ -41,13 +41,13 @@ export class LevelLoader {
     try {
       const jsonData = await fs.promises.readFile(jsonFilename, 'utf-8')
       data = JSON.parse(jsonData)
-    } catch (e: unknown) {
+    } catch (e) {
       const binaryFolder = this.getBinaryFolder()
       const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename(format) + '.unpacked')
 
       try {
         await fs.promises.access(binaryFolder, fs.promises.constants.R_OK | fs.promises.constants.W_OK)
-      } catch (e: unknown) {
+      } catch (e) {
         throw new Error(`attempted to read folder containing binary level data at "${binaryFolder}"`)
       }
 
@@ -92,7 +92,7 @@ export class LevelLoader {
 
     try {
       await fs.promises.access(jsonFolder, fs.promises.constants.R_OK | fs.promises.constants.W_OK)
-    } catch (e: unknown) {
+    } catch (e) {
       await fs.promises.mkdir(jsonFolder, { recursive: true })
     }
   }

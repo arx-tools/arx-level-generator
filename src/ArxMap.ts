@@ -31,7 +31,7 @@ import { Fog } from './Fog'
 import { Zone } from './Zone'
 import { Portal } from './Portal'
 import { Path } from './Path'
-import { Mesh, Color as ThreeJsColor } from 'three'
+import { Mesh, Color as ThreeJsColor, MeshBasicMaterial } from 'three'
 import { Vertex } from './Vertex'
 import { Texture } from './Texture'
 
@@ -270,7 +270,10 @@ export class ArxMap {
     const uv = mesh.geometry.getAttribute('uv')
     const vertices: Vertex[] = []
 
-    const color = 'color' in mesh.material ? Color.fromThreeJsColor(mesh.material.color as ThreeJsColor) : Color.white
+    let color = Color.white
+    if (mesh.material instanceof MeshBasicMaterial) {
+      color = Color.fromThreeJsColor(mesh.material.color as ThreeJsColor)
+    }
 
     if (index === null) {
       for (let idx = 0; idx < coords.count; idx += coords.itemSize) {

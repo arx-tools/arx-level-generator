@@ -1,9 +1,10 @@
 import { ArxPolygonFlags } from 'arx-convert/types'
 import { QuadrupleOf } from 'arx-convert/utils'
 import path from 'node:path'
-import { BoxGeometry, ConeGeometry, PlaneGeometry, MathUtils, Mesh } from 'three'
+import { BoxGeometry, ConeGeometry, PlaneGeometry, MathUtils, Mesh, BufferAttribute } from 'three'
 import { ArxMap } from './ArxMap'
 import { Color } from './Color'
+import { createFloorMesh } from './prefabs/mesh/floorMesh'
 import { randomBetween } from './helpers'
 import { Polygon } from './Polygon'
 import { Rotation } from './Rotation'
@@ -37,6 +38,7 @@ import { Vertex } from './Vertex'
 
   // --------------
 
+  /*
   const level8 = await ArxMap.fromOriginalLevel(8)
 
   const map = new ArxMap()
@@ -71,4 +73,18 @@ import { Vertex } from './Vertex'
   level8.finalize()
 
   level8.saveToDisk(OUTPUTDIR, parseInt(LEVEL))
+  */
+
+  // --------------
+
+  const map = new ArxMap()
+
+  map.config.offset = new Vector3(1000, 0, 1000)
+  map.player.position.adjustToPlayerHeight()
+
+  map.add(ArxMap.fromThreeJsMesh(createFloorMesh(1000, 1000, Color.white, Texture.humanPaving1)), true)
+
+  map.finalize()
+
+  map.saveToDisk(OUTPUTDIR, parseInt(LEVEL))
 })()
