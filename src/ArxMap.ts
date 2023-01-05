@@ -37,11 +37,11 @@ import { Texture } from './Texture'
 
 type ArxMapConfig = {
   isFinalized: boolean
+  offset: Vector3
 }
 
 type ToBeSortedLater = {
   uniqueHeaders: ArxUniqueHeader[]
-  mScenePosition: Vector3
   cells: Omit<ArxCell, 'polygons'>[]
   anchors: ArxAnchor[]
   rooms: ArxRoom[]
@@ -59,10 +59,10 @@ export class ArxMap {
   portals: Portal[] = []
   config: ArxMapConfig = {
     isFinalized: false,
+    offset: new Vector3(0, 0, 0),
   }
   todo: ToBeSortedLater = {
     uniqueHeaders: [],
-    mScenePosition: new Vector3(0, 0, 0),
     cells: times(() => ({}), MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS),
     anchors: [],
     rooms: [
@@ -116,7 +116,7 @@ export class ArxMap {
 
     // TODO: deal with these stuff later
     this.todo.uniqueHeaders = fts.uniqueHeaders
-    this.todo.mScenePosition = Vector3.fromArxVector3(fts.sceneHeader.mScenePosition)
+    this.config.offset = Vector3.fromArxVector3(fts.sceneHeader.mScenePosition)
     this.todo.cells = fts.cells
     this.todo.anchors = fts.anchors
     this.todo.rooms = fts.rooms
@@ -164,7 +164,7 @@ export class ArxMap {
       },
       uniqueHeaders: this.todo.uniqueHeaders,
       sceneHeader: {
-        mScenePosition: this.todo.mScenePosition.toArxVector3(),
+        mScenePosition: this.config.offset.toArxVector3(),
       },
       textureContainers: textureContainers.map(({ id, filename }): ArxTextureContainer => {
         return { id, filename }
@@ -511,9 +511,9 @@ export class ArxMap {
     await fs.promises.writeFile(`${outputDir}arx-level-generator-manifest.json`, JSON.stringify(manifest, null, 2))
   }
 
-  alignPolygonsTo(map: ArxMap) {
-    const offset = map.todo.mScenePosition.clone().sub(this.todo.mScenePosition)
-    this.movePolygons(offset)
+  adjustOffsetTo(map: ArxMap) {
+    const offsetDifference = map.config.offset.clone().sub(this.config.offset)
+    this.movePolygons(offsetDifference)
   }
 
   movePolygons(offset: Vector3) {
@@ -576,7 +576,7 @@ export class ArxMap {
     }
 
     if (alignPolygons) {
-      map.alignPolygonsTo(this)
+      map.adjustOffsetTo(this)
     }
 
     map.polygons.forEach((polygon) => {

@@ -47,7 +47,7 @@ import { Vertex } from './Vertex'
   coneMesh.rotateOnAxis(new Vector3(0.4, 0, 0.3), MathUtils.degToRad(20))
 
   const map = new ArxMap()
-  map.todo.mScenePosition = new Vector3(1000, 0, 1000)
+  map.config.offset = new Vector3(1000, 0, 1000)
   map.add(ArxMap.fromThreeJsMesh(planeMesh), true)
   map.add(ArxMap.fromThreeJsMesh(coneMesh), true)
   coneMesh.translateX(-300).rotateY(MathUtils.degToRad(-96))
