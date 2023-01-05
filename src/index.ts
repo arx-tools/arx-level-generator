@@ -42,9 +42,11 @@ import { Vertex } from './Vertex'
   const map = new ArxMap()
   map.config.offset = new Vector3(1000, 0, 1000)
 
-  const plane = new PlaneGeometry(100, 600, 1, 6)
+  const plane = new PlaneGeometry(1000, 600, 10, 6)
   const planeMesh = new Mesh(plane, Color.red.toBasicMaterial())
   planeMesh.rotateX(MathUtils.degToRad(-90))
+  // TODO: make geometry bumpy
+  // TODO: adjust geometry uv coordinates (u*10, v*6)
   map.add(ArxMap.fromThreeJsMesh(planeMesh), true)
 
   const cone = new ConeGeometry(50, 600, 10, 6, true)
