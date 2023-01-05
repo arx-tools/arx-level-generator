@@ -31,7 +31,7 @@ import { Fog } from './Fog'
 import { Zone } from './Zone'
 import { Portal } from './Portal'
 import { Path } from './Path'
-import { BufferAttribute, Mesh, Color as ThreeJsColor } from 'three'
+import { Mesh, Color as ThreeJsColor } from 'three'
 import { Vertex } from './Vertex'
 import { Texture } from './Texture'
 
