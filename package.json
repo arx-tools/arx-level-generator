@@ -1,7 +1,7 @@
 {
   "name": "arx-level-generator",
   "version": "0.17.0",
-  "description": "A tool to generate random Arx Fatalis maps",
+  "description": "A tool for creating Arx Fatalis maps",
   "main": "build/generate.js",
   "engines": {
     "npm": ">=8.0.0",
@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/meszaros-lajos-gyorgy/arx-level-generator.git"
+    "url": "git+https://github.com/arx-tools/arx-level-generator.git"
   },
   "author": "Lajos Meszaros <m_lajos@hotmail.com>",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/meszaros-lajos-gyorgy/arx-level-generator/issues"
+    "url": "https://github.com/arx-tools/arx-level-generator/issues"
   },
-  "homepage": "https://github.com/meszaros-lajos-gyorgy/arx-level-generator#readme",
+  "homepage": "https://github.com/arx-tools/arx-level-generator#readme",
   "dependencies": {
     "arx-convert": "^5.15.0",
     "color-rgba": "^2.4.0",

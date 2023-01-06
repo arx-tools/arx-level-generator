@@ -1,8 +1,8 @@
 # Arx Fatalis level generator
 
-Generates maps for the video game Arx Fatalis and Arx Libertatis
+A tool for creating maps for the video game [Arx Fatalis](https://en.wikipedia.org/wiki/Arx_Fatalis)
 
-Required extra packages: [pkware-test-files](https://github.com/meszaros-lajos-gyorgy/pkware-test-files)
+Required extra packages: [pkware-test-files](https://github.com/arx-tools/pkware-test-files)
 as it contains all the arx fatalis levels readily unpacked. The level generator expects the levels to be
 inside `../pkware-test-files` relative to where you have installed the `arx-level-generator` (the 2 packages
 should be in the same folder next to each other)
@@ -19,11 +19,11 @@ https://github.com/evanw/esbuild/issues/1975
 
 make sure that all assets are lowercase
 
-jpg files should be saved without progressive option
+`jpg` files should be saved without progressive option
 
-bmp files should only contain 3x8bit channels, alpha channel should be removed (24 bit, not 32)
+`bmp` files should only contain 3x8bit channels, alpha channel should be removed (24 bit, not 32)
 
-audio should be Microsoft ADCPM wav
+audio should be Microsoft ADCPM `wav`
 
 ## Notable dependencies
 
