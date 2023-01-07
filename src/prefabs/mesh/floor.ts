@@ -1,4 +1,4 @@
-import { BufferAttribute, MathUtils, Mesh, PlaneGeometry } from 'three'
+import { BufferAttribute, MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three'
 import { Color } from '../../Color'
 import { Texture } from '../../Texture'
 
@@ -13,7 +13,12 @@ export function createFloorMesh(width: number, height: number, color: Color, tex
   }
   floorGeometry.setAttribute('uv', new BufferAttribute(Float32Array.from(newUV), uv.itemSize))
 
-  const floorMesh = new Mesh(floorGeometry, color.toBasicMaterial())
+  const material = new MeshBasicMaterial({
+    color: color.getHex(),
+    map: texture,
+  })
+
+  const floorMesh = new Mesh(floorGeometry, material)
   floorMesh.rotateX(MathUtils.degToRad(-90))
   return floorMesh
 }

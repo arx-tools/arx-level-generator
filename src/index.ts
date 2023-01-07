@@ -84,6 +84,15 @@ import { Vertex } from './Vertex'
 
   map.add(ArxMap.fromThreeJsMesh(createFloorMesh(1000, 1000, Color.white, Texture.humanPaving1)), true)
 
+  // TODO: scale UV based on Texture size
+  const grates = ArxMap.fromThreeJsMesh(createFloorMesh(500, 500, Color.white, Texture.aliciaRoomMur02))
+  grates.config.offset = new Vector3(0, 10, 0)
+  grates.polygons.forEach((polygon) => {
+    // ArxLibertatis TODO: flags are not being recognised for audio
+    polygon.flags |= ArxPolygonFlags.Metal
+  })
+  map.add(grates, true)
+
   map.finalize()
 
   map.saveToDisk(OUTPUTDIR, parseInt(LEVEL))

@@ -167,7 +167,7 @@ export class ArxMap {
         mScenePosition: this.config.offset.toArxVector3(),
       },
       textureContainers: textureContainers.map(({ id, filename }): ArxTextureContainer => {
-        return { id, filename }
+        return { id, filename: Texture.getTargetPath() + filename }
       }),
       cells: this.todo.cells,
       polygons,
@@ -271,8 +271,12 @@ export class ArxMap {
     const vertices: Vertex[] = []
 
     let color = Color.white
+    let texture: Texture | undefined = undefined
     if (mesh.material instanceof MeshBasicMaterial) {
       color = Color.fromThreeJsColor(mesh.material.color as ThreeJsColor)
+      if (mesh.material.map instanceof Texture) {
+        texture = mesh.material.map
+      }
     }
 
     if (index === null) {
@@ -294,12 +298,8 @@ export class ArxMap {
     for (let i = 0; i < vertices.length; i += 3) {
       map.polygons.push(
         new Polygon({
-          vertices: [
-            // reverse is needed to flip winding
-            ...vertices.slice(i, i + 3).reverse(),
-            new Vertex(0, 0, 0),
-          ] as QuadrupleOf<Vertex>,
-          texture: Texture.humanPaving1,
+          vertices: [...vertices.slice(i, i + 3).reverse(), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
+          texture,
         }),
       )
     }

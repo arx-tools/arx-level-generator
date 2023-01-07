@@ -1,28 +1,59 @@
 import { ArxTextureContainer } from 'arx-convert/types'
-
-// TODO: Three JS comes with a Texture class, might worth investigating
-// https://threejs.org/docs/?q=Texture#api/en/textures/Texture
+import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping } from 'three'
 
 type TextureConstructorProps = {
   filename: string
+  isNative?: boolean
+  width?: number
+  height?: number
+  sourcePath?: string
 }
 
-export class Texture {
+export class Texture extends ThreeJsTextue {
   filename: string
+  isNative: boolean
+  width: number
+  height: number
+  sourcePath?: string
 
   static humanPaving1 = Object.freeze(
     new Texture({
-      filename: 'GRAPH\\OBJ3D\\TEXTURES\\[STONE]_HUMAN_PAVING1.BMP',
+      filename: '[STONE]_HUMAN_PAVING1.BMP',
+    }),
+  )
+
+  static l3DissidWall02 = Object.freeze(
+    new Texture({
+      filename: 'L3_Dissid_[iron]_wall02.bmp',
+      width: 64,
+      height: 64,
+    }),
+  )
+
+  static aliciaRoomMur02 = Object.freeze(
+    new Texture({
+      filename: 'ALICIAROOM_MUR02.jpg',
     }),
   )
 
   constructor(props: TextureConstructorProps) {
+    // ArxLibertatis TODO: wrapping should be RepeatWrapping (GL_REPEAT / TextureStage::WrapRepeat),
+    // but in AL it's ClampToEdgeWrapping (GL_CLAMP_TO_EDGE / TextureStage::WrapClamp)
+    super(undefined, UVMapping, ClampToEdgeWrapping, ClampToEdgeWrapping)
     this.filename = props.filename
+    this.isNative = props.isNative ?? true
+    this.width = props.width ?? 128
+    this.height = props.height ?? 128
+    this.sourcePath = props.sourcePath
+  }
+
+  static getTargetPath() {
+    return 'GRAPH\\OBJ3D\\TEXTURES\\'
   }
 
   static fromArxTextureContainer(texture: ArxTextureContainer) {
     return new Texture({
-      filename: texture.filename,
+      filename: texture.filename.replace(Texture.getTargetPath(), ''),
     })
   }
 }
