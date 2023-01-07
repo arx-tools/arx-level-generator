@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { ArxTextureContainer } from 'arx-convert/types'
 import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping } from 'three'
 
@@ -55,6 +56,19 @@ export class Texture extends ThreeJsTextue {
     return new Texture({
       filename: texture.filename.replace(Texture.getTargetPath(), ''),
     })
+  }
+
+  exportNonNativeData(outputDir: string = ''): Record<string, string> {
+    if (this.isNative) {
+      return {}
+    }
+
+    const source = path.resolve('assets', this.sourcePath ?? 'graph/obj3d/textures', this.filename)
+    const target = path.resolve(outputDir, 'graph/obj3d/textures', this.filename)
+
+    return {
+      [target]: source,
+    }
   }
 }
 

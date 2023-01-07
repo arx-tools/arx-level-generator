@@ -82,15 +82,21 @@ import { Vertex } from './Vertex'
   map.config.offset = new Vector3(1000, 0, 1000)
   map.player.position.adjustToPlayerHeight()
 
-  map.add(ArxMap.fromThreeJsMesh(createFloorMesh(1000, 1000, Color.white, Texture.humanPaving1)), true)
-
-  // TODO: scale UV based on Texture size
-  const grates = ArxMap.fromThreeJsMesh(createFloorMesh(500, 500, Color.white, Texture.l3DissidWall02))
-  grates.config.offset = new Vector3(0, 10, 0)
-  grates.polygons.forEach((polygon) => {
-    polygon.flags |= ArxPolygonFlags.Gravel
+  const carpet = new Texture({
+    sourcePath: 'projects/the-backrooms/textures/',
+    filename: 'backrooms-[fabric]-carpet-dirty.jpg',
+    isNative: false,
   })
-  map.add(grates, true)
+
+  map.add(ArxMap.fromThreeJsMesh(createFloorMesh(1000, 1000, Color.white, carpet)), true)
+
+  // // TODO: scale UV based on Texture size
+  // const grates = ArxMap.fromThreeJsMesh(createFloorMesh(500, 500, Color.white, Texture.l3DissidWall02))
+  // grates.config.offset = new Vector3(0, 10, 0)
+  // grates.polygons.forEach((polygon) => {
+  //   polygon.flags |= ArxPolygonFlags.Gravel
+  // })
+  // map.add(grates, true)
 
   map.finalize()
 

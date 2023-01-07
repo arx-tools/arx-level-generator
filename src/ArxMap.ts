@@ -462,6 +462,17 @@ export class ArxMap {
     })
   }
 
+  private exportTextures(outputDir: string) {
+    // TODO: find a more effective way of exporting textures
+    return this.polygons.reduce((files, polygon): Record<string, string> => {
+      if (polygon.texture === undefined) {
+        return files
+      }
+
+      return { ...files, ...polygon.texture.exportNonNativeData(outputDir) }
+    }, {} as Record<string, string>)
+  }
+
   async saveToDisk(outputDir: string, levelIdx: number, prettify: boolean = false) {
     if (!this.config.isFinalized) {
       throw new MapNotFinalizedError()
@@ -479,6 +490,8 @@ export class ArxMap {
       await uninstall(outputDir)
     }
 
+    const textures = this.exportTextures(outputDir)
+
     const files = {
       dlf: `${outputDir}graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`,
       fts: `${outputDir}game/graph/levels/level${levelIdx}/fast.fts.json`,
@@ -487,6 +500,7 @@ export class ArxMap {
 
     const manifest = {
       files: [
+        ...Object.keys(textures),
         files.dlf.replace('.dlf.json', '.dlf'),
         files.fts.replace('.fts.json', '.fts'),
         files.llf.replace('.llf.json', '.llf'),
@@ -500,6 +514,16 @@ export class ArxMap {
     for (let task of tasks) {
       await task
     }
+
+    // ------------------------
+
+    const texturesPairs = Object.entries(textures)
+
+    for (let [target, source] of [...texturesPairs]) {
+      await fs.promises.copyFile(source, target)
+    }
+
+    // ------------------------
 
     const { dlf, fts, llf } = await this.toArxData(levelIdx)
 
