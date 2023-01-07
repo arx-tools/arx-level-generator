@@ -5,7 +5,9 @@ import { Texture } from '../../Texture'
 export function createFloorMesh(width: number, height: number, color: Color, texture: Texture) {
   const divisionX = Math.ceil(width / 100)
   const divisionY = Math.ceil(height / 100)
+
   const floorGeometry = new PlaneGeometry(width, width, divisionX, divisionY)
+
   const uv = floorGeometry.getAttribute('uv')
   const newUV = []
   for (let i = 0; i < uv.count; i++) {
