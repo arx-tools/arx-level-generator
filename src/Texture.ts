@@ -2,7 +2,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { ArxTextureContainer } from 'arx-convert/types'
 import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
-import sharp from 'sharp'
+import sharp, { Sharp } from 'sharp'
+import { sharpFromBmp, sharpToBmp } from 'sharp-bmp'
 
 type TextureConstructorProps = {
   filename: string
@@ -57,7 +58,14 @@ export class Texture extends ThreeJsTextue {
     // TODO: might need https://socket.dev/npm/package/sharp-bmp for handling bmp files
 
     const source = path.resolve('assets', props.sourcePath ?? 'graph/obj3d/textures', props.filename)
-    const image = sharp(source)
+
+    let image: sharp.Sharp
+    if (props.filename.toLowerCase().endsWith('bmp')) {
+      image = sharpFromBmp(source) as Sharp
+    } else {
+      image = sharp(source)
+    }
+
     const metadata = await image.metadata()
 
     if (metadata.format === 'jpeg' && metadata.isProgressive) {
@@ -119,7 +127,14 @@ export class Texture extends ThreeJsTextue {
       return [resizedSource, resizedTarget]
     } catch (e) {}
 
-    const image = sharp(originalSource)
+    const isBMP = this.filename.toLowerCase().endsWith('bmp')
+
+    let image: sharp.Sharp
+    if (isBMP) {
+      image = sharpFromBmp(originalSource) as Sharp
+    } else {
+      image = sharp(originalSource)
+    }
 
     if (this.width !== this.height) {
       // TODO: extend the texture's lower side to get a square
@@ -127,7 +142,13 @@ export class Texture extends ThreeJsTextue {
 
     const powerOfTwo = MathUtils.floorPowerOfTwo(this.width)
 
-    await image.resize(powerOfTwo, powerOfTwo).toFile(resizedSource)
+    image.resize(powerOfTwo, powerOfTwo)
+
+    if (isBMP) {
+      await sharpToBmp(image, resizedSource)
+    } else {
+      await image.toFile(resizedSource)
+    }
 
     this.alreadyMadeTileable = true
 

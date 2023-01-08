@@ -29,6 +29,7 @@
     "nanoid": "^4.0.0",
     "node-pkware": "^3.0.4",
     "seedrandom": "^3.0.5",
+    "sharp-bmp": "^0.1.5",
     "three": "^0.148.0",
     "tiny-glob": "^0.2.9"
   },
