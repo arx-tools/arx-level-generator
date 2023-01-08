@@ -81,12 +81,13 @@ import { Vertex } from './Vertex'
 
   map.config.offset = new Vector3(1000, 0, 1000)
   map.player.position.adjustToPlayerHeight()
+  map.hideMinimap()
 
   const backroomsCarpet = new Texture({
     sourcePath: 'projects/the-backrooms/textures/',
     filename: 'backrooms-[fabric]-carpet-dirty.jpg',
-    width: 675,
-    height: 675,
+    width: 512,
+    height: 512,
     isNative: false,
   })
 

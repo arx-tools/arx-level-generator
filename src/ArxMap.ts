@@ -38,6 +38,7 @@ import { Texture } from './Texture'
 
 type ArxMapConfig = {
   isFinalized: boolean
+  isMinimapVisible: boolean
   offset: Vector3
 }
 
@@ -60,6 +61,7 @@ export class ArxMap {
   portals: Portal[] = []
   config: ArxMapConfig = {
     isFinalized: false,
+    isMinimapVisible: true,
     offset: new Vector3(0, 0, 0),
   }
   todo: ToBeSortedLater = {
@@ -472,7 +474,7 @@ export class ArxMap {
       const [source, target] = polygon.texture.exportSourceAndTarget(outputDir)
 
       if ((polygon.flags & ArxPolygonFlags.Tiled) === 0 || polygon.texture.isTileable()) {
-        files[source] = target
+        files[target] = source
         return files
       }
 
@@ -508,17 +510,27 @@ export class ArxMap {
       await uninstall(outputDir)
     }
 
+    // ------------------------
+
     const textures = this.exportTextures(outputDir)
 
+    const resets: Record<string, string> = {}
+    if (!this.config.isMinimapVisible) {
+      const source = path.resolve('assets', 'reset/map.bmp')
+      const target = path.resolve(outputDir, `graph/levels/level${levelIdx}/map.bmp`)
+      resets[target] = source
+    }
+
     const files = {
-      dlf: `${outputDir}graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`,
-      fts: `${outputDir}game/graph/levels/level${levelIdx}/fast.fts.json`,
-      llf: `${outputDir}graph/levels/level${levelIdx}/level${levelIdx}.llf.json`,
+      dlf: path.resolve(outputDir, `graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`),
+      fts: path.resolve(outputDir, `game/graph/levels/level${levelIdx}/fast.fts.json`),
+      llf: path.resolve(outputDir, `graph/levels/level${levelIdx}/level${levelIdx}.llf.json`),
     }
 
     const manifest = {
       files: [
         ...Object.keys(textures),
+        ...Object.keys(resets),
         files.dlf.replace('.dlf.json', '.dlf'),
         files.fts.replace('.fts.json', '.fts'),
         files.llf.replace('.llf.json', '.llf'),
@@ -535,9 +547,9 @@ export class ArxMap {
 
     // ------------------------
 
-    const texturesPairs = Object.entries(textures)
+    const filesToCopy = [...Object.entries(textures), ...Object.entries(resets)]
 
-    for (let [target, source] of [...texturesPairs]) {
+    for (let [target, source] of filesToCopy) {
       await fs.promises.copyFile(source, target)
     }
 
@@ -653,5 +665,9 @@ export class ArxMap {
     // })
     // TODO: adjust fts anchor linked anchor indices
     // TODO: adjust fts polygon texture container ids
+  }
+
+  hideMinimap() {
+    this.config.isMinimapVisible = false
   }
 }
