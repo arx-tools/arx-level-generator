@@ -9,6 +9,7 @@ import {
   ArxFTS,
   ArxLLF,
   ArxPolygon,
+  ArxPolygonFlags,
   ArxRoom,
   ArxRoomDistance,
   ArxTextureContainer,
@@ -463,13 +464,30 @@ export class ArxMap {
   }
 
   private exportTextures(outputDir: string) {
-    // TODO: find a more effective way of exporting textures
-    return this.polygons.reduce((files, polygon): Record<string, string> => {
-      if (polygon.texture === undefined) {
+    return this.polygons.reduce((files, polygon) => {
+      if (typeof polygon.texture === 'undefined' || polygon.texture.isNative) {
         return files
       }
 
-      return { ...files, ...polygon.texture.exportNonNativeData(outputDir) }
+      const [source, target] = polygon.texture.exportSourceAndTarget(outputDir)
+
+      if ((polygon.flags & ArxPolygonFlags.Tiled) === 0 || polygon.texture.isTileable()) {
+        files[source] = target
+        return files
+      }
+
+      // at this point the texture in it's current form is not tileable, but the polygon requires it to be
+      // so we need to fix up the texture
+
+      // TODO: 1) but first, check if the tiled version already have been generated
+      // if so, return files
+
+      console.warn(`resizing texture '${polygon.texture.filename}' to make it tileable`)
+
+      // TODO: 2) extend the texture's lowest side to get a square texture
+      // TODO: 3) resize to the closest lowest power of 2
+
+      return files
     }, {} as Record<string, string>)
   }
 

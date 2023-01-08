@@ -1,7 +1,6 @@
 import { ArxColor } from 'arx-convert/types'
 import rgba from 'color-rgba'
-import { MeshBasicMaterial, Color as ThreeJsColor } from 'three'
-import { clamp } from './faux-ramda'
+import { MeshBasicMaterial, Color as ThreeJsColor, MathUtils } from 'three'
 
 export enum Alpha {
   Transparent = 0,
@@ -67,9 +66,9 @@ export class Color {
     const extra = 255 * (percent / 100)
 
     return new Color(
-      clamp(0, 255, this.r + extra),
-      clamp(0, 255, this.g + extra),
-      clamp(0, 255, this.b + extra),
+      MathUtils.clamp(0, 255, this.r + extra),
+      MathUtils.clamp(0, 255, this.g + extra),
+      MathUtils.clamp(0, 255, this.b + extra),
       this.a,
     )
   }
@@ -78,9 +77,9 @@ export class Color {
     const extra = 255 * (percent / 100)
 
     return new Color(
-      clamp(0, 255, this.r - extra),
-      clamp(0, 255, this.g - extra),
-      clamp(0, 255, this.b - extra),
+      MathUtils.clamp(0, 255, this.r - extra),
+      MathUtils.clamp(0, 255, this.g - extra),
+      MathUtils.clamp(0, 255, this.b - extra),
       this.a,
     )
   }

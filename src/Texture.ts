@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { ArxTextureContainer } from 'arx-convert/types'
-import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping } from 'three'
+import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
 
 type TextureConstructorProps = {
   filename: string
@@ -38,14 +38,14 @@ export class Texture extends ThreeJsTextue {
   )
 
   constructor(props: TextureConstructorProps) {
-    // ArxLibertatis TODO: wrapping should be RepeatWrapping (GL_REPEAT / TextureStage::WrapRepeat),
-    // but in AL it's ClampToEdgeWrapping (GL_CLAMP_TO_EDGE / TextureStage::WrapClamp)
     super(undefined, UVMapping, ClampToEdgeWrapping, ClampToEdgeWrapping)
     this.filename = props.filename
     this.isNative = props.isNative ?? true
+    this.sourcePath = props.sourcePath
+
+    // TODO: if size not given and !isNative, then try reading it from the file itself
     this.width = props.width ?? 128
     this.height = props.height ?? 128
-    this.sourcePath = props.sourcePath
   }
 
   static getTargetPath() {
@@ -58,17 +58,19 @@ export class Texture extends ThreeJsTextue {
     })
   }
 
-  exportNonNativeData(outputDir: string = ''): Record<string, string> {
+  isTileable() {
+    return this.width === this.height && MathUtils.isPowerOfTwo(this.width)
+  }
+
+  exportSourceAndTarget(outputDir: string = ''): [string, string] {
     if (this.isNative) {
-      return {}
+      throw new Error('trying to export copying information for a native texture')
     }
 
     const source = path.resolve('assets', this.sourcePath ?? 'graph/obj3d/textures', this.filename)
     const target = path.resolve(outputDir, 'graph/obj3d/textures', this.filename)
 
-    return {
-      [target]: source,
-    }
+    return [source, target]
   }
 }
 

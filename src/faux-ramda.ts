@@ -31,13 +31,3 @@ export const sum = (numbers: number[]) => {
 export const clone = <T>(data: T): T => {
   return JSON.parse(JSON.stringify(data))
 }
-
-export const clamp = (min: number, max: number, n: number) => {
-  if (n < min) {
-    return min
-  }
-  if (n > max) {
-    return max
-  }
-  return n
-}
