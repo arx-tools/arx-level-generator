@@ -90,7 +90,7 @@ import { Vertex } from './Vertex'
   })
 
   // TODO: this creates nindices issue
-  const floor = ArxMap.fromThreeJsMesh(createFloorMesh(500, 500, Color.white.darken(30), backroomsCarpet))
+  const floor = ArxMap.fromThreeJsMesh(createFloorMesh(200, 200, Color.white.darken(30), backroomsCarpet))
   floor.polygons.forEach((polygon) => {
     polygon.flags |= ArxPolygonFlags.Tiled | ArxPolygonFlags.Water | ArxPolygonFlags.Transparent
     polygon.transval = 1.23
@@ -98,7 +98,7 @@ import { Vertex } from './Vertex'
 
   map.add(floor, true)
 
-  const floor2 = ArxMap.fromThreeJsMesh(createFloorMesh(1000, 1000, Color.white, backroomsCarpet))
+  const floor2 = ArxMap.fromThreeJsMesh(createFloorMesh(500, 500, Color.white, backroomsCarpet))
   floor2.config.offset.y -= 20
   floor2.polygons.forEach((polygon) => {
     polygon.flags |= ArxPolygonFlags.Tiled
