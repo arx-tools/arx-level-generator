@@ -465,32 +465,22 @@ export class ArxMap {
     })
   }
 
-  private exportTextures(outputDir: string) {
-    return this.polygons.reduce((files, polygon) => {
+  private async exportTextures(outputDir: string) {
+    const files: Record<string, string> = {}
+
+    for (let polygon of this.polygons) {
       if (typeof polygon.texture === 'undefined' || polygon.texture.isNative) {
         return files
       }
 
-      const [source, target] = polygon.texture.exportSourceAndTarget(outputDir)
+      const needsToBeTileable = (polygon.flags & ArxPolygonFlags.Tiled) !== 0
 
-      if ((polygon.flags & ArxPolygonFlags.Tiled) === 0 || polygon.texture.isTileable()) {
-        files[target] = source
-        return files
-      }
+      const [source, target] = await polygon.texture.exportSourceAndTarget(outputDir, needsToBeTileable)
 
-      // at this point the texture in it's current form is not tileable, but the polygon requires it to be
-      // so we need to fix up the texture
+      files[target] = source
+    }
 
-      // TODO: 1) but first, check if the tiled version already have been generated
-      // if so, return files
-
-      console.warn(`resizing texture '${polygon.texture.filename}' to make it tileable`)
-
-      // TODO: 2) extend the texture's lowest side to get a square texture
-      // TODO: 3) resize to the closest lowest power of 2
-
-      return files
-    }, {} as Record<string, string>)
+    return files
   }
 
   async saveToDisk(outputDir: string, levelIdx: number, prettify: boolean = false) {
@@ -512,7 +502,7 @@ export class ArxMap {
 
     // ------------------------
 
-    const textures = this.exportTextures(outputDir)
+    const textures = await this.exportTextures(outputDir)
 
     const resets: Record<string, string> = {}
     if (!this.config.isMinimapVisible) {

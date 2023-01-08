@@ -1,6 +1,8 @@
+import fs from 'node:fs'
 import path from 'node:path'
 import { ArxTextureContainer } from 'arx-convert/types'
 import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
+import sharp from 'sharp'
 
 type TextureConstructorProps = {
   filename: string
@@ -10,7 +12,10 @@ type TextureConstructorProps = {
   sourcePath?: string
 }
 
+export const SIZE_UNKNOWN = -1
+
 export class Texture extends ThreeJsTextue {
+  alreadyMadeTileable: boolean = false
   filename: string
   isNative: boolean
   width: number
@@ -39,17 +44,25 @@ export class Texture extends ThreeJsTextue {
 
   constructor(props: TextureConstructorProps) {
     super(undefined, UVMapping, ClampToEdgeWrapping, ClampToEdgeWrapping)
+
     this.filename = props.filename
     this.isNative = props.isNative ?? true
     this.sourcePath = props.sourcePath
 
-    // TODO: if size not given and !isNative, then try reading it from the file itself
-    this.width = props.width ?? 128
-    this.height = props.height ?? 128
+    this.width = props.width ?? SIZE_UNKNOWN
+    this.height = props.height ?? SIZE_UNKNOWN
   }
 
-  static getTargetPath() {
-    return 'GRAPH\\OBJ3D\\TEXTURES\\'
+  static async fromCustomFile(props: TextureConstructorProps) {
+    const source = path.resolve('assets', props.sourcePath ?? 'graph/obj3d/textures', props.filename)
+    const image = sharp(source)
+    const metadata = await image.metadata()
+
+    return new Texture({
+      ...props,
+      width: metadata.width,
+      height: metadata.height,
+    })
   }
 
   static fromArxTextureContainer(texture: ArxTextureContainer) {
@@ -58,19 +71,67 @@ export class Texture extends ThreeJsTextue {
     })
   }
 
+  static getTargetPath() {
+    return 'GRAPH\\OBJ3D\\TEXTURES\\'
+  }
+
   isTileable() {
     return this.width === this.height && MathUtils.isPowerOfTwo(this.width)
   }
 
-  exportSourceAndTarget(outputDir: string = ''): [string, string] {
+  async exportSourceAndTarget(outputDir: string, needsToBeTileable: boolean): Promise<[string, string]> {
     if (this.isNative) {
       throw new Error('trying to export copying information for a native texture')
     }
 
-    const source = path.resolve('assets', this.sourcePath ?? 'graph/obj3d/textures', this.filename)
-    const target = path.resolve(outputDir, 'graph/obj3d/textures', this.filename)
+    if (!needsToBeTileable || this.isTileable()) {
+      const source = path.resolve('assets', this.sourcePath ?? 'graph/obj3d/textures', this.filename)
+      const target = path.resolve(outputDir, 'graph/obj3d/textures', this.filename)
 
-    return [source, target]
+      return [source, target]
+    }
+
+    return await this.makeTileable(outputDir)
+  }
+
+  private async makeTileable(outputDir: string): Promise<[string, string]> {
+    const originalSource = path.resolve('assets', this.sourcePath ?? 'graph/obj3d/textures', this.filename)
+    const resizedSource = path.resolve('.cache', this.sourcePath ?? 'graph/obj3d/textures', 'tileable-' + this.filename)
+
+    const resizedTarget = path.resolve(outputDir, 'graph/obj3d/textures', 'tileable-' + this.filename)
+
+    if (this.alreadyMadeTileable) {
+      return [resizedSource, resizedTarget]
+    }
+
+    await this.createCacheFolderIfNotExists(path.dirname(resizedSource))
+
+    try {
+      // assuming a cached version already exists
+      await fs.promises.access(resizedSource, fs.promises.constants.R_OK)
+      this.alreadyMadeTileable = true
+      return [resizedSource, resizedTarget]
+    } catch (e) {}
+
+    const image = sharp(originalSource)
+
+    if (this.width !== this.height) {
+      // TODO: extend the texture's lower side to get a square
+    }
+
+    // TODO: resize to have a width of power of 2
+
+    this.alreadyMadeTileable = true
+
+    return [resizedSource, resizedTarget]
+  }
+
+  private async createCacheFolderIfNotExists(folder: string) {
+    try {
+      await fs.promises.access(folder, fs.promises.constants.R_OK | fs.promises.constants.W_OK)
+    } catch (e) {
+      await fs.promises.mkdir(folder, { recursive: true })
+    }
   }
 }
 

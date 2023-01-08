@@ -83,11 +83,9 @@ import { Vertex } from './Vertex'
   map.player.position.adjustToPlayerHeight()
   map.hideMinimap()
 
-  const backroomsCarpet = new Texture({
+  const backroomsCarpet = await Texture.fromCustomFile({
     sourcePath: 'projects/the-backrooms/textures/',
     filename: 'backrooms-[fabric]-carpet-dirty.jpg',
-    width: 512,
-    height: 512,
     isNative: false,
   })
 
