@@ -89,12 +89,22 @@ import { Vertex } from './Vertex'
     isNative: false,
   })
 
-  const floor = ArxMap.fromThreeJsMesh(createFloorMesh(1000, 1000, Color.white, backroomsCarpet))
+  // TODO: this creates nindices issue
+  const floor = ArxMap.fromThreeJsMesh(createFloorMesh(500, 500, Color.white.darken(30), backroomsCarpet))
   floor.polygons.forEach((polygon) => {
-    polygon.flags |= ArxPolygonFlags.Tiled
+    polygon.flags |= ArxPolygonFlags.Tiled | ArxPolygonFlags.Water | ArxPolygonFlags.Transparent
+    polygon.transval = 1.23
   })
 
   map.add(floor, true)
+
+  const floor2 = ArxMap.fromThreeJsMesh(createFloorMesh(1000, 1000, Color.white, backroomsCarpet))
+  floor2.config.offset.y -= 20
+  floor2.polygons.forEach((polygon) => {
+    polygon.flags |= ArxPolygonFlags.Tiled
+  })
+
+  map.add(floor2, true)
 
   // // TODO: scale UV based on Texture size
   // const grates = ArxMap.fromThreeJsMesh(createFloorMesh(500, 500, Color.white, Texture.l3DissidWall02))
