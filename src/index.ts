@@ -89,10 +89,10 @@ import { Vertex } from './Vertex'
     isNative: false,
   })
 
-  const floor = ArxMap.fromThreeJsMesh(createFloorMesh(200, 200, Color.white.darken(30), backroomsCarpet))
+  const floor = ArxMap.fromThreeJsMesh(createFloorMesh(200, 200, Color.white.darken(50), backroomsCarpet))
   floor.polygons.forEach((polygon) => {
-    polygon.flags |= ArxPolygonFlags.Tiled | ArxPolygonFlags.Water | ArxPolygonFlags.Transparent
-    polygon.transval = 1.23
+    polygon.flags |= ArxPolygonFlags.Tiled
+    polygon.setOpacity(50)
   })
 
   map.add(floor, true)

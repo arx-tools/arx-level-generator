@@ -6,7 +6,7 @@ import { ArxVertexWithColor } from './types'
 import { Vector3 } from './Vector3'
 import { Vertex } from './Vertex'
 
-export type NindexType = 'opaque' | 'multiplicative' | 'additive' | 'blended' | 'subtractive'
+export type TransparencyType = 'multiplicative' | 'additive' | 'blended' | 'subtractive'
 
 type PolygonConfig = {
   areNormalsCalculated: boolean
@@ -175,7 +175,7 @@ export class Polygon {
   /**
    * @see https://github.com/arx/ArxLibertatis/blob/1.2.1/src/graphics/data/Mesh.cpp#L1102
    */
-  getNindexType(): NindexType {
+  getTransparencyType(): TransparencyType | 'opaque' {
     if (!this.isTransparent()) {
       return 'opaque'
     }
@@ -193,6 +193,32 @@ export class Polygon {
     }
 
     return 'subtractive'
+  }
+
+  setOpacity(percent: number, transparencyType: TransparencyType = 'additive') {
+    if (percent === 100) {
+      this.flags &= ~ArxPolygonFlags.Transparent
+      return
+    }
+
+    this.flags |= ArxPolygonFlags.Transparent
+
+    const value = percent / 100
+
+    switch (transparencyType) {
+      case 'additive':
+        this.transval = 1 + value
+        break
+      case 'blended':
+        this.transval = value
+        break
+      case 'multiplicative':
+        this.transval = 2 + value
+        break
+      case 'subtractive':
+        this.transval = -value
+        break
+    }
   }
 
   /**

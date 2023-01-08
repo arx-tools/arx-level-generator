@@ -20,7 +20,7 @@ import { sum, times } from './faux-ramda'
 import { Vector3 } from './Vector3'
 import { applyTransformations, evenAndRemainder, getPackageVersion, uninstall } from './helpers'
 import { Color } from './Color'
-import { Polygon, NindexType } from './Polygon'
+import { Polygon, TransparencyType } from './Polygon'
 import { OriginalLevel } from './types'
 import { LevelLoader } from './LevelLoader'
 import { MapFinalizedError, MapNotFinalizedError } from './errors'
@@ -204,7 +204,7 @@ export class ArxMap {
   }
 
   countNindices() {
-    const nindices: Record<string, Record<NindexType, number>> = {}
+    const nindices: Record<string, Record<TransparencyType | 'opaque', number>> = {}
 
     this.polygons.forEach((polygon) => {
       if (typeof polygon.texture === 'undefined') {
@@ -221,7 +221,7 @@ export class ArxMap {
         }
       }
 
-      nindices[polygon.texture.filename][polygon.getNindexType()] += polygon.getNindices()
+      nindices[polygon.texture.filename][polygon.getTransparencyType()] += polygon.getNindices()
     })
 
     return nindices
