@@ -169,9 +169,11 @@ export class ArxMap {
       sceneHeader: {
         mScenePosition: this.config.offset.toArxVector3(),
       },
-      textureContainers: textureContainers.map(({ id, filename }): ArxTextureContainer => {
-        return { id, filename: Texture.getTargetPath() + filename }
-      }),
+      textureContainers: textureContainers
+        .filter(({ remaining, maxRemaining }) => remaining !== maxRemaining)
+        .map(({ id, filename }): ArxTextureContainer => {
+          return { id, filename: Texture.getTargetPath() + filename }
+        }),
       cells: this.todo.cells,
       polygons,
       anchors: this.todo.anchors,
@@ -226,7 +228,7 @@ export class ArxMap {
   }
 
   getTextureContainers() {
-    const textureContainers: (ArxTextureContainer & { remaining: number })[] = []
+    const textureContainers: (ArxTextureContainer & { remaining: number; maxRemaining: number })[] = []
 
     let cntr = 0
 
@@ -238,10 +240,17 @@ export class ArxMap {
       const [wholeBlocks, remainder] = evenAndRemainder(65535, maxNindices)
 
       times(() => {
-        textureContainers.push({ id: ++cntr, filename, remaining: 65535 })
+        textureContainers.push({ id: ++cntr, filename, remaining: 65535, maxRemaining: 65535 })
+        textureContainers.push({ id: ++cntr, filename: 'tileable-' + filename, remaining: 65535, maxRemaining: 65535 })
       }, wholeBlocks)
 
-      textureContainers.push({ id: ++cntr, filename, remaining: remainder })
+      textureContainers.push({ id: ++cntr, filename, remaining: remainder, maxRemaining: remainder })
+      textureContainers.push({
+        id: ++cntr,
+        filename: 'tileable-' + filename,
+        remaining: remainder,
+        maxRemaining: remainder,
+      })
     })
 
     return textureContainers

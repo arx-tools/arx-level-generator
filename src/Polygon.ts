@@ -108,10 +108,11 @@ export class Polygon {
 
     let textureContainerId = NO_TEXTURE
     if (typeof this.texture !== 'undefined') {
-      const texture = this.texture
+      const needsToBeTileable = (this.flags & ArxPolygonFlags.Tiled) !== 0
+      const textureFilename = needsToBeTileable ? 'tileable-' + this.texture.filename : this.texture.filename
       const nindices = this.getNindices()
       const textureContainer = textureContainers.find(({ filename, remaining }) => {
-        return remaining - nindices >= 0 && filename === texture.filename
+        return remaining - nindices >= 0 && filename === textureFilename
       })
       if (typeof textureContainer !== 'undefined') {
         textureContainer.remaining -= nindices

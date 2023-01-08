@@ -54,9 +54,15 @@ export class Texture extends ThreeJsTextue {
   }
 
   static async fromCustomFile(props: TextureConstructorProps) {
+    // TODO: might need https://socket.dev/npm/package/sharp-bmp for handling bmp files
+
     const source = path.resolve('assets', props.sourcePath ?? 'graph/obj3d/textures', props.filename)
     const image = sharp(source)
     const metadata = await image.metadata()
+
+    if (metadata.format === 'jpeg' && metadata.isProgressive) {
+      console.warn(`texture warning: '${props.filename}' is a progressive jpeg, Arx will not be able to load it`)
+    }
 
     return new Texture({
       ...props,
@@ -119,7 +125,9 @@ export class Texture extends ThreeJsTextue {
       // TODO: extend the texture's lower side to get a square
     }
 
-    // TODO: resize to have a width of power of 2
+    const powerOfTwo = MathUtils.floorPowerOfTwo(this.width)
+
+    await image.resize(powerOfTwo, powerOfTwo).toFile(resizedSource)
 
     this.alreadyMadeTileable = true
 
