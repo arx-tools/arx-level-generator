@@ -89,7 +89,6 @@ import { Vertex } from './Vertex'
     isNative: false,
   })
 
-  // TODO: this creates nindices issue
   const floor = ArxMap.fromThreeJsMesh(createFloorMesh(200, 200, Color.white.darken(30), backroomsCarpet))
   floor.polygons.forEach((polygon) => {
     polygon.flags |= ArxPolygonFlags.Tiled | ArxPolygonFlags.Water | ArxPolygonFlags.Transparent

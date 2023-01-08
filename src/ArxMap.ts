@@ -16,7 +16,7 @@ import {
   ArxUniqueHeader,
   ArxVertex,
 } from 'arx-convert/types'
-import { times } from './faux-ramda'
+import { sum, times } from './faux-ramda'
 import { Vector3 } from './Vector3'
 import { applyTransformations, evenAndRemainder, getPackageVersion, uninstall } from './helpers'
 import { Color } from './Color'
@@ -235,7 +235,7 @@ export class ArxMap {
     const nindices = this.countNindices()
 
     Object.entries(nindices).forEach(([filename, nindices]) => {
-      const maxNindices = Math.max(...Object.values(nindices))
+      const maxNindices = sum(Object.values(nindices))
 
       const [wholeBlocks, remainder] = evenAndRemainder(65535, maxNindices)
 
