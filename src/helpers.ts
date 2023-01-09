@@ -69,3 +69,7 @@ export const makeBumpy = (volume: number, percentage: number, mesh: Mesh) => {
     }
   }
 }
+
+export const percentOf = (percentage: number, maxValue: number) => {
+  return (maxValue / 100) * percentage
+}

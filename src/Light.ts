@@ -1,4 +1,4 @@
-import { ArxLight } from 'arx-convert/types'
+import { ArxLight, ArxLightFlags } from 'arx-convert/types'
 import { Color } from './Color'
 import { Vector3 } from './Vector3'
 
@@ -7,25 +7,29 @@ import { Vector3 } from './Vector3'
 
 type LightConstructorProps = {
   position: Vector3
-  color: Color
-  lightData: Omit<ArxLight, 'pos' | 'color'>
+  color?: Color
+  flags?: ArxLightFlags
+  lightData: Omit<ArxLight, 'pos' | 'color' | 'flags'>
 }
 
 export class Light {
   position: Vector3
   color: Color
-  lightData: Omit<ArxLight, 'pos' | 'color'>
+  flags: ArxLightFlags
+  lightData: Omit<ArxLight, 'pos' | 'color' | 'flags'>
 
   constructor(props: LightConstructorProps) {
     this.position = props.position
-    this.color = props.color
+    this.color = props.color ?? Color.white
+    this.flags = props.flags ?? ArxLightFlags.None
     this.lightData = props.lightData
   }
 
-  static fromArxLight({ pos, color, ...lightData }: ArxLight) {
+  static fromArxLight({ pos, color, flags, ...lightData }: ArxLight) {
     return new Light({
       position: Vector3.fromArxVector3(pos),
       color: Color.fromArxColor(color),
+      flags,
       lightData,
     })
   }
@@ -35,6 +39,7 @@ export class Light {
       ...this.lightData,
       pos: this.position.toArxVector3(),
       color: this.color.toArxColor(),
+      flags: this.flags,
     }
   }
 }

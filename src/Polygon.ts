@@ -1,6 +1,7 @@
 import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVector3, ArxVertex } from 'arx-convert/types'
 import { QuadrupleOf } from 'arx-convert/utils'
 import { Triangle } from 'three'
+import { percentOf } from './helpers'
 import { NO_TEXTURE, Texture } from './Texture'
 import { ArxVertexWithColor } from './types'
 import { Vector3 } from './Vector3'
@@ -204,7 +205,7 @@ export class Polygon {
 
     this.flags |= ArxPolygonFlags.Transparent
 
-    const value = percent / 100
+    const value = percentOf(percent, 1)
 
     switch (transparencyType) {
       case 'additive':

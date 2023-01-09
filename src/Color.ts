@@ -1,6 +1,7 @@
 import { ArxColor } from 'arx-convert/types'
 import rgba from 'color-rgba'
 import { MeshBasicMaterial, Color as ThreeJsColor, MathUtils } from 'three'
+import { percentOf } from './helpers'
 
 export enum Alpha {
   Transparent = 0,
@@ -20,6 +21,7 @@ export class Color {
   static green = Object.freeze(Color.fromCSS('green'))
   static blue = Object.freeze(Color.fromCSS('blue'))
   static white = Object.freeze(Color.fromCSS('white'))
+  static yellow = Object.freeze(Color.fromCSS('yellow'))
   static transparent = Object.freeze(Color.fromCSS('transparent'))
 
   constructor(r: number, g: number, b: number, a: number = Alpha.Opaque) {
@@ -63,23 +65,23 @@ export class Color {
   }
 
   lighten(percent: number) {
-    const extra = 255 * (percent / 100)
+    const extra = percentOf(percent, 255)
 
     return new Color(
-      MathUtils.clamp(0, 255, this.r + extra),
-      MathUtils.clamp(0, 255, this.g + extra),
-      MathUtils.clamp(0, 255, this.b + extra),
+      MathUtils.clamp(this.r + extra, 0, 255),
+      MathUtils.clamp(this.g + extra, 0, 255),
+      MathUtils.clamp(this.b + extra, 0, 255),
       this.a,
     )
   }
 
   darken(percent: number) {
-    const extra = 255 * (percent / 100)
+    const extra = percentOf(percent, 255)
 
     return new Color(
-      MathUtils.clamp(0, 255, this.r - extra),
-      MathUtils.clamp(0, 255, this.g - extra),
-      MathUtils.clamp(0, 255, this.b - extra),
+      MathUtils.clamp(this.r - extra, 0, 255),
+      MathUtils.clamp(this.g - extra, 0, 255),
+      MathUtils.clamp(this.b - extra, 0, 255),
       this.a,
     )
   }
