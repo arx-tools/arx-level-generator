@@ -3,6 +3,7 @@ declare global {
     interface ProcessEnv {
       OUTPUTDIR?: string
       LEVEL?: string
+      SEED?: string
     }
   }
 }

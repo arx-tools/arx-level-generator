@@ -248,13 +248,15 @@ export class Polygon {
    * 0 2
    * 1 3
    * ```
-   * `isQuadPart` = false is calculating the area of 0-1-2
-   * whereas `isQuadPart` = true is calculating the area of 1-2-3
+   * `isQuadPart` === false -> calculate the area of 0-1-2
+   * `isQuadPart` === true  -> calculate the area of 1-2-3
    */
   private getHalfPolygonArea(isQuadPart: boolean) {
-    const [i, j, k] = isQuadPart ? [0, 1, 2] : [1, 2, 3]
-    const a = this.vertices[i].clone().add(this.vertices[j]).divideScalar(2).distanceTo(this.vertices[k])
-    const b = this.vertices[isQuadPart ? i : k].distanceTo(this.vertices[j])
-    return (a * b) / 2
+    const triangle = new Triangle(...this.vertices.slice(isQuadPart ? 1 : 0, 3))
+    return triangle.getArea()
+    // const [i, j, k] = isQuadPart ? [1, 2, 3] : [0, 1, 2]
+    // const a = this.vertices[i].clone().add(this.vertices[j]).divideScalar(2).distanceTo(this.vertices[k])
+    // const b = this.vertices[isQuadPart ? i : k].distanceTo(this.vertices[j])
+    // return (a * b) / 2
   }
 }

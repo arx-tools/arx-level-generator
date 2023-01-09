@@ -1,8 +1,12 @@
 import { BufferAttribute, MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three'
 import { Color } from '../../Color'
+import { applyTransformations } from '../../helpers'
 import { Texture } from '../../Texture'
 
-export function createFloorMesh(width: number, height: number, color: Color, texture: Texture) {
+export const INDEXED = true
+export const NONINDEXED = false
+
+export function createFloorMesh(width: number, height: number, color: Color, texture: Texture, isIndexed = INDEXED) {
   const divisionX = Math.ceil(width / 100)
   const divisionY = Math.ceil(height / 100)
 
@@ -20,7 +24,8 @@ export function createFloorMesh(width: number, height: number, color: Color, tex
     map: texture,
   })
 
-  const floorMesh = new Mesh(floorGeometry, material)
+  const floorMesh = new Mesh(isIndexed === INDEXED ? floorGeometry : floorGeometry.toNonIndexed(), material)
   floorMesh.rotateX(MathUtils.degToRad(-90))
+  applyTransformations(floorMesh)
   return floorMesh
 }

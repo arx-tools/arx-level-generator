@@ -26,6 +26,8 @@ export class Texture extends ThreeJsTextue {
   static humanPaving1 = Object.freeze(
     new Texture({
       filename: '[STONE]_HUMAN_PAVING1.BMP',
+      width: 128,
+      height: 128,
     }),
   )
 
@@ -40,6 +42,16 @@ export class Texture extends ThreeJsTextue {
   static aliciaRoomMur02 = Object.freeze(
     new Texture({
       filename: 'ALICIAROOM_MUR02.jpg',
+      width: 128,
+      height: 128,
+    }),
+  )
+
+  static water = Object.freeze(
+    new Texture({
+      filename: '(WATER)CAVEWATER.jpg',
+      width: 128,
+      height: 128,
     }),
   )
 
@@ -105,10 +117,10 @@ export class Texture extends ThreeJsTextue {
       return [source, target]
     }
 
-    return await this.makeTileable(outputDir)
+    return await this._makeTileable(outputDir)
   }
 
-  private async makeTileable(outputDir: string): Promise<[string, string]> {
+  async _makeTileable(outputDir: string): Promise<[string, string]> {
     const originalSource = path.resolve('assets', this.sourcePath ?? 'graph/obj3d/textures', this.filename)
     const resizedSource = path.resolve('.cache', this.sourcePath ?? 'graph/obj3d/textures', 'tileable-' + this.filename)
 
@@ -118,7 +130,7 @@ export class Texture extends ThreeJsTextue {
       return [resizedSource, resizedTarget]
     }
 
-    await this.createCacheFolderIfNotExists(path.dirname(resizedSource))
+    await this._createCacheFolderIfNotExists(path.dirname(resizedSource))
 
     try {
       // assuming a cached version already exists
@@ -155,7 +167,7 @@ export class Texture extends ThreeJsTextue {
     return [resizedSource, resizedTarget]
   }
 
-  private async createCacheFolderIfNotExists(folder: string) {
+  async _createCacheFolderIfNotExists(folder: string) {
     try {
       await fs.promises.access(folder, fs.promises.constants.R_OK | fs.promises.constants.W_OK)
     } catch (e) {

@@ -292,15 +292,16 @@ export class ArxMap {
     }
 
     if (index === null) {
-      for (let idx = 0; idx < coords.count; idx += coords.itemSize) {
+      // non-indexed, all vertices are unique
+      for (let idx = 0; idx < coords.count; idx++) {
         vertices.push(
-          // TODO: check if params correctly fetched
           new Vertex(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx), uv.getX(idx), uv.getY(idx), color),
         )
       }
     } else {
+      // indexed, has shared vertices
       for (let i = 0; i < index.count; i++) {
-        const idx = index.array[i]
+        const idx = index.getX(i)
         vertices.push(
           new Vertex(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx), uv.getX(idx), uv.getY(idx), color),
         )
