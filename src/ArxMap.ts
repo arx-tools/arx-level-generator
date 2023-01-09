@@ -10,7 +10,6 @@ import {
   ArxLLF,
   ArxRoom,
   ArxRoomDistance,
-  ArxTextureContainer,
   ArxUniqueHeader,
   ArxVertex,
 } from 'arx-convert/types'
