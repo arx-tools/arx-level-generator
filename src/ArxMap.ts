@@ -8,19 +8,17 @@ import {
   ArxDLF,
   ArxFTS,
   ArxLLF,
-  ArxPolygon,
-  ArxPolygonFlags,
   ArxRoom,
   ArxRoomDistance,
   ArxTextureContainer,
   ArxUniqueHeader,
   ArxVertex,
 } from 'arx-convert/types'
-import { sum, times } from './faux-ramda'
+import { times } from './faux-ramda'
 import { Vector3 } from './Vector3'
-import { applyTransformations, evenAndRemainder, getPackageVersion, uninstall } from './helpers'
+import { applyTransformations, getPackageVersion, uninstall } from './helpers'
 import { Color } from './Color'
-import { Polygon, TransparencyType } from './Polygon'
+import { Polygon } from './Polygon'
 import { OriginalLevel } from './types'
 import { LevelLoader } from './LevelLoader'
 import { MapFinalizedError, MapNotFinalizedError } from './errors'
@@ -35,6 +33,7 @@ import { Path } from './Path'
 import { Mesh, Color as ThreeJsColor, MeshBasicMaterial } from 'three'
 import { Vertex } from './Vertex'
 import { Texture } from './Texture'
+import { Polygons } from './Polygons'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -51,7 +50,7 @@ type ToBeSortedLater = {
 }
 
 export class ArxMap {
-  polygons: Polygon[] = []
+  polygons = new Polygons()
   lights: Light[] = []
   fogs: Fog[] = []
   entities: Entity[] = []
@@ -110,8 +109,8 @@ export class ArxMap {
     this.zones = dlf.zones.map(Zone.fromArxZone)
     this.paths = dlf.paths.map(Path.fromArxPath)
 
-    this.polygons = fts.polygons.map((polygon) => {
-      return Polygon.fromArxPolygon(polygon, llf.colors, fts.textureContainers, areNormalsCalculated)
+    fts.polygons.forEach((polygon) => {
+      this.polygons.push(Polygon.fromArxPolygon(polygon, llf.colors, fts.textureContainers, areNormalsCalculated))
     })
 
     this.portals = fts.portals.map(Portal.fromArxPortal)
@@ -155,11 +154,7 @@ export class ArxMap {
       }),
     }
 
-    const textureContainers = this.getTextureContainers()
-
-    const polygons: ArxPolygon[] = this.polygons.map((polygon) => {
-      return polygon.toArxPolygon(textureContainers)
-    })
+    const { textureContainers, polygons } = this.polygons.toArxData()
 
     const fts: ArxFTS = {
       header: {
@@ -169,11 +164,7 @@ export class ArxMap {
       sceneHeader: {
         mScenePosition: this.config.offset.toArxVector3(),
       },
-      textureContainers: textureContainers
-        .filter(({ remaining, maxRemaining }) => remaining !== maxRemaining)
-        .map(({ id, filename }): ArxTextureContainer => {
-          return { id, filename: Texture.getTargetPath() + filename }
-        }),
+      textureContainers,
       cells: this.todo.cells,
       polygons,
       anchors: this.todo.anchors,
@@ -201,59 +192,6 @@ export class ArxMap {
       fts,
       llf,
     }
-  }
-
-  countNindices() {
-    const nindices: Record<string, Record<TransparencyType | 'opaque', number>> = {}
-
-    this.polygons.forEach((polygon) => {
-      if (typeof polygon.texture === 'undefined') {
-        return
-      }
-
-      if (!(polygon.texture.filename in nindices)) {
-        nindices[polygon.texture.filename] = {
-          additive: 0,
-          blended: 0,
-          multiplicative: 0,
-          opaque: 0,
-          subtractive: 0,
-        }
-      }
-
-      nindices[polygon.texture.filename][polygon.getTransparencyType()] += polygon.getNindices()
-    })
-
-    return nindices
-  }
-
-  getTextureContainers() {
-    const textureContainers: (ArxTextureContainer & { remaining: number; maxRemaining: number })[] = []
-
-    let cntr = 0
-
-    const nindices = this.countNindices()
-
-    Object.entries(nindices).forEach(([filename, nindices]) => {
-      const maxNindices = sum(Object.values(nindices))
-
-      const [wholeBlocks, remainder] = evenAndRemainder(65535, maxNindices)
-
-      times(() => {
-        textureContainers.push({ id: ++cntr, filename, remaining: 65535, maxRemaining: 65535 })
-        textureContainers.push({ id: ++cntr, filename: 'tileable-' + filename, remaining: 65535, maxRemaining: 65535 })
-      }, wholeBlocks)
-
-      textureContainers.push({ id: ++cntr, filename, remaining: remainder, maxRemaining: remainder })
-      textureContainers.push({
-        id: ++cntr,
-        filename: 'tileable-' + filename,
-        remaining: remainder,
-        maxRemaining: remainder,
-      })
-    })
-
-    return textureContainers
   }
 
   /**
@@ -475,24 +413,6 @@ export class ArxMap {
     })
   }
 
-  private async exportTextures(outputDir: string) {
-    const files: Record<string, string> = {}
-
-    for (let polygon of this.polygons) {
-      if (typeof polygon.texture === 'undefined' || polygon.texture.isNative) {
-        return files
-      }
-
-      const needsToBeTileable = (polygon.flags & ArxPolygonFlags.Tiled) !== 0
-
-      const [source, target] = await polygon.texture.exportSourceAndTarget(outputDir, needsToBeTileable)
-
-      files[target] = source
-    }
-
-    return files
-  }
-
   async saveToDisk(outputDir: string, levelIdx: number, prettify: boolean = false) {
     if (!this.config.isFinalized) {
       throw new MapNotFinalizedError()
@@ -512,7 +432,7 @@ export class ArxMap {
 
     // ------------------------
 
-    const textures = await this.exportTextures(outputDir)
+    const textures = await this.polygons.exportTextures(outputDir)
 
     const resets: Record<string, string> = {}
     if (!this.config.isMinimapVisible) {
@@ -570,26 +490,10 @@ export class ArxMap {
 
   adjustOffsetTo(map: ArxMap) {
     const offsetDifference = map.config.offset.clone().sub(this.config.offset)
-    this.movePolygons(offsetDifference)
-  }
-
-  movePolygons(offset: Vector3) {
-    if (this.config.isFinalized) {
-      throw new MapFinalizedError()
-    }
-
-    this.polygons.forEach((polygon) => {
-      polygon.vertices.forEach((vertex) => {
-        vertex.add(offset)
-      })
-    })
+    this.polygons.move(offsetDifference)
   }
 
   moveEntities(offset: Vector3) {
-    if (this.config.isFinalized) {
-      throw new MapFinalizedError()
-    }
-
     this.lights.forEach((light) => {
       light.position.add(offset)
     })
@@ -623,7 +527,11 @@ export class ArxMap {
   }
 
   move(offset: Vector3) {
-    this.movePolygons(offset)
+    if (this.config.isFinalized) {
+      throw new MapFinalizedError()
+    }
+
+    this.polygons.move(offset)
     this.moveEntities(offset)
   }
 
