@@ -33,6 +33,8 @@ import { Mesh, Color as ThreeJsColor, MeshBasicMaterial } from 'three'
 import { Vertex } from './Vertex'
 import { Texture } from './Texture'
 import { Polygons } from './Polygons'
+import { Entities } from './Entities'
+import { Lights } from './Lights'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -50,9 +52,9 @@ type ToBeSortedLater = {
 
 export class ArxMap {
   polygons = new Polygons()
-  lights: Light[] = []
+  lights = new Lights()
   fogs: Fog[] = []
-  entities: Entity[] = []
+  entities = new Entities()
   zones: Zone[] = []
   paths: Path[] = []
   player: Player = new Player()
@@ -102,7 +104,9 @@ export class ArxMap {
     this.player.orientation = Rotation.fromArxRotation(dlf.header.angleEdit)
     this.player.position = Vector3.fromArxVector3(dlf.header.posEdit)
 
-    this.entities = dlf.interactiveObjects.map(Entity.fromArxInteractiveObject)
+    dlf.interactiveObjects.forEach((entity) => {
+      this.entities.push(Entity.fromArxInteractiveObject(entity))
+    })
 
     this.fogs = dlf.fogs.map(Fog.fromArxFog)
     this.zones = dlf.zones.map(Zone.fromArxZone)
@@ -113,7 +117,9 @@ export class ArxMap {
     })
 
     this.portals = fts.portals.map(Portal.fromArxPortal)
-    this.lights = llf.lights.map(Light.fromArxLight)
+    llf.lights.forEach((light) => {
+      this.lights.push(Light.fromArxLight(light))
+    })
 
     // TODO: deal with these stuff later
     this.todo.uniqueHeaders = fts.uniqueHeaders
@@ -139,9 +145,6 @@ export class ArxMap {
       scene: {
         levelIdx,
       },
-      interactiveObjects: this.entities.map((entity) => {
-        return entity.toArxInteractiveObject()
-      }),
       fogs: this.fogs.map((fog) => {
         return fog.toArxFog()
       }),
@@ -151,9 +154,8 @@ export class ArxMap {
       zones: this.zones.map((zone) => {
         return zone.toArxZone()
       }),
+      ...this.entities.toArxData(),
     }
-
-    const { textureContainers, polygons } = this.polygons.toArxData()
 
     const fts: ArxFTS = {
       header: {
@@ -163,15 +165,14 @@ export class ArxMap {
       sceneHeader: {
         mScenePosition: this.config.offset.toArxVector3(),
       },
-      textureContainers,
       cells: this.todo.cells,
-      polygons,
       anchors: this.todo.anchors,
       portals: this.portals.map((portal) => {
         return portal.toArxPortal()
       }),
       rooms: this.todo.rooms,
       roomDistances: this.todo.roomDistances,
+      ...this.polygons.toArxData(),
     }
 
     const llf: ArxLLF = {
@@ -181,9 +182,7 @@ export class ArxMap {
         numberOfBackgroundPolygons: this.polygons.length,
       },
       colors: this.getVertexColors(),
-      lights: this.lights.map((light) => {
-        return light.toArxLight()
-      }),
+      ...this.lights.toArxData(),
     }
 
     return {
@@ -492,17 +491,18 @@ export class ArxMap {
     this.polygons.move(offsetDifference)
   }
 
-  moveEntities(offset: Vector3) {
-    this.lights.forEach((light) => {
-      light.position.add(offset)
-    })
+  move(offset: Vector3) {
+    if (this.config.isFinalized) {
+      throw new MapFinalizedError()
+    }
+
+    this.polygons.move(offset)
+
+    this.entities.move(offset)
+    this.lights.move(offset)
 
     this.fogs.forEach((fog) => {
       fog.position.add(offset)
-    })
-
-    this.entities.forEach((entity) => {
-      entity.position.add(offset)
     })
 
     this.paths.forEach((path) => {
@@ -523,15 +523,6 @@ export class ArxMap {
       anchor.data.pos.y += offset.y
       anchor.data.pos.z += offset.z
     })
-  }
-
-  move(offset: Vector3) {
-    if (this.config.isFinalized) {
-      throw new MapFinalizedError()
-    }
-
-    this.polygons.move(offset)
-    this.moveEntities(offset)
   }
 
   add(map: ArxMap, alignPolygons: boolean = false) {
