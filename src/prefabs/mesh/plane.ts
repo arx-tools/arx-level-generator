@@ -16,7 +16,7 @@ export async function createPlaneMesh(
   const divisionX = Math.ceil(width / 100)
   const divisionY = Math.ceil(height / 100)
 
-  const geometry = new PlaneGeometry(width, width, divisionX, divisionY)
+  const geometry = new PlaneGeometry(width, height, divisionX, divisionY)
 
   const uv = geometry.getAttribute('uv')
   const newUV = []

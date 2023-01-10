@@ -22,7 +22,7 @@ export default async () => {
   map.player.position.adjustToPlayerHeight()
   map.hideMinimap()
 
-  map.add(await createRoom(), true)
+  map.add(await createRoom(800, 300, 800), true)
 
   const light = new Light({
     color: Color.yellow.lighten(50),
