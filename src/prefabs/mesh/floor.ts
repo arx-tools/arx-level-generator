@@ -6,7 +6,13 @@ import { Texture } from '../../Texture'
 export const INDEXED = true
 export const NONINDEXED = false
 
-export function createFloorMesh(width: number, height: number, color: Color, texture: Texture, isIndexed = INDEXED) {
+export async function createFloorMesh(
+  width: number,
+  height: number,
+  color: Color,
+  texture: Texture | Promise<Texture>,
+  isIndexed = INDEXED,
+) {
   const divisionX = Math.ceil(width / 100)
   const divisionY = Math.ceil(height / 100)
 
@@ -18,6 +24,10 @@ export function createFloorMesh(width: number, height: number, color: Color, tex
     newUV.push(uv.array[i * uv.itemSize] * divisionX, uv.array[i * uv.itemSize + 1] * divisionY)
   }
   floorGeometry.setAttribute('uv', new BufferAttribute(Float32Array.from(newUV), uv.itemSize))
+
+  if (texture instanceof Promise) {
+    texture = await texture
+  }
 
   const material = new MeshBasicMaterial({
     color: color.getHex(),

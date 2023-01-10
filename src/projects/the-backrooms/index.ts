@@ -1,13 +1,10 @@
-import { ArxPolygonFlags } from 'arx-convert/types'
 import path from 'node:path'
 import seedrandom from 'seedrandom'
 import { ArxMap } from '../../ArxMap'
 import { Color } from '../../Color'
-import { createFloorMesh } from '../../prefabs/mesh/floor'
-import { makeBumpy } from '../../helpers'
-import { Texture } from '../../Texture'
 import { Vector3 } from '../../Vector3'
 import { Light } from '../../Light'
+import { createRoom } from './room'
 
 export default async () => {
   const {
@@ -25,27 +22,7 @@ export default async () => {
   map.player.position.adjustToPlayerHeight()
   map.hideMinimap()
 
-  const backroomsCarpet = await Texture.fromCustomFile({
-    sourcePath: 'projects/the-backrooms/textures/',
-    filename: 'backrooms-[fabric]-carpet-dirty.jpg',
-    isNative: false,
-  })
-
-  const floorMesh = createFloorMesh(2000, 2000, Color.white.darken(50), backroomsCarpet)
-  makeBumpy(20, 10, floorMesh)
-  const floor = ArxMap.fromThreeJsMesh(floorMesh)
-  floor.config.offset.y += 15
-  floor.polygons.forEach((polygon) => {
-    polygon.flags |= ArxPolygonFlags.Tiled
-  })
-  map.add(floor, true)
-
-  const water = ArxMap.fromThreeJsMesh(createFloorMesh(2000, 2000, Color.white, Texture.water))
-  water.polygons.forEach((polygon) => {
-    polygon.flags |= ArxPolygonFlags.Tiled | ArxPolygonFlags.Water
-    polygon.setOpacity(10)
-  })
-  map.add(water, true)
+  map.add(await createRoom(), true)
 
   const light = new Light({
     color: Color.yellow.lighten(50),
