@@ -25,10 +25,13 @@
   "homepage": "https://github.com/arx-tools/arx-level-generator#readme",
   "dependencies": {
     "arx-convert": "^5.17.0",
+    "arx-header-size": "^2.0.0",
     "color-rgba": "^2.4.0",
+    "dotenv": "^16.0.3",
     "nanoid": "^4.0.0",
     "node-pkware": "^3.0.4",
     "seedrandom": "^3.0.5",
+    "sharp": "^0.31.3",
     "sharp-bmp": "^0.1.5",
     "three": "^0.148.0",
     "tiny-glob": "^0.2.9"
@@ -39,9 +42,6 @@
     "@types/seedrandom": "^3.0.4",
     "@types/sharp": "^0.31.1",
     "@types/three": "^0.147.1",
-    "arx-header-size": "^2.0.0",
-    "dotenv": "^16.0.3",
-    "sharp": "^0.31.3",
     "tsc-alias": "^1.8.2",
     "typescript": "^4.9.4"
   },

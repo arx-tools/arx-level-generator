@@ -2,79 +2,106 @@ import { ArxPolygonFlags } from 'arx-convert/types'
 import { ArxMap } from '@src/ArxMap'
 import { Color } from '@src/Color'
 import { createPlaneMesh } from '@prefabs/mesh/plane'
-import { carpet, wallpaper, ceilingTile } from './materials'
-import { applyTransformations } from '@src/helpers'
-import { MathUtils } from 'three'
-import { Vector3 } from '@src/Vector3'
+import { carpet, wallpaper, ceilingTile, mold } from './materials'
+import { Group, MathUtils } from 'three'
 
 const createFloor = async (width: number, height: number, depth: number) => {
-  const mesh = await createPlaneMesh(width, depth, Color.white.darken(50), carpet)
-
-  return ArxMap.fromThreeJsMesh(mesh)
+  return await createPlaneMesh(width, depth, Color.white.darken(70), carpet)
 }
 
 const createNorthWall = async (width: number, height: number, depth: number) => {
-  const mesh = await createPlaneMesh(width, height, Color.white.darken(50), wallpaper)
-  mesh.rotateX(MathUtils.degToRad(-90))
-  applyTransformations(mesh)
-  mesh.translateZ(depth / 2).translateY(height / 2)
-  applyTransformations(mesh)
+  const group = new Group()
 
-  return ArxMap.fromThreeJsMesh(mesh)
+  const wall = await createPlaneMesh(width, height, Color.white.darken(50), wallpaper)
+  wall.translateZ(depth / 2).translateY(height / 2)
+  wall.rotateX(MathUtils.degToRad(-90))
+
+  const moldyWall = await createPlaneMesh(width, 100, Color.white.darken(50), mold)
+  moldyWall.translateZ(depth / 2 - 1).translateY(50)
+  moldyWall.rotateX(MathUtils.degToRad(-90))
+
+  group.add(wall)
+  group.add(moldyWall)
+
+  return group
 }
 
 const createSouthWall = async (width: number, height: number, depth: number) => {
-  const mesh = await createPlaneMesh(width, height, Color.white.darken(50), wallpaper)
-  mesh.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(180))
-  applyTransformations(mesh)
-  mesh.translateZ(-depth / 2).translateY(height / 2)
-  applyTransformations(mesh)
+  const group = new Group()
 
-  return ArxMap.fromThreeJsMesh(mesh)
+  const wall = await createPlaneMesh(width, height, Color.white.darken(50), wallpaper)
+  wall.translateZ(-depth / 2).translateY(height / 2)
+  wall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(180))
+
+  const moldyWall = await createPlaneMesh(width, 100, Color.white.darken(50), mold)
+  moldyWall.translateZ(-depth / 2 + 1).translateY(50)
+  moldyWall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(180))
+
+  group.add(wall)
+  group.add(moldyWall)
+
+  return group
 }
 
 const createWestWall = async (width: number, height: number, depth: number) => {
-  const mesh = await createPlaneMesh(width, height, Color.white.darken(50), wallpaper)
-  mesh.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(-90))
-  applyTransformations(mesh)
-  mesh.translateX(-width / 2).translateY(height / 2)
-  applyTransformations(mesh)
+  const group = new Group()
 
-  return ArxMap.fromThreeJsMesh(mesh)
+  const wall = await createPlaneMesh(depth, height, Color.white.darken(50), wallpaper)
+  wall.translateX(-width / 2).translateY(height / 2)
+  wall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(-90))
+
+  const moldyWall = await createPlaneMesh(depth, 100, Color.white.darken(50), mold)
+  moldyWall.translateX(-width / 2 + 1).translateY(50)
+  moldyWall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(-90))
+
+  group.add(wall)
+  group.add(moldyWall)
+
+  return group
 }
 
 const createEastWall = async (width: number, height: number, depth: number) => {
-  const mesh = await createPlaneMesh(width, height, Color.white.darken(50), wallpaper)
-  mesh.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(90))
-  applyTransformations(mesh)
-  mesh.translateX(width / 2).translateY(height / 2)
-  applyTransformations(mesh)
+  const group = new Group()
 
-  return ArxMap.fromThreeJsMesh(mesh)
+  const wall = await createPlaneMesh(depth, height, Color.white.darken(50), wallpaper)
+  wall.translateX(width / 2).translateY(height / 2)
+  wall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(90))
+
+  const moldyWall = await createPlaneMesh(depth, 100, Color.white.darken(50), mold)
+  moldyWall.translateX(width / 2 - 1).translateY(50)
+  moldyWall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(90))
+
+  group.add(wall)
+  group.add(moldyWall)
+
+  return group
 }
 
 const createCeiling = async (width: number, height: number, depth: number) => {
   const mesh = await createPlaneMesh(width, depth, Color.white.darken(50), ceilingTile)
-  mesh.rotateX(MathUtils.degToRad(180))
-  applyTransformations(mesh)
   mesh.translateY(height)
-  applyTransformations(mesh)
-
-  return ArxMap.fromThreeJsMesh(mesh)
+  mesh.rotateX(MathUtils.degToRad(180))
+  return mesh
 }
 
 export const createRoom = async (width: number, height: number, depth: number) => {
-  const room = new ArxMap()
+  const group = new Group()
 
-  room.add(await createFloor(width, height, depth), true)
-  room.add(await createNorthWall(width, height, depth), true)
-  room.add(await createSouthWall(width, height, depth), true)
-  room.add(await createWestWall(width, height, depth), true)
-  room.add(await createEastWall(width, height, depth), true)
-  room.add(await createCeiling(width, height, depth), true)
+  group.add(await createFloor(width, height, depth))
+  group.add(await createNorthWall(width, height, depth))
+  group.add(await createSouthWall(width, height, depth))
+  group.add(await createWestWall(width, height, depth))
+  group.add(await createEastWall(width, height, depth))
+  group.add(await createCeiling(width, height, depth))
+
+  const room = ArxMap.fromThreeJsMesh(group)
+  const moldTexture = await mold
 
   room.polygons.forEach((polygon) => {
     polygon.flags |= ArxPolygonFlags.Tiled
+    if (polygon.texture === moldTexture) {
+      polygon.setOpacity(50, 'subtractive')
+    }
   })
 
   return room

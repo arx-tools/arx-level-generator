@@ -29,7 +29,7 @@ import { Fog } from '@src/Fog'
 import { Zone } from '@src/Zone'
 import { Portal } from '@src/Portal'
 import { Path } from '@src/Path'
-import { Mesh, Color as ThreeJsColor, MeshBasicMaterial } from 'three'
+import { Mesh, Color as ThreeJsColor, MeshBasicMaterial, Object3D } from 'three'
 import { Vertex } from '@src/Vertex'
 import { Texture } from '@src/Texture'
 import { Polygons } from '@src/Polygons'
@@ -208,52 +208,64 @@ export class ArxMap {
     return new ArxMap(dlf, fts, llf, true)
   }
 
-  static fromThreeJsMesh(mesh: Mesh) {
+  static fromThreeJsMesh(threeJsObj: Object3D) {
     const map = new ArxMap()
 
-    applyTransformations(mesh)
-
-    const index = mesh.geometry.getIndex()
-    const coords = mesh.geometry.getAttribute('position')
-    const uv = mesh.geometry.getAttribute('uv')
-    const vertices: Vertex[] = []
-
-    let color = Color.white
-    let texture: Texture | undefined = undefined
-    if (mesh.material instanceof MeshBasicMaterial) {
-      color = Color.fromThreeJsColor(mesh.material.color as ThreeJsColor)
-      if (mesh.material.map instanceof Texture) {
-        texture = mesh.material.map
-      }
-    }
-
-    if (index === null) {
-      // non-indexed, all vertices are unique
-      for (let idx = 0; idx < coords.count; idx++) {
-        vertices.push(
-          new Vertex(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx), uv.getX(idx), uv.getY(idx), color),
-        )
-      }
-    } else {
-      // indexed, has shared vertices
-      for (let i = 0; i < index.count; i++) {
-        const idx = index.getX(i)
-        vertices.push(
-          new Vertex(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx), uv.getX(idx), uv.getY(idx), color),
-        )
-      }
-    }
-
-    for (let i = 0; i < vertices.length; i += 3) {
-      map.polygons.push(
-        new Polygon({
-          vertices: [...vertices.slice(i, i + 3).reverse(), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
-          texture,
-        }),
-      )
-    }
+    map.addThreeJsMesh(threeJsObj)
 
     return map
+  }
+
+  addThreeJsMesh(threeJsObj: Object3D) {
+    if (threeJsObj.parent === null) {
+      applyTransformations(threeJsObj)
+    }
+
+    if (threeJsObj instanceof Mesh) {
+      const index = threeJsObj.geometry.getIndex()
+      const coords = threeJsObj.geometry.getAttribute('position')
+      const uv = threeJsObj.geometry.getAttribute('uv')
+      const vertices: Vertex[] = []
+
+      let color = Color.white
+      let texture: Texture | undefined = undefined
+      if (threeJsObj.material instanceof MeshBasicMaterial) {
+        color = Color.fromThreeJsColor(threeJsObj.material.color as ThreeJsColor)
+        if (threeJsObj.material.map instanceof Texture) {
+          texture = threeJsObj.material.map
+        }
+      }
+
+      if (index === null) {
+        // non-indexed, all vertices are unique
+        for (let idx = 0; idx < coords.count; idx++) {
+          vertices.push(
+            new Vertex(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx), uv.getX(idx), uv.getY(idx), color),
+          )
+        }
+      } else {
+        // indexed, has shared vertices
+        for (let i = 0; i < index.count; i++) {
+          const idx = index.getX(i)
+          vertices.push(
+            new Vertex(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx), uv.getX(idx), uv.getY(idx), color),
+          )
+        }
+      }
+
+      for (let i = 0; i < vertices.length; i += 3) {
+        this.polygons.push(
+          new Polygon({
+            vertices: [...vertices.slice(i, i + 3).reverse(), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
+            texture,
+          }),
+        )
+      }
+    }
+
+    threeJsObj.children.forEach((child) => {
+      this.addThreeJsMesh(child)
+    })
   }
 
   private static async getGeneratorId() {

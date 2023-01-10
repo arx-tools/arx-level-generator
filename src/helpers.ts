@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { Mesh } from 'three'
+import { Mesh, Object3D } from 'three'
 
 export const getPackageVersion = async () => {
   try {
@@ -37,15 +37,22 @@ export const evenAndRemainder = (divisor: number, n: number): [number, number] =
   return [Math.floor(n / divisor), n % divisor]
 }
 
-export const applyTransformations = (mesh: Mesh) => {
-  mesh.updateMatrix()
+export const applyTransformations = (threeJsObj: Object3D) => {
+  threeJsObj.updateMatrix()
 
-  mesh.geometry.applyMatrix4(mesh.matrix)
+  if (threeJsObj instanceof Mesh) {
+    threeJsObj.geometry.applyMatrix4(threeJsObj.matrix)
+  }
 
-  mesh.position.set(0, 0, 0)
-  mesh.rotation.set(0, 0, 0)
-  mesh.scale.set(1, 1, 1)
-  mesh.updateMatrix()
+  threeJsObj.children.forEach((child) => {
+    child.applyMatrix4(threeJsObj.matrix)
+    applyTransformations(child)
+  })
+
+  threeJsObj.position.set(0, 0, 0)
+  threeJsObj.rotation.set(0, 0, 0)
+  threeJsObj.scale.set(1, 1, 1)
+  threeJsObj.updateMatrix()
 }
 
 export const makeBumpy = (volume: number, percentage: number, mesh: Mesh) => {

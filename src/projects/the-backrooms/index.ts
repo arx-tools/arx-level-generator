@@ -22,7 +22,14 @@ export default async () => {
   map.player.position.adjustToPlayerHeight()
   map.hideMinimap()
 
-  map.add(await createRoom(800, 300, 800), true)
+  const room1 = await createRoom(600, 300, 800)
+  // const room2 = await createRoom(600, 300, 800)
+  // room2.move(new Vector3(200, 0, 500))
+
+  // TODO: union(room1, room2) ?
+
+  map.add(room1, true)
+  // map.add(room2, true)
 
   const light = new Light({
     color: Color.yellow.lighten(50),

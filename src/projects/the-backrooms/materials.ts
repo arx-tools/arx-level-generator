@@ -19,3 +19,9 @@ export const ceilingTile = Texture.fromCustomFile({
   filename: 'backrooms-[stone]-ceiling-tile.jpg',
   isNative: false,
 })
+
+export const mold = Texture.fromCustomFile({
+  sourcePath: TEXTURE_DIR,
+  filename: 'mold-edge.jpg',
+  isNative: false,
+})
