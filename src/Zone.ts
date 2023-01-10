@@ -1,7 +1,7 @@
 import { ArxZone, ArxZoneAndPathPointType, ArxZoneAndPathPoint } from 'arx-convert/types'
-import { Ambience } from './Ambience'
-import { Color } from './Color'
-import { Vector3 } from './Vector3'
+import { Ambience } from '@src/Ambience'
+import { Color } from '@src/Color'
+import { Vector3 } from '@src/Vector3'
 
 export type ZonePoint = {
   position: Vector3

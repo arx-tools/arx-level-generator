@@ -1,6 +1,6 @@
 import { ArxInteractiveObject } from 'arx-convert/types'
-import { Rotation } from './Rotation'
-import { Vector3 } from './Vector3'
+import { Rotation } from '@src/Rotation'
+import { Vector3 } from '@src/Vector3'
 
 type EntityConstructorProps = {
   id: number

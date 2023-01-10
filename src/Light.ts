@@ -1,6 +1,6 @@
 import { ArxLight, ArxLightFlags } from 'arx-convert/types'
-import { Color } from './Color'
-import { Vector3 } from './Vector3'
+import { Color } from '@src/Color'
+import { Vector3 } from '@src/Vector3'
 
 // TODO: Three JS comes with a bunch of Light classes, might worth investigating
 // https://threejs.org/docs/#api/en/lights/Light

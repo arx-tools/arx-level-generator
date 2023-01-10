@@ -1,5 +1,5 @@
-import { Rotation } from './Rotation'
-import { Vector3 } from './Vector3'
+import { Rotation } from '@src/Rotation'
+import { Vector3 } from '@src/Vector3'
 
 export class Player {
   orientation: Rotation

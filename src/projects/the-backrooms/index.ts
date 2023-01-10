@@ -1,9 +1,9 @@
 import path from 'node:path'
 import seedrandom from 'seedrandom'
-import { ArxMap } from '../../ArxMap'
-import { Color } from '../../Color'
-import { Vector3 } from '../../Vector3'
-import { Light } from '../../Light'
+import { ArxMap } from '@src/ArxMap'
+import { Color } from '@src/Color'
+import { Vector3 } from '@src/Vector3'
+import { Light } from '@src/Light'
 import { createRoom } from './room'
 
 export default async () => {

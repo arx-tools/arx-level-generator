@@ -1,7 +1,7 @@
 import { ArxFog } from 'arx-convert/types'
-import { Color } from './Color'
-import { Rotation } from './Rotation'
-import { Vector3 } from './Vector3'
+import { Color } from '@src/Color'
+import { Rotation } from '@src/Rotation'
+import { Vector3 } from '@src/Vector3'
 
 // TODO: Three JS also has a Fog class
 // https://r105.threejsfundamentals.org/threejs/lessons/threejs-fog.html

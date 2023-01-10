@@ -1,9 +1,8 @@
 import { ArxPolygonFlags, ArxTextureContainer } from 'arx-convert/types'
-import { sum, times } from './faux-ramda'
-import { evenAndRemainder } from './helpers'
-import { Polygon, TransparencyType } from './Polygon'
-import { Texture } from './Texture'
-import { Vector3 } from './Vector3'
+import { sum, times } from '@src/faux-ramda'
+import { evenAndRemainder } from '@src/helpers'
+import { Polygon, TransparencyType } from '@src/Polygon'
+import { Vector3 } from '@src/Vector3'
 
 type TextureContainer = ArxTextureContainer & { remaining: number; maxRemaining: number }
 

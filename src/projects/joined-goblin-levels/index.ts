@@ -1,7 +1,7 @@
 import path from 'node:path'
 import seedrandom from 'seedrandom'
-import { ArxMap } from '../../ArxMap'
-import { Vector3 } from '../../Vector3'
+import { ArxMap } from '@src/ArxMap'
+import { Vector3 } from '@src/Vector3'
 
 export default async () => {
   const {

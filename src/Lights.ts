@@ -1,5 +1,5 @@
-import { Light } from './Light'
-import { Vector3 } from './Vector3'
+import { Light } from '@src/Light'
+import { Vector3 } from '@src/Vector3'
 
 export class Lights extends Array<Light> {
   toArxData() {

@@ -1,5 +1,5 @@
 import { ArxPath, ArxZoneAndPathPointType, ArxZoneAndPathPoint } from 'arx-convert/types'
-import { Vector3 } from './Vector3'
+import { Vector3 } from '@src/Vector3'
 
 export type PathPoint = {
   position: Vector3
