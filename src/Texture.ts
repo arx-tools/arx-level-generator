@@ -93,12 +93,8 @@ export class Texture extends ThreeJsTextue {
 
   static fromArxTextureContainer(texture: ArxTextureContainer) {
     return new Texture({
-      filename: texture.filename.replace(Texture.getTargetPath(), ''),
+      filename: texture.filename,
     })
-  }
-
-  static getTargetPath() {
-    return 'GRAPH\\OBJ3D\\TEXTURES\\'
   }
 
   isTileable() {

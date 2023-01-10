@@ -12,9 +12,9 @@ import { Rotation } from './Rotation'
 import { Texture } from './Texture'
 import { Vector3 } from './Vector3'
 import { Vertex } from './Vertex'
+import { Light } from './Light'
 
 // ....
-import { Light } from './Light'
 ;(async () => {
   const {
     OUTPUTDIR = path.resolve(__dirname, './dist'),
@@ -27,7 +27,7 @@ import { Light } from './Light'
 
   // --------------
 
-  // const map = await ArxMap.fromOriginalLevel(2)
+  // const map = await ArxMap.fromOriginalLevel(0)
 
   // const map2 = await ArxMap.fromOriginalLevel(15)
   // map2.alignPolygonsTo(map)
@@ -37,7 +37,7 @@ import { Light } from './Light'
 
   // // porticullis_0085.move 80 0 0
   // const portcullis = map.entities.find((entity) => {
-  //   return entity.name.toLowerCase().includes('porticullis') && entity.id === 85
+  //   return entity.name.endsWith('porticullis') && entity.id === 85
   // })
   // if (typeof portcullis !== 'undefined') {
   //   portcullis.position.add(new Vector3(80, 0, 0))
@@ -78,11 +78,10 @@ import { Light } from './Light'
   const light = new Light({
     color: Color.yellow.lighten(50),
     position: new Vector3(0, -800, 0),
+    fallStart: 100,
+    fallEnd: 1000,
+    intensity: 2,
     lightData: {
-      fallStart: 100,
-      fallEnd: 1000,
-      intensity: 2,
-      i: 0, // ?
       exFlicker: Color.transparent,
       exRadius: 0,
       exFrequency: 0,

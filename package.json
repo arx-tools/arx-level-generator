@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/arx-tools/arx-level-generator#readme",
   "dependencies": {
-    "arx-convert": "^5.16.0",
+    "arx-convert": "^5.17.0",
     "color-rgba": "^2.4.0",
     "nanoid": "^4.0.0",
     "node-pkware": "^3.0.4",

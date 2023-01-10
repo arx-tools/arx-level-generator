@@ -37,7 +37,7 @@ export class Polygons extends Array<Polygon> {
     const arxTextureContainers = textureContainers
       .filter(({ remaining, maxRemaining }) => remaining !== maxRemaining)
       .map(({ id, filename }): ArxTextureContainer => {
-        return { id, filename: Texture.getTargetPath() + filename }
+        return { id, filename }
       })
 
     return {

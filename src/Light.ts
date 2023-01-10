@@ -9,27 +9,39 @@ type LightConstructorProps = {
   position: Vector3
   color?: Color
   flags?: ArxLightFlags
-  lightData: Omit<ArxLight, 'pos' | 'color' | 'flags'>
+  fallStart?: number
+  fallEnd?: number
+  intensity?: number
+  lightData: Omit<ArxLight, 'pos' | 'color' | 'flags' | 'fallStart' | 'fallEnd' | 'intensity'>
 }
 
 export class Light {
   position: Vector3
   color: Color
   flags: ArxLightFlags
-  lightData: Omit<ArxLight, 'pos' | 'color' | 'flags'>
+  fallStart: number
+  fallEnd: number
+  intensity: number
+  lightData: Omit<ArxLight, 'pos' | 'color' | 'flags' | 'fallStart' | 'fallEnd' | 'intensity'>
 
   constructor(props: LightConstructorProps) {
     this.position = props.position
     this.color = props.color ?? Color.white
     this.flags = props.flags ?? ArxLightFlags.None
+    this.fallStart = props.fallStart ?? 0
+    this.fallEnd = props.fallEnd ?? 100
+    this.intensity = props.intensity ?? 1
     this.lightData = props.lightData
   }
 
-  static fromArxLight({ pos, color, flags, ...lightData }: ArxLight) {
+  static fromArxLight({ pos, color, flags, fallStart, fallEnd, intensity, ...lightData }: ArxLight) {
     return new Light({
       position: Vector3.fromArxVector3(pos),
       color: Color.fromArxColor(color),
       flags,
+      fallStart,
+      fallEnd,
+      intensity,
       lightData,
     })
   }
@@ -40,6 +52,9 @@ export class Light {
       pos: this.position.toArxVector3(),
       color: this.color.toArxColor(),
       flags: this.flags,
+      fallStart: this.fallStart,
+      fallEnd: this.fallEnd,
+      intensity: this.intensity,
     }
   }
 }
