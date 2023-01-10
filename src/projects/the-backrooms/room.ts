@@ -1,7 +1,7 @@
 import { ArxPolygonFlags } from 'arx-convert/types'
-import { ArxMap } from '../../ArxMap'
-import { Color } from '../../Color'
-import { createFloorMesh } from '../../prefabs/mesh/floor'
+import { ArxMap } from '@src/ArxMap'
+import { Color } from '@src/Color'
+import { createFloorMesh } from '@prefabs/mesh/floor'
 import { carpet } from './materials'
 
 const createFloor = async () => {

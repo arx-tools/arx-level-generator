@@ -1,4 +1,4 @@
-import { Texture } from '../../Texture'
+import { Texture } from '@src/Texture'
 
 export const carpet = Texture.fromCustomFile({
   sourcePath: 'projects/the-backrooms/textures/',

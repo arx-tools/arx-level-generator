@@ -1,7 +1,7 @@
 import { BufferAttribute, MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three'
-import { Color } from '../../Color'
-import { applyTransformations } from '../../helpers'
-import { Texture } from '../../Texture'
+import { Color } from '@src/Color'
+import { applyTransformations } from '@src/helpers'
+import { Texture } from '@src/Texture'
 
 export const INDEXED = true
 export const NONINDEXED = false

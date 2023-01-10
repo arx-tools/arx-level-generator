@@ -1,5 +1,5 @@
-import theBackrooms from './projects/the-backrooms/index'
-import joinedGoblinLevels from './projects/joined-goblin-levels/index'
+import theBackrooms from '@projects/the-backrooms/index'
+import joinedGoblinLevels from '@projects/joined-goblin-levels/index'
 
 const { PROJECT } = process.env
 
