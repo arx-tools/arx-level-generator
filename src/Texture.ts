@@ -55,6 +55,14 @@ export class Texture extends ThreeJsTextue {
     }),
   )
 
+  static l1DragonGround08 = Object.freeze(
+    new Texture({
+      filename: 'L1_DRAGON_[ICE]_GROUND08.jpg',
+      width: 128,
+      height: 128,
+    }),
+  )
+
   constructor(props: TextureConstructorProps) {
     super(undefined, UVMapping, ClampToEdgeWrapping, ClampToEdgeWrapping)
 
@@ -85,6 +93,7 @@ export class Texture extends ThreeJsTextue {
     }
 
     return new Texture({
+      isNative: false,
       ...props,
       width: metadata.width,
       height: metadata.height,

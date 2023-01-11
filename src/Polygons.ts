@@ -20,7 +20,7 @@ export class Polygons extends Array<Polygon> {
 
     for (let polygon of this) {
       if (typeof polygon.texture === 'undefined' || polygon.texture.isNative) {
-        return files
+        continue
       }
 
       const needsToBeTileable = (polygon.flags & ArxPolygonFlags.Tiled) !== 0
