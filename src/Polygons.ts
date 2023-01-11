@@ -1,8 +1,13 @@
 import { ArxPolygonFlags, ArxTextureContainer } from 'arx-convert/types'
 import { sum, times } from '@src/faux-ramda'
-import { evenAndRemainder } from '@src/helpers'
+import { applyTransformations, evenAndRemainder } from '@src/helpers'
 import { Polygon, TransparencyType } from '@src/Polygon'
 import { Vector3 } from '@src/Vector3'
+import { Mesh, MeshBasicMaterial, Object3D, Color as ThreeJsColor } from 'three'
+import { Color } from './Color'
+import { Texture } from './Texture'
+import { Vertex } from './Vertex'
+import { QuadrupleOf, TripleOf } from 'arx-convert/utils'
 
 type TextureContainer = ArxTextureContainer & { remaining: number; maxRemaining: number }
 
@@ -103,6 +108,97 @@ export class Polygons extends Array<Polygon> {
       polygon.vertices.forEach((vertex) => {
         vertex.add(offset)
       })
+    })
+  }
+
+  addThreeJsMesh(threeJsObj: Object3D, tryToQuadify = true) {
+    if (threeJsObj.parent === null) {
+      applyTransformations(threeJsObj)
+    }
+
+    if (threeJsObj instanceof Mesh) {
+      const index = threeJsObj.geometry.getIndex()
+      const coords = threeJsObj.geometry.getAttribute('position')
+      const uv = threeJsObj.geometry.getAttribute('uv')
+      const vertices: Vertex[] = []
+
+      let color = Color.white
+      let texture: Texture | undefined = undefined
+      if (threeJsObj.material instanceof MeshBasicMaterial) {
+        color = Color.fromThreeJsColor(threeJsObj.material.color as ThreeJsColor)
+        if (threeJsObj.material.map instanceof Texture) {
+          texture = threeJsObj.material.map
+        }
+      }
+
+      if (index === null) {
+        // non-indexed, all vertices are unique
+        for (let idx = 0; idx < coords.count; idx++) {
+          vertices.push(
+            new Vertex(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx), uv.getX(idx), uv.getY(idx), color),
+          )
+        }
+      } else {
+        // indexed, has shared vertices
+        for (let i = 0; i < index.count; i++) {
+          const idx = index.getX(i)
+          vertices.push(
+            new Vertex(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx), uv.getX(idx), uv.getY(idx), color),
+          )
+        }
+      }
+
+      let previousPolygon: TripleOf<Vertex> | null = null
+      let currentPolygon: TripleOf<Vertex>
+      for (let i = 0; i < vertices.length; i += 3) {
+        if (previousPolygon === null) {
+          previousPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<Vertex>
+          continue
+        }
+
+        currentPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<Vertex>
+
+        let isQuadable = false
+        if (tryToQuadify) {
+          // TODO: calculate this instead of having it hardcoded
+          isQuadable = true
+        }
+
+        if (isQuadable) {
+          const [a, b, c] = previousPolygon
+          const d = currentPolygon[1]
+          this.push(
+            new Polygon({
+              vertices: [a, d, c, b] as QuadrupleOf<Vertex>,
+              texture,
+              isQuad: true,
+            }),
+          )
+          previousPolygon = null
+          continue
+        }
+
+        this.push(
+          new Polygon({
+            vertices: [...previousPolygon, new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
+            texture,
+          }),
+        )
+        previousPolygon = currentPolygon
+      }
+
+      if (previousPolygon !== null) {
+        this.push(
+          new Polygon({
+            vertices: [...previousPolygon, new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
+            texture,
+          }),
+        )
+      }
+    }
+
+    threeJsObj.children.forEach((child) => {
+      this.addThreeJsMesh(child)
     })
   }
 }

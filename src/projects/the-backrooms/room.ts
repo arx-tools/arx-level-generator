@@ -17,7 +17,7 @@ const createNorthWall = async (width: number, height: number, depth: number) => 
   wall.rotateX(MathUtils.degToRad(-90))
 
   const moldyWall = await createPlaneMesh(width, 100, Color.white.darken(50), mold)
-  moldyWall.translateZ(depth / 2 - 1).translateY(50)
+  moldyWall.translateZ(depth / 2 - 0.1).translateY(50)
   moldyWall.rotateX(MathUtils.degToRad(-90))
 
   group.add(wall)
@@ -34,7 +34,7 @@ const createSouthWall = async (width: number, height: number, depth: number) => 
   wall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(180))
 
   const moldyWall = await createPlaneMesh(width, 100, Color.white.darken(50), mold)
-  moldyWall.translateZ(-depth / 2 + 1).translateY(50)
+  moldyWall.translateZ(-depth / 2 + 0.1).translateY(50)
   moldyWall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(180))
 
   group.add(wall)
@@ -51,7 +51,7 @@ const createWestWall = async (width: number, height: number, depth: number) => {
   wall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(-90))
 
   const moldyWall = await createPlaneMesh(depth, 100, Color.white.darken(50), mold)
-  moldyWall.translateX(-width / 2 + 1).translateY(50)
+  moldyWall.translateX(-width / 2 + 0.1).translateY(50)
   moldyWall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(-90))
 
   group.add(wall)
@@ -68,7 +68,7 @@ const createEastWall = async (width: number, height: number, depth: number) => {
   wall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(90))
 
   const moldyWall = await createPlaneMesh(depth, 100, Color.white.darken(50), mold)
-  moldyWall.translateX(width / 2 - 1).translateY(50)
+  moldyWall.translateX(width / 2 - 0.1).translateY(50)
   moldyWall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(90))
 
   group.add(wall)
@@ -93,6 +93,8 @@ export const createRoom = async (width: number, height: number, depth: number) =
   group.add(await createWestWall(width, height, depth))
   group.add(await createEastWall(width, height, depth))
   group.add(await createCeiling(width, height, depth))
+
+  group.rotateZ(MathUtils.degToRad(20))
 
   const room = ArxMap.fromThreeJsMesh(group)
   const moldTexture = await mold

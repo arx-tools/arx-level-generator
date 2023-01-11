@@ -22,7 +22,7 @@ export default async () => {
   map.player.position.adjustToPlayerHeight()
   map.hideMinimap()
 
-  const room1 = await createRoom(600, 300, 800)
+  const room1 = await createRoom(800, 400, 800)
   // const room2 = await createRoom(600, 300, 800)
   // room2.move(new Vector3(200, 0, 500))
 
