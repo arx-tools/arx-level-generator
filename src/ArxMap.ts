@@ -30,7 +30,7 @@ import { Zone } from '@src/Zone'
 import { Portal } from '@src/Portal'
 import { Path } from '@src/Path'
 import { Object3D } from 'three'
-import { Polygons, QUADIFY } from '@src/Polygons'
+import { DONT_QUADIFY, Polygons, QUADIFY } from '@src/Polygons'
 import { Entities } from '@src/Entities'
 import { Lights } from '@src/Lights'
 
