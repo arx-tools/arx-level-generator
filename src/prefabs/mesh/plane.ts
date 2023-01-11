@@ -3,15 +3,15 @@ import { Color } from '@src/Color'
 import { applyTransformations } from '@src/helpers'
 import { Texture } from '@src/Texture'
 
-export const INDEXED = true
-export const NONINDEXED = false
+export const INDEXED = 'indexed'
+export const NONINDEXED = 'non-indexed'
 
 export async function createPlaneMesh(
   width: number,
   height: number,
   color: Color,
   texture: Texture | Promise<Texture>,
-  isIndexed = INDEXED,
+  isIndexed: typeof INDEXED | typeof NONINDEXED = INDEXED,
 ) {
   const divisionX = Math.ceil(width / 100)
   const divisionY = Math.ceil(height / 100)

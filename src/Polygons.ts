@@ -9,6 +9,9 @@ import { Texture } from './Texture'
 import { Vertex } from './Vertex'
 import { QuadrupleOf, TripleOf } from 'arx-convert/utils'
 
+export const QUADIFY = 'quadify'
+export const DONT_QUADIFY = "don't quadify"
+
 type TextureContainer = ArxTextureContainer & { remaining: number; maxRemaining: number }
 
 export class Polygons extends Array<Polygon> {
@@ -111,7 +114,7 @@ export class Polygons extends Array<Polygon> {
     })
   }
 
-  addThreeJsMesh(threeJsObj: Object3D, tryToQuadify = true) {
+  addThreeJsMesh(threeJsObj: Object3D, tryToQuadify: typeof QUADIFY | typeof DONT_QUADIFY = QUADIFY) {
     if (threeJsObj.parent === null) {
       applyTransformations(threeJsObj)
     }
@@ -159,7 +162,7 @@ export class Polygons extends Array<Polygon> {
         currentPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<Vertex>
 
         let isQuadable = false
-        if (tryToQuadify) {
+        if (tryToQuadify === QUADIFY) {
           // TODO: calculate this instead of having it hardcoded
           isQuadable = true
         }

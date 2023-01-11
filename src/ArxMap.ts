@@ -30,7 +30,7 @@ import { Zone } from '@src/Zone'
 import { Portal } from '@src/Portal'
 import { Path } from '@src/Path'
 import { Object3D } from 'three'
-import { Polygons } from '@src/Polygons'
+import { Polygons, QUADIFY } from '@src/Polygons'
 import { Entities } from '@src/Entities'
 import { Lights } from '@src/Lights'
 
@@ -206,7 +206,7 @@ export class ArxMap {
     return new ArxMap(dlf, fts, llf, true)
   }
 
-  static fromThreeJsMesh(threeJsObj: Object3D, tryToQuadify = true) {
+  static fromThreeJsMesh(threeJsObj: Object3D, tryToQuadify: typeof QUADIFY | typeof DONT_QUADIFY = QUADIFY) {
     const map = new ArxMap()
 
     map.polygons.addThreeJsMesh(threeJsObj, tryToQuadify)
@@ -369,7 +369,7 @@ export class ArxMap {
     })
   }
 
-  async saveToDisk(outputDir: string, levelIdx: number, prettify: boolean = false) {
+  async saveToDisk(outputDir: string, levelIdx: number, prettify = false) {
     if (!this.config.isFinalized) {
       throw new MapNotFinalizedError()
     }
