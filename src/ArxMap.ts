@@ -4,7 +4,6 @@ import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf } fr
 import {
   ArxAnchor,
   ArxCell,
-  ArxColor,
   ArxDLF,
   ArxFTS,
   ArxLLF,
@@ -16,7 +15,6 @@ import {
 import { times } from '@src/faux-ramda'
 import { Vector3 } from '@src/Vector3'
 import { getPackageVersion, uninstall } from '@src/helpers'
-import { Color } from '@src/Color'
 import { Polygon } from '@src/Polygon'
 import { OriginalLevel } from '@src/types'
 import { LevelLoader } from '@src/LevelLoader'
@@ -179,7 +177,7 @@ export class ArxMap {
         time: now,
         numberOfBackgroundPolygons: this.polygons.length,
       },
-      colors: this.getVertexColors(),
+      colors: this.polygons.getVertexColors(),
       ...this.lights.toArxData(),
     }
 
@@ -233,44 +231,6 @@ export class ArxMap {
     this.config.isFinalized = true
   }
 
-  private getVertexColors() {
-    const cells: Record<string, number[]> = {}
-
-    this.polygons.forEach((polygon, idx) => {
-      const vertices = polygon.vertices.map((vertex) => vertex.toArxVertex())
-      const [cellX, cellZ] = getCellCoords(vertices as QuadrupleOf<ArxVertex>)
-      const key = `${cellZ}|${cellX}`
-
-      if (key in cells) {
-        cells[key].push(idx)
-      } else {
-        cells[key] = [idx]
-      }
-    })
-
-    const colors: ArxColor[] = []
-
-    for (let z = 0; z < MAP_DEPTH_IN_CELLS; z++) {
-      for (let x = 0; x < MAP_WIDTH_IN_CELLS; x++) {
-        const cell = cells[`${z}|${x}`] as number[] | undefined
-        if (typeof cell === 'undefined') {
-          continue
-        }
-
-        cell.forEach((idx) => {
-          const polygon = this.polygons[idx]
-
-          for (let i = 0; i < (polygon.isQuad() ? 4 : 3); i++) {
-            const color = polygon.vertices[i]?.color ?? Color.transparent
-            colors.push(color.toArxColor())
-          }
-        })
-      }
-    }
-
-    return colors
-  }
-
   removePortals() {
     if (this.config.isFinalized) {
       throw new MapFinalizedError()
@@ -308,13 +268,7 @@ export class ArxMap {
   }
 
   private movePolygonsToSameRoom() {
-    this.polygons.forEach((polygon) => {
-      if (polygon.room < 1) {
-        return
-      }
-
-      polygon.room = 1
-    })
+    this.polygons.moveToRoom1()
 
     this.todo.rooms = this.todo.rooms.slice(0, 2)
     this.todo.roomDistances = [

@@ -1,4 +1,4 @@
-import { ArxPolygonFlags, ArxTextureContainer } from 'arx-convert/types'
+import { ArxColor, ArxPolygonFlags, ArxTextureContainer, ArxVertex } from 'arx-convert/types'
 import { sum, times } from '@src/faux-ramda'
 import { applyTransformations, evenAndRemainder } from '@src/helpers'
 import { Polygon, TransparencyType } from '@src/Polygon'
@@ -7,7 +7,7 @@ import { Mesh, MeshBasicMaterial, Object3D, Color as ThreeJsColor } from 'three'
 import { Color } from './Color'
 import { Texture } from './Texture'
 import { Vertex } from './Vertex'
-import { QuadrupleOf, TripleOf } from 'arx-convert/utils'
+import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf, TripleOf } from 'arx-convert/utils'
 
 export const QUADIFY = 'quadify'
 export const DONT_QUADIFY = "don't quadify"
@@ -202,6 +202,54 @@ export class Polygons extends Array<Polygon> {
 
     threeJsObj.children.forEach((child) => {
       this.addThreeJsMesh(child)
+    })
+  }
+
+  getVertexColors() {
+    const cells: Record<string, number[]> = {}
+
+    this.forEach((polygon, idx) => {
+      const vertices = polygon.vertices.map((vertex) => vertex.toArxVertex())
+      const [cellX, cellZ] = getCellCoords(vertices as QuadrupleOf<ArxVertex>)
+      const key = `${cellZ}|${cellX}`
+
+      if (key in cells) {
+        cells[key].push(idx)
+      } else {
+        cells[key] = [idx]
+      }
+    })
+
+    const colors: ArxColor[] = []
+
+    for (let z = 0; z < MAP_DEPTH_IN_CELLS; z++) {
+      for (let x = 0; x < MAP_WIDTH_IN_CELLS; x++) {
+        const cell = cells[`${z}|${x}`] as number[] | undefined
+        if (typeof cell === 'undefined') {
+          continue
+        }
+
+        cell.forEach((idx) => {
+          const polygon = this[idx]
+
+          for (let i = 0; i < (polygon.isQuad() ? 4 : 3); i++) {
+            const color = polygon.vertices[i]?.color ?? Color.transparent
+            colors.push(color.toArxColor())
+          }
+        })
+      }
+    }
+
+    return colors
+  }
+
+  moveToRoom1() {
+    this.forEach((polygon) => {
+      if (polygon.room < 1) {
+        return
+      }
+
+      polygon.room = 1
     })
   }
 }
