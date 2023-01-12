@@ -3,7 +3,7 @@ import { sum, times } from '@src/faux-ramda'
 import { applyTransformations, evenAndRemainder } from '@src/helpers'
 import { Polygon, TransparencyType } from '@src/Polygon'
 import { Vector3 } from '@src/Vector3'
-import { Mesh, MeshBasicMaterial, Object3D, Color as ThreeJsColor } from 'three'
+import { Mesh, MeshBasicMaterial, Object3D, Color as ThreeJsColor, Box3 } from 'three'
 import { Color } from './Color'
 import { Texture } from './Texture'
 import { Vertex } from './Vertex'
@@ -108,10 +108,12 @@ export class Polygons extends Array<Polygon> {
 
   move(offset: Vector3) {
     this.forEach((polygon) => {
-      polygon.vertices.forEach((vertex) => {
-        vertex.add(offset)
-      })
+      polygon.move(offset)
     })
+  }
+
+  empty() {
+    this.length = 0
   }
 
   addThreeJsMesh(threeJsObj: Object3D, tryToQuadify: typeof QUADIFY | typeof DONT_QUADIFY = QUADIFY) {

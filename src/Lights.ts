@@ -17,4 +17,8 @@ export class Lights extends Array<Light> {
       light.position.add(offset)
     })
   }
+
+  empty() {
+    this.length = 0
+  }
 }

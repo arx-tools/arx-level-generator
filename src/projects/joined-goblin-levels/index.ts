@@ -2,6 +2,8 @@ import path from 'node:path'
 import seedrandom from 'seedrandom'
 import { ArxMap } from '@src/ArxMap'
 import { Vector3 } from '@src/Vector3'
+import { Box3 } from 'three'
+import { Color } from '@src/Color'
 
 export default async () => {
   const {
@@ -16,9 +18,38 @@ export default async () => {
   const map = await ArxMap.fromOriginalLevel(2)
 
   const map2 = await ArxMap.fromOriginalLevel(15)
-  map.add(map2, true)
+  map2.adjustOffsetTo(map)
+  /*
+  // TODO: can something like the one below work?
+  map2.polygons
+    .filter((a) => {
+      return map.polygons.find((b) => a.equals(b)) !== null
+    })
+    .forEach((polygon) => {
+      polygon.setColor(Color.red)
+    })
+  */
+
+  /*
+  const box = new Box3(new Vector3(10348, 9, 9036), new Vector3(12004, 950, 9544))
+  map2.polygons
+    .filter((polygon) => polygon.isPartiallyWithin(box))
+    .forEach((polygon) => {
+      // polygon.setColor(Color.red)
+
+      const idx = map2.polygons.indexOf(polygon)
+      map2.polygons.splice(idx, 1)
+
+      // polygon.move(new Vector3(0, 0, 200))
+    })
+  */
+
+  map.add(map2)
 
   map.zones = []
+  map.entities.empty()
+
+  map.player.position.add(new Vector3(0, -60, 0))
 
   // porticullis_0085.move 80 0 0
   const portcullis = map.entities.find((entity) => {

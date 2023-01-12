@@ -1,11 +1,12 @@
 import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVector3, ArxVertex } from 'arx-convert/types'
 import { QuadrupleOf } from 'arx-convert/utils'
-import { Triangle } from 'three'
+import { Box3, Triangle } from 'three'
 import { percentOf } from '@src/helpers'
 import { NO_TEXTURE, Texture } from '@src/Texture'
 import { ArxVertexWithColor } from '@src/types'
 import { Vector3 } from '@src/Vector3'
 import { Vertex } from '@src/Vertex'
+import { Color } from '@src/Color'
 
 export type TransparencyType = 'multiplicative' | 'additive' | 'blended' | 'subtractive'
 
@@ -259,5 +260,65 @@ export class Polygon {
     // const a = this.vertices[i].clone().add(this.vertices[j]).divideScalar(2).distanceTo(this.vertices[k])
     // const b = this.vertices[isQuadPart ? i : k].distanceTo(this.vertices[j])
     // return (a * b) / 2
+  }
+
+  isWithin(box: Box3) {
+    const [a, b, c, d] = this.vertices
+
+    if (!box.containsPoint(a) || !box.containsPoint(b) || !box.containsPoint(c)) {
+      return false
+    }
+
+    if (this.isQuad() && !box.containsPoint(d)) {
+      return false
+    }
+
+    return true
+  }
+
+  isPartiallyWithin(box: Box3) {
+    const [a, b, c, d] = this.vertices
+
+    if (box.containsPoint(a) || box.containsPoint(b) || box.containsPoint(c)) {
+      return true
+    }
+
+    if (this.isQuad() && box.containsPoint(d)) {
+      return true
+    }
+
+    return false
+  }
+
+  setColor(color: Color) {
+    this.vertices.forEach((vertex) => {
+      vertex.color = color
+    })
+  }
+
+  move(offset: Vector3) {
+    this.vertices.forEach((vertex) => {
+      vertex.add(offset)
+    })
+  }
+
+  equals(polygon: Polygon) {
+    if (this.isQuad() !== polygon.isQuad()) {
+      return false
+    }
+
+    for (let i = 0; i < 3; i++) {
+      if (!this.vertices[i].equals(polygon.vertices[i])) {
+        return false
+      }
+    }
+
+    if (this.isQuad()) {
+      if (!this.vertices[3].equals(polygon.vertices[3])) {
+        return false
+      }
+    }
+
+    return true
   }
 }

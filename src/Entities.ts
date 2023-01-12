@@ -17,4 +17,8 @@ export class Entities extends Array<Entity> {
       entity.position.add(offset)
     })
   }
+
+  empty() {
+    this.length = 0
+  }
 }
