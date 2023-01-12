@@ -80,3 +80,8 @@ export const makeBumpy = (volume: number, percentage: number, mesh: Mesh) => {
 export const percentOf = (percentage: number, maxValue: number) => {
   return (maxValue / 100) * percentage
 }
+
+export const removeByValue = <T>(value: T, array: T[]) => {
+  const idx = array.indexOf(value)
+  array.splice(idx, 1)
+}

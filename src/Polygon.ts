@@ -1,7 +1,7 @@
 import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVector3, ArxVertex } from 'arx-convert/types'
 import { QuadrupleOf } from 'arx-convert/utils'
 import { Box3, Triangle } from 'three'
-import { percentOf } from '@src/helpers'
+import { percentOf, removeByValue } from '@src/helpers'
 import { NO_TEXTURE, Texture } from '@src/Texture'
 import { ArxVertexWithColor } from '@src/types'
 import { Vector3 } from '@src/Vector3'
@@ -262,28 +262,52 @@ export class Polygon {
     // return (a * b) / 2
   }
 
-  isWithin(box: Box3) {
+  /**
+   * All the vertices are inside or on the surface of the box
+   * If exludeOnSurface (default true) is true, then we ignore checking the surface by shrinking
+   * the box by 1 on each side
+   */
+  isWithin(box: Box3, excludeOnSurface: boolean = true) {
+    const copyOfBox = box.clone()
+    if (excludeOnSurface) {
+      copyOfBox.min.add(new Vector3(1, 1, 1))
+      copyOfBox.max.sub(new Vector3(1, 1, 1))
+    }
+
     const [a, b, c, d] = this.vertices
 
-    if (!box.containsPoint(a) || !box.containsPoint(b) || !box.containsPoint(c)) {
+    if (!copyOfBox.containsPoint(a) || !copyOfBox.containsPoint(b) || !copyOfBox.containsPoint(c)) {
       return false
     }
 
-    if (this.isQuad() && !box.containsPoint(d)) {
+    if (this.isQuad() && !copyOfBox.containsPoint(d)) {
       return false
     }
 
     return true
   }
 
-  isPartiallyWithin(box: Box3) {
+  /**
+   * At least one of the vertices are inside or on the surface of the box
+   * If `exludeOnSurface` (default true) is true, then we ignore checking the surface by shrinking
+   * the box by a specific value on each side
+   */
+  isPartiallyWithin(box: Box3, excludeOnSurface: boolean = true) {
+    const padding = 0.1
+
+    const copyOfBox = box.clone()
+    if (excludeOnSurface) {
+      copyOfBox.min.add(new Vector3(padding, padding, padding))
+      copyOfBox.max.sub(new Vector3(padding, padding, padding))
+    }
+
     const [a, b, c, d] = this.vertices
 
-    if (box.containsPoint(a) || box.containsPoint(b) || box.containsPoint(c)) {
+    if (copyOfBox.containsPoint(a) || copyOfBox.containsPoint(b) || copyOfBox.containsPoint(c)) {
       return true
     }
 
-    if (this.isQuad() && box.containsPoint(d)) {
+    if (this.isQuad() && copyOfBox.containsPoint(d)) {
       return true
     }
 
@@ -302,23 +326,20 @@ export class Polygon {
     })
   }
 
-  equals(polygon: Polygon) {
+  equals(polygon: Polygon, epsilon: number = 0) {
     if (this.isQuad() !== polygon.isQuad()) {
       return false
     }
 
-    for (let i = 0; i < 3; i++) {
-      if (!this.vertices[i].equals(polygon.vertices[i])) {
-        return false
-      }
-    }
+    const unmatchedVertices = polygon.vertices.slice(0, this.isQuad() ? 4 : 3)
 
-    if (this.isQuad()) {
-      if (!this.vertices[3].equals(polygon.vertices[3])) {
-        return false
+    this.vertices.slice(0, this.isQuad() ? 4 : 3).forEach((vertex) => {
+      const idx = unmatchedVertices.findIndex((v) => vertex.equals(v, epsilon))
+      if (idx !== -1) {
+        unmatchedVertices.splice(idx, 1)
       }
-    }
+    })
 
-    return true
+    return unmatchedVertices.length === 0
   }
 }

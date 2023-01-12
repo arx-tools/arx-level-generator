@@ -19,16 +19,6 @@ export default async () => {
 
   const map2 = await ArxMap.fromOriginalLevel(15)
   map2.adjustOffsetTo(map)
-  /*
-  // TODO: can something like the one below work?
-  map2.polygons
-    .filter((a) => {
-      return map.polygons.find((b) => a.equals(b)) !== null
-    })
-    .forEach((polygon) => {
-      polygon.setColor(Color.red)
-    })
-  */
 
   /*
   const box = new Box3(new Vector3(10348, 9, 9036), new Vector3(12004, 950, 9544))

@@ -27,7 +27,7 @@ import { Fog } from '@src/Fog'
 import { Zone } from '@src/Zone'
 import { Portal } from '@src/Portal'
 import { Path } from '@src/Path'
-import { Object3D } from 'three'
+import { Box3, Object3D } from 'three'
 import { DONT_QUADIFY, Polygons, QUADIFY } from '@src/Polygons'
 import { Entities } from '@src/Entities'
 import { Lights } from '@src/Lights'
@@ -479,5 +479,41 @@ export class ArxMap {
 
   hideMinimap() {
     this.config.isMinimapVisible = false
+  }
+
+  getBoundingBox() {
+    const box = new Box3()
+
+    this.polygons
+      .flatMap((p) => {
+        return p.isQuad() ? p.vertices : p.vertices.slice(0, 3)
+      })
+      .forEach((vertex) => {
+        box.expandByPoint(vertex)
+      })
+
+    return box
+  }
+
+  getCenter() {
+    const bb = this.getBoundingBox()
+    const center = new Vector3()
+    bb.getCenter(center)
+    return center
+  }
+
+  getHeight() {
+    const bb = this.getBoundingBox()
+    return bb.max.clone().sub(bb.min).y
+  }
+
+  getWidth() {
+    const bb = this.getBoundingBox()
+    return bb.max.clone().sub(bb.min).x
+  }
+
+  getDepth() {
+    const bb = this.getBoundingBox()
+    return bb.max.clone().sub(bb.min).z
   }
 }

@@ -1,5 +1,5 @@
 import { ArxVertex } from 'arx-convert/types'
-import { Vector2 } from 'three'
+import { Box3, Vector2 } from 'three'
 import { Color } from '@src/Color'
 import { ArxVertexWithColor } from '@src/types'
 import { Vector3 } from '@src/Vector3'
@@ -28,5 +28,19 @@ export class Vertex extends Vector3 {
       u: this.uv.x,
       v: this.uv.y,
     }
+  }
+
+  equals(v: Vector3, epsilon: number = 0) {
+    if (Math.abs(this.x - v.x) > epsilon) {
+      return false
+    }
+    if (Math.abs(this.y - v.y) > epsilon) {
+      return false
+    }
+    if (Math.abs(this.z - v.z) > epsilon) {
+      return false
+    }
+
+    return true
   }
 }

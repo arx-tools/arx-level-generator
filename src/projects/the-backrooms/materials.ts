@@ -12,6 +12,11 @@ export const wallpaper = Texture.fromCustomFile({
   filename: 'backrooms-[stone]-wall.jpg',
 })
 
+export const wallpaperDotted = Texture.fromCustomFile({
+  sourcePath: TEXTURE_DIR,
+  filename: 'backrooms-[stone]-wall2.jpg',
+})
+
 export const ceilingTile = Texture.fromCustomFile({
   sourcePath: TEXTURE_DIR,
   filename: 'backrooms-[stone]-ceiling-tile.jpg',
