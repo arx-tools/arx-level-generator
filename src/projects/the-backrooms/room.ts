@@ -105,7 +105,7 @@ export const createRoom = async (dimensions: Vector3, wallTexture: Texture | Pro
   group.add(await createFloor(dimensions))
   group.add(await createNorthWall(dimensions, moldOffset, wallTexture))
   group.add(await createSouthWall(dimensions, moldOffset, wallTexture))
-  group.add(await createWestWall(dimensions, moldOffset, wallTexture))
+  // group.add(await createWestWall(dimensions, moldOffset, wallTexture))
   group.add(await createEastWall(dimensions, moldOffset, wallTexture))
   group.add(await createCeiling(dimensions))
 
