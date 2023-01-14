@@ -1,15 +1,15 @@
 import path from 'node:path'
 import seedrandom from 'seedrandom'
 import { ArxMap } from '@src/ArxMap'
-import { Color } from '@src/Color'
 import { Vector3 } from '@src/Vector3'
-import { Light } from '@src/Light'
 import { createRoom } from './room'
-import { ArxPolygonFlags } from 'arx-convert/types'
 import { removeByValue } from '@src/helpers'
 import { wallpaper, wallpaperDotted } from './materials'
 import { Texture } from '@src/Texture'
 import { any, startsWith } from '@src/faux-ramda'
+import { Zone } from '@src/Zone'
+import { MathUtils, PlaneGeometry } from 'three'
+import { ArxZoneAndPathPointType } from 'arx-convert/types'
 
 // only works when everything is aligned in a 100/100/100 grid
 function union(map1: ArxMap, map2: ArxMap) {
@@ -148,7 +148,8 @@ export default async () => {
     }
   }
 
-  async function addRoom(newRoomSize: Vector3, texture: Texture | Promise<Texture>, ...adjustments: CursorDir[]) {
+  async function addRoom(direction: Vector3, texture: Texture | Promise<Texture>, ...adjustments: CursorDir[]) {
+    newRoomSize = direction
     if (!any(startsWith('y'), adjustments)) {
       adjustments.push('y-')
     }
@@ -209,6 +210,46 @@ export default async () => {
   // })
 
   // map.lights.push(light)
+
+  // ----------------------
+  // Zone from PlaneGeometry
+
+  const plane = new PlaneGeometry(100, 100, 1, 1)
+  plane.rotateX(MathUtils.degToRad(90))
+  const index = plane.getIndex()
+  const coords = plane.getAttribute('position')
+  const vectors: Vector3[] = []
+
+  if (index === null) {
+    // non-indexed, all vertices are unique
+    for (let idx = 0; idx < coords.count; idx++) {
+      vectors.push(new Vector3(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx)))
+    }
+  } else {
+    // indexed, has shared vertices
+    for (let i = 0; i < index.count; i++) {
+      const idx = index.getX(i)
+      vectors.push(new Vector3(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx)))
+    }
+  }
+
+  const zone = new Zone({
+    height: Infinity,
+    name: 'spawn',
+    points: vectors.map((vector) => ({
+      position: vector,
+      type: ArxZoneAndPathPointType.Standard,
+      time: 0,
+    })),
+    ambience: {
+      src: 'ambient_gob_jail_main',
+      maxVolume: 20,
+    },
+  })
+
+  map.zones.push(zone)
+
+  // ----------------------
 
   map.finalize()
 
