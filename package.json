@@ -24,8 +24,8 @@
   },
   "homepage": "https://github.com/arx-tools/arx-level-generator#readme",
   "dependencies": {
-    "arx-convert": "^5.17.0",
-    "arx-header-size": "^2.0.0",
+    "arx-convert": "^6.0.0",
+    "arx-header-size": "^2.1.0",
     "color-rgba": "^2.4.0",
     "dotenv": "^16.0.3",
     "nanoid": "^4.0.0",
@@ -41,7 +41,7 @@
     "@types/node": "^18.11.18",
     "@types/seedrandom": "^3.0.4",
     "@types/sharp": "^0.31.1",
-    "@types/three": "^0.147.1",
+    "@types/three": "^0.148.0",
     "tsc-alias": "^1.8.2",
     "typescript": "^4.9.4"
   },
