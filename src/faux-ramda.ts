@@ -31,3 +31,18 @@ export const sum = (numbers: number[]) => {
 export const clone = <T>(data: T): T => {
   return JSON.parse(JSON.stringify(data))
 }
+
+export const any = <T>(fn: (value: T) => boolean, values: T[]) => {
+  for (let value of values) {
+    if (fn(value)) {
+      return true
+    }
+  }
+  return false
+}
+
+export const startsWith = (needle: string) => {
+  return (haystack: string) => {
+    return haystack.startsWith(needle)
+  }
+}

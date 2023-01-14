@@ -9,6 +9,7 @@ import { ArxPolygonFlags } from 'arx-convert/types'
 import { removeByValue } from '@src/helpers'
 import { wallpaper, wallpaperDotted } from './materials'
 import { Texture } from '@src/Texture'
+import { any, startsWith } from '@src/faux-ramda'
 
 // only works when everything is aligned in a 100/100/100 grid
 function union(map1: ArxMap, map2: ArxMap) {
@@ -88,6 +89,22 @@ export default async () => {
         // TODO: flip direction
         // TODO: the center on this axis is on the bottom and not in the middle
         // like as in with the x and z axis
+
+        switch (alignment) {
+          case '++':
+            cursor.y += 0
+            break
+          case '+':
+            cursor.y += 0
+            break
+          case '':
+            cursor.y += 0
+            break
+          case '--':
+            cursor.y += 0
+            break
+        }
+
         return
       }
 
@@ -131,8 +148,10 @@ export default async () => {
     }
   }
 
-  async function addRoom(dimensions: Vector3, texture: Texture | Promise<Texture>, ...adjustments: CursorDir[]) {
-    newRoomSize = dimensions
+  async function addRoom(newRoomSize: Vector3, texture: Texture | Promise<Texture>, ...adjustments: CursorDir[]) {
+    if (!any(startsWith('y'), adjustments)) {
+      adjustments.push('y-')
+    }
     moveCursor(...adjustments)
 
     currentRoom = await createRoom(newRoomSize, wallpaperDotted)
