@@ -2,6 +2,8 @@ import { ArxZone, ArxZoneAndPathPointType, ArxZoneAndPathPoint } from 'arx-conve
 import { Ambience } from '@src/Ambience'
 import { Color } from '@src/Color'
 import { Vector3 } from '@src/Vector3'
+import { BufferGeometry } from 'three'
+import { Vectors } from './Vectors'
 
 export type ZonePoint = {
   position: Vector3
@@ -11,7 +13,8 @@ export type ZonePoint = {
 
 type ZoneConstructorProps = {
   name: string
-  height: number
+  /** default value: Infinity */
+  height?: number
   points: ZonePoint[]
   backgroundColor?: Color
   drawDistance?: number
@@ -28,7 +31,7 @@ export class Zone {
 
   constructor(props: ZoneConstructorProps) {
     this.name = props.name
-    this.height = props.height
+    this.height = props.height ?? Infinity
     this.backgroundColor = props.backgroundColor
     this.drawDistance = props.drawDistance
     this.ambience = props.ambience
@@ -53,6 +56,19 @@ export class Zone {
           time: point.time,
         }
       }),
+    })
+  }
+
+  static fromThreejsGeometry(obj: BufferGeometry, props: Omit<ZoneConstructorProps, 'points'>) {
+    return new Zone({
+      ...props,
+      points: Vectors.fromThreejsGeometry(obj)
+        .uniq()
+        .map((position) => ({
+          position,
+          type: ArxZoneAndPathPointType.Standard,
+          time: 0,
+        })),
     })
   }
 

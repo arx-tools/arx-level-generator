@@ -8,9 +8,10 @@ import { wallpaper, wallpaperDotted } from './materials'
 import { Texture } from '@src/Texture'
 import { any, startsWith, uniq } from '@src/faux-ramda'
 import { Zone } from '@src/Zone'
-import { MathUtils, PlaneGeometry } from 'three'
+import { BoxGeometry, EdgesGeometry, MathUtils, PlaneGeometry, Shape, ShapeGeometry } from 'three'
 import { ArxZoneAndPathPointType } from 'arx-convert/types'
 import { Ambience } from '@src/Ambience'
+import { Vectors } from '@src/Vectors'
 
 // only works when everything is aligned in a 100/100/100 grid
 function union(map1: ArxMap, map2: ArxMap) {
@@ -212,60 +213,22 @@ export default async () => {
 
   // map.lights.push(light)
 
-  // ----------------------
-  // Zone from PlaneGeometry
+  const shape = new Shape()
+  shape.lineTo(100, 0)
+  shape.lineTo(0, 100)
+  shape.lineTo(0, 200)
+  shape.lineTo(-200, 50)
 
-  const plane = new PlaneGeometry(100, 100, 1, 1)
-  plane.rotateX(MathUtils.degToRad(90))
-  const index = plane.getIndex()
-  const coords = plane.getAttribute('position')
-  let vectors: Vector3[] = []
+  const geometry = new ShapeGeometry(shape)
+  const edge = new EdgesGeometry(geometry)
+  edge.rotateX(MathUtils.degToRad(70))
 
-  if (index === null) {
-    // non-indexed, all vertices are unique
-    for (let idx = 0; idx < coords.count; idx++) {
-      vectors.push(new Vector3(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx)))
-    }
-  } else {
-    // indexed, has shared vertices
-    for (let i = 0; i < index.count; i++) {
-      const idx = index.getX(i)
-      vectors.push(new Vector3(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx)))
-    }
-  }
-
-  // removing epsilons
-  vectors.forEach((vector) => {
-    vector.y = 0
-  })
-
-  // a plane is made up of 2 triangles, this removes the diagonals
-  vectors = uniq(vectors.map(({ x, y, z }) => `${x}|${y}|${z}`)).map((str) => {
-    const [x, y, z] = str.split('|')
-    return new Vector3(parseFloat(x), parseFloat(y), parseFloat(z))
-  })
-
-  let tmp = vectors[2]
-  vectors[2] = vectors[3]
-  vectors[3] = tmp
-
-  // TODO: EdgesGeometry might solve the issue
-  // https://threejs.org/docs/index.html#api/en/geometries/EdgesGeometry
-
-  const zone = new Zone({
-    height: Infinity,
+  const zone = Zone.fromThreejsGeometry(edge, {
     name: 'spawn',
-    points: vectors.map((vector) => ({
-      position: vector,
-      type: ArxZoneAndPathPointType.Standard,
-      time: 0,
-    })),
     ambience: Ambience.castle.setVolume(50),
   })
 
   map.zones.push(zone)
-
-  // ----------------------
 
   map.finalize()
 
