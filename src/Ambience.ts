@@ -14,47 +14,44 @@ export class Ambience {
   static caveA = Object.freeze(new Ambience({ src: 'ambient_cave_a' }))
   static caveB = Object.freeze(new Ambience({ src: 'ambient_cave_b' }))
   static caveFrozen = Object.freeze(new Ambience({ src: 'ambient_cave_frozen' }))
-  /*
-  TODO:
-  ambient_cave_greu
-  ambient_cave_lava
-  ambient_cave_worm
-  ambient_credits
-  ambient_crypt_a
-  ambient_crypt_b
-  ambient_crypt_c
-  ambient_crypt_d
-  ambient_crypt_e
-  ambient_crypt_f
-  ambient_crypt_lich
-  ambient_dramatic
-  ambient_dwarf
-  ambient_fight
-  ambient_fight_music
-  ambient_gob_castle
-  ambient_gob_intro
-  ambient_gob_jail_main
-  ambient_gob_jail_stress
-  ambient_gob_ruin
-  Ambient_important_place
-  ambient_intro_a
-  ambient_intro
-  ambient_intro_b
-  ambient_menu
-  ambient_noden
-  ambient_outpost
-  ambient_rebels_cool
-  ambient_rebels_intense
-  ambient_snake_castle
-  ambient_snake_illusion
-  ambient_tavern
-  ambient_temple_akbaa
-  ambient_temple_akbaa_up
-  ambient_town
-  ambient_troll
-  reverb_test
-  stress
-  */
+  static caveGreu = Object.freeze(new Ambience({ src: 'ambient_cave_greu' }))
+  static caveLava = Object.freeze(new Ambience({ src: 'ambient_cave_lava' }))
+  static caveWorm = Object.freeze(new Ambience({ src: 'ambient_cave_worm' }))
+  static credits = Object.freeze(new Ambience({ src: 'ambient_credits' }))
+  static cryptA = Object.freeze(new Ambience({ src: 'ambient_crypt_a' }))
+  static cryptB = Object.freeze(new Ambience({ src: 'ambient_crypt_b' }))
+  static cryptC = Object.freeze(new Ambience({ src: 'ambient_crypt_c' }))
+  static cryptD = Object.freeze(new Ambience({ src: 'ambient_crypt_d' }))
+  static cryptE = Object.freeze(new Ambience({ src: 'ambient_crypt_e' }))
+  static cryptF = Object.freeze(new Ambience({ src: 'ambient_crypt_f' }))
+  static cryptLich = Object.freeze(new Ambience({ src: 'ambient_crypt_lich' }))
+  static dramatic = Object.freeze(new Ambience({ src: 'ambient_dramatic' }))
+  static dwarf = Object.freeze(new Ambience({ src: 'ambient_dwarf' }))
+  static fight = Object.freeze(new Ambience({ src: 'ambient_fight' }))
+  static fightMusic = Object.freeze(new Ambience({ src: 'ambient_fight_music' }))
+  static gobCastle = Object.freeze(new Ambience({ src: 'ambient_gob_castle' }))
+  static gobIntro = Object.freeze(new Ambience({ src: 'ambient_gob_intro' }))
+  static jailMain = Object.freeze(new Ambience({ src: 'ambient_gob_jail_main' }))
+  static jailStress = Object.freeze(new Ambience({ src: 'ambient_gob_jail_stress' }))
+  static gobRuin = Object.freeze(new Ambience({ src: 'ambient_gob_ruin' }))
+  static importantPlace = Object.freeze(new Ambience({ src: 'Ambient_important_place' }))
+  static introA = Object.freeze(new Ambience({ src: 'ambient_intro_a' }))
+  static intro = Object.freeze(new Ambience({ src: 'ambient_intro' }))
+  static introB = Object.freeze(new Ambience({ src: 'ambient_intro_b' }))
+  static menu = Object.freeze(new Ambience({ src: 'ambient_menu' }))
+  static noden = Object.freeze(new Ambience({ src: 'ambient_noden' }))
+  static outpost = Object.freeze(new Ambience({ src: 'ambient_outpost' }))
+  static rebelsCool = Object.freeze(new Ambience({ src: 'ambient_rebels_cool' }))
+  static rebelsIntense = Object.freeze(new Ambience({ src: 'ambient_rebels_intense' }))
+  static snakeCastle = Object.freeze(new Ambience({ src: 'ambient_snake_castle' }))
+  static snakeIllusion = Object.freeze(new Ambience({ src: 'ambient_snake_illusion' }))
+  static tavern = Object.freeze(new Ambience({ src: 'ambient_tavern' }))
+  static templeAkbaa = Object.freeze(new Ambience({ src: 'ambient_temple_akbaa' }))
+  static templeAkbaaUp = Object.freeze(new Ambience({ src: 'ambient_temple_akbaa_up' }))
+  static town = Object.freeze(new Ambience({ src: 'ambient_town' }))
+  static troll = Object.freeze(new Ambience({ src: 'ambient_troll' }))
+  static reverbTest = Object.freeze(new Ambience({ src: 'reverb_test' }))
+  static stress = Object.freeze(new Ambience({ src: 'stress' }))
 
   constructor(props: AmbienceConstructorProps) {
     this.src = props.src
