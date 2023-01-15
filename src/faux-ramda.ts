@@ -46,3 +46,10 @@ export const startsWith = (needle: string) => {
     return haystack.startsWith(needle)
   }
 }
+
+// https://stackoverflow.com/a/14438954/1806628
+export const uniq = <T>(values: T[]) => {
+  return values.filter((value, index, self) => {
+    return self.indexOf(value) === index
+  })
+}

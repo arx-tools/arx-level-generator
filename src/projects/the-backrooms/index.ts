@@ -6,10 +6,11 @@ import { createRoom } from './room'
 import { removeByValue } from '@src/helpers'
 import { wallpaper, wallpaperDotted } from './materials'
 import { Texture } from '@src/Texture'
-import { any, startsWith } from '@src/faux-ramda'
+import { any, startsWith, uniq } from '@src/faux-ramda'
 import { Zone } from '@src/Zone'
 import { MathUtils, PlaneGeometry } from 'three'
 import { ArxZoneAndPathPointType } from 'arx-convert/types'
+import { Ambience } from '@src/Ambience'
 
 // only works when everything is aligned in a 100/100/100 grid
 function union(map1: ArxMap, map2: ArxMap) {
@@ -218,7 +219,7 @@ export default async () => {
   plane.rotateX(MathUtils.degToRad(90))
   const index = plane.getIndex()
   const coords = plane.getAttribute('position')
-  const vectors: Vector3[] = []
+  let vectors: Vector3[] = []
 
   if (index === null) {
     // non-indexed, all vertices are unique
@@ -233,6 +234,24 @@ export default async () => {
     }
   }
 
+  // removing epsilons
+  vectors.forEach((vector) => {
+    vector.y = 0
+  })
+
+  // a plane is made up of 2 triangles, this removes the diagonals
+  vectors = uniq(vectors.map(({ x, y, z }) => `${x}|${y}|${z}`)).map((str) => {
+    const [x, y, z] = str.split('|')
+    return new Vector3(parseFloat(x), parseFloat(y), parseFloat(z))
+  })
+
+  let tmp = vectors[2]
+  vectors[2] = vectors[3]
+  vectors[3] = tmp
+
+  // TODO: EdgesGeometry might solve the issue
+  // https://threejs.org/docs/index.html#api/en/geometries/EdgesGeometry
+
   const zone = new Zone({
     height: Infinity,
     name: 'spawn',
@@ -241,10 +260,7 @@ export default async () => {
       type: ArxZoneAndPathPointType.Standard,
       time: 0,
     })),
-    ambience: {
-      src: 'ambient_gob_jail_main',
-      maxVolume: 20,
-    },
+    ambience: Ambience.castle.setVolume(50),
   })
 
   map.zones.push(zone)
