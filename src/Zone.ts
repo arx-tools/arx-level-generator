@@ -47,7 +47,7 @@ export class Zone {
       drawDistance: zone.drawDistance,
       ambience:
         typeof zone.ambience !== 'undefined' && typeof zone.ambienceMaxVolume !== 'undefined'
-          ? new Ambience({ src: zone.ambience, volume: zone.ambienceMaxVolume })
+          ? new Ambience({ name: zone.ambience, volume: zone.ambienceMaxVolume })
           : undefined,
       points: zone.points.map((point): ZonePoint => {
         return {
@@ -78,7 +78,7 @@ export class Zone {
       backgroundColor: this.backgroundColor?.toArxColor(),
       drawDistance: this.drawDistance,
       height: this.height === Infinity ? -1 : this.height,
-      ambience: this.ambience?.src,
+      ambience: this.ambience?.name,
       ambienceMaxVolume: this.ambience?.volume,
       points: this.points.map((point): ArxZoneAndPathPoint => {
         return {

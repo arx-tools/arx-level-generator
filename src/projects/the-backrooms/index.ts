@@ -225,7 +225,7 @@ export default async () => {
 
   const zone = Zone.fromThreejsGeometry(edge, {
     name: 'spawn',
-    ambience: Ambience.castle.setVolume(50),
+    ambience: Ambience.fromCustomAudio('loop_sirs', 'loop_sirs.wav'),
   })
 
   map.zones.push(zone)
