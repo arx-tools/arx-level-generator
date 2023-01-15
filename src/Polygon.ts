@@ -1,7 +1,7 @@
 import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVector3, ArxVertex } from 'arx-convert/types'
 import { QuadrupleOf } from 'arx-convert/utils'
 import { Box3, Triangle } from 'three'
-import { percentOf, removeByValue } from '@src/helpers'
+import { percentOf } from '@src/helpers'
 import { NO_TEXTURE, Texture } from '@src/Texture'
 import { ArxVertexWithColor } from '@src/types'
 import { Vector3 } from '@src/Vector3'
