@@ -9,6 +9,8 @@ type AmbienceConstructorProps = {
 }
 
 export class Ambience {
+  static targetPath = 'sfx/ambiance'
+
   name: string
   volume: number
   isNative: boolean
@@ -76,6 +78,7 @@ export class Ambience {
     })
   }
 
+  // TODO: move this to a separate Track class
   static fromCustomAudio(ambienceName: string, filename: string, sourcePath?: string) {
     const track = {
       filename,
@@ -104,13 +107,15 @@ export class Ambience {
     })
   }
 
+  // TODO: move this to a separate Track class
   async exportSourceAndTarget(outputDir: string): Promise<[string, string]> {
     if (this.isNative) {
-      throw new Error('trying to export copying information for a native ambience')
+      throw new Error('trying to export copying information for a native Ambience')
     }
 
-    const source = path.resolve('assets', this.tracks[0].sourcePath ?? 'sfx/ambiance', this.tracks[0].filename)
-    const target = path.resolve(outputDir, 'sfx/ambiance', this.tracks[0].filename)
+    const track = this.tracks[0]
+    const source = path.resolve('assets', track.sourcePath ?? Ambience.targetPath, track.filename)
+    const target = path.resolve(outputDir, Ambience.targetPath, track.filename)
 
     return [source, target]
   }
