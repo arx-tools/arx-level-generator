@@ -4,18 +4,23 @@ import { ArxTextureContainer } from 'arx-convert/types'
 import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
 import sharp, { Sharp } from 'sharp'
 import { sharpFromBmp, sharpToBmp } from 'sharp-bmp'
+import { Expand } from 'arx-convert/utils'
 
 type TextureConstructorProps = {
   filename: string
   isNative?: boolean
   width?: number
   height?: number
+  size?: number
   sourcePath?: string
 }
 
 export const SIZE_UNKNOWN = -1
+export const NO_TEXTURE_CONTAINER = 0
 
 export class Texture extends ThreeJsTextue {
+  static targetPath = 'graph/obj3d/textures'
+
   alreadyMadeTileable: boolean = false
   filename: string
   isNative: boolean
@@ -23,45 +28,11 @@ export class Texture extends ThreeJsTextue {
   height: number
   sourcePath?: string
 
-  static humanPaving1 = Object.freeze(
-    new Texture({
-      filename: '[STONE]_HUMAN_PAVING1.BMP',
-      width: 128,
-      height: 128,
-    }),
-  )
-
-  static l3DissidWall02 = Object.freeze(
-    new Texture({
-      filename: 'L3_Dissid_[iron]_wall02.bmp',
-      width: 64,
-      height: 64,
-    }),
-  )
-
-  static aliciaRoomMur02 = Object.freeze(
-    new Texture({
-      filename: 'ALICIAROOM_MUR02.jpg',
-      width: 128,
-      height: 128,
-    }),
-  )
-
-  static water = Object.freeze(
-    new Texture({
-      filename: '(WATER)CAVEWATER.jpg',
-      width: 128,
-      height: 128,
-    }),
-  )
-
-  static l1DragonGround08 = Object.freeze(
-    new Texture({
-      filename: 'L1_DRAGON_[ICE]_GROUND08.jpg',
-      width: 128,
-      height: 128,
-    }),
-  )
+  static humanPaving1 = Object.freeze(new Texture({ filename: '[stone]_human_paving1.bmp', size: 128 }))
+  static l3DissidWall02 = Object.freeze(new Texture({ filename: 'l3_dissid_[iron]_wall02.bmp', size: 64 }))
+  static aliciaRoomMur02 = Object.freeze(new Texture({ filename: 'aliciaroom_mur02.jpg', size: 128 }))
+  static water = Object.freeze(new Texture({ filename: '(water)cavewater.jpg', size: 128 }))
+  static l1DragonGround08 = Object.freeze(new Texture({ filename: 'l1_dragon_[ice]_ground08.jpg', size: 128 }))
 
   constructor(props: TextureConstructorProps) {
     super(undefined, UVMapping, ClampToEdgeWrapping, ClampToEdgeWrapping)
@@ -70,31 +41,24 @@ export class Texture extends ThreeJsTextue {
     this.isNative = props.isNative ?? true
     this.sourcePath = props.sourcePath
 
-    this.width = props.width ?? SIZE_UNKNOWN
-    this.height = props.height ?? SIZE_UNKNOWN
+    this.width = props.size ?? props.width ?? SIZE_UNKNOWN
+    this.height = props.size ?? props.height ?? SIZE_UNKNOWN
   }
 
-  static async fromCustomFile(props: TextureConstructorProps) {
-    // TODO: might need https://socket.dev/npm/package/sharp-bmp for handling bmp files
+  static async fromCustomFile(props: Expand<Omit<TextureConstructorProps, 'isNative'>>) {
+    const source = path.resolve('assets', props.sourcePath ?? Texture.targetPath, props.filename)
 
-    const source = path.resolve('assets', props.sourcePath ?? 'graph/obj3d/textures', props.filename)
-
-    let image: sharp.Sharp
-    if (props.filename.toLowerCase().endsWith('bmp')) {
-      image = sharpFromBmp(source) as Sharp
-    } else {
-      image = sharp(source)
-    }
+    const image = props.filename.toLowerCase().endsWith('bmp') ? (sharpFromBmp(source) as Sharp) : sharp(source)
 
     const metadata = await image.metadata()
 
     if (metadata.format === 'jpeg' && metadata.isProgressive) {
-      console.warn(`texture warning: '${props.filename}' is a progressive jpeg, Arx will not be able to load it`)
+      console.warn(`Texture warning: '${props.filename}' is a progressive jpeg, Arx will not be able to load it`)
     }
 
     return new Texture({
-      isNative: false,
       ...props,
+      isNative: false,
       width: metadata.width,
       height: metadata.height,
     })
@@ -112,12 +76,12 @@ export class Texture extends ThreeJsTextue {
 
   async exportSourceAndTarget(outputDir: string, needsToBeTileable: boolean): Promise<[string, string]> {
     if (this.isNative) {
-      throw new Error('trying to export copying information for a native texture')
+      throw new Error('trying to export copying information for a native Texture')
     }
 
     if (!needsToBeTileable || this.isTileable()) {
-      const source = path.resolve('assets', this.sourcePath ?? 'graph/obj3d/textures', this.filename)
-      const target = path.resolve(outputDir, 'graph/obj3d/textures', this.filename)
+      const source = path.resolve('assets', this.sourcePath ?? Texture.targetPath, this.filename)
+      const target = path.resolve(outputDir, Texture.targetPath, this.filename)
 
       return [source, target]
     }
@@ -126,10 +90,10 @@ export class Texture extends ThreeJsTextue {
   }
 
   async _makeTileable(outputDir: string): Promise<[string, string]> {
-    const originalSource = path.resolve('assets', this.sourcePath ?? 'graph/obj3d/textures', this.filename)
-    const resizedSource = path.resolve('.cache', this.sourcePath ?? 'graph/obj3d/textures', 'tileable-' + this.filename)
+    const originalSource = path.resolve('assets', this.sourcePath ?? Texture.targetPath, this.filename)
+    const resizedSource = path.resolve('.cache', this.sourcePath ?? Texture.targetPath, 'tileable-' + this.filename)
 
-    const resizedTarget = path.resolve(outputDir, 'graph/obj3d/textures', 'tileable-' + this.filename)
+    const resizedTarget = path.resolve(outputDir, Texture.targetPath, 'tileable-' + this.filename)
 
     if (this.alreadyMadeTileable) {
       return [resizedSource, resizedTarget]
@@ -145,13 +109,7 @@ export class Texture extends ThreeJsTextue {
     } catch (e) {}
 
     const isBMP = this.filename.toLowerCase().endsWith('bmp')
-
-    let image: sharp.Sharp
-    if (isBMP) {
-      image = sharpFromBmp(originalSource) as Sharp
-    } else {
-      image = sharp(originalSource)
-    }
+    const image = isBMP ? (sharpFromBmp(originalSource) as Sharp) : sharp(originalSource)
 
     if (this.width !== this.height) {
       // TODO: extend the texture's lower side to get a square
@@ -161,11 +119,7 @@ export class Texture extends ThreeJsTextue {
 
     image.resize(powerOfTwo, powerOfTwo)
 
-    if (isBMP) {
-      await sharpToBmp(image, resizedSource)
-    } else {
-      await image.toFile(resizedSource)
-    }
+    await (isBMP ? sharpToBmp(image, resizedSource) : image.toFile(resizedSource))
 
     this.alreadyMadeTileable = true
 
@@ -180,5 +134,3 @@ export class Texture extends ThreeJsTextue {
     }
   }
 }
-
-export const NO_TEXTURE = 0
