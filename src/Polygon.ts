@@ -2,7 +2,7 @@ import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVector3,
 import { QuadrupleOf } from 'arx-convert/utils'
 import { Box3, Triangle } from 'three'
 import { percentOf } from '@src/helpers'
-import { NO_TEXTURE, Texture } from '@src/Texture'
+import { NO_TEXTURE_CONTAINER, Texture } from '@src/Texture'
 import { ArxVertexWithColor } from '@src/types'
 import { Vector3 } from '@src/Vector3'
 import { Vertex } from '@src/Vertex'
@@ -108,7 +108,7 @@ export class Polygon {
       return vertex.toArxVertex()
     }) as QuadrupleOf<ArxVertex>
 
-    let textureContainerId = NO_TEXTURE
+    let textureContainerId = NO_TEXTURE_CONTAINER
     if (typeof this.texture !== 'undefined') {
       const needsToBeTileable = (this.flags & ArxPolygonFlags.Tiled) !== 0
       const textureFilename =
