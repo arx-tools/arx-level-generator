@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf } from 'arx-convert/utils'
 import {
+  ArxAMB,
   ArxAnchor,
   ArxCell,
   ArxDLF,
@@ -31,6 +32,7 @@ import { Box3, Object3D } from 'three'
 import { DONT_QUADIFY, Polygons, QUADIFY } from '@src/Polygons'
 import { Entities } from '@src/Entities'
 import { Lights } from '@src/Lights'
+import { AMB } from 'arx-convert'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -351,6 +353,29 @@ export class ArxMap {
       resets[target] = source
     }
 
+    const ambienceTracks = this.zones.reduce((acc, zone) => {
+      if (zone.ambience === undefined || zone.ambience.isNative) {
+        return acc
+      }
+
+      zone.ambience.exportSourcesAndTargets(outputDir).forEach(([source, target]) => {
+        acc[target] = source
+      })
+
+      return acc
+    }, {} as Record<string, string>)
+
+    const customAmbiences = this.zones.reduce((acc, zone) => {
+      if (zone.ambience === undefined || zone.ambience.isNative) {
+        return acc
+      }
+
+      return {
+        ...acc,
+        ...zone.ambience.toArxData(outputDir),
+      }
+    }, {} as Record<string, ArxAMB>)
+
     const files = {
       dlf: path.resolve(outputDir, `graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`),
       fts: path.resolve(outputDir, `game/graph/levels/level${levelIdx}/fast.fts.json`),
@@ -361,9 +386,10 @@ export class ArxMap {
       files: [
         ...Object.keys(textures),
         ...Object.keys(resets),
-        files.dlf.replace('.dlf.json', '.dlf'),
-        files.fts.replace('.fts.json', '.fts'),
-        files.llf.replace('.llf.json', '.llf'),
+        ...Object.keys(ambienceTracks),
+        ...Object.keys(customAmbiences),
+        ...Object.values(files),
+        ...Object.values(files).map((filename) => filename.replace(/\.json$/, '')),
       ],
     }
 
@@ -377,10 +403,22 @@ export class ArxMap {
 
     // ------------------------
 
-    const filesToCopy = [...Object.entries(textures), ...Object.entries(resets)]
+    const filesToCopy = [...Object.entries(textures), ...Object.entries(resets), ...Object.entries(ambienceTracks)]
 
     for (let [target, source] of filesToCopy) {
       await fs.promises.copyFile(source, target)
+    }
+
+    // ------------------------
+
+    const filesToGenerate = [...Object.entries(customAmbiences)]
+
+    for (const [target, amb] of filesToGenerate) {
+      const stringifiedAmb = prettify ? JSON.stringify(amb, null, 2) : JSON.stringify(amb)
+      await fs.promises.writeFile(target, stringifiedAmb)
+
+      const compiledAmb = AMB.save(amb)
+      await fs.promises.writeFile(target.replace(/\.json$/, ''), compiledAmb)
     }
 
     // ------------------------

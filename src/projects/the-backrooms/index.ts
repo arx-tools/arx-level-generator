@@ -3,7 +3,7 @@ import seedrandom from 'seedrandom'
 import { ArxMap } from '@src/ArxMap'
 import { Vector3 } from '@src/Vector3'
 import { createRoom } from './room'
-import { removeByValue } from '@src/helpers'
+import { applyTransformations, removeByValue } from '@src/helpers'
 import { wallpaper, wallpaperDotted } from './materials'
 import { Texture } from '@src/Texture'
 import { any, startsWith, uniq } from '@src/faux-ramda'
@@ -229,6 +229,23 @@ export default async () => {
   })
 
   map.zones.push(zone)
+
+  const shape2 = new Shape()
+  shape2.lineTo(100, 0)
+  shape2.lineTo(100, 100)
+  shape2.lineTo(0, 100)
+
+  const geometry2 = new ShapeGeometry(shape2)
+  const edge2 = new EdgesGeometry(geometry2)
+  edge2.rotateX(MathUtils.degToRad(90))
+  edge2.translate(0, 0, 1100)
+
+  const zone2 = Zone.fromThreejsGeometry(edge2, {
+    name: 'other zone',
+    ambience: Ambience.jailStress,
+  })
+
+  map.zones.push(zone2)
 
   map.finalize()
 

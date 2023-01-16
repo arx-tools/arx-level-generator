@@ -1,11 +1,12 @@
+import { ArxAMB, ArxTrackFlags } from 'arx-convert/types'
 import path from 'node:path'
-import { ArxSettingFlag, ArxTrack, ArxTrackFlags } from 'arx-convert/types'
+import { AmbienceTrack } from './AmbienceTrack'
 
 type AmbienceConstructorProps = {
   name: string
   volume?: number
   isNative?: boolean
-  tracks?: (ArxTrack & { sourcePath?: string })[]
+  tracks?: AmbienceTrack[]
 }
 
 export class Ambience {
@@ -14,8 +15,9 @@ export class Ambience {
   name: string
   volume: number
   isNative: boolean
-  tracks: (ArxTrack & { sourcePath?: string })[]
+  tracks: AmbienceTrack[]
 
+  static none = Object.freeze(new Ambience({ name: 'none' }))
   static blackThing = Object.freeze(new Ambience({ name: 'ambient_blackthing' }))
   static bunkerAkbaa = Object.freeze(new Ambience({ name: 'ambient_bunker_akbaa' }))
   static bunker = Object.freeze(new Ambience({ name: 'ambient_bunker' }))
@@ -78,27 +80,12 @@ export class Ambience {
     })
   }
 
-  // TODO: move this to a separate Track class
   static fromCustomAudio(ambienceName: string, filename: string, sourcePath?: string) {
-    const track = {
+    const track = new AmbienceTrack({
       filename,
       sourcePath,
       flags: ArxTrackFlags.Master,
-      keys: [
-        {
-          start: 0,
-          loop: 4,
-          delayMin: 0,
-          delayMax: 0,
-          volume: { min: 0.9, max: 1, interval: 0, flags: ArxSettingFlag.None },
-          pitch: { min: 1, max: 1, interval: 0, flags: ArxSettingFlag.None },
-          pan: { min: 0, max: 0, interval: 0, flags: ArxSettingFlag.None },
-          x: { min: 0, max: 0, interval: 0, flags: ArxSettingFlag.None },
-          y: { min: 0, max: 0, interval: 0, flags: ArxSettingFlag.None },
-          z: { min: 0, max: 0, interval: 0, flags: ArxSettingFlag.None },
-        },
-      ],
-    }
+    })
 
     return new Ambience({
       name: ambienceName,
@@ -107,16 +94,27 @@ export class Ambience {
     })
   }
 
-  // TODO: move this to a separate Track class
-  async exportSourceAndTarget(outputDir: string): Promise<[string, string]> {
+  exportSourcesAndTargets(outputDir: string) {
     if (this.isNative) {
       throw new Error('trying to export copying information for a native Ambience')
     }
 
-    const track = this.tracks[0]
-    const source = path.resolve('assets', track.sourcePath ?? Ambience.targetPath, track.filename)
-    const target = path.resolve(outputDir, Ambience.targetPath, track.filename)
+    const results: [string, string][] = []
 
-    return [source, target]
+    for (let track of this.tracks) {
+      results.push(track.exportSourceAndTarget(outputDir))
+    }
+
+    return results
+  }
+
+  toArxData(outputDir: string): Record<string, ArxAMB> {
+    const target = path.resolve(outputDir, Ambience.targetPath, `${this.name}.amb.json`)
+
+    return {
+      [target]: {
+        tracks: this.tracks.map((track) => track.toArxTrack()),
+      },
+    }
   }
 }
