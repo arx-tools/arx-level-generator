@@ -3,15 +3,13 @@ import seedrandom from 'seedrandom'
 import { ArxMap } from '@src/ArxMap'
 import { Vector3 } from '@src/Vector3'
 import { createRoom } from './room'
-import { applyTransformations, removeByValue } from '@src/helpers'
+import { removeByValue } from '@src/helpers'
 import { wallpaper, wallpaperDotted } from './materials'
 import { Texture } from '@src/Texture'
-import { any, startsWith, uniq } from '@src/faux-ramda'
+import { any, startsWith } from '@src/faux-ramda'
 import { Zone } from '@src/Zone'
-import { BoxGeometry, EdgesGeometry, MathUtils, PlaneGeometry, Shape, ShapeGeometry } from 'three'
-import { ArxZoneAndPathPointType } from 'arx-convert/types'
+import { EdgesGeometry, MathUtils, Shape, ShapeGeometry } from 'three'
 import { Ambience } from '@src/Ambience'
-import { Vectors } from '@src/Vectors'
 
 // only works when everything is aligned in a 100/100/100 grid
 function union(map1: ArxMap, map2: ArxMap) {

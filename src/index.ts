@@ -1,6 +1,6 @@
-import theBackrooms from '@projects/the-backrooms/index'
-import joinedGoblinLevels from '@projects/joined-goblin-levels/index'
-import winterSurface from './projects/winter-surface/index'
+import theBackrooms from '@projects/the-backrooms'
+import joinedGoblinLevels from '@projects/joined-goblin-levels'
+import ambienceGallery from './projects/ambience-gallery'
 
 const { PROJECT } = process.env
 
@@ -11,8 +11,8 @@ switch (PROJECT) {
   case 'joined-goblin-levels':
     joinedGoblinLevels()
     break
-  case 'winter-surface':
-    winterSurface()
+  case 'ambience-gallery':
+    ambienceGallery()
     break
   default:
     console.log(`project "${PROJECT}" not found`)
