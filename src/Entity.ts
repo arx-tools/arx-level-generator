@@ -1,6 +1,7 @@
 import { ArxInteractiveObject } from 'arx-convert/types'
 import { Rotation } from '@src/Rotation'
 import { Vector3 } from '@src/Vector3'
+import { last } from './faux-ramda'
 
 type EntityConstructorProps = {
   id?: number
@@ -41,5 +42,12 @@ export class Entity {
       pos: this.position.toArxVector3(),
       angle: this.orientation.toArxRotation(),
     }
+  }
+
+  getRef() {
+    const numericId = this.id.toString().padStart(4, '0')
+    const name = last(this.name.split('/')) as string
+
+    return `${name}_${numericId}`
   }
 }

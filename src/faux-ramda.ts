@@ -53,3 +53,11 @@ export const uniq = <T>(values: T[]) => {
     return self.indexOf(value) === index
   })
 }
+
+export const last = <T>(values: T[]) => {
+  if (values.length === 0) {
+    return undefined
+  }
+
+  return values[values.length - 1]
+}
