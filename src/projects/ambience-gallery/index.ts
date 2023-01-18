@@ -1,6 +1,7 @@
 import { Ambience } from '@src/Ambience'
 import { ArxMap } from '@src/ArxMap'
 import { Color } from '@src/Color'
+import { Entity } from '@src/Entity'
 import { createPlaneMesh } from '@src/prefabs/mesh/plane'
 import { Texture } from '@src/Texture'
 import { Vector3 } from '@src/Vector3'
@@ -120,6 +121,13 @@ export default async () => {
       map.add(ArxMap.fromThreeJsMesh(tile), true)
     }
   }
+
+  const marker = new Entity({
+    id: 1,
+    name: 'system/marker',
+  })
+
+  map.entities.push(marker)
 
   map.finalize()
 
