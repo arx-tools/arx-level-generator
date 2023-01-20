@@ -71,10 +71,10 @@ export class Ambience {
     this.tracks = props.tracks ?? []
   }
 
-  setVolume(volume: number) {
+  clone() {
     return new Ambience({
       name: this.name,
-      volume,
+      volume: this.volume,
       isNative: this.isNative,
       tracks: this.tracks,
     })
