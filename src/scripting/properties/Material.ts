@@ -3,6 +3,14 @@ import { ScriptProperty } from '@src/ScriptProperty'
 export type MaterialType = 'stone' | 'wood' | 'metal' | 'cloth' | 'flesh' | 'ice' | 'glass' | 'earth' | 'weapon'
 
 export class Material extends ScriptProperty<MaterialType> {
+  toString() {
+    return `set_material ${this.value}`
+  }
+
+  // ----------------
+
+  // TODO: create static getters like in Entity class
+  // TODO: change functions that return a new object into mutating object -> no new instance needed
   static stone = Object.freeze(new Material('stone'))
   static wood = Object.freeze(new Material('wood'))
   static metal = Object.freeze(new Material('metal'))
@@ -12,8 +20,4 @@ export class Material extends ScriptProperty<MaterialType> {
   static glass = Object.freeze(new Material('glass'))
   static earth = Object.freeze(new Material('earth'))
   static weapon = Object.freeze(new Material('weapon'))
-
-  toString() {
-    return `set_material ${this.value}`
-  }
 }

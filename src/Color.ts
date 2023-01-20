@@ -17,13 +17,6 @@ export class Color {
   b: number
   a: number
 
-  static red = Object.freeze(Color.fromCSS('red'))
-  static green = Object.freeze(Color.fromCSS('green'))
-  static blue = Object.freeze(Color.fromCSS('blue'))
-  static white = Object.freeze(Color.fromCSS('white'))
-  static yellow = Object.freeze(Color.fromCSS('yellow'))
-  static transparent = Object.freeze(Color.fromCSS('transparent'))
-
   constructor(r: number, g: number, b: number, a: number = Alpha.Opaque) {
     this.r = r
     this.g = g
@@ -81,4 +74,15 @@ export class Color {
       this.a,
     )
   }
+
+  // ----------------
+
+  // TODO: create static getters like in Entity class
+  // TODO: change functions that return a new object into mutating object -> no new instance needed
+  static red = Object.freeze(Color.fromCSS('red'))
+  static green = Object.freeze(Color.fromCSS('green'))
+  static blue = Object.freeze(Color.fromCSS('blue'))
+  static white = Object.freeze(Color.fromCSS('white'))
+  static yellow = Object.freeze(Color.fromCSS('yellow'))
+  static transparent = Object.freeze(Color.fromCSS('transparent'))
 }

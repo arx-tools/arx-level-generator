@@ -4,6 +4,8 @@ import { Vector3 } from '@src/Vector3'
 import { last } from '@src/faux-ramda'
 import { Script } from '@src/Script'
 
+const instanceCatalog: Record<string, Entity[]> = {}
+
 type EntityConstructorProps = {
   id?: number
   name: string
@@ -21,15 +23,20 @@ export class Entity {
   isRoot: boolean
   script: Script
 
-  static marker = Object.freeze(new Entity({ name: 'system/marker' }))
-
   constructor(props: EntityConstructorProps) {
-    this.id = props.id ?? 0
     this.name = props.name
     this.position = props.position ?? new Vector3(0, 0, 0)
     this.orientation = props.orientation ?? new Rotation(0, 0, 0)
     this.isRoot = props.isRoot ?? false
     this.script = props.script ?? new Script()
+
+    if (typeof props.id === 'undefined') {
+      instanceCatalog[this.name] = instanceCatalog[this.name] ?? []
+      instanceCatalog[this.name].push(this)
+      this.id = instanceCatalog[this.name].length
+    } else {
+      this.id = props.id
+    }
   }
 
   public clone() {
@@ -66,5 +73,11 @@ export class Entity {
     const name = last(this.name.split('/')) as string
 
     return `${name}_${numericId}`
+  }
+
+  // ----------------
+
+  static get marker() {
+    return new Entity({ name: 'system/marker' })
   }
 }
