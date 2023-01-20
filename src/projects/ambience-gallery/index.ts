@@ -122,12 +122,10 @@ export default async () => {
     }
   }
 
-  const marker = new Entity({
-    id: 1,
-    name: 'system/marker',
-  })
+  const marker1 = Entity.marker // should be marker_0001
+  const marker2 = Entity.marker // should be marker_0002
 
-  map.entities.push(marker)
+  map.entities.push(marker2)
 
   map.finalize()
 
