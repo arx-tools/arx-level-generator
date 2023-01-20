@@ -13,7 +13,7 @@ export class Material extends ScriptProperty<MaterialType> {
   static earth = Object.freeze(new Material('earth'))
   static weapon = Object.freeze(new Material('weapon'))
 
-  toCommand() {
+  toString() {
     return `set_material ${this.value}`
   }
 }
