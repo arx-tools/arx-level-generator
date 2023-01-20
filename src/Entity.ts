@@ -18,12 +18,24 @@ export class Entity {
   orientation: Rotation
   isRoot: boolean
 
+  static marker = Object.freeze(new Entity({ name: 'system/marker' }))
+
   constructor(props: EntityConstructorProps) {
     this.id = props.id ?? 0
     this.name = props.name
     this.position = props.position ?? new Vector3(0, 0, 0)
     this.orientation = props.orientation ?? new Rotation(0, 0, 0)
     this.isRoot = props.isRoot ?? false
+  }
+
+  public clone() {
+    return new Entity({
+      id: this.id,
+      name: this.name,
+      position: this.position.clone(),
+      orientation: this.orientation.clone(),
+      isRoot: this.isRoot,
+    })
   }
 
   static fromArxInteractiveObject(entity: ArxInteractiveObject) {
