@@ -3,6 +3,7 @@ import { ArxMap } from '@src/ArxMap'
 import { Color } from '@src/Color'
 import { Entity } from '@src/Entity'
 import { createPlaneMesh } from '@src/prefabs/mesh/plane'
+import { Script } from '@src/Script'
 import { Texture } from '@src/Texture'
 import { Vector3 } from '@src/Vector3'
 import { Zone } from '@src/Zone'
@@ -122,10 +123,11 @@ export default async () => {
     }
   }
 
-  const marker1 = Entity.marker // should be marker_0001
-  const marker2 = Entity.marker // should be marker_0002
+  const marker = Entity.marker
 
-  map.entities.push(marker2)
+  console.log(Script.targetPath + '/' + marker.name + '/' + marker.getRef() + '/' + marker.script.filename)
+
+  map.entities.push(marker)
 
   map.finalize()
 

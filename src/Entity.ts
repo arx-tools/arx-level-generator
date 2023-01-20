@@ -28,7 +28,11 @@ export class Entity {
     this.position = props.position ?? new Vector3(0, 0, 0)
     this.orientation = props.orientation ?? new Rotation(0, 0, 0)
     this.isRoot = props.isRoot ?? false
-    this.script = props.script ?? new Script()
+    this.script =
+      props.script ??
+      new Script({
+        filename: (last(this.name.split('/')) as string) + '.asl',
+      })
 
     if (typeof props.id === 'undefined') {
       instanceCatalog[this.name] = instanceCatalog[this.name] ?? []
