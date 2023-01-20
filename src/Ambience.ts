@@ -73,53 +73,142 @@ export class Ambience {
 
   // ----------------
 
-  // TODO: create static getters like in Entity class
-  // TODO: change functions that return a new object into mutating object -> no new instance needed
-
-  static none = Object.freeze(new Ambience({ name: 'none' }))
-  static blackThing = Object.freeze(new Ambience({ name: 'ambient_blackthing' }))
-  static bunkerAkbaa = Object.freeze(new Ambience({ name: 'ambient_bunker_akbaa' }))
-  static bunker = Object.freeze(new Ambience({ name: 'ambient_bunker' }))
-  static castle = Object.freeze(new Ambience({ name: 'ambient_castle' }))
-  static caveA = Object.freeze(new Ambience({ name: 'ambient_cave_a' }))
-  static caveB = Object.freeze(new Ambience({ name: 'ambient_cave_b' }))
-  static caveFrozen = Object.freeze(new Ambience({ name: 'ambient_cave_frozen' }))
-  static caveGreu = Object.freeze(new Ambience({ name: 'ambient_cave_greu' }))
-  static caveLava = Object.freeze(new Ambience({ name: 'ambient_cave_lava' }))
-  static caveWorm = Object.freeze(new Ambience({ name: 'ambient_cave_worm' }))
-  static credits = Object.freeze(new Ambience({ name: 'ambient_credits' }))
-  static cryptA = Object.freeze(new Ambience({ name: 'ambient_crypt_a' }))
-  static cryptB = Object.freeze(new Ambience({ name: 'ambient_crypt_b' }))
-  static cryptC = Object.freeze(new Ambience({ name: 'ambient_crypt_c' }))
-  static cryptD = Object.freeze(new Ambience({ name: 'ambient_crypt_d' }))
-  static cryptE = Object.freeze(new Ambience({ name: 'ambient_crypt_e' }))
-  static cryptF = Object.freeze(new Ambience({ name: 'ambient_crypt_f' }))
-  static cryptLich = Object.freeze(new Ambience({ name: 'ambient_crypt_lich' }))
-  static dramatic = Object.freeze(new Ambience({ name: 'ambient_dramatic' }))
-  static dwarf = Object.freeze(new Ambience({ name: 'ambient_dwarf' }))
-  static fight = Object.freeze(new Ambience({ name: 'ambient_fight' }))
-  static fightMusic = Object.freeze(new Ambience({ name: 'ambient_fight_music' }))
-  static gobCastle = Object.freeze(new Ambience({ name: 'ambient_gob_castle' }))
-  static gobIntro = Object.freeze(new Ambience({ name: 'ambient_gob_intro' }))
-  static jailMain = Object.freeze(new Ambience({ name: 'ambient_gob_jail_main' }))
-  static jailStress = Object.freeze(new Ambience({ name: 'ambient_gob_jail_stress' }))
-  static gobRuin = Object.freeze(new Ambience({ name: 'ambient_gob_ruin' }))
-  static importantPlace = Object.freeze(new Ambience({ name: 'Ambient_important_place' }))
-  static introA = Object.freeze(new Ambience({ name: 'ambient_intro_a' }))
-  static intro = Object.freeze(new Ambience({ name: 'ambient_intro' }))
-  static introB = Object.freeze(new Ambience({ name: 'ambient_intro_b' }))
-  static menu = Object.freeze(new Ambience({ name: 'ambient_menu' }))
-  static noden = Object.freeze(new Ambience({ name: 'ambient_noden' }))
-  static outpost = Object.freeze(new Ambience({ name: 'ambient_outpost' }))
-  static rebelsCool = Object.freeze(new Ambience({ name: 'ambient_rebels_cool' }))
-  static rebelsIntense = Object.freeze(new Ambience({ name: 'ambient_rebels_intense' }))
-  static snakeCastle = Object.freeze(new Ambience({ name: 'ambient_snake_castle' }))
-  static snakeIllusion = Object.freeze(new Ambience({ name: 'ambient_snake_illusion' }))
-  static tavern = Object.freeze(new Ambience({ name: 'ambient_tavern' }))
-  static templeAkbaa = Object.freeze(new Ambience({ name: 'ambient_temple_akbaa' }))
-  static templeAkbaaUp = Object.freeze(new Ambience({ name: 'ambient_temple_akbaa_up' }))
-  static town = Object.freeze(new Ambience({ name: 'ambient_town' }))
-  static troll = Object.freeze(new Ambience({ name: 'ambient_troll' }))
-  static reverbTest = Object.freeze(new Ambience({ name: 'reverb_test' }))
-  static stress = Object.freeze(new Ambience({ name: 'stress' }))
+  static get none() {
+    return new Ambience({ name: 'none' })
+  }
+  static get blackThing() {
+    return new Ambience({ name: 'ambient_blackthing' })
+  }
+  static get bunkerAkbaa() {
+    return new Ambience({ name: 'ambient_bunker_akbaa' })
+  }
+  static get bunker() {
+    return new Ambience({ name: 'ambient_bunker' })
+  }
+  static get castle() {
+    return new Ambience({ name: 'ambient_castle' })
+  }
+  static get caveA() {
+    return new Ambience({ name: 'ambient_cave_a' })
+  }
+  static get caveB() {
+    return new Ambience({ name: 'ambient_cave_b' })
+  }
+  static get caveFrozen() {
+    return new Ambience({ name: 'ambient_cave_frozen' })
+  }
+  static get caveGreu() {
+    return new Ambience({ name: 'ambient_cave_greu' })
+  }
+  static get caveLava() {
+    return new Ambience({ name: 'ambient_cave_lava' })
+  }
+  static get caveWorm() {
+    return new Ambience({ name: 'ambient_cave_worm' })
+  }
+  static get credits() {
+    return new Ambience({ name: 'ambient_credits' })
+  }
+  static get cryptA() {
+    return new Ambience({ name: 'ambient_crypt_a' })
+  }
+  static get cryptB() {
+    return new Ambience({ name: 'ambient_crypt_b' })
+  }
+  static get cryptC() {
+    return new Ambience({ name: 'ambient_crypt_c' })
+  }
+  static get cryptD() {
+    return new Ambience({ name: 'ambient_crypt_d' })
+  }
+  static get cryptE() {
+    return new Ambience({ name: 'ambient_crypt_e' })
+  }
+  static get cryptF() {
+    return new Ambience({ name: 'ambient_crypt_f' })
+  }
+  static get cryptLich() {
+    return new Ambience({ name: 'ambient_crypt_lich' })
+  }
+  static get dramatic() {
+    return new Ambience({ name: 'ambient_dramatic' })
+  }
+  static get dwarf() {
+    return new Ambience({ name: 'ambient_dwarf' })
+  }
+  static get fight() {
+    return new Ambience({ name: 'ambient_fight' })
+  }
+  static get fightMusic() {
+    return new Ambience({ name: 'ambient_fight_music' })
+  }
+  static get gobCastle() {
+    return new Ambience({ name: 'ambient_gob_castle' })
+  }
+  static get gobIntro() {
+    return new Ambience({ name: 'ambient_gob_intro' })
+  }
+  static get jailMain() {
+    return new Ambience({ name: 'ambient_gob_jail_main' })
+  }
+  static get jailStress() {
+    return new Ambience({ name: 'ambient_gob_jail_stress' })
+  }
+  static get gobRuin() {
+    return new Ambience({ name: 'ambient_gob_ruin' })
+  }
+  static get importantPlace() {
+    return new Ambience({ name: 'Ambient_important_place' })
+  }
+  static get introA() {
+    return new Ambience({ name: 'ambient_intro_a' })
+  }
+  static get intro() {
+    return new Ambience({ name: 'ambient_intro' })
+  }
+  static get introB() {
+    return new Ambience({ name: 'ambient_intro_b' })
+  }
+  static get menu() {
+    return new Ambience({ name: 'ambient_menu' })
+  }
+  static get noden() {
+    return new Ambience({ name: 'ambient_noden' })
+  }
+  static get outpost() {
+    return new Ambience({ name: 'ambient_outpost' })
+  }
+  static get rebelsCool() {
+    return new Ambience({ name: 'ambient_rebels_cool' })
+  }
+  static get rebelsIntense() {
+    return new Ambience({ name: 'ambient_rebels_intense' })
+  }
+  static get snakeCastle() {
+    return new Ambience({ name: 'ambient_snake_castle' })
+  }
+  static get snakeIllusion() {
+    return new Ambience({ name: 'ambient_snake_illusion' })
+  }
+  static get tavern() {
+    return new Ambience({ name: 'ambient_tavern' })
+  }
+  static get templeAkbaa() {
+    return new Ambience({ name: 'ambient_temple_akbaa' })
+  }
+  static get templeAkbaaUp() {
+    return new Ambience({ name: 'ambient_temple_akbaa_up' })
+  }
+  static get town() {
+    return new Ambience({ name: 'ambient_town' })
+  }
+  static get troll() {
+    return new Ambience({ name: 'ambient_troll' })
+  }
+  static get reverbTest() {
+    return new Ambience({ name: 'reverb_test' })
+  }
+  static get stress() {
+    return new Ambience({ name: 'stress' })
+  }
 }

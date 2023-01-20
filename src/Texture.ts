@@ -143,11 +143,19 @@ export class Texture extends ThreeJsTextue {
 
   // ----------------
 
-  // TODO: create static getters like in Entity class
-  // TODO: change functions that return a new object into mutating object -> no new instance needed
-  static humanPaving1 = Object.freeze(new Texture({ filename: '[stone]_human_paving1.bmp', size: 128 }))
-  static l3DissidWall02 = Object.freeze(new Texture({ filename: 'l3_dissid_[iron]_wall02.bmp', size: 64 }))
-  static aliciaRoomMur02 = Object.freeze(new Texture({ filename: 'aliciaroom_mur02.jpg', size: 128 }))
-  static water = Object.freeze(new Texture({ filename: '(water)cavewater.jpg', size: 128 }))
-  static l1DragonGround08 = Object.freeze(new Texture({ filename: 'l1_dragon_[ice]_ground08.jpg', size: 128 }))
+  static get humanPaving1() {
+    return new Texture({ filename: '[stone]_human_paving1.bmp', size: 128 })
+  }
+  static get l3DissidWall02() {
+    return new Texture({ filename: 'l3_dissid_[iron]_wall02.bmp', size: 64 })
+  }
+  static get aliciaRoomMur02() {
+    return new Texture({ filename: 'aliciaroom_mur02.jpg', size: 128 })
+  }
+  static get water() {
+    return new Texture({ filename: '(water)cavewater.jpg', size: 128 })
+  }
+  static get l1DragonGround08() {
+    return new Texture({ filename: 'l1_dragon_[ice]_ground08.jpg', size: 128 })
+  }
 }

@@ -9,15 +9,31 @@ export class Material extends ScriptProperty<MaterialType> {
 
   // ----------------
 
-  // TODO: create static getters like in Entity class
-  // TODO: change functions that return a new object into mutating object -> no new instance needed
-  static stone = Object.freeze(new Material('stone'))
-  static wood = Object.freeze(new Material('wood'))
-  static metal = Object.freeze(new Material('metal'))
-  static cloth = Object.freeze(new Material('cloth'))
-  static flesh = Object.freeze(new Material('flesh'))
-  static ice = Object.freeze(new Material('ice'))
-  static glass = Object.freeze(new Material('glass'))
-  static earth = Object.freeze(new Material('earth'))
-  static weapon = Object.freeze(new Material('weapon'))
+  static get stone() {
+    return new Material('stone')
+  }
+  static get wood() {
+    return new Material('wood')
+  }
+  static get metal() {
+    return new Material('metal')
+  }
+  static get cloth() {
+    return new Material('cloth')
+  }
+  static get flesh() {
+    return new Material('flesh')
+  }
+  static get ice() {
+    return new Material('ice')
+  }
+  static get glass() {
+    return new Material('glass')
+  }
+  static get earth() {
+    return new Material('earth')
+  }
+  static get weapon() {
+    return new Material('weapon')
+  }
 }

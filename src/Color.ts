@@ -56,33 +56,41 @@ export class Color {
   lighten(percent: number) {
     const extra = percentOf(percent, 255)
 
-    return new Color(
-      MathUtils.clamp(this.r + extra, 0, 255),
-      MathUtils.clamp(this.g + extra, 0, 255),
-      MathUtils.clamp(this.b + extra, 0, 255),
-      this.a,
-    )
+    this.r = MathUtils.clamp(this.r + extra, 0, 255)
+    this.g = MathUtils.clamp(this.g + extra, 0, 255)
+    this.b = MathUtils.clamp(this.b + extra, 0, 255)
+
+    return this
   }
 
   darken(percent: number) {
     const extra = percentOf(percent, 255)
 
-    return new Color(
-      MathUtils.clamp(this.r - extra, 0, 255),
-      MathUtils.clamp(this.g - extra, 0, 255),
-      MathUtils.clamp(this.b - extra, 0, 255),
-      this.a,
-    )
+    this.r = MathUtils.clamp(this.r - extra, 0, 255)
+    this.g = MathUtils.clamp(this.g - extra, 0, 255)
+    this.b = MathUtils.clamp(this.b - extra, 0, 255)
+
+    return this
   }
 
   // ----------------
 
-  // TODO: create static getters like in Entity class
-  // TODO: change functions that return a new object into mutating object -> no new instance needed
-  static red = Object.freeze(Color.fromCSS('red'))
-  static green = Object.freeze(Color.fromCSS('green'))
-  static blue = Object.freeze(Color.fromCSS('blue'))
-  static white = Object.freeze(Color.fromCSS('white'))
-  static yellow = Object.freeze(Color.fromCSS('yellow'))
-  static transparent = Object.freeze(Color.fromCSS('transparent'))
+  static get red() {
+    return Color.fromCSS('red')
+  }
+  static get green() {
+    return Color.fromCSS('green')
+  }
+  static get blue() {
+    return Color.fromCSS('blue')
+  }
+  static get white() {
+    return Color.fromCSS('white')
+  }
+  static get yellow() {
+    return Color.fromCSS('yellow')
+  }
+  static get transparent() {
+    return Color.fromCSS('transparent')
+  }
 }
