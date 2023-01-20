@@ -45,6 +45,19 @@ export class Texture extends ThreeJsTextue {
     this.height = props.size ?? props.height ?? SIZE_UNKNOWN
   }
 
+  clone() {
+    const copy = super.clone()
+
+    copy.filename = this.filename
+    copy.isNative = this.isNative
+    copy.width = this.width
+    copy.height = this.height
+    copy.sourcePath = this.sourcePath
+    copy.alreadyMadeTileable = this.alreadyMadeTileable
+
+    return copy
+  }
+
   static async fromCustomFile(props: Expand<Omit<TextureConstructorProps, 'isNative'>>) {
     const source = path.resolve('assets', props.sourcePath ?? Texture.targetPath, props.filename)
 
