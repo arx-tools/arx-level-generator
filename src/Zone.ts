@@ -3,7 +3,7 @@ import { Ambience } from '@src/Ambience'
 import { Color } from '@src/Color'
 import { Vector3 } from '@src/Vector3'
 import { BufferGeometry } from 'three'
-import { Vectors } from './Vectors'
+import { Vectors } from '@src/Vectors'
 
 export type ZonePoint = {
   position: Vector3

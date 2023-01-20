@@ -1,15 +1,15 @@
 import path from 'node:path'
+import { EdgesGeometry, MathUtils, Shape, ShapeGeometry } from 'three'
 import seedrandom from 'seedrandom'
 import { ArxMap } from '@src/ArxMap'
 import { Vector3 } from '@src/Vector3'
-import { createRoom } from './room'
 import { removeByValue } from '@src/helpers'
-import { wallpaper, wallpaperDotted } from './materials'
 import { Texture } from '@src/Texture'
 import { any, startsWith } from '@src/faux-ramda'
 import { Zone } from '@src/Zone'
-import { EdgesGeometry, MathUtils, Shape, ShapeGeometry } from 'three'
 import { Ambience } from '@src/Ambience'
+import { createRoom } from './room'
+import { wallpaper, wallpaperDotted } from './materials'
 
 // only works when everything is aligned in a 100/100/100 grid
 function union(map1: ArxMap, map2: ArxMap) {

@@ -1,6 +1,6 @@
 import { ArxAMB, ArxTrackFlags } from 'arx-convert/types'
 import path from 'node:path'
-import { AmbienceTrack } from './AmbienceTrack'
+import { AmbienceTrack } from '@src/AmbienceTrack'
 
 type AmbienceConstructorProps = {
   name: string

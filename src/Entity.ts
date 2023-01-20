@@ -1,7 +1,8 @@
 import { ArxInteractiveObject } from 'arx-convert/types'
 import { Rotation } from '@src/Rotation'
 import { Vector3 } from '@src/Vector3'
-import { last } from './faux-ramda'
+import { last } from '@src/faux-ramda'
+import { Script } from '@src/Script'
 
 type EntityConstructorProps = {
   id?: number
@@ -9,6 +10,7 @@ type EntityConstructorProps = {
   position?: Vector3
   orientation?: Rotation
   isRoot?: boolean
+  script?: Script
 }
 
 export class Entity {
@@ -17,6 +19,7 @@ export class Entity {
   position: Vector3
   orientation: Rotation
   isRoot: boolean
+  script: Script
 
   static marker = Object.freeze(new Entity({ name: 'system/marker' }))
 
@@ -26,6 +29,7 @@ export class Entity {
     this.position = props.position ?? new Vector3(0, 0, 0)
     this.orientation = props.orientation ?? new Rotation(0, 0, 0)
     this.isRoot = props.isRoot ?? false
+    this.script = props.script ?? new Script()
   }
 
   public clone() {
@@ -35,6 +39,7 @@ export class Entity {
       position: this.position.clone(),
       orientation: this.orientation.clone(),
       isRoot: this.isRoot,
+      script: this.script,
     })
   }
 

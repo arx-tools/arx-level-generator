@@ -1,6 +1,6 @@
 import theBackrooms from '@projects/the-backrooms'
 import joinedGoblinLevels from '@projects/joined-goblin-levels'
-import ambienceGallery from './projects/ambience-gallery'
+import ambienceGallery from '@projects/ambience-gallery'
 
 const { PROJECT } = process.env
 
