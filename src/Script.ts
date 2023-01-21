@@ -19,7 +19,7 @@ export class Script {
   toArxData() {
     return `
 on init {
-  herosay "hello!"
+  ${this.properties.map((property) => `${property}\n`)}
   accept
 }
     `

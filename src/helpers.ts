@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { Mesh, Object3D } from 'three'
+import { randomBetween } from '@src/random'
 
 export const getPackageVersion = async () => {
   try {
@@ -27,10 +28,6 @@ export const uninstall = async (dir: string) => {
     }
     await fs.promises.rm(`${dir}/arx-level-generator-manifest.json`)
   } catch (e) {}
-}
-
-export const randomBetween = (min: number, max: number) => {
-  return Math.random() * (max - min) + min
 }
 
 export const evenAndRemainder = (divisor: number, n: number): [number, number] => {

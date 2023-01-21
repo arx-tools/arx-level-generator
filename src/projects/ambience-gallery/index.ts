@@ -2,7 +2,9 @@ import { Ambience } from '@src/Ambience'
 import { ArxMap } from '@src/ArxMap'
 import { Color } from '@src/Color'
 import { Entity } from '@src/Entity'
+import { pickWeightedRandoms, randomBetween } from '@src/random'
 import { createPlaneMesh } from '@src/prefabs/mesh/plane'
+import { Interactivity } from '@src/scripting/properties/Interactivity'
 import { Texture } from '@src/Texture'
 import { Vector3 } from '@src/Vector3'
 import { Zone } from '@src/Zone'
@@ -76,6 +78,59 @@ const ambiences = [
   Ambience.stress,
 ]
 
+const createNorthGates = (mapWidth: number, mapDepth: number) => {
+  const numberOfGates = Math.floor(mapWidth / 205)
+
+  const tiltX = pickWeightedRandoms(
+    numberOfGates,
+    [
+      { value: -3, zCorrection: -21, weight: 20 },
+      { value: -10, zCorrection: -50, weight: 1 },
+      { value: 0, zCorrection: 0, weight: 50 },
+      { value: 5, zCorrection: 25, weight: 10 },
+      { value: 3, zCorrection: 21, weight: 10 },
+    ],
+    true,
+  )
+  const tiltZ = pickWeightedRandoms(
+    numberOfGates,
+    [
+      { value: -3, weight: 20 },
+      { value: 0, weight: 100 },
+      { value: 3, weight: 100 },
+    ],
+    true,
+  )
+
+  const gates: Entity[] = []
+
+  let tiltZOffset = 0
+  for (let i = 0; i < numberOfGates; i++) {
+    tiltZOffset += tiltZ[i].value < 0 ? 20 : 0
+
+    const gate = Entity.porticullis.withScript()
+    gate.position.add(
+      new Vector3(-100 + i * 205 + tiltZOffset, -295 + randomBetween(0, 20), mapDepth / 2 - 20 + tiltX[i].zCorrection),
+    )
+    gate.orientation.x += MathUtils.degToRad(tiltX[i].value)
+    gate.orientation.y += MathUtils.degToRad(90)
+    gate.orientation.z += MathUtils.degToRad(180 + tiltZ[i].value)
+    gate.script?.properties.push(Interactivity.off)
+    gates.push(gate)
+  }
+
+  const gatesToBeRemoved = Math.ceil(tiltZOffset / 205)
+  for (let i = 0; i < gatesToBeRemoved; i++) {
+    gates.pop()
+  }
+
+  gates.forEach((gate, idx) => {
+    gate.position.x += idx * ((gatesToBeRemoved * 205 - tiltZOffset) / (gates.length - 1))
+  })
+
+  return gates
+}
+
 export default async () => {
   const {
     OUTPUTDIR = path.resolve(__dirname, './dist'),
@@ -97,12 +152,14 @@ export default async () => {
 
   const width = Math.ceil(ambiences.length / rowSize) * 300 + 400
   const depth = rowSize * 300 + 200
-  const floor = await createPlaneMesh(width, depth, Color.white, Texture.aliciaRoomMur02)
+  const floor = await createPlaneMesh(width, depth, Color.white, Texture.humanPaving1)
   floor.translateX(width / 2 - 200)
   map.add(ArxMap.fromThreeJsMesh(floor), true)
 
   const position = new Vector3(-200, 10, -depth / 2)
-  map.zones.push(createZone(position, new Vector2(width, depth), Ambience.none, 10))
+  const mainZone = createZone(position, new Vector2(width, depth), Ambience.none, 10)
+  mainZone.backgroundColor = Color.fromCSS('#111')
+  map.zones.push(mainZone)
 
   for (let i = 0; i < ambiences.length; i += rowSize) {
     const slice = ambiences.slice(i, i + rowSize)
@@ -114,7 +171,7 @@ export default async () => {
 
       map.zones.push(createZone(p, size, ambience, 50))
 
-      const tile = await createPlaneMesh(size.x, size.y, Color.white, Texture.humanPaving1)
+      const tile = await createPlaneMesh(size.x, size.y, Color.white, Texture.l2GobelCenter)
       tile.translateX(p.x + 50)
       tile.translateY(p.y)
       tile.translateZ(p.z + 50)
@@ -123,8 +180,9 @@ export default async () => {
   }
 
   const marker = Entity.marker.withScript()
-
   map.entities.push(marker)
+
+  map.entities.push(...createNorthGates(width, depth))
 
   map.finalize()
 

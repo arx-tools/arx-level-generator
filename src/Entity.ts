@@ -104,4 +104,7 @@ export class Entity {
   static get runeAam() {
     return new Entity({ name: 'items/magic/rune_aam' })
   }
+  static get porticullis() {
+    return new Entity({ name: 'fix_inter/porticullis' })
+  }
 }

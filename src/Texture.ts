@@ -152,10 +152,13 @@ export class Texture extends ThreeJsTextue {
   static get aliciaRoomMur02() {
     return new Texture({ filename: 'aliciaroom_mur02.jpg', size: 128 })
   }
-  static get water() {
+  static get cavewater() {
     return new Texture({ filename: '(water)cavewater.jpg', size: 128 })
   }
   static get l1DragonGround08() {
     return new Texture({ filename: 'l1_dragon_[ice]_ground08.jpg', size: 128 })
+  }
+  static get l2GobelCenter() {
+    return new Texture({ filename: 'l2_gobel_[stone]_center.jpg', size: 128 })
   }
 }

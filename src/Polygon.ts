@@ -256,6 +256,7 @@ export class Polygon {
   private getHalfPolygonArea(isQuadPart: boolean) {
     const triangle = new Triangle(...this.vertices.slice(isQuadPart ? 1 : 0, 3))
     return triangle.getArea()
+
     // const [i, j, k] = isQuadPart ? [1, 2, 3] : [0, 1, 2]
     // const a = this.vertices[i].clone().add(this.vertices[j]).divideScalar(2).distanceTo(this.vertices[k])
     // const b = this.vertices[isQuadPart ? i : k].distanceTo(this.vertices[j])

@@ -2,6 +2,10 @@ export const times = <T>(fn: (index: number) => T, repetitions: number): T[] => 
   return [...Array(repetitions)].map((value, index) => fn(index))
 }
 
+export const repeat = <T>(value: T, repetitions: number): T[] => {
+  return Array(repetitions).fill(value)
+}
+
 export const min = (arr: number[]) => {
   let len = arr.length
   let min = Infinity
