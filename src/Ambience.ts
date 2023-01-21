@@ -49,7 +49,7 @@ export class Ambience {
 
   exportSourcesAndTargets(outputDir: string) {
     if (this.isNative) {
-      throw new Error('trying to export copying information for a native Ambience')
+      throw new Error('trying to export a native Ambience')
     }
 
     const results: [string, string][] = []

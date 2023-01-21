@@ -83,7 +83,7 @@ export class Texture extends ThreeJsTextue {
 
   async exportSourceAndTarget(outputDir: string, needsToBeTileable: boolean): Promise<[string, string]> {
     if (this.isNative) {
-      throw new Error('trying to export copying information for a native Texture')
+      throw new Error('trying to export a native Texture')
     }
 
     if (!needsToBeTileable || this.isTileable()) {

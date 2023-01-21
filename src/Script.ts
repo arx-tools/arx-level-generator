@@ -15,4 +15,11 @@ export class Script {
   constructor(props: ScriptConstructorProps) {
     this.filename = props.filename
   }
+
+  toArxData() {
+    // TODO: encoding + line endings
+    return `
+// hello
+    `
+  }
 }
