@@ -6,6 +6,7 @@ import { carpet, ceilingTile, mold } from './materials'
 import { Group, MathUtils, Object3D } from 'three'
 import { Vector3 } from '@src/Vector3'
 import { Texture } from '@src/Texture'
+import { DONT_QUADIFY, QUADIFY } from '@src/Polygons'
 
 const createFloor = async (dimensions: Vector3) => {
   const { x: width, y: height, z: depth } = dimensions
@@ -97,7 +98,7 @@ const createCeiling = async (dimensions: Vector3) => {
   return mesh
 }
 
-export const createRoom = async (dimensions: Vector3, wallTexture: Texture | Promise<Texture>) => {
+export const createRoomMesh = async (dimensions: Vector3, wallTexture: Texture | Promise<Texture>) => {
   const moldOffset = 0 // TODO: if moldOffset is not 0, then union is not removing it with the wall
 
   const group = new Group()
@@ -105,11 +106,18 @@ export const createRoom = async (dimensions: Vector3, wallTexture: Texture | Pro
   group.add(await createFloor(dimensions))
   group.add(await createNorthWall(dimensions, moldOffset, wallTexture))
   group.add(await createSouthWall(dimensions, moldOffset, wallTexture))
-  // group.add(await createWestWall(dimensions, moldOffset, wallTexture))
+  group.add(await createWestWall(dimensions, moldOffset, wallTexture))
   group.add(await createEastWall(dimensions, moldOffset, wallTexture))
   group.add(await createCeiling(dimensions))
 
-  const room = ArxMap.fromThreeJsMesh(group)
+  return group
+}
+
+export const createRoomFromMesh = async (
+  mesh: Object3D,
+  tryToQuadify: typeof QUADIFY | typeof DONT_QUADIFY = QUADIFY,
+) => {
+  const room = ArxMap.fromThreeJsMesh(mesh, tryToQuadify)
   const moldTexture = await mold
 
   room.polygons.forEach((polygon) => {
@@ -120,4 +128,8 @@ export const createRoom = async (dimensions: Vector3, wallTexture: Texture | Pro
   })
 
   return room
+}
+
+export const createRoom = async (dimensions: Vector3, wallTexture: Texture | Promise<Texture>) => {
+  return createRoomFromMesh(await createRoomMesh(dimensions, wallTexture))
 }

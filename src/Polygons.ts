@@ -203,7 +203,7 @@ export class Polygons extends Array<Polygon> {
     }
 
     threeJsObj.children.forEach((child) => {
-      this.addThreeJsMesh(child)
+      this.addThreeJsMesh(child, tryToQuadify)
     })
   }
 
