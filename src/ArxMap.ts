@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { Box3, Object3D } from 'three'
 import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf } from 'arx-convert/utils'
 import {
   ArxAMB,
@@ -15,7 +16,7 @@ import {
 } from 'arx-convert/types'
 import { times } from '@src/faux-ramda'
 import { Vector3 } from '@src/Vector3'
-import { getPackageVersion, uninstall } from '@src/helpers'
+import { getPackageVersion, latin9ToLatin1, uninstall } from '@src/helpers'
 import { Polygon } from '@src/Polygon'
 import { OriginalLevel } from '@src/types'
 import { LevelLoader } from '@src/LevelLoader'
@@ -28,11 +29,11 @@ import { Fog } from '@src/Fog'
 import { Zone } from '@src/Zone'
 import { Portal } from '@src/Portal'
 import { Path } from '@src/Path'
-import { Box3, Object3D } from 'three'
 import { DONT_QUADIFY, Polygons, QUADIFY } from '@src/Polygons'
 import { Entities } from '@src/Entities'
 import { Lights } from '@src/Lights'
 import { AMB } from 'arx-convert'
+import { Script } from '@src/Script'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -376,6 +377,17 @@ export class ArxMap {
       }
     }, {} as Record<string, ArxAMB>)
 
+    const scripts = this.entities.reduce((acc, entity) => {
+      if (entity.script === undefined) {
+        return acc
+      }
+
+      return {
+        ...acc,
+        [entity.exportTarget(outputDir)]: entity.script?.toArxData(),
+      }
+    }, {} as Record<string, string>)
+
     const files = {
       dlf: path.resolve(outputDir, `graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`),
       fts: path.resolve(outputDir, `game/graph/levels/level${levelIdx}/fast.fts.json`),
@@ -388,6 +400,7 @@ export class ArxMap {
         ...Object.keys(resets),
         ...Object.keys(ambienceTracks),
         ...Object.keys(customAmbiences),
+        ...Object.keys(scripts),
         ...Object.values(files),
         ...Object.values(files).map((filename) => filename.replace(/\.json$/, '')),
       ],
@@ -411,14 +424,19 @@ export class ArxMap {
 
     // ------------------------
 
-    const filesToGenerate = [...Object.entries(customAmbiences)]
-
-    for (const [target, amb] of filesToGenerate) {
+    for (const [target, amb] of Object.entries(customAmbiences)) {
       const stringifiedAmb = prettify ? JSON.stringify(amb, null, 2) : JSON.stringify(amb)
       await fs.promises.writeFile(target, stringifiedAmb)
 
       const compiledAmb = AMB.save(amb)
       await fs.promises.writeFile(target.replace(/\.json$/, ''), compiledAmb)
+    }
+
+    // ------------------------
+
+    for (const [target, script] of Object.entries(scripts)) {
+      const latin1Script = latin9ToLatin1(script.replace(/\n/g, Script.EOL))
+      await fs.promises.writeFile(target, latin1Script, 'latin1')
     }
 
     // ------------------------

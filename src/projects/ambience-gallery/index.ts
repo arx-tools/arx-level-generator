@@ -126,9 +126,6 @@ export default async () => {
 
   map.entities.push(marker)
 
-  console.log(marker.exportTarget(OUTPUTDIR))
-  console.log(marker.script?.toArxData())
-
   map.finalize()
 
   map.saveToDisk(OUTPUTDIR, parseInt(LEVEL))

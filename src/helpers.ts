@@ -85,3 +85,16 @@ export const removeByValue = <T>(value: T, array: T[]) => {
   const idx = array.indexOf(value)
   array.splice(idx, 1)
 }
+
+// source: https://en.wikipedia.org/wiki/ISO/IEC_8859-15
+export const latin9ToLatin1 = (str: string) => {
+  return str
+    .replace('€', '¤')
+    .replace('Š', '¦')
+    .replace('š', '¨')
+    .replace('Ž', '´')
+    .replace('ž', '¸')
+    .replace('Œ', '¼')
+    .replace('œ', '½')
+    .replace('Ÿ', '¾')
+}

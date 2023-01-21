@@ -98,4 +98,10 @@ export class Entity {
   static get marker() {
     return new Entity({ name: 'system/marker' })
   }
+  static get torch() {
+    return new Entity({ name: 'items/provisions/torch' })
+  }
+  static get runeAam() {
+    return new Entity({ name: 'items/magic/rune_aam' })
+  }
 }

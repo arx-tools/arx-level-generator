@@ -25,6 +25,8 @@ make sure that all assets are lowercase
 
 audio should be Microsoft ADCPM `wav`
 
+`asl` scripts should be exported with ISO 8859-15 encoding and `\r\n` line endings
+
 ## Notable dependencies
 
 Fred's lighting calculator: https://github.com/fredlllll/ArxLibertatisLightingCalculator

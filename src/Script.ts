@@ -17,9 +17,11 @@ export class Script {
   }
 
   toArxData() {
-    // TODO: encoding + line endings
     return `
-// hello
+on init {
+  herosay "hello!"
+  accept
+}
     `
   }
 }
