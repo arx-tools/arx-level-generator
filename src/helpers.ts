@@ -95,3 +95,7 @@ export const latin9ToLatin1 = (str: string) => {
     .replace('œ', '½')
     .replace('Ÿ', '¾')
 }
+
+export const roundToNDecimals = (decimals: number, x: number) => {
+  return Math.round(x * 10 ** decimals) / 10 ** decimals
+}

@@ -10,6 +10,8 @@ import path from 'node:path'
 import seedrandom from 'seedrandom'
 import { EdgesGeometry, MathUtils, Shape, ShapeGeometry, Vector2 } from 'three'
 import { ControlZone } from '@src/scripting/properties/ControlZone'
+import { makeBumpy } from '@src/helpers'
+import { DONT_QUADIFY } from '@src/Polygons'
 
 const createZone = (pos: Vector3, size: Vector2, ambience: Ambience, height: number = Infinity) => {
   const shape = new Shape()
@@ -100,7 +102,8 @@ export default async () => {
   const depth = rowSize * 300 + 200
   const floor = await createPlaneMesh(width, depth, Color.white, Texture.humanPaving1)
   floor.translateX(width / 2 - 200)
-  map.add(ArxMap.fromThreeJsMesh(floor), true)
+  makeBumpy(5, 60, floor)
+  map.add(ArxMap.fromThreeJsMesh(floor, DONT_QUADIFY), true)
 
   const position = new Vector3(-200, 10, -depth / 2)
   const mainZone = createZone(position, new Vector2(width, depth), Ambience.none, 10)

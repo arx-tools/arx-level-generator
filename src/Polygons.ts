@@ -1,9 +1,9 @@
 import { ArxColor, ArxPolygonFlags, ArxTextureContainer, ArxVertex } from 'arx-convert/types'
 import { sum, times } from '@src/faux-ramda'
-import { applyTransformations, evenAndRemainder } from '@src/helpers'
+import { applyTransformations, evenAndRemainder, roundToNDecimals } from '@src/helpers'
 import { Polygon, TransparencyType } from '@src/Polygon'
 import { Vector3 } from '@src/Vector3'
-import { Mesh, MeshBasicMaterial, Object3D, Color as ThreeJsColor, Box3 } from 'three'
+import { Mesh, MeshBasicMaterial, Object3D, Color as ThreeJsColor, Box3, BufferAttribute } from 'three'
 import { Color } from '@src/Color'
 import { Texture } from '@src/Texture'
 import { Vertex } from '@src/Vertex'
@@ -122,9 +122,9 @@ export class Polygons extends Array<Polygon> {
     }
 
     if (threeJsObj instanceof Mesh) {
-      const index = threeJsObj.geometry.getIndex()
-      const coords = threeJsObj.geometry.getAttribute('position')
-      const uv = threeJsObj.geometry.getAttribute('uv')
+      const index: BufferAttribute = threeJsObj.geometry.getIndex()
+      const coords: BufferAttribute = threeJsObj.geometry.getAttribute('position')
+      const uvs: BufferAttribute = threeJsObj.geometry.getAttribute('uv')
       const vertices: Vertex[] = []
 
       let color = Color.white
@@ -136,20 +136,26 @@ export class Polygons extends Array<Polygon> {
         }
       }
 
+      function toVertex3(idx: number, coords: BufferAttribute, uvs: BufferAttribute, color: Color) {
+        const precision = 10
+        const x = roundToNDecimals(precision, coords.getX(idx))
+        const y = roundToNDecimals(precision, coords.getY(idx) * -1)
+        const z = roundToNDecimals(precision, coords.getZ(idx))
+        const u = uvs.getX(idx)
+        const v = uvs.getY(idx)
+        return new Vertex(x, y, z, u, v, color)
+      }
+
       if (index === null) {
         // non-indexed, all vertices are unique
         for (let idx = 0; idx < coords.count; idx++) {
-          vertices.push(
-            new Vertex(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx), uv.getX(idx), uv.getY(idx), color),
-          )
+          vertices.push(toVertex3(idx, coords, uvs, color))
         }
       } else {
         // indexed, has shared vertices
         for (let i = 0; i < index.count; i++) {
           const idx = index.getX(i)
-          vertices.push(
-            new Vertex(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx), uv.getX(idx), uv.getY(idx), color),
-          )
+          vertices.push(toVertex3(idx, coords, uvs, color))
         }
       }
 
