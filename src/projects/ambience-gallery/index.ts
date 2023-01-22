@@ -10,6 +10,10 @@ import { Texture } from '@src/Texture'
 import { Vector3 } from '@src/Vector3'
 import { Zone } from '@src/Zone'
 import { ControlZone } from '@src/scripting/properties/ControlZone'
+import { makeBumpy } from '@tools/mesh/makeBumpy'
+import { ambiences } from './constants'
+import { transformEdge } from '@tools/mesh/transformEdge'
+import { DONT_QUADIFY } from '@src/Polygons'
 
 const createZone = (pos: Vector3, size: Vector2, ambience: Ambience, height: number = Infinity) => {
   const shape = new Shape()
@@ -28,54 +32,6 @@ const createZone = (pos: Vector3, size: Vector2, ambience: Ambience, height: num
     ambience,
   })
 }
-
-const ambiences = [
-  Ambience.blackThing,
-  Ambience.bunkerAkbaa,
-  Ambience.bunker,
-  Ambience.castle,
-  Ambience.caveA,
-  Ambience.caveB,
-  Ambience.caveFrozen,
-  Ambience.caveGreu,
-  Ambience.caveLava,
-  Ambience.caveWorm,
-  Ambience.credits,
-  Ambience.cryptA,
-  Ambience.cryptB,
-  Ambience.cryptC,
-  Ambience.cryptD,
-  Ambience.cryptE,
-  Ambience.cryptF,
-  Ambience.cryptLich,
-  Ambience.dramatic,
-  Ambience.dwarf,
-  Ambience.fight,
-  Ambience.fightMusic,
-  Ambience.gobCastle,
-  Ambience.gobIntro,
-  Ambience.jailMain,
-  Ambience.jailStress,
-  Ambience.gobRuin,
-  Ambience.importantPlace,
-  Ambience.introA,
-  Ambience.intro,
-  Ambience.introB,
-  Ambience.menu,
-  Ambience.noden,
-  Ambience.outpost,
-  Ambience.rebelsCool,
-  Ambience.rebelsIntense,
-  Ambience.snakeCastle,
-  Ambience.snakeIllusion,
-  Ambience.tavern,
-  Ambience.templeAkbaa,
-  Ambience.templeAkbaaUp,
-  Ambience.town,
-  Ambience.troll,
-  Ambience.reverbTest,
-  Ambience.stress,
-]
 
 export default async () => {
   const {
@@ -98,9 +54,12 @@ export default async () => {
 
   const width = Math.ceil(ambiences.length / rowSize) * 300 + 400
   const depth = rowSize * 300 + 200
-  const floor = await createPlaneMesh(width, depth, Color.white, Texture.humanPaving1)
-  floor.translateX(width / 2 - 200)
-  map.add(ArxMap.fromThreeJsMesh(floor), true)
+  const floorMesh = await createPlaneMesh(width, depth, Color.white, Texture.humanPaving1)
+  transformEdge(new Vector3(0, -30, 0), floorMesh)
+  makeBumpy(10, 60, floorMesh)
+  floorMesh.translateX(width / 2 - 200)
+
+  map.add(ArxMap.fromThreeJsMesh(floorMesh, DONT_QUADIFY), true)
 
   const position = new Vector3(-200, 10, -depth / 2)
   const mainZone = createZone(position, new Vector2(width, depth), Ambience.none, 10)

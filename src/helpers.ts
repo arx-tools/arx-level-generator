@@ -1,7 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { Mesh, Object3D } from 'three'
-import { randomBetween } from '@src/random'
 
 export const getPackageVersion = async () => {
   try {
@@ -50,28 +49,6 @@ export const applyTransformations = (threeJsObj: Object3D) => {
   threeJsObj.rotation.set(0, 0, 0)
   threeJsObj.scale.set(1, 1, 1)
   threeJsObj.updateMatrix()
-}
-
-export const makeBumpy = (volume: number, percentage: number, mesh: Mesh) => {
-  const index = mesh.geometry.getIndex()
-  const coords = mesh.geometry.getAttribute('position')
-
-  if (index === null) {
-    // non-indexed, all vertices are unique
-    for (let idx = 0; idx < coords.count; idx++) {
-      if (randomBetween(0, 100) < percentage) {
-        coords.setY(idx, coords.getY(idx) + randomBetween(-volume, volume))
-      }
-    }
-  } else {
-    // indexed, has shared vertices
-    for (let i = 0; i < index.count; i++) {
-      const idx = index.getX(i)
-      if (randomBetween(0, 100) < percentage) {
-        coords.setY(idx, coords.getY(idx) + randomBetween(-volume, volume))
-      }
-    }
-  }
 }
 
 export const percentOf = (percentage: number, maxValue: number) => {
