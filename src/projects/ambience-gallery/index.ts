@@ -1,3 +1,6 @@
+import path from 'node:path'
+import seedrandom from 'seedrandom'
+import { EdgesGeometry, MathUtils, Shape, ShapeGeometry, Vector2 } from 'three'
 import { Ambience } from '@src/Ambience'
 import { ArxMap } from '@src/ArxMap'
 import { Color } from '@src/Color'
@@ -6,12 +9,7 @@ import { createPlaneMesh } from '@src/prefabs/mesh/plane'
 import { Texture } from '@src/Texture'
 import { Vector3 } from '@src/Vector3'
 import { Zone } from '@src/Zone'
-import path from 'node:path'
-import seedrandom from 'seedrandom'
-import { EdgesGeometry, MathUtils, Shape, ShapeGeometry, Vector2 } from 'three'
 import { ControlZone } from '@src/scripting/properties/ControlZone'
-import { makeBumpy } from '@src/helpers'
-import { DONT_QUADIFY } from '@src/Polygons'
 
 const createZone = (pos: Vector3, size: Vector2, ambience: Ambience, height: number = Infinity) => {
   const shape = new Shape()
@@ -102,8 +100,7 @@ export default async () => {
   const depth = rowSize * 300 + 200
   const floor = await createPlaneMesh(width, depth, Color.white, Texture.humanPaving1)
   floor.translateX(width / 2 - 200)
-  makeBumpy(5, 60, floor)
-  map.add(ArxMap.fromThreeJsMesh(floor, DONT_QUADIFY), true)
+  map.add(ArxMap.fromThreeJsMesh(floor), true)
 
   const position = new Vector3(-200, 10, -depth / 2)
   const mainZone = createZone(position, new Vector2(width, depth), Ambience.none, 10)
@@ -125,7 +122,7 @@ export default async () => {
       marker.position = pos.clone().add(new Vector3(50, -30, 50))
       marker.script?.properties.push(new ControlZone(zone))
       marker.script?.on('controlledzone_enter', () => {
-        return `herosay "now playing: ${zone.name}"`
+        return `herosay "${zone.name}"`
       })
       map.entities.push(marker)
 
