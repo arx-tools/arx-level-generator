@@ -1,7 +1,8 @@
 import theBackrooms from '@projects/the-backrooms'
 import joinedGoblinLevels from '@projects/joined-goblin-levels'
 import ambienceGallery from '@projects/ambience-gallery'
-import tiltedRoomDemo from './projects/tilted-room-demo/index'
+import tiltedRoomDemo from '@projects/tilted-room-demo'
+import aliasNightmare from '@projects/alias-nightmare'
 
 const { PROJECT } = process.env
 
@@ -18,6 +19,9 @@ switch (PROJECT) {
   case 'tilted-room-demo':
     tiltedRoomDemo()
     break
+  case 'alias-nightmare':
+    aliasNightmare()
+    break
   default:
-    console.log(`project "${PROJECT}" not found`)
+    throw new Error(`project "${PROJECT}" not found`)
 }

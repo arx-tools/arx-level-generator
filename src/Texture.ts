@@ -158,7 +158,34 @@ export class Texture extends ThreeJsTextue {
   static get l1DragonGround08() {
     return new Texture({ filename: 'l1_dragon_[ice]_ground08.jpg', size: 128 })
   }
+  static get l1PrisonGridl02() {
+    return new Texture({ filename: 'l1_prison_(stone)_gridl02', size: 64 })
+  }
+  static get l2TrollGround04() {
+    return new Texture({ filename: 'l2_troll_[stone]_ground04.jpg', size: 128 })
+  }
+  static get l2GobelFloor02() {
+    return new Texture({ filename: 'l2_gobel_[stone]_floor02.jpg', size: 128 })
+  }
   static get l2GobelCenter() {
     return new Texture({ filename: 'l2_gobel_[stone]_center.jpg', size: 128 })
+  }
+  static get l6RatmenWall03() {
+    return new Texture({ filename: 'l6_ratmen_[flesh]_wall03.jpg', size: 256 })
+  }
+  static get humanStoneWall() {
+    return new Texture({ filename: '[stone]_human_stone_wall.jpg', size: 256 })
+  }
+  static get humanStoneWall1() {
+    return new Texture({ filename: '[stone]_human_stone_wall1.jpg', size: 256 })
+  }
+  static get humanStoneWall2() {
+    return new Texture({ filename: '[stone]_human_stone_wall2.jpg', size: 256 })
+  }
+  static get humanAkbaa2F() {
+    return new Texture({ filename: '[stone]_human_akbaa2_f.jpg', size: 256 })
+  }
+  static get humanAkbaa4F() {
+    return new Texture({ filename: '[stone]_human_akbaa4_f.jpg', size: 256 })
   }
 }

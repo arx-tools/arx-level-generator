@@ -10,10 +10,7 @@ import { Texture } from '@src/Texture'
 import { Vector3 } from '@src/Vector3'
 import { Zone } from '@src/Zone'
 import { ControlZone } from '@src/scripting/properties/ControlZone'
-import { makeBumpy } from '@tools/mesh/makeBumpy'
 import { ambiences } from './constants'
-import { transformEdge } from '@tools/mesh/transformEdge'
-import { DONT_QUADIFY } from '@src/Polygons'
 
 const createZone = (pos: Vector3, size: Vector2, ambience: Ambience, height: number = Infinity) => {
   const shape = new Shape()
@@ -55,11 +52,8 @@ export default async () => {
   const width = Math.ceil(ambiences.length / rowSize) * 300 + 400
   const depth = rowSize * 300 + 200
   const floorMesh = await createPlaneMesh(width, depth, Color.white, Texture.humanPaving1)
-  transformEdge(new Vector3(0, -30, 0), floorMesh)
-  makeBumpy(10, 60, floorMesh)
   floorMesh.translateX(width / 2 - 200)
-
-  map.add(ArxMap.fromThreeJsMesh(floorMesh, DONT_QUADIFY), true)
+  map.add(ArxMap.fromThreeJsMesh(floorMesh), true)
 
   const position = new Vector3(-200, 10, -depth / 2)
   const mainZone = createZone(position, new Vector2(width, depth), Ambience.none, 10)
