@@ -2,15 +2,14 @@ import { Ambience } from '@src/Ambience'
 import { ArxMap } from '@src/ArxMap'
 import { Color } from '@src/Color'
 import { Entity } from '@src/Entity'
-import { pickWeightedRandoms, randomBetween } from '@src/random'
 import { createPlaneMesh } from '@src/prefabs/mesh/plane'
-import { Interactivity } from '@src/scripting/properties/Interactivity'
 import { Texture } from '@src/Texture'
 import { Vector3 } from '@src/Vector3'
 import { Zone } from '@src/Zone'
 import path from 'node:path'
 import seedrandom from 'seedrandom'
 import { EdgesGeometry, MathUtils, Shape, ShapeGeometry, Vector2 } from 'three'
+import { ControlZone } from '@src/scripting/properties/ControlZone'
 
 const createZone = (pos: Vector3, size: Vector2, ambience: Ambience, height: number = Infinity) => {
   const shape = new Shape()
@@ -24,7 +23,7 @@ const createZone = (pos: Vector3, size: Vector2, ambience: Ambience, height: num
   edge.translate(pos.x, pos.y, pos.z)
 
   return Zone.fromThreejsGeometry(edge, {
-    name: `play "${ambience.name}"`,
+    name: ambience.name,
     height,
     ambience,
   })
@@ -78,59 +77,6 @@ const ambiences = [
   Ambience.stress,
 ]
 
-const createNorthGates = (mapWidth: number, mapDepth: number) => {
-  const numberOfGates = Math.floor(mapWidth / 205)
-
-  const tiltX = pickWeightedRandoms(
-    numberOfGates,
-    [
-      { value: -3, zCorrection: -21, weight: 20 },
-      { value: -10, zCorrection: -50, weight: 1 },
-      { value: 0, zCorrection: 0, weight: 50 },
-      { value: 5, zCorrection: 25, weight: 10 },
-      { value: 3, zCorrection: 21, weight: 10 },
-    ],
-    true,
-  )
-  const tiltZ = pickWeightedRandoms(
-    numberOfGates,
-    [
-      { value: -3, weight: 20 },
-      { value: 0, weight: 100 },
-      { value: 3, weight: 100 },
-    ],
-    true,
-  )
-
-  const gates: Entity[] = []
-
-  let tiltZOffset = 0
-  for (let i = 0; i < numberOfGates; i++) {
-    tiltZOffset += tiltZ[i].value < 0 ? 20 : 0
-
-    const gate = Entity.porticullis.withScript()
-    gate.position.add(
-      new Vector3(-100 + i * 205 + tiltZOffset, -295 + randomBetween(0, 20), mapDepth / 2 - 20 + tiltX[i].zCorrection),
-    )
-    gate.orientation.x += MathUtils.degToRad(tiltX[i].value)
-    gate.orientation.y += MathUtils.degToRad(90)
-    gate.orientation.z += MathUtils.degToRad(180 + tiltZ[i].value)
-    gate.script?.properties.push(Interactivity.off)
-    gates.push(gate)
-  }
-
-  const gatesToBeRemoved = Math.ceil(tiltZOffset / 205)
-  for (let i = 0; i < gatesToBeRemoved; i++) {
-    gates.pop()
-  }
-
-  gates.forEach((gate, idx) => {
-    gate.position.x += idx * ((gatesToBeRemoved * 205 - tiltZOffset) / (gates.length - 1))
-  })
-
-  return gates
-}
-
 export default async () => {
   const {
     OUTPUTDIR = path.resolve(__dirname, './dist'),
@@ -166,23 +112,27 @@ export default async () => {
     for (let j = 0; j < slice.length; j++) {
       const ambience = ambiences[i + j]
 
-      const p = new Vector3((i / rowSize) * 300 + 100, 30, j * 300 - depth / 2 + 200)
+      const pos = new Vector3((i / rowSize) * 300 + 100, 30, j * 300 - depth / 2 + 200)
       const size = new Vector2(100, 100)
 
-      map.zones.push(createZone(p, size, ambience, 50))
+      const zone = createZone(pos, size, ambience, 50)
+      map.zones.push(zone)
+
+      const marker = Entity.marker.withScript()
+      marker.position = pos.clone().add(new Vector3(50, -30, 50))
+      marker.script?.properties.push(new ControlZone(zone))
+      marker.script?.on('controlledzone_enter', () => {
+        return `herosay "now playing: ${zone.name}"`
+      })
+      map.entities.push(marker)
 
       const tile = await createPlaneMesh(size.x, size.y, Color.white, Texture.l2GobelCenter)
-      tile.translateX(p.x + 50)
-      tile.translateY(p.y)
-      tile.translateZ(p.z + 50)
+      tile.translateX(pos.x + 50)
+      tile.translateY(pos.y)
+      tile.translateZ(pos.z + 50)
       map.add(ArxMap.fromThreeJsMesh(tile), true)
     }
   }
-
-  const marker = Entity.marker.withScript()
-  map.entities.push(marker)
-
-  map.entities.push(...createNorthGates(width, depth))
 
   map.finalize()
 
