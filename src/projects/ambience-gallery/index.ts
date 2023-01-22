@@ -1,6 +1,16 @@
 import path from 'node:path'
 import seedrandom from 'seedrandom'
-import { EdgesGeometry, MathUtils, Shape, ShapeGeometry, Vector2 } from 'three'
+import {
+  BufferAttribute,
+  EdgesGeometry,
+  ExtrudeGeometry,
+  MathUtils,
+  Mesh,
+  MeshBasicMaterial,
+  Shape,
+  ShapeGeometry,
+  Vector2,
+} from 'three'
 import { Ambience } from '@src/Ambience'
 import { ArxMap } from '@src/ArxMap'
 import { Color } from '@src/Color'
@@ -11,6 +21,8 @@ import { Vector3 } from '@src/Vector3'
 import { Zone } from '@src/Zone'
 import { ControlZone } from '@src/scripting/properties/ControlZone'
 import { ambiences } from './constants'
+import { applyTransformations } from '@src/helpers'
+import { DONT_QUADIFY } from '@src/Polygons'
 
 const createZone = (pos: Vector3, size: Vector2, ambience: Ambience, height: number = Infinity) => {
   const shape = new Shape()
@@ -53,6 +65,7 @@ export default async () => {
   const depth = rowSize * 300 + 200
   const floorMesh = await createPlaneMesh(width, depth, Color.white, Texture.humanPaving1)
   floorMesh.translateX(width / 2 - 200)
+
   map.add(ArxMap.fromThreeJsMesh(floorMesh), true)
 
   const position = new Vector3(-200, 10, -depth / 2)
@@ -79,11 +92,47 @@ export default async () => {
       })
       map.entities.push(marker)
 
-      const tile = await createPlaneMesh(size.x, size.y, Color.white, Texture.l2GobelCenter)
-      tile.translateX(pos.x + 50)
-      tile.translateY(pos.y)
-      tile.translateZ(pos.z + 50)
-      map.add(ArxMap.fromThreeJsMesh(tile), true)
+      // --------------------------
+
+      const extrudeSettings = {
+        steps: 1,
+        depth: 100,
+        bevelEnabled: true,
+        bevelThickness: 10,
+        bevelSize: 10,
+        bevelOffset: 0,
+        bevelSegments: 1,
+      }
+
+      const shape = new Shape()
+      shape.lineTo(size.x - extrudeSettings.bevelSize * 2, 0)
+      shape.lineTo(size.x - extrudeSettings.bevelSize * 2, size.y - extrudeSettings.bevelSize * 2)
+      shape.lineTo(0, size.y - extrudeSettings.bevelSize * 2)
+
+      const tileGeometry = new ExtrudeGeometry(shape, extrudeSettings)
+
+      const material = new MeshBasicMaterial({
+        color: Color.white.getHex(),
+        map: Texture.l2GobelCenter,
+      })
+
+      const uv = tileGeometry.getAttribute('uv')
+      const newUV = []
+      for (let i = 0; i < uv.count; i++) {
+        newUV.push(uv.array[i * uv.itemSize] * 0.01, uv.array[i * uv.itemSize + 1] * 0.01)
+      }
+      tileGeometry.setAttribute('uv', new BufferAttribute(Float32Array.from(newUV), uv.itemSize))
+
+      const mesh = new Mesh(tileGeometry, material)
+      mesh.translateX(pos.x + extrudeSettings.bevelSize)
+      mesh.translateY(pos.y - extrudeSettings.depth)
+      mesh.translateZ(pos.z + (size.y - extrudeSettings.bevelSize))
+      mesh.rotateX(MathUtils.degToRad(-90))
+      applyTransformations(mesh)
+
+      // --------------------------
+
+      map.add(ArxMap.fromThreeJsMesh(mesh, DONT_QUADIFY), true)
     }
   }
 
