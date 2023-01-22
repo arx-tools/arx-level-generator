@@ -10,10 +10,11 @@ export const transformEdge = (offset: Vector3, mesh: Mesh) => {
   const coords = mesh.geometry.getAttribute('position')
 
   vertices.forEach((vertex) => {
-    const v = edgeVertices.find((edgeVertex) => {
+    const edgeIdx = edgeVertices.findIndex((edgeVertex) => {
       return edgeVertex.vector.equals(vertex.vector)
     })
-    if (v !== undefined) {
+    if (edgeIdx !== -1) {
+      edgeVertices.splice(edgeIdx, 1)
       coords.setX(vertex.idx, vertex.vector.x + offset.x)
       coords.setY(vertex.idx, vertex.vector.y + offset.y)
       coords.setZ(vertex.idx, vertex.vector.z + offset.z)
