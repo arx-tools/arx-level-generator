@@ -8,18 +8,18 @@ export const INDEXED = 'indexed'
 export const NONINDEXED = 'non-indexed'
 
 export async function createPlaneMesh(
-  width: number,
-  height: number,
+  dimensions: Vector2,
+  tileSize: number,
   color: Color,
   texture: Texture | Promise<Texture>,
   isIndexed: typeof INDEXED | typeof NONINDEXED = INDEXED,
 ) {
-  const divisionX = Math.ceil(width / 100)
-  const divisionY = Math.ceil(height / 100)
+  const divisionX = Math.ceil(dimensions.x / tileSize)
+  const divisionY = Math.ceil(dimensions.y / tileSize)
 
-  const geometry = new PlaneGeometry(width, height, divisionX, divisionY)
+  const geometry = new PlaneGeometry(dimensions.x, dimensions.y, divisionX, divisionY)
 
-  scaleUV(new Vector2(width, height), geometry)
+  scaleUV(new Vector2(dimensions.x / tileSize, dimensions.y / tileSize), geometry)
 
   if (texture instanceof Promise) {
     texture = await texture

@@ -10,7 +10,7 @@ import { Vector3 } from '@src/Vector3'
 import { Zone } from '@src/Zone'
 import path from 'node:path'
 import seedrandom from 'seedrandom'
-import { EdgesGeometry, MathUtils, Shape, ShapeGeometry } from 'three'
+import { EdgesGeometry, MathUtils, Shape, ShapeGeometry, Vector2 } from 'three'
 
 const createSpawn = () => {
   const shape = new Shape()
@@ -32,7 +32,12 @@ const createSpawn = () => {
 }
 
 const createIsland = async (width: number, height: number) => {
-  const floorMesh = await createPlaneMesh(width, height, Color.white.darken(50), Texture.humanAkbaa2F)
+  const floorMesh = await createPlaneMesh(
+    new Vector2(width, height),
+    100,
+    Color.white.darken(50),
+    Texture.stoneHumanAkbaa2F,
+  )
   transformEdge(new Vector3(0, -30, 0), floorMesh)
   makeBumpy(10, 60, floorMesh)
   return ArxMap.fromThreeJsMesh(floorMesh, DONT_QUADIFY)

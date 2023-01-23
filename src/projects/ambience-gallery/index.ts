@@ -24,6 +24,9 @@ import { ambiences } from './constants'
 import { DONT_QUADIFY } from '@src/Polygons'
 import { makeBumpy } from '@tools/mesh/makeBumpy'
 import { scaleUV } from '@tools/mesh/scaleUV'
+import { applyTransformations } from '@src/helpers'
+import { translateUV } from '@tools/mesh/translateUV'
+import { transformEdge } from '@tools/mesh/transformEdge'
 
 const createZone = (pos: Vector3, size: Vector2, ambience: Ambience, height: number = Infinity) => {
   const shape = new Shape()
@@ -64,9 +67,11 @@ export default async () => {
 
   const width = Math.ceil(ambiences.length / rowSize) * 300 + 400
   const depth = rowSize * 300 + 200
-  const floorMesh = await createPlaneMesh(width, depth, Color.white, Texture.humanPaving1)
+  const floorMesh = await createPlaneMesh(new Vector2(width, depth), 30, Color.white, Texture.l5CavesGravelGround05)
   floorMesh.translateX(width / 2 - 200)
-  makeBumpy(5, 60, floorMesh)
+  transformEdge(new Vector3(0, 7, 0), floorMesh)
+  makeBumpy(7, 25, floorMesh)
+  scaleUV(new Vector2(0.25, 0.25), floorMesh.geometry)
   map.add(ArxMap.fromThreeJsMesh(floorMesh, DONT_QUADIFY), true)
 
   const position = new Vector3(-200, 10, -depth / 2)
@@ -111,11 +116,12 @@ export default async () => {
       shape.lineTo(0, size.y - extrudeSettings.bevelSize * 2)
 
       const tileGeometry = new ExtrudeGeometry(shape, extrudeSettings)
-      scaleUV(new Vector2(1, 1), tileGeometry)
+      scaleUV(new Vector2(1 / size.x, 1 / size.y), tileGeometry)
+      translateUV(new Vector2(0.1, 0), tileGeometry)
 
       const material = new MeshBasicMaterial({
-        color: Color.white.getHex(),
-        map: Texture.l2GobelCenter,
+        color: Color.white.darken(50).getHex(),
+        map: Texture.l4YlsideStoneGround01,
       })
 
       const mesh = new Mesh(tileGeometry, material)

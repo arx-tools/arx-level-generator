@@ -3,14 +3,14 @@ import { ArxMap } from '@src/ArxMap'
 import { Color } from '@src/Color'
 import { createPlaneMesh } from '@prefabs/mesh/plane'
 import { carpet, ceilingTile, mold } from './materials'
-import { Group, MathUtils, Object3D } from 'three'
+import { Group, MathUtils, Object3D, Vector2 } from 'three'
 import { Vector3 } from '@src/Vector3'
 import { Texture } from '@src/Texture'
 import { DONT_QUADIFY, QUADIFY } from '@src/Polygons'
 
 const createFloor = async (dimensions: Vector3) => {
   const { x: width, y: height, z: depth } = dimensions
-  return await createPlaneMesh(width, depth, Color.white.darken(70), carpet)
+  return await createPlaneMesh(new Vector2(width, depth), 100, Color.white.darken(70), carpet)
 }
 
 const createNorthWall = async (dimensions: Vector3, moldOffset: number, texture: Texture | Promise<Texture>) => {
@@ -18,11 +18,11 @@ const createNorthWall = async (dimensions: Vector3, moldOffset: number, texture:
 
   const group = new Group()
 
-  const wall = await createPlaneMesh(width, height, Color.white.darken(50), texture)
+  const wall = await createPlaneMesh(new Vector2(width, height), 100, Color.white.darken(50), texture)
   wall.translateZ(depth / 2).translateY(height / 2)
   wall.rotateX(MathUtils.degToRad(-90))
 
-  const moldyWall = await createPlaneMesh(width, 100, Color.white.darken(50), mold)
+  const moldyWall = await createPlaneMesh(new Vector2(width, 100), 100, Color.white.darken(50), mold)
   moldyWall.translateZ(depth / 2 - moldOffset).translateY(50)
   moldyWall.rotateX(MathUtils.degToRad(-90))
 
@@ -37,11 +37,11 @@ const createSouthWall = async (dimensions: Vector3, moldOffset: number, texture:
 
   const group = new Group()
 
-  const wall = await createPlaneMesh(width, height, Color.white.darken(50), texture)
+  const wall = await createPlaneMesh(new Vector2(width, height), 100, Color.white.darken(50), texture)
   wall.translateZ(-depth / 2).translateY(height / 2)
   wall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(180))
 
-  const moldyWall = await createPlaneMesh(width, 100, Color.white.darken(50), mold)
+  const moldyWall = await createPlaneMesh(new Vector2(width, 100), 100, Color.white.darken(50), mold)
   moldyWall.translateZ(-depth / 2 + moldOffset).translateY(50)
   moldyWall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(180))
 
@@ -56,11 +56,11 @@ const createWestWall = async (dimensions: Vector3, moldOffset: number, texture: 
 
   const group = new Group()
 
-  const wall = await createPlaneMesh(depth, height, Color.white.darken(50), texture)
+  const wall = await createPlaneMesh(new Vector2(depth, height), 100, Color.white.darken(50), texture)
   wall.translateX(-width / 2).translateY(height / 2)
   wall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(-90))
 
-  const moldyWall = await createPlaneMesh(depth, 100, Color.white.darken(50), mold)
+  const moldyWall = await createPlaneMesh(new Vector2(depth, 100), 100, Color.white.darken(50), mold)
   moldyWall.translateX(-width / 2 + moldOffset).translateY(50)
   moldyWall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(-90))
 
@@ -75,11 +75,11 @@ const createEastWall = async (dimensions: Vector3, moldOffset: number, texture: 
 
   const group = new Group()
 
-  const wall = await createPlaneMesh(depth, height, Color.white.darken(50), texture)
+  const wall = await createPlaneMesh(new Vector2(depth, height), 100, Color.white.darken(50), texture)
   wall.translateX(width / 2).translateY(height / 2)
   wall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(90))
 
-  const moldyWall = await createPlaneMesh(depth, 100, Color.white.darken(50), mold)
+  const moldyWall = await createPlaneMesh(new Vector2(depth, 100), 100, Color.white.darken(50), mold)
   moldyWall.translateX(width / 2 - moldOffset).translateY(50)
   moldyWall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(90))
 
@@ -92,7 +92,7 @@ const createEastWall = async (dimensions: Vector3, moldOffset: number, texture: 
 const createCeiling = async (dimensions: Vector3) => {
   const { x: width, y: height, z: depth } = dimensions
 
-  const mesh = await createPlaneMesh(width, depth, Color.white.darken(50), ceilingTile)
+  const mesh = await createPlaneMesh(new Vector2(width, depth), 100, Color.white.darken(50), ceilingTile)
   mesh.translateY(height)
   mesh.rotateX(MathUtils.degToRad(180))
   return mesh

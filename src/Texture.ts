@@ -143,58 +143,76 @@ export class Texture extends ThreeJsTextue {
 
   // ----------------
 
-  static get humanPaving() {
+  static get stoneHumanPaving() {
     return new Texture({ filename: '[stone]_human_paving.bmp', size: 256 })
   }
-  static get humanPaving1() {
+  static get stoneHumanPaving1() {
     return new Texture({ filename: '[stone]_human_paving1.bmp', size: 128 })
   }
   static get aliciaRoomMur02() {
     return new Texture({ filename: 'aliciaroom_mur02.jpg', size: 128 })
   }
-  static get cavewater() {
+  static get waterCavewater() {
     return new Texture({ filename: '(water)cavewater.jpg', size: 128 })
   }
-  static get l1DragonGround08() {
+  static get l1DragonIceGround08() {
     return new Texture({ filename: 'l1_dragon_[ice]_ground08.jpg', size: 128 })
   }
-  static get l1PrisonGridl02() {
+  static get l1PrisonStoneGridl02() {
     return new Texture({ filename: 'l1_prison_(stone)_gridl02', size: 64 })
   }
-  static get l1PrisonGround01() {
+  static get l1PrisonSandGround01() {
     return new Texture({ filename: 'l1_prison_[sand]_ground01.jpg', size: 64 })
   }
-  static get l2TrollGround04() {
+  static get l2TrollStoneGround04() {
     return new Texture({ filename: 'l2_troll_[stone]_ground04.jpg', size: 128 })
   }
-  static get l2GobelFloor02() {
+  static get l2GobelStoneFloor02() {
     return new Texture({ filename: 'l2_gobel_[stone]_floor02.jpg', size: 128 })
   }
-  static get l2GobelCenter() {
+  static get l2GobelStoneCenter() {
     return new Texture({ filename: 'l2_gobel_[stone]_center.jpg', size: 128 })
   }
-  static get l3DissidWall02() {
+  static get l3DissidWetGround01() {
+    return new Texture({ filename: 'l3_dissid_[wet]_ground01.jpg', size: 128 })
+  }
+  static get l3DissidStoneGround09() {
+    return new Texture({ filename: 'l3_dissid_[stone]_ground09.jpg', size: 128 })
+  }
+  static get l3DissidStoneGround10() {
+    return new Texture({ filename: 'l3_dissid_[stone]_ground10.jpg', size: 128 })
+  }
+  static get l3DissidIronWall02() {
     return new Texture({ filename: 'l3_dissid_[iron]_wall02.bmp', size: 64 })
   }
-  static get l3DissidWall03() {
+  static get l3DissidStoneWall03() {
     return new Texture({ filename: 'l3_dissid_[stone]_wall03.jpg', size: 128 })
   }
-  static get l6RatmenWall03() {
+  static get l3DissidStoneTrans01() {
+    return new Texture({ filename: 'l3_dissid_[stone]_trans01.jpg', size: 128 })
+  }
+  static get l4YlsideStoneGround01() {
+    return new Texture({ filename: 'L4_YLSIDE_[STONE]_GROUND01.jpg', size: 64 })
+  }
+  static get l5CavesGravelGround05() {
+    return new Texture({ filename: 'l5_caves_[gravel]_ground05.jpg', size: 128 })
+  }
+  static get l6RatmenFleshWall03() {
     return new Texture({ filename: 'l6_ratmen_[flesh]_wall03.jpg', size: 256 })
   }
-  static get humanStoneWall() {
+  static get stoneHumanStoneWall() {
     return new Texture({ filename: '[stone]_human_stone_wall.jpg', size: 256 })
   }
-  static get humanStoneWall1() {
+  static get stoneHumanStoneWall1() {
     return new Texture({ filename: '[stone]_human_stone_wall1.jpg', size: 256 })
   }
-  static get humanStoneWall2() {
+  static get stoneHumanStoneWall2() {
     return new Texture({ filename: '[stone]_human_stone_wall2.jpg', size: 256 })
   }
-  static get humanAkbaa2F() {
+  static get stoneHumanAkbaa2F() {
     return new Texture({ filename: '[stone]_human_akbaa2_f.jpg', size: 256 })
   }
-  static get humanAkbaa4F() {
+  static get stoneHumanAkbaa4F() {
     return new Texture({ filename: '[stone]_human_akbaa4_f.jpg', size: 256 })
   }
 }
