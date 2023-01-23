@@ -400,6 +400,7 @@ export class ArxMap {
         ...Object.keys(resets),
         ...Object.keys(ambienceTracks),
         ...Object.keys(customAmbiences),
+        ...Object.keys(customAmbiences).map((filename) => filename.replace(/\.json$/, '')),
         ...Object.keys(scripts),
         ...Object.values(files),
         ...Object.values(files).map((filename) => filename.replace(/\.json$/, '')),
