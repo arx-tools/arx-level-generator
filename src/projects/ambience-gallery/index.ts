@@ -70,7 +70,7 @@ export default async () => {
   const floorMesh = await createPlaneMesh(new Vector2(width, depth), 30, Color.white, Texture.l5CavesGravelGround05)
   floorMesh.translateX(width / 2 - 200)
   transformEdge(new Vector3(0, 7, 0), floorMesh)
-  makeBumpy(7, 25, floorMesh)
+  makeBumpy(7, 37, floorMesh)
   scaleUV(new Vector2(0.25, 0.25), floorMesh.geometry)
   map.add(ArxMap.fromThreeJsMesh(floorMesh, DONT_QUADIFY), true)
 
