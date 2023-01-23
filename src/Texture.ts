@@ -143,11 +143,11 @@ export class Texture extends ThreeJsTextue {
 
   // ----------------
 
+  static get humanPaving() {
+    return new Texture({ filename: '[stone]_human_paving.bmp', size: 256 })
+  }
   static get humanPaving1() {
     return new Texture({ filename: '[stone]_human_paving1.bmp', size: 128 })
-  }
-  static get l3DissidWall02() {
-    return new Texture({ filename: 'l3_dissid_[iron]_wall02.bmp', size: 64 })
   }
   static get aliciaRoomMur02() {
     return new Texture({ filename: 'aliciaroom_mur02.jpg', size: 128 })
@@ -161,6 +161,9 @@ export class Texture extends ThreeJsTextue {
   static get l1PrisonGridl02() {
     return new Texture({ filename: 'l1_prison_(stone)_gridl02', size: 64 })
   }
+  static get l1PrisonGround01() {
+    return new Texture({ filename: 'l1_prison_[sand]_ground01.jpg', size: 64 })
+  }
   static get l2TrollGround04() {
     return new Texture({ filename: 'l2_troll_[stone]_ground04.jpg', size: 128 })
   }
@@ -169,6 +172,12 @@ export class Texture extends ThreeJsTextue {
   }
   static get l2GobelCenter() {
     return new Texture({ filename: 'l2_gobel_[stone]_center.jpg', size: 128 })
+  }
+  static get l3DissidWall02() {
+    return new Texture({ filename: 'l3_dissid_[iron]_wall02.bmp', size: 64 })
+  }
+  static get l3DissidWall03() {
+    return new Texture({ filename: 'l3_dissid_[stone]_wall03.jpg', size: 128 })
   }
   static get l6RatmenWall03() {
     return new Texture({ filename: 'l6_ratmen_[flesh]_wall03.jpg', size: 256 })

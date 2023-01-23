@@ -21,8 +21,9 @@ import { Vector3 } from '@src/Vector3'
 import { Zone } from '@src/Zone'
 import { ControlZone } from '@src/scripting/properties/ControlZone'
 import { ambiences } from './constants'
-import { applyTransformations } from '@src/helpers'
 import { DONT_QUADIFY } from '@src/Polygons'
+import { makeBumpy } from '@tools/mesh/makeBumpy'
+import { scaleUV } from '@tools/mesh/scaleUV'
 
 const createZone = (pos: Vector3, size: Vector2, ambience: Ambience, height: number = Infinity) => {
   const shape = new Shape()
@@ -65,8 +66,8 @@ export default async () => {
   const depth = rowSize * 300 + 200
   const floorMesh = await createPlaneMesh(width, depth, Color.white, Texture.humanPaving1)
   floorMesh.translateX(width / 2 - 200)
-
-  map.add(ArxMap.fromThreeJsMesh(floorMesh), true)
+  makeBumpy(5, 60, floorMesh)
+  map.add(ArxMap.fromThreeJsMesh(floorMesh, DONT_QUADIFY), true)
 
   const position = new Vector3(-200, 10, -depth / 2)
   const mainZone = createZone(position, new Vector2(width, depth), Ambience.none, 10)
@@ -110,25 +111,18 @@ export default async () => {
       shape.lineTo(0, size.y - extrudeSettings.bevelSize * 2)
 
       const tileGeometry = new ExtrudeGeometry(shape, extrudeSettings)
+      scaleUV(new Vector2(1, 1), tileGeometry)
 
       const material = new MeshBasicMaterial({
         color: Color.white.getHex(),
         map: Texture.l2GobelCenter,
       })
 
-      const uv = tileGeometry.getAttribute('uv')
-      const newUV = []
-      for (let i = 0; i < uv.count; i++) {
-        newUV.push(uv.array[i * uv.itemSize] * 0.01, uv.array[i * uv.itemSize + 1] * 0.01)
-      }
-      tileGeometry.setAttribute('uv', new BufferAttribute(Float32Array.from(newUV), uv.itemSize))
-
       const mesh = new Mesh(tileGeometry, material)
       mesh.translateX(pos.x + extrudeSettings.bevelSize)
       mesh.translateY(pos.y - extrudeSettings.depth)
       mesh.translateZ(pos.z + (size.y - extrudeSettings.bevelSize))
       mesh.rotateX(MathUtils.degToRad(-90))
-      applyTransformations(mesh)
 
       // --------------------------
 

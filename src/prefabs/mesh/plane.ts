@@ -1,7 +1,8 @@
-import { BufferAttribute, MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three'
+import { BufferAttribute, MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry, Vector2 } from 'three'
 import { Color } from '@src/Color'
 import { applyTransformations } from '@src/helpers'
 import { Texture } from '@src/Texture'
+import { scaleUV } from '@tools/mesh/scaleUV'
 
 export const INDEXED = 'indexed'
 export const NONINDEXED = 'non-indexed'
@@ -18,12 +19,7 @@ export async function createPlaneMesh(
 
   const geometry = new PlaneGeometry(width, height, divisionX, divisionY)
 
-  const uv = geometry.getAttribute('uv')
-  const newUV = []
-  for (let i = 0; i < uv.count; i++) {
-    newUV.push(uv.array[i * uv.itemSize] * divisionX, uv.array[i * uv.itemSize + 1] * divisionY)
-  }
-  geometry.setAttribute('uv', new BufferAttribute(Float32Array.from(newUV), uv.itemSize))
+  scaleUV(new Vector2(width, height), geometry)
 
   if (texture instanceof Promise) {
     texture = await texture
