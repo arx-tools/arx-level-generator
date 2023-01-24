@@ -1,36 +1,42 @@
 import { randomBetween } from '@src/random'
-import { BufferGeometry, MathUtils, Vector2 } from 'three'
+import { BufferGeometry, MathUtils } from 'three'
 import { getVertices } from '@tools/mesh/getVertices'
 import { sum } from '@src/faux-ramda'
+import { Vector3 } from '@src/Vector3'
 
-export const makeBumpy = (volume: number, percentage: number, smoothRadius: number, geometry: BufferGeometry) => {
+type VertexData = { y: number; position: Vector3; idx: number }
+
+/**
+ * @param magnitude - the maximum amount in both directions which the peeks will reach
+ * @param percentage - for every vertex there's a certain percentage chance that it will be a peek. control the
+ * percentage with this parameter
+ * @param smoothenPeeks - whether to apply smoothing around the peeks
+ * @param geometry - any threejs geometry
+ * @returns the vectors of the peeks
+ */
+export const makeBumpy = (magnitude: number, percentage: number, smoothenPeeks: boolean, geometry: BufferGeometry) => {
   const vertices = getVertices(geometry)
   const coords = geometry.getAttribute('position')
 
-  const peeks: { y: number; position: Vector2; idx: number }[] = []
-  const notPeeks: { y: number; position: Vector2; idx: number }[] = []
+  const peeks: (VertexData & { affectedVertices: { elevation: number; distance: number }[] })[] = []
+  const notPeeks: VertexData[] = []
 
-  vertices.forEach((v, i) => {
-    // const isToBePeeked = randomBetween(0, 100) < percentage
-    const isToBePeeked = i === 12000 || i === 19500
+  // split vertices into peeks and not-peeks while also calculating the peek heights.
+  // this does not yet apply the height change for the peeks
+  vertices.forEach((v) => {
+    const isToBePeeked = randomBetween(0, 100) < percentage
 
-    let newY: number = 0
-
+    let newY = v.vector.y
     if (isToBePeeked) {
-      // newY = v.vector.y + randomBetween(-volume, volume)
-      if (i === 12000) {
-        newY = v.vector.y + 200
-      } else {
-        newY = v.vector.y - 300
-      }
-      coords.setY(v.idx, newY)
+      newY += randomBetween(-magnitude, magnitude)
     }
 
-    if (smoothRadius <= 0) {
-      return
+    const data = {
+      y: newY,
+      position: v.vector,
+      idx: v.idx,
+      affectedVertices: [],
     }
-
-    const data = { y: newY, position: new Vector2(v.vector.x, v.vector.z), idx: v.idx }
 
     if (isToBePeeked) {
       peeks.push(data)
@@ -39,26 +45,48 @@ export const makeBumpy = (volume: number, percentage: number, smoothRadius: numb
     }
   })
 
-  if (smoothRadius > 0) {
+  if (smoothenPeeks) {
+    // smooth peeks by raising not-peeks around them - the dropoff angle is 45 degrees.
+    // the implementation does this by measuring the height of all near peeks and sums the distance based elevations.
+    // it also saves which peeks affect which not-peeks
     notPeeks.forEach(({ y, position, idx }) => {
-      const closePeeks = peeks.filter((p) => {
+      const diffs: number[] = []
+      peeks.forEach((p) => {
         const distance = p.position.distanceTo(position)
-        return distance > 0 // && distance <= smoothRadius
+        const elevation = p.y - y
+        const volume = MathUtils.clamp(1 - distance / Math.abs(elevation), 0, 1)
+        if (volume > 0) {
+          p.affectedVertices.push({ elevation, distance })
+          diffs.push(elevation * volume)
+        }
       })
 
-      if (closePeeks.length === 0) {
-        return
-      }
-
-      const diffs = closePeeks.map((p) => {
-        const distance = p.position.distanceTo(position)
-        return (p.y - y) * MathUtils.clamp(1 - Math.sqrt(distance / smoothRadius), 0, 1)
-      })
-      const addition = sum(diffs) / diffs.length
-      // const addition = sum(diffs) / diffs.length
-      // const addition = Math.max(...diffs)
+      const addition = MathUtils.clamp(sum(diffs), -magnitude, magnitude)
 
       coords.setY(idx, y + addition)
     })
   }
+
+  // applies peek height.
+  // if the peek affected any near vertices' height, then lower it's own height
+  // to match the height of the highest affected not-peek
+  peeks.forEach(({ y, affectedVertices, idx }, i) => {
+    let peekY = y
+    if (affectedVertices.length > 0) {
+      const closestVertexY = affectedVertices.sort((a, b) => {
+        if (a.distance !== b.distance) {
+          // sort by distance, ascending order
+          return a.distance - b.distance
+        }
+
+        // distance is the same, sort by elevation, descending magnitude
+        return Math.abs(b.elevation) - Math.abs(a.elevation)
+      })
+      peekY = closestVertexY[0].elevation
+      peeks[i].y = peekY
+    }
+    coords.setY(idx, peekY)
+  })
+
+  return peeks.map(({ position }) => position)
 }
