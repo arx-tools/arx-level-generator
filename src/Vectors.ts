@@ -1,26 +1,16 @@
 import { Vector3 } from '@src/Vector3'
 import { BufferGeometry } from 'three'
 import { uniq } from '@src/faux-ramda'
+import { getNonIndexedVertices } from '@tools/mesh/getVertices'
 
 export class Vectors extends Array<Vector3> {
-  static fromThreejsGeometry(obj: BufferGeometry) {
+  static fromThreejsGeometry(geometry: BufferGeometry) {
     const vectors = new Vectors()
 
-    const index = obj.getIndex()
-    const coords = obj.getAttribute('position')
-
-    if (index === null) {
-      // non-indexed, all vertices are unique
-      for (let idx = 0; idx < coords.count; idx++) {
-        vectors.push(new Vector3(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx)))
-      }
-    } else {
-      // indexed, has shared vertices
-      for (let i = 0; i < index.count; i++) {
-        const idx = index.getX(i)
-        vectors.push(new Vector3(coords.getX(idx), coords.getY(idx) * -1, coords.getZ(idx)))
-      }
-    }
+    getNonIndexedVertices(geometry).forEach(({ vector }) => {
+      vector.y *= -1
+      vectors.push(vector)
+    })
 
     return vectors
   }
