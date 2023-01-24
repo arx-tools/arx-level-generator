@@ -59,6 +59,7 @@ const createGround = async (width: number, depth: number) => {
   return floorMesh
 }
 
+// TODO: turn this into 3 functions
 const createStoneBlocks = (rowSize: number, depth: number) => {
   const size = new Vector3(100, 100, 100)
 

@@ -82,7 +82,10 @@ export const makeBumpy = (magnitude: number, percentage: number, smoothenPeeks: 
         // distance is the same, sort by elevation, descending magnitude
         return Math.abs(b.elevation) - Math.abs(a.elevation)
       })
+
+      // TODO: this doesn't seem to work as intended, the terrain is still spikey
       peekY = closestVertexY[0].elevation
+
       peeks[i].y = peekY
     }
     coords.setY(idx, peekY)
