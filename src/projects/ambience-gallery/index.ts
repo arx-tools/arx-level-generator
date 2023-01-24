@@ -67,10 +67,15 @@ export default async () => {
 
   const width = Math.ceil(ambiences.length / rowSize) * 300 + 400
   const depth = rowSize * 300 + 200
-  const floorMesh = await createPlaneMesh(new Vector2(width, depth), 30, Color.white, Texture.l5CavesGravelGround05)
+  const floorMesh = await createPlaneMesh(
+    new Vector2(width, depth),
+    30,
+    Color.white,
+    /*Texture.l5CavesGravelGround05*/ Texture.stoneHumanStoneWall1,
+  )
   floorMesh.translateX(width / 2 - 200)
   transformEdge(new Vector3(0, 7, 0), floorMesh)
-  makeBumpy(7, 37, floorMesh)
+  makeBumpy(500, 1, 300, floorMesh.geometry)
   scaleUV(new Vector2(0.25, 0.25), floorMesh.geometry)
   map.add(ArxMap.fromThreeJsMesh(floorMesh, DONT_QUADIFY), true)
 
@@ -79,6 +84,7 @@ export default async () => {
   mainZone.backgroundColor = Color.fromCSS('#111')
   map.zones.push(mainZone)
 
+  /*
   for (let i = 0; i < ambiences.length; i += rowSize) {
     const slice = ambiences.slice(i, i + rowSize)
     for (let j = 0; j < slice.length; j++) {
@@ -135,6 +141,7 @@ export default async () => {
       map.add(ArxMap.fromThreeJsMesh(mesh, DONT_QUADIFY), true)
     }
   }
+  */
 
   map.finalize()
 
