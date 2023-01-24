@@ -12,10 +12,12 @@ export const getPackageVersion = async () => {
   }
 }
 
+// TODO: move this to ArxMap or somewhere more specific to handling/generating manifests
 export type Manifest = {
   files: string[]
 }
 
+// TODO: move this to ArxMap or somewhere more specific to handling/generating manifests
 export const uninstall = async (dir: string) => {
   try {
     const rawIn = await fs.promises.readFile(`${dir}/arx-level-generator-manifest.json`, 'utf-8')
@@ -76,3 +78,7 @@ export const latin9ToLatin1 = (str: string) => {
 export const roundToNDecimals = (decimals: number, x: number) => {
   return Math.round(x * 10 ** decimals) / 10 ** decimals
 }
+
+export const isEven = (n: number) => n % 2 === 0
+
+export const isOdd = (n: number) => n % 2 === 1
