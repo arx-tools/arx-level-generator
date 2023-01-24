@@ -64,8 +64,8 @@ export const pickWeightedRandoms = <T extends Record<string, any>>(
   return randomSort(weightedSet)
 }
 
-export const randomBetween = (min: number, max: number) => {
-  return Math.random() * (max - min) + min
+export const randomBetween = (a: number, b: number) => {
+  return a + Math.random() * (b - a)
 }
 
 export const pickRandoms = <T>(n: number, set: T[]) => {
