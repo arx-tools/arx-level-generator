@@ -12,7 +12,6 @@ type EntityConstructorProps = {
   name: string
   position?: Vector3
   orientation?: Rotation
-  isRoot?: boolean
 }
 
 export class Entity {
@@ -20,14 +19,12 @@ export class Entity {
   name: string
   position: Vector3
   orientation: Rotation
-  isRoot: boolean
   script?: Script
 
   constructor(props: EntityConstructorProps) {
     this.name = props.name
     this.position = props.position ?? new Vector3(0, 0, 0)
     this.orientation = props.orientation ?? new Rotation(0, 0, 0)
-    this.isRoot = props.isRoot ?? false
 
     if (typeof props.id === 'undefined') {
       instanceCatalog[this.name] = instanceCatalog[this.name] ?? []
@@ -56,7 +53,6 @@ export class Entity {
       name: this.name,
       position: this.position.clone(),
       orientation: this.orientation.clone(),
-      isRoot: this.isRoot,
     })
   }
 
@@ -106,5 +102,8 @@ export class Entity {
   }
   static get porticullis() {
     return new Entity({ name: 'fix_inter/porticullis' })
+  }
+  static get fern() {
+    return new Entity({ name: 'items/magic/fern' })
   }
 }
