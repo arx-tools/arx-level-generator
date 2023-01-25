@@ -143,6 +143,9 @@ export class Texture extends ThreeJsTextue {
 
   // ----------------
 
+  static get alpha() {
+    return new Texture({ filename: 'alpha.bmp', size: 32 })
+  }
   static get stoneHumanPaving() {
     return new Texture({ filename: '[stone]_human_paving.bmp', size: 256 })
   }
@@ -158,6 +161,9 @@ export class Texture extends ThreeJsTextue {
   static get l1DragonIceGround08() {
     return new Texture({ filename: 'l1_dragon_[ice]_ground08.jpg', size: 128 })
   }
+  static get l1DragonSpideLime1Nocol() {
+    return new Texture({ filename: 'L1_Dragon_[spide]_Lime1nocol.bmp', size: 128 })
+  }
   static get l1PrisonStoneGridl02() {
     return new Texture({ filename: 'l1_prison_(stone)_gridl02', size: 64 })
   }
@@ -166,6 +172,9 @@ export class Texture extends ThreeJsTextue {
   }
   static get l2TrollStoneGround04() {
     return new Texture({ filename: 'l2_troll_[stone]_ground04.jpg', size: 128 })
+  }
+  static get l2TrollWoodPillar08() {
+    return new Texture({ filename: 'l2_troll_[wood]_pillar08.jpg', size: 256 })
   }
   static get l2GobelStoneFloor02() {
     return new Texture({ filename: 'l2_gobel_[stone]_floor02.jpg', size: 128 })

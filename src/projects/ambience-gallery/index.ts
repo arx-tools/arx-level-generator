@@ -48,7 +48,12 @@ const createZone = (pos: Vector3, size: Vector3, ambience: Ambience, color?: Col
 }
 
 const createGround = async (width: number, depth: number) => {
-  const floorMesh = await createPlaneMesh(new Vector2(width, depth), 30, Color.white, Texture.l5CavesGravelGround05)
+  const floorMesh = await createPlaneMesh(
+    new Vector2(width + 200, depth + 200),
+    30,
+    Color.white,
+    Texture.l5CavesGravelGround05,
+  )
   floorMesh.translateX(width / 2 - 200)
 
   transformEdge(new Vector3(0, -5, 0), floorMesh)
@@ -59,12 +64,91 @@ const createGround = async (width: number, depth: number) => {
   return floorMesh
 }
 
-// TODO: turn this into 3 functions
-const createStoneBlocks = (rowSize: number, depth: number) => {
-  const size = new Vector3(100, 100, 100)
+const createNorthWall = async (width: number) => {
+  const wallSize = new Vector2(width, 200)
+  const wallMesh = await createPlaneMesh(wallSize, 100, Color.white.darken(50), Texture.l1DragonSpideLime1Nocol)
+  wallMesh.translateX(wallSize.x / 2 - 200)
+  wallMesh.translateY(wallSize.y / 2 - 15)
+  wallMesh.translateZ(800 + 50)
+  wallMesh.rotateX(MathUtils.degToRad(90))
+  wallMesh.rotateZ(MathUtils.degToRad(180))
+  scaleUV(new Vector2(100 / wallSize.y, 100 / wallSize.y), wallMesh.geometry)
+  translateUV(new Vector2(0, -1 / (wallMesh.material.map as Texture).height), wallMesh.geometry)
+
+  const blockerSize = new Vector2(width, 100)
+  const blockerMesh = await createPlaneMesh(blockerSize, 100, Color.white.darken(50), Texture.alpha)
+  blockerMesh.translateX(blockerSize.x / 2 - 200)
+  blockerMesh.translateY(blockerSize.y / 2 - 15 + wallSize.height)
+  blockerMesh.translateZ(800 + 50)
+  blockerMesh.rotateX(MathUtils.degToRad(90))
+  blockerMesh.rotateZ(MathUtils.degToRad(180))
+
+  return [wallMesh, blockerMesh]
+}
+
+const createSouthWall = async (width: number) => {
+  const [wallMesh, blockerMesh] = await createNorthWall(width)
+
+  applyTransformations(wallMesh)
+  wallMesh.translateX(2700)
+  wallMesh.rotateY(MathUtils.degToRad(180))
+
+  applyTransformations(blockerMesh)
+  blockerMesh.translateX(2700)
+  blockerMesh.rotateY(MathUtils.degToRad(180))
+
+  return [wallMesh, blockerMesh]
+}
+
+const createNWCorner = async () => {
+  const size = new Vector3(100, 400, 100)
 
   const extrudeSettings = {
-    steps: 1,
+    steps: size.y / 100,
+    depth: size.y,
+    bevelEnabled: false,
+    bevelThickness: 0,
+    bevelSize: 0,
+    bevelOffset: 0,
+    bevelSegments: 0,
+  }
+
+  const shape = new Shape()
+  shape.lineTo(size.x - extrudeSettings.bevelSize * 2, 0)
+  shape.lineTo(size.x - extrudeSettings.bevelSize * 2, size.z - extrudeSettings.bevelSize * 2)
+  shape.lineTo(0, size.z - extrudeSettings.bevelSize * 2)
+
+  const material = new MeshBasicMaterial({
+    color: Color.white.darken(50).getHex(),
+    map: Texture.stoneHumanAkbaa2F,
+  })
+
+  const stoneBlockGeometry = new ExtrudeGeometry(shape, extrudeSettings)
+  scaleUV(new Vector2(0.5 / size.x, 0.5 / size.x), stoneBlockGeometry)
+
+  const pos = new Vector3(-200 - size.x / 2, -50, 800 + size.z / 2 + 50)
+
+  const mesh = new Mesh(stoneBlockGeometry.clone(), material)
+  mesh.translateX(pos.x + extrudeSettings.bevelSize)
+  mesh.translateY(pos.y)
+  mesh.translateZ(pos.z + extrudeSettings.bevelSize)
+  mesh.rotateX(MathUtils.degToRad(-90))
+  return mesh
+}
+
+const createSWCorner = async () => {
+  const mesh = await createNWCorner()
+  applyTransformations(mesh)
+  mesh.translateZ(-1600 - 100)
+  return mesh
+}
+
+// TODO: turn this into 3 functions
+const createStoneBlocks = (rowSize: number, depth: number) => {
+  const size = new Vector3(80, 100, 80)
+
+  const extrudeSettings = {
+    steps: size.y / 100,
     depth: size.y,
     bevelEnabled: true,
     bevelThickness: 10,
@@ -84,7 +168,10 @@ const createStoneBlocks = (rowSize: number, depth: number) => {
   })
 
   const stoneBlockGeometry = new ExtrudeGeometry(shape, extrudeSettings)
-  scaleUV(new Vector2(1 / size.x, 1 / size.z), stoneBlockGeometry)
+  scaleUV(
+    new Vector2(1 / (size.x + extrudeSettings.bevelSize * 2), 1 / (size.z + extrudeSettings.bevelSize * 2)),
+    stoneBlockGeometry,
+  )
   translateUV(new Vector2(0.1, 0), stoneBlockGeometry)
 
   const zones: Zone[] = []
@@ -95,9 +182,14 @@ const createStoneBlocks = (rowSize: number, depth: number) => {
     const slice = ambiences.slice(i, i + rowSize)
     for (let j = 0; j < slice.length; j++) {
       const pos = new Vector3((i / rowSize) * 300 + 100, 40, j * 300 - depth / 2 + 200)
+      const heightOffset = randomBetween(-5, 15)
 
       const ambience = ambiences[i + j]
-      const zone = createZone(pos.clone(), size, ambience)
+      const zone = createZone(
+        pos.clone().add(new Vector3(0, heightOffset, extrudeSettings.bevelSize * 2)),
+        size,
+        ambience,
+      )
       zones.push(zone)
 
       const marker = Entity.marker.withScript()
@@ -110,8 +202,8 @@ const createStoneBlocks = (rowSize: number, depth: number) => {
 
       const stoneBlock = new Mesh(stoneBlockGeometry.clone(), material)
       stoneBlock.translateX(pos.x + extrudeSettings.bevelSize)
-      stoneBlock.translateY(pos.y - extrudeSettings.depth)
-      stoneBlock.translateZ(pos.z + (size.y - extrudeSettings.bevelSize))
+      stoneBlock.translateY(pos.y - extrudeSettings.depth + heightOffset)
+      stoneBlock.translateZ(pos.z + (100 - extrudeSettings.bevelSize))
       stoneBlock.rotateX(MathUtils.degToRad(-90 + randomBetween(-5, 5)))
       stoneBlock.rotateY(MathUtils.degToRad(randomBetween(-5, 5)))
       meshes.push(stoneBlock)
@@ -148,17 +240,23 @@ export default async () => {
   const depth = rowSize * 300 + 200
 
   const blocks = createStoneBlocks(rowSize, depth)
+  const northWall = await createNorthWall(3100)
+  const southWall = await createSouthWall(3100)
+  // TODO: other walls (east and west)
+  const nortWestCorner = await createNWCorner()
+  const southWestCorner = await createSWCorner()
+  // TODO: other corners (NE and SE)
   const groundMesh = await createGround(width, depth)
   const mainZone = createZone(
     new Vector3(-200, 20, -depth / 2),
     new Vector3(width, 10, depth),
     Ambience.none,
-    Color.fromCSS('#111'),
+    Color.fromCSS('#222322'),
   )
 
   const zones: Zone[] = [...blocks.zones, mainZone]
   const entities: Entity[] = blocks.entities
-  const meshes: Mesh[] = [...blocks.meshes, groundMesh]
+  const meshes: Mesh[] = [...blocks.meshes, groundMesh, ...northWall, ...southWall, nortWestCorner, southWestCorner]
 
   map.zones.push(...zones)
   map.entities.push(...entities)
