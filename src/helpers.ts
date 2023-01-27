@@ -20,14 +20,14 @@ export type Manifest = {
 // TODO: move this to ArxMap or somewhere more specific to handling/generating manifests
 export const uninstall = async (dir: string) => {
   try {
-    const rawIn = await fs.promises.readFile(`${dir}/arx-level-generator-manifest.json`, 'utf-8')
+    const rawIn = await fs.promises.readFile(path.resolve(dir, 'arx-level-generator-manifest.json'), 'utf-8')
     const manifest = JSON.parse(rawIn) as Manifest
     for (let file of manifest.files) {
       try {
-        await fs.promises.rm(file)
+        await fs.promises.rm(path.resolve(dir, file))
       } catch (f) {}
     }
-    await fs.promises.rm(`${dir}/arx-level-generator-manifest.json`)
+    await fs.promises.rm(path.resolve(dir, 'arx-level-generator-manifest.json'))
   } catch (e) {}
 }
 

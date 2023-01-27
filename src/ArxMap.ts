@@ -332,12 +332,13 @@ export class ArxMap {
     }
 
     const defaultOutputDir = path.resolve('./dist')
+    outputDir = path.resolve(outputDir) + '/'
 
     console.log('output directory:', outputDir)
 
     if (outputDir === defaultOutputDir) {
       try {
-        await fs.promises.rm('dist', { recursive: true })
+        await fs.promises.rm(defaultOutputDir, { recursive: true })
       } catch (e) {}
     } else {
       await uninstall(outputDir)
@@ -452,7 +453,14 @@ export class ArxMap {
     await fs.promises.writeFile(files.fts, stringifiedFts)
     await fs.promises.writeFile(files.llf, stringifiedLlf)
 
-    await fs.promises.writeFile(`${outputDir}arx-level-generator-manifest.json`, JSON.stringify(manifest, null, 2))
+    manifest.files = manifest.files.map((file) => {
+      return file.replace(outputDir, '')
+    })
+
+    await fs.promises.writeFile(
+      path.resolve(outputDir, 'arx-level-generator-manifest.json'),
+      JSON.stringify(manifest, null, 2),
+    )
   }
 
   adjustOffsetTo(map: ArxMap) {

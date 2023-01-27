@@ -45,7 +45,7 @@ const createIsland = async (width: number, height: number) => {
 
 export default async () => {
   const {
-    OUTPUTDIR = path.resolve(__dirname, './dist'),
+    OUTPUTDIR = path.resolve('./dist'),
     LEVEL = '1',
     SEED = Math.floor(Math.random() * 1e20).toString(),
   } = process.env

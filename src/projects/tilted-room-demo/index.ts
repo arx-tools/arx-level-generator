@@ -7,7 +7,7 @@ import { wallpaper } from '../the-backrooms/materials'
 import { createRoomFromMesh, createRoomMesh } from '../the-backrooms/room'
 
 export default async () => {
-  const { OUTPUTDIR = path.resolve(__dirname, './dist'), LEVEL = '1' } = process.env
+  const { OUTPUTDIR = path.resolve('./dist'), LEVEL = '1' } = process.env
 
   const map = new ArxMap()
 
