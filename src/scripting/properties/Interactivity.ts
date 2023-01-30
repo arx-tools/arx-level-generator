@@ -1,4 +1,4 @@
-import { ScriptProperty } from '@src/ScriptProperty'
+import { ScriptProperty } from '@scripting/ScriptProperty'
 
 export class Interactivity extends ScriptProperty<boolean> {
   toString() {

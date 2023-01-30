@@ -1,4 +1,5 @@
-import { ScriptProperty } from '@src/ScriptProperty'
+import { ScriptCommand } from '@scripting/ScriptCommand'
+import { ScriptProperty } from '@scripting/ScriptProperty'
 
 type ScriptConstructorProps = {
   filename: string
@@ -11,7 +12,7 @@ export class Script {
 
   filename: string
   properties: ScriptProperty<any>[] = []
-  eventHandlers: Record<string, (() => string)[]> = {
+  eventHandlers: Record<string, (ScriptCommand | (() => string))[]> = {
     init: [],
   }
 
@@ -27,15 +28,17 @@ export class Script {
       if (name === 'init') {
         eventString += this.properties.map((property) => '  ' + property + '\n').join('')
       }
-      eventString += handlers.map((handler) => '  ' + handler() + '\n').join('')
+      eventString += handlers
+        .map((handler) => '  ' + (handler instanceof ScriptCommand ? handler : handler()) + '\n')
+        .join('')
       eventStrings.push(`on ${name} {\n${eventString}  accept\n}`)
     })
 
     return eventStrings.join('\n')
   }
 
-  on(eventName: string, fn: () => string) {
+  on(eventName: string, handler: ScriptCommand | (() => string)) {
     this.eventHandlers[eventName] = this.eventHandlers[eventName] ?? []
-    this.eventHandlers[eventName].push(fn)
+    this.eventHandlers[eventName].push(handler)
   }
 }

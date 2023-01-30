@@ -1,7 +1,6 @@
 import path from 'node:path'
 import seedrandom from 'seedrandom'
 import {
-  CircleGeometry,
   EdgesGeometry,
   ExtrudeGeometry,
   MathUtils,
@@ -19,7 +18,7 @@ import { createPlaneMesh } from '@src/prefabs/mesh/plane'
 import { Texture } from '@src/Texture'
 import { Vector3 } from '@src/Vector3'
 import { Zone } from '@src/Zone'
-import { ControlZone } from '@src/scripting/properties/ControlZone'
+import { ControlZone } from '@scripting/properties/ControlZone'
 import { ambiences } from '@projects/ambience-gallery/constants'
 import { DONT_QUADIFY } from '@src/Polygons'
 import { makeBumpy } from '@tools/mesh/makeBumpy'
@@ -310,6 +309,7 @@ export default async () => {
   map.config.offset = new Vector3(2000, 0, 2000)
   map.player.position.adjustToPlayerHeight()
   map.player.orientation.y = MathUtils.degToRad(-90)
+  map.player.withScript()
   map.hud.hide(HudElements.Minimap)
   map.hud.hide(HudElements.Healthbar)
   map.hud.hide(HudElements.Manabar)

@@ -1,4 +1,4 @@
-import { ScriptProperty } from '@src/ScriptProperty'
+import { ScriptProperty } from '@scripting/ScriptProperty'
 
 export type MaterialType = 'stone' | 'wood' | 'metal' | 'cloth' | 'flesh' | 'ice' | 'glass' | 'earth' | 'weapon'
 

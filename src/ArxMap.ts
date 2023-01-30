@@ -373,16 +373,15 @@ export class ArxMap {
       }
     }, {} as Record<string, ArxAMB>)
 
-    const scripts = this.entities.reduce((acc, entity) => {
-      if (entity.script === undefined) {
-        return acc
+    const scripts: Record<string, string> = {}
+    this.entities.forEach((entity) => {
+      if (entity.script !== undefined) {
+        scripts[entity.exportTarget(outputDir)] = entity.script.toArxData()
       }
-
-      return {
-        ...acc,
-        [entity.exportTarget(outputDir)]: entity.script?.toArxData(),
-      }
-    }, {} as Record<string, string>)
+    })
+    if (this.player.script !== undefined) {
+      scripts[this.player.exportTarget(outputDir)] = this.player.script.toArxData()
+    }
 
     const files = {
       dlf: path.resolve(outputDir, `graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`),
