@@ -337,15 +337,15 @@ export default async () => {
     new Vector3(-200, 20, -depth / 2),
     new Vector3(width, 10, depth),
     Ambience.none,
-    Color.fromCSS('#111'),
+    Color.fromCSS('#444'),
   )
-  const mainLight = createLight(new Vector3(-200 + width / 2, -1000, 0), Color.white.darken(40), 'main')
-  const light1 = createLight(new Vector3(200, -300, 600), Color.white.darken(50), 'small')
-  const light2 = createLight(new Vector3(100, -300, 0), Color.white.darken(50), 'small')
-  const light3 = createLight(new Vector3(200, -300, -600), Color.white.darken(50), 'small')
-  const light4 = createLight(new Vector3(width - 650, -300, 600), Color.white.darken(50), 'small')
-  const light5 = createLight(new Vector3(width - 550, -300, 0), Color.white.darken(50), 'small')
-  const light6 = createLight(new Vector3(width - 650, -300, -600), Color.white.darken(50), 'small')
+  const mainLight = createLight(new Vector3(-200 + width / 2, -1000, 0), Color.white.darken(30), 'main')
+  const light1 = createLight(new Vector3(200, -300, 600), Color.white.darken(40), 'small')
+  const light2 = createLight(new Vector3(100, -300, 0), Color.white.darken(40), 'small')
+  const light3 = createLight(new Vector3(200, -300, -600), Color.white.darken(40), 'small')
+  const light4 = createLight(new Vector3(width - 650, -300, 600), Color.white.darken(40), 'small')
+  const light5 = createLight(new Vector3(width - 550, -300, 0), Color.white.darken(40), 'small')
+  const light6 = createLight(new Vector3(width - 650, -300, -600), Color.white.darken(40), 'small')
 
   const zones: Zone[] = [...blocks.zones, mainZone]
   const entities: Entity[] = blocks.entities
