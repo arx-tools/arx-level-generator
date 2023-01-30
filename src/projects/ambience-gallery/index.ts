@@ -20,7 +20,7 @@ import { Texture } from '@src/Texture'
 import { Vector3 } from '@src/Vector3'
 import { Zone } from '@src/Zone'
 import { ControlZone } from '@src/scripting/properties/ControlZone'
-import { ambiences } from './constants'
+import { ambiences } from '@projects/ambience-gallery/constants'
 import { DONT_QUADIFY } from '@src/Polygons'
 import { makeBumpy } from '@tools/mesh/makeBumpy'
 import { scaleUV } from '@tools/mesh/scaleUV'
@@ -29,6 +29,7 @@ import { transformEdge } from '@tools/mesh/transformEdge'
 import { randomBetween } from '@src/random'
 import { applyTransformations } from '@src/helpers'
 import { Light } from '@src/Light'
+import { HudElements } from '@src/HUD'
 
 const createZone = (pos: Vector3, size: Vector3, ambience: Ambience, color?: Color) => {
   const shape = new Shape()
@@ -309,7 +310,13 @@ export default async () => {
   map.config.offset = new Vector3(2000, 0, 2000)
   map.player.position.adjustToPlayerHeight()
   map.player.orientation.y = MathUtils.degToRad(-90)
-  map.hideMinimap()
+  map.hud.hide(HudElements.Minimap)
+  map.hud.hide(HudElements.Healthbar)
+  map.hud.hide(HudElements.Manabar)
+  map.hud.hide(HudElements.LevelUpIcon)
+  map.hud.hide(HudElements.BookIcon)
+  map.hud.hide(HudElements.BackpackIcon)
+  map.hud.hide(HudElements.PurseIcon)
 
   const rowSize = 5
 

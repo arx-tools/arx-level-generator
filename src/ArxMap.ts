@@ -34,10 +34,10 @@ import { Entities } from '@src/Entities'
 import { Lights } from '@src/Lights'
 import { AMB } from 'arx-convert'
 import { Script } from '@src/Script'
+import { HUD } from '@src/HUD'
 
 type ArxMapConfig = {
   isFinalized: boolean
-  isMinimapVisible: boolean
   offset: Vector3
 }
 
@@ -60,9 +60,9 @@ export class ArxMap {
   portals: Portal[] = []
   config: ArxMapConfig = {
     isFinalized: false,
-    isMinimapVisible: true,
     offset: new Vector3(0, 0, 0),
   }
+  hud: HUD = new HUD()
   todo: ToBeSortedLater = {
     uniqueHeaders: [],
     cells: times(() => ({}), MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS),
@@ -348,12 +348,7 @@ export class ArxMap {
 
     const textures = await this.polygons.exportTextures(outputDir)
 
-    const resets: Record<string, string> = {}
-    if (!this.config.isMinimapVisible) {
-      const source = path.resolve('assets', 'reset/map.bmp')
-      const target = path.resolve(outputDir, `graph/levels/level${levelIdx}/map.bmp`)
-      resets[target] = source
-    }
+    const hudElements = this.hud.exportSourcesAndTargets(outputDir, levelIdx)
 
     const ambienceTracks = this.zones.reduce((acc, zone) => {
       if (zone.ambience === undefined || zone.ambience.isNative) {
@@ -398,7 +393,7 @@ export class ArxMap {
     const manifest = {
       files: [
         ...Object.keys(textures),
-        ...Object.keys(resets),
+        ...Object.keys(hudElements),
         ...Object.keys(ambienceTracks),
         ...Object.keys(customAmbiences),
         ...Object.keys(customAmbiences).map((filename) => filename.replace(/\.json$/, '')),
@@ -418,7 +413,7 @@ export class ArxMap {
 
     // ------------------------
 
-    const filesToCopy = [...Object.entries(textures), ...Object.entries(resets), ...Object.entries(ambienceTracks)]
+    const filesToCopy = [...Object.entries(textures), ...Object.entries(hudElements), ...Object.entries(ambienceTracks)]
 
     for (let [target, source] of filesToCopy) {
       await fs.promises.copyFile(source, target)
@@ -540,10 +535,6 @@ export class ArxMap {
     // })
     // TODO: adjust fts anchor linked anchor indices
     // TODO: adjust fts polygon texture container ids
-  }
-
-  hideMinimap() {
-    this.config.isMinimapVisible = false
   }
 
   getBoundingBox() {

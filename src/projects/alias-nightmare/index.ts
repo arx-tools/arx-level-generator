@@ -1,6 +1,7 @@
 import { Ambience } from '@src/Ambience'
 import { ArxMap } from '@src/ArxMap'
 import { Color } from '@src/Color'
+import { HudElements } from '@src/HUD'
 import { DONT_QUADIFY } from '@src/Polygons'
 import { createPlaneMesh } from '@src/prefabs/mesh/plane'
 import { Texture } from '@src/Texture'
@@ -57,7 +58,7 @@ export default async () => {
 
   map.config.offset = new Vector3(6000, 0, 6000)
   map.player.position.adjustToPlayerHeight()
-  map.hideMinimap()
+  map.hud.hide(HudElements.Minimap)
 
   map.add(await createIsland(1000, 1000), true)
 

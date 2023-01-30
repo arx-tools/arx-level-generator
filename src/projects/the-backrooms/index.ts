@@ -8,8 +8,9 @@ import { Texture } from '@src/Texture'
 import { any, startsWith } from '@src/faux-ramda'
 import { Zone } from '@src/Zone'
 import { Ambience } from '@src/Ambience'
-import { createRoom } from './room'
-import { wallpaper, wallpaperDotted } from './materials'
+import { createRoom } from '@projects/the-backrooms/room'
+import { wallpaper, wallpaperDotted } from '@projects/the-backrooms/materials'
+import { HudElements } from '@src/HUD'
 
 // only works when everything is aligned in a 100/100/100 grid
 function union(map1: ArxMap, map2: ArxMap) {
@@ -185,7 +186,7 @@ export default async () => {
 
   map.config.offset = new Vector3(6000, 0, 6000)
   map.player.position.adjustToPlayerHeight()
-  map.hideMinimap()
+  map.hud.hide(HudElements.Minimap)
 
   rooms.forEach((room) => {
     map.add(room, true)
