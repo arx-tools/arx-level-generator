@@ -194,7 +194,7 @@ const createSECorner = async () => {
 }
 
 // TODO: turn this into 3 functions
-const createStoneBlocks = (rowSize: number, depth: number) => {
+const createStoneBlocks = (rowSize: number, depth: number, achievementManager: Entity) => {
   const size = new Vector3(80, 100, 80)
 
   const extrudeSettings = {
@@ -246,7 +246,16 @@ const createStoneBlocks = (rowSize: number, depth: number) => {
       marker.position = pos.clone().add(new Vector3(50, -30, 50))
       marker.script?.properties.push(new ControlZone(zone))
       marker.script?.on('controlledzone_enter', () => {
-        return `herosay "${zone.name}"`
+        return `
+        herosay "${zone.name}"
+        if (§already_listened == 0) {
+          set §already_listened 1
+          sendevent listened ${achievementManager.getRef()} nop
+        }
+        `
+      })
+      marker.script?.on('init', () => {
+        return 'set §already_listened 0'
       })
       entities.push(marker)
 
@@ -325,7 +334,59 @@ export default async () => {
   const width = Math.ceil(ambiences.length / rowSize) * 300 + 400
   const depth = rowSize * 300 + 200
 
-  const blocks = createStoneBlocks(rowSize, depth)
+  const mainMarker = Entity.marker.withScript()
+  const welcomeFn = new ScriptSubroutine('tutorial_welcome', () => {
+    return `
+    play -o "system"
+    herosay [tutorial--welcome]
+    quest [tutorial--welcome]
+  `
+  })
+  mainMarker.script?.subroutines.push(welcomeFn)
+  mainMarker.script?.on('init', () => {
+    return `TIMERwelcome -m 1 2000 gosub ${welcomeFn.name}`
+  })
+  mainMarker.script?.on('init', () => {
+    return `set §listened 0`
+  })
+  mainMarker.script?.on('listened', () => {
+    return `
+    INC §listened 1
+    if (§listened == 10) {
+      gosub achievement_listen_small
+    }
+    if (§listened == 25) {
+      gosub achievement_listen_medium
+    }
+    if (§listened == ${ambiences.length}) {
+      gosub achievement_listen_large
+    }
+    `
+  })
+  const achievementListenSmall = new ScriptSubroutine('achievement_listen_small', () => {
+    return `
+    play -o "system3"
+    herosay [achievement--listen-small]
+    quest [achievement--listen-small]
+    `
+  })
+  const achievementListenMedium = new ScriptSubroutine('achievement_listen_medium', () => {
+    return `
+    play -o "system3"
+    herosay [achievement--listen-medium]
+    quest [achievement--listen-medium]
+    `
+  })
+  const achievementListenLarge = new ScriptSubroutine('achievement_listen_large', () => {
+    return `
+    play -o "system3"
+    herosay [achievement--listen-large]
+    quest [achievement--listen-large]
+    `
+  })
+  mainMarker.script?.subroutines.push(achievementListenSmall, achievementListenMedium, achievementListenLarge)
+
+  const blocks = createStoneBlocks(rowSize, depth, mainMarker)
   const northWall = await createNorthWall(3100)
   const southWall = await createSouthWall(3100)
   const eastWall = await createEastWall(1700)
@@ -342,20 +403,6 @@ export default async () => {
     Color.fromCSS('#444'),
   )
 
-  const mainMarker = Entity.marker.withScript()
-
-  const welcomeFn = new ScriptSubroutine('tutorial_welcome', () => {
-    return `
-    play "system"
-    herosay [tutorial--welcome]
-    quest [tutorial--welcome]
-  `
-  })
-  mainMarker.script?.subroutines.push(welcomeFn)
-  mainMarker.script?.on('init', () => {
-    return `TIMERwelcome -m 1 2000 gosub ${welcomeFn.name}`
-  })
-
   const mainLight = createLight(new Vector3(-200 + width / 2, -1000, 0), Color.white.darken(30), 'main')
   const light1 = createLight(new Vector3(200, -300, 600), Color.white.darken(40), 'small')
   const light2 = createLight(new Vector3(100, -300, 0), Color.white.darken(40), 'small')
@@ -365,7 +412,7 @@ export default async () => {
   const light6 = createLight(new Vector3(width - 650, -300, -600), Color.white.darken(40), 'small')
 
   const zones: Zone[] = [...blocks.zones, mainZone]
-  const entities: Entity[] = [...blocks.entities, mainMarker]
+  const entities: Entity[] = [mainMarker, ...blocks.entities]
   const lights: Light[] = [mainLight, light1, light2, light3, light4, light5, light6]
   const meshes: Mesh[] = [
     ...blocks.meshes,

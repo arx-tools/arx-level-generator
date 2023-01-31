@@ -1,5 +1,14 @@
 {
   "tutorial--welcome": {
     "english": "Welcome to the Ambience Gallery! Step on any of the stones to listen to an ambience!"
+  },
+  "achievement--listen-small": {
+    "english": "Achievement reached: Listen to 10 ambiences."
+  },
+  "achievement--listen-medium": {
+    "english": "Achievement reached: Listen to 25 ambiences."
+  },
+  "achievement--listen-large": {
+    "english": "Achievement reached: Listen to all ambiences. Which one did you enjoy the most?"
   }
 }
