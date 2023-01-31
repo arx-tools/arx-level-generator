@@ -1,5 +1,6 @@
 import { ScriptCommand } from '@scripting/ScriptCommand'
 import { ScriptProperty } from '@scripting/ScriptProperty'
+import { ScriptSubroutine } from '@scripting/ScriptSubroutine'
 
 type ScriptConstructorProps = {
   filename: string
@@ -12,6 +13,7 @@ export class Script {
 
   filename: string
   properties: ScriptProperty<any>[] = []
+  subroutines: ScriptSubroutine[] = []
   eventHandlers: Record<string, (ScriptCommand | (() => string))[]> = {
     init: [],
   }
@@ -22,7 +24,6 @@ export class Script {
 
   toArxData() {
     const eventStrings: string[] = []
-
     Object.entries(this.eventHandlers).forEach(([name, handlers]) => {
       let eventString = ''
       if (name === 'init') {
@@ -34,7 +35,12 @@ export class Script {
       eventStrings.push(`on ${name} {\n${eventString}  accept\n}`)
     })
 
-    return eventStrings.join('\n')
+    const subroutines: string[] = []
+    this.subroutines.forEach((subroutine) => {
+      subroutines.push(subroutine.toString())
+    })
+
+    return eventStrings.join('\n') + '\n\n' + subroutines.join('\n')
   }
 
   on(eventName: string, handler: ScriptCommand | (() => string)) {

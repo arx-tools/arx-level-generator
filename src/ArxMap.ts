@@ -35,6 +35,8 @@ import { Lights } from '@src/Lights'
 import { AMB } from 'arx-convert'
 import { Script } from '@src/Script'
 import { HUD } from '@src/HUD'
+import { Translations } from '@src/Translations'
+import { MetaData } from '@src/MetaData'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -50,6 +52,7 @@ type ToBeSortedLater = {
 }
 
 export class ArxMap {
+  meta: MetaData = new MetaData()
   polygons = new Polygons()
   lights = new Lights()
   fogs: Fog[] = []
@@ -63,6 +66,7 @@ export class ArxMap {
     offset: new Vector3(0, 0, 0),
   }
   hud: HUD = new HUD()
+  i18n: Translations = new Translations()
   todo: ToBeSortedLater = {
     uniqueHeaders: [],
     cells: times(() => ({}), MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS),
@@ -344,6 +348,8 @@ export class ArxMap {
       await uninstall(outputDir)
     }
 
+    this.meta.generatorVersion = await getPackageVersion()
+
     // ------------------------
 
     const textures = await this.polygons.exportTextures(outputDir)
@@ -383,6 +389,8 @@ export class ArxMap {
       scripts[this.player.exportTarget(outputDir)] = this.player.script.toArxData()
     }
 
+    const translations = this.i18n.exportSourcesAndTargets(outputDir)
+
     const files = {
       dlf: path.resolve(outputDir, `graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`),
       fts: path.resolve(outputDir, `game/graph/levels/level${levelIdx}/fast.fts.json`),
@@ -390,6 +398,7 @@ export class ArxMap {
     }
 
     const manifest = {
+      meta: this.meta.toData(),
       files: [
         ...Object.keys(textures),
         ...Object.keys(hudElements),
@@ -397,6 +406,7 @@ export class ArxMap {
         ...Object.keys(customAmbiences),
         ...Object.keys(customAmbiences).map((filename) => filename.replace(/\.json$/, '')),
         ...Object.keys(scripts),
+        ...Object.keys(translations),
         ...Object.values(files),
         ...Object.values(files).map((filename) => filename.replace(/\.json$/, '')),
       ],
@@ -433,6 +443,16 @@ export class ArxMap {
     for (const [target, script] of Object.entries(scripts)) {
       const latin1Script = latin9ToLatin1(script.replace(/\n/g, Script.EOL))
       await fs.promises.writeFile(target, latin1Script, 'latin1')
+    }
+
+    for (const [filename, translation] of Object.entries(translations)) {
+      await fs.promises.writeFile(
+        filename,
+        `// ${this.meta.mapName} - Arx Level Generator ${this.meta.generatorVersion}
+  
+  ${translation}`,
+        'utf8',
+      )
     }
 
     // ------------------------

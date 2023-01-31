@@ -29,6 +29,7 @@ import { randomBetween } from '@src/random'
 import { applyTransformations } from '@src/helpers'
 import { Light } from '@src/Light'
 import { HudElements } from '@src/HUD'
+import { ScriptSubroutine } from '@scripting/ScriptSubroutine'
 
 const createZone = (pos: Vector3, size: Vector3, ambience: Ambience, color?: Color) => {
   const shape = new Shape()
@@ -305,7 +306,7 @@ export default async () => {
   console.log(`seed: ${SEED}`)
 
   const map = new ArxMap()
-
+  map.meta.mapName = 'Ambience Gallery'
   map.config.offset = new Vector3(2000, 0, 2000)
   map.player.position.adjustToPlayerHeight()
   map.player.orientation.y = MathUtils.degToRad(-90)
@@ -317,6 +318,7 @@ export default async () => {
   map.hud.hide(HudElements.BookIcon)
   map.hud.hide(HudElements.BackpackIcon)
   map.hud.hide(HudElements.PurseIcon)
+  await map.i18n.addFromFile(path.resolve('assets/projects/ambience-gallery/i18n.json'))
 
   const rowSize = 5
 
@@ -339,6 +341,22 @@ export default async () => {
     Ambience.none,
     Color.fromCSS('#444'),
   )
+
+  const mainMarker = Entity.marker.withScript()
+
+  const welcomeFn = new ScriptSubroutine('welcome_message', () => {
+    return `
+    play "system"
+    herosay [tutorial--welcome]
+    quest [tutorial--welcome]
+  `
+  })
+  mainMarker.script?.subroutines.push(welcomeFn)
+
+  mainMarker.script?.on('init', () => {
+    return `TIMERwelcome -m 1 2000 gosub ${welcomeFn.name}`
+  })
+
   const mainLight = createLight(new Vector3(-200 + width / 2, -1000, 0), Color.white.darken(30), 'main')
   const light1 = createLight(new Vector3(200, -300, 600), Color.white.darken(40), 'small')
   const light2 = createLight(new Vector3(100, -300, 0), Color.white.darken(40), 'small')
@@ -348,7 +366,7 @@ export default async () => {
   const light6 = createLight(new Vector3(width - 650, -300, -600), Color.white.darken(40), 'small')
 
   const zones: Zone[] = [...blocks.zones, mainZone]
-  const entities: Entity[] = blocks.entities
+  const entities: Entity[] = [...blocks.entities, mainMarker]
   const lights: Light[] = [mainLight, light1, light2, light3, light4, light5, light6]
   const meshes: Mesh[] = [
     ...blocks.meshes,
