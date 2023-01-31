@@ -55,7 +55,7 @@ export default async () => {
   console.log(`seed: ${SEED}`)
 
   const map = new ArxMap()
-
+  map.meta.mapName = "Alia's nightmare"
   map.config.offset = new Vector3(6000, 0, 6000)
   map.player.position.adjustToPlayerHeight()
   map.hud.hide(HudElements.Minimap)

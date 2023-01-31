@@ -11,7 +11,7 @@ export default async () => {
   const { OUTPUTDIR = path.resolve('./dist'), LEVEL = '1' } = process.env
 
   const map = new ArxMap()
-
+  map.meta.mapName = 'Tilted room demo'
   map.config.offset = new Vector3(2000, 0, 2000)
   map.player.position.adjustToPlayerHeight()
   map.player.orientation.y = MathUtils.degToRad(-90)

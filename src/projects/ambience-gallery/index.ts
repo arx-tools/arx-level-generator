@@ -344,7 +344,7 @@ export default async () => {
 
   const mainMarker = Entity.marker.withScript()
 
-  const welcomeFn = new ScriptSubroutine('welcome_message', () => {
+  const welcomeFn = new ScriptSubroutine('tutorial_welcome', () => {
     return `
     play "system"
     herosay [tutorial--welcome]
@@ -352,7 +352,6 @@ export default async () => {
   `
   })
   mainMarker.script?.subroutines.push(welcomeFn)
-
   mainMarker.script?.on('init', () => {
     return `TIMERwelcome -m 1 2000 gosub ${welcomeFn.name}`
   })
