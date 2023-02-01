@@ -316,6 +316,7 @@ export default async () => {
 
   const map = new ArxMap()
   map.meta.mapName = 'Ambience Gallery'
+  map.meta.seed = SEED
   map.config.offset = new Vector3(2000, 0, 2000)
   map.player.position.adjustToPlayerHeight()
   map.player.orientation.y = MathUtils.degToRad(-90)

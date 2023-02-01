@@ -1,5 +1,6 @@
 import path from 'node:path'
 import { MathUtils } from 'three'
+import seedrandom from 'seedrandom'
 import { ArxMap } from '@src/ArxMap'
 import { HudElements } from '@src/HUD'
 import { DONT_QUADIFY } from '@src/Polygons'
@@ -8,10 +9,18 @@ import { wallpaper } from '@projects/the-backrooms/materials'
 import { createRoomFromMesh, createRoomMesh } from '@projects/the-backrooms/room'
 
 export default async () => {
-  const { OUTPUTDIR = path.resolve('./dist'), LEVEL = '1' } = process.env
+  const {
+    OUTPUTDIR = path.resolve('./dist'),
+    LEVEL = '1',
+    SEED = Math.floor(Math.random() * 1e20).toString(),
+  } = process.env
+
+  seedrandom(SEED, { global: true })
+  console.log(`seed: ${SEED}`)
 
   const map = new ArxMap()
   map.meta.mapName = 'Tilted room demo'
+  map.meta.seed = SEED
   map.config.offset = new Vector3(2000, 0, 2000)
   map.player.position.adjustToPlayerHeight()
   map.player.orientation.y = MathUtils.degToRad(-90)

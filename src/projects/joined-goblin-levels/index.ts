@@ -17,6 +17,7 @@ export default async () => {
 
   const map = await ArxMap.fromOriginalLevel(2)
   map.meta.mapName = 'Joined goblin levels'
+  map.meta.seed = SEED
 
   const map2 = await ArxMap.fromOriginalLevel(15)
   map2.adjustOffsetTo(map)
