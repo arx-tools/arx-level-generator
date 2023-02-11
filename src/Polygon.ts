@@ -125,9 +125,7 @@ export class Polygon {
 
     let normals: QuadrupleOf<ArxVector3> | undefined = undefined
     if (this.normals) {
-      normals = this.normals.map((normal) => {
-        return normal.toArxVector3()
-      }) as QuadrupleOf<Vector3>
+      normals = this.normals.map((normal) => normal.toArxVector3()) as QuadrupleOf<Vector3>
     }
 
     return {

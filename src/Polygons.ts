@@ -12,6 +12,14 @@ import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf, Tri
 export const QUADIFY = 'quadify'
 export const DONT_QUADIFY = "don't quadify"
 
+export const SHADING_FLAT = 'flat'
+export const SHADING_SMOOTH = 'smooth'
+
+export type MeshImportProps = {
+  tryToQuadify?: typeof QUADIFY | typeof DONT_QUADIFY
+  shading?: typeof SHADING_FLAT | typeof SHADING_SMOOTH
+}
+
 type TextureContainer = ArxTextureContainer & { remaining: number; maxRemaining: number }
 
 export class Polygons extends Array<Polygon> {
@@ -116,7 +124,7 @@ export class Polygons extends Array<Polygon> {
     this.length = 0
   }
 
-  addThreeJsMesh(threeJsObj: Object3D, tryToQuadify: typeof QUADIFY | typeof DONT_QUADIFY = QUADIFY) {
+  addThreeJsMesh(threeJsObj: Object3D, { tryToQuadify = QUADIFY, shading = SHADING_FLAT }: MeshImportProps) {
     if (threeJsObj.parent === null) {
       applyTransformations(threeJsObj)
     }
@@ -209,7 +217,7 @@ export class Polygons extends Array<Polygon> {
     }
 
     threeJsObj.children.forEach((child) => {
-      this.addThreeJsMesh(child, tryToQuadify)
+      this.addThreeJsMesh(child, { tryToQuadify, shading })
     })
   }
 

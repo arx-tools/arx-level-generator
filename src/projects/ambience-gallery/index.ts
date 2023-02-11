@@ -20,7 +20,7 @@ import { Vector3 } from '@src/Vector3'
 import { Zone } from '@src/Zone'
 import { ControlZone } from '@scripting/properties/ControlZone'
 import { ambiences } from '@projects/ambience-gallery/constants'
-import { DONT_QUADIFY } from '@src/Polygons'
+import { DONT_QUADIFY, SHADING_FLAT, SHADING_SMOOTH } from '@src/Polygons'
 import { makeBumpy } from '@tools/mesh/makeBumpy'
 import { scaleUV } from '@tools/mesh/scaleUV'
 import { translateUV } from '@tools/mesh/translateUV'
@@ -417,7 +417,6 @@ export default async () => {
   const lights: Light[] = [mainLight, light1, light2, light3, light4, light5, light6]
   const meshes: Mesh[] = [
     ...blocks.meshes,
-    groundMesh,
     ...northWall,
     ...southWall,
     ...eastWall,
@@ -427,6 +426,7 @@ export default async () => {
     northEastCorner,
     southEastCorner,
   ]
+  const smoothMeshes: Mesh[] = [groundMesh]
 
   map.zones.push(...zones)
   map.entities.push(...entities)
@@ -437,7 +437,15 @@ export default async () => {
     mesh.translateY(map.config.offset.y)
     mesh.translateZ(map.config.offset.z)
     applyTransformations(mesh)
-    map.polygons.addThreeJsMesh(mesh, DONT_QUADIFY)
+    map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_FLAT })
+  })
+  smoothMeshes.forEach((mesh) => {
+    applyTransformations(mesh)
+    mesh.translateX(map.config.offset.x)
+    mesh.translateY(map.config.offset.y)
+    mesh.translateZ(map.config.offset.z)
+    applyTransformations(mesh)
+    map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
   })
 
   map.finalize()

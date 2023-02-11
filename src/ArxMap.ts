@@ -29,7 +29,7 @@ import { Fog } from '@src/Fog'
 import { Zone } from '@src/Zone'
 import { Portal } from '@src/Portal'
 import { Path } from '@src/Path'
-import { DONT_QUADIFY, Polygons, QUADIFY } from '@src/Polygons'
+import { DONT_QUADIFY, MeshImportProps, Polygons, QUADIFY } from '@src/Polygons'
 import { Entities } from '@src/Entities'
 import { Lights } from '@src/Lights'
 import { AMB } from 'arx-convert'
@@ -211,10 +211,10 @@ export class ArxMap {
     return new ArxMap(dlf, fts, llf, true)
   }
 
-  static fromThreeJsMesh(threeJsObj: Object3D, tryToQuadify: typeof QUADIFY | typeof DONT_QUADIFY = QUADIFY) {
+  static fromThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps) {
     const map = new ArxMap()
 
-    map.polygons.addThreeJsMesh(threeJsObj, tryToQuadify)
+    map.polygons.addThreeJsMesh(threeJsObj, meshImportProps)
 
     return map
   }
