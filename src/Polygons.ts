@@ -230,7 +230,12 @@ export class Polygons extends Array<Polygon> {
     }
 
     if (shading === SHADING_SMOOTH) {
-      // TODO: calculate polygon.normals
+      console.log(polygons.length)
+
+      polygons.forEach((polygon) => {
+        polygon.calculateNormals()
+        polygon.normals = [polygon.norm.clone(), polygon.norm.clone(), polygon.norm.clone(), polygon.norm2.clone()]
+      })
     }
 
     polygons.forEach((polygon) => {
