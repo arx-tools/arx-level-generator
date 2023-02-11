@@ -117,7 +117,7 @@ export const createRoomFromMesh = async (
   mesh: Object3D,
   tryToQuadify: typeof QUADIFY | typeof DONT_QUADIFY = QUADIFY,
 ) => {
-  const room = ArxMap.fromThreeJsMesh(mesh, tryToQuadify)
+  const room = ArxMap.fromThreeJsMesh(mesh, { tryToQuadify })
   const moldTexture = await mold
 
   room.polygons.forEach((polygon) => {

@@ -124,7 +124,12 @@ export class Polygons extends Array<Polygon> {
     this.length = 0
   }
 
-  addThreeJsMesh(threeJsObj: Object3D, { tryToQuadify = QUADIFY, shading = SHADING_FLAT }: MeshImportProps) {
+  addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps): void
+  addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps, root: false): Polygon[]
+  addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps, root: boolean = true) {
+    const { tryToQuadify = QUADIFY, shading = SHADING_FLAT } = meshImportProps
+    const polygons: Polygon[] = []
+
     if (threeJsObj.parent === null) {
       applyTransformations(threeJsObj)
     }
@@ -186,7 +191,7 @@ export class Polygons extends Array<Polygon> {
         if (isQuadable) {
           const [a, b, c] = previousPolygon
           const d = currentPolygon[1]
-          this.push(
+          polygons.push(
             new Polygon({
               vertices: [a, d, c, b] as QuadrupleOf<Vertex>,
               texture,
@@ -197,7 +202,7 @@ export class Polygons extends Array<Polygon> {
           continue
         }
 
-        this.push(
+        polygons.push(
           new Polygon({
             vertices: [...previousPolygon, new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
             texture,
@@ -207,7 +212,7 @@ export class Polygons extends Array<Polygon> {
       }
 
       if (previousPolygon !== null) {
-        this.push(
+        polygons.push(
           new Polygon({
             vertices: [...previousPolygon, new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
             texture,
@@ -217,7 +222,19 @@ export class Polygons extends Array<Polygon> {
     }
 
     threeJsObj.children.forEach((child) => {
-      this.addThreeJsMesh(child, { tryToQuadify, shading })
+      polygons.push(...this.addThreeJsMesh(child, meshImportProps, false))
+    })
+
+    if (!root) {
+      return polygons
+    }
+
+    if (shading === SHADING_SMOOTH) {
+      // TODO: calculate polygon.normals
+    }
+
+    polygons.forEach((polygon) => {
+      this.push(polygon)
     })
   }
 
