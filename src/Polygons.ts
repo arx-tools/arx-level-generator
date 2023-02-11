@@ -230,7 +230,7 @@ export class Polygons extends Array<Polygon> {
     }
 
     if (shading === SHADING_SMOOTH) {
-      console.log(polygons.length)
+      // console.log(polygons.length)
 
       polygons.forEach((polygon) => {
         polygon.calculateNormals()
