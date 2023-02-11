@@ -8,6 +8,7 @@ import { Color } from '@src/Color'
 import { Texture } from '@src/Texture'
 import { Vertex } from '@src/Vertex'
 import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf, TripleOf } from 'arx-convert/utils'
+import { getNonIndexedVertices } from '@tools/mesh/getVertices'
 
 export const QUADIFY = 'quadify'
 export const DONT_QUADIFY = "don't quadify"
@@ -125,20 +126,17 @@ export class Polygons extends Array<Polygon> {
   }
 
   addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps): void
-  addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps, root: false): Polygon[]
-  addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps, root: boolean = true) {
-    const { tryToQuadify = QUADIFY, shading = SHADING_FLAT } = meshImportProps
-    const polygons: Polygon[] = []
-
-    if (threeJsObj.parent === null) {
+  addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps, isRoot: false): Polygon[]
+  addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps, isRoot: boolean = true) {
+    if (isRoot) {
       applyTransformations(threeJsObj)
     }
 
+    const { tryToQuadify = QUADIFY, shading = SHADING_FLAT } = meshImportProps
+    const polygons: Polygon[] = []
+
     if (threeJsObj instanceof Mesh) {
-      const index: BufferAttribute = threeJsObj.geometry.getIndex()
-      const coords: BufferAttribute = threeJsObj.geometry.getAttribute('position')
       const uvs: BufferAttribute = threeJsObj.geometry.getAttribute('uv')
-      const vertices: Vertex[] = []
 
       let color = Color.white
       let texture: Texture | undefined = undefined
@@ -149,28 +147,17 @@ export class Polygons extends Array<Polygon> {
         }
       }
 
-      function toVertex3(idx: number, coords: BufferAttribute, uvs: BufferAttribute, color: Color) {
-        const precision = 10
-        const x = roundToNDecimals(precision, coords.getX(idx))
-        const y = roundToNDecimals(precision, coords.getY(idx) * -1)
-        const z = roundToNDecimals(precision, coords.getZ(idx))
-        const u = uvs.getX(idx)
-        const v = uvs.getY(idx)
-        return new Vertex(x, y, z, u, v, color)
-      }
-
-      if (index === null) {
-        // non-indexed, all vertices are unique
-        for (let idx = 0; idx < coords.count; idx++) {
-          vertices.push(toVertex3(idx, coords, uvs, color))
-        }
-      } else {
-        // indexed, has shared vertices
-        for (let i = 0; i < index.count; i++) {
-          const idx = index.getX(i)
-          vertices.push(toVertex3(idx, coords, uvs, color))
-        }
-      }
+      const vertexPrecision = 10
+      const vertices = getNonIndexedVertices(threeJsObj.geometry).map(({ idx, vector }) => {
+        return new Vertex(
+          roundToNDecimals(vertexPrecision, vector.x),
+          roundToNDecimals(vertexPrecision, vector.y * -1),
+          roundToNDecimals(vertexPrecision, vector.z),
+          uvs.getX(idx),
+          uvs.getY(idx),
+          color,
+        )
+      })
 
       let previousPolygon: TripleOf<Vertex> | null = null
       let currentPolygon: TripleOf<Vertex>
@@ -225,17 +212,16 @@ export class Polygons extends Array<Polygon> {
       polygons.push(...this.addThreeJsMesh(child, meshImportProps, false))
     })
 
-    if (!root) {
+    if (!isRoot) {
       return polygons
     }
 
     if (shading === SHADING_SMOOTH) {
-      // console.log(polygons.length)
-
       polygons.forEach((polygon) => {
         polygon.calculateNormals()
         polygon.normals = [polygon.norm.clone(), polygon.norm.clone(), polygon.norm.clone(), polygon.norm2.clone()]
       })
+      // TODO: adjust polygon.normals
     }
 
     polygons.forEach((polygon) => {

@@ -67,16 +67,17 @@ export default async () => {
     createZone(new Vector3(-200, 20, -depth / 2), new Vector3(width, 10, depth), Ambience.none, Color.fromCSS('#444')),
   ]
   const entities = [mainMarker, ...blocks.entities]
+
   const meshes = [
     ...blocks.meshes,
     ...(await createNorthWall(3100)),
     ...(await createSouthWall(3100)),
     ...(await createEastWall(1700)),
     ...(await createWestWall(1700)),
-    await createNWCorner(),
-    await createSWCorner(),
-    await createNECorner(),
-    await createSECorner(),
+    await createNWCorner(), // TODO: remove top and bottom -> quadify
+    await createSWCorner(), // TODO: remove top and bottom -> quadify
+    await createNECorner(), // TODO: remove top and bottom -> quadify
+    await createSECorner(), // TODO: remove top and bottom -> quadify
   ]
   const smoothMeshes = [await createGround(width, depth)]
 

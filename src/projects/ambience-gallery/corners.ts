@@ -28,12 +28,15 @@ export const createNWCorner = async () => {
     map: Texture.stoneHumanAkbaa2F,
   })
 
-  const stoneBlockGeometry = new ExtrudeGeometry(shape, extrudeSettings)
-  scaleUV(new Vector2(0.5 / size.x, 0.5 / size.x), stoneBlockGeometry)
+  const geometry = new ExtrudeGeometry(shape, extrudeSettings)
+
+  // TODO: remove vectors #0, #1, #2 and #3 (top and bottom 2 triangles)
+
+  scaleUV(new Vector2(0.5 / size.x, 0.5 / size.x), geometry)
 
   const pos = new Vector3(-200 - size.x / 2, -50, 800 + size.z / 2 + 50)
 
-  const mesh = new Mesh(stoneBlockGeometry.clone(), material)
+  const mesh = new Mesh(geometry.clone(), material)
   mesh.translateX(pos.x + extrudeSettings.bevelSize)
   mesh.translateY(pos.y)
   mesh.translateZ(pos.z + extrudeSettings.bevelSize)
