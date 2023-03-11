@@ -1,6 +1,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { Mesh, Object3D } from 'three'
+import { mean } from './faux-ramda'
+import { Vector3 } from './Vector3'
 
 export const getPackageVersion = async () => {
   try {
@@ -82,3 +84,11 @@ export const roundToNDecimals = (decimals: number, x: number) => {
 export const isEven = (n: number) => n % 2 === 0
 
 export const isOdd = (n: number) => n % 2 === 1
+
+export const averageVectors = (vectors: Vector3[]) => {
+  const xs = vectors.map(({ x }) => x)
+  const ys = vectors.map(({ y }) => y)
+  const zs = vectors.map(({ z }) => z)
+
+  return new Vector3(mean(xs), mean(ys), mean(zs))
+}

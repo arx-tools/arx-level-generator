@@ -1,6 +1,6 @@
 import { ArxColor, ArxPolygonFlags, ArxTextureContainer, ArxVertex } from 'arx-convert/types'
 import { sum, times } from '@src/faux-ramda'
-import { applyTransformations, evenAndRemainder, roundToNDecimals } from '@src/helpers'
+import { applyTransformations, averageVectors, evenAndRemainder, roundToNDecimals } from '@src/helpers'
 import { Polygon, TransparencyType } from '@src/Polygon'
 import { Vector3 } from '@src/Vector3'
 import { Mesh, MeshBasicMaterial, Object3D, Color as ThreeJsColor, BufferAttribute } from 'three'
@@ -217,11 +217,48 @@ export class Polygons extends Array<Polygon> {
     }
 
     if (shading === SHADING_SMOOTH) {
+      const polygonsOfVertices: Record<string, [number, Polygon][]> = {}
+
+      // TODO: calculate smooth normals for quads too
+
       polygons.forEach((polygon) => {
         polygon.calculateNormals()
         polygon.normals = [polygon.norm.clone(), polygon.norm.clone(), polygon.norm.clone(), polygon.norm2.clone()]
+
+        const [a, b, c] = polygon.vertices
+        if (Array.isArray(polygonsOfVertices[a.toString()])) {
+          polygonsOfVertices[a.toString()].push([0, polygon])
+        } else {
+          polygonsOfVertices[a.toString()] = [[0, polygon]]
+        }
+        if (Array.isArray(polygonsOfVertices[b.toString()])) {
+          polygonsOfVertices[b.toString()].push([1, polygon])
+        } else {
+          polygonsOfVertices[b.toString()] = [[1, polygon]]
+        }
+        if (Array.isArray(polygonsOfVertices[c.toString()])) {
+          polygonsOfVertices[c.toString()].push([2, polygon])
+        } else {
+          polygonsOfVertices[c.toString()] = [[2, polygon]]
+        }
       })
-      // TODO: adjust polygon.normals
+
+      Object.values(polygonsOfVertices).forEach((polygons) => {
+        if (polygons.length === 1) {
+          return
+        }
+
+        const normals = polygons.reduce((normals, [vertexIndex, polygon]) => {
+          normals.push((polygon.normals as QuadrupleOf<Vector3>)[vertexIndex])
+          return normals
+        }, [] as Vector3[])
+
+        const normal = averageVectors(normals)
+
+        polygons.forEach(([vertexIndex, polygon]) => {
+          ;(polygon.normals as QuadrupleOf<Vector3>)[vertexIndex] = normal.clone()
+        })
+      })
     }
 
     polygons.forEach((polygon) => {

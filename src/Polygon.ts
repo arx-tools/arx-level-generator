@@ -31,16 +31,20 @@ type PolygonContructorProps = {
 
 export class Polygon {
   vertices: QuadrupleOf<Vertex>
+  /** face normal for the 1st half of the polygon enclosed by vertices a, b and c */
   norm: Vector3
+  /** face normal for the 2nd half of the polygon enclosed by vertices d, b and c when polygon is a quad */
   norm2: Vector3
   texture?: Texture
   flags: ArxPolygonFlags
+  /** vertex normals */
   normals?: QuadrupleOf<Vector3>
   transval: number
   area: number
   room: number
   paddy?: number
   config: PolygonConfig = {
+    /** setting this to true will prevent calculation of norm, norm2 and normals properties */
     areNormalsCalculated: false,
   }
 

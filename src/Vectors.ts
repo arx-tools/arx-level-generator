@@ -18,9 +18,8 @@ export class Vectors extends Array<Vector3> {
   uniq() {
     const vectors = new Vectors()
 
-    uniq(this.map(({ x, y, z }) => `${x}|${y}|${z}`)).forEach((coords) => {
-      const [x, y, z] = coords.split('|')
-      vectors.push(new Vector3(parseFloat(x), parseFloat(y), parseFloat(z)))
+    uniq(this.map((vector) => vector.toString())).forEach((coords) => {
+      vectors.push(Vector3.fromString(coords))
     })
 
     return vectors
