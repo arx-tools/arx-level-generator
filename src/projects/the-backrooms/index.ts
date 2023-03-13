@@ -87,22 +87,21 @@ export default async () => {
       const alignment = dir.slice(1) as '--' | '-' | '' | '+' | '++'
 
       if (axis === 'y') {
-        // TODO: flip direction
-        // TODO: the center on this axis is on the bottom and not in the middle
-        // like as in with the x and z axis
-
         switch (alignment) {
           case '++':
-            cursor.y += 0
+            cursor.y -= newRoomSize.y * 2
             break
           case '+':
-            cursor.y += 0
+            cursor.y -= newRoomSize.y
             break
           case '':
+            cursor.y -= newRoomSize.y / 2
+            break
+          case '-':
             cursor.y += 0
             break
           case '--':
-            cursor.y += 0
+            cursor.y += newRoomSize.y
             break
         }
 
@@ -177,7 +176,7 @@ export default async () => {
   saveCursorAs('branch point')
   await addRoom(new Vector3(1000, 300, 200), wallpaperDotted, 'x--')
   await addRoom(new Vector3(400, 400, 400), wallpaper, 'x--')
-  await addRoom(new Vector3(200, 1000, 200), wallpaper, 'x++', 'y-', 'z--')
+  await addRoom(new Vector3(200, 200, 200), wallpaper, 'x', 'y', 'z--')
   restoreCursor('branch point')
   await addRoom(new Vector3(1000, 300, 200), wallpaperDotted, 'x++')
   await addRoom(new Vector3(400, 400, 400), wallpaper, 'x++')
