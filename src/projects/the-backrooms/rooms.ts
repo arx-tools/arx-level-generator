@@ -31,100 +31,8 @@ export type CursorDir =
 
 // ---------------------------
 
-let oldRoomSize = new Vector3(0, 0, 0)
-let newRoomSize = new Vector3(0, 0, 0)
-let cursor = new Vector3(0, 0, 0)
-
-const saves: Record<string, CursorSave> = {}
-
-export function moveCursor(...dirs: CursorDir[]) {
-  dirs.forEach((dir) => {
-    const axis = dir[0] as 'x' | 'y' | 'z'
-    const alignment = dir.slice(1) as '--' | '-' | '' | '+' | '++'
-
-    if (axis === 'y') {
-      switch (alignment) {
-        case '++':
-          cursor.y -= newRoomSize.y * 2
-          break
-        case '+':
-          cursor.y -= newRoomSize.y
-          break
-        case '':
-          cursor.y -= newRoomSize.y / 2
-          break
-        case '-':
-          cursor.y += 0
-          break
-        case '--':
-          cursor.y += newRoomSize.y
-          break
-      }
-
-      return
-    }
-
-    switch (alignment) {
-      case '++':
-        cursor[axis] += oldRoomSize[axis] / 2 + newRoomSize[axis] / 2
-        break
-      case '+':
-        cursor[axis] += oldRoomSize[axis] / 2 - newRoomSize[axis] / 2
-        break
-      case '-':
-        cursor[axis] -= oldRoomSize[axis] / 2 - newRoomSize[axis] / 2
-        break
-      case '--':
-        cursor[axis] -= oldRoomSize[axis] / 2 + newRoomSize[axis] / 2
-        break
-    }
-  })
-}
-
-let previousRoom: ArxMap | undefined = undefined
-let currentRoom: ArxMap | undefined = undefined
-const rooms: ArxMap[] = []
-
-export function saveCursorAs(key: string) {
-  const save: CursorSave = {
-    cursor: cursor.clone(),
-    oldRoomSize: oldRoomSize.clone(),
-    newRoomSize: newRoomSize.clone(),
-    previousRoomIdx: rooms.length - 1,
-  }
-  saves[key] = save
-}
-
-export function restoreCursor(key: string) {
-  if (key in saves) {
-    cursor = saves[key].cursor.clone()
-    oldRoomSize = saves[key].oldRoomSize.clone()
-    newRoomSize = saves[key].newRoomSize.clone()
-    previousRoom = rooms[saves[key].previousRoomIdx]
-  }
-}
-
-export async function addRoom(direction: Vector3, texture: Texture | Promise<Texture>, ...adjustments: CursorDir[]) {
-  newRoomSize = direction
-  if (!any(startsWith('y'), adjustments)) {
-    adjustments.push('y-')
-  }
-  moveCursor(...adjustments)
-
-  currentRoom = await createRoom(newRoomSize, texture)
-  currentRoom.move(cursor)
-
-  if (previousRoom !== undefined) {
-    union(previousRoom, currentRoom)
-  }
-  rooms.push(currentRoom)
-
-  previousRoom = currentRoom
-  oldRoomSize = newRoomSize
-}
-
 // only works when everything is aligned in a 100/100/100 grid
-export function union(map1: ArxMap, map2: ArxMap) {
+function union(map1: ArxMap, map2: ArxMap) {
   // TODO: this removes both polygons when they overlap, which is ideal for walls
   // but not for ceilings and floors
 
@@ -156,6 +64,101 @@ export function union(map1: ArxMap, map2: ArxMap) {
   })
 }
 
-export function getRooms() {
-  return rooms
+export class Rooms {
+  rooms: ArxMap[] = []
+  previousRoom: ArxMap | undefined = undefined
+  currentRoom: ArxMap | undefined = undefined
+
+  oldRoomSize = new Vector3(0, 0, 0)
+  newRoomSize = new Vector3(0, 0, 0)
+  cursor = new Vector3(0, 0, 0)
+
+  saves: Record<string, CursorSave> = {}
+
+  moveCursor(...dirs: CursorDir[]) {
+    dirs.forEach((dir) => {
+      const axis = dir[0] as 'x' | 'y' | 'z'
+      const alignment = dir.slice(1) as '--' | '-' | '' | '+' | '++'
+
+      if (axis === 'y') {
+        // TODO: calculate y offset
+        switch (alignment) {
+          case '++':
+            this.cursor.y -= 0
+            break
+          case '+':
+            this.cursor.y -= 0
+            break
+          case '':
+            this.cursor.y -= 0
+            break
+          case '-':
+            this.cursor.y += 0
+            break
+          case '--':
+            this.cursor.y += 0
+            break
+        }
+
+        return
+      }
+
+      switch (alignment) {
+        case '++':
+          this.cursor[axis] += this.oldRoomSize[axis] / 2 + this.newRoomSize[axis] / 2
+          break
+        case '+':
+          this.cursor[axis] += this.oldRoomSize[axis] / 2 - this.newRoomSize[axis] / 2
+          break
+        case '-':
+          this.cursor[axis] -= this.oldRoomSize[axis] / 2 - this.newRoomSize[axis] / 2
+          break
+        case '--':
+          this.cursor[axis] -= this.oldRoomSize[axis] / 2 + this.newRoomSize[axis] / 2
+          break
+      }
+    })
+  }
+
+  forEach(fn: (room: ArxMap) => void) {
+    this.rooms.forEach(fn)
+  }
+
+  saveCursorAs(key: string) {
+    const save: CursorSave = {
+      cursor: this.cursor.clone(),
+      oldRoomSize: this.oldRoomSize.clone(),
+      newRoomSize: this.newRoomSize.clone(),
+      previousRoomIdx: this.rooms.length - 1,
+    }
+    this.saves[key] = save
+  }
+
+  restoreCursor(key: string) {
+    if (key in this.saves) {
+      this.cursor = this.saves[key].cursor.clone()
+      this.oldRoomSize = this.saves[key].oldRoomSize.clone()
+      this.newRoomSize = this.saves[key].newRoomSize.clone()
+      this.previousRoom = this.rooms[this.saves[key].previousRoomIdx]
+    }
+  }
+
+  async addRoom(direction: Vector3, texture: Texture | Promise<Texture>, ...adjustments: CursorDir[]) {
+    this.newRoomSize = direction
+    if (!any(startsWith('y'), adjustments)) {
+      adjustments.push('y-')
+    }
+    this.moveCursor(...adjustments)
+
+    this.currentRoom = await createRoom(this.newRoomSize, texture)
+    this.currentRoom.move(this.cursor)
+
+    if (this.previousRoom !== undefined) {
+      union(this.previousRoom, this.currentRoom)
+    }
+    this.rooms.push(this.currentRoom)
+
+    this.previousRoom = this.currentRoom
+    this.oldRoomSize = this.newRoomSize
+  }
 }

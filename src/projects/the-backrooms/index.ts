@@ -7,7 +7,7 @@ import { Zone } from '@src/Zone'
 import { Ambience } from '@src/Ambience'
 import { wallpaper, wallpaperDotted } from '@projects/the-backrooms/materials'
 import { HudElements } from '@src/HUD'
-import { addRoom, getRooms, restoreCursor, saveCursorAs } from './rooms'
+import { Rooms } from './rooms'
 
 export default async () => {
   const {
@@ -21,17 +21,20 @@ export default async () => {
 
   // ---------------
 
-  await addRoom(new Vector3(800, 500, 1000), wallpaper)
-  saveCursorAs('spawn')
-  await addRoom(new Vector3(200, 300, 400), wallpaperDotted, 'z++')
-  await addRoom(new Vector3(600, 400, 600), wallpaper, 'z++')
-  saveCursorAs('branch point')
-  await addRoom(new Vector3(1000, 300, 200), wallpaperDotted, 'x--')
-  await addRoom(new Vector3(400, 400, 400), wallpaper, 'x--')
-  await addRoom(new Vector3(200, 200, 200), wallpaper, 'y', 'z--')
-  restoreCursor('branch point')
-  await addRoom(new Vector3(1000, 300, 200), wallpaperDotted, 'x++')
-  await addRoom(new Vector3(400, 400, 400), wallpaper, 'x++')
+  const rooms = new Rooms()
+
+  await rooms.addRoom(new Vector3(800, 500, 1000), wallpaper)
+  rooms.saveCursorAs('spawn')
+  await rooms.addRoom(new Vector3(200, 300, 400), wallpaperDotted, 'z++')
+  await rooms.addRoom(new Vector3(600, 400, 600), wallpaper, 'z++')
+  rooms.saveCursorAs('branch point')
+  await rooms.addRoom(new Vector3(1000, 300, 200), wallpaperDotted, 'x--')
+  await rooms.addRoom(new Vector3(400, 400, 400), wallpaper, 'x--')
+  await rooms.addRoom(new Vector3(200, 200, 200), wallpaper, 'y', 'z--')
+  await rooms.addRoom(new Vector3(800, 400, 800), wallpaperDotted, 'y', 'z--')
+  rooms.restoreCursor('branch point')
+  await rooms.addRoom(new Vector3(1000, 300, 200), wallpaperDotted, 'x++')
+  await rooms.addRoom(new Vector3(400, 400, 400), wallpaper, 'x++')
 
   const map = new ArxMap()
   map.meta.mapName = 'The Backrooms'
@@ -40,7 +43,7 @@ export default async () => {
   map.player.position.adjustToPlayerHeight()
   map.hud.hide(HudElements.Minimap)
 
-  getRooms().forEach((room) => {
+  rooms.forEach((room) => {
     map.add(room, true)
   })
 
