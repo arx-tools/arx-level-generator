@@ -81,22 +81,26 @@ export class Rooms {
       const alignment = dir.slice(1) as '--' | '-' | '' | '+' | '++'
 
       if (axis === 'y') {
-        // TODO: calculate y offset
         switch (alignment) {
           case '++':
-            this.cursor.y -= 0
+            // next floor = prev ceiling
+            this.cursor.y -= this.oldRoomSize.y
             break
           case '+':
-            this.cursor.y -= 0
+            // next ceiling = prev ceiling
+            this.cursor.y -= this.oldRoomSize.y - this.newRoomSize.y
             break
           case '':
-            this.cursor.y -= 0
+            // next middle = prev middle
+            this.cursor.y -= this.oldRoomSize.y / 2 - this.newRoomSize.y / 2
             break
           case '-':
+            // next floor = prev floor
             this.cursor.y += 0
             break
           case '--':
-            this.cursor.y += 0
+            // next ceiling = prev floor
+            this.cursor.y += this.newRoomSize.y
             break
         }
 
@@ -145,6 +149,8 @@ export class Rooms {
 
   async addRoom(direction: Vector3, texture: Texture | Promise<Texture>, ...adjustments: CursorDir[]) {
     this.newRoomSize = direction
+    // if no y alignment is specified then we assume the rooms are level
+    // meaning the floor is at the same y coordinate (y-)
     if (!any(startsWith('y'), adjustments)) {
       adjustments.push('y-')
     }

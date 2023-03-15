@@ -31,7 +31,7 @@ export default async () => {
   await rooms.addRoom(new Vector3(1000, 300, 200), wallpaperDotted, 'x--')
   await rooms.addRoom(new Vector3(400, 400, 400), wallpaper, 'x--')
   await rooms.addRoom(new Vector3(200, 200, 200), wallpaper, 'y', 'z--')
-  await rooms.addRoom(new Vector3(800, 400, 800), wallpaperDotted, 'y', 'z--')
+  await rooms.addRoom(new Vector3(800, 600, 800), wallpaperDotted, 'y', 'z--')
   rooms.restoreCursor('branch point')
   await rooms.addRoom(new Vector3(1000, 300, 200), wallpaperDotted, 'x++')
   await rooms.addRoom(new Vector3(400, 400, 400), wallpaper, 'x++')
@@ -67,6 +67,7 @@ export default async () => {
 
   // map.lights.push(light)
 
+  /*
   const shape = new Shape()
   shape.lineTo(100, 0)
   shape.lineTo(0, 100)
@@ -100,6 +101,7 @@ export default async () => {
   })
 
   map.zones.push(zone2)
+  */
 
   map.finalize()
 
