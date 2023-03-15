@@ -5,9 +5,11 @@ import { ArxMap } from '@src/ArxMap'
 import { Vector3 } from '@src/Vector3'
 import { Zone } from '@src/Zone'
 import { Ambience } from '@src/Ambience'
-import { wallpaper, wallpaperDotted } from '@projects/the-backrooms/materials'
+import { carpet, ceilingTile, wallpaper, wallpaperDotted, whiteMosaicTiles } from '@projects/the-backrooms/materials'
 import { HudElements } from '@src/HUD'
 import { Rooms } from './rooms'
+import { RoomTextures } from './room'
+import { Texture } from '@src/Texture'
 
 export default async () => {
   const {
@@ -21,20 +23,35 @@ export default async () => {
 
   // ---------------
 
+  const roomType1: RoomTextures = { wall: wallpaper, floor: carpet, ceiling: ceilingTile }
+  const roomType2: RoomTextures = { wall: wallpaperDotted, floor: carpet, ceiling: ceilingTile }
+  const poolRoom: RoomTextures = { wall: whiteMosaicTiles, floor: whiteMosaicTiles, ceiling: whiteMosaicTiles }
+  const water: RoomTextures = {
+    wall: Texture.waterCavewater,
+    floor: Texture.waterCavewater,
+    ceiling: Texture.waterCavewater,
+  }
+
   const rooms = new Rooms()
 
-  await rooms.addRoom(new Vector3(800, 500, 1000), wallpaper)
+  await rooms.addRoom(new Vector3(800, 500, 1000), roomType1)
   rooms.saveCursorAs('spawn')
-  await rooms.addRoom(new Vector3(200, 300, 400), wallpaperDotted, 'z++')
-  await rooms.addRoom(new Vector3(600, 400, 600), wallpaper, 'z++')
+  await rooms.addRoom(new Vector3(200, 300, 400), roomType2, 'z++')
+  await rooms.addRoom(new Vector3(600, 400, 600), roomType1, 'z++')
   rooms.saveCursorAs('branch point')
-  await rooms.addRoom(new Vector3(1000, 300, 200), wallpaperDotted, 'x--')
-  await rooms.addRoom(new Vector3(400, 400, 400), wallpaper, 'x--')
-  await rooms.addRoom(new Vector3(200, 200, 200), wallpaper, 'y', 'z--')
-  await rooms.addRoom(new Vector3(800, 600, 800), wallpaperDotted, 'y', 'z--')
+  await rooms.addRoom(new Vector3(1000, 300, 200), roomType2, 'x--')
+  await rooms.addRoom(new Vector3(400, 400, 400), roomType1, 'x--')
+  await rooms.addRoom(new Vector3(200, 200, 200), roomType1, 'y', 'z--')
+  rooms.saveCursorAs('pool room')
+  // TODO: turn off mold for pool room
+  await rooms.addRoom(new Vector3(800, 400, 800), poolRoom, 'y', 'z--')
+  await rooms.addRoom(new Vector3(600, 100, 600), poolRoom, 'y--')
+  // TODO: water
+  // await rooms.addRoom(new Vector3(600, 1, 600), water, 'y+', 'x', 'z')
+
   rooms.restoreCursor('branch point')
-  await rooms.addRoom(new Vector3(1000, 300, 200), wallpaperDotted, 'x++')
-  await rooms.addRoom(new Vector3(400, 400, 400), wallpaper, 'x++')
+  await rooms.addRoom(new Vector3(1000, 300, 200), roomType2, 'x++')
+  await rooms.addRoom(new Vector3(400, 400, 400), roomType1, 'x++')
 
   const map = new ArxMap()
   map.meta.mapName = 'The Backrooms'

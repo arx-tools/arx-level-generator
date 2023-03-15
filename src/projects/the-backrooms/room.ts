@@ -8,9 +8,15 @@ import { Vector3 } from '@src/Vector3'
 import { Texture } from '@src/Texture'
 import { DONT_QUADIFY, QUADIFY } from '@src/Polygons'
 
-const createFloor = async (dimensions: Vector3) => {
+export type RoomTextures = {
+  wall: Texture | Promise<Texture>
+  floor: Texture | Promise<Texture>
+  ceiling: Texture | Promise<Texture>
+}
+
+const createFloor = async (dimensions: Vector3, texture: Texture | Promise<Texture>) => {
   const { x: width, y: height, z: depth } = dimensions
-  return await createPlaneMesh(new Vector2(width, depth), 100, Color.white.darken(70), carpet)
+  return await createPlaneMesh(new Vector2(width, depth), 100, Color.white.darken(70), texture)
 }
 
 const createNorthWall = async (dimensions: Vector3, moldOffset: number, texture: Texture | Promise<Texture>) => {
@@ -89,26 +95,26 @@ const createEastWall = async (dimensions: Vector3, moldOffset: number, texture: 
   return group
 }
 
-const createCeiling = async (dimensions: Vector3) => {
+const createCeiling = async (dimensions: Vector3, texture: Texture | Promise<Texture>) => {
   const { x: width, y: height, z: depth } = dimensions
 
-  const mesh = await createPlaneMesh(new Vector2(width, depth), 100, Color.white.darken(50), ceilingTile)
+  const mesh = await createPlaneMesh(new Vector2(width, depth), 100, Color.white.darken(50), texture)
   mesh.translateY(height)
   mesh.rotateX(MathUtils.degToRad(180))
   return mesh
 }
 
-export const createRoomMesh = async (dimensions: Vector3, wallTexture: Texture | Promise<Texture>) => {
+export const createRoomMesh = async (dimensions: Vector3, { wall, floor, ceiling }: RoomTextures) => {
   const moldOffset = 0 // TODO: if moldOffset is not 0, then union is not removing it with the wall
 
   const group = new Group()
 
-  group.add(await createFloor(dimensions))
-  group.add(await createNorthWall(dimensions, moldOffset, wallTexture))
-  group.add(await createSouthWall(dimensions, moldOffset, wallTexture))
-  group.add(await createWestWall(dimensions, moldOffset, wallTexture))
-  group.add(await createEastWall(dimensions, moldOffset, wallTexture))
-  group.add(await createCeiling(dimensions))
+  group.add(await createFloor(dimensions, floor))
+  group.add(await createNorthWall(dimensions, moldOffset, wall))
+  group.add(await createSouthWall(dimensions, moldOffset, wall))
+  group.add(await createWestWall(dimensions, moldOffset, wall))
+  group.add(await createEastWall(dimensions, moldOffset, wall))
+  group.add(await createCeiling(dimensions, ceiling))
 
   return group
 }
@@ -130,6 +136,6 @@ export const createRoomFromMesh = async (
   return room
 }
 
-export const createRoom = async (dimensions: Vector3, wallTexture: Texture | Promise<Texture>) => {
-  return createRoomFromMesh(await createRoomMesh(dimensions, wallTexture))
+export const createRoom = async (dimensions: Vector3, textures: RoomTextures) => {
+  return createRoomFromMesh(await createRoomMesh(dimensions, textures))
 }

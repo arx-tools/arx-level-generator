@@ -26,3 +26,8 @@ export const mold = Texture.fromCustomFile({
   sourcePath: TEXTURE_DIR,
   filename: 'mold-edge.jpg',
 })
+
+export const whiteMosaicTiles = Texture.fromCustomFile({
+  sourcePath: TEXTURE_DIR,
+  filename: 'pool-room-white-mosaic-tile.jpg',
+})

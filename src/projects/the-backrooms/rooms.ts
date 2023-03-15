@@ -3,7 +3,7 @@ import { any, startsWith } from '@src/faux-ramda'
 import { removeByValue } from '@src/helpers'
 import { Texture } from '@src/Texture'
 import { Vector3 } from '@src/Vector3'
-import { createRoom } from './room'
+import { createRoom, RoomTextures } from './room'
 
 export type CursorSave = {
   oldRoomSize: Vector3
@@ -147,7 +147,7 @@ export class Rooms {
     }
   }
 
-  async addRoom(direction: Vector3, texture: Texture | Promise<Texture>, ...adjustments: CursorDir[]) {
+  async addRoom(direction: Vector3, textures: RoomTextures, ...adjustments: CursorDir[]) {
     this.newRoomSize = direction
     // if no y alignment is specified then we assume the rooms are level
     // meaning the floor is at the same y coordinate (y-)
@@ -156,7 +156,7 @@ export class Rooms {
     }
     this.moveCursor(...adjustments)
 
-    this.currentRoom = await createRoom(this.newRoomSize, texture)
+    this.currentRoom = await createRoom(this.newRoomSize, textures)
     this.currentRoom.move(this.cursor)
 
     if (this.previousRoom !== undefined) {
