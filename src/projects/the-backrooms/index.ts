@@ -46,7 +46,7 @@ export default async () => {
   // TODO: turn off mold for pool room
   await rooms.addRoom(new Vector3(800, 400, 800), poolRoom, 'y', 'z--')
   await rooms.addRoom(new Vector3(600, 100, 600), poolRoom, 'y--')
-  // TODO: water
+  // TODO: water -- turn off mold + should not clip with pool bottom + add water flag to texture
   // await rooms.addRoom(new Vector3(600, 1, 600), water, 'y+', 'x', 'z')
 
   rooms.restoreCursor('branch point')
