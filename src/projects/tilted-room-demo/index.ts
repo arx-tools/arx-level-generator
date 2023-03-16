@@ -27,9 +27,12 @@ export default async () => {
   map.hud.hide(HudElements.Minimap)
 
   const roomMesh = await createRoomMesh(new Vector3(600, 400, 600), {
-    wall: wallpaper,
-    floor: carpet,
-    ceiling: ceilingTile,
+    hasMold: false,
+    textures: {
+      wall: wallpaper,
+      floor: carpet,
+      ceiling: ceilingTile,
+    },
   })
   roomMesh.position.add(new Vector3(100, 0, 100))
   roomMesh.rotateZ(MathUtils.degToRad(20))

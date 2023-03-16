@@ -7,9 +7,11 @@ import { Zone } from '@src/Zone'
 import { Ambience } from '@src/Ambience'
 import { carpet, ceilingTile, wallpaper, wallpaperDotted, whiteMosaicTiles } from '@projects/the-backrooms/materials'
 import { HudElements } from '@src/HUD'
-import { Rooms } from './rooms'
-import { RoomTextures } from './room'
+import { Rooms } from './Rooms'
+import { RoomProps } from './room'
 import { Texture } from '@src/Texture'
+import { Cursor } from './Cursor'
+import { Zones } from './Zones'
 
 export default async () => {
   const {
@@ -23,35 +25,64 @@ export default async () => {
 
   // ---------------
 
-  const roomType1: RoomTextures = { wall: wallpaper, floor: carpet, ceiling: ceilingTile }
-  const roomType2: RoomTextures = { wall: wallpaperDotted, floor: carpet, ceiling: ceilingTile }
-  const poolRoom: RoomTextures = { wall: whiteMosaicTiles, floor: whiteMosaicTiles, ceiling: whiteMosaicTiles }
-  const water: RoomTextures = {
-    wall: Texture.waterCavewater,
-    floor: Texture.waterCavewater,
-    ceiling: Texture.waterCavewater,
+  const roomType1: RoomProps = {
+    hasMold: true,
+    textures: {
+      wall: wallpaper,
+      floor: carpet,
+      ceiling: ceilingTile,
+    },
+  }
+  const roomType2: RoomProps = {
+    hasMold: true,
+    textures: {
+      wall: wallpaperDotted,
+      floor: carpet,
+      ceiling: ceilingTile,
+    },
+  }
+  const poolRoom: RoomProps = {
+    hasMold: false,
+    textures: {
+      wall: whiteMosaicTiles,
+      floor: whiteMosaicTiles,
+      ceiling: whiteMosaicTiles,
+    },
+  }
+  const brokenWall: RoomProps = {
+    hasMold: false,
+    textures: {
+      wall: Texture.l1TempleStoneWall03,
+      floor: Texture.l1TempleStoneWall03,
+      ceiling: Texture.l1TempleStoneWall03,
+    },
   }
 
-  const rooms = new Rooms()
+  const cursor = new Cursor()
+  const rooms = new Rooms(cursor)
+  const zones = new Zones(cursor)
 
   await rooms.addRoom(new Vector3(800, 500, 1000), roomType1)
-  rooms.saveCursorAs('spawn')
+  // add spawn zone: no ambience + draw distance = 3000
+  // add light to the room's ceiling
+  cursor.saveAs('spawn')
   await rooms.addRoom(new Vector3(200, 300, 400), roomType2, 'z++')
   await rooms.addRoom(new Vector3(600, 400, 600), roomType1, 'z++')
-  rooms.saveCursorAs('branch point')
+  cursor.saveAs('branch point')
   await rooms.addRoom(new Vector3(1000, 300, 200), roomType2, 'x--')
   await rooms.addRoom(new Vector3(400, 400, 400), roomType1, 'x--')
-  await rooms.addRoom(new Vector3(200, 200, 200), roomType1, 'y', 'z--')
-  rooms.saveCursorAs('pool room')
-  // TODO: turn off mold for pool room
-  await rooms.addRoom(new Vector3(800, 400, 800), poolRoom, 'y', 'z--')
-  await rooms.addRoom(new Vector3(600, 100, 600), poolRoom, 'y--')
-  // TODO: water -- turn off mold + should not clip with pool bottom + add water flag to texture
-  // await rooms.addRoom(new Vector3(600, 1, 600), water, 'y+', 'x', 'z')
-
-  rooms.restoreCursor('branch point')
+  // await rooms.addZone(new Vector3(200, Infinity, 100), { ambience: Ambience.none, name: 'pool-room-out', drawDistance: 3000 }, 'y-', 'z-')
+  await rooms.addRoom(new Vector3(200, 200, 100), brokenWall, 'y', 'z--')
+  // await rooms.addZone(new Vector3(200, Infinity, 100), { ambience: Ambience.caveB, name: 'pool-room-in', drawDistance: 1000 }, 'y', 'z--')
+  await rooms.addRoom(new Vector3(1000, 600, 2000), poolRoom, 'y', 'z--')
+  await rooms.addRoom(new Vector3(600, 100, 1400), poolRoom, 'y--')
+  // cursor.saveAs('pool')
+  cursor.restore('branch point')
   await rooms.addRoom(new Vector3(1000, 300, 200), roomType2, 'x++')
   await rooms.addRoom(new Vector3(400, 400, 400), roomType1, 'x++')
+
+  // rooms.restore('pool')
+  // console.log(cursor.cursor)
 
   const map = new ArxMap()
   map.meta.mapName = 'The Backrooms'
@@ -60,8 +91,11 @@ export default async () => {
   map.player.position.adjustToPlayerHeight()
   map.hud.hide(HudElements.Minimap)
 
-  rooms.forEach((room) => {
+  rooms.entries.forEach((room) => {
     map.add(room, true)
+  })
+  zones.entries.forEach((zone) => {
+    map.zones.push(zone)
   })
 
   // ---------------

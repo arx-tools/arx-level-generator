@@ -170,6 +170,9 @@ export class Texture extends ThreeJsTextue {
   static get l1PrisonSandGround01() {
     return new Texture({ filename: 'l1_prison_[sand]_ground01.jpg', size: 64 })
   }
+  static get l1TempleStoneWall03() {
+    return new Texture({ filename: 'l1_temple_[stone]_wall03', size: 128 })
+  }
   static get l2TrollStoneGround04() {
     return new Texture({ filename: 'l2_troll_[stone]_ground04.jpg', size: 128 })
   }
@@ -201,7 +204,7 @@ export class Texture extends ThreeJsTextue {
     return new Texture({ filename: 'l3_dissid_[stone]_trans01.jpg', size: 128 })
   }
   static get l4YlsideStoneGround01() {
-    return new Texture({ filename: 'L4_YLSIDE_[STONE]_GROUND01.jpg', size: 64 })
+    return new Texture({ filename: 'l4_ylside_[stone]_ground01.jpg', size: 64 })
   }
   static get l5CavesGravelGround05() {
     return new Texture({ filename: 'l5_caves_[gravel]_ground05.jpg', size: 128 })
