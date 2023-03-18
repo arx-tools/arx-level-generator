@@ -8,4 +8,8 @@ export class Zones {
   constructor(cursor: Cursor) {
     this.cursor = cursor
   }
+
+  forEach(fn: (entry: Zone) => void) {
+    this.entries.forEach(fn)
+  }
 }

@@ -60,12 +60,28 @@ export class Rooms {
     this.currentRoom = await createRoom(dimensions, props)
     this.currentRoom.move(this.cursor.cursor)
 
-    if (this.previousRoom !== undefined) {
-      union(this.previousRoom, this.currentRoom)
-    }
+    // if (this.previousRoom !== undefined) {
+    //   union(this.previousRoom, this.currentRoom)
+    // }
     this.entries.push(this.currentRoom)
 
     this.previousRoom = this.currentRoom
     this.cursor.oldSize = this.cursor.newSize
+  }
+
+  unionAll() {
+    if (this.entries.length < 2) {
+      return
+    }
+
+    for (let i = 0; i < this.entries.length - 1; i++) {
+      for (let j = i + 1; j < this.entries.length; j++) {
+        union(this.entries[i], this.entries[j])
+      }
+    }
+  }
+
+  forEach(fn: (entry: ArxMap) => void) {
+    this.entries.forEach(fn)
   }
 }
