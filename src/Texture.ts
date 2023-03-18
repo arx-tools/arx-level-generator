@@ -165,13 +165,13 @@ export class Texture extends ThreeJsTextue {
     return new Texture({ filename: 'L1_Dragon_[spide]_Lime1nocol.bmp', size: 128 })
   }
   static get l1PrisonStoneGridl02() {
-    return new Texture({ filename: 'l1_prison_(stone)_gridl02', size: 64 })
+    return new Texture({ filename: 'l1_prison_(stone)_gridl02.bmp', size: 64 })
   }
   static get l1PrisonSandGround01() {
     return new Texture({ filename: 'l1_prison_[sand]_ground01.jpg', size: 64 })
   }
   static get l1TempleStoneWall03() {
-    return new Texture({ filename: 'l1_temple_[stone]_wall03', size: 128 })
+    return new Texture({ filename: 'l1_temple_[stone]_wall03.jpg', size: 128 })
   }
   static get l2TrollStoneGround04() {
     return new Texture({ filename: 'l2_troll_[stone]_ground04.jpg', size: 128 })

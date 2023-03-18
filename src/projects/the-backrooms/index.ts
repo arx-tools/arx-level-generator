@@ -1,3 +1,4 @@
+import fs from 'node:fs'
 import path from 'node:path'
 import { EdgesGeometry, MathUtils, Shape, ShapeGeometry } from 'three'
 import seedrandom from 'seedrandom'
@@ -10,7 +11,7 @@ import { HudElements } from '@src/HUD'
 import { Rooms } from './Rooms'
 import { RoomProps } from './room'
 import { Texture } from '@src/Texture'
-import { Cursor } from './Cursor'
+import { Cursor, CursorDir } from './Cursor'
 import { Zones } from './Zones'
 
 export default async () => {
@@ -33,6 +34,7 @@ export default async () => {
       ceiling: ceilingTile,
     },
   }
+  /*
   const officeDotted: RoomProps = {
     hasMold: true,
     textures: {
@@ -57,11 +59,85 @@ export default async () => {
       ceiling: Texture.l1TempleStoneWall03,
     },
   }
+  */
 
   const cursor = new Cursor()
   const rooms = new Rooms(cursor)
   const zones = new Zones(cursor)
+  const roomDefinitions: Record<string, RoomProps> = {}
 
+  const defaultMap = path.resolve('assets/projects/the-backrooms/maps/default.ini')
+  const rawInput = await fs.promises.readFile(defaultMap, 'utf-8')
+
+  const lines = rawInput.split(/\r?\n/)
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim()
+
+    if (line.startsWith('#') || line === '') {
+      continue
+    }
+
+    const tokens = line.split(' ')
+
+    switch (tokens[0]) {
+      case 'define':
+        // TODO: validate arguments
+        const definitionName = tokens[1]
+        if (typeof roomDefinitions[definitionName] === 'undefined') {
+          roomDefinitions[definitionName] = {
+            hasMold: false,
+            textures: {
+              ceiling: Texture.aliciaRoomMur02,
+              wall: Texture.aliciaRoomMur02,
+              floor: Texture.aliciaRoomMur02,
+            },
+          }
+        }
+        switch (tokens[2]) {
+          case 'floor':
+          case 'wall':
+          case 'ceiling':
+            roomDefinitions[definitionName].textures[tokens[2]] = new Texture({ filename: tokens[3], size: 128 })
+            break
+          default:
+          // TODO
+        }
+        break
+      case 'room':
+        switch (tokens[1]) {
+          case 'add':
+            // TODO: validate arguments
+            await rooms.addRoom(
+              new Vector3(parseInt(tokens[2]), parseInt(tokens[3]), parseInt(tokens[4])),
+              roomDefinitions[tokens[5]],
+              ...(tokens.slice(6) as CursorDir[]),
+            )
+            break
+          default:
+            console.error(`Unknown parameter "${tokens[1]}" after "room" at line ${i + 1}`)
+        }
+        break
+      case 'cursor':
+        switch (tokens[1]) {
+          case 'save':
+            // TODO: check if tokens[2] exists
+            cursor.saveAs(tokens[2])
+            break
+          case 'restore':
+            // TODO: check if tokens[2] exists
+            cursor.restore(tokens[2])
+            break
+          default:
+            console.error(`Unknown parameter "${tokens[1]}" after "cursor" at line ${i + 1}`)
+        }
+        break
+      default:
+        console.error(`Unknown command "${tokens[0]}" at line ${i + 1}`)
+    }
+  }
+
+  /*
   await rooms.addRoom(new Vector3(800, 500, 1000), office)
   // add spawn zone: no ambience + draw distance = 3000
   // add light to the room's ceiling
@@ -69,7 +145,7 @@ export default async () => {
   await rooms.addRoom(new Vector3(200, 300, 400), officeDotted, 'z++')
   await rooms.addRoom(new Vector3(600, 400, 600), office, 'z++')
   cursor.saveAs('branch point')
-  await rooms.addRoom(new Vector3(2000, 300, 200), officeDotted, 'x--')
+  await rooms.addRoom(new Vector3(1000, 300, 200), officeDotted, 'x--')
   await rooms.addRoom(new Vector3(400, 400, 400), office, 'x--')
 
   // await rooms.addZone(new Vector3(200, Infinity, 100), { ambience: Ambience.none, name: 'pool-room-out', drawDistance: 3000 }, 'y-', 'z-')
@@ -120,6 +196,7 @@ export default async () => {
   cursor.restore('branch point')
   await rooms.addRoom(new Vector3(1000, 300, 200), officeDotted, 'x++')
   await rooms.addRoom(new Vector3(400, 400, 400), office, 'x++')
+  */
 
   rooms.unionAll()
 
