@@ -13,6 +13,7 @@ import { RoomProps } from './room'
 import { Texture } from '@src/Texture'
 import { Cursor, CursorDir } from './Cursor'
 import { Zones } from './Zones'
+import { createLight } from './light'
 
 export default async () => {
   const {
@@ -118,6 +119,23 @@ export default async () => {
             console.error(`Unknown parameter "${tokens[1]}" after "room" at line ${i + 1}`)
         }
         break
+      case 'with':
+        switch (tokens[1]) {
+          case 'light':
+            if (rooms.currentRoom === undefined) {
+              // TODO: error: only add light if there's at least 1 room
+            } else {
+              const light = createLight(
+                new Vector3(cursor.cursor.x, cursor.cursor.y - cursor.newSize.y / 2, cursor.cursor.z),
+                Math.min(cursor.newSize.x, cursor.newSize.y, cursor.newSize.z) * 1.3,
+              )
+              rooms.currentRoom.lights.push(light)
+            }
+            break
+          default:
+            console.error(`Unknown parameter "${tokens[1]}" after "with" at line ${i + 1}`)
+        }
+        break
       case 'cursor':
         switch (tokens[1]) {
           case 'save':
@@ -215,24 +233,6 @@ export default async () => {
   })
 
   // ---------------
-
-  // const light = new Light({
-  //   color: Color.yellow.lighten(50),
-  //   position: new Vector3(0, -800, 0),
-  //   fallStart: 100,
-  //   fallEnd: 1000,
-  //   intensity: 2,
-  //   lightData: {
-  //     exFlicker: Color.transparent,
-  //     exRadius: 0,
-  //     exFrequency: 0,
-  //     exSize: 0,
-  //     exSpeed: 0,
-  //     exFlareSize: 0,
-  //   },
-  // })
-
-  // map.lights.push(light)
 
   /*
   const shape = new Shape()

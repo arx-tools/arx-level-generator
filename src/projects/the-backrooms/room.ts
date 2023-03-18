@@ -169,5 +169,5 @@ export const createRoomFromMesh = async (
 }
 
 export const createRoom = async (dimensions: Vector3, props: RoomProps) => {
-  return createRoomFromMesh(await createRoomMesh(dimensions, props))
+  return await createRoomFromMesh(await createRoomMesh(dimensions, props))
 }
