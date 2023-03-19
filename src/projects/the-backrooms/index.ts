@@ -27,6 +27,7 @@ export default async () => {
 
   // ---------------
 
+  /*
   const office: RoomProps = {
     hasMold: true,
     textures: {
@@ -35,7 +36,6 @@ export default async () => {
       ceiling: ceilingTile,
     },
   }
-  /*
   const officeDotted: RoomProps = {
     hasMold: true,
     textures: {
