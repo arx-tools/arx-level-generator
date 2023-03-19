@@ -14,6 +14,7 @@ import { Texture } from '@src/Texture'
 import { Cursor, CursorDir } from './Cursor'
 import { Zones } from './Zones'
 import { createLight } from './light'
+import { randomBetween } from '@src/random'
 
 export default async () => {
   const {
@@ -125,11 +126,36 @@ export default async () => {
             if (rooms.currentRoom === undefined) {
               // TODO: error: only add light if there's at least 1 room
             } else {
-              const light = createLight(
-                new Vector3(cursor.cursor.x, cursor.cursor.y - cursor.newSize.y / 2, cursor.cursor.z),
-                Math.min(cursor.newSize.x, cursor.newSize.y, cursor.newSize.z) * 1.3,
-              )
-              rooms.currentRoom.lights.push(light)
+              const lightSpacing = 200
+              const xAmount = Math.floor(cursor.newSize.x / lightSpacing)
+              const yAmount = Math.floor(cursor.newSize.y / lightSpacing)
+              const zAmount = Math.floor(cursor.newSize.z / lightSpacing)
+              for (let x = 0; x < xAmount; x++) {
+                for (let y = 0; y < yAmount; y++) {
+                  for (let z = 0; z < zAmount; z++) {
+                    const light = createLight(
+                      new Vector3(
+                        cursor.cursor.x -
+                          cursor.newSize.x / 2 +
+                          x * lightSpacing +
+                          lightSpacing / 2 +
+                          randomBetween(-lightSpacing / 2, +lightSpacing / 2),
+                        cursor.cursor.y -
+                          y * lightSpacing -
+                          lightSpacing / 2 -
+                          randomBetween(-lightSpacing / 2, +lightSpacing / 2),
+                        cursor.cursor.z -
+                          cursor.newSize.z / 2 +
+                          z * lightSpacing +
+                          lightSpacing / 2 +
+                          randomBetween(-lightSpacing / 2, +lightSpacing / 2),
+                      ),
+                      lightSpacing * 1.3,
+                    )
+                    rooms.currentRoom.lights.push(light)
+                  }
+                }
+              }
             }
             break
           default:
