@@ -9,6 +9,7 @@ import { Texture } from '@src/Texture'
 import { Vertex } from '@src/Vertex'
 import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf, TripleOf } from 'arx-convert/utils'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices'
+import { Material } from './Material'
 
 export const QUADIFY = 'quadify'
 export const DONT_QUADIFY = "don't quadify"
@@ -19,6 +20,7 @@ export const SHADING_SMOOTH = 'smooth'
 export type MeshImportProps = {
   tryToQuadify?: typeof QUADIFY | typeof DONT_QUADIFY
   shading?: typeof SHADING_FLAT | typeof SHADING_SMOOTH
+  flags?: ArxPolygonFlags
 }
 
 type TextureContainer = ArxTextureContainer & { remaining: number; maxRemaining: number }
@@ -132,7 +134,7 @@ export class Polygons extends Array<Polygon> {
       applyTransformations(threeJsObj)
     }
 
-    const { tryToQuadify = QUADIFY, shading = SHADING_FLAT } = meshImportProps
+    const { tryToQuadify = QUADIFY, shading = SHADING_FLAT, flags = ArxPolygonFlags.None } = meshImportProps
     const polygons: Polygon[] = []
 
     if (threeJsObj instanceof Mesh) {
@@ -193,6 +195,7 @@ export class Polygons extends Array<Polygon> {
           new Polygon({
             vertices: [...previousPolygon, new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
             texture,
+            flags: texture instanceof Material ? texture.flags | flags : flags,
           }),
         )
         previousPolygon = currentPolygon
@@ -203,6 +206,7 @@ export class Polygons extends Array<Polygon> {
           new Polygon({
             vertices: [...previousPolygon, new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
             texture,
+            flags: texture instanceof Material ? texture.flags | flags : flags,
           }),
         )
       }

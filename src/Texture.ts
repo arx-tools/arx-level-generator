@@ -6,7 +6,7 @@ import sharp, { Sharp } from 'sharp'
 import { sharpFromBmp, sharpToBmp } from 'sharp-bmp'
 import { Expand } from 'arx-convert/utils'
 
-type TextureConstructorProps = {
+export type TextureConstructorProps = {
   filename: string
   isNative?: boolean
   width?: number

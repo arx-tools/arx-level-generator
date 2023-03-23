@@ -1,14 +1,21 @@
 import { createPlaneMesh } from '@prefabs/mesh/plane'
 import { Color } from '@src/Color'
 import { applyTransformations } from '@src/helpers'
+import { Material } from '@src/Material'
 import { Texture } from '@src/Texture'
 import { scaleUV } from '@tools/mesh/scaleUV'
 import { translateUV } from '@tools/mesh/translateUV'
+import { ArxPolygonFlags } from 'arx-convert/types'
 import { MathUtils, Vector2 } from 'three'
 
 export const createNorthWall = async (width: number) => {
   const wallSize = new Vector2(width, 200)
-  const wallMesh = await createPlaneMesh(wallSize, 100, Color.white.darken(50), Texture.l1DragonSpideLime1Nocol)
+  const wallMesh = await createPlaneMesh(
+    wallSize,
+    100,
+    Color.white.darken(50),
+    Material.fromTexture(Texture.l1DragonSpideLime1Nocol, { flags: ArxPolygonFlags.NoShadow }),
+  )
   wallMesh.translateX(wallSize.x / 2 - 200)
   wallMesh.translateY(wallSize.y / 2 - 15)
   wallMesh.translateZ(800 + 50 + 8)
@@ -18,7 +25,12 @@ export const createNorthWall = async (width: number) => {
   translateUV(new Vector2(0, -1 / (wallMesh.material.map as Texture).height), wallMesh.geometry)
 
   const blockerSize = new Vector2(width, 300)
-  const blockerMesh = await createPlaneMesh(blockerSize, 100, Color.white.darken(50), Texture.alpha)
+  const blockerMesh = await createPlaneMesh(
+    blockerSize,
+    100,
+    Color.white.darken(50),
+    Material.fromTexture(Texture.alpha, { flags: ArxPolygonFlags.NoShadow }),
+  )
   blockerMesh.translateX(blockerSize.x / 2 - 200)
   blockerMesh.translateY(blockerSize.y / 2 - 15)
   blockerMesh.translateZ(800 + 50)

@@ -11,7 +11,7 @@
         "dependencies": {
           "ArxLibertatisEditorIO": "1.2.0",
           "BepuPhysics": "2.3.3",
-          "Plexdata.ArgumentParser.NET": "1.0.7",
+          "CommandLineParser": "2.9.1",
           "System.Numerics.Vectors": "4.5.0"
         },
         "runtime": {
@@ -53,11 +53,11 @@
           }
         }
       },
-      "Plexdata.ArgumentParser.NET/1.0.7": {
+      "CommandLineParser/2.9.1": {
         "runtime": {
-          "lib/netstandard2.0/Plexdata.ArgumentParser.NET.dll": {
-            "assemblyVersion": "1.0.7.0",
-            "fileVersion": "1.0.7.0"
+          "lib/netstandard2.0/CommandLine.dll": {
+            "assemblyVersion": "2.9.1.0",
+            "fileVersion": "2.9.1.0"
           }
         }
       },
@@ -93,12 +93,12 @@
       "path": "bepuutilities/2.3.3",
       "hashPath": "bepuutilities.2.3.3.nupkg.sha512"
     },
-    "Plexdata.ArgumentParser.NET/1.0.7": {
+    "CommandLineParser/2.9.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-gBNh+taXQE3iaDXaWXkSr27AVkPQ2cH5TWl3TaTTJj0BlEnNvRsMMmPKwHX1F2IdTRteg8CwmgT5Q4PMjJJPAw==",
-      "path": "plexdata.argumentparser.net/1.0.7",
-      "hashPath": "plexdata.argumentparser.net.1.0.7.nupkg.sha512"
+      "sha512": "sha512-OE0sl1/sQ37bjVsPKKtwQlWDgqaxWgtme3xZz7JssWUzg5JpMIyHgCTY9MVMxOg48fJ1AgGT3tgdH5m/kQ5xhA==",
+      "path": "commandlineparser/2.9.1",
+      "hashPath": "commandlineparser.2.9.1.nupkg.sha512"
     },
     "System.Memory/4.5.4": {
       "type": "package",
