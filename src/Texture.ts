@@ -206,6 +206,9 @@ export class Texture extends ThreeJsTextue {
   static get l4YlsideStoneGround01() {
     return new Texture({ filename: 'l4_ylside_[stone]_ground01.jpg', size: 64 })
   }
+  static get l4DwarfIronBoard02() {
+    return new Texture({ filename: 'l4_dwarf_[iron]_board02', size: 256 })
+  }
   static get l5CavesGravelGround05() {
     return new Texture({ filename: 'l5_caves_[gravel]_ground05.jpg', size: 128 })
   }
