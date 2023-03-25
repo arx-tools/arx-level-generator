@@ -28,11 +28,12 @@ const ironPole = (position: Vector3, { x: width, y: height }: Vector2) => {
 const fenceSegment = (pos: Vector3, hasEdgePole: boolean) => {
   const group = new Group()
 
-  if (hasEdgePole) {
-    group.add(ironPole(pos.clone(), new Vector2(5, 220)))
-  }
   for (let i = 0; i < 10; i++) {
-    group.add(ironPole(new Vector3(pos.x + 20 + i * 20, pos.y, pos.z), new Vector2(3, 200)))
+    group.add(ironPole(pos, new Vector2(3, 200)))
+    pos.add(new Vector3(20, 0, 0))
+  }
+  if (hasEdgePole) {
+    group.add(ironPole(pos, new Vector2(8, 220)))
   }
 
   return group
@@ -40,24 +41,24 @@ const fenceSegment = (pos: Vector3, hasEdgePole: boolean) => {
 
 export const createNorthWall = async (numberOfFences: number) => {
   const fence = new Group()
-  const pos = new Vector3(-180, 0, 50)
+  const pos = new Vector3(-160, 0, 50)
 
   const dentOffsetTotal = new Vector3(0, 0, 800)
 
   for (let j = 0; j < numberOfFences; j++) {
-    const dentAngle = new Rotation(0, MathUtils.degToRad(randomBetween(-10, 10)), 0)
-    const dentOffset = new Vector3(220, 0, 0)
-    dentOffset.applyEuler(dentAngle)
-    console.log(dentOffset)
+    // const angle = new Rotation(0, MathUtils.degToRad(randomBetween(-10, 10)), 0)
+    const angle = new Rotation(0, MathUtils.degToRad(10), 0)
 
-    const segment = fenceSegment(pos, j > 0)
-    segment.setRotationFromEuler(dentAngle) // rotation origin is center
+    const segment = fenceSegment(pos.clone(), j < numberOfFences - 1)
+    segment.setRotationFromEuler(angle)
     applyTransformations(segment)
     segment.translateX(dentOffsetTotal.x)
     segment.translateY(dentOffsetTotal.y)
     segment.translateZ(dentOffsetTotal.z)
     fence.add(segment)
 
+    const dentOffset = new Vector3(220, 0, 0)
+    dentOffset.applyEuler(angle)
     dentOffsetTotal.add(dentOffset)
   }
 

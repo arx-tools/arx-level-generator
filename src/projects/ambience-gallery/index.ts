@@ -71,7 +71,7 @@ export default async () => {
   const meshes = [
     ...blocks.meshes,
     ...(await createNorthWall(14)),
-    // ...(await createSouthWall(3100)),
+    // ...(await createSouthWall(14)),
     // ...(await createEastWall(1700)),
     // ...(await createWestWall(1700)),
     await createNWCorner(), // TODO: remove top and bottom -> quadify
