@@ -92,3 +92,8 @@ export const averageVectors = (vectors: Vector3[]) => {
 
   return new Vector3(mean(xs), mean(ys), mean(zs))
 }
+
+/** inclusive */
+export const isBetween = (min: number, max: number, n: number) => {
+  return n >= min && n <= max
+}

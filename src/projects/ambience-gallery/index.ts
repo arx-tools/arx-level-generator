@@ -18,7 +18,7 @@ import { createZone } from './zone'
 import { createMainMarker } from './mainMarker'
 import { Entity } from '@src/Entity'
 import { times } from '@src/faux-ramda'
-import { randomBetween } from '@src/random'
+import { pickRandom, randomBetween } from '@src/random'
 import { Interactivity } from '@scripting/properties/Interactivity'
 
 export default async () => {
@@ -69,12 +69,12 @@ export default async () => {
     createLight(new Vector3(width - 650, -300, -600), Color.white.darken(40), 'small'),
   ]
 
-  const torches = times(() => {
-    const entity = Entity.torch
+  const loot = times(() => {
+    const entity = pickRandom([Entity.torch])
     entity.position.add(new Vector3(randomBetween(-200, 2800), 0, randomBetween(-800, 800)))
     entity.orientation.y = MathUtils.degToRad(randomBetween(0, 360))
     return entity
-  }, Math.round(randomBetween(10, 20)))
+  }, Math.round(randomBetween(5, 10)))
 
   const plants = times(() => {
     const entity = Entity.fern.withScript()
@@ -90,7 +90,7 @@ export default async () => {
     createZone(new Vector3(-200, 20, -depth / 2), new Vector3(width, 10, depth), Ambience.none, Color.fromCSS('#444')),
   ]
 
-  const entities = [mainMarker, ...blocks.entities, ...torches, ...plants]
+  const entities = [mainMarker, ...blocks.entities, ...loot, ...plants]
 
   const meshes = [...blocks.meshes]
 

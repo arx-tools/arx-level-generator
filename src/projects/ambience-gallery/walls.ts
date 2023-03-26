@@ -1,5 +1,5 @@
 import { Color } from '@src/Color'
-import { applyTransformations } from '@src/helpers'
+import { applyTransformations, isBetween } from '@src/helpers'
 import { pickRandom, randomBetween } from '@src/random'
 import { Rotation } from '@src/Rotation'
 import { Texture } from '@src/Texture'
@@ -79,10 +79,12 @@ export const createNorthWall = async (numberOfFences: number) => {
   let previousAngle = new Rotation(0, 0, 0)
 
   for (let j = 0; j < numberOfFences; j++) {
+    const offset = new Vector3(220, 0, 0)
     let angle: Rotation
     if (j < numberOfFences - 1) {
       angle = new Rotation(0, MathUtils.degToRad(randomBetween(-10, 10)), 0)
-      if (pos.z < -50 || pos.z > 50) {
+      const futurePos = pos.clone().add(offset.clone().applyEuler(angle)).sub(startPos)
+      if (!isBetween(-50, 50, futurePos.z)) {
         angle.y *= -1
       }
       previousAngle.x += angle.x
@@ -91,7 +93,6 @@ export const createNorthWall = async (numberOfFences: number) => {
     } else {
       angle = new Rotation(-previousAngle.x, -previousAngle.y, -previousAngle.z)
     }
-    const offset = new Vector3(220, 0, 0)
     offset.applyEuler(angle)
 
     const segment = fenceSegment(j < numberOfFences - 1)
