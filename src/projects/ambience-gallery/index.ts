@@ -34,9 +34,12 @@ export default async () => {
   map.player.position.adjustToPlayerHeight()
   map.player.orientation.y = MathUtils.degToRad(-90)
   map.player.withScript()
+  // map.player.script?.on('init', () => 'setspeed 3')
   map.hud.hide(HudElements.Minimap)
   map.hud.hide(HudElements.Healthbar)
   map.hud.hide(HudElements.Manabar)
+  map.hud.hide(HudElements.StealthIndicator)
+  map.hud.hide(HudElements.StealingIcon)
   map.hud.hide(HudElements.LevelUpIcon)
   map.hud.hide(HudElements.BookIcon)
   map.hud.hide(HudElements.BackpackIcon)
@@ -68,8 +71,10 @@ export default async () => {
   ]
   const entities = [mainMarker, ...blocks.entities]
 
-  const meshes = [
-    ...blocks.meshes,
+  const meshes = [...blocks.meshes]
+
+  const smoothMeshes = [
+    await createGround(width, depth),
     ...(await createNorthWall(14)),
     // ...(await createSouthWall(14)),
     // ...(await createEastWall(1700)),
@@ -79,7 +84,6 @@ export default async () => {
     await createNECorner(), // TODO: remove top and bottom -> quadify
     await createSECorner(), // TODO: remove top and bottom -> quadify
   ]
-  const smoothMeshes = [await createGround(width, depth)]
 
   map.zones.push(...zones)
   map.entities.push(...entities)
