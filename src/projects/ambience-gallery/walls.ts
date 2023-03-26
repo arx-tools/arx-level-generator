@@ -71,17 +71,16 @@ const fenceSegment = (hasEdgePole: boolean) => {
   return group
 }
 
-export const createNorthWall = async (numberOfFences: number) => {
+export const createEastWestWall = (startPos: Vector3, numberOfSegments: number) => {
   const fence = new Group()
-  const startPos = new Vector3(-160, 0, 50 + 800)
   const pos = startPos.clone()
 
   let previousAngle = new Rotation(0, 0, 0)
 
-  for (let j = 0; j < numberOfFences; j++) {
+  for (let j = 0; j < numberOfSegments; j++) {
     const offset = new Vector3(220, 0, 0)
     let angle: Rotation
-    if (j < numberOfFences - 1) {
+    if (j < numberOfSegments - 1) {
       angle = new Rotation(0, MathUtils.degToRad(randomBetween(-10, 10)), 0)
       const futurePos = pos.clone().add(offset.clone().applyEuler(angle)).sub(startPos)
       if (!isBetween(-50, 50, futurePos.z)) {
@@ -95,7 +94,7 @@ export const createNorthWall = async (numberOfFences: number) => {
     }
     offset.applyEuler(angle)
 
-    const segment = fenceSegment(j < numberOfFences - 1)
+    const segment = fenceSegment(j < numberOfSegments - 1)
     segment.setRotationFromEuler(angle)
     applyTransformations(segment)
     segment.translateX(pos.x)
@@ -107,69 +106,9 @@ export const createNorthWall = async (numberOfFences: number) => {
   }
 
   return [fence]
-
-  // const wallSize = new Vector2(width, 200)
-  // const wallMesh = await createPlaneMesh(
-  //   wallSize,
-  //   100,
-  //   Color.white.darken(50),
-  //   Material.fromTexture(Texture.l1DragonSpideLime1Nocol, { flags: ArxPolygonFlags.NoShadow }),
-  // )
-  // wallMesh.translateX(wallSize.x / 2 - 200)
-  // wallMesh.translateY(wallSize.y / 2 - 15)
-  // wallMesh.translateZ(800 + 50 + 8)
-  // wallMesh.rotateX(MathUtils.degToRad(90 + 5))
-  // wallMesh.rotateZ(MathUtils.degToRad(180))
-  // scaleUV(new Vector2(100 / wallSize.y, 100 / wallSize.y), wallMesh.geometry)
-  // translateUV(new Vector2(0, -1 / (wallMesh.material.map as Texture).height), wallMesh.geometry)
-  // const blockerSize = new Vector2(width, 300)
-  // const blockerMesh = await createPlaneMesh(
-  //   blockerSize,
-  //   100,
-  //   Color.white.darken(50),
-  //   Material.fromTexture(Texture.alpha, { flags: ArxPolygonFlags.NoShadow }),
-  // )
-  // blockerMesh.translateX(blockerSize.x / 2 - 200)
-  // blockerMesh.translateY(blockerSize.y / 2 - 15)
-  // blockerMesh.translateZ(800 + 50)
-  // blockerMesh.rotateX(MathUtils.degToRad(90))
-  // blockerMesh.rotateZ(MathUtils.degToRad(180))
-  // return [wallMesh, blockerMesh]
 }
 
-export const createSouthWall = async (width: number) => {
-  // const [wallMesh, blockerMesh] = await createNorthWall(width)
-  // applyTransformations(wallMesh)
-  // wallMesh.translateX(2700)
-  // wallMesh.rotateY(MathUtils.degToRad(180))
-  // applyTransformations(blockerMesh)
-  // blockerMesh.translateX(2700)
-  // blockerMesh.rotateY(MathUtils.degToRad(180))
-  // return [wallMesh, blockerMesh]
-}
-
-export const createEastWall = async (width: number) => {
-  // const [wallMesh, blockerMesh] = await createNorthWall(width)
-  // applyTransformations(wallMesh)
-  // wallMesh.translateX(650)
-  // wallMesh.translateZ(-width / 2 + 200)
-  // wallMesh.rotateY(MathUtils.degToRad(-90))
-  // applyTransformations(blockerMesh)
-  // blockerMesh.translateX(650)
-  // blockerMesh.translateZ(-width / 2 + 200)
-  // blockerMesh.rotateY(MathUtils.degToRad(-90))
-  // return [wallMesh, blockerMesh]
-}
-
-export const createWestWall = async (width: number) => {
-  // const [wallMesh, blockerMesh] = await createNorthWall(width)
-  // applyTransformations(wallMesh)
-  // wallMesh.translateZ(650)
-  // wallMesh.translateX(width + 350)
-  // wallMesh.rotateY(MathUtils.degToRad(90))
-  // applyTransformations(blockerMesh)
-  // blockerMesh.translateZ(650)
-  // blockerMesh.translateX(width + 350)
-  // blockerMesh.rotateY(MathUtils.degToRad(90))
-  // return [wallMesh, blockerMesh]
+export const createNorthSouthWall = (startPos: Vector3, numberOfSegments: number) => {
+  // TODO
+  return []
 }

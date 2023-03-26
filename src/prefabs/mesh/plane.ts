@@ -7,13 +7,13 @@ import { scaleUV } from '@tools/mesh/scaleUV'
 export const INDEXED = 'indexed'
 export const NONINDEXED = 'non-indexed'
 
-export async function createPlaneMesh(
+export const createPlaneMesh = async (
   dimensions: Vector2,
   tileSize: number,
   color: Color,
   texture: Texture | Promise<Texture>,
   isIndexed: typeof INDEXED | typeof NONINDEXED = INDEXED,
-) {
+) => {
   const divisionX = Math.ceil(dimensions.x / tileSize)
   const divisionY = Math.ceil(dimensions.y / tileSize)
 

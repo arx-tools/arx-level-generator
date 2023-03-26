@@ -10,7 +10,7 @@ import { applyTransformations } from '@src/helpers'
 import { HudElements } from '@src/HUD'
 import { ambiences } from '@projects/ambience-gallery/constants'
 import { createGround } from '@projects/ambience-gallery/ground'
-import { createEastWall, createNorthWall, createSouthWall, createWestWall } from '@projects/ambience-gallery/walls'
+import { createEastWestWall, createNorthSouthWall } from '@projects/ambience-gallery/walls'
 import { createNECorner, createNWCorner, createSECorner, createSWCorner } from '@projects/ambience-gallery/corners'
 import { createLight } from '@projects/ambience-gallery/light'
 import { createStoneBlocks } from './stoneBlock'
@@ -96,14 +96,14 @@ export default async () => {
 
   const smoothMeshes = [
     await createGround(width, depth),
-    ...(await createNorthWall(14)),
-    // ...(await createSouthWall(14)),
-    // ...(await createEastWall(1700)),
-    // ...(await createWestWall(1700)),
-    await createNWCorner(), // TODO: remove top and bottom -> quadify
-    await createSWCorner(), // TODO: remove top and bottom -> quadify
-    await createNECorner(), // TODO: remove top and bottom -> quadify
-    await createSECorner(), // TODO: remove top and bottom -> quadify
+    ...createEastWestWall(new Vector3(-160, 0, 850), 14),
+    ...createEastWestWall(new Vector3(-160, 0, -850), 14),
+    // ...createNorthSouthWall(new Vector3(?, ?, ?), 7),
+    // ...createNorthSouthWall(new Vector3(?, ?, ?), 7),
+    createNWCorner(),
+    createSWCorner(),
+    createNECorner(),
+    createSECorner(),
   ]
 
   map.zones.push(...zones)

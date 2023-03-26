@@ -5,7 +5,7 @@ import { Vector3 } from '@src/Vector3'
 import { scaleUV } from '@tools/mesh/scaleUV'
 import { ExtrudeGeometry, MathUtils, Mesh, MeshBasicMaterial, Shape, Vector2 } from 'three'
 
-export const createNWCorner = async () => {
+export const createNWCorner = () => {
   const size = new Vector3(50, 400, 50)
 
   const extrudeSettings = {
@@ -44,22 +44,22 @@ export const createNWCorner = async () => {
   return mesh
 }
 
-export const createSWCorner = async () => {
-  const mesh = await createNWCorner()
+export const createSWCorner = () => {
+  const mesh = createNWCorner()
   applyTransformations(mesh)
   mesh.translateZ(-1600 - 100)
   return mesh
 }
 
-export const createNECorner = async () => {
-  const mesh = await createNWCorner()
+export const createNECorner = () => {
+  const mesh = createNWCorner()
   applyTransformations(mesh)
   mesh.translateX(3100)
   return mesh
 }
 
-export const createSECorner = async () => {
-  const mesh = await createNWCorner()
+export const createSECorner = () => {
+  const mesh = createNWCorner()
   applyTransformations(mesh)
   mesh.translateZ(-1600 - 100)
   mesh.translateX(3100)
