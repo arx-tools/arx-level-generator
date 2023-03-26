@@ -16,6 +16,10 @@ import { createLight } from '@projects/ambience-gallery/light'
 import { createStoneBlocks } from './stoneBlock'
 import { createZone } from './zone'
 import { createMainMarker } from './mainMarker'
+import { Entity } from '@src/Entity'
+import { times } from '@src/faux-ramda'
+import { randomBetween } from '@src/random'
+import { Interactivity } from '@scripting/properties/Interactivity'
 
 export default async () => {
   const {
@@ -65,11 +69,28 @@ export default async () => {
     createLight(new Vector3(width - 650, -300, -600), Color.white.darken(40), 'small'),
   ]
 
+  const torches = times(() => {
+    const entity = Entity.torch
+    entity.position.add(new Vector3(randomBetween(-200, 2800), 0, randomBetween(-800, 800)))
+    entity.orientation.y = MathUtils.degToRad(randomBetween(0, 360))
+    return entity
+  }, Math.round(randomBetween(10, 20)))
+
+  const plants = times(() => {
+    const entity = Entity.fern.withScript()
+    entity.position.add(new Vector3(randomBetween(-200, 2800), 0, randomBetween(-800, 800)))
+    entity.orientation.y = MathUtils.degToRad(randomBetween(0, 360))
+    entity.script?.properties.push(Interactivity.off)
+    entity.script?.on('init', () => `setscale ${Math.round(randomBetween(30, 120))}`)
+    return entity
+  }, Math.round(randomBetween(60, 100)))
+
   const zones = [
     ...blocks.zones,
     createZone(new Vector3(-200, 20, -depth / 2), new Vector3(width, 10, depth), Ambience.none, Color.fromCSS('#444')),
   ]
-  const entities = [mainMarker, ...blocks.entities]
+
+  const entities = [mainMarker, ...blocks.entities, ...torches, ...plants]
 
   const meshes = [...blocks.meshes]
 
