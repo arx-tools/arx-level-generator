@@ -69,19 +69,12 @@ export default async () => {
     createLight(new Vector3(width - 650, -300, -600), Color.white.darken(40), 'small'),
   ]
 
-  const loot = times(() => {
-    const entity = pickRandom([Entity.torch])
-    entity.position.add(new Vector3(randomBetween(-200, 2800), 0, randomBetween(-800, 800)))
-    entity.orientation.y = MathUtils.degToRad(randomBetween(0, 360))
-    return entity
-  }, Math.round(randomBetween(5, 10)))
-
   const plants = times(() => {
     const entity = Entity.fern.withScript()
     entity.position.add(new Vector3(randomBetween(-200, 2800), 0, randomBetween(-800, 800)))
     entity.orientation.y = MathUtils.degToRad(randomBetween(0, 360))
     entity.script?.properties.push(Interactivity.off)
-    entity.script?.on('init', () => `setscale ${Math.round(randomBetween(30, 120))}`)
+    entity.script?.on('init', () => `setscale ${Math.round(randomBetween(30, 150))}`)
     return entity
   }, Math.round(randomBetween(60, 100)))
 
@@ -90,16 +83,16 @@ export default async () => {
     createZone(new Vector3(-200, 20, -depth / 2), new Vector3(width, 10, depth), Ambience.none, Color.fromCSS('#444')),
   ]
 
-  const entities = [mainMarker, ...blocks.entities, ...loot, ...plants]
+  const entities = [mainMarker, ...blocks.entities, ...plants]
 
   const meshes = [...blocks.meshes]
 
   const smoothMeshes = [
     await createGround(width, depth),
-    ...createEastWestWall(new Vector3(-160, 0, 850), 14),
-    ...createEastWestWall(new Vector3(-160, 0, -850), 14),
-    // ...createNorthSouthWall(new Vector3(?, ?, ?), 7),
-    // ...createNorthSouthWall(new Vector3(?, ?, ?), 7),
+    createEastWestWall(new Vector3(-160, 0, 850), 14),
+    createEastWestWall(new Vector3(-160, 0, -850), 14),
+    createNorthSouthWall(new Vector3(-200, 0, 850), 8),
+    createNorthSouthWall(new Vector3(2900, 0, 850), 8),
     createNWCorner(),
     createSWCorner(),
     createNECorner(),

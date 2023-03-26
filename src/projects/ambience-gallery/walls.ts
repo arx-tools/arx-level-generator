@@ -105,10 +105,15 @@ export const createEastWestWall = (startPos: Vector3, numberOfSegments: number) 
     pos.add(offset)
   }
 
-  return [fence]
+  return fence
 }
 
 export const createNorthSouthWall = (startPos: Vector3, numberOfSegments: number) => {
-  // TODO
-  return []
+  const fence = createEastWestWall(new Vector3(0, 0, 0), numberOfSegments)
+  fence.rotateY(MathUtils.degToRad(90))
+  applyTransformations(fence)
+  fence.translateX(startPos.x)
+  fence.translateY(startPos.y)
+  fence.translateZ(startPos.z)
+  return fence
 }
