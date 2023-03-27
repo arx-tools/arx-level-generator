@@ -1,4 +1,4 @@
-import { ScriptCommand } from '@scripting/ScriptCommand'
+import { ScriptCommand } from '@scripting/ScriptCommand.js'
 
 export class LoadAnim extends ScriptCommand {
   animation: string

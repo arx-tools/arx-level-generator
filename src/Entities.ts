@@ -1,5 +1,5 @@
-import { Entity } from '@src/Entity'
-import { Vector3 } from '@src/Vector3'
+import { Entity } from '@src/Entity.js'
+import { Vector3 } from '@src/Vector3.js'
 
 export class Entities extends Array<Entity> {
   toArxData() {

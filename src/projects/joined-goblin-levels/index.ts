@@ -1,9 +1,9 @@
 import path from 'node:path'
 import seedrandom from 'seedrandom'
-import { ArxMap } from '@src/ArxMap'
-import { Vector3 } from '@src/Vector3'
-import { Box3 } from 'three'
-import { Color } from '@src/Color'
+import { ArxMap } from '@src/ArxMap.js'
+import { Vector3 } from '@src/Vector3.js'
+// import { Box3 } from 'three'
+// import { Color } from '@src/Color.js'
 
 export default async () => {
   const {

@@ -1,4 +1,4 @@
-import { Vector3 } from '@src/Vector3'
+import { Vector3 } from '@src/Vector3.js'
 
 export type CursorSave = {
   oldSize: Vector3

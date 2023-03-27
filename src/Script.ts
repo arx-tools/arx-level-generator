@@ -1,6 +1,6 @@
-import { ScriptCommand } from '@scripting/ScriptCommand'
-import { ScriptProperty } from '@scripting/ScriptProperty'
-import { ScriptSubroutine } from '@scripting/ScriptSubroutine'
+import { ScriptCommand } from '@scripting/ScriptCommand.js'
+import { ScriptProperty } from '@scripting/ScriptProperty.js'
+import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
 
 type ScriptConstructorProps = {
   filename: string

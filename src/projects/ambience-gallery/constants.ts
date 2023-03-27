@@ -1,4 +1,4 @@
-import { Ambience } from '@src/Ambience'
+import { Ambience } from '@src/Ambience.js'
 
 export const ambiences = [
   Ambience.blackThing,

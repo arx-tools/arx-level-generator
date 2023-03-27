@@ -1,8 +1,8 @@
-import { Color } from '@src/Color'
-import { applyTransformations } from '@src/helpers'
-import { Texture } from '@src/Texture'
-import { Vector3 } from '@src/Vector3'
-import { scaleUV } from '@tools/mesh/scaleUV'
+import { Color } from '@src/Color.js'
+import { applyTransformations } from '@src/helpers.js'
+import { Texture } from '@src/Texture.js'
+import { Vector3 } from '@src/Vector3.js'
+import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { ExtrudeGeometry, MathUtils, Mesh, MeshBasicMaterial, Shape, Vector2 } from 'three'
 
 export const createNWCorner = () => {

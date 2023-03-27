@@ -3,6 +3,7 @@
   "version": "0.17.0",
   "description": "A tool for creating Arx Fatalis maps",
   "main": "build/generate.js",
+  "type": "module",
   "engines": {
     "npm": ">=8.0.0",
     "node": ">=18.0.0"

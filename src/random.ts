@@ -1,4 +1,4 @@
-import { clone, repeat, sum } from '@src/faux-ramda'
+import { clone, repeat, sum } from '@src/faux-ramda.js'
 
 export const randomSort = <T>(items: T[]) => {
   const clonedItems = clone(items)

@@ -1,8 +1,8 @@
 import { BufferAttribute, MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry, Vector2 } from 'three'
-import { Color } from '@src/Color'
-import { applyTransformations } from '@src/helpers'
-import { Texture } from '@src/Texture'
-import { scaleUV } from '@tools/mesh/scaleUV'
+import { Color } from '@src/Color.js'
+import { applyTransformations } from '@src/helpers.js'
+import { Texture } from '@src/Texture.js'
+import { scaleUV } from '@tools/mesh/scaleUV.js'
 
 export const INDEXED = 'indexed'
 export const NONINDEXED = 'non-indexed'

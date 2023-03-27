@@ -1,6 +1,6 @@
 import { ArxPortal, ArxTextureVertex } from 'arx-convert/types'
 import { QuadrupleOf } from 'arx-convert/utils'
-import { Vector3 } from '@src/Vector3'
+import { Vector3 } from '@src/Vector3.js'
 
 type TextureVertex = {
   position: Vector3

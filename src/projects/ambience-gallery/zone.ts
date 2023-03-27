@@ -1,7 +1,7 @@
-import { Ambience } from '@src/Ambience'
-import { Color } from '@src/Color'
-import { Vector3 } from '@src/Vector3'
-import { Zone } from '@src/Zone'
+import { Ambience } from '@src/Ambience.js'
+import { Color } from '@src/Color.js'
+import { Vector3 } from '@src/Vector3.js'
+import { Zone } from '@src/Zone.js'
 import { EdgesGeometry, MathUtils, Shape, ShapeGeometry } from 'three'
 
 export const createZone = (pos: Vector3, size: Vector3, ambience: Ambience, color?: Color) => {

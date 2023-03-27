@@ -1,6 +1,6 @@
-import { Vector3 } from '@src/Vector3'
 import { EdgesGeometry, Mesh } from 'three'
-import { getVertices } from '@tools/mesh/getVertices'
+import { Vector3 } from '@src/Vector3.js'
+import { getVertices } from '@tools/mesh/getVertices.js'
 
 export const transformEdge = (offset: Vector3, mesh: Mesh) => {
   const edge = new EdgesGeometry(mesh.geometry)

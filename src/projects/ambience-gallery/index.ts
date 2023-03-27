@@ -1,25 +1,27 @@
+import fs from 'node:fs'
 import path from 'node:path'
 import seedrandom from 'seedrandom'
 import { MathUtils } from 'three'
-import { Ambience } from '@src/Ambience'
-import { ArxMap } from '@src/ArxMap'
-import { Color } from '@src/Color'
-import { Vector3 } from '@src/Vector3'
-import { DONT_QUADIFY, SHADING_FLAT, SHADING_SMOOTH } from '@src/Polygons'
-import { applyTransformations } from '@src/helpers'
-import { HudElements } from '@src/HUD'
-import { ambiences } from '@projects/ambience-gallery/constants'
-import { createGround } from '@projects/ambience-gallery/ground'
-import { createEastWestWall, createNorthSouthWall } from '@projects/ambience-gallery/walls'
-import { createNECorner, createNWCorner, createSECorner, createSWCorner } from '@projects/ambience-gallery/corners'
-import { createLight } from '@projects/ambience-gallery/light'
-import { createStoneBlocks } from './stoneBlock'
-import { createZone } from './zone'
-import { createMainMarker } from './mainMarker'
-import { Entity } from '@src/Entity'
-import { times } from '@src/faux-ramda'
-import { pickRandom, randomBetween } from '@src/random'
-import { Interactivity } from '@scripting/properties/Interactivity'
+import { Ambience } from '@src/Ambience.js'
+import { ArxMap } from '@src/ArxMap.js'
+import { Color } from '@src/Color.js'
+import { Vector3 } from '@src/Vector3.js'
+import { DONT_QUADIFY, SHADING_FLAT, SHADING_SMOOTH } from '@src/Polygons.js'
+import { applyTransformations } from '@src/helpers.js'
+import { HudElements } from '@src/HUD.js'
+import { ambiences } from '@projects/ambience-gallery/constants.js'
+import { createGround } from '@projects/ambience-gallery/ground.js'
+import { createEastWestWall, createNorthSouthWall } from '@projects/ambience-gallery/walls.js'
+import { createNECorner, createNWCorner, createSECorner, createSWCorner } from '@projects/ambience-gallery/corners.js'
+import { createLight } from '@projects/ambience-gallery/light.js'
+import { createStoneBlocks } from './stoneBlock.js'
+import { createZone } from './zone.js'
+import { createMainMarker } from './mainMarker.js'
+import { Entity } from '@src/Entity.js'
+import { times } from '@src/faux-ramda.js'
+import { randomBetween } from '@src/random.js'
+import { Interactivity } from '@scripting/properties/Interactivity.js'
+// import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 
 export default async () => {
   const {
@@ -118,6 +120,16 @@ export default async () => {
     applyTransformations(mesh)
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
   })
+
+  // -----------------------------
+
+  // const src = path.resolve('./assets/projects/forest/models/tree/tree.obj')
+  // const raw = await fs.promises.readFile(src, 'utf-8')
+  // const loader = new OBJLoader()
+  // const obj = loader.parse(raw)
+  // map.polygons.addThreeJsMesh(obj, { tryToQuadify: DONT_QUADIFY, shading: SHADING_FLAT })
+
+  // -----------------------------
 
   map.finalize()
 

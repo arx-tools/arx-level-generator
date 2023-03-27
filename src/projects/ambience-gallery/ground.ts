@@ -1,10 +1,10 @@
-import { createPlaneMesh } from '@prefabs/mesh/plane'
-import { Color } from '@src/Color'
-import { Texture } from '@src/Texture'
-import { Vector3 } from '@src/Vector3'
-import { makeBumpy } from '@tools/mesh/makeBumpy'
-import { scaleUV } from '@tools/mesh/scaleUV'
-import { transformEdge } from '@tools/mesh/transformEdge'
+import { createPlaneMesh } from '@prefabs/mesh/plane.js'
+import { Color } from '@src/Color.js'
+import { Texture } from '@src/Texture.js'
+import { Vector3 } from '@src/Vector3.js'
+import { makeBumpy } from '@tools/mesh/makeBumpy.js'
+import { scaleUV } from '@tools/mesh/scaleUV.js'
+import { transformEdge } from '@tools/mesh/transformEdge.js'
 import { Vector2 } from 'three'
 
 export const createGround = async (width: number, depth: number) => {

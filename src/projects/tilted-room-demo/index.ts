@@ -1,12 +1,12 @@
 import path from 'node:path'
 import { MathUtils } from 'three'
 import seedrandom from 'seedrandom'
-import { ArxMap } from '@src/ArxMap'
-import { HudElements } from '@src/HUD'
-import { DONT_QUADIFY } from '@src/Polygons'
-import { Vector3 } from '@src/Vector3'
-import { carpet, ceilingTile, wallpaper } from '@projects/the-backrooms/materials'
-import { createRoomFromMesh, createRoomMesh } from '@projects/the-backrooms/room'
+import { ArxMap } from '@src/ArxMap.js'
+import { HudElements } from '@src/HUD.js'
+import { DONT_QUADIFY } from '@src/Polygons.js'
+import { Vector3 } from '@src/Vector3.js'
+import { carpet, ceilingTile, wallpaper } from '@projects/the-backrooms/materials.js'
+import { createRoomFromMesh, createRoomMesh } from '@projects/the-backrooms/room.js'
 
 export default async () => {
   const {

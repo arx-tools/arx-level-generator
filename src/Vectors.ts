@@ -1,7 +1,7 @@
-import { Vector3 } from '@src/Vector3'
+import { Vector3 } from '@src/Vector3.js'
 import { BufferGeometry } from 'three'
-import { uniq } from '@src/faux-ramda'
-import { getNonIndexedVertices } from '@tools/mesh/getVertices'
+import { uniq } from '@src/faux-ramda.js'
+import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 
 export class Vectors extends Array<Vector3> {
   static fromThreejsGeometry(geometry: BufferGeometry) {

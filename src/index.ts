@@ -1,8 +1,8 @@
-import theBackrooms from '@projects/the-backrooms'
-import joinedGoblinLevels from '@projects/joined-goblin-levels'
-import ambienceGallery from '@projects/ambience-gallery'
-import tiltedRoomDemo from '@projects/tilted-room-demo'
-import aliasNightmare from '@projects/alias-nightmare'
+import theBackrooms from '@projects/the-backrooms/index.js'
+import joinedGoblinLevels from '@projects/joined-goblin-levels/index.js'
+import ambienceGallery from '@projects/ambience-gallery/index.js'
+import tiltedRoomDemo from '@projects/tilted-room-demo/index.js'
+import aliasNightmare from '@projects/alias-nightmare/index.js'
 
 const { PROJECT } = process.env
 

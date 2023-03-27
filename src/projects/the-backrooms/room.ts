@@ -1,12 +1,12 @@
 import { ArxPolygonFlags } from 'arx-convert/types'
-import { ArxMap } from '@src/ArxMap'
-import { Color } from '@src/Color'
-import { createPlaneMesh } from '@prefabs/mesh/plane'
-import { mold } from '@projects/the-backrooms/materials'
+import { ArxMap } from '@src/ArxMap.js'
+import { Color } from '@src/Color.js'
+import { createPlaneMesh } from '@prefabs/mesh/plane.js'
+import { mold } from '@projects/the-backrooms/materials.js'
 import { Group, MathUtils, Object3D, Vector2 } from 'three'
-import { Vector3 } from '@src/Vector3'
-import { Texture } from '@src/Texture'
-import { DONT_QUADIFY, QUADIFY } from '@src/Polygons'
+import { Vector3 } from '@src/Vector3.js'
+import { Texture } from '@src/Texture.js'
+import { DONT_QUADIFY, QUADIFY } from '@src/Polygons.js'
 
 const TILE_SIZE = 100
 

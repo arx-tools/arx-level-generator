@@ -1,5 +1,5 @@
-import { Zone } from '@src/Zone'
-import { Cursor } from './Cursor'
+import { Zone } from '@src/Zone.js'
+import { Cursor } from './Cursor.js'
 
 export class Zones {
   entries: Zone[] = []

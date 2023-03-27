@@ -1,6 +1,6 @@
-import { Color } from '@src/Color'
-import { Light } from '@src/Light'
-import { Vector3 } from '@src/Vector3'
+import { Color } from '@src/Color.js'
+import { Light } from '@src/Light.js'
+import { Vector3 } from '@src/Vector3.js'
 
 export const createLight = (position: Vector3, size: number) => {
   return new Light({

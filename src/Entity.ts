@@ -1,8 +1,8 @@
 import { ArxInteractiveObject } from 'arx-convert/types'
-import { Rotation } from '@src/Rotation'
-import { Vector3 } from '@src/Vector3'
-import { last } from '@src/faux-ramda'
-import { Script } from '@src/Script'
+import { Rotation } from '@src/Rotation.js'
+import { Vector3 } from '@src/Vector3.js'
+import { last } from '@src/faux-ramda.js'
+import { Script } from '@src/Script.js'
 import path from 'node:path'
 
 const instanceCatalog: Record<string, Entity[]> = {}

@@ -1,5 +1,5 @@
 import { BufferGeometry } from 'three'
-import { Vector3 } from '@src/Vector3'
+import { Vector3 } from '@src/Vector3.js'
 
 /**
  * Gets the vertices of a geometry.

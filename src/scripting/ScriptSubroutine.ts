@@ -1,5 +1,5 @@
-import { repeat } from '@src/faux-ramda'
-import { ScriptCommand } from './ScriptCommand'
+import { repeat } from '@src/faux-ramda.js'
+import { ScriptCommand } from './ScriptCommand.js'
 
 export class ScriptSubroutine {
   name: string

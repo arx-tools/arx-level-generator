@@ -1,5 +1,5 @@
-import { ScriptProperty } from '@scripting/ScriptProperty'
-import { Zone } from '@src/Zone'
+import { ScriptProperty } from '@scripting/ScriptProperty.js'
+import { Zone } from '@src/Zone.js'
 
 export class ControlZone extends ScriptProperty<Zone> {
   toString() {

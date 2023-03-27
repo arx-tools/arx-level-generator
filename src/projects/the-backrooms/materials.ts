@@ -1,4 +1,4 @@
-import { Texture } from '@src/Texture'
+import { Texture } from '@src/Texture.js'
 
 const TEXTURE_DIR = 'projects/the-backrooms/textures'
 

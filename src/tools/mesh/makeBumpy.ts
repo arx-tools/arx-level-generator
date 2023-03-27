@@ -1,8 +1,8 @@
-import { randomBetween } from '@src/random'
 import { BufferGeometry, MathUtils } from 'three'
-import { getVertices } from '@tools/mesh/getVertices'
-import { sum } from '@src/faux-ramda'
-import { Vector3 } from '@src/Vector3'
+import { randomBetween } from '@src/random.js'
+import { getVertices } from '@tools/mesh/getVertices.js'
+import { sum } from '@src/faux-ramda.js'
+import { Vector3 } from '@src/Vector3.js'
 
 type VertexData = { y: number; position: Vector3; idx: number }
 
