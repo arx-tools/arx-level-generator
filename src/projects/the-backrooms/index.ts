@@ -252,6 +252,7 @@ export default async () => {
   map.config.offset = new Vector3(6000, 0, 6000)
   map.player.position.adjustToPlayerHeight()
   map.hud.hide(HudElements.Minimap)
+  await map.i18n.addFromFile(path.resolve('assets/projects/the-backrooms/i18n.json'))
 
   rooms.forEach((room) => {
     map.add(room, true)

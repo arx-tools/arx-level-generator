@@ -2,10 +2,12 @@ import { CatacombHeavyDoor, DoorConstructorPropsWithFixSrc } from '@prefabs/enti
 import { TweakSkin } from '@scripting/commands/TweakSkin.js'
 import { Texture } from '@src/Texture.js'
 import { fireExitDoor } from './materials.js'
+import { Label } from '@scripting/properties/Label.js'
 
 export class FireExitDoor extends CatacombHeavyDoor {
   constructor(props: DoorConstructorPropsWithFixSrc = {}) {
     super(props)
     this.script?.on('initend', new TweakSkin(Texture.fixinterHeavyCatacombDoor, fireExitDoor))
+    this.script?.properties.push(new Label('[door--fire-exit-door]'))
   }
 }
