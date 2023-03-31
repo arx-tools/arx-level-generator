@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import seedrandom from 'seedrandom'
-import { MathUtils } from 'three'
+import { MathUtils, Mesh, MeshBasicMaterial } from 'three'
 import { Ambience } from '@src/Ambience.js'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
@@ -21,7 +21,10 @@ import { Entity } from '@src/Entity.js'
 import { times } from '@src/faux-ramda.js'
 import { randomBetween } from '@src/random.js'
 import { Interactivity } from '@scripting/properties/Interactivity.js'
-// import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
+import { Texture } from '@src/Texture.js'
+import { Material } from '@src/Material.js'
+import { ArxPolygonFlags } from 'arx-convert/types'
 
 export default async () => {
   const {
@@ -62,13 +65,85 @@ export default async () => {
   const blocks = createStoneBlocks(rowSize, depth, mainMarker)
 
   const lights = [
-    createLight(new Vector3(-200 + width / 2, -1000, 0), Color.white.darken(30), 'main'),
-    createLight(new Vector3(200, -300, 600), Color.white.darken(40), 'small'),
-    createLight(new Vector3(100, -300, 0), Color.white.darken(40), 'small'),
-    createLight(new Vector3(200, -300, -600), Color.white.darken(40), 'small'),
-    createLight(new Vector3(width - 650, -300, 600), Color.white.darken(40), 'small'),
-    createLight(new Vector3(width - 550, -300, 0), Color.white.darken(40), 'small'),
-    createLight(new Vector3(width - 650, -300, -600), Color.white.darken(40), 'small'),
+    createLight(new Vector3(width + 500, -2000, -1000), Color.white.darken(20), 200, 5000, 1),
+
+    createLight(
+      new Vector3(
+        width - 500 + randomBetween(-100, 100),
+        -300 + randomBetween(-50, 50),
+        -1000 + randomBetween(-100, 100),
+      ),
+      Color.white.darken(40),
+      1,
+      1000,
+      0.3,
+    ),
+    createLight(
+      new Vector3(width - 500 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), 0 + randomBetween(-100, 100)),
+      Color.white.darken(40),
+      1,
+      1000,
+      0.3,
+    ),
+    createLight(
+      new Vector3(
+        width - 500 + randomBetween(-100, 100),
+        -300 + randomBetween(-50, 50),
+        1000 + randomBetween(-100, 100),
+      ),
+      Color.white.darken(40),
+      1,
+      1000,
+      0.3,
+    ),
+
+    createLight(
+      new Vector3(
+        width / 2 + randomBetween(-100, 100),
+        -300 + randomBetween(-50, 50),
+        -1000 + randomBetween(-100, 100),
+      ),
+      Color.white.darken(40),
+      1,
+      1000,
+      0.3,
+    ),
+    createLight(
+      new Vector3(width / 2 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), 0 + randomBetween(-100, 100)),
+      Color.white.darken(40),
+      1,
+      1000,
+      0.3,
+    ),
+    createLight(
+      new Vector3(width / 2 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), 1000 + randomBetween(-100, 100)),
+      Color.white.darken(40),
+      1,
+      1000,
+      0.3,
+    ),
+
+    createLight(
+      new Vector3(300 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), -1000 + randomBetween(-100, 100)),
+      Color.white.darken(40),
+      1,
+      1000,
+      0.3,
+    ),
+    createLight(
+      new Vector3(300 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), 0 + randomBetween(-100, 100)),
+      Color.white.darken(40),
+      1,
+      1000,
+      0.3,
+    ),
+    createLight(
+      new Vector3(300 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), 1000 + randomBetween(-100, 100)),
+      Color.white.darken(40),
+      1,
+      1000,
+      0.3,
+    ),
   ]
 
   const plants = times(() => {
@@ -123,11 +198,25 @@ export default async () => {
 
   // -----------------------------
 
-  // const src = path.resolve('./assets/projects/forest/models/tree/tree.obj')
-  // const raw = await fs.promises.readFile(src, 'utf-8')
-  // const loader = new OBJLoader()
-  // const obj = loader.parse(raw)
-  // map.polygons.addThreeJsMesh(obj, { tryToQuadify: DONT_QUADIFY, shading: SHADING_FLAT })
+  const src = path.resolve('./assets/projects/forest/models/tree/tree.obj')
+  const raw = await fs.promises.readFile(src, 'utf-8')
+  const loader = new OBJLoader()
+  const obj = loader.parse(raw)
+
+  const geometry = (obj.children[0] as Mesh).geometry
+  geometry.scale(80, 70, 80)
+  geometry.rotateY(MathUtils.degToRad(80))
+  geometry.translate(4770, 0, 1450)
+  const material = new MeshBasicMaterial({
+    color: Color.white.getHex(),
+    map: Material.fromTexture(Texture.l2TrollWoodPillar08, {
+      flags: ArxPolygonFlags.DoubleSided,
+    }),
+  })
+
+  const mesh = new Mesh(geometry, material)
+
+  map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
 
   // -----------------------------
 
