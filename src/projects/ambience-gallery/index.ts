@@ -65,7 +65,7 @@ export default async () => {
   const blocks = createStoneBlocks(rowSize, depth, mainMarker)
 
   const lights = [
-    createLight(new Vector3(width + 500, -2000, -1000), Color.white.darken(20), 200, 5000, 1),
+    createLight(new Vector3(width + 500, -2000, -1000), Color.white.darken(30), 200, 5000, 1),
 
     createLight(
       new Vector3(
@@ -76,14 +76,14 @@ export default async () => {
       Color.white.darken(40),
       1,
       1000,
-      0.3,
+      0.45,
     ),
     createLight(
       new Vector3(width - 500 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), 0 + randomBetween(-100, 100)),
       Color.white.darken(40),
       1,
       1000,
-      0.3,
+      0.45,
     ),
     createLight(
       new Vector3(
@@ -94,7 +94,7 @@ export default async () => {
       Color.white.darken(40),
       1,
       1000,
-      0.3,
+      0.45,
     ),
 
     createLight(
@@ -106,21 +106,21 @@ export default async () => {
       Color.white.darken(40),
       1,
       1000,
-      0.3,
+      0.45,
     ),
     createLight(
       new Vector3(width / 2 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), 0 + randomBetween(-100, 100)),
       Color.white.darken(40),
       1,
       1000,
-      0.3,
+      0.45,
     ),
     createLight(
       new Vector3(width / 2 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), 1000 + randomBetween(-100, 100)),
       Color.white.darken(40),
       1,
       1000,
-      0.3,
+      0.45,
     ),
 
     createLight(
@@ -128,25 +128,26 @@ export default async () => {
       Color.white.darken(40),
       1,
       1000,
-      0.3,
+      0.45,
     ),
     createLight(
       new Vector3(300 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), 0 + randomBetween(-100, 100)),
       Color.white.darken(40),
       1,
       1000,
-      0.3,
+      0.45,
     ),
     createLight(
       new Vector3(300 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), 1000 + randomBetween(-100, 100)),
       Color.white.darken(40),
       1,
       1000,
-      0.3,
+      0.45,
     ),
   ]
 
   const plants = times(() => {
+    // TODO: add mushroom
     const entity = Entity.fern.withScript()
     entity.position.add(new Vector3(randomBetween(-200, 2800), 0, randomBetween(-800, 800)))
     entity.orientation.y = MathUtils.degToRad(randomBetween(0, 360))
