@@ -29,7 +29,7 @@ export class Rune extends Entity {
 
   constructor(variant: RuneVariant, props: EntityConstructorPropsWithoutName = {}) {
     super({
-      name: 'items/magic/rune_aam',
+      src: 'items/magic/rune_aam',
       ...props,
     })
     this.withScript()

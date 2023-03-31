@@ -10,29 +10,29 @@ const instanceCatalog: Record<string, Entity[]> = {}
 
 export type EntityConstructorProps = {
   id?: number
-  name: string
+  src: string
   position?: Vector3
   orientation?: Rotation
 }
 
-export type EntityConstructorPropsWithoutName = Expand<Omit<EntityConstructorProps, 'name'>>
+export type EntityConstructorPropsWithoutName = Expand<Omit<EntityConstructorProps, 'src'>>
 
 export class Entity {
   id: number
-  name: string
+  src: string
   position: Vector3
   orientation: Rotation
   script?: Script
 
   constructor(props: EntityConstructorProps) {
-    this.name = props.name
+    this.src = props.src
     this.position = props.position ?? new Vector3(0, 0, 0)
     this.orientation = props.orientation ?? new Rotation(0, 0, 0)
 
     if (typeof props.id === 'undefined') {
-      instanceCatalog[this.name] = instanceCatalog[this.name] ?? []
-      instanceCatalog[this.name].push(this)
-      this.id = instanceCatalog[this.name].length
+      instanceCatalog[this.src] = instanceCatalog[this.src] ?? []
+      instanceCatalog[this.src].push(this)
+      this.id = instanceCatalog[this.src].length
     } else {
       this.id = props.id
     }
@@ -44,7 +44,7 @@ export class Entity {
     }
 
     this.script = new Script({
-      filename: (last(this.name.split('/')) as string) + '.asl',
+      filename: (last(this.src.split('/')) as string) + '.asl',
     })
 
     return this
@@ -53,7 +53,7 @@ export class Entity {
   public clone() {
     return new Entity({
       id: this.id,
-      name: this.name,
+      src: this.src,
       position: this.position.clone(),
       orientation: this.orientation.clone(),
     })
@@ -62,7 +62,7 @@ export class Entity {
   static fromArxInteractiveObject(entity: ArxInteractiveObject) {
     return new Entity({
       id: entity.identifier,
-      name: entity.name,
+      src: entity.name,
       position: Vector3.fromArxVector3(entity.pos),
       orientation: Rotation.fromArxRotation(entity.angle),
     })
@@ -71,7 +71,7 @@ export class Entity {
   toArxInteractiveObject(): ArxInteractiveObject {
     return {
       identifier: this.id,
-      name: this.name,
+      name: this.src,
       pos: this.position.toArxVector3(),
       angle: this.orientation.toArxRotation(),
     }
@@ -79,7 +79,7 @@ export class Entity {
 
   get ref() {
     const numericId = this.id.toString().padStart(4, '0')
-    const name = last(this.name.split('/')) as string
+    const name = last(this.src.split('/')) as string
 
     return `${name}_${numericId}`
   }
@@ -89,21 +89,21 @@ export class Entity {
       throw new Error("trying to export an Entity which doesn't have a script")
     }
 
-    return path.resolve(outputDir, Script.targetPath, this.name, this.ref, this.script.filename)
+    return path.resolve(outputDir, Script.targetPath, this.src, this.ref, this.script.filename)
   }
 
   // ----------------
 
   static get marker() {
-    return new Entity({ name: 'system/marker' })
+    return new Entity({ src: 'system/marker' })
   }
   static get torch() {
-    return new Entity({ name: 'items/provisions/torch' })
+    return new Entity({ src: 'items/provisions/torch' })
   }
   static get fern() {
-    return new Entity({ name: 'items/magic/fern' })
+    return new Entity({ src: 'items/magic/fern' })
   }
   static get key() {
-    return new Entity({ name: 'items/quest_item/key_base' })
+    return new Entity({ src: 'items/quest_item/key_base' })
   }
 }

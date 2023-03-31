@@ -45,7 +45,7 @@ export default async () => {
 
   // porticullis_0085.move 80 0 0
   const portcullis = map.entities.find((entity) => {
-    return entity.name.endsWith('porticullis') && entity.id === 85
+    return entity.src.endsWith('porticullis') && entity.id === 85
   })
   if (typeof portcullis !== 'undefined') {
     portcullis.position.add(new Vector3(80, 0, 0))

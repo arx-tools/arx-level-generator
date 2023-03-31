@@ -1,6 +1,6 @@
 import { UseMesh } from '@scripting/commands/UseMesh.js'
 import { Variable } from '@scripting/properties/Variable.js'
-import { Entity, EntityConstructorProps, EntityConstructorPropsWithoutName } from '@src/Entity.js'
+import { Entity, EntityConstructorProps } from '@src/Entity.js'
 import { Expand } from 'arx-convert/utils'
 
 export type DoorConstructorProps = Expand<
@@ -11,7 +11,7 @@ export type DoorConstructorProps = Expand<
   }
 >
 
-export type DoorConstructorPropsWithFixName = Expand<Omit<DoorConstructorProps, 'name'>>
+export type DoorConstructorPropsWithFixSrc = Expand<Omit<DoorConstructorProps, 'src'>>
 
 export abstract class Door extends Entity {
   protected propIsOpen: Variable<boolean>
@@ -52,9 +52,9 @@ export abstract class Door extends Entity {
 }
 
 export class Portcullis extends Door {
-  constructor(props: DoorConstructorPropsWithFixName = {}) {
+  constructor(props: DoorConstructorPropsWithFixSrc = {}) {
     super({
-      name: 'fix_inter/porticullis',
+      src: 'fix_inter/porticullis',
       ...props,
     })
   }
@@ -64,9 +64,9 @@ export class LightDoor extends Door {
   protected propType: Variable<string>
   protected propKey: Variable<string>
 
-  constructor(props: DoorConstructorPropsWithFixName = {}) {
+  constructor(props: DoorConstructorPropsWithFixSrc = {}) {
     super({
-      name: 'fix_inter/light_door',
+      src: 'fix_inter/light_door',
       ...props,
     })
 
@@ -86,7 +86,7 @@ export class LightDoor extends Door {
 }
 
 export class CatacombHeavyDoor extends LightDoor {
-  constructor(props: DoorConstructorPropsWithFixName = {}) {
+  constructor(props: DoorConstructorPropsWithFixSrc = {}) {
     super(props)
     this.propType.value = 'door_catacomb_heavy'
     this.script?.on('load', new UseMesh('door_catacomb_heavy/door_catacomb_heavy.teo'))
@@ -94,7 +94,7 @@ export class CatacombHeavyDoor extends LightDoor {
 }
 
 export class YlsideDoor extends LightDoor {
-  constructor(props: DoorConstructorPropsWithFixName = {}) {
+  constructor(props: DoorConstructorPropsWithFixSrc = {}) {
     super(props)
     this.propType.value = 'door_ylsides'
     this.script?.on('load', new UseMesh('door_ylsides/door_ylsides.teo'))
