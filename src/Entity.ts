@@ -2,7 +2,6 @@ import path from 'node:path'
 import { ArxInteractiveObject } from 'arx-convert/types'
 import { Rotation } from '@src/Rotation.js'
 import { Vector3 } from '@src/Vector3.js'
-import { last } from '@src/faux-ramda.js'
 import { Script } from '@src/Script.js'
 import { Expand } from 'arx-convert/utils'
 
@@ -44,7 +43,7 @@ export class Entity {
     }
 
     this.script = new Script({
-      filename: (last(this.src.split('/')) as string) + '.asl',
+      filename: path.parse(this.src).name + '.asl',
     })
 
     return this
@@ -79,7 +78,7 @@ export class Entity {
 
   get ref() {
     const numericId = this.id.toString().padStart(4, '0')
-    const name = last(this.src.split('/')) as string
+    const name = path.parse(this.src).name
 
     return `${name}_${numericId}`
   }
