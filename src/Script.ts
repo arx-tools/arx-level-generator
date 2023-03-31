@@ -1,6 +1,7 @@
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import { ScriptProperty } from '@scripting/ScriptProperty.js'
 import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
+import { UsesTextures, isUsesTextures } from '@scripting/interfaces/UsesTextures.js'
 
 type ScriptConstructorProps = {
   filename: string
@@ -22,23 +23,28 @@ export class Script {
     this.filename = props.filename
   }
 
-  toArxData() {
+  async toArxData() {
     const eventStrings: string[] = []
-    Object.entries(this.eventHandlers).forEach(([name, handlers]) => {
+
+    const eventHandlerPairs = Object.entries(this.eventHandlers)
+    for (let [eventName, handlers] of eventHandlerPairs) {
       let eventString = ''
-      if (name === 'init') {
+
+      if (eventName === 'init') {
         eventString += this.properties.map((property) => '  ' + property + '\n').join('')
       }
-      eventString += handlers
-        .map((handler) => '  ' + (handler instanceof ScriptCommand ? handler : handler()) + '\n')
-        .join('')
-      eventStrings.push(`on ${name} {\n${eventString}  accept\n}`)
-    })
+
+      for (let handler of handlers) {
+        eventString += '  ' + (handler instanceof ScriptCommand ? await handler.toString() : handler()) + '\n'
+      }
+
+      eventStrings.push(`on ${eventName} {\n${eventString}  accept\n}`)
+    }
 
     const subroutines: string[] = []
-    this.subroutines.forEach((subroutine) => {
-      subroutines.push(subroutine.toString())
-    })
+    for (let subroutine of this.subroutines) {
+      subroutines.push(await subroutine.toString())
+    }
 
     return eventStrings.join('\n') + '\n\n' + subroutines.join('\n')
   }
@@ -46,5 +52,17 @@ export class Script {
   on(eventName: string, handler: ScriptCommand | (() => string)) {
     this.eventHandlers[eventName] = this.eventHandlers[eventName] ?? []
     this.eventHandlers[eventName].push(handler)
+  }
+
+  async exportTextures(outputDir: string) {
+    let files: Record<string, string> = {}
+
+    const handlers = Object.values(this.eventHandlers).flat(1).filter(isUsesTextures)
+
+    for (let handler of handlers) {
+      files = { ...files, ...(await handler.exportTextures(outputDir)) }
+    }
+
+    return files
   }
 }

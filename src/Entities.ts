@@ -24,7 +24,7 @@ export class Entities extends Array<Entity> {
 
   findByRef(ref: string) {
     return this.find((entity) => {
-      return entity.getRef() === ref
+      return entity.ref === ref
     })
   }
 }

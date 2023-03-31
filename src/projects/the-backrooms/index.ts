@@ -15,8 +15,8 @@ import { Cursor, CursorDir } from './Cursor.js'
 import { Zones } from './Zones.js'
 import { createLight } from './light.js'
 import { randomBetween } from '@src/random.js'
+import { FireExitDoor } from './FireExitDoor.js'
 import { Entity } from '@src/Entity.js'
-import { Portcullis } from '@prefabs/entity/Door.js'
 
 export default async () => {
   const {
@@ -262,10 +262,17 @@ export default async () => {
 
   // ---------------
 
-  const door = new Portcullis({
+  const key = Entity.key
+  key.position = new Vector3(randomBetween(-100, 100), -10, randomBetween(-100, 100))
+
+  const door = new FireExitDoor({
     position: new Vector3(0, -200, 0),
+    isLocked: true,
+    lockpickDifficulty: 100,
   })
-  map.entities.push(door)
+  door.setKey(key)
+
+  map.entities.push(door, key)
 
   // ---------------
 

@@ -77,7 +77,7 @@ export class Entity {
     }
   }
 
-  getRef() {
+  get ref() {
     const numericId = this.id.toString().padStart(4, '0')
     const name = last(this.name.split('/')) as string
 
@@ -89,7 +89,7 @@ export class Entity {
       throw new Error("trying to export an Entity which doesn't have a script")
     }
 
-    return path.resolve(outputDir, Script.targetPath, this.name, this.getRef(), this.script.filename)
+    return path.resolve(outputDir, Script.targetPath, this.name, this.ref, this.script.filename)
   }
 
   // ----------------
@@ -102,5 +102,8 @@ export class Entity {
   }
   static get fern() {
     return new Entity({ name: 'items/magic/fern' })
+  }
+  static get key() {
+    return new Entity({ name: 'items/quest_item/key_base' })
   }
 }

@@ -68,7 +68,7 @@ export const createStoneBlocks = (rowSize: number, depth: number, achievementMan
         herosay "${zone.name}"
         if (§already_listened == 0) {
           set §already_listened 1
-          sendevent listened ${achievementManager.getRef()} nop
+          sendevent listened ${achievementManager.ref} nop
         }
         `
       })

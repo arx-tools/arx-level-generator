@@ -5,5 +5,5 @@ export abstract class ScriptProperty<T> {
     this.value = value
   }
 
-  abstract toString(): string
+  abstract toString(): string | Promise<string>
 }

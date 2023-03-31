@@ -10,9 +10,9 @@ export class ScriptSubroutine {
     this.command = command
   }
 
-  toString() {
+  async toString() {
     const indentation = repeat(' ', 2).join('')
-    const commands = (this.command instanceof ScriptCommand ? this.command.toString() : this.command())
+    const commands = (this.command instanceof ScriptCommand ? await this.command.toString() : this.command())
       .trim()
       .split('\n')
       .map((line) => indentation + line.trim())

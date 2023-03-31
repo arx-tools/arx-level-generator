@@ -31,3 +31,8 @@ export const whiteMosaicTiles = Texture.fromCustomFile({
   sourcePath: TEXTURE_DIR,
   filename: 'pool-room-white-mosaic-tile.jpg',
 })
+
+export const fireExitDoor = Texture.fromCustomFile({
+  sourcePath: TEXTURE_DIR,
+  filename: 'fire-exit-door.bmp',
+})

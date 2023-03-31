@@ -233,4 +233,10 @@ export class Texture extends ThreeJsTextue {
   static get stoneHumanAkbaa4F() {
     return new Texture({ filename: '[stone]_human_akbaa4_f.jpg', size: 256 })
   }
+
+  // ----------------
+
+  static get fixinterHeavyCatacombDoor() {
+    return new Texture({ filename: 'fixinter_heavy_catacomb_door.bmp', size: 256 })
+  }
 }

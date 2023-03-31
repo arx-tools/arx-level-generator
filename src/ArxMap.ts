@@ -352,7 +352,7 @@ export class ArxMap {
 
     // ------------------------
 
-    const textures = await this.polygons.exportTextures(outputDir)
+    let textures = await this.polygons.exportTextures(outputDir)
 
     const hudElements = this.hud.exportSourcesAndTargets(outputDir, levelIdx)
 
@@ -380,13 +380,15 @@ export class ArxMap {
     }, {} as Record<string, ArxAMB>)
 
     const scripts: Record<string, string> = {}
-    this.entities.forEach((entity) => {
+    for (let entity of this.entities) {
       if (entity.script !== undefined) {
-        scripts[entity.exportTarget(outputDir)] = entity.script.toArxData()
+        scripts[entity.exportTarget(outputDir)] = await entity.script.toArxData()
+        textures = { ...textures, ...(await entity.script.exportTextures(outputDir)) }
       }
-    })
+    }
     if (this.player.script !== undefined) {
-      scripts[this.player.exportTarget(outputDir)] = this.player.script.toArxData()
+      scripts[this.player.exportTarget(outputDir)] = await this.player.script.toArxData()
+      textures = { ...textures, ...(await this.player.script.exportTextures(outputDir)) }
     }
 
     const translations = this.i18n.exportSourcesAndTargets(outputDir)
