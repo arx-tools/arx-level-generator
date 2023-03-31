@@ -15,6 +15,8 @@ import { Cursor, CursorDir } from './Cursor.js'
 import { Zones } from './Zones.js'
 import { createLight } from './light.js'
 import { randomBetween } from '@src/random.js'
+import { Entity } from '@src/Entity.js'
+import { Portcullis } from '@prefabs/entity/Door.js'
 
 export default async () => {
   const {
@@ -257,6 +259,13 @@ export default async () => {
   zones.forEach((zone) => {
     map.zones.push(zone)
   })
+
+  // ---------------
+
+  const door = new Portcullis({
+    position: new Vector3(0, -200, 0),
+  })
+  map.entities.push(door)
 
   // ---------------
 

@@ -1,18 +1,21 @@
+import path from 'node:path'
 import { ArxInteractiveObject } from 'arx-convert/types'
 import { Rotation } from '@src/Rotation.js'
 import { Vector3 } from '@src/Vector3.js'
 import { last } from '@src/faux-ramda.js'
 import { Script } from '@src/Script.js'
-import path from 'node:path'
+import { Expand } from 'arx-convert/utils'
 
 const instanceCatalog: Record<string, Entity[]> = {}
 
-type EntityConstructorProps = {
+export type EntityConstructorProps = {
   id?: number
   name: string
   position?: Vector3
   orientation?: Rotation
 }
+
+export type EntityConstructorPropsWithoutName = Expand<Omit<EntityConstructorProps, 'name'>>
 
 export class Entity {
   id: number
@@ -96,12 +99,6 @@ export class Entity {
   }
   static get torch() {
     return new Entity({ name: 'items/provisions/torch' })
-  }
-  static get runeAam() {
-    return new Entity({ name: 'items/magic/rune_aam' })
-  }
-  static get porticullis() {
-    return new Entity({ name: 'fix_inter/porticullis' })
   }
   static get fern() {
     return new Entity({ name: 'items/magic/fern' })
