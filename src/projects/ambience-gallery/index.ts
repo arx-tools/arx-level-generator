@@ -19,7 +19,7 @@ import { createZone } from './zone.js'
 import { createMainMarker } from './mainMarker.js'
 import { Entity } from '@src/Entity.js'
 import { times } from '@src/faux-ramda.js'
-import { randomBetween } from '@src/random.js'
+import { pickRandom, randomBetween } from '@src/random.js'
 import { Interactivity } from '@scripting/properties/Interactivity.js'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import { Texture } from '@src/Texture.js'
@@ -147,8 +147,7 @@ export default async () => {
   ]
 
   const plants = times(() => {
-    // TODO: add mushroom
-    const entity = Entity.fern.withScript()
+    const entity = pickRandom([Entity.fern, Entity.mushroom]).withScript()
     entity.position.add(new Vector3(randomBetween(-200, 2800), 0, randomBetween(-800, 800)))
     entity.orientation.y = MathUtils.degToRad(randomBetween(0, 360))
     entity.script?.properties.push(Interactivity.off)

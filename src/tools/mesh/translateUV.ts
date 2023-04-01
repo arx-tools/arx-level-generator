@@ -1,7 +1,7 @@
 import { BufferAttribute, BufferGeometry, Vector2 } from 'three'
 
 export const translateUV = (offset: Vector2, geometry: BufferGeometry) => {
-  const uv = geometry.getAttribute('uv')
+  const uv = geometry.getAttribute('uv') as BufferAttribute
 
   const newUV: number[] = []
   for (let i = 0; i < uv.count; i++) {

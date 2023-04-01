@@ -1,4 +1,4 @@
-import { BufferGeometry } from 'three'
+import { BufferAttribute, BufferGeometry } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 
 /**
@@ -9,7 +9,7 @@ import { Vector3 } from '@src/Vector3.js'
 export const getVertices = (geometry: BufferGeometry) => {
   const vertices: { vector: Vector3; idx: number }[] = []
 
-  const coords = geometry.getAttribute('position')
+  const coords = geometry.getAttribute('position') as BufferAttribute
 
   for (let idx = 0; idx < coords.count; idx++) {
     vertices.push({
@@ -29,7 +29,7 @@ export const getNonIndexedVertices = (geometry: BufferGeometry) => {
   const vertices: { vector: Vector3; idx: number }[] = []
 
   const index = geometry.getIndex()
-  const coords = geometry.getAttribute('position')
+  const coords = geometry.getAttribute('position') as BufferAttribute
 
   if (index === null) {
     // non-indexed geometry, all vertices are unique

@@ -1,4 +1,4 @@
-import { EdgesGeometry, Mesh } from 'three'
+import { BufferAttribute, EdgesGeometry, Mesh } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
 
@@ -7,7 +7,7 @@ export const transformEdge = (offset: Vector3, mesh: Mesh) => {
   const edgeVertices = getVertices(edge)
 
   const vertices = getVertices(mesh.geometry)
-  const coords = mesh.geometry.getAttribute('position')
+  const coords = mesh.geometry.getAttribute('position') as BufferAttribute
 
   vertices.forEach((vertex) => {
     const edgeIdx = edgeVertices.findIndex((edgeVertex) => {

@@ -9,6 +9,12 @@ const instanceCatalog: Record<string, Entity[]> = {}
 
 export type EntityConstructorProps = {
   id?: number
+  /**
+   * specify the script file for the entity with `.asl` extension
+   *
+   * if the ASL file for the entity has the same name as it's container folder
+   * like `items/magic/fern/fern.asl` then you can shorten it to `items/magic/fern`
+   */
   src: string
   position?: Vector3
   orientation?: Rotation
@@ -37,13 +43,17 @@ export class Entity {
     }
   }
 
+  get entityName() {
+    return path.parse(this.src).name
+  }
+
   withScript() {
     if (typeof this.script !== 'undefined') {
       throw new Error('trying to add a script to an Entity which already has one')
     }
 
     this.script = new Script({
-      filename: path.parse(this.src).name + '.asl',
+      filename: this.entityName + '.asl',
     })
 
     return this
@@ -78,9 +88,8 @@ export class Entity {
 
   get ref() {
     const numericId = this.id.toString().padStart(4, '0')
-    const name = path.parse(this.src).name
 
-    return `${name}_${numericId}`
+    return `${this.entityName}_${numericId}`
   }
 
   exportTarget(outputDir: string) {
@@ -101,6 +110,9 @@ export class Entity {
   }
   static get fern() {
     return new Entity({ src: 'items/magic/fern' })
+  }
+  static get mushroom() {
+    return new Entity({ src: 'items/provisions/mushroom/food_mushroom.asl' })
   }
   static get key() {
     return new Entity({ src: 'items/quest_item/key_base' })

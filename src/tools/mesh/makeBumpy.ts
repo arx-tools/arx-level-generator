@@ -1,4 +1,4 @@
-import { BufferGeometry, MathUtils } from 'three'
+import { BufferAttribute, BufferGeometry, MathUtils } from 'three'
 import { randomBetween } from '@src/random.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
 import { sum } from '@src/faux-ramda.js'
@@ -16,7 +16,7 @@ type VertexData = { y: number; position: Vector3; idx: number }
  */
 export const makeBumpy = (magnitude: number, percentage: number, smoothenPeeks: boolean, geometry: BufferGeometry) => {
   const vertices = getVertices(geometry)
-  const coords = geometry.getAttribute('position')
+  const coords = geometry.getAttribute('position') as BufferAttribute
 
   const peeks: (VertexData & { affectedVertices: { elevation: number; distance: number }[] })[] = []
   const notPeeks: VertexData[] = []
