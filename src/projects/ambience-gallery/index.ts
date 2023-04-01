@@ -151,7 +151,13 @@ export default async () => {
     entity.position.add(new Vector3(randomBetween(-200, 2800), 0, randomBetween(-800, 800)))
     entity.orientation.y = MathUtils.degToRad(randomBetween(0, 360))
     entity.script?.properties.push(Interactivity.off)
-    entity.script?.on('init', () => `setscale ${Math.round(randomBetween(30, 150))}`)
+    entity.script?.on('init', () => {
+      if (entity.ref.includes('mushroom')) {
+        return `setscale ${Math.round(randomBetween(100, 450))}`
+      } else {
+        return `setscale ${Math.round(randomBetween(30, 150))}`
+      }
+    })
     return entity
   }, Math.round(randomBetween(60, 100)))
 

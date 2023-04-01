@@ -97,7 +97,13 @@ export class Entity {
       throw new Error("trying to export an Entity which doesn't have a script")
     }
 
-    return path.resolve(outputDir, Script.targetPath, this.src, this.ref, this.script.filename)
+    return path.resolve(
+      outputDir,
+      Script.targetPath,
+      this.src.replace(this.script.filename, ''),
+      this.ref,
+      this.script.filename,
+    )
   }
 
   // ----------------
