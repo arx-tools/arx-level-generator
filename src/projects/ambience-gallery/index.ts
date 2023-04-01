@@ -153,13 +153,13 @@ export default async () => {
     entity.script?.properties.push(Interactivity.off)
     entity.script?.on('init', () => {
       if (entity.ref.includes('mushroom')) {
-        return `setscale ${Math.round(randomBetween(100, 450))}`
+        return `setscale ${Math.round(randomBetween(100, 300))}`
       } else {
-        return `setscale ${Math.round(randomBetween(30, 150))}`
+        return `setscale ${Math.round(randomBetween(50, 200))}`
       }
     })
     return entity
-  }, Math.round(randomBetween(60, 100)))
+  }, Math.round(randomBetween(100, 150)))
 
   const zones = [
     ...blocks.zones,
