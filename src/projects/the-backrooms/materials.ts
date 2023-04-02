@@ -1,6 +1,6 @@
 import { Texture } from '@src/Texture.js'
 
-const TEXTURE_DIR = 'projects/the-backrooms/textures'
+export const TEXTURE_DIR = 'projects/the-backrooms/textures'
 
 export const carpet = Texture.fromCustomFile({
   sourcePath: TEXTURE_DIR,

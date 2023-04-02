@@ -385,6 +385,9 @@ export class ArxMap {
         scripts[entity.exportTarget(outputDir)] = await entity.script.toArxData()
         textures = { ...textures, ...(await entity.script.exportTextures(outputDir)) }
       }
+      if (entity.inventoryIcon !== undefined) {
+        textures = { ...textures, ...(await entity.exportInventoryIcon(outputDir)) }
+      }
     }
     if (this.player.script !== undefined) {
       scripts[this.player.exportTarget(outputDir)] = await this.player.script.toArxData()

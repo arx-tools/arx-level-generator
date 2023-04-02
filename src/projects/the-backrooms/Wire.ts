@@ -1,17 +1,21 @@
 import { TweakSkin } from '@scripting/commands/TweakSkin.js'
-import { Interactivity } from '@scripting/properties/Interactivity.js'
 import { Label } from '@scripting/properties/Label.js'
 import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 import { Texture } from '@src/Texture.js'
+import { TEXTURE_DIR } from './materials.js'
 
 export class Wire extends Entity {
-  constructor(props: EntityConstructorPropsWithoutSrc) {
+  constructor(props: EntityConstructorPropsWithoutSrc = {}) {
     super({
       src: 'items/provisions/pole',
+      inventoryIcon: Texture.fromCustomFile({
+        sourcePath: TEXTURE_DIR,
+        filename: 'cable-drum.bmp',
+      }),
       ...props,
     })
     this.withScript()
-    this.script?.properties.push(new Label('[pole--wire]'))
+    this.script?.properties.push(new Label('[wire]'))
     this.script?.on('initend', new TweakSkin(Texture.itemFishingPole2, Texture.l7DwarfMetalPlate10))
   }
 }

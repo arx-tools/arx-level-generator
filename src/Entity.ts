@@ -4,6 +4,7 @@ import { Rotation } from '@src/Rotation.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Script } from '@src/Script.js'
 import { Expand } from 'arx-convert/utils'
+import { Texture } from './Texture.js'
 
 const instanceCatalog: Record<string, Entity[]> = {}
 
@@ -18,6 +19,7 @@ export type EntityConstructorProps = {
   src: string
   position?: Vector3
   orientation?: Rotation
+  inventoryIcon?: Texture | Promise<Texture>
 }
 
 export type EntityConstructorPropsWithoutSrc = Expand<Omit<EntityConstructorProps, 'src'>>
@@ -27,6 +29,7 @@ export class Entity {
   src: string
   position: Vector3
   orientation: Rotation
+  inventoryIcon?: Texture | Promise<Texture>
   script?: Script
 
   constructor(props: EntityConstructorProps) {
@@ -41,6 +44,8 @@ export class Entity {
     } else {
       this.id = props.id
     }
+
+    this.inventoryIcon = props.inventoryIcon
   }
 
   get entityName() {
@@ -104,6 +109,26 @@ export class Entity {
       this.ref,
       this.script.filename,
     )
+  }
+
+  async exportInventoryIcon(outputDir: string) {
+    if (this.inventoryIcon === undefined) {
+      return {}
+    }
+
+    const inventoryIcon = await this.inventoryIcon
+    if (inventoryIcon.isNative) {
+      return {}
+    }
+
+    const [source] = await inventoryIcon.exportSourceAndTarget(outputDir, false)
+
+    // TODO: src might be a full path
+    const target = path.resolve(outputDir, 'graph/obj3d/interactive', this.src, this.entityName + `[icon].bmp`)
+
+    return {
+      [target]: source,
+    }
   }
 
   // ----------------

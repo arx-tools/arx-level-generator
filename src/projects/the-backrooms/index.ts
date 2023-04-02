@@ -23,6 +23,7 @@ import { Interactivity } from '@scripting/properties/Interactivity.js'
 import { Label } from '@scripting/properties/Label.js'
 import { TweakSkin } from '@scripting/commands/TweakSkin.js'
 import { Wire } from './Wire.js'
+import { Transparency } from '@scripting/properties/Transparency.js'
 
 export default async () => {
   const {
@@ -314,15 +315,25 @@ export default async () => {
     position: new Vector3(-157, -162, 502),
     orientation: new Rotation(0, MathUtils.degToRad(-155), MathUtils.degToRad(10)),
   })
+  wire1.script?.properties.push(new Transparency(0.85))
   const wire2 = new Wire({
     position: new Vector3(-287, -162, 502),
     orientation: new Rotation(0, MathUtils.degToRad(-155), MathUtils.degToRad(10)),
   })
+  wire2.script?.properties.push(Interactivity.off)
   const wire3 = new Wire({
     position: new Vector3(-402, -161, 502),
     orientation: new Rotation(MathUtils.degToRad(10), MathUtils.degToRad(-65), MathUtils.degToRad(10)),
   })
-  const wires = [wire1, wire2, wire3]
+  wire3.script?.properties.push(Interactivity.off)
+
+  const wire4 = new Wire()
+
+  map.player.script?.on('init', () => {
+    return `inventory addfromscene ${wire4.ref}`
+  })
+
+  const wires = [wire1, wire2, wire3, wire4]
 
   map.entities.push(slot, stoneInSlot, lock, door, key, ...wires)
 
