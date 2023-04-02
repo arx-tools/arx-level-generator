@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import seedrandom from 'seedrandom'
-import { MathUtils, Mesh, MeshBasicMaterial } from 'three'
+import { MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { Ambience } from '@src/Ambience.js'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
@@ -25,6 +25,7 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import { Texture } from '@src/Texture.js'
 import { Material } from '@src/Material.js'
 import { ArxPolygonFlags } from 'arx-convert/types'
+import { scaleUV } from '@tools/mesh/scaleUV.js'
 
 export default async () => {
   const {
@@ -152,6 +153,7 @@ export default async () => {
   geometry.scale(80, 70, 80)
   geometry.rotateY(MathUtils.degToRad(80))
   geometry.translate(4770, 0, 1450)
+  scaleUV(new Vector2(3, 3), geometry)
   const material = new MeshBasicMaterial({
     color: Color.white.getHex(),
     map: Material.fromTexture(Texture.l2TrollWoodPillar08, {

@@ -1,11 +1,17 @@
 import { BufferAttribute, BufferGeometry, Vector2 } from 'three'
 
-export const scaleUV = (steps: Vector2, geometry: BufferGeometry) => {
+/**
+ * multiplies uv coordinates in a way that allows textures to be tiled
+ *
+ * `scaleUV(new Vector2(2, 3), geometry)` will shrink the texture in a way
+ * that the texture will fit 2 times horizontally and 3 times vertically
+ */
+export const scaleUV = (scale: Vector2, geometry: BufferGeometry) => {
   const uv = geometry.getAttribute('uv') as BufferAttribute
 
   const newUV: number[] = []
   for (let i = 0; i < uv.count; i++) {
-    newUV.push(uv.array[i * uv.itemSize] * steps.x, uv.array[i * uv.itemSize + 1] * steps.y)
+    newUV.push(uv.array[i * uv.itemSize] * scale.x, uv.array[i * uv.itemSize + 1] * scale.y)
   }
   geometry.setAttribute('uv', new BufferAttribute(Float32Array.from(newUV), uv.itemSize))
 }
