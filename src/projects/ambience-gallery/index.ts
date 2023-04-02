@@ -64,87 +64,26 @@ export default async () => {
 
   const blocks = createStoneBlocks(rowSize, depth, mainMarker)
 
-  const lights = [
-    createLight(new Vector3(width + 500, -2000, -1000), Color.white.darken(30), 200, 5000, 1),
+  const lights = [createLight(new Vector3(width + 500, -2000, -1000), Color.white.darken(30), 200, 5000, 1)]
 
-    createLight(
-      new Vector3(
-        width - 500 + randomBetween(-100, 100),
-        -300 + randomBetween(-50, 50),
-        -1000 + randomBetween(-100, 100),
-      ),
-      Color.white.darken(40),
-      1,
-      1000,
-      0.45,
-    ),
-    createLight(
-      new Vector3(width - 500 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), 0 + randomBetween(-100, 100)),
-      Color.white.darken(40),
-      1,
-      1000,
-      0.45,
-    ),
-    createLight(
-      new Vector3(
-        width - 500 + randomBetween(-100, 100),
-        -300 + randomBetween(-50, 50),
-        1000 + randomBetween(-100, 100),
-      ),
-      Color.white.darken(40),
-      1,
-      1000,
-      0.45,
-    ),
+  const lightCoords = [
+    new Vector3(width * (0.1 + 0.4 * 0), -300, -1000),
+    new Vector3(width * (0.1 + 0.4 * 0), -300, 0),
+    new Vector3(width * (0.1 + 0.4 * 0), -300, 1000),
 
-    createLight(
-      new Vector3(
-        width / 2 + randomBetween(-100, 100),
-        -300 + randomBetween(-50, 50),
-        -1000 + randomBetween(-100, 100),
-      ),
-      Color.white.darken(40),
-      1,
-      1000,
-      0.45,
-    ),
-    createLight(
-      new Vector3(width / 2 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), 0 + randomBetween(-100, 100)),
-      Color.white.darken(40),
-      1,
-      1000,
-      0.45,
-    ),
-    createLight(
-      new Vector3(width / 2 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), 1000 + randomBetween(-100, 100)),
-      Color.white.darken(40),
-      1,
-      1000,
-      0.45,
-    ),
+    new Vector3(width * (0.1 + 0.4 * 1), -300, -1000),
+    new Vector3(width * (0.1 + 0.4 * 1), -300, 0),
+    new Vector3(width * (0.1 + 0.4 * 1), -300, 1000),
 
-    createLight(
-      new Vector3(300 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), -1000 + randomBetween(-100, 100)),
-      Color.white.darken(40),
-      1,
-      1000,
-      0.45,
-    ),
-    createLight(
-      new Vector3(300 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), 0 + randomBetween(-100, 100)),
-      Color.white.darken(40),
-      1,
-      1000,
-      0.45,
-    ),
-    createLight(
-      new Vector3(300 + randomBetween(-100, 100), -300 + randomBetween(-50, 50), 1000 + randomBetween(-100, 100)),
-      Color.white.darken(40),
-      1,
-      1000,
-      0.45,
-    ),
+    new Vector3(width * (0.1 + 0.4 * 2), -300, -1000),
+    new Vector3(width * (0.1 + 0.4 * 2), -300, 0),
+    new Vector3(width * (0.1 + 0.4 * 2), -300, 1000),
   ]
+
+  lightCoords.forEach((pos) => {
+    pos.add(new Vector3(randomBetween(-100, 100), randomBetween(-50, 50), randomBetween(-100, 100)))
+    lights.push(createLight(pos, Color.white.darken(40), 1, 1000, 0.45))
+  })
 
   const plants = times(() => {
     const entity = pickRandom([Entity.fern, Entity.mushroom]).withScript()
