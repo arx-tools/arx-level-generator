@@ -20,7 +20,7 @@ export type EntityConstructorProps = {
   orientation?: Rotation
 }
 
-export type EntityConstructorPropsWithoutName = Expand<Omit<EntityConstructorProps, 'src'>>
+export type EntityConstructorPropsWithoutSrc = Expand<Omit<EntityConstructorProps, 'src'>>
 
 export class Entity {
   id: number
@@ -122,5 +122,14 @@ export class Entity {
   }
   static get key() {
     return new Entity({ src: 'items/quest_item/key_base' })
+  }
+  static get powerStonePlace() {
+    return new Entity({ src: 'fix_inter/power_stone_place' })
+  }
+  static get powerStone() {
+    return new Entity({ src: 'items/magic/power_stone' })
+  }
+  static get lock() {
+    return new Entity({ src: 'fix_inter/lock' })
   }
 }

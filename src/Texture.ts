@@ -218,6 +218,9 @@ export class Texture extends ThreeJsTextue {
   static get l6RatmenFleshWall03() {
     return new Texture({ filename: 'l6_ratmen_[flesh]_wall03.jpg', size: 256 })
   }
+  static get l7DwarfMetalPlate10() {
+    return new Texture({ filename: 'l7_dwarf_[metal]_plate10.jpg', size: 128 })
+  }
   static get stoneHumanStoneWall() {
     return new Texture({ filename: '[stone]_human_stone_wall.jpg', size: 256 })
   }
@@ -232,6 +235,12 @@ export class Texture extends ThreeJsTextue {
   }
   static get stoneHumanAkbaa4F() {
     return new Texture({ filename: '[stone]_human_akbaa4_f.jpg', size: 256 })
+  }
+
+  // ----------------
+
+  static get itemFishingPole2() {
+    return new Texture({ filename: 'item_fishing pole2.bmp', size: 128 })
   }
 
   // ----------------

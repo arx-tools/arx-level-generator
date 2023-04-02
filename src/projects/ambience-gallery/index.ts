@@ -26,6 +26,7 @@ import { Texture } from '@src/Texture.js'
 import { Material } from '@src/Material.js'
 import { ArxPolygonFlags } from 'arx-convert/types'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
+import { Scale } from '@scripting/properties/Scale.js'
 
 export default async () => {
   const {
@@ -91,13 +92,9 @@ export default async () => {
     entity.position.add(new Vector3(randomBetween(-200, 2800), 0, randomBetween(-800, 800)))
     entity.orientation.y = MathUtils.degToRad(randomBetween(0, 360))
     entity.script?.properties.push(Interactivity.off)
-    entity.script?.on('init', () => {
-      if (entity.ref.includes('mushroom')) {
-        return `setscale ${Math.round(randomBetween(100, 300))}`
-      } else {
-        return `setscale ${Math.round(randomBetween(50, 200))}`
-      }
-    })
+    entity.script?.properties.push(
+      new Scale(entity.ref.includes('mushroom') ? randomBetween(1, 3) : randomBetween(0.5, 2)),
+    )
     return entity
   }, Math.round(randomBetween(100, 150)))
 

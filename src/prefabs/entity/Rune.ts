@@ -1,5 +1,5 @@
 import { Variable } from '@scripting/properties/Variable.js'
-import { Entity, EntityConstructorPropsWithoutName } from '@src/Entity.js'
+import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 
 // source: https://wiki.arx-libertatis.org/Category:Runes
 type RuneVariant =
@@ -27,7 +27,7 @@ type RuneVariant =
 export class Rune extends Entity {
   private propRuneName: Variable<string>
 
-  constructor(variant: RuneVariant, props: EntityConstructorPropsWithoutName = {}) {
+  constructor(variant: RuneVariant, props: EntityConstructorPropsWithoutSrc = {}) {
     super({
       src: 'items/magic/rune_aam',
       ...props,

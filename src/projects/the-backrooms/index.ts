@@ -17,6 +17,12 @@ import { createLight } from './light.js'
 import { randomBetween } from '@src/random.js'
 import { FireExitDoor } from './FireExitDoor.js'
 import { Entity } from '@src/Entity.js'
+import { Rotation } from '@src/Rotation.js'
+import { Scale } from '@scripting/properties/Scale.js'
+import { Interactivity } from '@scripting/properties/Interactivity.js'
+import { Label } from '@scripting/properties/Label.js'
+import { TweakSkin } from '@scripting/commands/TweakSkin.js'
+import { Wire } from './Wire.js'
 
 export default async () => {
   const {
@@ -251,6 +257,7 @@ export default async () => {
   map.meta.seed = SEED
   map.config.offset = new Vector3(6000, 0, 6000)
   map.player.position.adjustToPlayerHeight()
+  map.player.withScript()
   map.hud.hide(HudElements.Minimap)
   await map.i18n.addFromFile(path.resolve('assets/projects/the-backrooms/i18n.json'))
 
@@ -263,6 +270,7 @@ export default async () => {
 
   // ---------------
 
+  /*
   const key = Entity.key
   key.position = new Vector3(randomBetween(-100, 100), -10, randomBetween(-100, 100))
 
@@ -274,6 +282,92 @@ export default async () => {
   door.setKey(key)
 
   map.entities.push(door, key)
+  */
+
+  // ---------------
+
+  const slot = Entity.powerStonePlace.withScript()
+  slot.position = new Vector3(-400, -150, 345)
+  slot.orientation = new Rotation(0, MathUtils.degToRad(90), 0)
+
+  const stoneInSlot = Entity.powerStone.withScript()
+  stoneInSlot.script?.properties.push(Interactivity.off)
+  stoneInSlot.position = slot.position.clone().add(new Vector3(-21, -13, 13))
+  stoneInSlot.orientation = new Rotation(0, 0, MathUtils.degToRad(-90))
+
+  const lock = Entity.lock.withScript()
+  lock.position = new Vector3(-150, -162, 500)
+  lock.orientation = new Rotation(0, MathUtils.degToRad(-90), 0)
+  lock.script?.properties.push(new Label('[lock--card-reader]'))
+
+  const door = new FireExitDoor({
+    position: new Vector3(100, 0, 510),
+    orientation: new Rotation(0, MathUtils.degToRad(-90), 0),
+    isLocked: false,
+    lockpickDifficulty: 100,
+  })
+  door.script?.properties.push(new Scale(1.2))
+
+  const key = Entity.key
+
+  const wire1 = new Wire({
+    position: new Vector3(-157, -162, 502),
+    orientation: new Rotation(0, MathUtils.degToRad(-155), MathUtils.degToRad(10)),
+  })
+  const wire2 = new Wire({
+    position: new Vector3(-287, -162, 502),
+    orientation: new Rotation(0, MathUtils.degToRad(-155), MathUtils.degToRad(10)),
+  })
+  const wire3 = new Wire({
+    position: new Vector3(-402, -161, 502),
+    orientation: new Rotation(MathUtils.degToRad(10), MathUtils.degToRad(-65), MathUtils.degToRad(10)),
+  })
+  const wires = [wire1, wire2, wire3]
+
+  map.entities.push(slot, stoneInSlot, lock, door, key, ...wires)
+
+  /*
+  // lock
+
+  // slot:
+  ON INIT {
+    SET §power 0
+    SETNAME [description_power_slot]
+    SET_MATERIAL METAL
+    ACCEPT
+  }
+
+  ON COMBINE {
+    IF (§power == 1) ACCEPT
+    IF (^$PARAM1 ISCLASS "POWER_STONE") {
+      SENDEVENT CUSTOM ^$PARAM1 "INSLOT"
+      PLAY "Clip"
+      SET §power 1
+      SENDEVENT CUSTOM Timed_lever_0052 "NRJ"
+      SENDEVENT CUSTOM POWER_STONE_0034 "UNHIDE"
+      ACCEPT
+    }
+  ACCEPT
+  }
+
+  // -------------
+
+  // stone:
+  ON INIT {
+    SETNAME [description_power_stone]
+    SET_MATERIAL GLASS
+    //SET_GROUP PROVISIONS
+    //SET_PRICE 1250
+    PLAYERSTACKSIZE 10
+    SET_STEAL 50
+    SET_WEIGHT 1
+    ACCEPT
+  }  
+  ON CUSTOM {  
+    IF (^$PARAM1 == "INSLOT") DESTROY SELF
+    ACCEPT
+  }
+  */
 
   // ---------------
 
