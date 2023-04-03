@@ -382,7 +382,7 @@ export class ArxMap {
     const scripts: Record<string, string> = {}
     for (let entity of this.entities) {
       if (entity.script !== undefined) {
-        scripts[entity.exportTarget(outputDir)] = await entity.script.toArxData()
+        scripts[entity.exportScriptTarget(outputDir)] = await entity.script.toArxData()
         textures = { ...textures, ...(await entity.script.exportTextures(outputDir)) }
       }
       if (entity.inventoryIcon !== undefined) {

@@ -97,7 +97,7 @@ export class Entity {
     return `${this.entityName}_${numericId}`
   }
 
-  exportTarget(outputDir: string) {
+  exportScriptTarget(outputDir: string) {
     if (typeof this.script === 'undefined') {
       throw new Error("trying to export an Entity which doesn't have a script")
     }
@@ -123,8 +123,12 @@ export class Entity {
 
     const [source] = await inventoryIcon.exportSourceAndTarget(outputDir, false)
 
-    // TODO: src might be a full path
-    const target = path.resolve(outputDir, 'graph/obj3d/interactive', this.src, this.entityName + `[icon].bmp`)
+    let target: string
+    if (this.src.endsWith('.asl')) {
+      target = path.resolve(outputDir, 'graph/obj3d/interactive', this.src.replace(/.asl$/, '[icon].bmp'))
+    } else {
+      target = path.resolve(outputDir, 'graph/obj3d/interactive', this.src, this.entityName + `[icon].bmp`)
+    }
 
     return {
       [target]: source,
