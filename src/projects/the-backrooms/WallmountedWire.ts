@@ -4,7 +4,7 @@ import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 import { Texture } from '@src/Texture.js'
 import { TEXTURE_DIR } from './materials.js'
 
-export class Wire extends Entity {
+export class WallmountedWire extends Entity {
   constructor(props: EntityConstructorPropsWithoutSrc = {}) {
     super({
       src: 'items/provisions/pole',

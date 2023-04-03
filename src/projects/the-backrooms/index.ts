@@ -21,8 +21,7 @@ import { Rotation } from '@src/Rotation.js'
 import { Scale } from '@scripting/properties/Scale.js'
 import { Interactivity } from '@scripting/properties/Interactivity.js'
 import { Label } from '@scripting/properties/Label.js'
-import { TweakSkin } from '@scripting/commands/TweakSkin.js'
-import { Wire } from './Wire.js'
+import { WallmountedWire } from './WallmountedWire.js'
 import { Transparency } from '@scripting/properties/Transparency.js'
 
 export default async () => {
@@ -311,29 +310,23 @@ export default async () => {
 
   const key = Entity.key
 
-  const wire1 = new Wire({
+  const mountedWire1 = new WallmountedWire({
     position: new Vector3(-157, -162, 502),
     orientation: new Rotation(0, MathUtils.degToRad(-155), MathUtils.degToRad(10)),
   })
-  wire1.script?.properties.push(new Transparency(0.85))
-  const wire2 = new Wire({
+  mountedWire1.script?.properties.push(new Transparency(0.85))
+  const mountedWire2 = new WallmountedWire({
     position: new Vector3(-287, -162, 502),
     orientation: new Rotation(0, MathUtils.degToRad(-155), MathUtils.degToRad(10)),
   })
-  wire2.script?.properties.push(Interactivity.off)
-  const wire3 = new Wire({
+  mountedWire2.script?.properties.push(Interactivity.off)
+  const mountedWire3 = new WallmountedWire({
     position: new Vector3(-402, -161, 502),
     orientation: new Rotation(MathUtils.degToRad(10), MathUtils.degToRad(-65), MathUtils.degToRad(10)),
   })
-  wire3.script?.properties.push(Interactivity.off)
+  mountedWire3.script?.properties.push(Interactivity.off)
 
-  const wire4 = new Wire()
-
-  map.player.script?.on('init', () => {
-    return `inventory addfromscene ${wire4.ref}`
-  })
-
-  const wires = [wire1, wire2, wire3, wire4]
+  const wires = [mountedWire1, mountedWire2, mountedWire3]
 
   map.entities.push(slot, stoneInSlot, lock, door, key, ...wires)
 
