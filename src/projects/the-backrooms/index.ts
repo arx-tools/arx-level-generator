@@ -23,6 +23,7 @@ import { Interactivity } from '@scripting/properties/Interactivity.js'
 import { Label } from '@scripting/properties/Label.js'
 import { WallmountedWire } from './WallmountedWire.js'
 import { Transparency } from '@scripting/properties/Transparency.js'
+import { CableDrum } from './CableDrum.js'
 
 export default async () => {
   const {
@@ -258,6 +259,15 @@ export default async () => {
   map.config.offset = new Vector3(6000, 0, 6000)
   map.player.position.adjustToPlayerHeight()
   map.player.withScript()
+  map.player.script?.on('init', () => {
+    // TODO: load the item from the CableDrum class
+    const item = 'provisions/cable_drum/cable_drum'
+    // TODO: export the entity as root item
+    return `
+      inventory playeradd ${item}
+      inventory playeradd ${item}
+    `
+  })
   map.hud.hide(HudElements.Minimap)
   await map.i18n.addFromFile(path.resolve('assets/projects/the-backrooms/i18n.json'))
 
@@ -303,32 +313,38 @@ export default async () => {
   const door = new FireExitDoor({
     position: new Vector3(100, 0, 510),
     orientation: new Rotation(0, MathUtils.degToRad(-90), 0),
-    isLocked: false,
+    isLocked: true,
     lockpickDifficulty: 100,
   })
   door.script?.properties.push(new Scale(1.2))
 
-  const key = Entity.key
+  // const key = Entity.key
 
   const mountedWire1 = new WallmountedWire({
     position: new Vector3(-157, -162, 502),
     orientation: new Rotation(0, MathUtils.degToRad(-155), MathUtils.degToRad(10)),
   })
-  mountedWire1.script?.properties.push(new Transparency(0.85))
+  mountedWire1.isMounted = false
+
   const mountedWire2 = new WallmountedWire({
     position: new Vector3(-287, -162, 502),
     orientation: new Rotation(0, MathUtils.degToRad(-155), MathUtils.degToRad(10)),
   })
-  mountedWire2.script?.properties.push(Interactivity.off)
+  mountedWire2.isMounted = true
   const mountedWire3 = new WallmountedWire({
     position: new Vector3(-402, -161, 502),
     orientation: new Rotation(MathUtils.degToRad(10), MathUtils.degToRad(-65), MathUtils.degToRad(10)),
   })
-  mountedWire3.script?.properties.push(Interactivity.off)
+  mountedWire3.isMounted = false
+
+  const rootCableDrum = new CableDrum()
+  rootCableDrum.script?.makeIntoRoot()
 
   const wires = [mountedWire1, mountedWire2, mountedWire3]
 
-  map.entities.push(slot, stoneInSlot, lock, door, key, ...wires)
+  map.entities.push(slot, stoneInSlot, lock, door, /*key,*/ ...wires, rootCableDrum)
+
+  // sfx/mloop2.wav - machine sound
 
   /*
   // lock

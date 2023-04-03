@@ -7,6 +7,10 @@
     "english": "Card reader",
     "hungarian": "Kártyaolvasó"
   },
+  "unmounted-wire": {
+    "english": "Some electrical wire is missing here",
+    "hungarian": "Ezen a szakaszon hiányzik az elektromos vezeték"
+  },
   "wire": {
     "english": "Electrical wire",
     "hungarian": "Eleketromos vezeték"

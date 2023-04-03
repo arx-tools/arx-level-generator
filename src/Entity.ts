@@ -79,6 +79,14 @@ export class Entity {
       src: this.src,
       position: this.position.clone(),
       orientation: this.orientation.clone(),
+      /*
+      // TODO: clone these aswell
+      inventoryIcon?: Texture | Promise<Texture>
+      model?: {
+        sourcePath: string
+        filename: string
+      }
+      */
     })
   }
 
@@ -109,6 +117,15 @@ export class Entity {
   exportScriptTarget(outputDir: string) {
     if (typeof this.script === 'undefined') {
       throw new Error("trying to export an Entity which doesn't have a script")
+    }
+
+    if (this.script.isRoot) {
+      return path.resolve(
+        outputDir,
+        Script.targetPath,
+        this.src.replace(this.script.filename, ''),
+        this.script.filename,
+      )
     }
 
     return path.resolve(
@@ -151,7 +168,7 @@ export class Entity {
 
     // TODO: handle this.src containing file extension
     const source = path.resolve('assets', this.model.sourcePath, this.model.filename)
-    const target = path.resolve(outputDir, 'game/graph/obj3d/interactive', this.src, this.model.filename)
+    const target = path.resolve(outputDir, 'game/graph/obj3d/interactive', this.src, this.entityName + '.ftl')
 
     return {
       [target]: source,
@@ -183,5 +200,8 @@ export class Entity {
   }
   static get lock() {
     return new Entity({ src: 'fix_inter/lock' })
+  }
+  static get rope() {
+    return new Entity({ src: 'items/provisions/rope' })
   }
 }

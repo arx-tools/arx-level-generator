@@ -12,6 +12,7 @@ export class Script {
 
   static targetPath = 'graph/obj3d/interactive'
 
+  isRoot = false
   filename: string
   properties: ScriptProperty<any>[] = []
   subroutines: ScriptSubroutine[] = []
@@ -64,5 +65,9 @@ export class Script {
     }
 
     return files
+  }
+
+  makeIntoRoot() {
+    this.isRoot = true
   }
 }

@@ -242,6 +242,9 @@ export class Texture extends ThreeJsTextue {
   static get itemFishingPole2() {
     return new Texture({ filename: 'item_fishing pole2.bmp', size: 128 })
   }
+  static get itemRope() {
+    return new Texture({ filename: 'item_rope.bmp', size: 128 })
+  }
 
   // ----------------
 

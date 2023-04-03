@@ -405,6 +405,20 @@ export class ArxMap {
       }
     }
 
+    // TODO: removing root entities in a hacky way
+    const filteredEntities = new Entities()
+    this.entities
+      .filter((entity) => {
+        if (entity.script === undefined) {
+          return true
+        }
+        return !entity.script.isRoot
+      })
+      .forEach((entity) => {
+        filteredEntities.push(entity)
+      })
+    this.entities = filteredEntities
+
     if (this.player.script !== undefined) {
       scripts[this.player.exportTarget(outputDir)] = await this.player.script.toArxData()
       textures = { ...textures, ...(await this.player.script.exportTextures(outputDir)) }
