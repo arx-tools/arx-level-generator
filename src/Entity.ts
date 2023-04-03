@@ -20,6 +20,10 @@ export type EntityConstructorProps = {
   position?: Vector3
   orientation?: Rotation
   inventoryIcon?: Texture | Promise<Texture>
+  model?: {
+    sourcePath: string
+    filename: string
+  }
 }
 
 export type EntityConstructorPropsWithoutSrc = Expand<Omit<EntityConstructorProps, 'src'>>
@@ -31,6 +35,10 @@ export class Entity {
   orientation: Rotation
   inventoryIcon?: Texture | Promise<Texture>
   script?: Script
+  model?: {
+    sourcePath: string
+    filename: string
+  }
 
   constructor(props: EntityConstructorProps) {
     this.src = props.src
@@ -46,6 +54,7 @@ export class Entity {
     }
 
     this.inventoryIcon = props.inventoryIcon
+    this.model = props.model
   }
 
   get entityName() {
@@ -111,7 +120,7 @@ export class Entity {
     )
   }
 
-  async exportInventoryIcon(outputDir: string) {
+  async exportInventoryIcon(outputDir: string): Promise<Record<string, string>> {
     if (this.inventoryIcon === undefined) {
       return {}
     }
@@ -129,6 +138,20 @@ export class Entity {
     } else {
       target = path.resolve(outputDir, 'graph/obj3d/interactive', this.src, this.entityName + `[icon].bmp`)
     }
+
+    return {
+      [target]: source,
+    }
+  }
+
+  async exportModel(outputDir: string): Promise<Record<string, string>> {
+    if (this.model === undefined) {
+      return {}
+    }
+
+    // TODO: handle this.src containing file extension
+    const source = path.resolve('assets', this.model.sourcePath, this.model.filename)
+    const target = path.resolve(outputDir, 'game/graph/obj3d/interactive', this.src, this.model.filename)
 
     return {
       [target]: source,

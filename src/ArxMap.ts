@@ -380,15 +380,31 @@ export class ArxMap {
     }, {} as Record<string, ArxAMB>)
 
     const scripts: Record<string, string> = {}
+    const models: Record<string, string> = {}
+
     for (let entity of this.entities) {
       if (entity.script !== undefined) {
         scripts[entity.exportScriptTarget(outputDir)] = await entity.script.toArxData()
-        textures = { ...textures, ...(await entity.script.exportTextures(outputDir)) }
+        const texturesToExport = await entity.script.exportTextures(outputDir)
+        for (let target in texturesToExport) {
+          textures[target] = texturesToExport[target]
+        }
       }
       if (entity.inventoryIcon !== undefined) {
-        textures = { ...textures, ...(await entity.exportInventoryIcon(outputDir)) }
+        const texturesToExport = await entity.exportInventoryIcon(outputDir)
+        for (let target in texturesToExport) {
+          textures[target] = texturesToExport[target]
+        }
+      }
+
+      if (entity.model !== undefined) {
+        const modelToExport = await entity.exportModel(outputDir)
+        for (let target in modelToExport) {
+          models[target] = modelToExport[target]
+        }
       }
     }
+
     if (this.player.script !== undefined) {
       scripts[this.player.exportTarget(outputDir)] = await this.player.script.toArxData()
       textures = { ...textures, ...(await this.player.script.exportTextures(outputDir)) }
@@ -406,6 +422,7 @@ export class ArxMap {
       meta: this.meta.toData(),
       files: [
         ...Object.keys(textures),
+        ...Object.keys(models),
         ...Object.keys(hudElements),
         ...Object.keys(ambienceTracks),
         ...Object.keys(customAmbiences),
@@ -427,7 +444,12 @@ export class ArxMap {
 
     // ------------------------
 
-    const filesToCopy = [...Object.entries(textures), ...Object.entries(hudElements), ...Object.entries(ambienceTracks)]
+    const filesToCopy = [
+      ...Object.entries(textures),
+      ...Object.entries(hudElements),
+      ...Object.entries(ambienceTracks),
+      ...Object.entries(models),
+    ]
 
     for (let [target, source] of filesToCopy) {
       await fs.promises.copyFile(source, target)
