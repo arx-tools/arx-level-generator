@@ -24,6 +24,7 @@ import { Label } from '@scripting/properties/Label.js'
 import { WallmountedWire } from './WallmountedWire.js'
 import { Transparency } from '@scripting/properties/Transparency.js'
 import { CableDrum } from './CableDrum.js'
+import { TweakSkin } from '@scripting/commands/TweakSkin.js'
 
 export default async () => {
   const {
@@ -313,7 +314,7 @@ export default async () => {
   const door = new FireExitDoor({
     position: new Vector3(100, 0, 510),
     orientation: new Rotation(0, MathUtils.degToRad(-90), 0),
-    isLocked: true,
+    isLocked: false,
     lockpickDifficulty: 100,
   })
   door.script?.properties.push(new Scale(1.2))
@@ -343,6 +344,17 @@ export default async () => {
   const wires = [mountedWire1, mountedWire2, mountedWire3]
 
   map.entities.push(slot, stoneInSlot, lock, door, /*key,*/ ...wires, rootCableDrum)
+
+  // for (let i = 0; i < 10; i++) {
+  //   const cube = Entity.cube.withScript()
+  //   cube.position = new Vector3(i * 100, -10, i * 100)
+  //   cube.script?.properties.push(new Scale(0.3 * i + 0.01))
+  //   cube.script?.on('initend', new TweakSkin(Texture.stoneGroundCavesWet05, Texture.l1DragonIceGround08))
+  //   cube.script?.on('init', () => {
+  //     return `collision on`
+  //   })
+  //   map.entities.push(cube)
+  // }
 
   // sfx/mloop2.wav - machine sound
 

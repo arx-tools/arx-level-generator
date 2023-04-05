@@ -189,7 +189,15 @@ export default async () => {
   //   Texture.l2CavesRustyItem01,
   // )
 
-  const importedModels = [...tree /*, ...cableDrum*/]
+  // const ceilingLamp = await loadModel(
+  //   './assets/projects/the-backrooms/models/ceiling-lamp/ceiling-lamp.obj',
+  //   new Vector3(3000, 300, 1450),
+  //   new Vector3(50, 50, 50),
+  //   new Rotation(0, 0, 0),
+  //   Texture.aliciaRoomMur02,
+  // )
+
+  const importedModels = [...tree /*, ...cableDrum, ...ceilingLamp */]
 
   importedModels.forEach((mesh) => {
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })

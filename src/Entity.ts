@@ -204,4 +204,7 @@ export class Entity {
   static get rope() {
     return new Entity({ src: 'items/provisions/rope' })
   }
+  static get cube() {
+    return new Entity({ src: 'fix_inter/polytrans' })
+  }
 }

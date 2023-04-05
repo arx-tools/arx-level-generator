@@ -237,18 +237,16 @@ export class Texture extends ThreeJsTextue {
     return new Texture({ filename: '[stone]_human_akbaa4_f.jpg', size: 256 })
   }
 
-  // ----------------
-
   static get itemFishingPole2() {
     return new Texture({ filename: 'item_fishing pole2.bmp', size: 128 })
   }
   static get itemRope() {
     return new Texture({ filename: 'item_rope.bmp', size: 128 })
   }
-
-  // ----------------
-
   static get fixinterHeavyCatacombDoor() {
     return new Texture({ filename: 'fixinter_heavy_catacomb_door.bmp', size: 256 })
+  }
+  static get stoneGroundCavesWet05() {
+    return new Texture({ filename: '[stone]_ground_caves_wet05', size: 128 })
   }
 }
