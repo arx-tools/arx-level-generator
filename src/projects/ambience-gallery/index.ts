@@ -27,6 +27,7 @@ import { Material } from '@src/Material.js'
 import { ArxPolygonFlags } from 'arx-convert/types'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { Scale } from '@scripting/properties/Scale.js'
+import { Rotation } from '@src/Rotation.js'
 
 export default async () => {
   const {
@@ -93,7 +94,7 @@ export default async () => {
     entity.orientation.y = MathUtils.degToRad(randomBetween(0, 360))
     entity.script?.properties.push(Interactivity.off)
     entity.script?.properties.push(
-      new Scale(entity.ref.includes('mushroom') ? randomBetween(1, 3) : randomBetween(0.5, 2)),
+      new Scale(entity.ref.includes('mushroom') ? randomBetween(1, 2) : randomBetween(0.5, 2)),
     )
     return entity
   }, Math.round(randomBetween(100, 150)))
@@ -141,26 +142,58 @@ export default async () => {
 
   // -----------------------------
 
-  const src = path.resolve('./assets/projects/forest/models/tree/tree.obj')
-  const raw = await fs.promises.readFile(src, 'utf-8')
-  const loader = new OBJLoader()
-  const obj = loader.parse(raw)
+  const loadModel = async (filename: string, pos: Vector3, scale: Vector3, rotation: Rotation, texture: Texture) => {
+    const src = path.resolve(filename)
+    const raw = await fs.promises.readFile(src, 'utf-8')
+    const loader = new OBJLoader()
+    const obj = loader.parse(raw)
 
-  const geometry = (obj.children[0] as Mesh).geometry
-  geometry.scale(80, 70, 80)
-  geometry.rotateY(MathUtils.degToRad(80))
-  geometry.translate(4770, 0, 1450)
-  scaleUV(new Vector2(3, 3), geometry)
-  const material = new MeshBasicMaterial({
-    color: Color.white.getHex(),
-    map: Material.fromTexture(Texture.l2TrollWoodPillar08, {
-      flags: ArxPolygonFlags.DoubleSided,
-    }),
+    const meshes: Mesh[] = []
+
+    obj.children.forEach((child) => {
+      if (child instanceof Mesh) {
+        const { geometry } = child
+        geometry.scale(scale.x, scale.y, scale.z)
+        geometry.rotateX(rotation.x)
+        geometry.rotateY(rotation.y)
+        geometry.rotateZ(rotation.z)
+        geometry.translate(pos.x, pos.y, pos.z)
+        scaleUV(new Vector2(3, 3), geometry)
+        const material = new MeshBasicMaterial({
+          color: Color.white.getHex(),
+          map: Material.fromTexture(texture, {
+            flags: ArxPolygonFlags.DoubleSided,
+          }),
+        })
+
+        meshes.push(new Mesh(geometry, material))
+      }
+    })
+
+    return meshes
+  }
+
+  const tree = await loadModel(
+    './assets/projects/forest/models/tree/tree.obj',
+    new Vector3(4770, 0, 1450),
+    new Vector3(80, 70, 80),
+    new Rotation(0, MathUtils.degToRad(80), 0),
+    Texture.l2TrollWoodPillar08,
+  )
+
+  // const cableDrum = await loadModel(
+  //   './assets/projects/the-backrooms/models/cable-drum/cable-drum-test.obj',
+  //   new Vector3(3000, 200, 1450),
+  //   new Vector3(100, 100, 100),
+  //   new Rotation(MathUtils.degToRad(90), 0, 0),
+  //   Texture.l2CavesRustyItem01,
+  // )
+
+  const importedModels = [...tree /*, ...cableDrum*/]
+
+  importedModels.forEach((mesh) => {
+    map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
   })
-
-  const mesh = new Mesh(geometry, material)
-
-  map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
 
   // -----------------------------
 
