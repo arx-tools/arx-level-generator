@@ -94,10 +94,10 @@ export default async () => {
     entity.orientation.y = MathUtils.degToRad(randomBetween(0, 360))
     entity.script?.properties.push(Interactivity.off)
     entity.script?.properties.push(
-      new Scale(entity.ref.includes('mushroom') ? randomBetween(1, 2) : randomBetween(0.5, 2)),
+      new Scale(entity.ref.includes('mushroom') ? randomBetween(0.7, 1.6) : randomBetween(0.5, 1.3)),
     )
     return entity
-  }, Math.round(randomBetween(100, 150)))
+  }, Math.round(randomBetween(30, 80)))
 
   const zones = [
     ...blocks.zones,
@@ -182,11 +182,11 @@ export default async () => {
   )
 
   // const cableDrum = await loadModel(
-  //   './assets/projects/the-backrooms/models/cable-drum/cable-drum-test.obj',
+  //   './assets/projects/the-backrooms/models/cable-drum/cable-drum.obj',
   //   new Vector3(3000, 200, 1450),
   //   new Vector3(100, 100, 100),
   //   new Rotation(MathUtils.degToRad(90), 0, 0),
-  //   Texture.l2CavesRustyItem01,
+  //   Texture.l2GobelStoneCenter,
   // )
 
   // const ceilingLamp = await loadModel(
