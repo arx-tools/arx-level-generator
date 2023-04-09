@@ -7,7 +7,7 @@ import { Cursor, CursorDir } from './Cursor.js'
 
 // ---------------------------
 
-// only works when everything is aligned in a 100/100/100 grid
+// only works when everything is aligned to a 100/100/100 grid
 function union(map1: ArxMap, map2: ArxMap) {
   // TODO: this removes both polygons when they overlap, which is ideal for walls
   // but not for ceilings and floors
