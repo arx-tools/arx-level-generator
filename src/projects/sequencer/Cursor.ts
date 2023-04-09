@@ -1,3 +1,5 @@
+import { Interactivity } from '@scripting/properties/Interactivity.js'
+import { Invulnerability } from '@scripting/properties/Invulnerability.js'
 import { Scale } from '@scripting/properties/Scale.js'
 import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 
@@ -10,7 +12,11 @@ export class Cursor extends Entity {
     this.withScript()
     this.script?.properties.push(new Scale(0.2))
     this.script?.on('init', () => {
-      return `SET_SHADOW OFF`
+      return `
+        SET_SHADOW OFF
+        ${Invulnerability.on}
+        ${Interactivity.off}
+      `
     })
 
     this.script?.on('move_x', () => {
