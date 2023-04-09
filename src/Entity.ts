@@ -4,7 +4,7 @@ import { Rotation } from '@src/Rotation.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Script } from '@src/Script.js'
 import { Expand } from 'arx-convert/utils'
-import { Texture } from './Texture.js'
+import { Texture } from '@src/Texture.js'
 
 const instanceCatalog: Record<string, Entity[]> = {}
 
@@ -205,6 +205,11 @@ export class Entity {
     return new Entity({ src: 'items/provisions/rope' })
   }
   static get cube() {
-    return new Entity({ src: 'fix_inter/polytrans' })
+    // TODO: I'm not sure about this, but this is the only way to import a class
+    // which extends the base Entity class
+    return (async () => {
+      const { Cube } = await import('@prefabs/entity/Cube.js')
+      return new Cube()
+    })()
   }
 }

@@ -24,6 +24,7 @@ import { WallmountedWire } from './WallmountedWire.js'
 import { Transparency } from '@scripting/properties/Transparency.js'
 import { CableDrum } from './CableDrum.js'
 import { TweakSkin } from '@scripting/commands/TweakSkin.js'
+import { Cube } from '@prefabs/entity/Cube.js'
 
 export default async () => {
   const {
@@ -344,8 +345,10 @@ export default async () => {
   map.entities.push(slot, stoneInSlot, lock, door, /*key,*/ ...wires, rootCableDrum)
 
   // for (let i = 0; i < 10; i++) {
-  //   const cube = Entity.cube.withScript()
-  //   cube.position = new Vector3(i * 100, -10, i * 100)
+  //   const cube = new Cube({
+  //     position: new Vector3(i * 100, -10, i * 100)
+  //   })
+  //   cube.withScript()
   //   cube.script?.properties.push(new Scale(0.3 * i + 0.01))
   //   cube.script?.on('initend', new TweakSkin(Texture.stoneGroundCavesWet05, Texture.l1DragonIceGround08))
   //   cube.script?.on('init', () => {

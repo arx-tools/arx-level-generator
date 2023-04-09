@@ -3,6 +3,7 @@ import joinedGoblinLevels from '@projects/joined-goblin-levels/index.js'
 import ambienceGallery from '@projects/ambience-gallery/index.js'
 import tiltedRoomDemo from '@projects/tilted-room-demo/index.js'
 import aliasNightmare from '@projects/alias-nightmare/index.js'
+import sequencer from '@projects/sequencer/index.js'
 
 const { PROJECT } = process.env
 
@@ -21,6 +22,9 @@ switch (PROJECT) {
     break
   case 'alias-nightmare':
     aliasNightmare()
+    break
+  case 'sequencer':
+    sequencer()
     break
   default:
     throw new Error(`project "${PROJECT}" not found`)

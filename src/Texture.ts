@@ -158,6 +158,9 @@ export class Texture extends ThreeJsTextue {
   static get waterCavewater() {
     return new Texture({ filename: '(water)cavewater.jpg', size: 128 })
   }
+  static get l1DragonStoneGround01() {
+    return new Texture({ filename: 'l1_dragon_[stone]_ground01.jpg', size: 128 })
+  }
   static get l1DragonIceGround08() {
     return new Texture({ filename: 'l1_dragon_[ice]_ground08.jpg', size: 128 })
   }
@@ -212,6 +215,9 @@ export class Texture extends ThreeJsTextue {
   static get l4DwarfIronBoard02() {
     return new Texture({ filename: 'l4_dwarf_[iron]_board02.jpg', size: 256 })
   }
+  static get l4DwarfWoodBoard02() {
+    return new Texture({ filename: 'l4_dwarf_[wood]_board02.jpg', size: 128 })
+  }
   static get l5CavesGravelGround05() {
     return new Texture({ filename: 'l5_caves_[gravel]_ground05.jpg', size: 128 })
   }
@@ -235,6 +241,9 @@ export class Texture extends ThreeJsTextue {
   }
   static get stoneHumanAkbaa4F() {
     return new Texture({ filename: '[stone]_human_akbaa4_f.jpg', size: 256 })
+  }
+  static get stoneHumanPriest4() {
+    return new Texture({ filename: '[stone]_human_priest4.jpg', size: 256 })
   }
 
   static get itemFishingPole2() {
