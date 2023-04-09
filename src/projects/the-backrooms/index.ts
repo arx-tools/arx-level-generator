@@ -18,7 +18,6 @@ import { randomBetween } from '@src/random.js'
 import { FireExitDoor } from './FireExitDoor.js'
 import { Entity } from '@src/Entity.js'
 import { Rotation } from '@src/Rotation.js'
-import { Scale } from '@scripting/properties/Scale.js'
 import { Interactivity } from '@scripting/properties/Interactivity.js'
 import { Label } from '@scripting/properties/Label.js'
 import { WallmountedWire } from './WallmountedWire.js'
@@ -317,7 +316,6 @@ export default async () => {
     isLocked: false,
     lockpickDifficulty: 100,
   })
-  door.script?.properties.push(new Scale(1.2))
 
   // const key = Entity.key
 
