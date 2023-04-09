@@ -47,7 +47,7 @@ const createWall = async (width: number, height: number) => {
   scaleUV(new Vector2(2, 2), mesh.geometry)
   applyTransformations(mesh)
   mesh.translateX(30)
-  mesh.translateY(170)
+  mesh.translateY(150)
   mesh.translateZ(400)
   return ArxMap.fromThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY })
 }
@@ -73,25 +73,37 @@ export default async () => {
   map.hud.hide(HudElements.Minimap)
 
   map.add(await createFloor(1000, 1000), true)
-  map.add(await createWall(420, 160), true)
+  map.add(await createWall(420, 190), true)
 
   // ----------------------
 
   const instruments = [
-    new SoundPlayer({ filename: 'footstep_shoe_metal_step' }),
-    new SoundPlayer({ filename: 'cloth_on_cloth_1' }),
-    new SoundPlayer({ filename: 'armor_club_metal' }),
-    new SoundPlayer({ filename: 'ice_on_ice_1' }),
     new SoundPlayer({ filename: 'rat_step4' }),
+    new SoundPlayer({ filename: 'sausage_jump' }),
+    new SoundPlayer({ filename: 'metal_on_earth_1' }),
+    new SoundPlayer({ filename: 'footstep_shoe_metal_step' }),
+    new SoundPlayer({ filename: 'interface_invstd' }),
+    new SoundPlayer({ filename: 'cloth_on_cloth_1' }),
   ]
 
   // prettier-ignore
+  // const buttonPattern = [
+  //   'xxxxxxxxxxxxxxxx',
+  //   '..........xx..x.',
+  //   'x...............',
+  //   'x..x..x.........',
+  //   '....x.......x...',
+  //   'x...x...x...x...',
+  // ]
+
+  // prettier-ignore
   const buttonPattern = [
-    'x..x..x.........',
-    'x...x...x...x...',
-    '....x.......x...',
-    '..........xx..x.',
-    'xxxxxxxxxxxxxxxx'
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
   ]
 
   const buttons: Button[][] = []
@@ -128,13 +140,13 @@ export default async () => {
   })
 
   const cursor = new Cursor({
-    position: new Vector3(-100, -250, 400),
+    position: new Vector3(-100, -220 - 30, 400),
     orientation: new Rotation(0, MathUtils.degToRad(-90), 0),
   })
 
   // ----------------------
 
-  timer.isMuted = true
+  timer.isMuted = false
   timer.script?.on('tick', () => {
     return `
       if (^#param1 == 0) {
@@ -150,7 +162,7 @@ export default async () => {
     `
   })
 
-  lever.isPulled = false
+  lever.isPulled = !timer.isMuted
   lever.script?.on('custom', () => {
     return `
       if (^$param1 == "on") {

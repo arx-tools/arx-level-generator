@@ -10,7 +10,7 @@ export class SoundPlayer extends Marker {
     super(props)
     this.withScript()
     this.script?.on('play', () => {
-      return `play -io ${props.filename}`
+      return `play -o ${props.filename}`
     })
   }
 }
