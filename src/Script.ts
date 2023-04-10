@@ -7,6 +7,8 @@ type ScriptConstructorProps = {
   filename: string
 }
 
+export type ScriptHandler = ScriptCommand | (() => string | Promise<string>)
+
 export class Script {
   static readonly EOL = '\r\n'
 
@@ -16,7 +18,7 @@ export class Script {
   filename: string
   properties: ScriptProperty<any>[] = []
   subroutines: ScriptSubroutine[] = []
-  eventHandlers: Record<string, (ScriptCommand | (() => string))[]> = {
+  eventHandlers: Record<string, ScriptHandler[]> = {
     init: [],
   }
 
@@ -36,7 +38,7 @@ export class Script {
       }
 
       for (let handler of handlers) {
-        eventString += '  ' + (handler instanceof ScriptCommand ? await handler.toString() : handler()) + '\n'
+        eventString += '  ' + (handler instanceof ScriptCommand ? await handler.toString() : await handler()) + '\n'
       }
 
       eventStrings.push(`on ${eventName} {\n${eventString}  accept\n}`)
@@ -50,7 +52,7 @@ export class Script {
     return eventStrings.join('\n') + '\n\n' + subroutines.join('\n')
   }
 
-  on(eventName: string, handler: ScriptCommand | (() => string)) {
+  on(eventName: string, handler: ScriptHandler) {
     this.eventHandlers[eventName] = this.eventHandlers[eventName] ?? []
     this.eventHandlers[eventName].push(handler)
   }

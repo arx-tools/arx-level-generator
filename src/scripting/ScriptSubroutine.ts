@@ -1,11 +1,12 @@
 import { repeat } from '@src/faux-ramda.js'
 import { ScriptCommand } from './ScriptCommand.js'
+import { ScriptHandler } from '@src/Script.js'
 
 export class ScriptSubroutine {
   name: string
-  command: ScriptCommand | (() => string)
+  command: ScriptHandler
 
-  constructor(name: string, command: ScriptCommand | (() => string | Promise<string>)) {
+  constructor(name: string, command: ScriptHandler) {
     this.name = name
     this.command = command
   }
