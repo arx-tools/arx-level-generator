@@ -1,5 +1,8 @@
 import { ScriptProperty } from '@scripting/ScriptProperty.js'
 
+/**
+ * @see https://wiki.arx-libertatis.org/Script:setinteractivity
+ */
 export class Interactivity extends ScriptProperty<boolean> {
   toString() {
     return `set_interactivity ${this.value === true ? 'on' : 'none'}`

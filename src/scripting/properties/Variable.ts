@@ -10,6 +10,9 @@ export type VariableType =
   | 'global float'
   | 'global string'
 
+/**
+ * @see https://wiki.arx-libertatis.org/Script:Variables
+ */
 export class Variable<T> extends ScriptProperty<T> {
   private propType: VariableType
   private propName: string

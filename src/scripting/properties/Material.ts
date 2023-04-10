@@ -2,6 +2,9 @@ import { ScriptProperty } from '@scripting/ScriptProperty.js'
 
 export type MaterialType = 'stone' | 'wood' | 'metal' | 'cloth' | 'flesh' | 'ice' | 'glass' | 'earth' | 'weapon'
 
+/**
+ * @see https://wiki.arx-libertatis.org/Script:setmaterial
+ */
 export class Material extends ScriptProperty<MaterialType> {
   toString() {
     return `set_material ${this.value}`

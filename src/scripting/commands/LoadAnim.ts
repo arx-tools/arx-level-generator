@@ -1,5 +1,8 @@
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
 
+/**
+ * @see https://wiki.arx-libertatis.org/Script:loadanim
+ */
 export class LoadAnim extends ScriptCommand {
   animation: string
   filename: string

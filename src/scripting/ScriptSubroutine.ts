@@ -20,4 +20,8 @@ export class ScriptSubroutine {
 
     return [`>>${this.name} {`, ...commands, indentation + 'return', '}'].join('\n')
   }
+
+  invoke() {
+    return `gosub ${this.name}`
+  }
 }

@@ -1,5 +1,8 @@
 import { ScriptProperty } from '@scripting/ScriptProperty.js'
 
+/**
+ * @see https://wiki.arx-libertatis.org/Script:setname
+ */
 export class Label extends ScriptProperty<string> {
   toString() {
     if (this.isI18nKey()) {
