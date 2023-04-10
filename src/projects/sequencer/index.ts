@@ -1,30 +1,22 @@
+import path from 'node:path'
+import seedrandom from 'seedrandom'
+import { MathUtils, Vector2 } from 'three'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
-import { Variable } from '@scripting/properties/Variable.js'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
-import { Entity } from '@src/Entity.js'
 import { HudElements } from '@src/HUD.js'
 import { DONT_QUADIFY } from '@src/Polygons.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
-import path from 'node:path'
-import seedrandom from 'seedrandom'
-import { MathUtils, Vector2 } from 'three'
-import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
-import { Cube } from '@prefabs/entity/Cube.js'
-import { Interactivity } from '@scripting/properties/Interactivity.js'
-import { Scale } from '@scripting/properties/Scale.js'
-import { TweakSkin } from '@scripting/commands/TweakSkin.js'
 import { Rotation } from '@src/Rotation.js'
 import { createLight } from '@projects/the-backrooms/light.js'
-import { Button } from './Button.js'
-import { Timer } from './Timer.js'
+import { Button } from '@projects/sequencer/Button.js'
+import { Timer } from '@projects/sequencer/Timer.js'
 import { applyTransformations } from '@src/helpers.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
-import { Label } from '@scripting/properties/Label.js'
-import { Lever } from './Lever.js'
-import { Cursor } from './Cursor.js'
-import { SoundPlayer } from './SoundPlayer.js'
+import { Lever } from '@projects/sequencer/Lever.js'
+import { Cursor } from '@projects/sequencer/Cursor.js'
+import { SoundPlayer } from '@projects/sequencer/SoundPlayer.js'
 
 const createFloor = async (width: number, height: number) => {
   const mesh = await createPlaneMesh(
@@ -51,8 +43,6 @@ const createWall = async (width: number, height: number) => {
   mesh.translateZ(400)
   return ArxMap.fromThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY })
 }
-
-// metal_on_earth.wav
 
 export default async () => {
   const {
