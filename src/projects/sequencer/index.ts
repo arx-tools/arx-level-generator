@@ -77,24 +77,20 @@ export default async () => {
   ]
 
   // prettier-ignore
-  // const buttonPattern = [
-  //   'xxxxxxxxxxxxxxxx',
-  //   '..........xx..x.',
-  //   'x...............',
-  //   'x..x..x.........',
-  //   '....x.......x...',
-  //   'x...x...x...x...',
-  // ]
-
-  // prettier-ignore
-  const buttonPattern = [
-    '................',
-    '................',
-    '................',
-    '................',
-    '................',
-    '................',
+  const formattedButtonPattern = [
+    '.... .... .... .... .... .... .... ....',
+    '.... .... .... .... ..xx xx.. x... ....',
+    '.... .... .... .... .... .... .... ....',
+    '.... .... .... .... .... .... .... ....',
+    '.... x... .... x... .... x... .... x...',
+    'x.x. .x.. x.xx .x.. x.x. .x.. x... ...x',
   ]
+
+  const buttonPattern = formattedButtonPattern.map((row) => {
+    return row.replaceAll(' ', '')
+  })
+
+  const numberOfSteps = buttonPattern[0].length
 
   const buttons: Button[][] = []
   for (let y = 0; y < buttonPattern.length; y++) {
@@ -122,7 +118,7 @@ export default async () => {
     buttons.push(row)
   }
 
-  const timer = new Timer({})
+  const timer = new Timer({ numberOfSteps, notesPerBeat: 4, bpm: 120 })
 
   const lever = new Lever({
     position: new Vector3(-140, -220 + (buttonPattern.length / 2) * 30 - 20, 400),
@@ -140,7 +136,7 @@ export default async () => {
   timer.script?.on('tick', () => {
     return `
       if (^#param1 == 0) {
-        sendevent move_x ${cursor.ref} -300
+        sendevent move_x ${cursor.ref} -${(numberOfSteps - 1) * 20}
       } else {
         sendevent move_x ${cursor.ref} 20
       }
