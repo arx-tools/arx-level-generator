@@ -140,36 +140,72 @@ export class Polygons extends Array<Polygon> {
     if (threeJsObj instanceof Mesh) {
       const uvs: BufferAttribute = threeJsObj.geometry.getAttribute('uv') as BufferAttribute
 
-      let color = Color.white
-      let texture: Texture | undefined = undefined
+      let color: Color | Color[] = Color.white
+      let texture: Texture | undefined | (Texture | undefined)[] = undefined
       if (threeJsObj.material instanceof MeshBasicMaterial) {
         color = Color.fromThreeJsColor(threeJsObj.material.color as ThreeJsColor)
         if (threeJsObj.material.map instanceof Texture) {
           texture = threeJsObj.material.map
+        } else {
+          console.warn('Unsupported texture map in material when adding threejs mesh')
         }
+      } else if (Array.isArray(threeJsObj.material)) {
+        color = threeJsObj.material.map((material) => {
+          if (material instanceof MeshBasicMaterial) {
+            return Color.fromThreeJsColor(material.color as ThreeJsColor)
+          } else {
+            console.warn('Unsupported material found when adding threejs mesh')
+            return Color.white
+          }
+        })
+        texture = threeJsObj.material.map((material) => {
+          if (material instanceof MeshBasicMaterial) {
+            if (material.map instanceof Texture) {
+              return material.map
+            } else {
+              console.warn('Unsupported texture map in material when adding threejs mesh')
+              return undefined
+            }
+          } else {
+            console.warn('Unsupported material found when adding threejs mesh')
+            return undefined
+          }
+        })
+      } else if (typeof threeJsObj.material !== 'undefined') {
+        console.warn('Unsupported material found when adding threejs mesh')
+      }
+
+      type VertexWithMaterialIndex = {
+        vertex: Vertex
+        materialIndex: number | undefined
       }
 
       const vertexPrecision = 10
-      const vertices = getNonIndexedVertices(threeJsObj.geometry).map(({ idx, vector }) => {
-        return new Vertex(
-          roundToNDecimals(vertexPrecision, vector.x),
-          roundToNDecimals(vertexPrecision, vector.y * -1),
-          roundToNDecimals(vertexPrecision, vector.z),
-          uvs.getX(idx),
-          uvs.getY(idx),
-          color,
-        )
+      const vertices = getNonIndexedVertices(threeJsObj.geometry).map(({ idx, vector, materialIndex }) => {
+        return {
+          vertex: new Vertex(
+            roundToNDecimals(vertexPrecision, vector.x),
+            roundToNDecimals(vertexPrecision, vector.y * -1),
+            roundToNDecimals(vertexPrecision, vector.z),
+            uvs.getX(idx),
+            uvs.getY(idx),
+            Array.isArray(color) ? color[materialIndex ?? 0] : color,
+          ),
+          materialIndex,
+        } as VertexWithMaterialIndex
       })
 
-      let previousPolygon: TripleOf<Vertex> | null = null
-      let currentPolygon: TripleOf<Vertex>
+      let previousPolygon: TripleOf<VertexWithMaterialIndex> | undefined = undefined
+      let currentPolygon: TripleOf<VertexWithMaterialIndex>
       for (let i = 0; i < vertices.length; i += 3) {
-        if (previousPolygon === null) {
-          previousPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<Vertex>
+        if (typeof previousPolygon === 'undefined') {
+          previousPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<VertexWithMaterialIndex>
           continue
         }
 
-        currentPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<Vertex>
+        currentPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<VertexWithMaterialIndex>
+
+        const materialIndex = currentPolygon[0].materialIndex
 
         let isQuadable = false
         if (tryToQuadify === QUADIFY) {
@@ -182,30 +218,31 @@ export class Polygons extends Array<Polygon> {
           const d = currentPolygon[1]
           polygons.push(
             new Polygon({
-              vertices: [a, d, c, b] as QuadrupleOf<Vertex>,
-              texture,
+              vertices: [a, d, c, b].map(({ vertex }) => vertex) as QuadrupleOf<Vertex>,
+              texture: Array.isArray(texture) ? texture[materialIndex ?? 0] : texture,
               isQuad: true,
             }),
           )
-          previousPolygon = null
+          previousPolygon = undefined
           continue
         }
 
         polygons.push(
           new Polygon({
-            vertices: [...previousPolygon, new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
-            texture,
+            vertices: [...previousPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
+            texture: Array.isArray(texture) ? texture[materialIndex ?? 0] : texture,
             flags: texture instanceof Material ? texture.flags | flags : flags,
           }),
         )
         previousPolygon = currentPolygon
       }
 
-      if (previousPolygon !== null) {
+      if (typeof previousPolygon !== 'undefined') {
+        const materialIndex = previousPolygon[0].materialIndex
         polygons.push(
           new Polygon({
-            vertices: [...previousPolygon, new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
-            texture,
+            vertices: [...previousPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
+            texture: Array.isArray(texture) ? texture[materialIndex ?? 0] : texture,
             flags: texture instanceof Material ? texture.flags | flags : flags,
           }),
         )

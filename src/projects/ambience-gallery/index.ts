@@ -138,21 +138,21 @@ export default async () => {
 
   // -----------------------------
 
-  const tree = await loadOBJ('./assets/projects/forest/models/tree/tree.obj', {
+  const tree = await loadOBJ('./assets/projects/forest/models/tree/tree', {
     position: new Vector3(4770, 0, 1450),
     scale: new Vector3(80, 70, 80),
     rotation: new Rotation(0, MathUtils.degToRad(80), 0),
     texture: Texture.l2TrollWoodPillar08,
   })
 
-  // const cableDrum = await loadOBJ('./assets/projects/the-backrooms/models/cable-drum/cable-drum.obj', {
+  // const cableDrum = await loadOBJ('./assets/projects/the-backrooms/models/cable-drum/cable-drum', {
   //   position: new Vector3(3000, 200, 1450),
   //   scale: new Vector3(100, 100, 100),
   //   rotation: new Rotation(MathUtils.degToRad(90), 0, 0),
   //   texture: Texture.l2GobelStoneCenter,
   // })
 
-  // const ceilingLamp = await loadOBJ('./assets/projects/the-backrooms/models/ceiling-lamp/ceiling-lamp.obj', {
+  // const ceilingLamp = await loadOBJ('./assets/projects/the-backrooms/models/ceiling-lamp/ceiling-lamp', {
   //   position: new Vector3(3000, 300, 1450),
   //   scale: new Vector3(50, 50, 50),
   //   rotation: new Rotation(0, 0, 0),

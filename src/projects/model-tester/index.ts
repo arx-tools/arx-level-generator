@@ -1,4 +1,5 @@
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
+import { createLight } from '@projects/the-backrooms/light.js'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
 import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
@@ -40,10 +41,10 @@ export default async () => {
 
   map.add(await createFloor(2000, 1000), true)
 
-  const teddy = await loadOBJ('./assets/projects/model-tester/models/teddy-bear/teddy-bear.obj', {
-    position: new Vector3(2000, 0, 1450),
-    scale: new Vector3(80, 70, 80),
-    rotation: new Rotation(0, MathUtils.degToRad(-90), 0),
+  const teddy = await loadOBJ('projects/model-tester/models/teddy-bear/teddy-bear', {
+    position: new Vector3(2300, 100, 2000),
+    scale: new Vector3(30, 30, 30),
+    rotation: new Rotation(0, MathUtils.degToRad(180), 0),
     texture: Texture.l2TrollWoodPillar08,
   })
 
@@ -52,6 +53,13 @@ export default async () => {
   importedModels.forEach((mesh) => {
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
   })
+
+  map.lights.push(createLight(new Vector3(0, -300, 0), 2000))
+
+  map.lights.push(createLight(new Vector3(1000, -300, 1000), 1300))
+  map.lights.push(createLight(new Vector3(1000, -300, -1000), 1300))
+  map.lights.push(createLight(new Vector3(-1000, -300, 1000), 1300))
+  map.lights.push(createLight(new Vector3(-1000, -300, -1000), 1300))
 
   map.finalize()
 

@@ -1,5 +1,24 @@
 import { BufferAttribute, BufferGeometry } from 'three'
 import { Vector3 } from '@src/Vector3.js'
+import { isBetween } from '@src/helpers.js'
+
+type GeometryVertex = {
+  idx: number
+  vector: Vector3
+  materialIndex?: number
+}
+
+const getMaterialIndex = (idx: number, geometry: BufferGeometry) => {
+  if (geometry.groups.length === 0) {
+    return undefined
+  }
+
+  const group = geometry.groups.find(({ start, count }) => {
+    return isBetween(start, start + count - 1, idx)
+  })
+
+  return group?.materialIndex
+}
 
 /**
  * Gets the vertices of a geometry.
@@ -7,7 +26,7 @@ import { Vector3 } from '@src/Vector3.js'
  * into individual vertices.
  */
 export const getVertices = (geometry: BufferGeometry) => {
-  const vertices: { vector: Vector3; idx: number }[] = []
+  const vertices: GeometryVertex[] = []
 
   const coords = geometry.getAttribute('position') as BufferAttribute
 
@@ -15,6 +34,7 @@ export const getVertices = (geometry: BufferGeometry) => {
     vertices.push({
       idx,
       vector: new Vector3(coords.getX(idx), coords.getY(idx), coords.getZ(idx)),
+      materialIndex: getMaterialIndex(idx, geometry),
     })
   }
 
@@ -26,7 +46,7 @@ export const getVertices = (geometry: BufferGeometry) => {
  * Should be used when converting it to Arx polygon data as Arx uses non-indexed geometry.
  */
 export const getNonIndexedVertices = (geometry: BufferGeometry) => {
-  const vertices: { vector: Vector3; idx: number }[] = []
+  const vertices: GeometryVertex[] = []
 
   const index = geometry.getIndex()
   const coords = geometry.getAttribute('position') as BufferAttribute
@@ -37,6 +57,7 @@ export const getNonIndexedVertices = (geometry: BufferGeometry) => {
       vertices.push({
         idx,
         vector: new Vector3(coords.getX(idx), coords.getY(idx), coords.getZ(idx)),
+        materialIndex: getMaterialIndex(idx, geometry),
       })
     }
   } else {
@@ -46,6 +67,9 @@ export const getNonIndexedVertices = (geometry: BufferGeometry) => {
       vertices.push({
         idx,
         vector: new Vector3(coords.getX(idx), coords.getY(idx), coords.getZ(idx)),
+        // TODO: if the following line produces weird things
+        // then replace i with idx
+        materialIndex: getMaterialIndex(i, geometry),
       })
     }
   }
