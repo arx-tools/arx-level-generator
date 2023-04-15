@@ -9,6 +9,7 @@ import { Variable } from '@scripting/properties/Variable.js'
 import { EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 import { Texture } from '@src/Texture.js'
 
+// TODO: create a base class so that the script doesn't get copied 6*32 times
 export class Button extends Cube {
   private propIsOn: Variable<boolean>
 
