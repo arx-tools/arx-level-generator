@@ -37,7 +37,7 @@ export class Sound {
 
   getFilename() {
     if (typeof this.filename === 'string') {
-      return this.filename
+      return '"' + this.filename + '"'
     } else {
       return this.filename.name
     }
