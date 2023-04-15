@@ -4,6 +4,7 @@ import ambienceGallery from '@projects/ambience-gallery/index.js'
 import tiltedRoomDemo from '@projects/tilted-room-demo/index.js'
 import aliasNightmare from '@projects/alias-nightmare/index.js'
 import sequencer from '@projects/sequencer/index.js'
+import modelTester from '@projects/model-tester/index.js'
 
 const { PROJECT } = process.env
 
@@ -25,6 +26,9 @@ switch (PROJECT) {
     break
   case 'sequencer':
     sequencer()
+    break
+  case 'model-tester':
+    modelTester()
     break
   default:
     throw new Error(`project "${PROJECT}" not found`)

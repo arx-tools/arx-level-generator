@@ -1,7 +1,6 @@
-import fs from 'node:fs'
 import path from 'node:path'
 import seedrandom from 'seedrandom'
-import { MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
+import { MathUtils } from 'three'
 import { Ambience } from '@src/Ambience.js'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
@@ -21,13 +20,10 @@ import { Entity } from '@src/Entity.js'
 import { times } from '@src/faux-ramda.js'
 import { pickRandom, randomBetween } from '@src/random.js'
 import { Interactivity } from '@scripting/properties/Interactivity.js'
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import { Texture } from '@src/Texture.js'
-import { Material } from '@src/Material.js'
-import { ArxPolygonFlags } from 'arx-convert/types'
-import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { Scale } from '@scripting/properties/Scale.js'
 import { Rotation } from '@src/Rotation.js'
+import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 
 export default async () => {
   const {
@@ -142,60 +138,26 @@ export default async () => {
 
   // -----------------------------
 
-  const loadModel = async (filename: string, pos: Vector3, scale: Vector3, rotation: Rotation, texture: Texture) => {
-    const src = path.resolve(filename)
-    const raw = await fs.promises.readFile(src, 'utf-8')
-    const loader = new OBJLoader()
-    const obj = loader.parse(raw)
+  const tree = await loadOBJ('./assets/projects/forest/models/tree/tree.obj', {
+    position: new Vector3(4770, 0, 1450),
+    scale: new Vector3(80, 70, 80),
+    rotation: new Rotation(0, MathUtils.degToRad(80), 0),
+    texture: Texture.l2TrollWoodPillar08,
+  })
 
-    const meshes: Mesh[] = []
+  // const cableDrum = await loadOBJ('./assets/projects/the-backrooms/models/cable-drum/cable-drum.obj', {
+  //   position: new Vector3(3000, 200, 1450),
+  //   scale: new Vector3(100, 100, 100),
+  //   rotation: new Rotation(MathUtils.degToRad(90), 0, 0),
+  //   texture: Texture.l2GobelStoneCenter,
+  // })
 
-    obj.children.forEach((child) => {
-      if (child instanceof Mesh) {
-        const { geometry } = child
-        geometry.scale(scale.x, scale.y, scale.z)
-        geometry.rotateX(rotation.x)
-        geometry.rotateY(rotation.y)
-        geometry.rotateZ(rotation.z)
-        geometry.translate(pos.x, pos.y, pos.z)
-        scaleUV(new Vector2(3, 3), geometry)
-        const material = new MeshBasicMaterial({
-          color: Color.white.getHex(),
-          map: Material.fromTexture(texture, {
-            flags: ArxPolygonFlags.DoubleSided,
-          }),
-        })
-
-        meshes.push(new Mesh(geometry, material))
-      }
-    })
-
-    return meshes
-  }
-
-  const tree = await loadModel(
-    './assets/projects/forest/models/tree/tree.obj',
-    new Vector3(4770, 0, 1450),
-    new Vector3(80, 70, 80),
-    new Rotation(0, MathUtils.degToRad(80), 0),
-    Texture.l2TrollWoodPillar08,
-  )
-
-  // const cableDrum = await loadModel(
-  //   './assets/projects/the-backrooms/models/cable-drum/cable-drum.obj',
-  //   new Vector3(3000, 200, 1450),
-  //   new Vector3(100, 100, 100),
-  //   new Rotation(MathUtils.degToRad(90), 0, 0),
-  //   Texture.l2GobelStoneCenter,
-  // )
-
-  // const ceilingLamp = await loadModel(
-  //   './assets/projects/the-backrooms/models/ceiling-lamp/ceiling-lamp.obj',
-  //   new Vector3(3000, 300, 1450),
-  //   new Vector3(50, 50, 50),
-  //   new Rotation(0, 0, 0),
-  //   Texture.aliciaRoomMur02,
-  // )
+  // const ceilingLamp = await loadOBJ('./assets/projects/the-backrooms/models/ceiling-lamp/ceiling-lamp.obj', {
+  //   position: new Vector3(3000, 300, 1450),
+  //   scale: new Vector3(50, 50, 50),
+  //   rotation: new Rotation(0, 0, 0),
+  //   texture: Texture.aliciaRoomMur02,
+  // })
 
   const importedModels = [...tree /*, ...cableDrum, ...ceilingLamp */]
 
