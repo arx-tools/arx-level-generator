@@ -12,4 +12,8 @@ export class Transparency extends ScriptProperty<number> {
   toString() {
     return `set_transparency ${100 - roundToNDecimals(2, this.value) * 100}`
   }
+
+  static get default() {
+    return new Transparency(1)
+  }
 }
