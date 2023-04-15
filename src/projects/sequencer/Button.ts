@@ -4,6 +4,7 @@ import { LoadAnim } from '@scripting/commands/LoadAnim.js'
 import { TweakSkin } from '@scripting/commands/TweakSkin.js'
 import { Interactivity } from '@scripting/properties/Interactivity.js'
 import { Scale } from '@scripting/properties/Scale.js'
+import { Speed } from '@scripting/properties/Speed.js'
 import { Variable } from '@scripting/properties/Variable.js'
 import { EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 import { Texture } from '@src/Texture.js'
@@ -28,23 +29,23 @@ export class Button extends Cube {
       `
     })
 
-    this.script?.properties.push(Interactivity.on, new Scale(0.1), this.propIsOn)
+    this.script?.properties.push(Interactivity.on, new Scale(0.1), this.propIsOn, new Speed(2))
     this.script?.subroutines.push(updateSkin)
 
     this.script?.on('init', new LoadAnim('action1', 'push_button'))
     this.script?.on('init', () => updateSkin.invoke())
 
-    this.script?.on('action', () => {
+    this.script?.on('clicked', () => {
       return `
         ${Interactivity.off}
+        TIMERenable -m 1 500 ${Interactivity.on}
         if (${this.propIsOn.name} == 1) {
           set ${this.propIsOn.name} 0
         } else {
           set ${this.propIsOn.name} 1
         }
         ${updateSkin.invoke()}
-        play "button_up"
-        playanim -e action1 ${Interactivity.on}
+        playanim action1
       `
     })
     this.script?.on('trigger', () => {
