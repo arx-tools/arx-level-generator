@@ -7,7 +7,6 @@ import { Color } from '@src/Color.js'
 import { Vector3 } from '@src/Vector3.js'
 import { DONT_QUADIFY, SHADING_FLAT, SHADING_SMOOTH } from '@src/Polygons.js'
 import { applyTransformations } from '@src/helpers.js'
-import { HudElements } from '@src/HUD.js'
 import { ambiences } from '@projects/ambience-gallery/constants.js'
 import { createGround } from '@projects/ambience-gallery/ground.js'
 import { createEastWestWall, createNorthSouthWall } from '@projects/ambience-gallery/walls.js'
@@ -43,15 +42,7 @@ export default async () => {
   map.player.orientation.y = MathUtils.degToRad(-90)
   map.player.withScript()
   // map.player.script?.on('init', () => 'setspeed 3')
-  map.hud.hide(HudElements.Minimap)
-  map.hud.hide(HudElements.Healthbar)
-  map.hud.hide(HudElements.Manabar)
-  map.hud.hide(HudElements.StealthIndicator)
-  map.hud.hide(HudElements.StealingIcon)
-  map.hud.hide(HudElements.LevelUpIcon)
-  map.hud.hide(HudElements.BookIcon)
-  map.hud.hide(HudElements.BackpackIcon)
-  map.hud.hide(HudElements.PurseIcon)
+  map.hud.hide('all')
   await map.i18n.addFromFile(path.resolve('assets/projects/ambience-gallery/i18n.json'))
 
   const rowSize = 5
@@ -138,28 +129,14 @@ export default async () => {
 
   // -----------------------------
 
-  const tree = await loadOBJ('./assets/projects/forest/models/tree/tree', {
+  const tree = await loadOBJ('projects/forest/models/tree/tree', {
     position: new Vector3(4770, 0, 1450),
     scale: new Vector3(80, 70, 80),
     rotation: new Rotation(0, MathUtils.degToRad(80), 0),
-    texture: Texture.l2TrollWoodPillar08,
+    fallbackTexture: Texture.l2TrollWoodPillar08,
   })
 
-  // const cableDrum = await loadOBJ('./assets/projects/the-backrooms/models/cable-drum/cable-drum', {
-  //   position: new Vector3(3000, 200, 1450),
-  //   scale: new Vector3(100, 100, 100),
-  //   rotation: new Rotation(MathUtils.degToRad(90), 0, 0),
-  //   texture: Texture.l2GobelStoneCenter,
-  // })
-
-  // const ceilingLamp = await loadOBJ('./assets/projects/the-backrooms/models/ceiling-lamp/ceiling-lamp', {
-  //   position: new Vector3(3000, 300, 1450),
-  //   scale: new Vector3(50, 50, 50),
-  //   rotation: new Rotation(0, 0, 0),
-  //   texture: Texture.aliciaRoomMur02,
-  // })
-
-  const importedModels = [...tree /*, ...cableDrum, ...ceilingLamp */]
+  const importedModels = [...tree]
 
   importedModels.forEach((mesh) => {
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })

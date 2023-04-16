@@ -25,12 +25,24 @@ export class HUD {
     [HudElements.PurseIcon]: true,
   }
 
-  hide(hudElement: HudElements) {
-    this.elements[hudElement] = false
+  hide(hudElement: HudElements | 'all') {
+    if (hudElement === 'all') {
+      for (let key in this.elements) {
+        this.elements[key as HudElements] = false
+      }
+    } else {
+      this.elements[hudElement] = false
+    }
   }
 
-  show(hudElement: HudElements) {
-    this.elements[hudElement] = true
+  show(hudElement: HudElements | 'all') {
+    if (hudElement === 'all') {
+      for (let key in this.elements) {
+        this.elements[key as HudElements] = true
+      }
+    } else {
+      this.elements[hudElement] = true
+    }
   }
 
   exportSourcesAndTargets(outputDir: string, levelIdx: number) {

@@ -258,4 +258,8 @@ export class Texture extends ThreeJsTextue {
   static get stoneGroundCavesWet05() {
     return new Texture({ filename: '[stone]_ground_caves_wet05', size: 128 })
   }
+
+  static get glassGlass01() {
+    return new Texture({ filename: '[glass]_glass01.jpg', size: 128 })
+  }
 }

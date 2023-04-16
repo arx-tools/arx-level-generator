@@ -12,4 +12,5 @@ newmtl 03___Default
 	Kd 1.0000 1.0000 1.0000
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Kd fountain-[stone].jpg
+	map_Kd fountainDe.tga
+	map_bump -bm 0.7600 Map__13_Normal Bump.tga

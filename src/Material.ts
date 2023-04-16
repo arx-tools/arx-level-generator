@@ -1,7 +1,9 @@
 import { ArxPolygonFlags } from 'arx-convert/types'
 import { Texture, TextureConstructorProps } from './Texture.js'
 
-type MaterialExtraProps = { flags?: ArxPolygonFlags }
+type MaterialExtraProps = {
+  flags?: ArxPolygonFlags
+}
 
 type MaterialConstructorProps = TextureConstructorProps & MaterialExtraProps
 
