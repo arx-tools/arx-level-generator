@@ -26,6 +26,12 @@ type OBJProperties = {
 //   mesh.scale(1.2)
 //   applyTransformations(mesh)
 
+const missingTexture = Texture.fromCustomFile({
+  filename: 'jorge-[stone].jpg',
+  sourcePath: 'textures',
+  size: 32,
+})
+
 export const loadOBJ = async (
   filenameWithoutExtension: string,
   { position, scale, scaleUV, rotation, materialFlags, fallbackTexture }: OBJProperties,
@@ -39,7 +45,9 @@ export const loadOBJ = async (
 
   let materials: MeshBasicMaterial | Record<string, MeshBasicMaterial>
 
-  const defaultTexture = Texture.aliciaRoomMur02
+  const defaultTexture = Material.fromTexture(await missingTexture, {
+    flags: materialFlags ?? ArxPolygonFlags.None,
+  })
 
   // TODO: this should only wrap around the readFile command
   try {

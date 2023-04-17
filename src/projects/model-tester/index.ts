@@ -50,9 +50,9 @@ export default async () => {
     scale: 50,
     scaleUV: 5,
     materialFlags: ArxPolygonFlags.Glow,
-    fallbackTexture: Material.fromTexture(Texture.aliciaRoomMur02, {
-      flags: ArxPolygonFlags.Glow,
-    }),
+    // fallbackTexture: Material.fromTexture(Texture.aliciaRoomMur02, {
+    //   flags: ArxPolygonFlags.Glow,
+    // }),
   })
 
   // TODO: flip polygons' UV from code
@@ -64,7 +64,7 @@ export default async () => {
   const tree = await loadOBJ('projects/forest/models/tree/tree', {
     position: new Vector3(2300, 0, 2800),
     scale: 30,
-    fallbackTexture: Texture.l2TrollWoodPillar08,
+    // fallbackTexture: Texture.l2TrollWoodPillar08,
   })
 
   const ladder = await loadOBJ('projects/forest/models/ladder/ladder', {
@@ -76,10 +76,10 @@ export default async () => {
   const cableDrum = await loadOBJ('projects/the-backrooms/models/cable-drum/cable-drum', {
     position: new Vector3(1800, 15, 2600),
     scale: 10,
-    materialFlags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided,
-    fallbackTexture: Material.fromTexture(Texture.l2GobelStoneCenter, {
-      flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided,
-    }),
+    // materialFlags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided,
+    // fallbackTexture: Material.fromTexture(Texture.l2GobelStoneCenter, {
+    //   flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided,
+    // }),
   })
 
   const teddy = await loadOBJ('projects/model-tester/models/teddy-bear/teddy-bear', {
