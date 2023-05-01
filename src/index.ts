@@ -5,6 +5,7 @@ import tiltedRoomDemo from '@projects/tilted-room-demo/index.js'
 import aliasNightmare from '@projects/alias-nightmare/index.js'
 import sequencer from '@projects/sequencer/index.js'
 import modelTester from '@projects/model-tester/index.js'
+import city from '@projects/city/index.js'
 
 const { PROJECT } = process.env
 
@@ -29,6 +30,9 @@ switch (PROJECT) {
     break
   case 'model-tester':
     modelTester()
+    break
+  case 'city':
+    city()
     break
   default:
     throw new Error(`project "${PROJECT}" not found`)
