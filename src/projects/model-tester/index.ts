@@ -88,7 +88,12 @@ export default async () => {
     rotation: new Rotation(0, 0, MathUtils.degToRad(30)),
   })
 
-  const importedModels = [teddy, tree, cableDrum, ceilingLamp, fountain, ladder].flat()
+  const megaphone = await loadOBJ('models/megaphone/megaphone', {
+    position: new Vector3(2000, 100, 2700),
+    scale: 10,
+  })
+
+  const importedModels = [teddy, tree, cableDrum, ceilingLamp, fountain, ladder, megaphone].flat()
 
   importedModels.forEach((mesh) => {
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })

@@ -10,6 +10,7 @@ import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { BufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial, Vector2 } from 'three'
 import { Color } from '@src/Color.js'
+import { fileExists } from '@src/helpers.js'
 
 type OBJProperties = {
   position?: Vector3
@@ -49,39 +50,47 @@ export const loadOBJ = async (
     flags: materialFlags ?? ArxPolygonFlags.None,
   })
 
-  // TODO: this should only wrap around the readFile command
-  try {
-    const rawMtl = await fs.promises.readFile(mtlSrc, 'utf-8')
-    const mtl = mtlLoader.parse(rawMtl, '')
+  if (await fileExists(mtlSrc)) {
+    try {
+      const rawMtl = await fs.promises.readFile(mtlSrc, 'utf-8')
+      const mtl = mtlLoader.parse(rawMtl, '')
 
-    const entriesOfMaterials = Object.entries(mtl.materialsInfo)
-    const nameMaterialPairs: [string, MeshBasicMaterial][] = []
+      const entriesOfMaterials = Object.entries(mtl.materialsInfo)
+      const nameMaterialPairs: [string, MeshBasicMaterial][] = []
 
-    for (const [name, materialInfo] of entriesOfMaterials) {
-      let textureMap: Texture = fallbackTexture ?? defaultTexture
+      for (const [name, materialInfo] of entriesOfMaterials) {
+        let textureMap: Texture = fallbackTexture ?? defaultTexture
 
-      if (typeof materialInfo.map_kd !== 'undefined') {
-        const textureFromFile = await Texture.fromCustomFile({
-          filename: materialInfo.map_kd,
-          sourcePath: dir,
+        if (typeof materialInfo.map_kd !== 'undefined') {
+          const textureFromFile = await Texture.fromCustomFile({
+            filename: materialInfo.map_kd,
+            sourcePath: dir,
+          })
+
+          textureMap = Material.fromTexture(textureFromFile, {
+            flags: materialFlags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
+          })
+        }
+
+        const material = new MeshBasicMaterial({
+          name,
+          color: Color.white.getHex(),
+          map: textureMap,
         })
 
-        textureMap = Material.fromTexture(textureFromFile, {
-          flags: materialFlags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
-        })
+        nameMaterialPairs.push([name, material])
       }
 
-      const material = new MeshBasicMaterial({
+      materials = Object.fromEntries(nameMaterialPairs)
+    } catch (e: unknown) {
+      console.error(`Error while parsing ${name}.mtl file:`, e)
+      materials = new MeshBasicMaterial({
         name,
         color: Color.white.getHex(),
-        map: textureMap,
+        map: fallbackTexture ?? defaultTexture,
       })
-
-      nameMaterialPairs.push([name, material])
     }
-
-    materials = Object.fromEntries(nameMaterialPairs)
-  } catch (e: unknown) {
+  } else {
     materials = new MeshBasicMaterial({
       name,
       color: Color.white.getHex(),

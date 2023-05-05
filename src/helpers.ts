@@ -97,3 +97,12 @@ export const averageVectors = (vectors: Vector3[]) => {
 export const isBetween = (min: number, max: number, n: number) => {
   return n >= min && n <= max
 }
+
+export const fileExists = async (filename: string) => {
+  try {
+    await fs.promises.access(filename, fs.constants.R_OK)
+    return true
+  } catch (e: unknown) {
+    return false
+  }
+}
