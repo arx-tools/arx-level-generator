@@ -55,10 +55,10 @@ export default async () => {
     // }),
   })
 
-  // TODO: flip polygons' UV from code
   const fountain = await loadOBJ('projects/forest/models/fountain/fountain', {
     position: new Vector3(2000, 3, 2500),
     scale: 2,
+    scaleUV: new Vector2(1, -1),
   })
 
   const tree = await loadOBJ('projects/forest/models/tree/tree', {
@@ -71,6 +71,7 @@ export default async () => {
     position: new Vector3(2300, 100, 2740),
     scale: 10,
     rotation: new Rotation(MathUtils.degToRad(-70), 0, 0),
+    scaleUV: new Vector2(1, -1),
   })
 
   const cableDrum = await loadOBJ('projects/the-backrooms/models/cable-drum/cable-drum', {
@@ -88,9 +89,11 @@ export default async () => {
     rotation: new Rotation(0, 0, MathUtils.degToRad(30)),
   })
 
+  // TODO: this model is not triangulated
   const megaphone = await loadOBJ('models/megaphone/megaphone', {
     position: new Vector3(2000, 100, 2700),
-    scale: 10,
+    scale: 20,
+    materialFlags: ArxPolygonFlags.None,
   })
 
   const importedModels = [teddy, tree, cableDrum, ceilingLamp, fountain, ladder, megaphone].flat()
