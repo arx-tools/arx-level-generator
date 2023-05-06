@@ -1,8 +1,8 @@
 # Blender MTL File: 'Megaphone.blend'
 # Material Count: 3
 
-newmtl Border
-Ns 250.000000
+newmtl Metal
+Ns 0.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
@@ -10,20 +10,20 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd black-leather.jpg
+map_Kd metal.jpg
 
-newmtl Silver.001
-Ns 250.000000
-Ka 0.642202 0.642202 0.642202
+newmtl MetalBody
+Ns 32.004870
+Ka 0.743119 0.743119 0.743119
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 3
-map_Kd silver.jpg
+map_Kd metal.jpg
 
-newmtl Silver.002
+newmtl Silver.001
 Ns 250.000000
 Ka 0.642202 0.642202 0.642202
 Kd 0.800000 0.800000 0.800000
