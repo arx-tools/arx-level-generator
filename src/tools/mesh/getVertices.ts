@@ -2,7 +2,7 @@ import { BufferAttribute, BufferGeometry } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { isBetween } from '@src/helpers.js'
 
-type GeometryVertex = {
+export type GeometryVertex = {
   idx: number
   vector: Vector3
   materialIndex?: number

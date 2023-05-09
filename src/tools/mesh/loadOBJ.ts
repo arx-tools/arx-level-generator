@@ -11,6 +11,9 @@ import { Texture } from '@src/Texture.js'
 import { BufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial, Vector2 } from 'three'
 import { Color } from '@src/Color.js'
 import { fileExists } from '@src/helpers.js'
+import { last } from '@src/faux-ramda.js'
+import { getVertices } from './getVertices.js'
+import { sum } from '@src/faux-ramda.js'
 
 type OBJProperties = {
   position?: Vector3
@@ -32,6 +35,64 @@ const missingTexture = Texture.fromCustomFile({
   sourcePath: 'textures',
   size: 32,
 })
+
+const reTriangulateGeometry = (geometry: BufferGeometry, rawObjDefinition: string) => {
+  const groupedVerticesPerFaces = rawObjDefinition
+    .replace(/\\\n/g, '')
+    .split(/\r?\n/)
+    .filter((row) => row.startsWith('f ') || row.startsWith('usemtl '))
+    .reduce((groups, row) => {
+      if (row.startsWith('usemtl ')) {
+        groups.push([])
+      } else {
+        const verticesPerFace = row.replace(/^f /, '').split(' ').length
+        last(groups)?.push(verticesPerFace)
+      }
+
+      return groups
+    }, [] as number[][])
+
+  const vertices = getVertices(geometry)
+
+  let verticesIndex = 0
+
+  groupedVerticesPerFaces.forEach((group) => {
+    const groupHasNonTriangleFace = group.some((verticesPerFace) => verticesPerFace > 3)
+
+    if (!groupHasNonTriangleFace) {
+      // group is triangulated, we can skip to next group
+      verticesIndex += group.length
+      return
+    }
+
+    group.forEach((verticesPerFace) => {
+      const trianglesPerFace = verticesPerFace - 2
+
+      if (trianglesPerFace === 1) {
+        // face is a triangle, we can skip to next face
+        verticesIndex += 1
+        return
+      }
+
+      // revert fan-triangulation done by threeJS' OBJLoader
+      const nGon = [vertices[verticesIndex * 3].vector, vertices[verticesIndex * 3 + 1].vector]
+      for (let i = 0; i < trianglesPerFace; i++) {
+        nGon.push(vertices[verticesIndex * 3 + 2 + i].vector)
+      }
+
+      // TODO: triangulate nGon
+
+      // TODO: what about UV coordinates?
+
+      verticesIndex += trianglesPerFace
+    })
+  })
+
+  // TODO: create a new geometry from the old one
+  const newGeometry = geometry
+
+  return newGeometry
+}
 
 export const loadOBJ = async (
   filenameWithoutExtension: string,
@@ -117,7 +178,8 @@ export const loadOBJ = async (
       material = materials instanceof MeshBasicMaterial ? materials : Object.values(materials)[0]
     }
 
-    const geometry = child.geometry
+    const geometry = reTriangulateGeometry(child.geometry, rawObj)
+
     if (scale) {
       if (typeof scale === 'number') {
         geometry.scale(scale, scale, scale)

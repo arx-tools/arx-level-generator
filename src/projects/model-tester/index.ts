@@ -43,8 +43,9 @@ export default async () => {
   map.player.withScript()
   map.hud.hide('all')
 
-  map.add(await createFloor(1000, 2000), true)
+  // map.add(await createFloor(1000, 2000), true)
 
+  /*
   const ceilingLamp = await loadOBJ('projects/the-backrooms/models/ceiling-lamp/ceiling-lamp', {
     position: new Vector3(2000, 300, 2500),
     scale: 50,
@@ -88,6 +89,7 @@ export default async () => {
     scale: 7,
     rotation: new Rotation(0, 0, MathUtils.degToRad(30)),
   })
+  */
 
   // TODO: this model is not triangulated
   const megaphone = await loadOBJ('models/megaphone/megaphone', {
@@ -96,7 +98,7 @@ export default async () => {
     materialFlags: ArxPolygonFlags.None,
   })
 
-  const importedModels = [teddy, tree, cableDrum, ceilingLamp, fountain, ladder, megaphone].flat()
+  const importedModels = [/*teddy, tree, cableDrum, ceilingLamp, fountain, ladder,*/ megaphone].flat()
 
   importedModels.forEach((mesh) => {
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
