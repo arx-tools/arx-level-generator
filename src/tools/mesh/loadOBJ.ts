@@ -8,7 +8,7 @@ import { scaleUV as scaleUVTool } from '@tools/mesh/scaleUV.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
-import { BufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial, Vector2 } from 'three'
+import { BufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial, Triangle, Vector2 } from 'three'
 import { Color } from '@src/Color.js'
 import { fileExists } from '@src/helpers.js'
 import { last, uniq } from '@src/faux-ramda.js'
@@ -114,10 +114,19 @@ const reTriangulateGeometry = (geometry: BufferGeometry, rawObjDefinition: strin
       // for debugging to see how the shape looks like:
       // https://www.mathsisfun.com/data/cartesian-coordinates-interactive.html
       // nGon.forEach((vector) => {
-      //   console.log('( ' + (vector.x * 10) + ', ' + (vector.y * 10) + ' ),')
+      //   console.log('( ' + vector.x * 10 + ', ' + vector.y * 10 + ' ),')
       // })
 
-      // TODO: triangulate nGon
+      // triangulate nGon by ear clipping (https://www.youtube.com/watch?v=QAdfkylpYwc)
+
+      const triplet = [0, 2, 3]
+      const triangle = new Triangle(nGon[triplet[0]], nGon[triplet[1]], nGon[triplet[2]])
+      for (let i = 0; i < nGon.length; i++) {
+        if (triplet.includes(i)) {
+          continue
+        }
+        console.log(i.toString().padStart(2, ' '), triangle.containsPoint(nGon[i]))
+      }
 
       // TODO: what about UV coordinates?
       // const uvs: BufferAttribute = threeJsObj.geometry.getAttribute('uv') as BufferAttribute
