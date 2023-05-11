@@ -13,7 +13,6 @@ import { Color } from '@src/Color.js'
 import { fileExists } from '@src/helpers.js'
 import { last } from '@src/faux-ramda.js'
 import { getVertices } from './getVertices.js'
-import { sum } from '@src/faux-ramda.js'
 
 type OBJProperties = {
   position?: Vector3
@@ -75,14 +74,30 @@ const reTriangulateGeometry = (geometry: BufferGeometry, rawObjDefinition: strin
       }
 
       // revert fan-triangulation done by threeJS' OBJLoader
-      const nGon = [vertices[verticesIndex * 3].vector, vertices[verticesIndex * 3 + 1].vector]
-      for (let i = 0; i < trianglesPerFace; i++) {
-        nGon.push(vertices[verticesIndex * 3 + 2 + i].vector)
+      const nGon = [
+        vertices[verticesIndex * 3].vector,
+        vertices[verticesIndex * 3 + 1].vector,
+        vertices[verticesIndex * 3 + 2].vector,
+      ]
+      for (let i = 1; i < trianglesPerFace; i++) {
+        nGon.push(vertices[(verticesIndex + i) * 3 + 2].vector)
       }
+
+      // for debugging to see how the shape looks like:
+      // https://www.mathsisfun.com/data/cartesian-coordinates-interactive.html
+      // nGon.forEach((vector) => {
+      //   console.log('( ' + (vector.x * 10) + ', ' + (vector.y * 10) + ' ),')
+      // })
 
       // TODO: triangulate nGon
 
+      // TODO: are faces in obj files coplanar?
+
       // TODO: what about UV coordinates?
+      // const uvs: BufferAttribute = threeJsObj.geometry.getAttribute('uv') as BufferAttribute
+      // uvs.getX(idx) / uvs.getY(idx) -> idx === vertices[vertexIndex].idx
+
+      // TODO: what about normals? -> calculated on arx side when calling finalize()
 
       verticesIndex += trianglesPerFace
     })
