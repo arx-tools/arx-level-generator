@@ -11,8 +11,9 @@ import { Texture } from '@src/Texture.js'
 import { BufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial, Vector2 } from 'three'
 import { Color } from '@src/Color.js'
 import { fileExists } from '@src/helpers.js'
-import { last } from '@src/faux-ramda.js'
+import { last, uniq } from '@src/faux-ramda.js'
 import { getVertices } from './getVertices.js'
+import { TripleOf } from 'arx-convert/utils'
 
 type OBJProperties = {
   position?: Vector3
@@ -37,26 +38,42 @@ const missingTexture = Texture.fromCustomFile({
 
 const reTriangulateGeometry = (geometry: BufferGeometry, rawObjDefinition: string) => {
   const groupedVerticesPerFaces = rawObjDefinition
-    .replace(/\\\n/g, '')
+    //.replace(/\\\n/g, '')
     .split(/\r?\n/)
-    .filter((row) => row.startsWith('f ') || row.startsWith('usemtl '))
-    .reduce((groups, row) => {
+    .reduce((groups, row, index) => {
+      if (!row.startsWith('f ') && !row.startsWith('usemtl ')) {
+        return groups
+      }
+
       if (row.startsWith('usemtl ')) {
         groups.push([])
       } else {
-        const verticesPerFace = row.replace(/^f /, '').split(' ').length
-        last(groups)?.push(verticesPerFace)
+        const vertices = row.replace(/^f /, '').split(' ')
+        last(groups)?.push({
+          faceDefinition: row,
+          lineNumber: index + 1,
+          numberOfVertices: vertices.length,
+          isCoplanar:
+            uniq(
+              vertices.map((triplets) => {
+                const [vertexIndex, uvIndex, normalIndex] = triplets
+                  .split('/')
+                  .map((n) => parseInt(n)) as TripleOf<number>
+                return normalIndex
+              }),
+            ).length === 1,
+        })
       }
 
       return groups
-    }, [] as number[][])
+    }, [] as { faceDefinition: string; lineNumber: number; numberOfVertices: number; isCoplanar: boolean }[][])
 
   const vertices = getVertices(geometry)
 
   let verticesIndex = 0
 
   groupedVerticesPerFaces.forEach((group) => {
-    const groupHasNonTriangleFace = group.some((verticesPerFace) => verticesPerFace > 3)
+    const groupHasNonTriangleFace = group.some((face) => face.numberOfVertices > 3)
 
     if (!groupHasNonTriangleFace) {
       // group is triangulated, we can skip to next group
@@ -64,12 +81,23 @@ const reTriangulateGeometry = (geometry: BufferGeometry, rawObjDefinition: strin
       return
     }
 
-    group.forEach((verticesPerFace) => {
-      const trianglesPerFace = verticesPerFace - 2
+    group.forEach((face) => {
+      const trianglesPerFace = face.numberOfVertices - 2
 
       if (trianglesPerFace === 1) {
         // face is a triangle, we can skip to next face
         verticesIndex += 1
+        // TODO: copy this triangle to the new geometry, as this does not change
+        return
+      }
+
+      if (!face.isCoplanar) {
+        // obj files don't contain enough information
+        console.warn(
+          `skipping re-triangulation of non-coplanar face definition at line ${face.lineNumber}: ${face.faceDefinition}`,
+        )
+        verticesIndex += trianglesPerFace
+        // TODO: copy these triangles to the new geometry, as these don't change
         return
       }
 
@@ -91,13 +119,9 @@ const reTriangulateGeometry = (geometry: BufferGeometry, rawObjDefinition: strin
 
       // TODO: triangulate nGon
 
-      // TODO: are faces in obj files coplanar?
-
       // TODO: what about UV coordinates?
       // const uvs: BufferAttribute = threeJsObj.geometry.getAttribute('uv') as BufferAttribute
       // uvs.getX(idx) / uvs.getY(idx) -> idx === vertices[vertexIndex].idx
-
-      // TODO: what about normals? -> calculated on arx side when calling finalize()
 
       verticesIndex += trianglesPerFace
     })
