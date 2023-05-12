@@ -110,7 +110,7 @@ export const loadOBJ = async (
   const rawObj = await fs.promises.readFile(objSrc, 'utf-8')
 
   if (!isTriangulatedMesh(rawObj)) {
-    console.warn(`warning: ${name}.obj is not triangulated`)
+    console.warn(`loadOBJ warning: ${name}.obj is not triangulated`)
   }
 
   const obj = objLoader.parse(rawObj)
