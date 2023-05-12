@@ -68,9 +68,9 @@ export default async () => {
   // ----------------------
 
   const instruments = [
-    new SoundPlayer({ filename: 'rat_step4' }),
+    new SoundPlayer({ filename: 'spider_step3' }),
+    new SoundPlayer({ filename: 'metal_on_wood_2' }),
     new SoundPlayer({ filename: 'sausage_jump' }),
-    new SoundPlayer({ filename: 'metal_on_earth_1' }),
     new SoundPlayer({ filename: 'footstep_shoe_metal_step' }),
     new SoundPlayer({ filename: 'interface_invstd' }),
     new SoundPlayer({ filename: 'cloth_on_cloth_1' }),
