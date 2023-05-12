@@ -5,7 +5,7 @@ import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } f
 import sharp, { Sharp } from 'sharp'
 import { sharpFromBmp, sharpToBmp } from 'sharp-bmp'
 import { Expand } from 'arx-convert/utils'
-import { fileExists } from './helpers.js'
+import { fileExists } from '@src/helpers.js'
 
 export type TextureConstructorProps = {
   filename: string

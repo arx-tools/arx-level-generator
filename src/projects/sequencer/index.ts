@@ -17,6 +17,7 @@ import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { Lever } from '@projects/sequencer/Lever.js'
 import { Cursor } from '@projects/sequencer/Cursor.js'
 import { SoundPlayer } from '@projects/sequencer/SoundPlayer.js'
+import { Audio } from '@src/Audio.js'
 
 const createFloor = async (width: number, height: number) => {
   const mesh = await createPlaneMesh(
@@ -68,12 +69,12 @@ export default async () => {
   // ----------------------
 
   const instruments = [
-    new SoundPlayer({ filename: 'spider_step3' }),
-    new SoundPlayer({ filename: 'metal_on_wood_2' }),
-    new SoundPlayer({ filename: 'sausage_jump' }),
-    new SoundPlayer({ filename: 'footstep_shoe_metal_step' }),
-    new SoundPlayer({ filename: 'interface_invstd' }),
-    new SoundPlayer({ filename: 'cloth_on_cloth_1' }),
+    new SoundPlayer({ audio: Audio.spiderStep3 }),
+    new SoundPlayer({ audio: Audio.metalOnWood2 }),
+    new SoundPlayer({ audio: Audio.sausageJump }),
+    new SoundPlayer({ audio: Audio.footstepShoeMetalStep }),
+    new SoundPlayer({ audio: Audio.interfaceInvstd }),
+    new SoundPlayer({ audio: Audio.clothOnCloth1 }),
   ]
 
   // prettier-ignore
@@ -159,6 +160,8 @@ export default async () => {
       }
     `
   })
+
+  // TODO: remove lever sound by copying "reset/no-sound.wav" as "sfx/lever.wav"
 
   // ----------------------
 
