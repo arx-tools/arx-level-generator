@@ -43,17 +43,13 @@ export default async () => {
   map.player.withScript()
   map.hud.hide('all')
 
-  // map.add(await createFloor(1000, 2000), true)
+  map.add(await createFloor(1000, 2000), true)
 
-  /*
   const ceilingLamp = await loadOBJ('projects/the-backrooms/models/ceiling-lamp/ceiling-lamp', {
     position: new Vector3(2000, 300, 2500),
     scale: 50,
     scaleUV: 5,
     materialFlags: ArxPolygonFlags.Glow,
-    // fallbackTexture: Material.fromTexture(Texture.aliciaRoomMur02, {
-    //   flags: ArxPolygonFlags.Glow,
-    // }),
   })
 
   const fountain = await loadOBJ('projects/forest/models/fountain/fountain', {
@@ -78,10 +74,6 @@ export default async () => {
   const cableDrum = await loadOBJ('projects/the-backrooms/models/cable-drum/cable-drum', {
     position: new Vector3(1800, 15, 2600),
     scale: 10,
-    // materialFlags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided,
-    // fallbackTexture: Material.fromTexture(Texture.l2GobelStoneCenter, {
-    //   flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided,
-    // }),
   })
 
   const teddy = await loadOBJ('projects/model-tester/models/teddy-bear/teddy-bear', {
@@ -89,16 +81,18 @@ export default async () => {
     scale: 7,
     rotation: new Rotation(0, 0, MathUtils.degToRad(30)),
   })
-  */
 
-  // TODO: this model is not triangulated
   const megaphone = await loadOBJ('models/megaphone/megaphone', {
     position: new Vector3(2000, 100, 2700),
     scale: 20,
-    materialFlags: ArxPolygonFlags.None,
   })
 
-  const importedModels = [/*teddy, tree, cableDrum, ceilingLamp, fountain, ladder,*/ megaphone].flat()
+  const speaker = await loadOBJ('models/speaker/speaker', {
+    position: new Vector3(1690, 50, 2850),
+    scale: 10,
+  })
+
+  const importedModels = [teddy, tree, cableDrum, ceilingLamp, fountain, ladder, megaphone, speaker].flat()
 
   importedModels.forEach((mesh) => {
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })

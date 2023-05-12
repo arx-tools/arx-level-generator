@@ -30,13 +30,15 @@ const missingTexture = Texture.fromCustomFile({
 const isTriangulatedMesh = (rawObj: string) => {
   const rows = rawObj.replace(/\\\n/g, '').split(/\r?\n/)
 
-  return rows.some((row) => {
+  const isNotTriangulated = rows.some((row) => {
     if (!row.startsWith('f ')) {
       return false
     }
 
     return row.trim().split(' ').length > 4
   })
+
+  return !isNotTriangulated
 }
 
 export const loadOBJ = async (
@@ -108,10 +110,7 @@ export const loadOBJ = async (
   const rawObj = await fs.promises.readFile(objSrc, 'utf-8')
 
   if (!isTriangulatedMesh(rawObj)) {
-    console.warn(
-      `warning: loadObj(): ${name}.obj is not triangulated! Fan triangulation is applied, if you see any glitches in` +
-        `game try triangulating the object in the 3d editor software and export it again.`,
-    )
+    console.warn(`warning: ${name}.obj is not triangulated`)
   }
 
   const obj = objLoader.parse(rawObj)
