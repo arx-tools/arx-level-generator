@@ -5,6 +5,7 @@ import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } f
 import sharp, { Sharp } from 'sharp'
 import { sharpFromBmp, sharpToBmp } from 'sharp-bmp'
 import { Expand } from 'arx-convert/utils'
+import { fileExists } from './helpers.js'
 
 export type TextureConstructorProps = {
   filename: string
@@ -56,12 +57,7 @@ export class Texture extends ThreeJsTextue {
     const source = path.resolve('assets', props.sourcePath ?? Texture.targetPath, props.filename)
 
     const image = props.filename.toLowerCase().endsWith('bmp') ? (sharpFromBmp(source) as Sharp) : sharp(source)
-
     const metadata = await image.metadata()
-
-    if (metadata.format === 'jpeg' && metadata.isProgressive) {
-      console.warn(`Texture warning: '${props.filename}' is a progressive jpeg, Arx will not be able to load it`)
-    }
 
     return new Texture({
       ...props,
@@ -81,59 +77,96 @@ export class Texture extends ThreeJsTextue {
     return this.width === this.height && MathUtils.isPowerOfTwo(this.width)
   }
 
-  async exportSourceAndTarget(outputDir: string, needsToBeTileable: boolean): Promise<[string, string]> {
+  async exportSourceAndTarget(outputDir: string, needsToBeTileable: boolean) {
     if (this.isNative) {
       throw new Error('trying to export a native Texture')
     }
 
-    if (!needsToBeTileable || this.isTileable()) {
-      const source = path.resolve('assets', this.sourcePath ?? Texture.targetPath, this.filename)
-      const target = path.resolve(outputDir, Texture.targetPath, this.filename)
-
-      return [source, target]
+    if (needsToBeTileable && !this.isTileable()) {
+      return this.makeTileable(outputDir)
+    } else {
+      return this.makeCopy(outputDir)
     }
-
-    return await this._makeTileable(outputDir)
   }
 
-  async _makeTileable(outputDir: string): Promise<[string, string]> {
-    const originalSource = path.resolve('assets', this.sourcePath ?? Texture.targetPath, this.filename)
-    const resizedSource = path.resolve('.cache', this.sourcePath ?? Texture.targetPath, 'tileable-' + this.filename)
+  private async makeCopy(outputDir: string): Promise<[string, string]> {
+    const { ext, name } = path.parse(this.filename)
+    const isBMP = ext === 'bmp'
+    const newFilename = isBMP ? this.filename : `${name}.jpg`
 
-    const resizedTarget = path.resolve(outputDir, Texture.targetPath, 'tileable-' + this.filename)
+    const originalSource = path.resolve('assets', this.sourcePath ?? Texture.targetPath, this.filename)
+    const convertedSource = path.resolve('.cache', this.sourcePath ?? Texture.targetPath, newFilename)
+
+    const convertedTarget = path.resolve(outputDir, Texture.targetPath, newFilename)
+
+    await this.createCacheFolderIfNotExists(path.dirname(convertedSource))
+
+    if (await fileExists(convertedSource)) {
+      return [convertedSource, convertedTarget]
+    }
+
+    const image = isBMP ? (sharpFromBmp(originalSource) as Sharp) : sharp(originalSource)
+
+    if (isBMP) {
+      await sharpToBmp(image, convertedSource)
+    } else {
+      await image
+        .jpeg({
+          quality: 100,
+          progressive: false,
+        })
+        .toFile(convertedSource)
+    }
+
+    return [convertedSource, convertedTarget]
+  }
+
+  private async makeTileable(outputDir: string): Promise<[string, string]> {
+    const { ext, name } = path.parse(this.filename)
+    const isBMP = ext === 'bmp'
+    const newFilename = 'tileable-' + (isBMP ? this.filename : `${name}.jpg`)
+
+    const originalSource = path.resolve('assets', this.sourcePath ?? Texture.targetPath, this.filename)
+    const resizedSource = path.resolve('.cache', this.sourcePath ?? Texture.targetPath, newFilename)
+
+    const resizedTarget = path.resolve(outputDir, Texture.targetPath, newFilename)
 
     if (this.alreadyMadeTileable) {
       return [resizedSource, resizedTarget]
     }
 
-    await this._createCacheFolderIfNotExists(path.dirname(resizedSource))
+    await this.createCacheFolderIfNotExists(path.dirname(resizedSource))
 
-    try {
-      // assuming a cached version already exists
-      await fs.promises.access(resizedSource, fs.promises.constants.R_OK)
+    if (await fileExists(resizedSource)) {
       this.alreadyMadeTileable = true
       return [resizedSource, resizedTarget]
-    } catch (e) {}
-
-    const isBMP = this.filename.toLowerCase().endsWith('bmp')
-    const image = isBMP ? (sharpFromBmp(originalSource) as Sharp) : sharp(originalSource)
-
-    if (this.width !== this.height) {
-      // TODO: extend the texture's lower side to get a square
     }
+
+    const image = isBMP ? (sharpFromBmp(originalSource) as Sharp) : sharp(originalSource)
 
     const powerOfTwo = MathUtils.floorPowerOfTwo(this.width)
 
-    image.resize(powerOfTwo, powerOfTwo)
+    image.resize(powerOfTwo, powerOfTwo, {
+      fit: 'cover',
+    })
 
-    await (isBMP ? sharpToBmp(image, resizedSource) : image.toFile(resizedSource))
+    if (isBMP) {
+      await sharpToBmp(image, resizedSource)
+    } else {
+      await image
+        .jpeg({
+          quality: 100,
+          progressive: false,
+        })
+        .toFile(resizedSource)
+    }
 
     this.alreadyMadeTileable = true
 
     return [resizedSource, resizedTarget]
   }
 
-  async _createCacheFolderIfNotExists(folder: string) {
+  private async createCacheFolderIfNotExists(folder: string) {
     try {
       await fs.promises.access(folder, fs.promises.constants.R_OK | fs.promises.constants.W_OK)
     } catch (e) {
