@@ -1,10 +1,9 @@
-# Blender MTL File: 'Megaphone.blend'
-# Material Count: 3
+# Blender 3.5.1 MTL File: 'Megaphone.blend'
+# www.blender.org
 
 newmtl Metal
 Ns 0.000000
 Ka 1.000000 1.000000 1.000000
-Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
@@ -13,9 +12,8 @@ illum 2
 map_Kd metal.jpg
 
 newmtl MetalBody
-Ns 32.004870
+Ns 32.004871
 Ka 0.743119 0.743119 0.743119
-Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
@@ -26,7 +24,6 @@ map_Kd metal.jpg
 newmtl Silver.001
 Ns 250.000000
 Ka 0.642202 0.642202 0.642202
-Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000

@@ -8,12 +8,9 @@ import { scaleUV as scaleUVTool } from '@tools/mesh/scaleUV.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
-import { BufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial, Triangle, Vector2 } from 'three'
+import { BufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial, Vector2 } from 'three'
 import { Color } from '@src/Color.js'
 import { fileExists } from '@src/helpers.js'
-import { last, uniq } from '@src/faux-ramda.js'
-import { getVertices } from './getVertices.js'
-import { TripleOf } from 'arx-convert/utils'
 
 type OBJProperties = {
   position?: Vector3
@@ -24,122 +21,22 @@ type OBJProperties = {
   fallbackTexture?: Texture
 }
 
-// TODO: turn this into a class:
-//   const teddy = new Object('assets/projects/.../teddy-bear') // no extension -> search for both obj and mtl
-//   const mesh = teddy.toMesh()
-//   mesh.scale(1.2)
-//   applyTransformations(mesh)
-
 const missingTexture = Texture.fromCustomFile({
   filename: 'jorge-[stone].jpg',
   sourcePath: 'textures',
   size: 32,
 })
 
-const reTriangulateGeometry = (geometry: BufferGeometry, rawObjDefinition: string) => {
-  const groupedVerticesPerFaces = rawObjDefinition
-    //.replace(/\\\n/g, '')
-    .split(/\r?\n/)
-    .reduce((groups, row, index) => {
-      if (!row.startsWith('f ') && !row.startsWith('usemtl ')) {
-        return groups
-      }
+const isTriangulatedMesh = (rawObj: string) => {
+  const rows = rawObj.replace(/\\\n/g, '').split(/\r?\n/)
 
-      if (row.startsWith('usemtl ')) {
-        groups.push([])
-      } else {
-        const vertices = row.replace(/^f /, '').split(' ')
-        last(groups)?.push({
-          faceDefinition: row,
-          lineNumber: index + 1,
-          numberOfVertices: vertices.length,
-          isCoplanar:
-            uniq(
-              vertices.map((triplets) => {
-                const [vertexIndex, uvIndex, normalIndex] = triplets
-                  .split('/')
-                  .map((n) => parseInt(n)) as TripleOf<number>
-                return normalIndex
-              }),
-            ).length === 1,
-        })
-      }
-
-      return groups
-    }, [] as { faceDefinition: string; lineNumber: number; numberOfVertices: number; isCoplanar: boolean }[][])
-
-  const vertices = getVertices(geometry)
-
-  let verticesIndex = 0
-
-  groupedVerticesPerFaces.forEach((group) => {
-    const groupHasNonTriangleFace = group.some((face) => face.numberOfVertices > 3)
-
-    if (!groupHasNonTriangleFace) {
-      // group is triangulated, we can skip to next group
-      verticesIndex += group.length
-      return
+  return rows.some((row) => {
+    if (!row.startsWith('f ')) {
+      return false
     }
 
-    group.forEach((face) => {
-      const trianglesPerFace = face.numberOfVertices - 2
-
-      if (trianglesPerFace === 1) {
-        // face is a triangle, we can skip to next face
-        verticesIndex += 1
-        // TODO: copy this triangle to the new geometry, as this does not change
-        return
-      }
-
-      if (!face.isCoplanar) {
-        // obj files don't contain enough information
-        console.warn(
-          `skipping re-triangulation of non-coplanar face definition at line ${face.lineNumber}: ${face.faceDefinition}`,
-        )
-        verticesIndex += trianglesPerFace
-        // TODO: copy these triangles to the new geometry, as these don't change
-        return
-      }
-
-      // revert fan-triangulation done by threeJS' OBJLoader
-      const nGon = [
-        vertices[verticesIndex * 3].vector,
-        vertices[verticesIndex * 3 + 1].vector,
-        vertices[verticesIndex * 3 + 2].vector,
-      ]
-      for (let i = 1; i < trianglesPerFace; i++) {
-        nGon.push(vertices[(verticesIndex + i) * 3 + 2].vector)
-      }
-
-      // for debugging to see how the shape looks like:
-      // https://www.mathsisfun.com/data/cartesian-coordinates-interactive.html
-      // nGon.forEach((vector) => {
-      //   console.log('( ' + vector.x * 10 + ', ' + vector.y * 10 + ' ),')
-      // })
-
-      // triangulate nGon by ear clipping (https://www.youtube.com/watch?v=QAdfkylpYwc)
-
-      const triplet = [0, 2, 3]
-      const triangle = new Triangle(nGon[triplet[0]], nGon[triplet[1]], nGon[triplet[2]])
-      for (let i = 0; i < nGon.length; i++) {
-        if (triplet.includes(i)) {
-          continue
-        }
-        console.log(i.toString().padStart(2, ' '), triangle.containsPoint(nGon[i]))
-      }
-
-      // TODO: what about UV coordinates?
-      // const uvs: BufferAttribute = threeJsObj.geometry.getAttribute('uv') as BufferAttribute
-      // uvs.getX(idx) / uvs.getY(idx) -> idx === vertices[vertexIndex].idx
-
-      verticesIndex += trianglesPerFace
-    })
+    return row.trim().split(' ').length > 4
   })
-
-  // TODO: create a new geometry from the old one
-  const newGeometry = geometry
-
-  return newGeometry
 }
 
 export const loadOBJ = async (
@@ -209,6 +106,14 @@ export const loadOBJ = async (
 
   const objSrc = path.resolve('assets/' + dir + '/' + name + '.obj')
   const rawObj = await fs.promises.readFile(objSrc, 'utf-8')
+
+  if (!isTriangulatedMesh(rawObj)) {
+    console.warn(
+      `warning: loadObj(): ${name}.obj is not triangulated! Fan triangulation is applied, if you see any glitches in` +
+        `game try triangulating the object in the 3d editor software and export it again.`,
+    )
+  }
+
   const obj = objLoader.parse(rawObj)
 
   const meshes: Mesh[] = []
@@ -226,7 +131,7 @@ export const loadOBJ = async (
       material = materials instanceof MeshBasicMaterial ? materials : Object.values(materials)[0]
     }
 
-    const geometry = reTriangulateGeometry(child.geometry, rawObj)
+    const geometry = child.geometry
 
     if (scale) {
       if (typeof scale === 'number') {
