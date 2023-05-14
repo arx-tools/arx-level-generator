@@ -61,7 +61,7 @@ export default async () => {
   map.config.offset = new Vector3(6000, 0, 6000)
   map.player.withScript()
   map.player.position.adjustToPlayerHeight()
-  map.hud.hide(HudElements.Minimap)
+  map.hud.hide('all')
 
   map.add(await createFloor(1000, 1000), true)
   map.add(await createWall(420, 190), true)
@@ -161,7 +161,7 @@ export default async () => {
     `
   })
 
-  // TODO: remove lever sound by copying "reset/no-sound.wav" as "sfx/lever.wav"
+  Audio.mute(Audio.lever)
 
   // ----------------------
 

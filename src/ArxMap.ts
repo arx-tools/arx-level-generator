@@ -37,6 +37,7 @@ import { Script } from '@src/Script.js'
 import { HUD } from '@src/HUD.js'
 import { Translations } from '@src/Translations.js'
 import { MetaData } from '@src/MetaData.js'
+import { Audio } from './Audio.js'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -390,6 +391,7 @@ export class ArxMap {
           textures[target] = texturesToExport[target]
         }
       }
+
       if (entity.inventoryIcon !== undefined) {
         const texturesToExport = await entity.exportInventoryIcon(outputDir)
         for (let target in texturesToExport) {
@@ -404,6 +406,8 @@ export class ArxMap {
         }
       }
     }
+
+    const sounds = await Audio.exportReplacements(outputDir)
 
     // TODO: removing root entities in a hacky way
     const filteredEntities = new Entities()
@@ -437,6 +441,7 @@ export class ArxMap {
       files: [
         ...Object.keys(textures),
         ...Object.keys(models),
+        ...Object.keys(sounds),
         ...Object.keys(hudElements),
         ...Object.keys(ambienceTracks),
         ...Object.keys(customAmbiences),
@@ -463,6 +468,7 @@ export class ArxMap {
       ...Object.entries(hudElements),
       ...Object.entries(ambienceTracks),
       ...Object.entries(models),
+      ...Object.entries(sounds),
     ]
 
     for (let [target, source] of filesToCopy) {
