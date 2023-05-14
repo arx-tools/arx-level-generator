@@ -13,7 +13,7 @@ export class CableDrum extends Entity {
         filename: 'cable-drum.bmp',
       }),
       model: {
-        sourcePath: 'projects/the-backrooms/models/cable-drum',
+        sourcePath: 'models/cable-drum',
         filename: 'cable-drum.ftl',
       },
       ...props,

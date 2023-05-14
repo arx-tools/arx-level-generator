@@ -71,12 +71,12 @@ export default async () => {
     scaleUV: new Vector2(1, -1),
   })
 
-  const cableDrum = await loadOBJ('projects/the-backrooms/models/cable-drum/cable-drum', {
+  const cableDrum = await loadOBJ('models/cable-drum/cable-drum', {
     position: new Vector3(1800, 15, 2600),
     scale: 10,
   })
 
-  const teddy = await loadOBJ('projects/model-tester/models/teddy-bear/teddy-bear', {
+  const teddy = await loadOBJ('models/teddy-bear/teddy-bear', {
     position: new Vector3(1825, 15, 2600),
     scale: 7,
     rotation: new Rotation(0, 0, MathUtils.degToRad(30)),
