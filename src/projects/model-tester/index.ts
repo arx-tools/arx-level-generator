@@ -77,8 +77,8 @@ export default async () => {
   })
 
   const teddy = await loadOBJ('models/teddy-bear/teddy-bear', {
-    position: new Vector3(1825, 15, 2600),
-    scale: 7,
+    position: new Vector3(1825, 150, 2600),
+    scale: 10,
     rotation: new Rotation(0, 0, MathUtils.degToRad(30)),
   })
 
