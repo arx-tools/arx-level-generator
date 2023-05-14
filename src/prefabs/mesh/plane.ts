@@ -1,4 +1,4 @@
-import { BufferAttribute, MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry, Vector2 } from 'three'
+import { MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry, Vector2 } from 'three'
 import { Color } from '@src/Color.js'
 import { applyTransformations } from '@src/helpers.js'
 import { Texture } from '@src/Texture.js'

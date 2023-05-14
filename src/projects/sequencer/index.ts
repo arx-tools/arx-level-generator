@@ -39,11 +39,20 @@ const createWall = async (width: number, height: number) => {
   mesh.rotateX(MathUtils.degToRad(-90))
   scaleUV(new Vector2(2, 2), mesh.geometry)
   applyTransformations(mesh)
-  mesh.translateX(30)
   mesh.translateY(150)
   mesh.translateZ(400)
   return ArxMap.fromThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY })
 }
+
+// prettier-ignore
+const formattedButtonPattern = [
+  '.... .... .... .... .... .... .... ....',
+  '.... .... .... .... ..xx xx.. x... ....',
+  '.... .... .... .... .... .... .... ....',
+  '.... .... .... .... .... .... .... ....',
+  '.... x... .... x... .... x... .... x...',
+  'x.x. .x.. x.xx .x.. x.x. .x.. x... ...x',
+]
 
 export default async () => {
   const {
@@ -63,9 +72,6 @@ export default async () => {
   map.player.position.adjustToPlayerHeight()
   map.hud.hide('all')
 
-  map.add(await createFloor(1000, 1000), true)
-  map.add(await createWall(420, 190), true)
-
   // ----------------------
 
   const instruments = [
@@ -77,36 +83,39 @@ export default async () => {
     new SoundPlayer({ audio: Audio.clothOnCloth1 }),
   ]
 
-  // prettier-ignore
-  const formattedButtonPattern = [
-    '.... .... .... .... .... .... .... ....',
-    '.... .... .... .... ..xx xx.. x... ....',
-    '.... .... .... .... .... .... .... ....',
-    '.... .... .... .... .... .... .... ....',
-    '.... x... .... x... .... x... .... x...',
-    'x.x. .x.. x.xx .x.. x.x. .x.. x... ...x',
-  ]
-
   const buttonPattern = formattedButtonPattern.map((row) => {
     return row.replaceAll(' ', '')
   })
 
-  const numberOfSteps = buttonPattern[0].length
+  const numberOfSteps = formattedButtonPattern[0].length
+  const numberOfBeats = buttonPattern[0].length
+
+  const offsetLeft = -360
 
   const buttons: Button[][] = []
-  for (let y = 0; y < buttonPattern.length; y++) {
+  for (let y = 0; y < formattedButtonPattern.length; y++) {
     const row: Button[] = []
-    for (let x = 0; x < buttonPattern[y].length; x++) {
+    let cntr = -1
+    for (let x = 0; x < formattedButtonPattern[y].length; x++) {
+      if (formattedButtonPattern[y][x] === ' ') {
+        continue
+      }
+
+      cntr++
+
       const button = new Button({
-        position: new Vector3(-100 + x * 20, -220 + y * 30, 400),
+        position: new Vector3(offsetLeft + x * 20, -220 + y * 30, 400),
         orientation: new Rotation(0, MathUtils.degToRad(-90), 0),
       })
-      if (buttonPattern[y][x] === 'x') {
+      if (formattedButtonPattern[y][x] === 'x') {
         button.on()
       }
-      button.script?.on('init', () => {
-        return `setgroup button_column_${x}`
-      })
+      button.script?.on(
+        'init',
+        ((i) => () => {
+          return `setgroup button_column_${i}`
+        })(cntr),
+      )
       button.script?.on('trigger', () => {
         return `
           if (^$param1 == "out") {
@@ -119,15 +128,15 @@ export default async () => {
     buttons.push(row)
   }
 
-  const timer = new Timer({ numberOfSteps, notesPerBeat: 4, bpm: 120 })
+  const timer = new Timer({ numberOfSteps: numberOfBeats, notesPerBeat: 4, bpm: 120 })
 
   const lever = new Lever({
-    position: new Vector3(-140, -220 + (buttonPattern.length / 2) * 30 - 20, 400),
+    position: new Vector3(-40 + offsetLeft, -220 + (buttonPattern.length / 2) * 30 - 20, 400),
     orientation: new Rotation(MathUtils.degToRad(90), 0, 0),
   })
 
   const cursor = new Cursor({
-    position: new Vector3(-100, -220 - 30, 400),
+    position: new Vector3(offsetLeft, -220 - 30, 400),
     orientation: new Rotation(0, MathUtils.degToRad(-90), 0),
   })
 
@@ -137,9 +146,45 @@ export default async () => {
   timer.script?.on('tick', () => {
     return `
       if (^#param1 == 0) {
-        sendevent move_x ${cursor.ref} -${(numberOfSteps - 1) * 20}
+        sendevent move_x ${cursor.ref} -${(numberOfBeats - 1 + 7) * 20}
       } else {
-        sendevent move_x ${cursor.ref} 20
+        if(^#param1 == 4) {
+          sendevent move_x ${cursor.ref} 40
+        } else {
+          if (^#param1 == 8) {
+            sendevent move_x ${cursor.ref} 40
+          } else {
+            if(^#param1 == 12) {
+              sendevent move_x ${cursor.ref} 40
+            } else {
+              if(^#param1 == 16) {
+                sendevent move_x ${cursor.ref} 40
+              } else {
+                if (^#param1 == 20) {
+                  sendevent move_x ${cursor.ref} 40
+                } else {
+                  if(^#param1 == 24) {
+                    sendevent move_x ${cursor.ref} 40
+                  } else {
+                    if(^#param1 == 28) {
+                      sendevent move_x ${cursor.ref} 40
+                    } else {
+                      if (^#param1 == 32) {
+                        sendevent move_x ${cursor.ref} 40
+                      } else {
+                        if(^#param1 == 36) {
+                          sendevent move_x ${cursor.ref} 40
+                        } else {
+                          sendevent move_x ${cursor.ref} 20
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     `
   })
@@ -164,6 +209,9 @@ export default async () => {
   Audio.mute(Audio.lever)
 
   // ----------------------
+
+  map.add(await createFloor(1000, 1000), true)
+  map.add(await createWall(formattedButtonPattern[0].length * 20 + 70, 190), true)
 
   map.entities.push(...buttons.flat(), timer, lever, cursor, ...instruments)
 

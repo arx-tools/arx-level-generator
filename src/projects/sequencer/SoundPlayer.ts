@@ -8,12 +8,9 @@ type SoundPlayerConstructorProps = EntityConstructorPropsWithoutSrc & {
 }
 
 export class SoundPlayer extends Marker {
-  audio: Audio
-
   constructor({ audio, ...props }: SoundPlayerConstructorProps) {
     super(props)
     this.withScript()
-    this.audio = audio
 
     const sound = new Sound(audio.filename, SoundFlags.EmitFromPlayer)
 
