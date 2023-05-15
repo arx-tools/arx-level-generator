@@ -58,10 +58,10 @@ export default async () => {
     scaleUV: new Vector2(1, -1),
   })
 
-  const tree = await loadOBJ('projects/forest/models/tree/tree', {
+  const tree = await loadOBJ('models/tree/tree', {
     position: new Vector3(2300, 0, 2800),
     scale: 30,
-    // fallbackTexture: Texture.l2TrollWoodPillar08,
+    fallbackTexture: Texture.l2TrollWoodPillar08,
   })
 
   const ladder = await loadOBJ('projects/forest/models/ladder/ladder', {

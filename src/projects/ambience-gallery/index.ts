@@ -129,7 +129,7 @@ export default async () => {
 
   // -----------------------------
 
-  const tree = await loadOBJ('projects/forest/models/tree/tree', {
+  const tree = await loadOBJ('models/tree/tree', {
     position: new Vector3(4770, 0, 1450),
     scale: new Vector3(80, 70, 80),
     rotation: new Rotation(0, MathUtils.degToRad(80), 0),
