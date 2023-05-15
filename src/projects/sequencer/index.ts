@@ -5,7 +5,7 @@ import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
 import { HudElements } from '@src/HUD.js'
-import { DONT_QUADIFY } from '@src/Polygons.js'
+import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Rotation } from '@src/Rotation.js'
@@ -18,30 +18,82 @@ import { Lever } from '@projects/sequencer/Lever.js'
 import { Cursor } from '@projects/sequencer/Cursor.js'
 import { SoundPlayer } from '@projects/sequencer/SoundPlayer.js'
 import { Audio } from '@src/Audio.js'
+import { loadOBJ } from '@tools/mesh/loadOBJ.js'
+import { ArxPolygonFlags } from 'arx-convert/types'
+import { Material } from '@src/Material.js'
 
-const createFloor = async (width: number, height: number) => {
-  const mesh = await createPlaneMesh(
-    new Vector2(width, height),
-    100,
-    Color.white.darken(50),
-    Texture.stoneHumanStoneWall1,
+const createFloor = async (position: Vector3, dimensions: Vector2) => {
+  const discoTiles = Material.fromTexture(
+    await Texture.fromCustomFile({
+      filename: '[stone]-disco-floor.jpg',
+      sourcePath: 'textures',
+    }),
+    {
+      flags: ArxPolygonFlags.Tiled,
+    },
   )
-  return ArxMap.fromThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY })
+
+  const floor = await createPlaneMesh(dimensions, 100, Color.white.darken(50), discoTiles)
+  scaleUV(new Vector2(0.5, 0.5), floor.geometry)
+  floor.translateX(position.x)
+  floor.translateY(position.y)
+  floor.translateZ(position.z)
+
+  return [floor]
 }
 
-const createWall = async (width: number, height: number) => {
-  const mesh = await createPlaneMesh(
-    new Vector2(width, height),
-    100,
-    Color.white.darken(50),
-    Texture.l4DwarfWoodBoard02,
+const createWall = async (position: Vector3, dimensions: Vector2, direction: 'north' | 'west' | 'east' | 'south') => {
+  const metal = Material.fromTexture(
+    await Texture.fromCustomFile({
+      filename: '[stone]-dark-brick-wall.jpg',
+      sourcePath: 'textures',
+    }),
+    {
+      flags: ArxPolygonFlags.Tiled,
+    },
   )
-  mesh.rotateX(MathUtils.degToRad(-90))
-  scaleUV(new Vector2(2, 2), mesh.geometry)
-  applyTransformations(mesh)
-  mesh.translateY(150)
-  mesh.translateZ(400)
-  return ArxMap.fromThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY })
+
+  const wall = await createPlaneMesh(dimensions, 100, Color.white.darken(50), metal)
+  wall.rotateX(MathUtils.degToRad(-90))
+  if (direction === 'south') {
+    wall.rotateZ(MathUtils.degToRad(180))
+  }
+  if (direction === 'west') {
+    wall.rotateZ(MathUtils.degToRad(-90))
+  }
+  if (direction === 'east') {
+    wall.rotateZ(MathUtils.degToRad(90))
+  }
+  scaleUV(new Vector2((1 / 3) * 2, (1 / 3) * 2), wall.geometry)
+  applyTransformations(wall)
+
+  wall.translateX(position.x)
+  wall.translateY(position.y)
+  wall.translateZ(position.z)
+
+  return [wall]
+}
+
+const createSynth = async (position: Vector3, dimensions: Vector2) => {
+  const metal = Material.fromTexture(
+    await Texture.fromCustomFile({
+      filename: 'dark-[metal]-grid.jpg',
+      sourcePath: 'textures',
+    }),
+    {
+      flags: ArxPolygonFlags.Tiled,
+    },
+  )
+
+  const panel = await createPlaneMesh(dimensions, 100, Color.white.darken(50), metal)
+  panel.rotateX(MathUtils.degToRad(-90))
+  scaleUV(new Vector2(0.5, 0.5), panel.geometry)
+  applyTransformations(panel)
+  panel.translateX(position.x)
+  panel.translateY(position.y)
+  panel.translateZ(position.z)
+
+  return [panel]
 }
 
 // prettier-ignore
@@ -87,7 +139,6 @@ export default async () => {
     return row.replaceAll(' ', '')
   })
 
-  const numberOfSteps = formattedButtonPattern[0].length
   const numberOfBeats = buttonPattern[0].length
 
   const offsetLeft = -360
@@ -210,8 +261,37 @@ export default async () => {
 
   // ----------------------
 
-  map.add(await createFloor(1000, 1000), true)
-  map.add(await createWall(formattedButtonPattern[0].length * 20 + 70, 190), true)
+  const speakerL = await loadOBJ('models/speaker/speaker', {
+    position: new Vector3(6000 - 540, 200, 6000 + 350),
+    scale: 30,
+    rotation: new Rotation(MathUtils.degToRad(-15), MathUtils.degToRad(60), MathUtils.degToRad(-15)),
+    materialFlags: ArxPolygonFlags.None,
+  })
+
+  const speakerR = await loadOBJ('models/speaker/speaker', {
+    position: new Vector3(6000 + 540, 200, 6000 + 350),
+    scale: 30,
+    rotation: new Rotation(MathUtils.degToRad(15), MathUtils.degToRad(180 - 60), MathUtils.degToRad(15)),
+    materialFlags: ArxPolygonFlags.None,
+  })
+
+  const floor = await createFloor(new Vector3(6000, 0, 6000), new Vector2(1200, 850))
+
+  const synth = await createSynth(
+    new Vector3(6000 + 0, 150, 6000 + 400),
+    new Vector2(formattedButtonPattern[0].length * 20 + 70, 190),
+  )
+
+  const wallN = await createWall(new Vector3(6000, 150, 6000 + 425), new Vector2(1200, 300), 'north')
+  const wallS = await createWall(new Vector3(6000, 150, 6000 - 425), new Vector2(1200, 300), 'south')
+  const wallW = await createWall(new Vector3(6000 - 600, 150, 6000), new Vector2(850, 300), 'west')
+  const wallE = await createWall(new Vector3(6000 + 600, 150, 6000), new Vector2(850, 300), 'east')
+
+  const meshes = [speakerL, speakerR, floor, synth, wallN, wallS, wallW, wallE].flat()
+
+  meshes.forEach((mesh) => {
+    map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
+  })
 
   map.entities.push(...buttons.flat(), timer, lever, cursor, ...instruments)
 
