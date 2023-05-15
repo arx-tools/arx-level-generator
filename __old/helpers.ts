@@ -12,7 +12,7 @@ import {
   LlfData,
   ZoneData,
 } from './blankMap'
-import { countBy, partition, repeat, clone, min } from './faux-ramda'
+import { countBy, partition, clone, min } from './faux-ramda'
 import {
   POLY_QUAD,
   MAP_MAX_HEIGHT,
@@ -117,14 +117,6 @@ export const movePlayerTo = (pos: RelativeCoords, mapData: MapData) => {
   return mapData
 }
 
-export const isBetween = (min: number, max: number, value: number) => {
-  return value >= min && value < max
-}
-
-export const isBetweenInclusive = (min: number, max: number, value: number) => {
-  return value >= min && value <= max
-}
-
 const getCellCoords = (isQuad: boolean, vertices: PosVertex3[]) => {
   const v = vertices.slice(0, isQuad ? 4 : 3)
 
@@ -193,31 +185,6 @@ const vectorToXYZ = ([x, y, z]: Vector3): Vertex3 => {
 
 export const calculateNormal = ([a, b, c]: Vector3[]) => {
   return vectorToXYZ(normalize(cross(subtractVec3(b, a), subtractVec3(c, a))))
-}
-
-const calculateNormals = (mapData: FinalizedMapData) => {
-  // https://computergraphics.stackexchange.com/questions/4031/programmatically-generating-vertex-normals
-
-  mapData.fts.polygons.forEach((polygon: FtsPolygon) => {
-    const { vertices, config } = polygon
-
-    const points: Vector3[] = vertices.map(posVertexToVector)
-
-    // vertices are laid down in a cyrillic i shape (И):
-    // a c
-    // b d
-    const [a, b, c, d] = points
-
-    if (config.isQuad) {
-      polygon.norm2 = calculateNormal([d, b, c])
-    } else {
-      polygon.norm2 = vectorToXYZ([0, 0, 0])
-    }
-
-    polygon.norm = calculateNormal([a, b, c])
-
-    polygon.normals = [polygon.norm, polygon.norm, polygon.norm, polygon.norm2]
-  })
 }
 
 export const finalize = (mapData: MapData) => {
@@ -318,31 +285,6 @@ export const generateBlankMapData = (config: MapConfig) => {
   addOriginPolygon(mapData)
 
   return mapData
-}
-
-export const uninstall = async (dir: string) => {
-  try {
-    const manifest = require(`${dir}/manifest.json`)
-    for (let file of manifest.files) {
-      try {
-        await fs.promises.rm(file)
-      } catch (f) {}
-    }
-    await fs.promises.rm(`${dir}/manifest.json`)
-  } catch (e) {}
-}
-
-// source: https://en.wikipedia.org/wiki/ISO/IEC_8859-15
-const latin9ToLatin1 = (str: string) => {
-  return str
-    .replace('€', '¤')
-    .replace('Š', '¦')
-    .replace('š', '¨')
-    .replace('Ž', '´')
-    .replace('ž', '¸')
-    .replace('Œ', '¼')
-    .replace('œ', '½')
-    .replace('Ÿ', '¾')
 }
 
 export const saveToDisk = async (finalizedMapData: FinalizedMapData) => {
@@ -504,32 +446,6 @@ export const adjustVertexBy = (
   })
 }
 
-export const randomBetween = (min: number, max: number) => {
-  return Math.random() * (max - min) + min
-}
-
-export const pickRandoms = <T>(n: number, set: T[]) => {
-  if (set.length <= n) {
-    return set
-  } else {
-    let remaining = set.slice()
-    let matches: T[] = []
-    for (let i = 0; i < n; i++) {
-      let idx = Math.floor(randomBetween(0, remaining.length))
-      matches = matches.concat(remaining.splice(idx, 1))
-    }
-    return matches
-  }
-}
-
-export const pickRandom = <T>(set: T[]) => {
-  return pickRandoms(1, set)[0]
-}
-
-export const pickRandomIdx = <T>(set: T[]) => {
-  return pickRandom([...set.keys()])
-}
-
 const cross = (u: Vector3, v: Vector3): Vector3 => {
   return [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]]
 }
@@ -674,53 +590,6 @@ export const cleanupCache = () => {
   resetTranslations()
 }
 
-export const sum = (numbers: number[]) => {
-  return numbers.reduce((sum, n) => sum + n, 0)
-}
-
-export const randomSort = <T>(items: T[]) => {
-  const clonedItems = clone(items)
-  const sortedItems: T[] = []
-
-  while (clonedItems.length) {
-    const idx = pickRandomIdx(clonedItems)
-    sortedItems.push(clonedItems.splice(idx, 1)[0])
-  }
-
-  return sortedItems
-}
-
-// guaranteePresenceOfAll=true will sort items with smaller weights to the beginning of the weightedSet
-// so they will always be present in the list of items, no matter how heavy other items are
-// this way the item with weight=1 will be guaranteed to show up in the selected list
-export const pickWeightedRandoms = (amount: number, set: { weight: number }[], guaranteePresenceOfAll = false) => {
-  const weights = set.map(({ weight }) => weight)
-  const totalWeight = sum(weights)
-  const percentages = weights.map((weight) => weight / totalWeight)
-
-  const weightedSet = percentages
-    .map((weight, idx) => ({
-      idx,
-      originalWeight: set[idx].weight,
-      weight: Math.ceil(weight * amount),
-    }))
-    .sort((a, b) => {
-      if (guaranteePresenceOfAll) {
-        return a.originalWeight - b.originalWeight
-      } else {
-        return b.originalWeight - a.originalWeight
-      }
-    })
-    .flatMap(({ weight, idx }) => repeat(set[idx], weight))
-    .slice(0, amount)
-
-  return randomSort(weightedSet)
-}
-
-export const roundToNDecimals = (decimals: number, x: number) => {
-  return Math.round(x * 10 ** decimals) / 10 ** decimals
-}
-
 export const normalizeDegree = (degree: number) => {
   let normalizedDegree = degree % 360
   if (normalizedDegree < 0) {
@@ -757,8 +626,4 @@ export const rotateUV = (
       // TODO: implement custom rotation (https://forum.unity.com/threads/rotate-uv-coordinates-is-it-possible.135025/)
       return [a, b, c, d]
   }
-}
-
-export const evenAndRemainder = (divisor: number, n: number): [number, number] => {
-  return [Math.floor(n / divisor), n % divisor]
 }
