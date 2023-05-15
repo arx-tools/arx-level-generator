@@ -92,7 +92,13 @@ export default async () => {
     scale: 10,
   })
 
-  const importedModels = [teddy, tree, cableDrum, ceilingLamp, fountain, ladder, megaphone, speaker].flat()
+  const pole = await loadOBJ('models/pole/pole', {
+    position: new Vector3(1800, 50, 2850),
+    scale: 10,
+    materialFlags: ArxPolygonFlags.None,
+  })
+
+  const importedModels = [teddy, tree, cableDrum, ceilingLamp, fountain, ladder, megaphone, speaker, pole].flat()
 
   importedModels.forEach((mesh) => {
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
