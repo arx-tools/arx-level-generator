@@ -66,7 +66,7 @@ export default async () => {
 
   map.add(await createFloor(1000, 2000), true)
 
-  const ceilingLamp = await loadOBJ('projects/the-backrooms/models/ceiling-lamp/ceiling-lamp', {
+  const ceilingLamp = await loadOBJ('models/ceiling-lamp/ceiling-lamp', {
     position: new Vector3(0, 300, 500),
     scale: 50,
     scaleUV: 5,
