@@ -73,7 +73,7 @@ export default async () => {
     materialFlags: ArxPolygonFlags.Glow,
   })
 
-  const fountain = await loadOBJ('projects/forest/models/fountain/fountain', {
+  const fountain = await loadOBJ('models/fountain/fountain', {
     position: new Vector3(0, 3, 500),
     scale: 2,
     scaleUV: new Vector2(1, -1),
@@ -85,7 +85,7 @@ export default async () => {
     fallbackTexture: Texture.l2TrollWoodPillar08,
   })
 
-  const ladder = await loadOBJ('projects/forest/models/ladder/ladder', {
+  const ladder = await loadOBJ('models/ladder/ladder', {
     position: new Vector3(300, 100, 740),
     scale: 10,
     rotation: new Rotation(MathUtils.degToRad(-70), 0, 0),
