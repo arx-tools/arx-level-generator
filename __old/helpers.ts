@@ -64,17 +64,6 @@ export type MapData = {
 
 export type FinalizedMapData = Record<string, any> // TODO
 
-export const normalize = (vector: Vector3): Vector3 => {
-  const [x, y, z] = vector
-  const mag = magnitude(vector)
-  return [x / mag, y / mag, z / mag]
-}
-
-export const move = (x: number, y: number, z: number, vector: Vector3): Vector3 => {
-  const [vx, vy, vz] = vector
-  return [vx + x, vy + y, vz + z]
-}
-
 export const addCoords = (
   a: RelativeCoords | AbsoluteCoords,
   b: RelativeCoords | AbsoluteCoords,
@@ -87,92 +76,6 @@ export const addCoords = (
     type: a.type,
     coords: [a.coords[0] + b.coords[0], a.coords[1] + b.coords[1], a.coords[2] + b.coords[2]],
   }
-}
-
-// "#ff07a4" -> { r: [0..255], g: [0..255], b: [0..255], a: [0..255] }
-export const toRgba = (cssColor: string): RgbaBytes => {
-  const color = rgba(cssColor)
-
-  if (color === undefined) {
-    return { r: 255, g: 255, b: 255, a: 255 }
-  }
-
-  const [r, g, b, a] = color
-
-  return {
-    r,
-    g,
-    b,
-    a: Math.round(255 * a),
-  }
-}
-
-export const toArxColor = (color: RgbaBytes): ArxColor => {
-  const { r, g, b, a } = color
-  return { r, g, b, a }
-}
-
-export const movePlayerTo = (pos: RelativeCoords, mapData: MapData) => {
-  mapData.state.spawn = pos.coords
-  return mapData
-}
-
-const getCellCoords = (isQuad: boolean, vertices: PosVertex3[]) => {
-  const v = vertices.slice(0, isQuad ? 4 : 3)
-
-  const x = Math.round(min(v.map(({ x }) => x)))
-  const z = Math.round(min(v.map(({ z }) => z)))
-
-  const cellX = Math.floor(x / 100)
-  const cellZ = Math.floor(z / 100) + 1
-
-  return [cellX, cellZ]
-}
-
-const generateLights = (mapData: FinalizedMapData) => {
-  let colorIdx = 0
-
-  const colors: RgbaBytes[] = []
-  const polygons: FtsPolygon[] = mapData.fts.polygons
-
-  const cells = polygons.reduce(
-    (acc, { vertices, config }: { vertices: PosVertex3[]; config: Record<string, any> }, idx) => {
-      const [x, z] = getCellCoords(config.isQuad, vertices)
-
-      if (!acc[`${z}-${x}`]) {
-        acc[`${z}-${x}`] = [idx]
-      } else {
-        acc[`${z}-${x}`].push(idx)
-      }
-
-      return acc
-    },
-    {} as Record<string, number[]>,
-  )
-
-  for (let z = 0; z < MAP_MAX_HEIGHT; z++) {
-    for (let x = 0; x < MAP_MAX_WIDTH; x++) {
-      const cell = cells[`${z}-${x}`]
-      if (cell) {
-        cell.forEach((idx) => {
-          const { config, vertices } = polygons[idx]
-          let { color, isQuad } = config
-
-          colors.push(color, color, color)
-          vertices[0].llfColorIdx = colorIdx++
-          vertices[1].llfColorIdx = colorIdx++
-          vertices[2].llfColorIdx = colorIdx++
-
-          if (isQuad) {
-            colors.push(color)
-            vertices[3].llfColorIdx = colorIdx++
-          }
-        })
-      }
-    }
-  }
-
-  mapData.llf.colors = colors
 }
 
 export const posVertexToVector = ({ x, y, z }: PosVertex3): Vector3 => {
@@ -287,94 +190,6 @@ export const generateBlankMapData = (config: MapConfig) => {
   return mapData
 }
 
-export const saveToDisk = async (finalizedMapData: FinalizedMapData) => {
-  const { levelIdx } = finalizedMapData.config
-  const defaultOutputDir = resolve('./dist')
-
-  const outputDir = process.env.OUTPUTDIR ?? finalizedMapData.config.outputDir ?? defaultOutputDir
-
-  console.log('output directory:', outputDir)
-
-  if (outputDir === defaultOutputDir) {
-    try {
-      await fs.promises.rm('dist', { recursive: true })
-    } catch (e) {}
-  } else {
-    await uninstall(outputDir)
-  }
-
-  let scripts = exportScripts(outputDir)
-  let textures = exportTextures(outputDir)
-  let ambiences = exportAmbiences(outputDir)
-  let translations = exportTranslations(outputDir)
-  let dependencies = await exportDependencies(outputDir)
-
-  const files = {
-    fts: `${outputDir}/game/graph/levels/level${levelIdx}/fast.fts.json`,
-    dlf: `${outputDir}/graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`,
-    llf: `${outputDir}/graph/levels/level${levelIdx}/level${levelIdx}.llf.json`,
-  }
-
-  const manifest = {
-    meta: finalizedMapData.meta,
-    config: finalizedMapData.config,
-    files: [
-      ...Object.values(files),
-      ...Object.keys(scripts),
-      ...Object.keys(ambiences),
-      ...Object.keys(dependencies),
-      ...Object.keys(textures),
-      ...Object.keys(translations),
-      files.fts.replace('.fts.json', '.fts'),
-      files.dlf.replace('.dlf.json', '.dlf'),
-      files.llf.replace('.llf.json', '.llf'),
-    ].sort(),
-  }
-
-  const tasks = manifest.files.map((path) => {
-    return fs.promises.mkdir(dirname(path), { recursive: true })
-  })
-
-  for (let task of tasks) {
-    await task
-  }
-
-  // ------------
-
-  for (let [filename, script] of Object.entries(scripts)) {
-    script = latin9ToLatin1(script)
-    await fs.promises.writeFile(filename, script, 'latin1')
-  }
-
-  for (let [filename, translation] of Object.entries(translations)) {
-    await fs.promises.writeFile(
-      filename,
-      `// ${finalizedMapData.meta.mapName} - Arx Level Generator ${finalizedMapData.meta.generatorVersion}
-
-${translation}`,
-      'utf8',
-    )
-  }
-
-  // ------------
-
-  const ambiencesPairs = Object.entries(ambiences)
-  const dependenciesPairs = Object.entries(dependencies)
-  const texturesPairs = Object.entries(textures)
-
-  for (let [target, source] of [...ambiencesPairs, ...dependenciesPairs, ...texturesPairs]) {
-    await fs.promises.copyFile(source, target)
-  }
-
-  // ------------
-
-  await fs.promises.writeFile(files.dlf, JSON.stringify(finalizedMapData.dlf))
-  await fs.promises.writeFile(files.fts, JSON.stringify(finalizedMapData.fts))
-  await fs.promises.writeFile(files.llf, JSON.stringify(finalizedMapData.llf))
-
-  await fs.promises.writeFile(`${outputDir}/manifest.json`, JSON.stringify(manifest, null, 2))
-}
-
 export const setColor = (color: string, mapData: MapData) => {
   mapData.state.color = toRgba(color)
 }
@@ -444,26 +259,6 @@ export const adjustVertexBy = (
       return vertex
     })
   })
-}
-
-const cross = (u: Vector3, v: Vector3): Vector3 => {
-  return [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]]
-}
-
-export const subtractVec3 = (a: Vector3, b: Vector3): Vector3 => {
-  return [b[0] - a[0], b[1] - a[1], b[2] - a[2]]
-}
-
-export const magnitude = ([x, y, z]: Vector3) => {
-  return Math.sqrt(x ** 2 + y ** 2 + z ** 2)
-}
-
-const triangleArea = (a: Vector3, b: Vector3, c: Vector3) => {
-  return magnitude(cross(subtractVec3(a, b), subtractVec3(a, c))) / 2
-}
-
-export const distance = (a: Vector3, b: Vector3) => {
-  return Math.abs(magnitude(subtractVec3(a, b)))
 }
 
 // source: https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/barycentric-coordinates

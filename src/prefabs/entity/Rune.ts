@@ -1,7 +1,9 @@
 import { Variable } from '@scripting/properties/Variable.js'
 import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 
-// source: https://wiki.arx-libertatis.org/Category:Runes
+/**
+ * @see https://wiki.arx-libertatis.org/Category:Runes
+ */
 type RuneVariant =
   | 'aam'
   | 'cetrius'
@@ -35,6 +37,13 @@ export class Rune extends Entity {
     this.withScript()
 
     this.propRuneName = new Variable('string', 'rune_name', variant)
+
+    /*
+    ON INVENTORYUSE {
+      SENDEVENT GOT_RUNE ${onEquipTarget.ref} "${runeName}"
+      ACCEPT
+    }
+    */
 
     this.script?.properties.push(this.propRuneName)
   }

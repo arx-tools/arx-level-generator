@@ -8,39 +8,6 @@ import {
   TEXTURE_QUAD_TOP_RIGHT,
 } from './constants'
 
-export type Vector3 = [number, number, number]
-
-export type Vertex3 = {
-  x: number
-  y: number
-  z: number
-}
-
-export type UV = {
-  u: number
-  v: number
-}
-
-export type UVQuad = [UV, UV, UV, UV]
-
-export type PosVertex3 = Vertex3 &
-  UV & {
-    llfColorIdx?: number
-    modified?: boolean
-  }
-
-export type Polygon = [PosVertex3, PosVertex3, PosVertex3, PosVertex3]
-
-export type AbsoluteCoords = {
-  type: 'absolute'
-  coords: Vector3
-}
-
-export type RelativeCoords = {
-  type: 'relative'
-  coords: Vector3
-}
-
 export type LootTableEntry = {
   name: string
   weight: number
@@ -56,13 +23,6 @@ export type MapConfig = {
   lootTable: LootTable
   bumpFactor: number
   outputDir?: string
-}
-
-export type RgbaBytes = {
-  r: number
-  g: number
-  b: number
-  a: number
 }
 
 export type TextureQuad =

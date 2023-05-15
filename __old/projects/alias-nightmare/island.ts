@@ -15,11 +15,13 @@ import { plain, connectToNearPolygons, disableBumping } from '../../prefabs/plai
 import { moveTo, markAsUsed, ItemRef } from '../../assets/items'
 import { textures } from '../../assets/textures'
 import { nanoid } from 'nanoid'
-import { ISLAND_JOINT_LENGTH, ISLAND_JOINT_WIDTH, HFLIP, VFLIP, TEXTURE_FULL_SCALE } from '../../constants'
 import { createPressurePlate } from './items/pressurePlate'
 import { createEventBus } from './items/eventBus'
 import { createGate } from './items/gate'
 import { Island } from './bridges'
+
+export const ISLAND_JOINT_LENGTH = 5
+export const ISLAND_JOINT_WIDTH = 3
 
 // PP = pressure plate
 
