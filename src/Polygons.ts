@@ -214,42 +214,49 @@ export class Polygons extends Array<Polygon> {
           isQuadable = true
         }
 
+        const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
+
         if (isQuadable) {
           const [a, b, c] = previousPolygon
           const d = currentPolygon[1]
-          polygons.push(
-            new Polygon({
-              vertices: [a, d, c, b].map(({ vertex }) => vertex) as QuadrupleOf<Vertex>,
-              texture: Array.isArray(texture) ? texture[materialIndex ?? 0] : texture,
-              isQuad: true,
-            }),
-          )
+          const polygon = new Polygon({
+            vertices: [a, d, c, b].map(({ vertex }) => vertex) as QuadrupleOf<Vertex>,
+            texture: currentTexture,
+            flags: currentTexture instanceof Material ? currentTexture.flags | flags : flags,
+            isQuad: true,
+          })
+          if (currentTexture instanceof Material && currentTexture.opacity !== 100) {
+            polygon.setOpacity(currentTexture.opacity, currentTexture.opacityMode)
+          }
+          polygons.push(polygon)
           previousPolygon = undefined
           continue
         }
 
-        const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
-
-        polygons.push(
-          new Polygon({
-            vertices: [...previousPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
-            texture: currentTexture,
-            flags: currentTexture instanceof Material ? currentTexture.flags | flags : flags,
-          }),
-        )
+        const polygon = new Polygon({
+          vertices: [...previousPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
+          texture: currentTexture,
+          flags: currentTexture instanceof Material ? currentTexture.flags | flags : flags,
+        })
+        if (currentTexture instanceof Material && currentTexture.opacity !== 100) {
+          polygon.setOpacity(currentTexture.opacity, currentTexture.opacityMode)
+        }
+        polygons.push(polygon)
         previousPolygon = currentPolygon
       }
 
       if (typeof previousPolygon !== 'undefined') {
         const materialIndex = previousPolygon[0].materialIndex
         const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
-        polygons.push(
-          new Polygon({
-            vertices: [...previousPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
-            texture: currentTexture,
-            flags: currentTexture instanceof Material ? currentTexture.flags | flags : flags,
-          }),
-        )
+        const polygon = new Polygon({
+          vertices: [...previousPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
+          texture: currentTexture,
+          flags: currentTexture instanceof Material ? currentTexture.flags | flags : flags,
+        })
+        if (currentTexture instanceof Material && currentTexture.opacity !== 100) {
+          polygon.setOpacity(currentTexture.opacity, currentTexture.opacityMode)
+        }
+        polygons.push(polygon)
       }
     }
 

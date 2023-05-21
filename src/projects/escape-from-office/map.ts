@@ -1,14 +1,19 @@
-import { Cursor } from '@projects/the-backrooms/Cursor.js'
-import { Rooms } from '@projects/the-backrooms/Rooms.js'
-import { RoomProps } from '@projects/the-backrooms/room.js'
+import { Cursor } from '@tools/rooms/Cursor.js'
+import { Rooms } from '@tools/rooms/Rooms.js'
+import { RoomProps } from '@tools/rooms/room.js'
 import { fakeWoodTiles, officeCeiling, officeWalls } from './materials.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Texture } from '@src/Texture.js'
-import { Material } from '@src/Material.js'
-import { ArxPolygonFlags } from 'arx-convert/types'
 
 const office: RoomProps = {
-  hasMold: false,
+  textures: {
+    wall: officeWalls,
+    floor: fakeWoodTiles,
+    ceiling: officeCeiling,
+  },
+}
+
+const corridor: RoomProps = {
   textures: {
     wall: officeWalls,
     floor: fakeWoodTiles,
@@ -17,7 +22,6 @@ const office: RoomProps = {
 }
 
 const doorFrame: RoomProps = {
-  hasMold: false,
   textures: {
     wall: officeWalls,
     floor: fakeWoodTiles,
@@ -26,16 +30,14 @@ const doorFrame: RoomProps = {
 }
 
 const windowFrame: RoomProps = {
-  hasMold: false,
   textures: {
-    wall: [officeWalls, officeWalls, Texture.alpha, officeWalls],
+    wall: officeWalls,
     floor: officeWalls,
     ceiling: officeWalls,
   },
 }
 
 const invisible: RoomProps = {
-  hasMold: false,
   textures: {
     wall: Texture.alpha,
     floor: Texture.alpha,
@@ -48,21 +50,33 @@ export const createRooms = async () => {
   const rooms = new Rooms(cursor)
 
   await rooms.addRoom(new Vector3(500, 300, 500), office)
-  cursor.saveAs('first-room')
+  cursor.saveAs('1st-room')
   await rooms.addRoom(new Vector3(200, 250, 20), doorFrame, 'y-', 'z++')
-  await rooms.addRoom(new Vector3(1000, 300, 300), office, 'y-', 'z++')
+  await rooms.addRoom(new Vector3(1000, 300, 300), corridor, 'y-', 'z++')
   cursor.saveAs('corridor')
   await rooms.addRoom(new Vector3(200, 250, 20), doorFrame, 'y-', 'z++')
   await rooms.addRoom(new Vector3(500, 300, 500), office, 'y-', 'z++')
-  cursor.restore('first-room')
+  cursor.saveAs('2nd-room')
   await rooms.addRoom(new Vector3(100, 100, 100), invisible, 'y++')
-  cursor.restore('first-room')
+  cursor.restore('1st-room')
+  await rooms.addRoom(new Vector3(100, 100, 100), invisible, 'y++')
+  cursor.restore('1st-room')
   await rooms.addRoom(new Vector3(100, 200, 20), windowFrame, 'y', 'z--')
   await rooms.addRoom(new Vector3(400, 200, 20), invisible, 'y', 'z--')
   cursor.saveAs('window-helper')
   await rooms.addRoom(new Vector3(100, 200, 20), windowFrame, 'y', 'z++', 'x-')
   cursor.restore('window-helper')
   await rooms.addRoom(new Vector3(100, 200, 20), windowFrame, 'y', 'z++', 'x+')
+  cursor.restore('2nd-room')
+  await rooms.addRoom(new Vector3(100, 200, 20), windowFrame, 'y', 'z++')
+  await rooms.addRoom(new Vector3(400, 200, 20), invisible, 'y', 'z++')
+  cursor.saveAs('window-helper')
+  await rooms.addRoom(new Vector3(100, 200, 20), windowFrame, 'y', 'z--', 'x-')
+  cursor.restore('window-helper')
+  await rooms.addRoom(new Vector3(100, 200, 20), windowFrame, 'y', 'z--', 'x+')
+
+  cursor.restore('corridor')
+  await rooms.addRoom(new Vector3(1000, 300, 300), corridor, 'y-', 'x++')
 
   rooms.unionAll()
 

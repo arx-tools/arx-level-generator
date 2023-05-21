@@ -40,17 +40,22 @@ export default async () => {
   })
 
   const wetFloorSign = await loadOBJ('models/wet-floor-sign/wet-floor-sign', {
-    position: new Vector3(-250, 30, 360),
+    position: new Vector3(-250, 30, 410),
     rotation: new Rotation(0, MathUtils.degToRad(30), 0),
     scale: 30,
   })
 
-  const ceilingLamp = await loadOBJ('models/ceiling-lamp/ceiling-lamp', {
+  const ceilingLampOffice1 = await loadOBJ('models/ceiling-lamp/ceiling-lamp', {
     position: new Vector3(-24, 308, 54),
     scale: 65,
   })
 
-  const models = [...wetFloorSign, ...ceilingLamp]
+  const ceilingLampOffice2 = await loadOBJ('models/ceiling-lamp/ceiling-lamp', {
+    position: new Vector3(-24, 308, 54 + 840),
+    scale: 65,
+  })
+
+  const models = [...wetFloorSign, ...ceilingLampOffice1, ...ceilingLampOffice2]
 
   const spawnZone = createZone(new Vector3(0, 10, 0), new Vector3(100, Infinity, 100), {
     name: 'spawn',

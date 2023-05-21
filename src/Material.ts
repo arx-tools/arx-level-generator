@@ -1,18 +1,30 @@
 import { ArxPolygonFlags } from 'arx-convert/types'
 import { Texture, TextureConstructorProps } from './Texture.js'
+import { TransparencyType } from './Polygon.js'
 
 type MaterialExtraProps = {
   flags?: ArxPolygonFlags
+  opacity?: number
+  opacityMode?: TransparencyType
 }
 
 type MaterialConstructorProps = TextureConstructorProps & MaterialExtraProps
 
 export class Material extends Texture {
   flags: ArxPolygonFlags
+  opacity: number
+  opacityMode: TransparencyType
 
-  constructor({ flags = ArxPolygonFlags.None, ...props }: MaterialConstructorProps) {
+  constructor({
+    flags = ArxPolygonFlags.None,
+    opacity = 100,
+    opacityMode = 'subtractive',
+    ...props
+  }: MaterialConstructorProps) {
     super(props)
     this.flags = flags
+    this.opacity = opacity
+    this.opacityMode = opacityMode
   }
 
   static fromTexture(texture: Texture, props: MaterialExtraProps = {}) {

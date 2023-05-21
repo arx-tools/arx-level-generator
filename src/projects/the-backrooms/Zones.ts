@@ -1,5 +1,5 @@
 import { Zone } from '@src/Zone.js'
-import { Cursor } from './Cursor.js'
+import { Cursor } from '../../tools/rooms/Cursor.js'
 
 export class Zones {
   entries: Zone[] = []

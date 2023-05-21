@@ -8,10 +8,10 @@ import { Zone } from '@src/Zone.js'
 import { Ambience } from '@src/Ambience.js'
 import { carpet, ceilingTile, wallpaper, wallpaperDotted, whiteMosaicTiles } from '@projects/the-backrooms/materials.js'
 import { HudElements } from '@src/HUD.js'
-import { Rooms } from './Rooms.js'
-import { RoomProps } from './room.js'
+import { Rooms } from '../../tools/rooms/Rooms.js'
+import { RoomProps } from '../../tools/rooms/room.js'
 import { Texture } from '@src/Texture.js'
-import { Cursor, CursorDir } from './Cursor.js'
+import { Cursor, CursorDir } from '../../tools/rooms/Cursor.js'
 import { Zones } from './Zones.js'
 import { createLight } from './light.js'
 import { randomBetween } from '@src/random.js'
@@ -98,7 +98,6 @@ export default async () => {
         const definitionName = tokens[1]
         if (typeof roomDefinitions[definitionName] === 'undefined') {
           roomDefinitions[definitionName] = {
-            hasMold: false,
             textures: {
               ceiling: Texture.aliciaRoomMur02,
               wall: Texture.aliciaRoomMur02,
