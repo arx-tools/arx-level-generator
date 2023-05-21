@@ -8,14 +8,18 @@ import { Vector3 } from '@src/Vector3.js'
 import { Texture } from '@src/Texture.js'
 import { DONT_QUADIFY, QUADIFY } from '@src/Polygons.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
+import { QuadrupleOf } from 'arx-convert/utils'
+import { Material } from '@src/Material.js'
 
-const TILE_SIZE = 100
+const TILE_SIZE = 50
 const TILE_SCALE = new Vector2(TILE_SIZE / 100, TILE_SIZE / 100)
 
+type SingleTexture = Texture | Promise<Texture> | Material | Promise<Material>
+
 export type RoomTextures = {
-  wall: Texture | Promise<Texture>
-  floor: Texture | Promise<Texture>
-  ceiling: Texture | Promise<Texture>
+  wall: SingleTexture | QuadrupleOf<SingleTexture>
+  floor: SingleTexture
+  ceiling: SingleTexture
 }
 
 export type RoomProps = {
@@ -23,19 +27,14 @@ export type RoomProps = {
   textures: RoomTextures
 }
 
-const createFloor = async (dimensions: Vector3, texture: Texture | Promise<Texture>) => {
+const createFloor = async (dimensions: Vector3, texture: SingleTexture) => {
   const { x: width, y: height, z: depth } = dimensions
   const mesh = await createPlaneMesh(new Vector2(width, depth), TILE_SIZE, Color.white.darken(70), texture)
   scaleUV(TILE_SCALE, mesh.geometry)
   return mesh
 }
 
-const createNorthWall = async (
-  dimensions: Vector3,
-  hasMold: boolean,
-  moldOffset: number,
-  texture: Texture | Promise<Texture>,
-) => {
+const createNorthWall = async (dimensions: Vector3, hasMold: boolean, moldOffset: number, texture: SingleTexture) => {
   const { x: width, y: height, z: depth } = dimensions
 
   const group = new Group()
@@ -57,12 +56,7 @@ const createNorthWall = async (
   return group
 }
 
-const createSouthWall = async (
-  dimensions: Vector3,
-  hasMold: boolean,
-  moldOffset: number,
-  texture: Texture | Promise<Texture>,
-) => {
+const createSouthWall = async (dimensions: Vector3, hasMold: boolean, moldOffset: number, texture: SingleTexture) => {
   const { x: width, y: height, z: depth } = dimensions
 
   const group = new Group()
@@ -84,12 +78,7 @@ const createSouthWall = async (
   return group
 }
 
-const createWestWall = async (
-  dimensions: Vector3,
-  hasMold: boolean,
-  moldOffset: number,
-  texture: Texture | Promise<Texture>,
-) => {
+const createWestWall = async (dimensions: Vector3, hasMold: boolean, moldOffset: number, texture: SingleTexture) => {
   const { x: width, y: height, z: depth } = dimensions
 
   const group = new Group()
@@ -111,12 +100,7 @@ const createWestWall = async (
   return group
 }
 
-const createEastWall = async (
-  dimensions: Vector3,
-  hasMold: boolean,
-  moldOffset: number,
-  texture: Texture | Promise<Texture>,
-) => {
+const createEastWall = async (dimensions: Vector3, hasMold: boolean, moldOffset: number, texture: SingleTexture) => {
   const { x: width, y: height, z: depth } = dimensions
 
   const group = new Group()
@@ -138,7 +122,7 @@ const createEastWall = async (
   return group
 }
 
-const createCeiling = async (dimensions: Vector3, texture: Texture | Promise<Texture>) => {
+const createCeiling = async (dimensions: Vector3, texture: SingleTexture) => {
   const { x: width, y: height, z: depth } = dimensions
 
   const mesh = await createPlaneMesh(new Vector2(width, depth), TILE_SIZE, Color.white.darken(50), texture)
@@ -157,10 +141,10 @@ export const createRoomMesh = async (
   const group = new Group()
 
   group.add(await createFloor(dimensions, floor))
-  group.add(await createNorthWall(dimensions, hasMold, moldOffset, wall))
-  group.add(await createSouthWall(dimensions, hasMold, moldOffset, wall))
-  group.add(await createWestWall(dimensions, hasMold, moldOffset, wall))
-  group.add(await createEastWall(dimensions, hasMold, moldOffset, wall))
+  group.add(await createNorthWall(dimensions, hasMold, moldOffset, Array.isArray(wall) ? wall[0] : wall))
+  group.add(await createEastWall(dimensions, hasMold, moldOffset, Array.isArray(wall) ? wall[1] : wall))
+  group.add(await createSouthWall(dimensions, hasMold, moldOffset, Array.isArray(wall) ? wall[2] : wall))
+  group.add(await createWestWall(dimensions, hasMold, moldOffset, Array.isArray(wall) ? wall[3] : wall))
   group.add(await createCeiling(dimensions, ceiling))
 
   return group

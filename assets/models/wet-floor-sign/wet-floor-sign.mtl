@@ -1,7 +1,7 @@
-# Blender 3.5.1 MTL File: 'Better better ceiling lamp.blend'
+# Blender 3.5.1 MTL File: 'wetfloor.blend'
 # www.blender.org
 
-newmtl glass
+newmtl draw
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -9,19 +9,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd glass.jpg
+map_Kd wtesigndraw.jpg
 
-newmtl mirror
-Ns 250.000000
-Ka 0.715596 0.715596 0.715596
-Ks 0.500000 0.500000 0.500000
-Ke 0.000000 0.000000 0.000000
-Ni 1.450000
-d 1.000000
-illum 3
-map_Kd mirror.png
-
-newmtl shiny
+newmtl draw.001
 Ns 250.000000
 Ka 1.000000 1.000000 1.000000
 Ks 0.500000 0.500000 0.500000
@@ -29,4 +19,24 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd shiny.png
+map_Kd wtesigndraw.jpg
+
+newmtl yellow
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd yellow.png
+
+newmtl yellow.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd yellow.png

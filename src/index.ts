@@ -6,6 +6,7 @@ import aliasNightmare from '@projects/alias-nightmare/index.js'
 import sequencer from '@projects/sequencer/index.js'
 import modelTester from '@projects/model-tester/index.js'
 import city from '@projects/city/index.js'
+import escapeFromOffice from '@projects/escape-from-office/index.js'
 
 const { PROJECT } = process.env
 
@@ -33,6 +34,9 @@ switch (PROJECT) {
     break
   case 'city':
     city()
+    break
+  case 'escape-from-office':
+    escapeFromOffice()
     break
   default:
     throw new Error(`project "${PROJECT}" not found`)

@@ -11,7 +11,7 @@ export type ZonePoint = {
   time: number
 }
 
-type ZoneConstructorProps = {
+export type ZoneConstructorProps = {
   name: string
   /** default value: Infinity */
   height?: number
