@@ -1,5 +1,4 @@
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
-import { createLight } from '@projects/the-backrooms/light.js'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
 import { Material } from '@src/Material.js'
@@ -9,6 +8,7 @@ import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Zone } from '@src/Zone.js'
 import { applyTransformations } from '@src/helpers.js'
+import { createLight } from '@tools/createLight.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { ArxPolygonFlags } from 'arx-convert/types'
 import path from 'node:path'
@@ -139,14 +139,14 @@ export default async () => {
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
   })
 
-  map.lights.push(createLight(new Vector3(0, -200, 0), 2000))
+  map.lights.push(createLight({ position: new Vector3(0, -200, 0), radius: 2000 }))
 
-  map.lights.push(createLight(new Vector3(0, -200, 500), 300))
+  map.lights.push(createLight({ position: new Vector3(0, -200, 500), radius: 300 }))
 
-  map.lights.push(createLight(new Vector3(1000, -200, 1000), 1300))
-  map.lights.push(createLight(new Vector3(1000, -200, -1000), 1300))
-  map.lights.push(createLight(new Vector3(-1000, -200, 1000), 1300))
-  map.lights.push(createLight(new Vector3(-1000, -200, -1000), 1300))
+  map.lights.push(createLight({ position: new Vector3(1000, -200, 1000), radius: 1300 }))
+  map.lights.push(createLight({ position: new Vector3(1000, -200, -1000), radius: 1300 }))
+  map.lights.push(createLight({ position: new Vector3(-1000, -200, 1000), radius: 1300 }))
+  map.lights.push(createLight({ position: new Vector3(-1000, -200, -1000), radius: 1300 }))
 
   map.zones.push(createSpawnZone())
 

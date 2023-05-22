@@ -11,9 +11,7 @@ import { ambiences } from '@projects/ambience-gallery/constants.js'
 import { createGround } from '@projects/ambience-gallery/ground.js'
 import { createEastWestWall, createNorthSouthWall } from '@projects/ambience-gallery/walls.js'
 import { createNECorner, createNWCorner, createSECorner, createSWCorner } from '@projects/ambience-gallery/corners.js'
-import { createLight } from '@projects/ambience-gallery/light.js'
 import { createStoneBlocks } from './stoneBlock.js'
-import { createZone } from './zone.js'
 import { createMainMarker } from './mainMarker.js'
 import { Entity } from '@src/Entity.js'
 import { times } from '@src/faux-ramda.js'
@@ -23,6 +21,8 @@ import { Texture } from '@src/Texture.js'
 import { Scale } from '@scripting/properties/Scale.js'
 import { Rotation } from '@src/Rotation.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
+import { createZone } from '@tools/createZone.js'
+import { createLight } from '@tools/createLight.js'
 
 export default async () => {
   const {
@@ -54,7 +54,14 @@ export default async () => {
 
   const blocks = createStoneBlocks(rowSize, depth, mainMarker)
 
-  const lights = [createLight(new Vector3(width + 500, -2000, -1000), Color.white.darken(30), 200, 5000, 1)]
+  const lights = [
+    createLight({
+      position: new Vector3(width + 500, -2000, -1000),
+      color: Color.white.darken(30),
+      fallStart: 200,
+      radius: 5000,
+    }),
+  ]
 
   const lightCoords = [
     new Vector3(width * (0.1 + 0.4 * 0), -300, -1000),
@@ -70,9 +77,17 @@ export default async () => {
     new Vector3(width * (0.1 + 0.4 * 2), -300, 1000),
   ]
 
-  lightCoords.forEach((pos) => {
-    pos.add(new Vector3(randomBetween(-100, 100), randomBetween(-50, 50), randomBetween(-100, 100)))
-    lights.push(createLight(pos, Color.white.darken(40), 1, 1000, 0.45))
+  lightCoords.forEach((position) => {
+    position.add(new Vector3(randomBetween(-100, 100), randomBetween(-50, 50), randomBetween(-100, 100)))
+    lights.push(
+      createLight({
+        position,
+        color: Color.white.darken(40),
+        fallStart: 1,
+        radius: 1000,
+        intensity: 0.45,
+      }),
+    )
   })
 
   const plants = times(() => {
@@ -88,7 +103,11 @@ export default async () => {
 
   const zones = [
     ...blocks.zones,
-    createZone(new Vector3(-200, 20, -depth / 2), new Vector3(width, 10, depth), Ambience.none, Color.fromCSS('#444')),
+    createZone(new Vector3(-200, 20, -depth / 2), new Vector3(width, 10, depth), {
+      name: Ambience.none.name,
+      ambience: Ambience.none,
+      backgroundColor: Color.fromCSS('#444'),
+    }),
   ]
 
   const entities = [mainMarker, ...blocks.entities, ...plants]

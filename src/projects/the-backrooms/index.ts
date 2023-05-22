@@ -13,7 +13,7 @@ import { RoomProps } from '../../tools/rooms/room.js'
 import { Texture } from '@src/Texture.js'
 import { Cursor, CursorDir } from '../../tools/rooms/Cursor.js'
 import { Zones } from './Zones.js'
-import { createLight } from './light.js'
+import { createLight } from '@tools/createLight.js'
 import { randomBetween } from '@src/random.js'
 import { FireExitDoor } from './FireExitDoor.js'
 import { Entity } from '@src/Entity.js'
@@ -142,8 +142,9 @@ export default async () => {
               for (let x = 0; x < xAmount; x++) {
                 for (let y = 0; y < yAmount; y++) {
                   for (let z = 0; z < zAmount; z++) {
-                    const light = createLight(
-                      new Vector3(
+                    const light = createLight({
+                      radius: lightSpacing * 1.3,
+                      position: new Vector3(
                         cursor.cursor.x -
                           cursor.newSize.x / 2 +
                           x * lightSpacing +
@@ -159,8 +160,7 @@ export default async () => {
                           lightSpacing / 2 +
                           randomBetween(-lightSpacing / 2, +lightSpacing / 2),
                       ),
-                      lightSpacing * 1.3,
-                    )
+                    })
                     rooms.currentRoom.lights.push(light)
                   }
                 }

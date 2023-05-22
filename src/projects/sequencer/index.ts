@@ -4,12 +4,10 @@ import { MathUtils, Vector2 } from 'three'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
-import { HudElements } from '@src/HUD.js'
 import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Rotation } from '@src/Rotation.js'
-import { createLight } from '@projects/the-backrooms/light.js'
 import { Button } from '@projects/sequencer/Button.js'
 import { Timer } from '@projects/sequencer/Timer.js'
 import { applyTransformations } from '@src/helpers.js'
@@ -21,6 +19,7 @@ import { Audio } from '@src/Audio.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { ArxPolygonFlags } from 'arx-convert/types'
 import { Material } from '@src/Material.js'
+import { createLight } from '@tools/createLight.js'
 
 const createFloor = async (position: Vector3, dimensions: Vector2) => {
   const discoTiles = Material.fromTexture(
@@ -295,7 +294,7 @@ export default async () => {
 
   map.entities.push(...buttons.flat(), timer, lever, cursor, ...instruments)
 
-  const light = createLight(new Vector3(0, -300, 0), 2000)
+  const light = createLight({ position: new Vector3(0, -300, 0), radius: 2000 })
   map.lights.push(light)
 
   map.finalize()

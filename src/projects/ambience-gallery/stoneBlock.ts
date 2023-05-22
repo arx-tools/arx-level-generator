@@ -9,7 +9,7 @@ import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { translateUV } from '@tools/mesh/translateUV.js'
 import { ExtrudeGeometry, MathUtils, Mesh, MeshBasicMaterial, Shape, Vector2 } from 'three'
 import { ambiences } from './constants.js'
-import { createZone } from './zone.js'
+import { createZone } from '@tools/createZone.js'
 
 // TODO: turn this into 3 functions
 export const createStoneBlocks = (rowSize: number, depth: number, achievementManager: Entity) => {
@@ -53,11 +53,10 @@ export const createStoneBlocks = (rowSize: number, depth: number, achievementMan
       const heightOffset = randomBetween(-5, 15)
 
       const ambience = ambiences[i + j]
-      const zone = createZone(
-        pos.clone().add(new Vector3(0, heightOffset, extrudeSettings.bevelSize * 2)),
-        size,
+      const zone = createZone(pos.clone().add(new Vector3(0, heightOffset, extrudeSettings.bevelSize * 2)), size, {
+        name: ambience.name,
         ambience,
-      )
+      })
       zones.push(zone)
 
       const marker = Entity.marker.withScript()

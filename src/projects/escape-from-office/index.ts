@@ -11,7 +11,7 @@ import { Rotation } from '@src/Rotation.js'
 import { MathUtils } from 'three'
 import { Color } from '@src/Color.js'
 import { createZone } from '@tools/createZone.js'
-import { createLight } from '@projects/the-backrooms/light.js'
+// import { createLight } from '@tools/createLight.js'
 
 export default async () => {
   const {
@@ -64,7 +64,7 @@ export default async () => {
 
   const zones = [spawnZone]
 
-  // const sun = createLight(new Vector3(0, -200, -1000), 2000)
+  // const sun = createLight({ position: new Vector3(0, -200, -1000), radius: 2000 })
 
   // const lights = [sun]
 
