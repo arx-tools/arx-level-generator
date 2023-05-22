@@ -151,6 +151,5 @@ export default async () => {
   map.zones.push(createSpawnZone())
 
   map.finalize()
-
   map.saveToDisk(OUTPUTDIR, parseInt(LEVEL))
 }

@@ -10,7 +10,7 @@ import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
 import { Rotation } from '@src/Rotation.js'
 import { MathUtils } from 'three'
 import { Color } from '@src/Color.js'
-import { createZone } from './createZone.js'
+import { createZone } from '@tools/createZone.js'
 import { createLight } from '@projects/the-backrooms/light.js'
 
 export default async () => {
