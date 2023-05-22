@@ -103,7 +103,9 @@ export default async () => {
 
   const zones = [
     ...blocks.zones,
-    createZone(new Vector3(-200, 20, -depth / 2), new Vector3(width, 10, depth), {
+    createZone({
+      position: new Vector3(-200, 20, -depth / 2),
+      size: new Vector3(width, 10, depth),
       name: Ambience.none.name,
       ambience: Ambience.none,
       backgroundColor: Color.fromCSS('#444'),

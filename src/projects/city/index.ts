@@ -4,13 +4,13 @@ import { EdgesGeometry, MathUtils, Shape, ShapeGeometry, Vector2 } from 'three'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
-import { HudElements } from '@src/HUD.js'
 import { DONT_QUADIFY } from '@src/Polygons.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations } from '@src/helpers.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { Zone } from '@src/Zone.js'
+import { createZone } from '@tools/createZone.js'
 
 const facadeRatio = 1000 / 1319
 
@@ -68,19 +68,8 @@ export default async () => {
 
   map.add(await createWall(1000, 1000 * facadeRatio), true)
 
-  const shape = new Shape()
-  shape.lineTo(100, 0)
-  shape.lineTo(100, 100)
-  shape.lineTo(0, 100)
-  shape.lineTo(0, 0)
-
-  const geometry = new ShapeGeometry(shape)
-  const edge = new EdgesGeometry(geometry)
-  edge.rotateX(MathUtils.degToRad(90))
-  edge.translate(0, 0, 0)
-
   map.zones.push(
-    Zone.fromThreejsGeometry(edge, {
+    createZone({
       name: 'sky changer',
       backgroundColor: Color.fromCSS('#7d94b7'),
     }),

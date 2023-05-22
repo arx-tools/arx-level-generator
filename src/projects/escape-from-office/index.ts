@@ -57,7 +57,8 @@ export default async () => {
 
   const models = [...wetFloorSign, ...ceilingLampOffice1, ...ceilingLampOffice2]
 
-  const spawnZone = createZone(new Vector3(0, 10, 0), new Vector3(100, Infinity, 100), {
+  const spawnZone = createZone({
+    position: new Vector3(0, 10, 0),
     name: 'spawn',
     backgroundColor: Color.fromCSS('skyblue'),
   })

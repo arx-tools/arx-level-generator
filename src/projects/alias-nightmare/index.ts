@@ -9,28 +9,10 @@ import { makeBumpy } from '@src/tools/mesh/makeBumpy.js'
 import { transformEdge } from '@src/tools/mesh/transformEdge.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Zone } from '@src/Zone.js'
+import { createZone } from '@tools/createZone.js'
 import path from 'node:path'
 import seedrandom from 'seedrandom'
 import { EdgesGeometry, MathUtils, Shape, ShapeGeometry, Vector2 } from 'three'
-
-const createSpawn = () => {
-  const shape = new Shape()
-  shape.lineTo(100, 0)
-  shape.lineTo(100, 100)
-  shape.lineTo(0, 100)
-
-  const geometry = new ShapeGeometry(shape)
-  const edge = new EdgesGeometry(geometry)
-  edge.rotateX(MathUtils.degToRad(70))
-
-  const zone = Zone.fromThreejsGeometry(edge, {
-    name: 'spawn',
-    backgroundColor: Color.fromCSS('hsla(0, 64%, 8%, 1)'),
-    ambience: Ambience.fromCustomAudio('loop_sirs', 'loop_sirs.wav'),
-  })
-
-  return zone
-}
 
 const createIsland = async (width: number, height: number) => {
   const floorMesh = await createPlaneMesh(
@@ -63,9 +45,14 @@ export default async () => {
 
   map.add(await createIsland(1000, 1000), true)
 
-  map.zones.push(createSpawn())
+  map.zones.push(
+    createZone({
+      name: 'spawn',
+      backgroundColor: Color.fromCSS('hsla(0, 64%, 8%, 1)'),
+      ambience: Ambience.fromCustomAudio('loop_sirs', 'loop_sirs.wav'),
+    }),
+  )
 
   map.finalize()
-
   map.saveToDisk(OUTPUTDIR, parseInt(LEVEL))
 }

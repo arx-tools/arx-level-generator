@@ -53,7 +53,9 @@ export const createStoneBlocks = (rowSize: number, depth: number, achievementMan
       const heightOffset = randomBetween(-5, 15)
 
       const ambience = ambiences[i + j]
-      const zone = createZone(pos.clone().add(new Vector3(0, heightOffset, extrudeSettings.bevelSize * 2)), size, {
+      const zone = createZone({
+        position: pos.clone().add(new Vector3(0, heightOffset, extrudeSettings.bevelSize * 2)),
+        size,
         name: ambience.name,
         ambience,
       })
