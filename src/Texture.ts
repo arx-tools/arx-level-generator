@@ -91,7 +91,7 @@ export class Texture extends ThreeJsTextue {
 
   private async makeCopy(outputDir: string): Promise<[string, string]> {
     const { ext, name } = path.parse(this.filename)
-    const isBMP = ext === 'bmp'
+    const isBMP = ext === '.bmp'
     const newFilename = isBMP ? this.filename : `${name}.jpg`
 
     const originalSource = path.resolve('assets', this.sourcePath ?? Texture.targetPath, this.filename)
@@ -123,7 +123,7 @@ export class Texture extends ThreeJsTextue {
 
   private async makeTileable(outputDir: string): Promise<[string, string]> {
     const { ext, name } = path.parse(this.filename)
-    const isBMP = ext === 'bmp'
+    const isBMP = ext === '.bmp'
     const newFilename = 'tileable-' + (isBMP ? this.filename : `${name}.jpg`)
 
     const originalSource = path.resolve('assets', this.sourcePath ?? Texture.targetPath, this.filename)
