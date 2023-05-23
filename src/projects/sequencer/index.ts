@@ -24,7 +24,7 @@ import { createLight } from '@tools/createLight.js'
 const createFloor = async (position: Vector3, dimensions: Vector2) => {
   const discoTiles = Material.fromTexture(
     await Texture.fromCustomFile({
-      filename: '[stone]-disco-floor.jpg',
+      filename: 'dance-floor1.bmp',
       sourcePath: 'textures',
     }),
     {
@@ -53,6 +53,7 @@ const createWall = async (position: Vector3, dimensions: Vector2, direction: 'no
   )
 
   const wall = await createPlaneMesh(dimensions, 100, Color.white.darken(50), metal)
+  scaleUV(new Vector2((1 / 3) * 2, (1 / 3) * 2), wall.geometry)
   wall.rotateX(MathUtils.degToRad(-90))
   if (direction === 'south') {
     wall.rotateZ(MathUtils.degToRad(180))
@@ -63,7 +64,6 @@ const createWall = async (position: Vector3, dimensions: Vector2, direction: 'no
   if (direction === 'east') {
     wall.rotateZ(MathUtils.degToRad(90))
   }
-  scaleUV(new Vector2((1 / 3) * 2, (1 / 3) * 2), wall.geometry)
   applyTransformations(wall)
 
   wall.translateX(position.x)
@@ -71,6 +71,29 @@ const createWall = async (position: Vector3, dimensions: Vector2, direction: 'no
   wall.translateZ(position.z)
 
   return [wall]
+}
+
+const createCeiling = async (position: Vector3, dimensions: Vector2) => {
+  const woodenStripes = Material.fromTexture(
+    await Texture.fromCustomFile({
+      // filename: '[wood]-stripes.jpg',
+      filename: '[stone]-polished-concrete3.png',
+      sourcePath: 'textures',
+    }),
+    {
+      flags: ArxPolygonFlags.Tiled,
+    },
+  )
+
+  const ceiling = await createPlaneMesh(dimensions, 100, Color.white.darken(50), woodenStripes)
+  scaleUV(new Vector2(0.5, 0.5), ceiling.geometry)
+  ceiling.rotateX(MathUtils.degToRad(180))
+  applyTransformations(ceiling)
+  ceiling.translateX(position.x)
+  ceiling.translateY(position.y)
+  ceiling.translateZ(position.z)
+
+  return [ceiling]
 }
 
 const createSynth = async (position: Vector3, dimensions: Vector2) => {
@@ -260,6 +283,12 @@ export default async () => {
 
   // ----------------------
 
+  // TODO: add NPCs
+
+  // Add Tizzy @ 5500/0/5655
+
+  // ----------------------
+
   const speakerL = await loadOBJ('models/speaker/speaker', {
     position: new Vector3(6000 - 540, 200, 6000 + 350),
     scale: 30,
@@ -274,19 +303,21 @@ export default async () => {
     materialFlags: ArxPolygonFlags.None,
   })
 
-  const floor = await createFloor(new Vector3(6000, 0, 6000), new Vector2(1200, 850))
-
-  const synth = await createSynth(
+  const synthPanel = await createSynth(
     new Vector3(6000 + 0, 150, 6000 + 400),
     new Vector2(formattedButtonPattern[0].length * 20 + 70, 190),
   )
+
+  const floor = await createFloor(new Vector3(6000, 0, 6000), new Vector2(1200, 850))
 
   const wallN = await createWall(new Vector3(6000, 150, 6000 + 425), new Vector2(1200, 300), 'north')
   const wallS = await createWall(new Vector3(6000, 150, 6000 - 425), new Vector2(1200, 300), 'south')
   const wallW = await createWall(new Vector3(6000 - 600, 150, 6000), new Vector2(850, 300), 'west')
   const wallE = await createWall(new Vector3(6000 + 600, 150, 6000), new Vector2(850, 300), 'east')
 
-  const meshes = [speakerL, speakerR, floor, synth, wallN, wallS, wallW, wallE].flat()
+  const ceiling = await createCeiling(new Vector3(6000, 300, 6000), new Vector2(1200, 850))
+
+  const meshes = [speakerL, speakerR, synthPanel, floor, wallN, wallS, wallW, wallE, ceiling].flat()
 
   meshes.forEach((mesh) => {
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
