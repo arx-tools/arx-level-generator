@@ -2,6 +2,10 @@ import { ArxMap } from '@src/ArxMap.js'
 import { Vector3 } from '@src/Vector3.js'
 import path from 'node:path'
 import seedrandom from 'seedrandom'
+import { createGround } from './createGround.js'
+import { Mesh, Vector2 } from 'three'
+import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
+import { applyTransformations } from '@src/helpers.js'
 
 export default async () => {
   const {
@@ -17,8 +21,25 @@ export default async () => {
   map.meta.mapName = 'The Forest'
   map.meta.seed = SEED
   map.config.offset = new Vector3(6000, 0, 6000)
+  map.player.position.adjustToPlayerHeight()
+  map.player.withScript()
+  map.hud.hide('all')
 
-  // TODO
+  const meshes: Mesh[] = []
+
+  // ---------------------------
+
+  meshes.push(...(await createGround({ size: new Vector2(2000, 2000) })))
+
+  // ---------------------------
+
+  meshes.forEach((mesh) => {
+    mesh.translateX(map.config.offset.x)
+    mesh.translateY(map.config.offset.y)
+    mesh.translateZ(map.config.offset.z)
+    applyTransformations(mesh)
+    map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
+  })
 
   map.finalize()
   map.saveToDisk(OUTPUTDIR, parseInt(LEVEL))

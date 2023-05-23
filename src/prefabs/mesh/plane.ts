@@ -1,9 +1,8 @@
 import { MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry, Vector2 } from 'three'
 import { Color } from '@src/Color.js'
 import { applyTransformations } from '@src/helpers.js'
-import { Texture } from '@src/Texture.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
-import { Material } from '@src/Material.js'
+import { TextureOrMaterial } from '@src/types.js'
 
 export const INDEXED = 'indexed'
 export const NONINDEXED = 'non-indexed'
@@ -12,7 +11,7 @@ export const createPlaneMesh = async (
   dimensions: Vector2,
   tileSize: number,
   color: Color,
-  texture: Texture | Promise<Texture> | Material | Promise<Material>,
+  texture: TextureOrMaterial,
   isIndexed: typeof INDEXED | typeof NONINDEXED = INDEXED,
 ) => {
   const divisionX = Math.ceil(dimensions.x / tileSize)

@@ -1,4 +1,6 @@
 import { ArxColor, ArxVertex } from 'arx-convert/types'
+import { Texture } from '@src/Texture.js'
+import { Material } from '@src/Material.js'
 
 export type ArxVertexWithColor = ArxVertex & {
   color?: ArxColor
@@ -28,3 +30,5 @@ export type OriginalLevel =
   | 21
   | 22
   | 23
+
+export type TextureOrMaterial = Texture | Promise<Texture> | Material | Promise<Material>
