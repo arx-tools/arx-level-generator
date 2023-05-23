@@ -6,6 +6,8 @@ import { createGround } from './createGround.js'
 import { Mesh, Vector2 } from 'three'
 import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
 import { applyTransformations } from '@src/helpers.js'
+import { createLight } from '@tools/createLight.js'
+import { Color } from '@src/Color.js'
 
 export default async () => {
   const {
@@ -31,8 +33,6 @@ export default async () => {
 
   meshes.push(...(await createGround({ size: new Vector2(2000, 2000) })))
 
-  // ---------------------------
-
   meshes.forEach((mesh) => {
     mesh.translateX(map.config.offset.x)
     mesh.translateY(map.config.offset.y)
@@ -40,6 +40,18 @@ export default async () => {
     applyTransformations(mesh)
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
   })
+
+  map.lights.push(
+    createLight({
+      position: new Vector3(0, -300, 0),
+      radius: 600,
+      color: Color.white,
+    }),
+  )
+
+  // TODO: add dead tree
+
+  // ---------------------------
 
   map.finalize()
   map.saveToDisk(OUTPUTDIR, parseInt(LEVEL))

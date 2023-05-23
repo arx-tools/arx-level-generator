@@ -29,7 +29,7 @@ export const createGround = async ({
     tileSize,
     Color.white,
     Material.fromTexture(Texture.waterCavewater, {
-      flags: ArxPolygonFlags.Water | ArxPolygonFlags.Transparent,
+      flags: ArxPolygonFlags.Water | ArxPolygonFlags.Transparent | ArxPolygonFlags.NoShadow,
     }),
   )
   scaleUV(new Vector2(tileSize / 100, tileSize / 100), waterMesh.geometry)
