@@ -20,11 +20,13 @@ import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { ArxPolygonFlags } from 'arx-convert/types'
 import { Material } from '@src/Material.js'
 import { createLight } from '@tools/createLight.js'
+import { Cube } from '@prefabs/entity/Cube.js'
+import { TweakSkin } from '@scripting/commands/TweakSkin.js'
 
 const createFloor = async (position: Vector3, dimensions: Vector2) => {
-  const discoTiles = Material.fromTexture(
+  const floorTiles = Material.fromTexture(
     await Texture.fromCustomFile({
-      filename: 'dance-floor1.bmp',
+      filename: '[wood]-fake-floor.jpg',
       sourcePath: 'textures',
     }),
     {
@@ -32,7 +34,7 @@ const createFloor = async (position: Vector3, dimensions: Vector2) => {
     },
   )
 
-  const floor = await createPlaneMesh(dimensions, 100, Color.white.darken(50), discoTiles)
+  const floor = await createPlaneMesh(dimensions, 100, Color.white.darken(50), floorTiles)
   scaleUV(new Vector2(0.5, 0.5), floor.geometry)
   floor.translateX(position.x)
   floor.translateY(position.y)
@@ -283,6 +285,22 @@ export default async () => {
 
   // ----------------------
 
+  // const discoTileTexture = Texture.fromCustomFile({
+  //   filename: 'dance-floor1.bmp',
+  //   sourcePath: 'textures',
+  // })
+
+  // const discoTile = new Cube({
+  //   position: new Vector3(0, 0, 0),
+  //   orientation: new Rotation(MathUtils.degToRad(0), MathUtils.degToRad(0), MathUtils.degToRad(0)),
+  // })
+  // discoTile.withScript()
+  // discoTile.script?.on('initend', new TweakSkin(Texture.stoneGroundCavesWet05, discoTileTexture))
+
+  // the cube model is unusable here as the texture is cut off mid-tile
+
+  // ----------------------
+
   // TODO: add NPCs
 
   // Add Tizzy @ 5500/0/5655
@@ -308,14 +326,14 @@ export default async () => {
     new Vector2(formattedButtonPattern[0].length * 20 + 70, 190),
   )
 
-  const floor = await createFloor(new Vector3(6000, 0, 6000), new Vector2(1200, 850))
+  const floor = await createFloor(new Vector3(6000, 0, 6000 - 425), new Vector2(1200, 1700))
 
   const wallN = await createWall(new Vector3(6000, 150, 6000 + 425), new Vector2(1200, 300), 'north')
-  const wallS = await createWall(new Vector3(6000, 150, 6000 - 425), new Vector2(1200, 300), 'south')
-  const wallW = await createWall(new Vector3(6000 - 600, 150, 6000), new Vector2(850, 300), 'west')
-  const wallE = await createWall(new Vector3(6000 + 600, 150, 6000), new Vector2(850, 300), 'east')
+  const wallS = await createWall(new Vector3(6000, 150, 6000 - 850 - 425), new Vector2(1200, 300), 'south')
+  const wallW = await createWall(new Vector3(6000 - 600, 150, 6000 - 425), new Vector2(1700, 300), 'west')
+  const wallE = await createWall(new Vector3(6000 + 600, 150, 6000 - 425), new Vector2(1700, 300), 'east')
 
-  const ceiling = await createCeiling(new Vector3(6000, 300, 6000), new Vector2(1200, 850))
+  const ceiling = await createCeiling(new Vector3(6000, 300, 6000 - 425), new Vector2(1200, 1700))
 
   const meshes = [speakerL, speakerR, synthPanel, floor, wallN, wallS, wallW, wallE, ceiling].flat()
 
@@ -323,7 +341,7 @@ export default async () => {
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
   })
 
-  map.entities.push(...buttons.flat(), timer, lever, cursor, ...instruments)
+  map.entities.push(...buttons.flat(), timer, lever, cursor, ...instruments /*, discoTile*/)
 
   const light = createLight({ position: new Vector3(0, -300, 0), radius: 2000 })
   map.lights.push(light)
