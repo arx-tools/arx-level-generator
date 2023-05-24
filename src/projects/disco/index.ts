@@ -8,13 +8,13 @@ import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Rotation } from '@src/Rotation.js'
-import { Button } from '@projects/sequencer/Button.js'
-import { Timer } from '@projects/sequencer/Timer.js'
+import { Button } from '@projects/disco/Button.js'
+import { Timer } from '@projects/disco/Timer.js'
 import { applyTransformations } from '@src/helpers.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
-import { Lever } from '@projects/sequencer/Lever.js'
-import { Cursor } from '@projects/sequencer/Cursor.js'
-import { SoundPlayer } from '@projects/sequencer/SoundPlayer.js'
+import { Lever } from '@projects/disco/Lever.js'
+import { Cursor } from '@projects/disco/Cursor.js'
+import { SoundPlayer } from '@projects/disco/SoundPlayer.js'
 import { Audio } from '@src/Audio.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { ArxPolygonFlags } from 'arx-convert/types'
@@ -141,7 +141,7 @@ export default async () => {
   console.log(`seed: ${SEED}`)
 
   const map = new ArxMap()
-  map.meta.mapName = 'Sequencer'
+  map.meta.mapName = 'Disco'
   map.meta.seed = SEED
   map.config.offset = new Vector3(6000, 0, 6000)
   map.player.withScript()
@@ -287,7 +287,7 @@ export default async () => {
 
   // const discoTileTexture = Texture.fromCustomFile({
   //   filename: 'dance-floor1.bmp',
-  //   sourcePath: 'textures',
+  //   sourcePath: 'projects/disco/textures',
   // })
 
   // const discoTile = new Cube({
