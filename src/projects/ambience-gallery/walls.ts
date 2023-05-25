@@ -8,7 +8,7 @@ import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { translateUV } from '@tools/mesh/translateUV.js'
 import { MathUtils, Vector2, BoxGeometry, MeshBasicMaterial, Mesh, Group, CylinderGeometry } from 'three'
 
-const ironPole = (position: Vector3, { x: width, y: height }: Vector2) => {
+const createIronPole = (position: Vector3, { x: width, y: height }: Vector2) => {
   const geometry = new CylinderGeometry(width, width, height, 4, 2, false, MathUtils.degToRad(randomBetween(0, 120)))
   scaleUV(new Vector2(0.01 * width, 1), geometry)
   translateUV(new Vector2(0.5, 0), geometry)
@@ -22,7 +22,7 @@ const ironPole = (position: Vector3, { x: width, y: height }: Vector2) => {
   return new Mesh(geometry, material)
 }
 
-const horizontalBar = (position: Vector3) => {
+const createHorizontalBar = (position: Vector3) => {
   const geometry = new BoxGeometry(220, 5, 8, 3, 1, 1)
   scaleUV(new Vector2(1, 0.01 * 8), geometry)
   translateUV(new Vector2(0.5, 0), geometry)
@@ -36,12 +36,12 @@ const horizontalBar = (position: Vector3) => {
   return new Mesh(geometry, material)
 }
 
-const fenceSegment = (hasEdgePole: boolean) => {
+const createFenceSegment = (hasEdgePole: boolean) => {
   const pos = new Vector3(0, 0, 0)
   const group = new Group()
 
   for (let i = 0; i < 10; i++) {
-    const pole = ironPole(new Vector3(0, 0, 0), new Vector2(3 * randomBetween(0.75, 1.25), 200))
+    const pole = createIronPole(new Vector3(0, 0, 0), new Vector2(3 * randomBetween(0.75, 1.25), 200))
     if (randomBetween(0, 100) < 15) {
       pole.setRotationFromEuler(
         new Rotation(
@@ -62,11 +62,11 @@ const fenceSegment = (hasEdgePole: boolean) => {
     pos.add(new Vector3(20, 0, 0))
   }
   if (hasEdgePole) {
-    group.add(ironPole(pos, new Vector2(8, 220)))
+    group.add(createIronPole(pos, new Vector2(8, 220)))
   }
 
-  group.add(horizontalBar(new Vector3(0, 0, 0)))
-  group.add(horizontalBar(new Vector3(0, 100, 0)))
+  group.add(createHorizontalBar(new Vector3(0, 0, 0)))
+  group.add(createHorizontalBar(new Vector3(0, 100, 0)))
 
   return group
 }
@@ -94,7 +94,7 @@ export const createEastWestWall = (startPos: Vector3, numberOfSegments: number) 
     }
     offset.applyEuler(angle)
 
-    const segment = fenceSegment(j < numberOfSegments - 1)
+    const segment = createFenceSegment(j < numberOfSegments - 1)
     segment.setRotationFromEuler(angle)
     applyTransformations(segment)
     segment.translateX(pos.x)
