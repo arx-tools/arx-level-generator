@@ -102,7 +102,7 @@ export default async () => {
   }, Math.round(randomBetween(30, 80)))
 
   const zones = [
-    ...blocks.zones,
+    blocks.zones,
     createZone({
       position: new Vector3(-200, 20, -depth / 2),
       size: new Vector3(width, 10, depth),
@@ -112,9 +112,9 @@ export default async () => {
     }),
   ]
 
-  const entities = [mainMarker, ...blocks.entities, ...plants]
+  const entities = [mainMarker, blocks.entities, plants]
 
-  const meshes = [...blocks.meshes]
+  const meshes = [blocks.meshes]
 
   const smoothMeshes = [
     await createGround(width, depth),
@@ -128,10 +128,10 @@ export default async () => {
     createSECorner(),
   ]
 
-  map.zones.push(...zones)
-  map.entities.push(...entities)
-  map.lights.push(...lights)
-  meshes.forEach((mesh) => {
+  map.zones.push(...zones.flat())
+  map.entities.push(...entities.flat())
+  map.lights.push(...lights.flat())
+  meshes.flat().forEach((mesh) => {
     applyTransformations(mesh)
     mesh.translateX(map.config.offset.x)
     mesh.translateY(map.config.offset.y)
@@ -139,7 +139,7 @@ export default async () => {
     applyTransformations(mesh)
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_FLAT })
   })
-  smoothMeshes.forEach((mesh) => {
+  smoothMeshes.flat().forEach((mesh) => {
     applyTransformations(mesh)
     mesh.translateX(map.config.offset.x)
     mesh.translateY(map.config.offset.y)
