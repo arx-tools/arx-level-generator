@@ -23,6 +23,7 @@ import { Rotation } from '@src/Rotation.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { createZone } from '@tools/createZone.js'
 import { createLight } from '@tools/createLight.js'
+import { createMoon } from './moon.js'
 
 export default async () => {
   const {
@@ -41,9 +42,10 @@ export default async () => {
   map.player.position.adjustToPlayerHeight()
   map.player.orientation.y = MathUtils.degToRad(-90)
   map.player.withScript()
-  // map.player.script?.on('init', () => 'setspeed 3')
   map.hud.hide('all')
   await map.i18n.addFromFile(path.resolve('assets/projects/ambience-gallery/i18n.json'))
+
+  // -----------------------------
 
   const rowSize = 5
 
@@ -54,41 +56,47 @@ export default async () => {
 
   const blocks = createStoneBlocks(rowSize, depth, mainMarker)
 
+  const moon = createMoon({
+    position: new Vector3(width + 500, -1000, -1000),
+    size: 30,
+  })
+
+  const nwCorner = await createNWCorner()
+  const swCorner = await createSWCorner()
+  const neCorner = await createNECorner()
+  const seCorner = await createSECorner()
+
   const lights = [
-    createLight({
-      position: new Vector3(width + 500, -2000, -1000),
-      color: Color.white.darken(30),
-      fallStart: 200,
-      radius: 5000,
-    }),
-  ]
+    moon.lights,
+    nwCorner.lights,
+    swCorner.lights,
+    neCorner.lights,
+    seCorner.lights,
+    [
+      new Vector3(width * (0.1 + 0.4 * 0), -300, -1000),
+      new Vector3(width * (0.1 + 0.4 * 0), -300, 0),
+      new Vector3(width * (0.1 + 0.4 * 0), -300, 1000),
 
-  const lightCoords = [
-    new Vector3(width * (0.1 + 0.4 * 0), -300, -1000),
-    new Vector3(width * (0.1 + 0.4 * 0), -300, 0),
-    new Vector3(width * (0.1 + 0.4 * 0), -300, 1000),
+      new Vector3(width * (0.1 + 0.4 * 1), -300, -1000),
+      new Vector3(width * (0.1 + 0.4 * 1), -300, 0),
+      new Vector3(width * (0.1 + 0.4 * 1), -300, 1000),
 
-    new Vector3(width * (0.1 + 0.4 * 1), -300, -1000),
-    new Vector3(width * (0.1 + 0.4 * 1), -300, 0),
-    new Vector3(width * (0.1 + 0.4 * 1), -300, 1000),
-
-    new Vector3(width * (0.1 + 0.4 * 2), -300, -1000),
-    new Vector3(width * (0.1 + 0.4 * 2), -300, 0),
-    new Vector3(width * (0.1 + 0.4 * 2), -300, 1000),
-  ]
-
-  lightCoords.forEach((position) => {
-    position.add(new Vector3(randomBetween(-100, 100), randomBetween(-50, 50), randomBetween(-100, 100)))
-    lights.push(
-      createLight({
-        position,
+      new Vector3(width * (0.1 + 0.4 * 2), -300, -1000),
+      new Vector3(width * (0.1 + 0.4 * 2), -300, 0),
+      new Vector3(width * (0.1 + 0.4 * 2), -300, 1000),
+    ].map((position) => {
+      const xOffset = randomBetween(-100, 100)
+      const yOffset = randomBetween(-50, 50)
+      const zOffset = randomBetween(-100, 100)
+      return createLight({
+        position: position.clone().add(new Vector3(xOffset, yOffset, zOffset)),
         color: Color.white.darken(40),
         fallStart: 1,
         radius: 1000,
         intensity: 0.45,
-      }),
-    )
-  })
+      })
+    }),
+  ]
 
   const plants = times(() => {
     const entity = pickRandom([Entity.fern, Entity.mushroom]).withScript()
@@ -109,6 +117,7 @@ export default async () => {
       name: Ambience.none.name,
       ambience: Ambience.none,
       backgroundColor: Color.fromCSS('#444'),
+      drawDistance: 10000,
     }),
   ]
 
@@ -117,15 +126,16 @@ export default async () => {
   const meshes = [blocks.meshes]
 
   const smoothMeshes = [
+    moon.meshes,
     await createGround(width, depth),
     createEastWestWall(new Vector3(-160, 0, 850), 14),
     createEastWestWall(new Vector3(-160, 0, -850), 14),
     createNorthSouthWall(new Vector3(-200, 0, 850), 8),
     createNorthSouthWall(new Vector3(2900, 0, 850), 8),
-    await createNWCorner(),
-    await createSWCorner(),
-    await createNECorner(),
-    await createSECorner(),
+    nwCorner.meshes,
+    swCorner.meshes,
+    neCorner.meshes,
+    seCorner.meshes,
   ]
 
   map.zones.push(...zones.flat())
