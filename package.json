@@ -9,6 +9,7 @@
     "node": ">=18.0.0"
   },
   "scripts": {
+    "publish-map": "export OUTPUTDIR=$(pwd)/dist/ && npm run generate && npm run compile",
     "dev": "npm run generate && npm run compile && npm run run",
     "generate": "tsc && tsc-alias && node --require dotenv/config --enable-source-maps ./build/index.js",
     "compile": "./scripts/compile.sh",

@@ -2,11 +2,19 @@
 
 REPO_ROOT="$(realpath $(dirname "$(realpath "${BASH_SOURCE:-$0}")")/../)/"
 
+set -e
+
+# save already set environments to restore later (quasi dotenv_config_override=false)
+CURRENT_ENV=$(declare -p -x)
+
 if [ -f "${REPO_ROOT}.env" ]; then
   set -a
   source "${REPO_ROOT}.env"
   set +a
 fi
+
+# restore previously saved environment variables
+eval "$CURRENT_ENV"
 
 if [ "$LEVEL" = "" ]; then
   LEVEL=1
@@ -15,6 +23,8 @@ fi
 if [ -z "$OUTPUTDIR" ]; then
   OUTPUTDIR=$(pwd)/dist/
 fi
+
+echo $OUTPUTDIR
 
 arx-convert --version
 
@@ -55,3 +65,5 @@ fi
 
 echo ""
 echo "done"
+
+set +e

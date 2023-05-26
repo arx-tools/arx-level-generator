@@ -336,7 +336,7 @@ export class ArxMap {
       throw new MapNotFinalizedError()
     }
 
-    const defaultOutputDir = path.resolve('./dist')
+    const defaultOutputDir = path.resolve('./dist') + '/'
     outputDir = path.resolve(outputDir) + '/'
 
     console.log('output directory:', outputDir)
