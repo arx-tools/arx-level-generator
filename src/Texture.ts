@@ -295,4 +295,8 @@ export class Texture extends ThreeJsTextue {
   static get glassGlass01() {
     return new Texture({ filename: '[glass]_glass01.jpg', size: 128 })
   }
+
+  static get itemCheese() {
+    return new Texture({ filename: 'item_cheese.jpg', size: 64 })
+  }
 }
