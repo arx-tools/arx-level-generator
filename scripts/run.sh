@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 REPO_ROOT="$(realpath $(dirname "$(realpath "${BASH_SOURCE:-$0}")")/../)/"
 
 if [ -f "${REPO_ROOT}.env" ]; then
@@ -25,3 +27,5 @@ fi
 if [ -e "${OUTPUTDIR}arx" ]; then
   $OUTPUTDIR/arx --loadlevel $LEVEL
 fi
+
+set +e

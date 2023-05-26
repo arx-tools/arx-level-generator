@@ -1,10 +1,10 @@
 #!/bin/bash
 
-REPO_ROOT="$(realpath $(dirname "$(realpath "${BASH_SOURCE:-$0}")")/../)/"
-
 set -e
 
-# save already set environments to restore later (quasi dotenv_config_override=false)
+REPO_ROOT="$(realpath $(dirname "$(realpath "${BASH_SOURCE:-$0}")")/../)/"
+
+# save already set environment variables to restore later (quasi dotenv_config_override=false)
 CURRENT_ENV=$(declare -p -x)
 
 if [ -f "${REPO_ROOT}.env" ]; then

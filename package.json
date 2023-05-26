@@ -9,11 +9,12 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "publish-map": "export OUTPUTDIR=$(pwd)/dist/ && npm run generate && npm run compile",
+    "publish-map": "export OUTPUTDIR=$(pwd)/dist/ && npm run generate && npm run compile && npm run pack",
     "dev": "npm run generate && npm run compile && npm run run",
     "generate": "tsc && tsc-alias && node --require dotenv/config --enable-source-maps ./build/index.js",
     "compile": "./scripts/compile.sh",
-    "run": "./scripts/run.sh"
+    "run": "./scripts/run.sh",
+    "pack": "./scripts/pack.sh"
   },
   "repository": {
     "type": "git",
