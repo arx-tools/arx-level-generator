@@ -10,5 +10,8 @@
   },
   "achievement--listen-large": {
     "english": "Achievement reached: Listen to all ambiences. Which one did you enjoy the most?"
+  },
+  "achievement--found-chicken-on-moon": {
+    "english": "Achievement reached: Chicken on the moon."
   }
 }
