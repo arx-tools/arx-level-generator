@@ -30,6 +30,10 @@ export class Color {
       throw new Error(`failed to parse color "${color}"`)
     }
     const [r, g, b, a] = channels
+    if (typeof r === 'undefined' || typeof g === 'undefined' || typeof b === 'undefined') {
+      throw new Error(`failed to parse color "${color}"`)
+    }
+
     return new Color(r, g, b, a)
   }
 
