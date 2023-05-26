@@ -212,4 +212,17 @@ export class Entity {
       return new Cube()
     })()
   }
+
+  static get bone() {
+    return new Entity({ src: 'items/provisions/bone' })
+  }
+  static get boneWeap() {
+    return new Entity({ src: 'items/weapons/bone_weap' })
+  }
+  static get skull() {
+    return new Entity({ src: 'items/movable/skull' })
+  }
+  static get boneBassin() {
+    return new Entity({ src: 'items/movable/bones/bone_bassin.asl' })
+  }
 }

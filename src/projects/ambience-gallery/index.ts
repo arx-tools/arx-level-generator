@@ -98,15 +98,21 @@ export default async () => {
     }),
   ]
 
-  const plants = times(() => {
-    const entity = pickRandom([Entity.fern, Entity.mushroom]).withScript()
-    entity.position.add(new Vector3(randomBetween(-200, 2800), 0, randomBetween(-800, 800)))
-    entity.orientation.y = MathUtils.degToRad(randomBetween(0, 360))
-    entity.script?.properties.push(Interactivity.off)
-    entity.script?.properties.push(
-      new Scale(entity.ref.includes('mushroom') ? randomBetween(0.7, 1.6) : randomBetween(0.5, 1.3)),
+  const randomGraveyardJunk = times(() => {
+    const item = pickRandom([Entity.skull, Entity.boneBassin, Entity.bone]).withScript()
+    item.position.add(new Vector3(randomBetween(-200, 2800), 5 + randomBetween(-5, 5), randomBetween(-800, 800)))
+    item.orientation = new Rotation(
+      MathUtils.degToRad(randomBetween(-45, 45)),
+      MathUtils.degToRad(randomBetween(0, 360)),
+      MathUtils.degToRad(randomBetween(-45, 45)),
     )
-    return entity
+
+    if (item.entityName === 'bone_bassin') {
+      item.position.y += 15
+    }
+
+    item.script?.properties.push(Interactivity.off)
+    return item
   }, Math.round(randomBetween(30, 80)))
 
   const zones = [
@@ -121,7 +127,7 @@ export default async () => {
     }),
   ]
 
-  const entities = [mainMarker, blocks.entities, plants]
+  const entities = [mainMarker, blocks.entities, randomGraveyardJunk]
 
   const meshes = [blocks.meshes]
 
