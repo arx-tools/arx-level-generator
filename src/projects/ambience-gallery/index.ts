@@ -122,10 +122,10 @@ export default async () => {
     createEastWestWall(new Vector3(-160, 0, -850), 14),
     createNorthSouthWall(new Vector3(-200, 0, 850), 8),
     createNorthSouthWall(new Vector3(2900, 0, 850), 8),
-    createNWCorner(),
-    createSWCorner(),
-    createNECorner(),
-    createSECorner(),
+    await createNWCorner(),
+    await createSWCorner(),
+    await createNECorner(),
+    await createSECorner(),
   ]
 
   map.zones.push(...zones.flat())
