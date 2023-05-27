@@ -51,6 +51,7 @@ export default async () => {
         return undefined
       }
 
+      // TODO: turn polygons inside out by reversing polygon winding
       let flags = ArxPolygonFlags.None | ArxPolygonFlags.DoubleSided
 
       const textureIdx = parseInt(texture.filename.split('_')[3])
