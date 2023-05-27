@@ -1,38 +1,75 @@
+import { Material } from '@src/Material.js'
 import { Texture } from '@src/Texture.js'
+import { ArxPolygonFlags } from 'arx-convert/types'
 
 export const TEXTURE_DIR = 'projects/the-backrooms/textures'
 
-export const carpet = Texture.fromCustomFile({
-  sourcePath: TEXTURE_DIR,
-  filename: 'backrooms-[fabric]-carpet-dirty.jpg',
-})
+export const carpet = Material.fromTexture(
+  await Texture.fromCustomFile({
+    sourcePath: TEXTURE_DIR,
+    filename: 'backrooms-[fabric]-carpet-dirty.jpg',
+  }),
+  {
+    flags: ArxPolygonFlags.Tiled,
+  },
+)
 
-export const wallpaper = Texture.fromCustomFile({
-  sourcePath: TEXTURE_DIR,
-  filename: 'backrooms-[stone]-wall.jpg',
-})
+export const wallpaper = Material.fromTexture(
+  await Texture.fromCustomFile({
+    sourcePath: TEXTURE_DIR,
+    filename: 'backrooms-[stone]-wall.jpg',
+  }),
+  {
+    flags: ArxPolygonFlags.Tiled,
+  },
+)
 
-export const wallpaperDotted = Texture.fromCustomFile({
-  sourcePath: TEXTURE_DIR,
-  filename: 'backrooms-[stone]-wall2.jpg',
-})
+export const wallpaperDotted = Material.fromTexture(
+  await Texture.fromCustomFile({
+    sourcePath: TEXTURE_DIR,
+    filename: 'backrooms-[stone]-wall2.jpg',
+  }),
+  {
+    flags: ArxPolygonFlags.Tiled,
+  },
+)
 
-export const ceilingTile = Texture.fromCustomFile({
-  sourcePath: TEXTURE_DIR,
-  filename: 'backrooms-[stone]-ceiling-tile.jpg',
-})
+export const ceilingTile = Material.fromTexture(
+  await Texture.fromCustomFile({
+    sourcePath: TEXTURE_DIR,
+    filename: 'backrooms-[stone]-ceiling-tile.jpg',
+  }),
+  {
+    flags: ArxPolygonFlags.Tiled,
+  },
+)
 
-export const mold = Texture.fromCustomFile({
-  sourcePath: TEXTURE_DIR,
-  filename: 'mold-edge.jpg',
-})
+export const mold = Material.fromTexture(
+  await Texture.fromCustomFile({
+    sourcePath: TEXTURE_DIR,
+    filename: 'mold-edge.jpg',
+  }),
+  {
+    flags: ArxPolygonFlags.Tiled,
+  },
+)
 
-export const whiteMosaicTiles = Texture.fromCustomFile({
-  sourcePath: TEXTURE_DIR,
-  filename: 'pool-room-white-mosaic-tile.jpg',
-})
+export const whiteMosaicTiles = Material.fromTexture(
+  await Texture.fromCustomFile({
+    sourcePath: TEXTURE_DIR,
+    filename: 'pool-room-white-mosaic-tile.jpg',
+  }),
+  {
+    flags: ArxPolygonFlags.Tiled,
+  },
+)
 
-export const fireExitDoor = Texture.fromCustomFile({
-  sourcePath: TEXTURE_DIR,
-  filename: 'fire-exit-door.bmp',
-})
+export const fireExitDoor = Material.fromTexture(
+  await Texture.fromCustomFile({
+    sourcePath: TEXTURE_DIR,
+    filename: 'fire-exit-door.bmp',
+  }),
+  {
+    flags: ArxPolygonFlags.Tiled,
+  },
+)

@@ -10,7 +10,8 @@ import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { BufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial, Vector2 } from 'three'
 import { Color } from '@src/Color.js'
-import { fileExists } from '@src/helpers.js'
+import { applyTransformations, fileExists } from '@src/helpers.js'
+import { toArxCoordinateSystem } from './toArxCoordinateSystem.js'
 
 type OBJProperties = {
   position?: Vector3
@@ -113,7 +114,14 @@ export const loadOBJ = async (
     console.warn(`loadOBJ warning: ${name}.obj is not triangulated`)
   }
 
-  const obj = objLoader.parse(rawObj)
+  let obj = objLoader.parse(rawObj)
+
+  // the Y axis in Arx is flipped
+  obj = toArxCoordinateSystem(obj)
+
+  // 1 meter in blender = 1 centimeter in Arx
+  obj.scale.multiply(new Vector3(100, 100, 100))
+  applyTransformations(obj)
 
   const meshes: Mesh[] = []
 

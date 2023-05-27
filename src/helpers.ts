@@ -6,7 +6,7 @@ import { Vector3 } from './Vector3.js'
 
 export const getPackageVersion = async () => {
   try {
-    const rawIn = await fs.promises.readFile(path.resolve(__dirname, '../package.json'), 'utf-8')
+    const rawIn = await fs.promises.readFile(path.resolve('./package.json'), 'utf-8')
     const { version } = JSON.parse(rawIn) as { version: string }
     return version
   } catch (error) {

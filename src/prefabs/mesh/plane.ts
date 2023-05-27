@@ -3,6 +3,7 @@ import { Color } from '@src/Color.js'
 import { applyTransformations } from '@src/helpers.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { TextureOrMaterial } from '@src/types.js'
+import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
 export const INDEXED = 'indexed'
 export const NONINDEXED = 'non-indexed'
@@ -17,7 +18,8 @@ export const createPlaneMesh = async (
   const divisionX = Math.ceil(dimensions.x / tileSize)
   const divisionY = Math.ceil(dimensions.y / tileSize)
 
-  const geometry = new PlaneGeometry(dimensions.x, dimensions.y, divisionX, divisionY)
+  let geometry = new PlaneGeometry(dimensions.x, dimensions.y, divisionX, divisionY)
+  geometry = toArxCoordinateSystem(geometry)
 
   scaleUV(new Vector2(dimensions.x / tileSize, dimensions.y / tileSize), geometry)
 
@@ -31,7 +33,7 @@ export const createPlaneMesh = async (
   })
 
   const mesh = new Mesh(isIndexed === INDEXED ? geometry : geometry.toNonIndexed(), material)
-  mesh.rotateX(MathUtils.degToRad(-90))
+  mesh.rotateX(MathUtils.degToRad(90))
   applyTransformations(mesh)
   return mesh
 }

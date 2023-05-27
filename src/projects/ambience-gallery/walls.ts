@@ -5,14 +5,17 @@ import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
+import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 import { translateUV } from '@tools/mesh/translateUV.js'
 import { MathUtils, Vector2, BoxGeometry, MeshBasicMaterial, Mesh, Group, CylinderGeometry } from 'three'
 
 const createIronPole = (position: Vector3, { x: width, y: height }: Vector2) => {
-  const geometry = new CylinderGeometry(width, width, height, 4, 2, false, MathUtils.degToRad(randomBetween(0, 120)))
+  let geometry = new CylinderGeometry(width, width, height, 4, 2, false, MathUtils.degToRad(randomBetween(0, 120)))
+  geometry = toArxCoordinateSystem(geometry)
+
   scaleUV(new Vector2(0.01 * width, 1), geometry)
   translateUV(new Vector2(0.5, 0), geometry)
-  geometry.translate(position.x, position.y + height / 2 - 10, position.z)
+  geometry.translate(position.x, position.y - height / 2 + 10, position.z)
 
   const material = new MeshBasicMaterial({
     color: Color.white.darken(50).getHex(),
@@ -23,10 +26,12 @@ const createIronPole = (position: Vector3, { x: width, y: height }: Vector2) => 
 }
 
 const createHorizontalBar = (position: Vector3) => {
-  const geometry = new BoxGeometry(220, 5, 8, 3, 1, 1)
+  let geometry = new BoxGeometry(220, 5, 8, 3, 1, 1)
+  geometry = toArxCoordinateSystem(geometry)
+
   scaleUV(new Vector2(1, 0.01 * 8), geometry)
   translateUV(new Vector2(0.5, 0), geometry)
-  geometry.translate(position.x + 110 - 20, position.y + 50, position.z)
+  geometry.translate(position.x + 110 - 20, position.y - 50, position.z)
 
   const material = new MeshBasicMaterial({
     color: Color.white.darken(50).getHex(),
@@ -66,7 +71,7 @@ const createFenceSegment = (hasEdgePole: boolean) => {
   }
 
   group.add(createHorizontalBar(new Vector3(0, 0, 0)))
-  group.add(createHorizontalBar(new Vector3(0, 100, 0)))
+  group.add(createHorizontalBar(new Vector3(0, -100, 0)))
 
   return group
 }

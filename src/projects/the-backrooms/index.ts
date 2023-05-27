@@ -22,7 +22,7 @@ import { Interactivity } from '@scripting/properties/Interactivity.js'
 import { Label } from '@scripting/properties/Label.js'
 import { WallmountedWire } from './WallmountedWire.js'
 import { Transparency } from '@scripting/properties/Transparency.js'
-import { CableDrum } from './CableDrum.js'
+// import { CableDrum } from './CableDrum.js'
 import { TweakSkin } from '@scripting/commands/TweakSkin.js'
 import { Cube } from '@prefabs/entity/Cube.js'
 
@@ -336,12 +336,14 @@ export default async () => {
   })
   mountedWire3.isMounted = false
 
+  /*
   const rootCableDrum = new CableDrum()
   rootCableDrum.script?.makeIntoRoot()
+  */
 
   const wires = [mountedWire1, mountedWire2, mountedWire3]
 
-  map.entities.push(slot, stoneInSlot, lock, door, /*key,*/ ...wires, rootCableDrum)
+  map.entities.push(slot, stoneInSlot, lock, door, /*key,*/ ...wires /*, rootCableDrum*/)
 
   // for (let i = 0; i < 10; i++) {
   //   const cube = new Cube({

@@ -56,15 +56,15 @@ const createWall = async (position: Vector3, dimensions: Vector2, direction: 'no
 
   const wall = await createPlaneMesh(dimensions, 100, Color.white.darken(50), metal)
   scaleUV(new Vector2((1 / 3) * 2, (1 / 3) * 2), wall.geometry)
-  wall.rotateX(MathUtils.degToRad(-90))
+  wall.rotateX(MathUtils.degToRad(90))
   if (direction === 'south') {
     wall.rotateZ(MathUtils.degToRad(180))
   }
   if (direction === 'west') {
-    wall.rotateZ(MathUtils.degToRad(-90))
+    wall.rotateZ(MathUtils.degToRad(90))
   }
   if (direction === 'east') {
-    wall.rotateZ(MathUtils.degToRad(90))
+    wall.rotateZ(MathUtils.degToRad(-90))
   }
   applyTransformations(wall)
 
@@ -98,7 +98,7 @@ const createCeiling = async (position: Vector3, dimensions: Vector2) => {
   return [ceiling]
 }
 
-const createSynth = async (position: Vector3, dimensions: Vector2) => {
+const createSynthPanel = async (position: Vector3, dimensions: Vector2) => {
   const metal = Material.fromTexture(
     await Texture.fromCustomFile({
       filename: 'dark-[metal]-grid.jpg',
@@ -110,7 +110,7 @@ const createSynth = async (position: Vector3, dimensions: Vector2) => {
   )
 
   const panel = await createPlaneMesh(dimensions, 100, Color.white.darken(50), metal)
-  panel.rotateX(MathUtils.degToRad(-90))
+  panel.rotateX(MathUtils.degToRad(90))
   scaleUV(new Vector2(0.5, 0.5), panel.geometry)
   applyTransformations(panel)
   panel.translateX(position.x)
@@ -308,32 +308,32 @@ export default async () => {
   // ----------------------
 
   const speakerL = await loadOBJ('models/speaker/speaker', {
-    position: new Vector3(6000 - 540, 200, 6000 + 350),
-    scale: 30,
-    rotation: new Rotation(MathUtils.degToRad(-15), MathUtils.degToRad(60), MathUtils.degToRad(-15)),
+    position: new Vector3(6000 - 540, -200, 6000 + 350),
+    scale: 0.3,
+    rotation: new Rotation(MathUtils.degToRad(15), MathUtils.degToRad(60), MathUtils.degToRad(15)),
     materialFlags: ArxPolygonFlags.None,
   })
 
   const speakerR = await loadOBJ('models/speaker/speaker', {
-    position: new Vector3(6000 + 540, 200, 6000 + 350),
-    scale: 30,
-    rotation: new Rotation(MathUtils.degToRad(15), MathUtils.degToRad(180 - 60), MathUtils.degToRad(15)),
+    position: new Vector3(6000 + 540, -200, 6000 + 350),
+    scale: 0.3,
+    rotation: new Rotation(MathUtils.degToRad(-15), MathUtils.degToRad(180 - 60), MathUtils.degToRad(-15)),
     materialFlags: ArxPolygonFlags.None,
   })
 
-  const synthPanel = await createSynth(
-    new Vector3(6000 + 0, 150, 6000 + 400),
+  const synthPanel = await createSynthPanel(
+    new Vector3(6000 + 0, -150, 6000 + 400),
     new Vector2(formattedButtonPattern[0].length * 20 + 70, 190),
   )
 
   const floor = await createFloor(new Vector3(6000, 0, 6000 - 425), new Vector2(1200, 1700))
 
-  const wallN = await createWall(new Vector3(6000, 150, 6000 + 425), new Vector2(1200, 300), 'north')
-  const wallS = await createWall(new Vector3(6000, 150, 6000 - 850 - 425), new Vector2(1200, 300), 'south')
-  const wallW = await createWall(new Vector3(6000 - 600, 150, 6000 - 425), new Vector2(1700, 300), 'west')
-  const wallE = await createWall(new Vector3(6000 + 600, 150, 6000 - 425), new Vector2(1700, 300), 'east')
+  const wallN = await createWall(new Vector3(6000, -150, 6000 + 425), new Vector2(1200, 300), 'north')
+  const wallS = await createWall(new Vector3(6000, -150, 6000 - 850 - 425), new Vector2(1200, 300), 'south')
+  const wallW = await createWall(new Vector3(6000 - 600, -150, 6000 - 425), new Vector2(1700, 300), 'west')
+  const wallE = await createWall(new Vector3(6000 + 600, -150, 6000 - 425), new Vector2(1700, 300), 'east')
 
-  const ceiling = await createCeiling(new Vector3(6000, 300, 6000 - 425), new Vector2(1200, 1700))
+  const ceiling = await createCeiling(new Vector3(6000, -300, 6000 - 425), new Vector2(1200, 1700))
 
   const meshes = [speakerL, speakerR, synthPanel, floor, wallN, wallS, wallW, wallE, ceiling].flat()
 

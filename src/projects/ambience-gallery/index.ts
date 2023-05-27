@@ -57,7 +57,7 @@ export default async () => {
 
   const moon = createMoon({
     position: new Vector3(width + 500, -1000, -1000),
-    size: 30,
+    size: 50,
   })
 
   const nwCorner = await createNWCorner()
@@ -166,9 +166,9 @@ export default async () => {
   // -----------------------------
 
   const tree = await loadOBJ('models/tree/tree', {
-    position: new Vector3(4770, 0, 1450),
-    scale: new Vector3(80, 70, 80),
-    rotation: new Rotation(0, MathUtils.degToRad(80), 0),
+    position: new Vector3(4770, -10, 1450),
+    scale: new Vector3(0.8, 0.7, 0.8),
+    rotation: new Rotation(0, MathUtils.degToRad(70), 0),
     fallbackTexture: Texture.l2TrollWoodPillar08,
   })
 

@@ -4,7 +4,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { OriginalLevel } from '@src/types.js'
 
-const { LEVELFILES = path.resolve(__dirname, '../pkware-test-files') } = process.env
+const { LEVELFILES = path.resolve('../pkware-test-files') } = process.env
 
 export class LevelLoader {
   levelIdx: OriginalLevel
@@ -80,7 +80,7 @@ export class LevelLoader {
   }
 
   private getJsonFolder() {
-    return path.resolve(__dirname, `../.cache/levels/level${this.levelIdx}`)
+    return path.resolve(`../.cache/levels/level${this.levelIdx}`)
   }
 
   private getBinaryFolder() {

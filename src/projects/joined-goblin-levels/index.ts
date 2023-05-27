@@ -24,6 +24,7 @@ export default async () => {
 
   /*
   const box = new Box3(new Vector3(10348, 9, 9036), new Vector3(12004, 950, 9544))
+  box = toArxCoordinateSystem(box)
   map2.polygons
     .filter((polygon) => polygon.isPartiallyWithin(box))
     .forEach((polygon) => {

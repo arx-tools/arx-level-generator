@@ -26,7 +26,7 @@ export default async () => {
   map.player.orientation.y = MathUtils.degToRad(-90)
   map.hud.hide(HudElements.Minimap)
 
-  const roomMesh = await createRoomMesh(new Vector3(600, 400, 600), {
+  const roomMesh = await createRoomMesh(new Vector3(700, 400, 700), {
     textures: {
       wall: wallpaper,
       floor: carpet,

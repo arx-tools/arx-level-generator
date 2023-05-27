@@ -186,7 +186,7 @@ export class Polygons extends Array<Polygon> {
         return {
           vertex: new Vertex(
             roundToNDecimals(vertexPrecision, vector.x),
-            roundToNDecimals(vertexPrecision, vector.y * -1),
+            roundToNDecimals(vertexPrecision, vector.y),
             roundToNDecimals(vertexPrecision, vector.z),
             uvs.getX(idx),
             uvs.getY(idx),

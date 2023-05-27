@@ -10,6 +10,7 @@ import { translateUV } from '@tools/mesh/translateUV.js'
 import { ExtrudeGeometry, MathUtils, Mesh, MeshBasicMaterial, Shape, Vector2 } from 'three'
 import { ambiences } from './constants.js'
 import { createZone } from '@tools/createZone.js'
+import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
 // TODO: turn this into 3 functions
 export const createStoneBlocks = (rowSize: number, depth: number, achievementManager: Entity) => {
@@ -30,17 +31,18 @@ export const createStoneBlocks = (rowSize: number, depth: number, achievementMan
   shape.lineTo(size.x - extrudeSettings.bevelSize * 2, size.z - extrudeSettings.bevelSize * 2)
   shape.lineTo(0, size.z - extrudeSettings.bevelSize * 2)
 
-  const material = new MeshBasicMaterial({
-    color: Color.white.darken(50).getHex(),
-    map: Texture.l4YlsideStoneGround01,
-  })
-
-  const stoneBlockGeometry = new ExtrudeGeometry(shape, extrudeSettings)
+  let stoneBlockGeometry = new ExtrudeGeometry(shape, extrudeSettings)
+  stoneBlockGeometry = toArxCoordinateSystem(stoneBlockGeometry)
   scaleUV(
     new Vector2(1 / (size.x + extrudeSettings.bevelSize * 2), 1 / (size.z + extrudeSettings.bevelSize * 2)),
     stoneBlockGeometry,
   )
   translateUV(new Vector2(0.1, 0), stoneBlockGeometry)
+
+  const material = new MeshBasicMaterial({
+    color: Color.white.darken(50).getHex(),
+    map: Texture.l4YlsideStoneGround01,
+  })
 
   const zones: Zone[] = []
   const entities: Entity[] = []
@@ -79,9 +81,9 @@ export const createStoneBlocks = (rowSize: number, depth: number, achievementMan
       entities.push(marker)
 
       const stoneBlock = new Mesh(stoneBlockGeometry.clone(), material)
-      stoneBlock.translateX(pos.x + extrudeSettings.bevelSize)
+      stoneBlock.translateX(pos.x - extrudeSettings.bevelSize + 20)
       stoneBlock.translateY(pos.y - extrudeSettings.depth + heightOffset)
-      stoneBlock.translateZ(pos.z + (100 - extrudeSettings.bevelSize))
+      stoneBlock.translateZ(pos.z - extrudeSettings.bevelSize + 50)
       stoneBlock.rotateX(MathUtils.degToRad(-90 + randomBetween(-5, 5)))
       stoneBlock.rotateY(MathUtils.degToRad(randomBetween(-5, 5)))
       meshes.push(stoneBlock)

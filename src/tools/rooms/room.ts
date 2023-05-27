@@ -36,15 +36,15 @@ const createNorthWall = async (dimensions: Vector3, texture: TextureOrMaterial, 
   const group = new Group()
 
   const wall = await createPlaneMesh(new Vector2(width, height), TILE_SIZE, Color.white.darken(50), texture)
-  wall.translateZ(depth / 2).translateY(height / 2)
-  wall.rotateX(MathUtils.degToRad(-90))
+  wall.translateZ(depth / 2).translateY(-height / 2)
+  wall.rotateX(MathUtils.degToRad(90))
   scaleUV(TILE_SCALE, wall.geometry)
   group.add(wall)
 
   if (decal) {
     const decalOnWall = await createPlaneMesh(new Vector2(width, TILE_SIZE), TILE_SIZE, Color.white.darken(50), decal)
-    decalOnWall.translateZ(depth / 2).translateY(50)
-    decalOnWall.rotateX(MathUtils.degToRad(-90))
+    decalOnWall.translateZ(depth / 2).translateY(-50)
+    decalOnWall.rotateX(MathUtils.degToRad(90))
     scaleUV(TILE_SCALE, decalOnWall.geometry)
     group.add(decalOnWall)
   }
@@ -58,15 +58,15 @@ const createSouthWall = async (dimensions: Vector3, texture: TextureOrMaterial, 
   const group = new Group()
 
   const wall = await createPlaneMesh(new Vector2(width, height), TILE_SIZE, Color.white.darken(50), texture)
-  wall.translateZ(-depth / 2).translateY(height / 2)
-  wall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(180))
+  wall.translateZ(-depth / 2).translateY(-height / 2)
+  wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(180))
   scaleUV(TILE_SCALE, wall.geometry)
   group.add(wall)
 
   if (decal) {
     const decalOnWall = await createPlaneMesh(new Vector2(width, TILE_SIZE), TILE_SIZE, Color.white.darken(50), decal)
-    decalOnWall.translateZ(-depth / 2).translateY(50)
-    decalOnWall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(180))
+    decalOnWall.translateZ(-depth / 2).translateY(-50)
+    decalOnWall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(180))
     scaleUV(TILE_SCALE, decalOnWall.geometry)
     group.add(decalOnWall)
   }
@@ -80,15 +80,15 @@ const createWestWall = async (dimensions: Vector3, texture: TextureOrMaterial, d
   const group = new Group()
 
   const wall = await createPlaneMesh(new Vector2(depth, height), TILE_SIZE, Color.white.darken(50), texture)
-  wall.translateX(-width / 2).translateY(height / 2)
-  wall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(-90))
+  wall.translateX(-width / 2).translateY(-height / 2)
+  wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(90))
   scaleUV(TILE_SCALE, wall.geometry)
   group.add(wall)
 
   if (decal) {
     const decalOnWall = await createPlaneMesh(new Vector2(depth, TILE_SIZE), TILE_SIZE, Color.white.darken(50), decal)
-    decalOnWall.translateX(-width / 2).translateY(50)
-    decalOnWall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(-90))
+    decalOnWall.translateX(-width / 2).translateY(-50)
+    decalOnWall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(90))
     scaleUV(TILE_SCALE, decalOnWall.geometry)
     group.add(decalOnWall)
   }
@@ -102,15 +102,15 @@ const createEastWall = async (dimensions: Vector3, texture: TextureOrMaterial, d
   const group = new Group()
 
   const wall = await createPlaneMesh(new Vector2(depth, height), TILE_SIZE, Color.white.darken(50), texture)
-  wall.translateX(width / 2).translateY(height / 2)
-  wall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(90))
+  wall.translateX(width / 2).translateY(-height / 2)
+  wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(-90))
   scaleUV(TILE_SCALE, wall.geometry)
   group.add(wall)
 
   if (decal) {
     const decalOnWall = await createPlaneMesh(new Vector2(depth, TILE_SIZE), TILE_SIZE, Color.white.darken(50), decal)
-    decalOnWall.translateX(width / 2).translateY(50)
-    decalOnWall.rotateX(MathUtils.degToRad(-90)).rotateZ(MathUtils.degToRad(90))
+    decalOnWall.translateX(width / 2).translateY(-50)
+    decalOnWall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(-90))
     scaleUV(TILE_SCALE, decalOnWall.geometry)
     group.add(decalOnWall)
   }
@@ -122,7 +122,7 @@ const createCeiling = async (dimensions: Vector3, texture: TextureOrMaterial) =>
   const { x: width, y: height, z: depth } = dimensions
 
   const mesh = await createPlaneMesh(new Vector2(width, depth), TILE_SIZE, Color.white.darken(50), texture)
-  mesh.translateY(height)
+  mesh.translateY(-height)
   mesh.rotateX(MathUtils.degToRad(180))
   scaleUV(TILE_SCALE, mesh.geometry)
   return mesh

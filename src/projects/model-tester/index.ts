@@ -9,11 +9,13 @@ import { Vector3 } from '@src/Vector3.js'
 import { Zone } from '@src/Zone.js'
 import { applyTransformations } from '@src/helpers.js'
 import { createLight } from '@tools/createLight.js'
+import { createZone } from '@tools/createZone.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
+import { translateUV } from '@tools/mesh/translateUV.js'
 import { ArxPolygonFlags } from 'arx-convert/types'
 import path from 'node:path'
 import seedrandom from 'seedrandom'
-import { EdgesGeometry, MathUtils, Shape, ShapeGeometry, Vector2 } from 'three'
+import { MathUtils, Vector2 } from 'three'
 
 const createFloor = async (width: number, height: number) => {
   const mesh = await createPlaneMesh(
@@ -24,25 +26,16 @@ const createFloor = async (width: number, height: number) => {
       flags: ArxPolygonFlags.None,
     }),
   )
+
   return ArxMap.fromThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY })
 }
 
 const createSpawnZone = () => {
-  const shape = new Shape()
-  shape.lineTo(100, 0)
-  shape.lineTo(100, 100)
-  shape.lineTo(0, 100)
-
-  const geometry = new ShapeGeometry(shape)
-  const edge = new EdgesGeometry(geometry)
-  edge.rotateX(MathUtils.degToRad(90))
-
-  const zone = Zone.fromThreejsGeometry(edge, {
+  return createZone({
+    size: new Vector3(100, Infinity, 100),
     name: 'spawn',
     backgroundColor: Color.fromCSS('skyblue'),
   })
-
-  return zone
 }
 
 export default async () => {
@@ -67,61 +60,61 @@ export default async () => {
   map.add(await createFloor(1000, 2000), true)
 
   const ceilingLamp = await loadOBJ('models/ceiling-lamp/ceiling-lamp', {
-    position: new Vector3(0, 300, 500),
-    scale: 50,
+    position: new Vector3(0, -300, 500),
+    scale: 0.5,
     scaleUV: 5,
     materialFlags: ArxPolygonFlags.Glow,
   })
 
   const fountain = await loadOBJ('models/fountain/fountain', {
-    position: new Vector3(0, 3, 500),
-    scale: 2,
+    position: new Vector3(0, -3, 500),
+    scale: 0.02,
     scaleUV: new Vector2(1, -1),
   })
 
   const tree = await loadOBJ('models/tree/tree', {
     position: new Vector3(300, 0, 800),
-    scale: 30,
+    scale: 0.3,
     fallbackTexture: Texture.l2TrollWoodPillar08,
   })
 
   const ladder = await loadOBJ('models/ladder/ladder', {
-    position: new Vector3(300, 100, 740),
-    scale: 10,
-    rotation: new Rotation(MathUtils.degToRad(-70), 0, 0),
+    position: new Vector3(300, -100, 740),
+    scale: 0.1,
+    rotation: new Rotation(MathUtils.degToRad(70), 0, 0),
     scaleUV: new Vector2(1, -1),
   })
 
   const cableDrum = await loadOBJ('models/cable-drum/cable-drum', {
-    position: new Vector3(-200, 15, 600),
-    scale: 10,
+    position: new Vector3(-200, -15, 600),
+    scale: 0.1,
   })
 
   const teddy = await loadOBJ('models/teddy-bear/teddy-bear', {
-    position: new Vector3(-175, 150, 600),
-    scale: 10,
-    rotation: new Rotation(0, 0, MathUtils.degToRad(30)),
+    position: new Vector3(-175, -150, 600),
+    scale: 0.1,
+    rotation: new Rotation(0, 0, MathUtils.degToRad(-30)),
   })
 
   const megaphone = await loadOBJ('models/megaphone/megaphone', {
-    position: new Vector3(0, 100, 700),
-    scale: 20,
+    position: new Vector3(0, -100, 700),
+    scale: 0.2,
   })
 
   const speaker = await loadOBJ('models/speaker/speaker', {
-    position: new Vector3(-310, 50, 850),
-    scale: 10,
+    position: new Vector3(-310, -50, 850),
+    scale: 0.1,
   })
 
   const pole = await loadOBJ('models/pole/pole', {
-    position: new Vector3(-200, 50, 850),
-    scale: 10,
+    position: new Vector3(-200, -50, 850),
+    scale: 0.1,
     materialFlags: ArxPolygonFlags.None,
   })
 
   const area51Shaft = await loadOBJ('models/area51-shaft/area51-shaft', {
-    position: new Vector3(-1230, -150, -1100),
-    scale: 40,
+    position: new Vector3(-1230, 150, -1100),
+    scale: 0.4,
     rotation: new Rotation(0, MathUtils.degToRad(180), 0),
     fallbackTexture: await Texture.fromCustomFile({
       filename: '[stone]-concrete.jpg',
@@ -129,7 +122,26 @@ export default async () => {
     }),
   })
 
-  const importedModels = [teddy, tree, cableDrum, ceilingLamp, fountain, ladder, megaphone, speaker, pole, area51Shaft]
+  // it's 2m x 2m x 2m
+  const blenderDefaultCube = await loadOBJ('models/blender-default-cube/blender-default-cube', {
+    position: new Vector3(-350, -50, 50),
+    scale: 0.5,
+    scaleUV: new Vector2(8, 8),
+  })
+
+  const importedModels = [
+    teddy,
+    tree,
+    cableDrum,
+    ceilingLamp,
+    fountain,
+    ladder,
+    megaphone,
+    speaker,
+    pole,
+    area51Shaft,
+    blenderDefaultCube,
+  ]
 
   importedModels.flat().forEach((mesh) => {
     mesh.translateX(map.config.offset.x)

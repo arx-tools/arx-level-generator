@@ -1,6 +1,6 @@
 import path from 'node:path'
 import seedrandom from 'seedrandom'
-import { EdgesGeometry, MathUtils, Shape, ShapeGeometry, Vector2 } from 'three'
+import { MathUtils, Vector2 } from 'three'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
@@ -9,7 +9,6 @@ import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations } from '@src/helpers.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
-import { Zone } from '@src/Zone.js'
 import { createZone } from '@tools/createZone.js'
 
 const facadeRatio = 1000 / 1319
@@ -37,11 +36,11 @@ const createWall = async (width: number, height: number) => {
       sourcePath: 'projects/city/textures',
     }),
   )
-  mesh.rotateX(MathUtils.degToRad(-90))
+  mesh.rotateX(MathUtils.degToRad(90))
   scaleUV(new Vector2(0.1 / 1, 0.1 / (facadeRatio / 1)), mesh.geometry)
   applyTransformations(mesh)
   mesh.translateX(0)
-  mesh.translateY(350)
+  mesh.translateY(-350)
   mesh.translateZ(400)
   return ArxMap.fromThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY })
 }

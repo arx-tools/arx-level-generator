@@ -7,9 +7,12 @@ import { Vector3 } from '@src/Vector3.js'
 import { createLight } from '@tools/createLight.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { translateUV } from '@tools/mesh/translateUV.js'
+import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
 export const createMoon = ({ position, size }: { position: Vector3; size: number }) => {
-  const geometry = new SphereGeometry(size, 10, 10)
+  let geometry = new SphereGeometry(size, 10, 10)
+  geometry = toArxCoordinateSystem(geometry)
+
   scaleUV(new Vector2(0.2, 0.2), geometry)
   translateUV(new Vector2(0.7, 0.7), geometry)
 
@@ -22,7 +25,7 @@ export const createMoon = ({ position, size }: { position: Vector3; size: number
 
   const mesh = new Mesh(geometry, material)
   mesh.translateX(position.x - 100)
-  mesh.translateY(-position.y + 100)
+  mesh.translateY(position.y + 100)
   mesh.translateZ(position.z - 50)
   mesh.rotateY(MathUtils.degToRad(180))
 
