@@ -72,8 +72,8 @@ export const loadOBJ = async (
 
         if (typeof materialInfo.map_kd !== 'undefined') {
           const textureFromFile = await Texture.fromCustomFile({
-            filename: materialInfo.map_kd,
-            sourcePath: dir,
+            filename: path.parse(materialInfo.map_kd).base,
+            sourcePath: [dir, path.parse(materialInfo.map_kd).dir].filter((row) => row !== '').join('/'),
           })
 
           textureMap = Material.fromTexture(textureFromFile, {
