@@ -17,7 +17,9 @@ export type ZoneConstructorProps = {
   height?: number
   points: ZonePoint[]
   backgroundColor?: Color
+  /** default value: 2800 */
   drawDistance?: number
+  /** default value: Ambience.none */
   ambience?: Ambience
 }
 
