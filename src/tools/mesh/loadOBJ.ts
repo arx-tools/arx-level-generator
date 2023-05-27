@@ -18,7 +18,7 @@ type OBJProperties = {
   scale?: number | Vector3
   scaleUV?: number | Vector2
   rotation?: Rotation
-  materialFlags?: ArxPolygonFlags
+  materialFlags?: ArxPolygonFlags | ((texture: Texture) => ArxPolygonFlags | undefined)
   fallbackTexture?: Texture
 }
 
@@ -55,9 +55,17 @@ export const loadOBJ = async (
 
   let materials: MeshBasicMaterial | Record<string, MeshBasicMaterial>
 
-  const defaultTexture = Material.fromTexture(await missingTexture, {
-    flags: materialFlags ?? ArxPolygonFlags.None,
-  })
+  let defaultTexture: Material
+  if (typeof materialFlags === 'function') {
+    const flags = materialFlags(await missingTexture)
+    defaultTexture = Material.fromTexture(await missingTexture, {
+      flags: flags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
+    })
+  } else {
+    defaultTexture = Material.fromTexture(await missingTexture, {
+      flags: materialFlags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
+    })
+  }
 
   if (await fileExists(mtlSrc)) {
     try {
@@ -76,9 +84,16 @@ export const loadOBJ = async (
             sourcePath: [dir, path.parse(materialInfo.map_kd).dir].filter((row) => row !== '').join('/'),
           })
 
-          textureMap = Material.fromTexture(textureFromFile, {
-            flags: materialFlags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
-          })
+          if (typeof materialFlags === 'function') {
+            const flags = materialFlags(textureFromFile)
+            textureMap = Material.fromTexture(textureFromFile, {
+              flags: flags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
+            })
+          } else {
+            textureMap = Material.fromTexture(textureFromFile, {
+              flags: materialFlags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
+            })
+          }
         }
 
         const material = new MeshBasicMaterial({
