@@ -8,6 +8,7 @@ import modelTester from '@projects/model-tester/index.js'
 import city from '@projects/city/index.js'
 import escapeFromOffice from '@projects/escape-from-office/index.js'
 import forest from '@projects/forest/index.js'
+import csItaly from '@projects/cs_italy/index.js'
 
 const { PROJECT } = process.env
 
@@ -41,6 +42,9 @@ switch (PROJECT) {
     break
   case 'forest':
     forest()
+    break
+  case 'cs_italy':
+    csItaly()
     break
   default:
     throw new Error(`project "${PROJECT}" not found`)

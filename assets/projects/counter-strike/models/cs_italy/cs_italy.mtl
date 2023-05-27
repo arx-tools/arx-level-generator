@@ -12,8 +12,8 @@ newmtl texture_0
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_0.jpg
-	map_Kd Amadeus maps\cs_italy_texture_0.jpg
+	map_Ka textures/cs_italy_texture_0.jpg
+	map_Kd textures/cs_italy_texture_0.jpg
 
 newmtl texture_1
 	Ns 30.0000
@@ -26,8 +26,8 @@ newmtl texture_1
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_1.jpg
-	map_Kd Amadeus maps\cs_italy_texture_1.jpg
+	map_Ka textures/cs_italy_texture_1.jpg
+	map_Kd textures/cs_italy_texture_1.jpg
 
 newmtl texture_2
 	Ns 30.0000
@@ -40,8 +40,8 @@ newmtl texture_2
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_2.jpg
-	map_Kd Amadeus maps\cs_italy_texture_2.jpg
+	map_Ka textures/cs_italy_texture_2.jpg
+	map_Kd textures/cs_italy_texture_2.jpg
 
 newmtl texture_3
 	Ns 30.0000
@@ -54,8 +54,8 @@ newmtl texture_3
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_3.jpg
-	map_Kd Amadeus maps\cs_italy_texture_3.jpg
+	map_Ka textures/cs_italy_texture_3.jpg
+	map_Kd textures/cs_italy_texture_3.jpg
 
 newmtl texture_4
 	Ns 30.0000
@@ -68,8 +68,8 @@ newmtl texture_4
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_4.jpg
-	map_Kd Amadeus maps\cs_italy_texture_4.jpg
+	map_Ka textures/cs_italy_texture_4.jpg
+	map_Kd textures/cs_italy_texture_4.jpg
 
 newmtl texture_5
 	Ns 30.0000
@@ -82,8 +82,8 @@ newmtl texture_5
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_5.jpg
-	map_Kd Amadeus maps\cs_italy_texture_5.jpg
+	map_Ka textures/cs_italy_texture_5.jpg
+	map_Kd textures/cs_italy_texture_5.jpg
 
 newmtl texture_6
 	Ns 30.0000
@@ -96,8 +96,8 @@ newmtl texture_6
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_6.jpg
-	map_Kd Amadeus maps\cs_italy_texture_6.jpg
+	map_Ka textures/cs_italy_texture_6.jpg
+	map_Kd textures/cs_italy_texture_6.jpg
 
 newmtl texture_7
 	Ns 30.0000
@@ -110,8 +110,8 @@ newmtl texture_7
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_7.jpg
-	map_Kd Amadeus maps\cs_italy_texture_7.jpg
+	map_Ka textures/cs_italy_texture_7.jpg
+	map_Kd textures/cs_italy_texture_7.jpg
 
 newmtl texture_8
 	Ns 30.0000
@@ -124,8 +124,8 @@ newmtl texture_8
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_8.jpg
-	map_Kd Amadeus maps\cs_italy_texture_8.jpg
+	map_Ka textures/cs_italy_texture_8.jpg
+	map_Kd textures/cs_italy_texture_8.jpg
 
 newmtl texture_9
 	Ns 30.0000
@@ -138,8 +138,8 @@ newmtl texture_9
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_9.jpg
-	map_Kd Amadeus maps\cs_italy_texture_9.jpg
+	map_Ka textures/cs_italy_texture_9.jpg
+	map_Kd textures/cs_italy_texture_9.jpg
 
 newmtl texture_10
 	Ns 30.0000
@@ -152,8 +152,8 @@ newmtl texture_10
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_10.jpg
-	map_Kd Amadeus maps\cs_italy_texture_10.jpg
+	map_Ka textures/cs_italy_texture_10.jpg
+	map_Kd textures/cs_italy_texture_10.jpg
 
 newmtl texture_11
 	Ns 30.0000
@@ -166,8 +166,8 @@ newmtl texture_11
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_11.jpg
-	map_Kd Amadeus maps\cs_italy_texture_11.jpg
+	map_Ka textures/cs_italy_texture_11.jpg
+	map_Kd textures/cs_italy_texture_11.jpg
 
 newmtl texture_12
 	Ns 30.0000
@@ -180,8 +180,8 @@ newmtl texture_12
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_12.jpg
-	map_Kd Amadeus maps\cs_italy_texture_12.jpg
+	map_Ka textures/cs_italy_texture_12.jpg
+	map_Kd textures/cs_italy_texture_12.jpg
 
 newmtl texture_13
 	Ns 30.0000
@@ -194,8 +194,8 @@ newmtl texture_13
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_13.jpg
-	map_Kd Amadeus maps\cs_italy_texture_13.jpg
+	map_Ka textures/cs_italy_texture_13.jpg
+	map_Kd textures/cs_italy_texture_13.jpg
 
 newmtl texture_14
 	Ns 30.0000
@@ -208,8 +208,8 @@ newmtl texture_14
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_14.jpg
-	map_Kd Amadeus maps\cs_italy_texture_14.jpg
+	map_Ka textures/cs_italy_texture_14.jpg
+	map_Kd textures/cs_italy_texture_14.jpg
 
 newmtl texture_15
 	Ns 30.0000
@@ -222,8 +222,8 @@ newmtl texture_15
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_15.jpg
-	map_Kd Amadeus maps\cs_italy_texture_15.jpg
+	map_Ka textures/cs_italy_texture_15.jpg
+	map_Kd textures/cs_italy_texture_15.jpg
 
 newmtl texture_16
 	Ns 30.0000
@@ -236,8 +236,8 @@ newmtl texture_16
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_16.jpg
-	map_Kd Amadeus maps\cs_italy_texture_16.jpg
+	map_Ka textures/cs_italy_texture_16.jpg
+	map_Kd textures/cs_italy_texture_16.jpg
 
 newmtl texture_17
 	Ns 30.0000
@@ -250,8 +250,8 @@ newmtl texture_17
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_17.jpg
-	map_Kd Amadeus maps\cs_italy_texture_17.jpg
+	map_Ka textures/cs_italy_texture_17.jpg
+	map_Kd textures/cs_italy_texture_17.jpg
 
 newmtl texture_18
 	Ns 30.0000
@@ -264,8 +264,8 @@ newmtl texture_18
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_18.jpg
-	map_Kd Amadeus maps\cs_italy_texture_18.jpg
+	map_Ka textures/cs_italy_texture_18.jpg
+	map_Kd textures/cs_italy_texture_18.jpg
 
 newmtl texture_19
 	Ns 30.0000
@@ -278,8 +278,8 @@ newmtl texture_19
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_19.jpg
-	map_Kd Amadeus maps\cs_italy_texture_19.jpg
+	map_Ka textures/cs_italy_texture_19.jpg
+	map_Kd textures/cs_italy_texture_19.jpg
 
 newmtl texture_20
 	Ns 30.0000
@@ -292,8 +292,8 @@ newmtl texture_20
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_20.jpg
-	map_Kd Amadeus maps\cs_italy_texture_20.jpg
+	map_Ka textures/cs_italy_texture_20.jpg
+	map_Kd textures/cs_italy_texture_20.jpg
 
 newmtl texture_21
 	Ns 30.0000
@@ -306,8 +306,8 @@ newmtl texture_21
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_21.jpg
-	map_Kd Amadeus maps\cs_italy_texture_21.jpg
+	map_Ka textures/cs_italy_texture_21.jpg
+	map_Kd textures/cs_italy_texture_21.jpg
 
 newmtl texture_22
 	Ns 30.0000
@@ -320,8 +320,8 @@ newmtl texture_22
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_22.jpg
-	map_Kd Amadeus maps\cs_italy_texture_22.jpg
+	map_Ka textures/cs_italy_texture_22.jpg
+	map_Kd textures/cs_italy_texture_22.jpg
 
 newmtl texture_23
 	Ns 30.0000
@@ -334,8 +334,8 @@ newmtl texture_23
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_23.jpg
-	map_Kd Amadeus maps\cs_italy_texture_23.jpg
+	map_Ka textures/cs_italy_texture_23.jpg
+	map_Kd textures/cs_italy_texture_23.jpg
 
 newmtl texture_24
 	Ns 30.0000
@@ -348,8 +348,8 @@ newmtl texture_24
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_24.jpg
-	map_Kd Amadeus maps\cs_italy_texture_24.jpg
+	map_Ka textures/cs_italy_texture_24.jpg
+	map_Kd textures/cs_italy_texture_24.jpg
 
 newmtl texture_25
 	Ns 30.0000
@@ -362,8 +362,8 @@ newmtl texture_25
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_25.jpg
-	map_Kd Amadeus maps\cs_italy_texture_25.jpg
+	map_Ka textures/cs_italy_texture_25.jpg
+	map_Kd textures/cs_italy_texture_25.jpg
 
 newmtl texture_26
 	Ns 30.0000
@@ -376,8 +376,8 @@ newmtl texture_26
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_26.jpg
-	map_Kd Amadeus maps\cs_italy_texture_26.jpg
+	map_Ka textures/cs_italy_texture_26.jpg
+	map_Kd textures/cs_italy_texture_26.jpg
 
 newmtl texture_27
 	Ns 30.0000
@@ -390,8 +390,8 @@ newmtl texture_27
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_27.jpg
-	map_Kd Amadeus maps\cs_italy_texture_27.jpg
+	map_Ka textures/cs_italy_texture_27.jpg
+	map_Kd textures/cs_italy_texture_27.jpg
 
 newmtl texture_28
 	Ns 30.0000
@@ -404,8 +404,8 @@ newmtl texture_28
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_28.jpg
-	map_Kd Amadeus maps\cs_italy_texture_28.jpg
+	map_Ka textures/cs_italy_texture_28.jpg
+	map_Kd textures/cs_italy_texture_28.jpg
 
 newmtl texture_29
 	Ns 30.0000
@@ -418,8 +418,8 @@ newmtl texture_29
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_29.jpg
-	map_Kd Amadeus maps\cs_italy_texture_29.jpg
+	map_Ka textures/cs_italy_texture_29.jpg
+	map_Kd textures/cs_italy_texture_29.jpg
 
 newmtl texture_30
 	Ns 30.0000
@@ -432,8 +432,8 @@ newmtl texture_30
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_30.jpg
-	map_Kd Amadeus maps\cs_italy_texture_30.jpg
+	map_Ka textures/cs_italy_texture_30.jpg
+	map_Kd textures/cs_italy_texture_30.jpg
 
 newmtl texture_31
 	Ns 30.0000
@@ -446,8 +446,8 @@ newmtl texture_31
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_31.jpg
-	map_Kd Amadeus maps\cs_italy_texture_31.jpg
+	map_Ka textures/cs_italy_texture_31.jpg
+	map_Kd textures/cs_italy_texture_31.jpg
 
 newmtl texture_32
 	Ns 30.0000
@@ -460,8 +460,8 @@ newmtl texture_32
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_32.jpg
-	map_Kd Amadeus maps\cs_italy_texture_32.jpg
+	map_Ka textures/cs_italy_texture_32.jpg
+	map_Kd textures/cs_italy_texture_32.jpg
 
 newmtl texture_33
 	Ns 30.0000
@@ -474,8 +474,8 @@ newmtl texture_33
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_33.jpg
-	map_Kd Amadeus maps\cs_italy_texture_33.jpg
+	map_Ka textures/cs_italy_texture_33.jpg
+	map_Kd textures/cs_italy_texture_33.jpg
 
 newmtl texture_34
 	Ns 30.0000
@@ -488,8 +488,8 @@ newmtl texture_34
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_34.jpg
-	map_Kd Amadeus maps\cs_italy_texture_34.jpg
+	map_Ka textures/cs_italy_texture_34.jpg
+	map_Kd textures/cs_italy_texture_34.jpg
 
 newmtl texture_35
 	Ns 30.0000
@@ -502,8 +502,8 @@ newmtl texture_35
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_35.jpg
-	map_Kd Amadeus maps\cs_italy_texture_35.jpg
+	map_Ka textures/cs_italy_texture_35.jpg
+	map_Kd textures/cs_italy_texture_35.jpg
 
 newmtl texture_36
 	Ns 30.0000
@@ -516,8 +516,8 @@ newmtl texture_36
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_36.jpg
-	map_Kd Amadeus maps\cs_italy_texture_36.jpg
+	map_Ka textures/cs_italy_texture_36.jpg
+	map_Kd textures/cs_italy_texture_36.jpg
 
 newmtl texture_37
 	Ns 30.0000
@@ -530,8 +530,8 @@ newmtl texture_37
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_37.jpg
-	map_Kd Amadeus maps\cs_italy_texture_37.jpg
+	map_Ka textures/cs_italy_texture_37.jpg
+	map_Kd textures/cs_italy_texture_37.jpg
 
 newmtl texture_38
 	Ns 30.0000
@@ -544,8 +544,8 @@ newmtl texture_38
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_38.jpg
-	map_Kd Amadeus maps\cs_italy_texture_38.jpg
+	map_Ka textures/cs_italy_texture_38.jpg
+	map_Kd textures/cs_italy_texture_38.jpg
 
 newmtl texture_39
 	Ns 30.0000
@@ -558,8 +558,8 @@ newmtl texture_39
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_39.jpg
-	map_Kd Amadeus maps\cs_italy_texture_39.jpg
+	map_Ka textures/cs_italy_texture_39.jpg
+	map_Kd textures/cs_italy_texture_39.jpg
 
 newmtl texture_40
 	Ns 30.0000
@@ -572,8 +572,8 @@ newmtl texture_40
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_40.jpg
-	map_Kd Amadeus maps\cs_italy_texture_40.jpg
+	map_Ka textures/cs_italy_texture_40.jpg
+	map_Kd textures/cs_italy_texture_40.jpg
 
 newmtl texture_41
 	Ns 30.0000
@@ -586,8 +586,8 @@ newmtl texture_41
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_41.jpg
-	map_Kd Amadeus maps\cs_italy_texture_41.jpg
+	map_Ka textures/cs_italy_texture_41.jpg
+	map_Kd textures/cs_italy_texture_41.jpg
 
 newmtl texture_42
 	Ns 30.0000
@@ -600,8 +600,8 @@ newmtl texture_42
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_42.jpg
-	map_Kd Amadeus maps\cs_italy_texture_42.jpg
+	map_Ka textures/cs_italy_texture_42.jpg
+	map_Kd textures/cs_italy_texture_42.jpg
 
 newmtl texture_43
 	Ns 30.0000
@@ -614,8 +614,8 @@ newmtl texture_43
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_43.jpg
-	map_Kd Amadeus maps\cs_italy_texture_43.jpg
+	map_Ka textures/cs_italy_texture_43.jpg
+	map_Kd textures/cs_italy_texture_43.jpg
 
 newmtl texture_44
 	Ns 30.0000
@@ -628,8 +628,8 @@ newmtl texture_44
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_44.jpg
-	map_Kd Amadeus maps\cs_italy_texture_44.jpg
+	map_Ka textures/cs_italy_texture_44.jpg
+	map_Kd textures/cs_italy_texture_44.jpg
 
 newmtl texture_45
 	Ns 30.0000
@@ -642,8 +642,8 @@ newmtl texture_45
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_45.jpg
-	map_Kd Amadeus maps\cs_italy_texture_45.jpg
+	map_Ka textures/cs_italy_texture_45.jpg
+	map_Kd textures/cs_italy_texture_45.jpg
 
 newmtl texture_46
 	Ns 30.0000
@@ -656,8 +656,8 @@ newmtl texture_46
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_46.jpg
-	map_Kd Amadeus maps\cs_italy_texture_46.jpg
+	map_Ka textures/cs_italy_texture_46.jpg
+	map_Kd textures/cs_italy_texture_46.jpg
 
 newmtl texture_47
 	Ns 30.0000
@@ -670,8 +670,8 @@ newmtl texture_47
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_47.jpg
-	map_Kd Amadeus maps\cs_italy_texture_47.jpg
+	map_Ka textures/cs_italy_texture_47.jpg
+	map_Kd textures/cs_italy_texture_47.jpg
 
 newmtl texture_48
 	Ns 30.0000
@@ -684,8 +684,8 @@ newmtl texture_48
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_48.jpg
-	map_Kd Amadeus maps\cs_italy_texture_48.jpg
+	map_Ka textures/cs_italy_texture_48.jpg
+	map_Kd textures/cs_italy_texture_48.jpg
 
 newmtl texture_49
 	Ns 30.0000
@@ -698,8 +698,8 @@ newmtl texture_49
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_49.jpg
-	map_Kd Amadeus maps\cs_italy_texture_49.jpg
+	map_Ka textures/cs_italy_texture_49.jpg
+	map_Kd textures/cs_italy_texture_49.jpg
 
 newmtl texture_50
 	Ns 30.0000
@@ -712,8 +712,8 @@ newmtl texture_50
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_50.jpg
-	map_Kd Amadeus maps\cs_italy_texture_50.jpg
+	map_Ka textures/cs_italy_texture_50.jpg
+	map_Kd textures/cs_italy_texture_50.jpg
 
 newmtl texture_51
 	Ns 30.0000
@@ -726,8 +726,8 @@ newmtl texture_51
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_51.jpg
-	map_Kd Amadeus maps\cs_italy_texture_51.jpg
+	map_Ka textures/cs_italy_texture_51.jpg
+	map_Kd textures/cs_italy_texture_51.jpg
 
 newmtl texture_52
 	Ns 30.0000
@@ -740,8 +740,8 @@ newmtl texture_52
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_52.jpg
-	map_Kd Amadeus maps\cs_italy_texture_52.jpg
+	map_Ka textures/cs_italy_texture_52.jpg
+	map_Kd textures/cs_italy_texture_52.jpg
 
 newmtl texture_53
 	Ns 30.0000
@@ -754,8 +754,8 @@ newmtl texture_53
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_53.jpg
-	map_Kd Amadeus maps\cs_italy_texture_53.jpg
+	map_Ka textures/cs_italy_texture_53.jpg
+	map_Kd textures/cs_italy_texture_53.jpg
 
 newmtl texture_54
 	Ns 30.0000
@@ -768,8 +768,8 @@ newmtl texture_54
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_54.jpg
-	map_Kd Amadeus maps\cs_italy_texture_54.jpg
+	map_Ka textures/cs_italy_texture_54.jpg
+	map_Kd textures/cs_italy_texture_54.jpg
 
 newmtl texture_55
 	Ns 30.0000
@@ -782,8 +782,8 @@ newmtl texture_55
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_55.jpg
-	map_Kd Amadeus maps\cs_italy_texture_55.jpg
+	map_Ka textures/cs_italy_texture_55.jpg
+	map_Kd textures/cs_italy_texture_55.jpg
 
 newmtl texture_56
 	Ns 30.0000
@@ -796,8 +796,8 @@ newmtl texture_56
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_56.jpg
-	map_Kd Amadeus maps\cs_italy_texture_56.jpg
+	map_Ka textures/cs_italy_texture_56.jpg
+	map_Kd textures/cs_italy_texture_56.jpg
 
 newmtl texture_57
 	Ns 30.0000
@@ -810,8 +810,8 @@ newmtl texture_57
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_57.jpg
-	map_Kd Amadeus maps\cs_italy_texture_57.jpg
+	map_Ka textures/cs_italy_texture_57.jpg
+	map_Kd textures/cs_italy_texture_57.jpg
 
 newmtl texture_58
 	Ns 30.0000
@@ -824,8 +824,8 @@ newmtl texture_58
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_58.jpg
-	map_Kd Amadeus maps\cs_italy_texture_58.jpg
+	map_Ka textures/cs_italy_texture_58.jpg
+	map_Kd textures/cs_italy_texture_58.jpg
 
 newmtl texture_59
 	Ns 30.0000
@@ -838,8 +838,8 @@ newmtl texture_59
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_59.jpg
-	map_Kd Amadeus maps\cs_italy_texture_59.jpg
+	map_Ka textures/cs_italy_texture_59.jpg
+	map_Kd textures/cs_italy_texture_59.jpg
 
 newmtl texture_60
 	Ns 30.0000
@@ -852,8 +852,8 @@ newmtl texture_60
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_60.jpg
-	map_Kd Amadeus maps\cs_italy_texture_60.jpg
+	map_Ka textures/cs_italy_texture_60.jpg
+	map_Kd textures/cs_italy_texture_60.jpg
 
 newmtl texture_61
 	Ns 30.0000
@@ -866,8 +866,8 @@ newmtl texture_61
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_61.jpg
-	map_Kd Amadeus maps\cs_italy_texture_61.jpg
+	map_Ka textures/cs_italy_texture_61.jpg
+	map_Kd textures/cs_italy_texture_61.jpg
 
 newmtl texture_62
 	Ns 30.0000
@@ -880,8 +880,8 @@ newmtl texture_62
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_62.jpg
-	map_Kd Amadeus maps\cs_italy_texture_62.jpg
+	map_Ka textures/cs_italy_texture_62.jpg
+	map_Kd textures/cs_italy_texture_62.jpg
 
 newmtl texture_63
 	Ns 30.0000
@@ -894,8 +894,8 @@ newmtl texture_63
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_63.jpg
-	map_Kd Amadeus maps\cs_italy_texture_63.jpg
+	map_Ka textures/cs_italy_texture_63.jpg
+	map_Kd textures/cs_italy_texture_63.jpg
 
 newmtl texture_64
 	Ns 30.0000
@@ -908,8 +908,8 @@ newmtl texture_64
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_64.jpg
-	map_Kd Amadeus maps\cs_italy_texture_64.jpg
+	map_Ka textures/cs_italy_texture_64.jpg
+	map_Kd textures/cs_italy_texture_64.jpg
 
 newmtl texture_65
 	Ns 30.0000
@@ -922,8 +922,8 @@ newmtl texture_65
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_65.jpg
-	map_Kd Amadeus maps\cs_italy_texture_65.jpg
+	map_Ka textures/cs_italy_texture_65.jpg
+	map_Kd textures/cs_italy_texture_65.jpg
 
 newmtl texture_66
 	Ns 30.0000
@@ -936,8 +936,8 @@ newmtl texture_66
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_66.jpg
-	map_Kd Amadeus maps\cs_italy_texture_66.jpg
+	map_Ka textures/cs_italy_texture_66.jpg
+	map_Kd textures/cs_italy_texture_66.jpg
 
 newmtl texture_67
 	Ns 30.0000
@@ -950,8 +950,8 @@ newmtl texture_67
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_67.jpg
-	map_Kd Amadeus maps\cs_italy_texture_67.jpg
+	map_Ka textures/cs_italy_texture_67.jpg
+	map_Kd textures/cs_italy_texture_67.jpg
 
 newmtl texture_68
 	Ns 30.0000
@@ -964,8 +964,8 @@ newmtl texture_68
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_68.jpg
-	map_Kd Amadeus maps\cs_italy_texture_68.jpg
+	map_Ka textures/cs_italy_texture_68.jpg
+	map_Kd textures/cs_italy_texture_68.jpg
 
 newmtl texture_69
 	Ns 30.0000
@@ -978,8 +978,8 @@ newmtl texture_69
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_69.jpg
-	map_Kd Amadeus maps\cs_italy_texture_69.jpg
+	map_Ka textures/cs_italy_texture_69.jpg
+	map_Kd textures/cs_italy_texture_69.jpg
 
 newmtl texture_70
 	Ns 30.0000
@@ -992,8 +992,8 @@ newmtl texture_70
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_70.jpg
-	map_Kd Amadeus maps\cs_italy_texture_70.jpg
+	map_Ka textures/cs_italy_texture_70.jpg
+	map_Kd textures/cs_italy_texture_70.jpg
 
 newmtl texture_71
 	Ns 30.0000
@@ -1006,8 +1006,8 @@ newmtl texture_71
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_71.jpg
-	map_Kd Amadeus maps\cs_italy_texture_71.jpg
+	map_Ka textures/cs_italy_texture_71.jpg
+	map_Kd textures/cs_italy_texture_71.jpg
 
 newmtl texture_72
 	Ns 30.0000
@@ -1020,8 +1020,8 @@ newmtl texture_72
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_72.jpg
-	map_Kd Amadeus maps\cs_italy_texture_72.jpg
+	map_Ka textures/cs_italy_texture_72.jpg
+	map_Kd textures/cs_italy_texture_72.jpg
 
 newmtl texture_73
 	Ns 30.0000
@@ -1034,8 +1034,8 @@ newmtl texture_73
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_73.jpg
-	map_Kd Amadeus maps\cs_italy_texture_73.jpg
+	map_Ka textures/cs_italy_texture_73.jpg
+	map_Kd textures/cs_italy_texture_73.jpg
 
 newmtl texture_74
 	Ns 30.0000
@@ -1048,8 +1048,8 @@ newmtl texture_74
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_74.jpg
-	map_Kd Amadeus maps\cs_italy_texture_74.jpg
+	map_Ka textures/cs_italy_texture_74.jpg
+	map_Kd textures/cs_italy_texture_74.jpg
 
 newmtl texture_75
 	Ns 30.0000
@@ -1062,8 +1062,8 @@ newmtl texture_75
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_75.jpg
-	map_Kd Amadeus maps\cs_italy_texture_75.jpg
+	map_Ka textures/cs_italy_texture_75.jpg
+	map_Kd textures/cs_italy_texture_75.jpg
 
 newmtl texture_76
 	Ns 30.0000
@@ -1076,8 +1076,8 @@ newmtl texture_76
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_76.jpg
-	map_Kd Amadeus maps\cs_italy_texture_76.jpg
+	map_Ka textures/cs_italy_texture_76.jpg
+	map_Kd textures/cs_italy_texture_76.jpg
 
 newmtl texture_77
 	Ns 30.0000
@@ -1090,8 +1090,8 @@ newmtl texture_77
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_77.jpg
-	map_Kd Amadeus maps\cs_italy_texture_77.jpg
+	map_Ka textures/cs_italy_texture_77.jpg
+	map_Kd textures/cs_italy_texture_77.jpg
 
 newmtl texture_78
 	Ns 30.0000
@@ -1104,8 +1104,8 @@ newmtl texture_78
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_78.jpg
-	map_Kd Amadeus maps\cs_italy_texture_78.jpg
+	map_Ka textures/cs_italy_texture_78.jpg
+	map_Kd textures/cs_italy_texture_78.jpg
 
 newmtl texture_79
 	Ns 30.0000
@@ -1118,8 +1118,8 @@ newmtl texture_79
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_79.jpg
-	map_Kd Amadeus maps\cs_italy_texture_79.jpg
+	map_Ka textures/cs_italy_texture_79.jpg
+	map_Kd textures/cs_italy_texture_79.jpg
 
 newmtl texture_80
 	Ns 30.0000
@@ -1132,8 +1132,8 @@ newmtl texture_80
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_80.jpg
-	map_Kd Amadeus maps\cs_italy_texture_80.jpg
+	map_Ka textures/cs_italy_texture_80.jpg
+	map_Kd textures/cs_italy_texture_80.jpg
 
 newmtl texture_81
 	Ns 30.0000
@@ -1146,8 +1146,8 @@ newmtl texture_81
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_81.jpg
-	map_Kd Amadeus maps\cs_italy_texture_81.jpg
+	map_Ka textures/cs_italy_texture_81.jpg
+	map_Kd textures/cs_italy_texture_81.jpg
 
 newmtl texture_82
 	Ns 30.0000
@@ -1160,8 +1160,8 @@ newmtl texture_82
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_82.jpg
-	map_Kd Amadeus maps\cs_italy_texture_82.jpg
+	map_Ka textures/cs_italy_texture_82.jpg
+	map_Kd textures/cs_italy_texture_82.jpg
 
 newmtl texture_83
 	Ns 30.0000
@@ -1174,8 +1174,8 @@ newmtl texture_83
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_83.jpg
-	map_Kd Amadeus maps\cs_italy_texture_83.jpg
+	map_Ka textures/cs_italy_texture_83.jpg
+	map_Kd textures/cs_italy_texture_83.jpg
 
 newmtl texture_84
 	Ns 30.0000
@@ -1188,8 +1188,8 @@ newmtl texture_84
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_84.jpg
-	map_Kd Amadeus maps\cs_italy_texture_84.jpg
+	map_Ka textures/cs_italy_texture_84.jpg
+	map_Kd textures/cs_italy_texture_84.jpg
 
 newmtl texture_85
 	Ns 30.0000
@@ -1202,8 +1202,8 @@ newmtl texture_85
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_85.jpg
-	map_Kd Amadeus maps\cs_italy_texture_85.jpg
+	map_Ka textures/cs_italy_texture_85.jpg
+	map_Kd textures/cs_italy_texture_85.jpg
 
 newmtl texture_86
 	Ns 30.0000
@@ -1216,5 +1216,5 @@ newmtl texture_86
 	Kd 0.5500 0.5500 0.5500
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
-	map_Ka Amadeus maps\cs_italy_texture_86.jpg
-	map_Kd Amadeus maps\cs_italy_texture_86.jpg
+	map_Ka textures/cs_italy_texture_86.jpg
+	map_Kd textures/cs_italy_texture_86.jpg
