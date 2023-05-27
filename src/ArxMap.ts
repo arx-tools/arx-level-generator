@@ -229,6 +229,14 @@ export class ArxMap {
       throw new MapFinalizedError()
     }
 
+    const numberOfRemovedPolygons = this.polygons.removeOutOfBoundPolygons()
+
+    if (numberOfRemovedPolygons > 0) {
+      console.warn(
+        `Removed ${numberOfRemovedPolygons} polygons what are outside the 0..16000 boundary on the X or Z axis`,
+      )
+    }
+
     this.polygons.forEach((polygon) => {
       polygon.calculateNormals()
       polygon.calculateArea()

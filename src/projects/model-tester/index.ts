@@ -35,6 +35,7 @@ const createSpawnZone = () => {
     size: new Vector3(100, Infinity, 100),
     name: 'spawn',
     backgroundColor: Color.fromCSS('skyblue'),
+    drawDistance: 20000,
   })
 }
 

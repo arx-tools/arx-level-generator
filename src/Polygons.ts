@@ -365,4 +365,25 @@ export class Polygons extends Array<Polygon> {
       polygon.room = 1
     })
   }
+
+  /**
+   * removes polygons, which go outside the 0-160 meters bound on the horizontal axis
+   *
+   * @returns the number of polygons that have ben removed
+   */
+  removeOutOfBoundPolygons() {
+    let numberOfRemovedPolygons = 0
+
+    let i = 0
+    while (i < this.length) {
+      if (this[i].isOutOfBounds()) {
+        this.splice(i, 1)
+        numberOfRemovedPolygons += 1
+      } else {
+        i++
+      }
+    }
+
+    return numberOfRemovedPolygons
+  }
 }
