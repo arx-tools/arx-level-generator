@@ -9,6 +9,7 @@ import city from '@projects/city/index.js'
 import escapeFromOffice from '@projects/escape-from-office/index.js'
 import forest from '@projects/forest/index.js'
 import csItaly from '@projects/cs_italy/index.js'
+import laleesMinigame from '@projects/lalees-minigame/index.js'
 
 const { PROJECT } = process.env
 
@@ -45,6 +46,9 @@ switch (PROJECT) {
     break
   case 'cs_italy':
     csItaly()
+    break
+  case 'lalees-minigame':
+    laleesMinigame()
     break
   default:
     throw new Error(`project "${PROJECT}" not found`)
