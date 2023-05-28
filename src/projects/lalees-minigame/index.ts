@@ -60,6 +60,19 @@ export default async () => {
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
   })
 
+  /*
+  -------------------
+  convert the obj file into evm_box.ftl -> scale it 10x
+  place it into game/graph/obj3d/interactive/items/special/evm_box/
+  rename texture to evm_box_art.png
+  create script: graph/obj3d/interactive/items/special/evm_box/evm_box.asl
+    noshadow
+    setname <name of the pc game>
+  create icon at graph/obj3d/interactive/items/special/evm_box/evm_box[icon].bmp
+
+  -------------------
+  */
+
   const spawnZone = createZone({
     name: 'spawn',
     backgroundColor: Color.fromCSS('white').darken(30),
