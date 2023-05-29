@@ -1,7 +1,7 @@
 {
   "header": {
     "origin": 5,
-    "name": "evm_box"
+    "name": "pcgame"
   },
   "vertices": [
     {
@@ -453,7 +453,7 @@
   ],
   "textureContainers": [
     {
-      "filename": "evm_box_art.jpg"
+      "filename": "pcgame_box_art.jpg"
     }
   ],
   "groups": [],

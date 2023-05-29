@@ -4,24 +4,31 @@ import { Material } from '@scripting/properties/Material.js'
 import { Shadow } from '@scripting/properties/Shadow.js'
 import { StackSize } from '@scripting/properties/StackSize.js'
 
+type PCGameVariant =
+  | 'mesterlovesz'
+  | 'mortyr'
+  | 'wolfschanze'
+  | 'traktor-racer'
+  | 'americas-10-most-wanted'
+  | 'big-rigs'
+  | 'streets-racer'
+  | 'bikini-karate-babes'
+
 const boxArxTexture = Texture.fromCustomFile({
-  filename: 'evm_box_art.png',
+  filename: 'pcgame_box_art.png',
   sourcePath: 'projects/lalees-minigame',
 })
 
-/**
- * EVM = Ezt Vedd Meg - a hungarian pc game (re)publisher brand name
- */
-export class EVMBox extends Entity {
+export class PCGame extends Entity {
   constructor(props: EntityConstructorPropsWithoutSrc = {}) {
     super({
-      src: 'items/quest_item/evm_box',
+      src: 'items/quest_item/pcgame',
       inventoryIcon: Texture.fromCustomFile({
-        filename: 'evm_box[icon].bmp',
+        filename: 'pcgame[icon].bmp',
         sourcePath: 'projects/lalees-minigame',
       }),
       model: {
-        filename: 'evm_box.ftl',
+        filename: 'pcgame.ftl',
         sourcePath: 'projects/lalees-minigame',
         textures: [boxArxTexture],
       },
@@ -34,6 +41,6 @@ export class EVMBox extends Entity {
 
 /*
 TODOs:
- - convert the obj file programmatically into evm_box.ftl -> scale it 10x
- - place it into game/graph/obj3d/interactive/items/quest_item/evm_box/
+ - convert the obj file programmatically into pcgame.ftl -> scale it 10x
+ - place it into game/graph/obj3d/interactive/items/quest_item/pcgame/
 */

@@ -1,6 +1,34 @@
 {
+  "game--mesterlovesz": {
+    "english": "The Sniper",
+    "hungarian": "A mesterlövész"
+  },
+  "game--mortyr": {
+    "english": "Mortyr",
+    "hungarian": "Mortyr"
+  },
+  "game--wolfschanze": {
+    "english": "Wolfschanze",
+    "hungarian": "Wolfschanze"
+  },
+  "game--traktor-racer": {
+    "english": "Traktor Racer",
+    "hungarian": "Traktor Racer"
+  },
+  "game--americas-10-most-wanted": {
+    "english": "America's 10 most wanted",
+    "hungarian": "America's 10 most wanted"
+  },
+  "game--big-rigs": {
+    "english": "Big Rigs: Over the Road Racing",
+    "hungarian": "Big Rigs: Over the Road Racing"
+  },
   "game--streets-racer": {
     "english": "Streets Racer",
     "hungarian": "Streets Racer"
+  },
+  "game--bikini-karate-babes": {
+    "english": "Bikini Karate Babes",
+    "hungarian": "Bikini Karate Babes"
   }
 }

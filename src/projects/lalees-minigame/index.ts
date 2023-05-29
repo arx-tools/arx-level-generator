@@ -3,11 +3,11 @@ import seedrandom from 'seedrandom'
 import { Vector2 } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
-import { SHADING_SMOOTH } from '@src/Polygons.js'
+import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
-import { EVMBox } from '@projects/lalees-minigame/EVMBox.js'
+import { PCGame } from '@projects/lalees-minigame/PCGame.js'
 import { Label } from '@scripting/properties/Label.js'
 import { createZone } from '@tools/createZone.js'
 import { makeBumpy } from '@tools/mesh/makeBumpy.js'
@@ -40,10 +40,10 @@ export default async () => {
     Texture.l4DwarfWoodBoard02,
   )
   makeBumpy(10, 30, false, floorMesh.geometry)
-  const floor = ArxMap.fromThreeJsMesh(floorMesh, { tryToQuadify: "don't quadify", shading: SHADING_SMOOTH })
+  const floor = ArxMap.fromThreeJsMesh(floorMesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
   map.add(floor, true)
 
-  const game1 = new EVMBox({
+  const game1 = new PCGame({
     position: new Vector3(0, -10, 0),
   })
   game1.script?.properties.push(new Label('[game--streets-racer]'))
