@@ -5,8 +5,8 @@ import { ArxMap } from '@src/ArxMap.js'
 import { HudElements } from '@src/HUD.js'
 import { DONT_QUADIFY } from '@src/Polygons.js'
 import { Vector3 } from '@src/Vector3.js'
+import { createRoomFromMesh, createRoomMesh } from '@prefabs/rooms/room.js'
 import { carpet, ceilingTile, wallpaper } from '@projects/the-backrooms/materials.js'
-import { createRoomFromMesh, createRoomMesh } from '@tools/rooms/room.js'
 
 export default async () => {
   const {
