@@ -42,7 +42,7 @@ export default async () => {
   map.player.orientation.y = MathUtils.degToRad(-90)
   map.player.withScript()
   map.hud.hide('all')
-  await map.i18n.addFromFile(path.resolve('assets/projects/ambience-gallery/i18n.json'))
+  await map.i18n.addFromFile('projects/ambience-gallery/i18n.json')
 
   // -----------------------------
 

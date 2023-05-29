@@ -269,7 +269,7 @@ export default async () => {
     `
   })
   map.hud.hide(HudElements.Minimap)
-  await map.i18n.addFromFile(path.resolve('assets/projects/the-backrooms/i18n.json'))
+  await map.i18n.addFromFile('projects/the-backrooms/i18n.json')
 
   rooms.forEach((room) => {
     map.add(room, true)

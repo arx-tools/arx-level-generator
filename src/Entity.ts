@@ -23,6 +23,7 @@ export type EntityConstructorProps = {
   model?: {
     sourcePath: string
     filename: string
+    textures?: (Texture | Promise<Texture>)[]
   }
 }
 
@@ -38,6 +39,7 @@ export class Entity {
   model?: {
     sourcePath: string
     filename: string
+    textures: (Texture | Promise<Texture>)[]
   }
 
   constructor(props: EntityConstructorProps) {
@@ -54,7 +56,10 @@ export class Entity {
     }
 
     this.inventoryIcon = props.inventoryIcon
-    this.model = props.model
+
+    if (typeof props.model !== 'undefined') {
+      this.model = { ...props.model, textures: props.model.textures ?? [] }
+    }
   }
 
   get entityName() {
@@ -159,6 +164,22 @@ export class Entity {
     return {
       [target]: source,
     }
+  }
+
+  async exportTextures(outputDir: string): Promise<Record<string, string>> {
+    const files: Record<string, string> = {}
+
+    if (typeof this.model !== 'undefined') {
+      for (let texture of this.model.textures) {
+        texture = await texture
+        if (!texture.isNative) {
+          const [source, target] = await texture.exportSourceAndTarget(outputDir, false)
+          files[target] = source
+        }
+      }
+    }
+
+    return files
   }
 
   async exportModel(outputDir: string): Promise<Record<string, string>> {

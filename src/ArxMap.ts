@@ -412,6 +412,10 @@ export class ArxMap {
         for (let target in modelToExport) {
           models[target] = modelToExport[target]
         }
+        const texturesToExport = await entity.exportTextures(outputDir)
+        for (let target in texturesToExport) {
+          textures[target] = texturesToExport[target]
+        }
       }
     }
 

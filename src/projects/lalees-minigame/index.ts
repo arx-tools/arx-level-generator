@@ -1,19 +1,16 @@
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
-import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
-import { Rotation } from '@src/Rotation.js'
+import { SHADING_SMOOTH } from '@src/Polygons.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
-import { applyTransformations } from '@src/helpers.js'
 import { createZone } from '@tools/createZone.js'
-import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { makeBumpy } from '@tools/mesh/makeBumpy.js'
-import { ArxPolygonFlags } from 'arx-convert/types'
 import path from 'node:path'
 import seedrandom from 'seedrandom'
-import { MathUtils, Vector2 } from 'three'
-import { floor } from 'three/examples/jsm/nodes/Nodes.js'
+import { EVMBox } from '@projects/lalees-minigame/EVMBox.js'
+import { Label } from '@scripting/properties/Label.js'
+import { Vector2 } from 'three'
 
 export default async () => {
   const {
@@ -32,6 +29,7 @@ export default async () => {
   map.player.position.adjustToPlayerHeight()
   map.player.withScript()
   map.hud.hide('all')
+  await map.i18n.addFromFile('projects/lalees-minigame/i18n.json')
 
   // --------------
 
@@ -45,33 +43,11 @@ export default async () => {
   const floor = ArxMap.fromThreeJsMesh(floorMesh, { tryToQuadify: "don't quadify", shading: SHADING_SMOOTH })
   map.add(floor, true)
 
-  const pcGameBox = await loadOBJ('projects/lalees-minigame/evm-box', {
-    position: new Vector3(100, -100, 100),
-    scale: 0.1,
-    rotation: new Rotation(MathUtils.degToRad(-45), MathUtils.degToRad(-45 - 90), 0),
-    materialFlags: ArxPolygonFlags.None,
+  const game1 = new EVMBox({
+    position: new Vector3(0, -10, 0),
   })
-  const models = [pcGameBox].flat()
-  models.forEach((mesh) => {
-    mesh.translateX(map.config.offset.x)
-    mesh.translateY(map.config.offset.y)
-    mesh.translateZ(map.config.offset.z)
-    applyTransformations(mesh)
-    map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
-  })
-
-  /*
-  -------------------
-  convert the obj file into evm_box.ftl -> scale it 10x
-  place it into game/graph/obj3d/interactive/items/special/evm_box/
-  rename texture to evm_box_art.png
-  create script: graph/obj3d/interactive/items/special/evm_box/evm_box.asl
-    noshadow
-    setname <name of the pc game>
-  create icon at graph/obj3d/interactive/items/special/evm_box/evm_box[icon].bmp
-
-  -------------------
-  */
+  game1.script?.properties.push(new Label('[game--streets-racer]'))
+  map.entities.push(game1)
 
   const spawnZone = createZone({
     name: 'spawn',

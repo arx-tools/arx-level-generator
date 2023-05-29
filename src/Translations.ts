@@ -49,7 +49,7 @@ export class Translations {
 
   async addFromFile(filename: string) {
     try {
-      const rawIn = await fs.promises.readFile(filename, 'utf-8')
+      const rawIn = await fs.promises.readFile(path.resolve('assets', filename), 'utf-8')
       const translations = JSON.parse(rawIn) as Record<string, Record<string, string>>
       this.add(translations)
     } catch (error) {
