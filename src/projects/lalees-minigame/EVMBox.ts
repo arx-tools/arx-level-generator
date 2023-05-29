@@ -34,11 +34,6 @@ export class EVMBox extends Entity {
 
 /*
 TODOs:
- - the generator is not yet loading the custom texture of an entitiy
-
  - convert the obj file programmatically into evm_box.ftl -> scale it 10x
  - place it into game/graph/obj3d/interactive/items/quest_item/evm_box/
- - create script: graph/obj3d/interactive/items/quest_item/evm_box/evm_box.asl
-    * noshadow
-    * setname <name of the pc game>
 */
