@@ -1,5 +1,5 @@
-import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
 import { Entity } from '@src/Entity.js'
+import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
 import { ambiences } from './constants.js'
 
 export const createMainMarker = () => {

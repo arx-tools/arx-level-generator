@@ -1,9 +1,8 @@
-import { TweakSkin } from '@scripting/commands/TweakSkin.js'
+import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
+import { Texture } from '@src/Texture.js'
 import { Material } from '@scripting/properties/Material.js'
 import { Shadow } from '@scripting/properties/Shadow.js'
 import { StackSize } from '@scripting/properties/StackSize.js'
-import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
-import { Texture } from '@src/Texture.js'
 
 const boxArxTexture = Texture.fromCustomFile({
   filename: 'evm_box_art.png',

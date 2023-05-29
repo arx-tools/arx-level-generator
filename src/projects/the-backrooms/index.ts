@@ -1,30 +1,30 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { EdgesGeometry, MathUtils, Shape, ShapeGeometry } from 'three'
 import seedrandom from 'seedrandom'
+import { EdgesGeometry, MathUtils, Shape, ShapeGeometry } from 'three'
+import { Ambience } from '@src/Ambience.js'
 import { ArxMap } from '@src/ArxMap.js'
+import { Entity } from '@src/Entity.js'
+import { HudElements } from '@src/HUD.js'
+import { Rotation } from '@src/Rotation.js'
+import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Zone } from '@src/Zone.js'
-import { Ambience } from '@src/Ambience.js'
-import { carpet, ceilingTile, wallpaper, wallpaperDotted, whiteMosaicTiles } from '@projects/the-backrooms/materials.js'
-import { HudElements } from '@src/HUD.js'
-import { Rooms } from '../../tools/rooms/Rooms.js'
-import { RoomProps } from '../../tools/rooms/room.js'
-import { Texture } from '@src/Texture.js'
-import { Cursor, CursorDir } from '../../tools/rooms/Cursor.js'
-import { Zones } from './Zones.js'
-import { createLight } from '@tools/createLight.js'
 import { randomBetween } from '@src/random.js'
-import { FireExitDoor } from './FireExitDoor.js'
-import { Entity } from '@src/Entity.js'
-import { Rotation } from '@src/Rotation.js'
-import { Interactivity } from '@scripting/properties/Interactivity.js'
-import { Label } from '@scripting/properties/Label.js'
-import { WallmountedWire } from './WallmountedWire.js'
-import { Transparency } from '@scripting/properties/Transparency.js'
+import { Cube } from '@prefabs/entity/Cube.js'
+import { carpet, ceilingTile, wallpaper, wallpaperDotted, whiteMosaicTiles } from '@projects/the-backrooms/materials.js'
 // import { CableDrum } from './CableDrum.js'
 import { TweakSkin } from '@scripting/commands/TweakSkin.js'
-import { Cube } from '@prefabs/entity/Cube.js'
+import { Interactivity } from '@scripting/properties/Interactivity.js'
+import { Label } from '@scripting/properties/Label.js'
+import { Transparency } from '@scripting/properties/Transparency.js'
+import { createLight } from '@tools/createLight.js'
+import { Cursor, CursorDir } from '../../tools/rooms/Cursor.js'
+import { Rooms } from '../../tools/rooms/Rooms.js'
+import { RoomProps } from '../../tools/rooms/room.js'
+import { FireExitDoor } from './FireExitDoor.js'
+import { WallmountedWire } from './WallmountedWire.js'
+import { Zones } from './Zones.js'
 
 export default async () => {
   const {
@@ -416,6 +416,7 @@ export default async () => {
   const edge = new EdgesGeometry(geometry)
   edge.rotateX(MathUtils.degToRad(70))
 
+  // TODO: replace this with createZone()
   const zone = Zone.fromThreejsGeometry(edge, {
     name: 'spawn',
     ambience: Ambience.fromCustomAudio('loop_sirs', 'loop_sirs.wav'),

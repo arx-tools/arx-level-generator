@@ -1,9 +1,3 @@
-// [o] = emit from player
-// [l] = loop
-// [i] = unique
-// [p] = variable pitch
-// [s] = stop (only if unique)
-
 import { Variable } from '@scripting/properties/Variable.js'
 
 export enum SoundFlags {
@@ -43,6 +37,13 @@ export class Sound {
     }
   }
 
+  /**
+   * [o] = emit from player
+   * [l] = loop
+   * [i] = unique
+   * [p] = variable pitch
+   * [s] = stop (only if unique)
+   */
   stringifyFlags() {
     let letters = ''
 

@@ -1,5 +1,5 @@
-import { ArxAMB, ArxTrackFlags } from 'arx-convert/types'
 import path from 'node:path'
+import { ArxAMB, ArxTrackFlags } from 'arx-convert/types'
 import { AmbienceTrack } from '@src/AmbienceTrack.js'
 
 type AmbienceConstructorProps = {

@@ -1,10 +1,10 @@
+import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 import { LoadAnim } from '@scripting/commands/LoadAnim.js'
 import { Interactivity } from '@scripting/properties/Interactivity.js'
 import { Label } from '@scripting/properties/Label.js'
 import { Scale } from '@scripting/properties/Scale.js'
 import { Speed } from '@scripting/properties/Speed.js'
 import { Variable } from '@scripting/properties/Variable.js'
-import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 
 export class Lever extends Entity {
   private propIsPulled: Variable<boolean>

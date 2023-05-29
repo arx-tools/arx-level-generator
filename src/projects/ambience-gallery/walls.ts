@@ -1,13 +1,13 @@
+import { MathUtils, Vector2, BoxGeometry, MeshBasicMaterial, Mesh, Group, CylinderGeometry } from 'three'
 import { Color } from '@src/Color.js'
-import { applyTransformations, isBetween } from '@src/helpers.js'
-import { pickRandom, randomBetween } from '@src/random.js'
 import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
+import { applyTransformations, isBetween } from '@src/helpers.js'
+import { pickRandom, randomBetween } from '@src/random.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 import { translateUV } from '@tools/mesh/translateUV.js'
-import { MathUtils, Vector2, BoxGeometry, MeshBasicMaterial, Mesh, Group, CylinderGeometry } from 'three'
 
 const createIronPole = (position: Vector3, { x: width, y: height }: Vector2) => {
   let geometry = new CylinderGeometry(width, width, height, 4, 2, false, MathUtils.degToRad(randomBetween(0, 120)))

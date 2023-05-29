@@ -1,7 +1,7 @@
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import { ScriptProperty } from '@scripting/ScriptProperty.js'
 import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
-import { UsesTextures, isUsesTextures } from '@scripting/interfaces/UsesTextures.js'
+import { isUsesTextures } from '@scripting/interfaces/UsesTextures.js'
 
 type ScriptConstructorProps = {
   filename: string

@@ -1,6 +1,6 @@
 import { ArxColor } from 'arx-convert/types'
 import rgba from 'color-rgba'
-import { MeshBasicMaterial, Color as ThreeJsColor, MathUtils } from 'three'
+import { Color as ThreeJsColor, MathUtils } from 'three'
 import { percentOf } from '@src/helpers.js'
 
 export enum Alpha {

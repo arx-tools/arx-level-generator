@@ -1,8 +1,8 @@
 import { ArxVertex } from 'arx-convert/types'
-import { Box3, Vector2 } from 'three'
+import { Vector2 } from 'three'
 import { Color } from '@src/Color.js'
-import { ArxVertexWithColor } from '@src/types.js'
 import { Vector3 } from '@src/Vector3.js'
+import { ArxVertexWithColor } from '@src/types.js'
 
 export class Vertex extends Vector3 {
   uv: Vector2

@@ -1,13 +1,13 @@
-import { MathUtils, Mesh, MeshBasicMaterial, SphereGeometry, Vector2 } from 'three'
 import { ArxPolygonFlags } from 'arx-convert/types'
+import { MathUtils, Mesh, MeshBasicMaterial, SphereGeometry, Vector2 } from 'three'
 import { Color } from '@src/Color.js'
 import { Material } from '@src/Material.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { createLight } from '@tools/createLight.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
-import { translateUV } from '@tools/mesh/translateUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
+import { translateUV } from '@tools/mesh/translateUV.js'
 
 export const createMoon = ({ position, size }: { position: Vector3; size: number }) => {
   let geometry = new SphereGeometry(size, 10, 10)

@@ -1,6 +1,4 @@
-import fs from 'node:fs'
 import path from 'node:path'
-import { fileExists } from '@src/helpers.js'
 import { Expand } from 'arx-convert/utils'
 
 type AudioConstructorProps = {

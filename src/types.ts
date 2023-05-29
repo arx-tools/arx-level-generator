@@ -1,6 +1,6 @@
 import { ArxColor, ArxVertex } from 'arx-convert/types'
-import { Texture } from '@src/Texture.js'
 import { Material } from '@src/Material.js'
+import { Texture } from '@src/Texture.js'
 
 export type ArxVertexWithColor = ArxVertex & {
   color?: ArxColor

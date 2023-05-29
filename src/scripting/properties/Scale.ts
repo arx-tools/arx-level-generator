@@ -1,5 +1,5 @@
-import { ScriptProperty } from '@scripting/ScriptProperty.js'
 import { roundToNDecimals } from '@src/helpers.js'
+import { ScriptProperty } from '@scripting/ScriptProperty.js'
 
 /**
  * default value for scale is 1

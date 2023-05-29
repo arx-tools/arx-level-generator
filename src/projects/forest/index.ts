@@ -1,13 +1,13 @@
-import { ArxMap } from '@src/ArxMap.js'
-import { Vector3 } from '@src/Vector3.js'
 import path from 'node:path'
 import seedrandom from 'seedrandom'
-import { createGround } from './createGround.js'
 import { Mesh, Vector2 } from 'three'
+import { ArxMap } from '@src/ArxMap.js'
+import { Color } from '@src/Color.js'
 import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
+import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations } from '@src/helpers.js'
 import { createLight } from '@tools/createLight.js'
-import { Color } from '@src/Color.js'
+import { createGround } from './createGround.js'
 
 export default async () => {
   const {

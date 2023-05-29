@@ -1,5 +1,5 @@
-import { Vector3 } from '@src/Vector3.js'
 import { BufferGeometry } from 'three'
+import { Vector3 } from '@src/Vector3.js'
 import { uniq } from '@src/faux-ramda.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 

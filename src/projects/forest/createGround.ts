@@ -1,14 +1,14 @@
-import { createPlaneMesh } from '@prefabs/mesh/plane.js'
+import { ArxPolygonFlags } from 'arx-convert/types'
+import { Vector2 } from 'three'
 import { Color } from '@src/Color.js'
 import { Material } from '@src/Material.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { TextureOrMaterial } from '@src/types.js'
+import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { makeBumpy } from '@tools/mesh/makeBumpy.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { transformEdge } from '@tools/mesh/transformEdge.js'
-import { ArxPolygonFlags } from 'arx-convert/types'
-import { Vector2 } from 'three'
 
 export const createGround = async ({
   size,

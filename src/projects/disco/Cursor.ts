@@ -1,8 +1,8 @@
+import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 import { Interactivity } from '@scripting/properties/Interactivity.js'
 import { Invulnerability } from '@scripting/properties/Invulnerability.js'
 import { Scale } from '@scripting/properties/Scale.js'
 import { Shadow } from '@scripting/properties/Shadow.js'
-import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 
 export class Cursor extends Entity {
   constructor(props: EntityConstructorPropsWithoutSrc = {}) {

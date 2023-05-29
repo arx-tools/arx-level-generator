@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { Rotation } from '@src/Rotation.js'
-import { Vector3 } from '@src/Vector3.js'
 import { Script } from '@src/Script.js'
+import { Vector3 } from '@src/Vector3.js'
 import { LoadAnim } from '@scripting/commands/LoadAnim.js'
 
 export class Player {

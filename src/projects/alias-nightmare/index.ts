@@ -1,18 +1,17 @@
+import path from 'node:path'
+import seedrandom from 'seedrandom'
+import { Vector2 } from 'three'
 import { Ambience } from '@src/Ambience.js'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
 import { HudElements } from '@src/HUD.js'
 import { DONT_QUADIFY } from '@src/Polygons.js'
-import { createPlaneMesh } from '@src/prefabs/mesh/plane.js'
 import { Texture } from '@src/Texture.js'
+import { Vector3 } from '@src/Vector3.js'
+import { createPlaneMesh } from '@src/prefabs/mesh/plane.js'
 import { makeBumpy } from '@src/tools/mesh/makeBumpy.js'
 import { transformEdge } from '@src/tools/mesh/transformEdge.js'
-import { Vector3 } from '@src/Vector3.js'
-import { Zone } from '@src/Zone.js'
 import { createZone } from '@tools/createZone.js'
-import path from 'node:path'
-import seedrandom from 'seedrandom'
-import { EdgesGeometry, MathUtils, Shape, ShapeGeometry, Vector2 } from 'three'
 
 const createIsland = async (width: number, height: number) => {
   const floorMesh = await createPlaneMesh(

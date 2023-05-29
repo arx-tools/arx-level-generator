@@ -1,8 +1,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { Mesh, Object3D } from 'three'
-import { mean } from './faux-ramda.js'
 import { Vector3 } from './Vector3.js'
+import { mean } from './faux-ramda.js'
 
 export const getPackageVersion = async () => {
   try {

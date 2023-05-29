@@ -1,8 +1,8 @@
 import { BufferAttribute, BufferGeometry, MathUtils } from 'three'
+import { Vector3 } from '@src/Vector3.js'
+import { sum } from '@src/faux-ramda.js'
 import { randomBetween } from '@src/random.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
-import { sum } from '@src/faux-ramda.js'
-import { Vector3 } from '@src/Vector3.js'
 
 type VertexData = { y: number; position: Vector3; idx: number }
 

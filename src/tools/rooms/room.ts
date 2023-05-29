@@ -1,13 +1,12 @@
-import { ArxPolygonFlags } from 'arx-convert/types'
+import { QuadrupleOf } from 'arx-convert/utils'
+import { Group, MathUtils, Object3D, Vector2 } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
-import { createPlaneMesh } from '@prefabs/mesh/plane.js'
-import { Group, MathUtils, Object3D, Vector2 } from 'three'
-import { Vector3 } from '@src/Vector3.js'
 import { DONT_QUADIFY, QUADIFY } from '@src/Polygons.js'
-import { scaleUV } from '@tools/mesh/scaleUV.js'
-import { QuadrupleOf } from 'arx-convert/utils'
+import { Vector3 } from '@src/Vector3.js'
 import { TextureOrMaterial } from '@src/types.js'
+import { createPlaneMesh } from '@prefabs/mesh/plane.js'
+import { scaleUV } from '@tools/mesh/scaleUV.js'
 
 const TILE_SIZE = 50
 const TILE_SCALE = new Vector2(TILE_SIZE / 100, TILE_SIZE / 100)

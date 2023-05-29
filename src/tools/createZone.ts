@@ -1,7 +1,7 @@
-import { Vector3 } from '@src/Vector3.js'
-import { Zone, ZoneConstructorProps } from '@src/Zone.js'
 import { Expand } from 'arx-convert/utils'
 import { EdgesGeometry, MathUtils, Shape, ShapeGeometry } from 'three'
+import { Vector3 } from '@src/Vector3.js'
+import { Zone, ZoneConstructorProps } from '@src/Zone.js'
 
 export const createZone = (
   props: Expand<Omit<ZoneConstructorProps, 'points' | 'height'> & { position?: Vector3; size?: Vector3 }>,

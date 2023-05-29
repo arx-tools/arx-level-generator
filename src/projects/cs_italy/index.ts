@@ -1,3 +1,7 @@
+import path from 'node:path'
+import { ArxPolygonFlags } from 'arx-convert/types'
+import seedrandom from 'seedrandom'
+import { Object3D } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
 import { DONT_QUADIFY, SHADING_FLAT } from '@src/Polygons.js'
@@ -5,10 +9,6 @@ import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations } from '@src/helpers.js'
 import { createZone } from '@tools/createZone.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
-import { ArxPolygonFlags } from 'arx-convert/types'
-import path from 'node:path'
-import seedrandom from 'seedrandom'
-import { Object3D } from 'three'
 
 export default async () => {
   const {

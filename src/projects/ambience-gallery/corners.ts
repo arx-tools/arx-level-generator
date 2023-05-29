@@ -1,3 +1,4 @@
+import { CylinderGeometry, MathUtils, Mesh, MeshBasicMaterial } from 'three'
 import { Color } from '@src/Color.js'
 import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
@@ -5,7 +6,6 @@ import { Vector3 } from '@src/Vector3.js'
 import { createLight } from '@tools/createLight.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
-import { CylinderGeometry, MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
 
 const createWoodenPole = ({ position }: { position: Vector3 }) => {
   const radius = 20

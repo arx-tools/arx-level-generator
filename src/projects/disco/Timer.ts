@@ -1,8 +1,8 @@
+import { EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
+import { roundToNDecimals } from '@src/helpers.js'
 import { Marker } from '@prefabs/entity/Marker.js'
 import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
 import { Variable } from '@scripting/properties/Variable.js'
-import { EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
-import { roundToNDecimals } from '@src/helpers.js'
 
 type TimerConstructorProps = EntityConstructorPropsWithoutSrc & {
   numberOfSteps: number

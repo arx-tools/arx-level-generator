@@ -1,9 +1,9 @@
+import { Texture } from '@src/Texture.js'
 import { CatacombHeavyDoor, DoorConstructorPropsWithFixSrc } from '@prefabs/entity/Door.js'
 import { TweakSkin } from '@scripting/commands/TweakSkin.js'
-import { Texture } from '@src/Texture.js'
-import { fireExitDoor } from './materials.js'
 import { Label } from '@scripting/properties/Label.js'
 import { Scale } from '@scripting/properties/Scale.js'
+import { fireExitDoor } from './materials.js'
 
 /**
  * 180 wide / 240 high

@@ -1,5 +1,5 @@
-import { ScriptProperty } from '@scripting/ScriptProperty.js'
 import { Zone } from '@src/Zone.js'
+import { ScriptProperty } from '@scripting/ScriptProperty.js'
 
 /**
  * @see https://wiki.arx-libertatis.org/Script:setcontrolledzone

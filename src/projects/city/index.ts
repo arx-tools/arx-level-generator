@@ -1,15 +1,15 @@
 import path from 'node:path'
 import seedrandom from 'seedrandom'
 import { MathUtils, Vector2 } from 'three'
-import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
 import { DONT_QUADIFY } from '@src/Polygons.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations } from '@src/helpers.js'
-import { scaleUV } from '@tools/mesh/scaleUV.js'
+import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { createZone } from '@tools/createZone.js'
+import { scaleUV } from '@tools/mesh/scaleUV.js'
 
 const facadeRatio = 1000 / 1319
 

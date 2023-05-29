@@ -1,7 +1,7 @@
 import path from 'node:path'
+import { Texture } from '@src/Texture.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import { UsesTextures } from '@scripting/interfaces/UsesTextures.js'
-import { Texture } from '@src/Texture.js'
 
 export class TweakSkin extends ScriptCommand implements UsesTextures {
   oldTexture: Texture | Promise<Texture>

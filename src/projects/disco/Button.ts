@@ -1,3 +1,5 @@
+import { EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
+import { Texture } from '@src/Texture.js'
 import { Cube } from '@prefabs/entity/Cube.js'
 import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
 import { LoadAnim } from '@scripting/commands/LoadAnim.js'
@@ -6,8 +8,6 @@ import { Interactivity } from '@scripting/properties/Interactivity.js'
 import { Scale } from '@scripting/properties/Scale.js'
 import { Speed } from '@scripting/properties/Speed.js'
 import { Variable } from '@scripting/properties/Variable.js'
-import { EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
-import { Texture } from '@src/Texture.js'
 
 // TODO: create a base class so that the script doesn't get copied 6*32 times
 export class Button extends Cube {

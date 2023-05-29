@@ -1,16 +1,16 @@
-import { createPlaneMesh } from '@prefabs/mesh/plane.js'
+import path from 'node:path'
+import seedrandom from 'seedrandom'
+import { Vector2 } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
 import { SHADING_SMOOTH } from '@src/Polygons.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
-import { createZone } from '@tools/createZone.js'
-import { makeBumpy } from '@tools/mesh/makeBumpy.js'
-import path from 'node:path'
-import seedrandom from 'seedrandom'
+import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { EVMBox } from '@projects/lalees-minigame/EVMBox.js'
 import { Label } from '@scripting/properties/Label.js'
-import { Vector2 } from 'three'
+import { createZone } from '@tools/createZone.js'
+import { makeBumpy } from '@tools/mesh/makeBumpy.js'
 
 export default async () => {
   const {

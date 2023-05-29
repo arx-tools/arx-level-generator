@@ -1,6 +1,6 @@
+import { ArxPolygonFlags } from 'arx-convert/types'
 import { Material } from '@src/Material.js'
 import { Texture } from '@src/Texture.js'
-import { ArxPolygonFlags } from 'arx-convert/types'
 
 const TEXTURE_DIR = 'textures'
 

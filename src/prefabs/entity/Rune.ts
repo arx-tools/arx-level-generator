@@ -1,5 +1,5 @@
-import { Variable } from '@scripting/properties/Variable.js'
 import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
+import { Variable } from '@scripting/properties/Variable.js'
 
 /**
  * @see https://wiki.arx-libertatis.org/Category:Runes

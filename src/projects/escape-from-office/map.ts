@@ -1,9 +1,9 @@
+import { Texture } from '@src/Texture.js'
+import { Vector3 } from '@src/Vector3.js'
 import { Cursor } from '@tools/rooms/Cursor.js'
 import { Rooms } from '@tools/rooms/Rooms.js'
 import { RoomProps } from '@tools/rooms/room.js'
 import { fakeWoodTiles, officeCeiling, officeWalls } from './materials.js'
-import { Vector3 } from '@src/Vector3.js'
-import { Texture } from '@src/Texture.js'
 
 const office: RoomProps = {
   textures: {

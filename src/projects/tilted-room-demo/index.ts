@@ -1,6 +1,6 @@
 import path from 'node:path'
-import { MathUtils } from 'three'
 import seedrandom from 'seedrandom'
+import { MathUtils } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
 import { HudElements } from '@src/HUD.js'
 import { DONT_QUADIFY } from '@src/Polygons.js'

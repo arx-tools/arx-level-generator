@@ -1,10 +1,11 @@
+import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
+import { Texture } from '@src/Texture.js'
 import { TweakSkin } from '@scripting/commands/TweakSkin.js'
 import { Interactivity } from '@scripting/properties/Interactivity.js'
 import { Label } from '@scripting/properties/Label.js'
 import { Transparency } from '@scripting/properties/Transparency.js'
 import { Variable } from '@scripting/properties/Variable.js'
-import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
-import { Texture } from '@src/Texture.js'
+
 // import { TEXTURE_DIR } from './materials.js'
 
 export class WallmountedWire extends Entity {

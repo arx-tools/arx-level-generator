@@ -1,12 +1,12 @@
 import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVector3, ArxVertex } from 'arx-convert/types'
 import { QuadrupleOf } from 'arx-convert/utils'
 import { Box3, Triangle } from 'three'
-import { isBetween, percentOf } from '@src/helpers.js'
+import { Color } from '@src/Color.js'
 import { NO_TEXTURE_CONTAINER, Texture } from '@src/Texture.js'
-import { ArxVertexWithColor } from '@src/types.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
-import { Color } from '@src/Color.js'
+import { isBetween, percentOf } from '@src/helpers.js'
+import { ArxVertexWithColor } from '@src/types.js'
 
 export type TransparencyType = 'multiplicative' | 'additive' | 'blended' | 'subtractive'
 

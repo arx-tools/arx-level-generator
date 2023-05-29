@@ -1,16 +1,16 @@
-import { ControlZone } from '@scripting/properties/ControlZone.js'
+import { ExtrudeGeometry, MathUtils, Mesh, MeshBasicMaterial, Shape, Vector2 } from 'three'
 import { Color } from '@src/Color.js'
 import { Entity } from '@src/Entity.js'
-import { randomBetween } from '@src/random.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Zone } from '@src/Zone.js'
-import { scaleUV } from '@tools/mesh/scaleUV.js'
-import { translateUV } from '@tools/mesh/translateUV.js'
-import { ExtrudeGeometry, MathUtils, Mesh, MeshBasicMaterial, Shape, Vector2 } from 'three'
-import { ambiences } from './constants.js'
+import { randomBetween } from '@src/random.js'
+import { ControlZone } from '@scripting/properties/ControlZone.js'
 import { createZone } from '@tools/createZone.js'
+import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
+import { translateUV } from '@tools/mesh/translateUV.js'
+import { ambiences } from './constants.js'
 
 // TODO: turn this into 3 functions
 export const createStoneBlocks = (rowSize: number, depth: number, achievementManager: Entity) => {

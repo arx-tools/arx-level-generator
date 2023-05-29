@@ -1,7 +1,8 @@
 import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 import { Texture } from '@src/Texture.js'
-import { TEXTURE_DIR } from './materials.js'
 import { Label } from '@scripting/properties/Label.js'
+import { TEXTURE_DIR } from './materials.js'
+
 // import { TweakSkin } from '@scripting/commands/TweakSkin.js'
 
 // TODO: this was originally made by copying the rope entity as cable-drum.ftl

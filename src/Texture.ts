@@ -1,10 +1,10 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { ArxTextureContainer } from 'arx-convert/types'
-import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
+import { Expand } from 'arx-convert/utils'
 import sharp, { Sharp } from 'sharp'
 import { sharpFromBmp, sharpToBmp } from 'sharp-bmp'
-import { Expand } from 'arx-convert/utils'
+import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
 import { fileExists } from '@src/helpers.js'
 
 export type TextureConstructorProps = {

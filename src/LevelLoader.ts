@@ -1,7 +1,7 @@
-import { DLF, FTS, LLF } from 'arx-convert'
-import { ArxDLF, ArxFTS, ArxLLF } from 'arx-convert/types'
 import fs from 'node:fs'
 import path from 'node:path'
+import { DLF, FTS, LLF } from 'arx-convert'
+import { ArxDLF, ArxFTS, ArxLLF } from 'arx-convert/types'
 import { OriginalLevel } from '@src/types.js'
 
 const { LEVELFILES = path.resolve('../pkware-test-files') } = process.env

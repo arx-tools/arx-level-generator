@@ -1,10 +1,10 @@
 import path from 'node:path'
 import { ArxInteractiveObject } from 'arx-convert/types'
-import { Rotation } from '@src/Rotation.js'
-import { Vector3 } from '@src/Vector3.js'
-import { Script } from '@src/Script.js'
 import { Expand } from 'arx-convert/utils'
+import { Rotation } from '@src/Rotation.js'
+import { Script } from '@src/Script.js'
 import { Texture } from '@src/Texture.js'
+import { Vector3 } from '@src/Vector3.js'
 
 const instanceCatalog: Record<string, Entity[]> = {}
 

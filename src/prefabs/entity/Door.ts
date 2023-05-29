@@ -1,7 +1,7 @@
+import { Expand } from 'arx-convert/utils'
+import { Entity, EntityConstructorProps } from '@src/Entity.js'
 import { UseMesh } from '@scripting/commands/UseMesh.js'
 import { Variable } from '@scripting/properties/Variable.js'
-import { Entity, EntityConstructorProps } from '@src/Entity.js'
-import { Expand } from 'arx-convert/utils'
 
 export type DoorConstructorProps = Expand<
   EntityConstructorProps & {

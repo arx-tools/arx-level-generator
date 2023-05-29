@@ -1,9 +1,9 @@
 import { ArxMap } from '@src/ArxMap.js'
+import { Vector3 } from '@src/Vector3.js'
 import { none, startsWith } from '@src/faux-ramda.js'
 import { removeByValue } from '@src/helpers.js'
-import { Vector3 } from '@src/Vector3.js'
-import { createRoom, RoomProps } from '@tools/rooms/room.js'
 import { Cursor, CursorDir } from '@tools/rooms/Cursor.js'
+import { createRoom, RoomProps } from '@tools/rooms/room.js'
 
 // ---------------------------
 
