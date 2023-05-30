@@ -1,6 +1,6 @@
 {
   "header": {
-    "origin": 5,
+    "origin": 4,
     "name": "pcgame"
   },
   "vertices": [
@@ -453,7 +453,7 @@
   ],
   "textureContainers": [
     {
-      "filename": "pcgame_box_art.jpg"
+      "filename": "pcgame_box_art_blank.jpg"
     }
   ],
   "groups": [],

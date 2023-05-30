@@ -1,9 +1,10 @@
 import path from 'node:path'
 import seedrandom from 'seedrandom'
-import { Vector2 } from 'three'
+import { MathUtils, Vector2 } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
 import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
+import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
@@ -53,10 +54,10 @@ export default async () => {
   map.lights.push(light)
 
   const game1 = new PCGame({
+    variant: 'mesterlovesz',
     position: new Vector3(0, -10, 0),
-    variant: 'streets-racer',
+    orientation: new Rotation(MathUtils.degToRad(45), 0, 0),
   })
-  game1.script?.properties.push(new Label('[game--streets-racer]'))
   map.entities.push(game1)
 
   const spawnZone = createZone({

@@ -1,5 +1,7 @@
 import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 import { Texture } from '@src/Texture.js'
+import { TweakSkin } from '@scripting/commands/TweakSkin.js'
+import { Label } from '@scripting/properties/Label.js'
 import { Material } from '@scripting/properties/Material.js'
 import { Shadow } from '@scripting/properties/Shadow.js'
 import { StackSize } from '@scripting/properties/StackSize.js'
@@ -8,7 +10,7 @@ import { Variable } from '@scripting/properties/Variable.js'
 const ASSETS_DIR = 'projects/lalees-minigame'
 
 type PCGameVariant =
-  | 'empty'
+  | 'blank'
   | 'mesterlovesz'
   | 'mortyr'
   | 'wolfschanze'
@@ -19,42 +21,42 @@ type PCGameVariant =
   | 'bikini-karate-babes'
 
 // TODO: create various box arx images
-const TEXTURES: Record<PCGameVariant, Promise<Texture>> = {
-  empty: Texture.fromCustomFile({
-    filename: 'pcgame_box_art_empty.png',
-    sourcePath: ASSETS_DIR + '/box-arts',
+const TEXTURES: Record<PCGameVariant, Texture | Promise<Texture>> = {
+  blank: Texture.fromCustomFile({
+    filename: 'pcgame_box_art_blank.png',
+    sourcePath: ASSETS_DIR + '/textures',
   }),
   mesterlovesz: Texture.fromCustomFile({
-    filename: 'pcgame_box_art.png',
-    sourcePath: ASSETS_DIR + '/box-arts',
+    filename: 'pcgame_box_art_mesterlovesz.png',
+    sourcePath: ASSETS_DIR + '/textures',
   }),
   mortyr: Texture.fromCustomFile({
-    filename: 'pcgame_box_art.png',
-    sourcePath: ASSETS_DIR + '/box-arts',
+    filename: 'pcgame_box_art_blank.png',
+    sourcePath: ASSETS_DIR + '/textures',
   }),
   wolfschanze: Texture.fromCustomFile({
-    filename: 'pcgame_box_art.png',
-    sourcePath: ASSETS_DIR + '/box-arts',
+    filename: 'pcgame_box_art_blank.png',
+    sourcePath: ASSETS_DIR + '/textures',
   }),
   'traktor-racer': Texture.fromCustomFile({
-    filename: 'pcgame_box_art.png',
-    sourcePath: ASSETS_DIR + '/box-arts',
+    filename: 'pcgame_box_art_blank.png',
+    sourcePath: ASSETS_DIR + '/textures',
   }),
   'americas-10-most-wanted': Texture.fromCustomFile({
-    filename: 'pcgame_box_art.png',
-    sourcePath: ASSETS_DIR + '/box-arts',
+    filename: 'pcgame_box_art_blank.png',
+    sourcePath: ASSETS_DIR + '/textures',
   }),
   'big-rigs': Texture.fromCustomFile({
-    filename: 'pcgame_box_art.png',
-    sourcePath: ASSETS_DIR + '/box-arts',
+    filename: 'pcgame_box_art_blank.png',
+    sourcePath: ASSETS_DIR + '/textures',
   }),
   'streets-racer': Texture.fromCustomFile({
-    filename: 'pcgame_box_art.png',
-    sourcePath: ASSETS_DIR + '/box-arts',
+    filename: 'pcgame_box_art_streets_racer.png',
+    sourcePath: ASSETS_DIR + '/textures',
   }),
   'bikini-karate-babes': Texture.fromCustomFile({
-    filename: 'pcgame_box_art.png',
-    sourcePath: ASSETS_DIR + '/box-arts',
+    filename: 'pcgame_box_art_blank.png',
+    sourcePath: ASSETS_DIR + '/textures',
   }),
 }
 
@@ -84,11 +86,17 @@ export class PCGame extends Entity {
 
     this.withScript()
 
-    this.propVariant = new Variable('string', 'variant', variant)
+    this.propVariant = new Variable('string', 'variant', 'blank')
 
-    // default = empty -> all others = tweakskin
+    this.script?.properties.push(
+      Shadow.off,
+      Material.stone,
+      StackSize.unstackable,
+      this.propVariant,
+      new Label(`[game--${variant}]`),
+    )
 
-    this.script?.properties.push(Shadow.off, Material.stone, StackSize.unstackable, this.propVariant)
+    this.script?.on('init', new TweakSkin(TEXTURES['blank'], TEXTURES[variant]))
   }
 
   get variant() {
