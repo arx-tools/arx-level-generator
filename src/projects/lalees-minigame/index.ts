@@ -9,6 +9,7 @@ import { Vector3 } from '@src/Vector3.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { PCGame } from '@projects/lalees-minigame/PCGame.js'
 import { Label } from '@scripting/properties/Label.js'
+import { createLight } from '@tools/createLight.js'
 import { createZone } from '@tools/createZone.js'
 import { makeBumpy } from '@tools/mesh/makeBumpy.js'
 
@@ -42,6 +43,14 @@ export default async () => {
   makeBumpy(10, 30, false, floorMesh.geometry)
   const floor = ArxMap.fromThreeJsMesh(floorMesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
   map.add(floor, true)
+
+  const light = createLight({
+    position: new Vector3(0, -200, 0),
+    radius: 250,
+    intensity: 3,
+  })
+
+  map.lights.push(light)
 
   const game1 = new PCGame({
     position: new Vector3(0, -10, 0),
