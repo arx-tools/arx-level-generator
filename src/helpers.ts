@@ -69,14 +69,14 @@ export const removeByValue = <T>(value: T, array: T[]) => {
  */
 export const latin9ToLatin1 = (str: string) => {
   return str
-    .replace('€', '¤')
-    .replace('Š', '¦')
-    .replace('š', '¨')
-    .replace('Ž', '´')
-    .replace('ž', '¸')
-    .replace('Œ', '¼')
-    .replace('œ', '½')
-    .replace('Ÿ', '¾')
+    .replaceAll('€', '¤')
+    .replaceAll('Š', '¦')
+    .replaceAll('š', '¨')
+    .replaceAll('Ž', '´')
+    .replaceAll('ž', '¸')
+    .replaceAll('Œ', '¼')
+    .replaceAll('œ', '½')
+    .replaceAll('Ÿ', '¾')
 }
 
 export const roundToNDecimals = (decimals: number, x: number) => {

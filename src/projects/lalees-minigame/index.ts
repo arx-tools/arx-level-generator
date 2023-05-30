@@ -54,6 +54,7 @@ export default async () => {
 
   const game1 = new PCGame({
     position: new Vector3(0, -10, 0),
+    variant: 'streets-racer',
   })
   game1.script?.properties.push(new Label('[game--streets-racer]'))
   map.entities.push(game1)
