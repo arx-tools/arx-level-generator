@@ -66,6 +66,16 @@ export default async () => {
       orientation: new Rotation(0, MathUtils.radToDeg(randomBetween(-90, 90)), 0),
     }),
     new PCGame({
+      variant: 'americas-10-most-wanted',
+      position: new Vector3(randomBetween(-100, 100), randomBetween(-20, 0), randomBetween(-100, 100)),
+      orientation: new Rotation(0, MathUtils.radToDeg(randomBetween(-90, 90)), 0),
+    }),
+    new PCGame({
+      variant: 'big-rigs',
+      position: new Vector3(randomBetween(-100, 100), randomBetween(-20, 0), randomBetween(-100, 100)),
+      orientation: new Rotation(0, MathUtils.radToDeg(randomBetween(-90, 90)), 0),
+    }),
+    new PCGame({
       variant: 'streets-racer',
       position: new Vector3(randomBetween(-100, 100), randomBetween(-20, 0), randomBetween(-100, 100)),
       orientation: new Rotation(0, MathUtils.radToDeg(randomBetween(-90, 90)), 0),

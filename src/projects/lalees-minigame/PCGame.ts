@@ -43,11 +43,11 @@ const TEXTURES: Record<PCGameVariant, Texture | Promise<Texture>> = {
     sourcePath: ASSETS_DIR + '/textures',
   }),
   'americas-10-most-wanted': Texture.fromCustomFile({
-    filename: 'pcgame_box_art_blank.png',
+    filename: 'pcgame_box_art_americas_10_most_wanted.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
   'big-rigs': Texture.fromCustomFile({
-    filename: 'pcgame_box_art_blank.png',
+    filename: 'pcgame_box_art_big_rigs.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
   'streets-racer': Texture.fromCustomFile({
