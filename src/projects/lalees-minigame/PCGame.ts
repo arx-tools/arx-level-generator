@@ -35,11 +35,11 @@ const TEXTURES: Record<PCGameVariant, Texture | Promise<Texture>> = {
     sourcePath: ASSETS_DIR + '/textures',
   }),
   wolfschanze: Texture.fromCustomFile({
-    filename: 'pcgame_box_art_blank.png',
+    filename: 'pcgame_box_art_wolfschanze.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
   'traktor-racer': Texture.fromCustomFile({
-    filename: 'pcgame_box_art_blank.png',
+    filename: 'pcgame_box_art_traktor_racer.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
   'americas-10-most-wanted': Texture.fromCustomFile({
