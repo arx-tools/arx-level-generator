@@ -70,6 +70,11 @@ export default async () => {
       position: new Vector3(randomBetween(-100, 100), randomBetween(-20, 0), randomBetween(-100, 100)),
       orientation: new Rotation(0, MathUtils.radToDeg(randomBetween(-90, 90)), 0),
     }),
+    new PCGame({
+      variant: 'bikini-karate-babes',
+      position: new Vector3(randomBetween(-100, 100), randomBetween(-20, 0), randomBetween(-100, 100)),
+      orientation: new Rotation(0, MathUtils.radToDeg(randomBetween(-90, 90)), 0),
+    }),
   )
 
   const spawnZone = createZone({

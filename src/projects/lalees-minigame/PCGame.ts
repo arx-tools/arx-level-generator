@@ -55,7 +55,7 @@ const TEXTURES: Record<PCGameVariant, Texture | Promise<Texture>> = {
     sourcePath: ASSETS_DIR + '/textures',
   }),
   'bikini-karate-babes': Texture.fromCustomFile({
-    filename: 'pcgame_box_art_blank.png',
+    filename: 'pcgame_box_art_bikini_karate_babes.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
 }
