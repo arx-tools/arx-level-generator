@@ -7,6 +7,7 @@ import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
 import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
+import { randomBetween } from '@src/random.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { PCGame } from '@projects/lalees-minigame/PCGame.js'
 import { Label } from '@scripting/properties/Label.js'
@@ -53,12 +54,23 @@ export default async () => {
 
   map.lights.push(light)
 
-  const game1 = new PCGame({
-    variant: 'mesterlovesz',
-    position: new Vector3(0, -10, 0),
-    orientation: new Rotation(MathUtils.degToRad(45), 0, 0),
-  })
-  map.entities.push(game1)
+  map.entities.push(
+    new PCGame({
+      variant: 'mesterlovesz',
+      position: new Vector3(randomBetween(-100, 100), randomBetween(-20, 0), randomBetween(-100, 100)),
+      orientation: new Rotation(0, MathUtils.degToRad(randomBetween(-90, 90)), 0),
+    }),
+    new PCGame({
+      variant: 'mortyr',
+      position: new Vector3(randomBetween(-100, 100), randomBetween(-20, 0), randomBetween(-100, 100)),
+      orientation: new Rotation(0, MathUtils.radToDeg(randomBetween(-90, 90)), 0),
+    }),
+    new PCGame({
+      variant: 'streets-racer',
+      position: new Vector3(randomBetween(-100, 100), randomBetween(-20, 0), randomBetween(-100, 100)),
+      orientation: new Rotation(0, MathUtils.radToDeg(randomBetween(-90, 90)), 0),
+    }),
+  )
 
   const spawnZone = createZone({
     name: 'spawn',

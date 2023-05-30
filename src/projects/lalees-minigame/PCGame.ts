@@ -31,7 +31,7 @@ const TEXTURES: Record<PCGameVariant, Texture | Promise<Texture>> = {
     sourcePath: ASSETS_DIR + '/textures',
   }),
   mortyr: Texture.fromCustomFile({
-    filename: 'pcgame_box_art_blank.png',
+    filename: 'pcgame_box_art_mortyr.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
   wolfschanze: Texture.fromCustomFile({
