@@ -20,7 +20,6 @@ type PCGameVariant =
   | 'streets-racer'
   | 'bikini-karate-babes'
 
-// TODO: create various box arx images
 const TEXTURES: Record<PCGameVariant, Texture | Promise<Texture>> = {
   blank: Texture.fromCustomFile({
     filename: 'pcgame_box_art_blank.png',
