@@ -38,6 +38,7 @@ import { times } from '@src/faux-ramda.js'
 import { getPackageVersion, latin9ToLatin1, uninstall } from '@src/helpers.js'
 import { OriginalLevel } from '@src/types.js'
 import { Audio } from './Audio.js'
+import { UI } from './UI.js'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -67,6 +68,7 @@ export class ArxMap {
     offset: new Vector3(0, 0, 0),
   }
   hud: HUD = new HUD()
+  ui: UI = new UI()
   i18n: Translations = new Translations()
   todo: ToBeSortedLater = {
     uniqueHeaders: [],
@@ -363,7 +365,8 @@ export class ArxMap {
 
     let textures = await this.polygons.exportTextures(outputDir)
 
-    const hudElements = this.hud.exportSourcesAndTargets(outputDir, levelIdx)
+    const hudElements = await this.hud.exportSourcesAndTargets(outputDir, levelIdx)
+    const uiElements = await this.ui.exportSourcesAndTargets(outputDir)
 
     const ambienceTracks = this.zones.reduce((acc, zone) => {
       if (zone.ambience === undefined || zone.ambience.isNative) {
@@ -455,6 +458,7 @@ export class ArxMap {
         ...Object.keys(models),
         ...Object.keys(sounds),
         ...Object.keys(hudElements),
+        ...Object.keys(uiElements),
         ...Object.keys(ambienceTracks),
         ...Object.keys(customAmbiences),
         ...Object.keys(customAmbiences).map((filename) => filename.replace(/\.json$/, '')),
@@ -478,6 +482,7 @@ export class ArxMap {
     const filesToCopy = [
       ...Object.entries(textures),
       ...Object.entries(hudElements),
+      ...Object.entries(uiElements),
       ...Object.entries(ambienceTracks),
       ...Object.entries(models),
       ...Object.entries(sounds),

@@ -45,7 +45,7 @@ export class HUD {
     }
   }
 
-  exportSourcesAndTargets(outputDir: string, levelIdx: number) {
+  async exportSourcesAndTargets(outputDir: string, levelIdx: number) {
     const files: Record<string, string> = {}
 
     if (this.elementVisibility[HudElements.Minimap] === false) {

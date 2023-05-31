@@ -6,6 +6,7 @@ import { Color } from '@src/Color.js'
 import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
 import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
+import { UiElements } from '@src/UI.js'
 import { Vector3 } from '@src/Vector3.js'
 import { randomBetween } from '@src/random.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
@@ -31,6 +32,7 @@ export default async () => {
   map.player.position.adjustToPlayerHeight()
   map.player.withScript()
   map.hud.hide('all')
+  map.ui.set(UiElements.MainMenuBackground, 'projects/lalees-minigame/ui/menu_main_background.jpg')
   await map.i18n.addFromFile('projects/lalees-minigame/i18n.json')
 
   // --------------
