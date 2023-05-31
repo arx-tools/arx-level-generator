@@ -10,7 +10,6 @@ import { Vector3 } from '@src/Vector3.js'
 import { randomBetween } from '@src/random.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { PCGame } from '@projects/lalees-minigame/PCGame.js'
-import { Label } from '@scripting/properties/Label.js'
 import { createLight } from '@tools/createLight.js'
 import { createZone } from '@tools/createZone.js'
 import { makeBumpy } from '@tools/mesh/makeBumpy.js'
@@ -26,7 +25,7 @@ export default async () => {
   console.log(`seed: ${SEED}`)
 
   const map = new ArxMap()
-  map.meta.mapName = "Lalee's minigame"
+  map.meta.mapName = "LaLee's minigame"
   map.meta.seed = SEED
   map.config.offset = new Vector3(6000, 0, 6000)
   map.player.position.adjustToPlayerHeight()
