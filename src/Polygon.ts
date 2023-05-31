@@ -1,5 +1,5 @@
 import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVector3, ArxVertex } from 'arx-convert/types'
-import { QuadrupleOf } from 'arx-convert/utils'
+import { MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf } from 'arx-convert/utils'
 import { Box3, Triangle } from 'three'
 import { Color } from '@src/Color.js'
 import { NO_TEXTURE_CONTAINER, Texture } from '@src/Texture.js'
@@ -349,7 +349,11 @@ export class Polygon {
   isOutOfBounds() {
     const outOfBoundVertex = this.vertices
       .slice(0, this.isQuad() ? 4 : 3)
-      .find((vertex) => !isBetween(0, 16000 - 1, vertex.x) || !isBetween(0, 16000 - 1, vertex.z))
+      .find(
+        (vertex) =>
+          !isBetween(0, MAP_WIDTH_IN_CELLS * 100 - 1, vertex.x) ||
+          !isBetween(0, MAP_DEPTH_IN_CELLS * 100 - 1, vertex.z),
+      )
 
     return outOfBoundVertex !== undefined
   }
