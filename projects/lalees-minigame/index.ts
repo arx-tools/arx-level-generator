@@ -1,19 +1,9 @@
 import path from 'node:path'
 import seedrandom from 'seedrandom'
-import { MathUtils, Vector2 } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
-import { Color } from '@src/Color.js'
-import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
-import { Rotation } from '@src/Rotation.js'
-import { Texture } from '@src/Texture.js'
 import { UiElements } from '@src/UI.js'
 import { Vector3 } from '@src/Vector3.js'
-import { randomBetween } from '@src/random.js'
-import { createPlaneMesh } from '@prefabs/mesh/plane.js'
-import { PCGame } from '@projects/lalees-minigame/PCGame.js'
-import { createLight } from '@tools/createLight.js'
-import { createZone } from '@tools/createZone.js'
-import { makeBumpy } from '@tools/mesh/makeBumpy.js'
+import { createHouse } from './map.js'
 
 export default async () => {
   const {
@@ -37,13 +27,13 @@ export default async () => {
 
   // --------------
 
-  const floorMesh = await createPlaneMesh(
-    new Vector2(500, 500),
-    100,
-    Color.fromCSS('white'),
-    Texture.l4DwarfWoodBoard02,
-  )
-  makeBumpy(10, 30, false, floorMesh.geometry)
+  const meshes = await createHouse()
+
+  meshes.forEach((mesh) => {
+    map.add(mesh, true)
+  })
+
+  /*
   const floor = ArxMap.fromThreeJsMesh(floorMesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
   map.add(floor, true)
 
@@ -104,6 +94,7 @@ export default async () => {
     drawDistance: 5000,
   })
   map.zones.push(spawnZone)
+  */
 
   // --------------
 

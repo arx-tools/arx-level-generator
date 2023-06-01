@@ -4,30 +4,30 @@ import { Texture } from '@src/Texture.js'
 
 const TEXTURE_DIR = 'textures'
 
-export const fakeWoodTiles = Material.fromTexture(
+export const carpet = Material.fromTexture(
   await Texture.fromCustomFile({
+    filename: '[fabric]-carpet.jpg',
     sourcePath: TEXTURE_DIR,
-    filename: '[wood]-fake-floor.jpg',
   }),
   {
     flags: ArxPolygonFlags.Tiled,
   },
 )
 
-export const officeCeiling = Material.fromTexture(
+export const granite = Material.fromTexture(
   await Texture.fromCustomFile({
+    filename: '[stone]-granite.jpg',
     sourcePath: TEXTURE_DIR,
-    filename: '[stone]-office-ceiling-tile.jpg',
   }),
   {
     flags: ArxPolygonFlags.Tiled,
   },
 )
 
-export const officeWalls = Material.fromTexture(
+export const woodStripes = Material.fromTexture(
   await Texture.fromCustomFile({
+    filename: '[wood]-stripes.jpg',
     sourcePath: TEXTURE_DIR,
-    filename: '[stone]-concrete.jpg',
   }),
   {
     flags: ArxPolygonFlags.Tiled,
