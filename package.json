@@ -2,7 +2,7 @@
   "name": "arx-level-generator",
   "version": "0.17.0",
   "description": "A tool for creating Arx Fatalis maps",
-  "main": "build/generate.js",
+  "main": "build/projects/index.js",
   "type": "module",
   "engines": {
     "npm": ">=8.0.0",
@@ -11,7 +11,7 @@
   "scripts": {
     "publish-map": "export OUTPUTDIR=$(pwd)/dist/ && npm run generate && npm run compile && npm run pack",
     "dev": "npm run generate && npm run compile && npm run run",
-    "generate": "tsc && tsc-alias && node --require dotenv/config --enable-source-maps ./build/index.js",
+    "generate": "tsc && tsc-alias && node --require dotenv/config --enable-source-maps ./build/projects/index.js",
     "compile": "./scripts/compile.sh",
     "run": "./scripts/run.sh",
     "pack": "./scripts/pack.sh"
