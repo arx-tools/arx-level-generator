@@ -33,3 +33,8 @@ export const woodStripes = Material.fromTexture(
     flags: ArxPolygonFlags.Tiled,
   },
 )
+
+export const apartments = await Texture.fromCustomFile({
+  filename: 'office-facade.jpg',
+  sourcePath: 'projects/city/textures',
+})
