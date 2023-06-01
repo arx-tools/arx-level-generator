@@ -2,6 +2,7 @@ import { ArxColor, ArxPolygonFlags, ArxTextureContainer, ArxVertex } from 'arx-c
 import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf, TripleOf } from 'arx-convert/utils'
 import { Mesh, MeshBasicMaterial, Object3D, Color as ThreeJsColor, BufferAttribute } from 'three'
 import { Color } from '@src/Color.js'
+import { Material } from '@src/Material.js'
 import { Polygon, TransparencyType } from '@src/Polygon.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
@@ -9,7 +10,6 @@ import { Vertex } from '@src/Vertex.js'
 import { sum, times } from '@src/faux-ramda.js'
 import { applyTransformations, averageVectors, evenAndRemainder, roundToNDecimals } from '@src/helpers.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
-import { Material } from './Material.js'
 
 export const QUADIFY = 'quadify'
 export const DONT_QUADIFY = "don't quadify"

@@ -1,6 +1,6 @@
 import { ScriptHandler } from '@src/Script.js'
 import { repeat } from '@src/faux-ramda.js'
-import { ScriptCommand } from './ScriptCommand.js'
+import { ScriptCommand } from '@scripting/ScriptCommand.js'
 
 export class ScriptSubroutine {
   name: string

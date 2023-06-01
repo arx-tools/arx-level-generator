@@ -11,7 +11,7 @@ import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations, fileExists } from '@src/helpers.js'
 import { scaleUV as scaleUVTool } from '@tools/mesh/scaleUV.js'
-import { toArxCoordinateSystem } from './toArxCoordinateSystem.js'
+import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
 type OBJProperties = {
   position?: Vector3

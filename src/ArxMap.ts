@@ -15,6 +15,7 @@ import {
 } from 'arx-convert/types'
 import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf } from 'arx-convert/utils'
 import { Box3, Object3D } from 'three'
+import { Audio } from '@src/Audio.js'
 import { Entities } from '@src/Entities.js'
 import { Entity } from '@src/Entity.js'
 import { Fog } from '@src/Fog.js'
@@ -31,14 +32,13 @@ import { Portal } from '@src/Portal.js'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
 import { Translations } from '@src/Translations.js'
+import { UI } from '@src/UI.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Zone } from '@src/Zone.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { times } from '@src/faux-ramda.js'
 import { getPackageVersion, latin9ToLatin1, uninstall } from '@src/helpers.js'
 import { OriginalLevel } from '@src/types.js'
-import { Audio } from './Audio.js'
-import { UI } from './UI.js'
 
 type ArxMapConfig = {
   isFinalized: boolean
