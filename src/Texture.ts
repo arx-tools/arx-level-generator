@@ -299,4 +299,12 @@ export class Texture extends ThreeJsTextue {
   static get itemCheese() {
     return new Texture({ filename: 'item_cheese.jpg', size: 64 })
   }
+
+  static get missingTexture() {
+    return Texture.fromCustomFile({
+      filename: 'jorge-[stone].jpg',
+      sourcePath: 'textures',
+      size: 32,
+    })
+  }
 }
