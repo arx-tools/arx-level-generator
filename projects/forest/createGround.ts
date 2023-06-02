@@ -1,6 +1,5 @@
 import { ArxPolygonFlags } from 'arx-convert/types'
 import { Vector2 } from 'three'
-import { Color } from '@src/Color.js'
 import { Material } from '@src/Material.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
