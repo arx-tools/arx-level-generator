@@ -7,7 +7,7 @@ import { Rooms } from '@prefabs/rooms/Rooms.js'
 import { RoomProps } from '@prefabs/rooms/room.js'
 import { createLight } from '@tools/createLight.js'
 
-export const loadMapDef = async (filename: string) => {
+export const loadRooms = async (filename: string) => {
   const cursor = new Cursor()
   const rooms = new Rooms(cursor)
   const roomDefinitions: Record<string, RoomProps> = {}
@@ -68,36 +68,12 @@ export const loadMapDef = async (filename: string) => {
             if (rooms.currentRoom === undefined) {
               // TODO: error: only add light if there's at least 1 room
             } else {
-              const lightSpacing = 200
-              const xAmount = Math.floor(cursor.newSize.x / lightSpacing)
-              const yAmount = Math.floor(cursor.newSize.y / lightSpacing)
-              const zAmount = Math.floor(cursor.newSize.z / lightSpacing)
-              for (let x = 0; x < xAmount; x++) {
-                for (let y = 0; y < yAmount; y++) {
-                  for (let z = 0; z < zAmount; z++) {
-                    const light = createLight({
-                      radius: lightSpacing * 1.3,
-                      position: new Vector3(
-                        cursor.cursor.x -
-                          cursor.newSize.x / 2 +
-                          x * lightSpacing +
-                          lightSpacing / 2 +
-                          randomBetween(-lightSpacing / 2, +lightSpacing / 2),
-                        cursor.cursor.y -
-                          y * lightSpacing -
-                          lightSpacing / 2 -
-                          randomBetween(-lightSpacing / 2, +lightSpacing / 2),
-                        cursor.cursor.z -
-                          cursor.newSize.z / 2 +
-                          z * lightSpacing +
-                          lightSpacing / 2 +
-                          randomBetween(-lightSpacing / 2, +lightSpacing / 2),
-                      ),
-                    })
-                    rooms.currentRoom.lights.push(light)
-                  }
-                }
-              }
+              const mainLight = createLight({
+                radius: Math.max(cursor.newSize.x, cursor.newSize.y, cursor.newSize.z),
+                position: new Vector3(cursor.cursor.x, cursor.cursor.y - cursor.newSize.y / 2, cursor.cursor.z),
+              })
+
+              rooms.currentRoom.lights.push(mainLight)
             }
             break
           default:

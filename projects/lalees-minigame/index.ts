@@ -3,7 +3,7 @@ import seedrandom from 'seedrandom'
 import { ArxMap } from '@src/ArxMap.js'
 import { UiElements } from '@src/UI.js'
 import { Vector3 } from '@src/Vector3.js'
-import { createHouse } from './map.js'
+import { loadRooms } from '@prefabs/rooms/loadRooms.js'
 
 export default async () => {
   const {
@@ -27,10 +27,10 @@ export default async () => {
 
   // --------------
 
-  const meshes = await createHouse()
+  const rooms = await loadRooms('assets/projects/the-backrooms/default.rooms')
 
-  meshes.forEach((mesh) => {
-    map.add(mesh, true)
+  rooms.forEach((room) => {
+    map.add(room, true)
   })
 
   /*
