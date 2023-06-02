@@ -1,3 +1,5 @@
+# use shellscript syntax highlighting
+
 # define the looks of a room which we'll refer to as room1
 define room1 ceiling [stone]_human_stone_wall1.jpg
 define room1 wall [stone]_human_stone_wall1.jpg
