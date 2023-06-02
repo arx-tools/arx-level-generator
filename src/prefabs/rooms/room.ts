@@ -8,9 +8,6 @@ import { TextureOrMaterial } from '@src/types.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 
-const TILE_SIZE = 50
-const TILE_SCALE = new Vector2(TILE_SIZE / 100, TILE_SIZE / 100)
-
 export type RoomTextures = {
   wall: TextureOrMaterial | QuadrupleOf<TextureOrMaterial>
   floor: TextureOrMaterial
@@ -20,122 +17,149 @@ export type RoomTextures = {
 export type RoomProps = {
   decal?: TextureOrMaterial
   textures: RoomTextures
+  /**
+   * @default 50
+   */
+  tileSize?: number
 }
 
-const createFloor = async (dimensions: Vector3, texture: TextureOrMaterial) => {
+const createFloor = async (dimensions: Vector3, texture: TextureOrMaterial, tileSize: number) => {
   const { x: width, y: height, z: depth } = dimensions
-  const mesh = await createPlaneMesh(new Vector2(width, depth), TILE_SIZE, Color.white.darken(70), texture)
-  scaleUV(TILE_SCALE, mesh.geometry)
+  const mesh = await createPlaneMesh(new Vector2(width, depth), tileSize, Color.white.darken(70), texture)
+  scaleUV(new Vector2(tileSize / 100, tileSize / 100), mesh.geometry)
   return mesh
 }
 
-const createNorthWall = async (dimensions: Vector3, texture: TextureOrMaterial, decal?: TextureOrMaterial) => {
+const createNorthWall = async (
+  dimensions: Vector3,
+  texture: TextureOrMaterial,
+  tileSize: number,
+  decal?: TextureOrMaterial,
+) => {
   const { x: width, y: height, z: depth } = dimensions
 
   const group = new Group()
 
-  const wall = await createPlaneMesh(new Vector2(width, height), TILE_SIZE, Color.white.darken(50), texture)
+  const wall = await createPlaneMesh(new Vector2(width, height), tileSize, Color.white.darken(50), texture)
   wall.translateZ(depth / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90))
-  scaleUV(TILE_SCALE, wall.geometry)
+  scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
   group.add(wall)
 
   if (decal) {
-    const decalOnWall = await createPlaneMesh(new Vector2(width, TILE_SIZE), TILE_SIZE, Color.white.darken(50), decal)
+    const decalOnWall = await createPlaneMesh(new Vector2(width, tileSize), tileSize, Color.white.darken(50), decal)
     decalOnWall.translateZ(depth / 2).translateY(-50)
     decalOnWall.rotateX(MathUtils.degToRad(90))
-    scaleUV(TILE_SCALE, decalOnWall.geometry)
+    scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
     group.add(decalOnWall)
   }
 
   return group
 }
 
-const createSouthWall = async (dimensions: Vector3, texture: TextureOrMaterial, decal?: TextureOrMaterial) => {
+const createSouthWall = async (
+  dimensions: Vector3,
+  texture: TextureOrMaterial,
+  tileSize: number,
+  decal?: TextureOrMaterial,
+) => {
   const { x: width, y: height, z: depth } = dimensions
 
   const group = new Group()
 
-  const wall = await createPlaneMesh(new Vector2(width, height), TILE_SIZE, Color.white.darken(50), texture)
+  const wall = await createPlaneMesh(new Vector2(width, height), tileSize, Color.white.darken(50), texture)
   wall.translateZ(-depth / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(180))
-  scaleUV(TILE_SCALE, wall.geometry)
+  scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
   group.add(wall)
 
   if (decal) {
-    const decalOnWall = await createPlaneMesh(new Vector2(width, TILE_SIZE), TILE_SIZE, Color.white.darken(50), decal)
+    const decalOnWall = await createPlaneMesh(new Vector2(width, tileSize), tileSize, Color.white.darken(50), decal)
     decalOnWall.translateZ(-depth / 2).translateY(-50)
     decalOnWall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(180))
-    scaleUV(TILE_SCALE, decalOnWall.geometry)
+    scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
     group.add(decalOnWall)
   }
 
   return group
 }
 
-const createWestWall = async (dimensions: Vector3, texture: TextureOrMaterial, decal?: TextureOrMaterial) => {
+const createWestWall = async (
+  dimensions: Vector3,
+  texture: TextureOrMaterial,
+  tileSize: number,
+  decal?: TextureOrMaterial,
+) => {
   const { x: width, y: height, z: depth } = dimensions
 
   const group = new Group()
 
-  const wall = await createPlaneMesh(new Vector2(depth, height), TILE_SIZE, Color.white.darken(50), texture)
+  const wall = await createPlaneMesh(new Vector2(depth, height), tileSize, Color.white.darken(50), texture)
   wall.translateX(-width / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(90))
-  scaleUV(TILE_SCALE, wall.geometry)
+  scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
   group.add(wall)
 
   if (decal) {
-    const decalOnWall = await createPlaneMesh(new Vector2(depth, TILE_SIZE), TILE_SIZE, Color.white.darken(50), decal)
+    const decalOnWall = await createPlaneMesh(new Vector2(depth, tileSize), tileSize, Color.white.darken(50), decal)
     decalOnWall.translateX(-width / 2).translateY(-50)
     decalOnWall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(90))
-    scaleUV(TILE_SCALE, decalOnWall.geometry)
+    scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
     group.add(decalOnWall)
   }
 
   return group
 }
 
-const createEastWall = async (dimensions: Vector3, texture: TextureOrMaterial, decal?: TextureOrMaterial) => {
+const createEastWall = async (
+  dimensions: Vector3,
+  texture: TextureOrMaterial,
+  tileSize: number,
+  decal?: TextureOrMaterial,
+) => {
   const { x: width, y: height, z: depth } = dimensions
 
   const group = new Group()
 
-  const wall = await createPlaneMesh(new Vector2(depth, height), TILE_SIZE, Color.white.darken(50), texture)
+  const wall = await createPlaneMesh(new Vector2(depth, height), tileSize, Color.white.darken(50), texture)
   wall.translateX(width / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(-90))
-  scaleUV(TILE_SCALE, wall.geometry)
+  scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
   group.add(wall)
 
   if (decal) {
-    const decalOnWall = await createPlaneMesh(new Vector2(depth, TILE_SIZE), TILE_SIZE, Color.white.darken(50), decal)
+    const decalOnWall = await createPlaneMesh(new Vector2(depth, tileSize), tileSize, Color.white.darken(50), decal)
     decalOnWall.translateX(width / 2).translateY(-50)
     decalOnWall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(-90))
-    scaleUV(TILE_SCALE, decalOnWall.geometry)
+    scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
     group.add(decalOnWall)
   }
 
   return group
 }
 
-const createCeiling = async (dimensions: Vector3, texture: TextureOrMaterial) => {
+const createCeiling = async (dimensions: Vector3, texture: TextureOrMaterial, tileSize: number) => {
   const { x: width, y: height, z: depth } = dimensions
 
-  const mesh = await createPlaneMesh(new Vector2(width, depth), TILE_SIZE, Color.white.darken(50), texture)
+  const mesh = await createPlaneMesh(new Vector2(width, depth), tileSize, Color.white.darken(50), texture)
   mesh.translateY(-height)
   mesh.rotateX(MathUtils.degToRad(180))
-  scaleUV(TILE_SCALE, mesh.geometry)
+  scaleUV(new Vector2(tileSize / 100, tileSize / 100), mesh.geometry)
   return mesh
 }
 
-export const createRoomMesh = async (dimensions: Vector3, { decal, textures: { wall, floor, ceiling } }: RoomProps) => {
+export const createRoomMesh = async (
+  dimensions: Vector3,
+  { decal, textures: { wall, floor, ceiling }, tileSize = 50 }: RoomProps,
+) => {
   const group = new Group()
 
-  group.add(await createFloor(dimensions, floor))
-  group.add(await createNorthWall(dimensions, Array.isArray(wall) ? wall[0] : wall, decal))
-  group.add(await createEastWall(dimensions, Array.isArray(wall) ? wall[1] : wall, decal))
-  group.add(await createSouthWall(dimensions, Array.isArray(wall) ? wall[2] : wall, decal))
-  group.add(await createWestWall(dimensions, Array.isArray(wall) ? wall[3] : wall, decal))
-  group.add(await createCeiling(dimensions, ceiling))
+  group.add(await createFloor(dimensions, floor, tileSize))
+  group.add(await createNorthWall(dimensions, Array.isArray(wall) ? wall[0] : wall, tileSize, decal))
+  group.add(await createEastWall(dimensions, Array.isArray(wall) ? wall[1] : wall, tileSize, decal))
+  group.add(await createSouthWall(dimensions, Array.isArray(wall) ? wall[2] : wall, tileSize, decal))
+  group.add(await createWestWall(dimensions, Array.isArray(wall) ? wall[3] : wall, tileSize, decal))
+  group.add(await createCeiling(dimensions, ceiling, tileSize))
 
   return group
 }
