@@ -9,6 +9,7 @@ import { createLight } from '@tools/createLight.js'
 export const loadRooms = async (filename: string) => {
   const cursor = new Cursor()
   const rooms = new Rooms(cursor)
+
   const roomDefinitions: Record<string, RoomProps> = {
     default: {
       textures: {
@@ -18,9 +19,9 @@ export const loadRooms = async (filename: string) => {
       },
     },
   }
+  const variables: Record<string, string> = {}
 
   const rawInput = await fs.promises.readFile(filename, 'utf-8')
-
   const lines = rawInput.split(/\r?\n/)
 
   for (let i = 0; i < lines.length; i++) {
@@ -49,7 +50,14 @@ export const loadRooms = async (filename: string) => {
           case 'floor':
           case 'wall':
           case 'ceiling':
-            roomDefinitions[definitionName].textures[tokens[2]] = new Texture({ filename: tokens[3], size: 128 })
+            if (tokens[3] === 'custom') {
+              roomDefinitions[definitionName].textures[tokens[2]] = await Texture.fromCustomFile({
+                filename: tokens[3],
+                sourcePath: tokens[4],
+              })
+            } else {
+              roomDefinitions[definitionName].textures[tokens[2]] = new Texture({ filename: tokens[3], size: 128 })
+            }
             break
           default:
           // TODO
@@ -59,9 +67,14 @@ export const loadRooms = async (filename: string) => {
         switch (tokens[1]) {
           case 'add':
             // TODO: validate arguments
+            const posX = parseInt(tokens[2].startsWith('$') ? variables[tokens[2]] : tokens[2])
+            const posY = parseInt(tokens[3].startsWith('$') ? variables[tokens[3]] : tokens[3])
+            const posZ = parseInt(tokens[4].startsWith('$') ? variables[tokens[4]] : tokens[4])
+            const definitionName = tokens[5]
+
             await rooms.addRoom(
-              new Vector3(parseInt(tokens[2]), parseInt(tokens[3]), parseInt(tokens[4])),
-              roomDefinitions[tokens[5]],
+              new Vector3(posX, posY, posZ),
+              roomDefinitions[definitionName],
               ...(tokens.slice(6) as CursorDir[]),
             )
             break
@@ -102,7 +115,19 @@ export const loadRooms = async (filename: string) => {
         }
         break
       default:
-        console.error(`Unknown command "${tokens[0]}" at line ${i + 1}`)
+        if (tokens[0].startsWith('$')) {
+          if (tokens[1] === '=') {
+            if (typeof tokens[2] !== 'undefined') {
+              variables[tokens[0]] = tokens[2]
+            } else {
+              console.error(`Missing value for variable at line ${i + 1}`)
+            }
+          } else {
+            console.error(`Unexpected token "${tokens[1]}" after variable at line ${i + 1}`)
+          }
+        } else {
+          console.error(`Unknown command "${tokens[0]}" at line ${i + 1}`)
+        }
     }
   }
 
