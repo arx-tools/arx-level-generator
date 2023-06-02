@@ -1,5 +1,4 @@
 import { MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry, Vector2 } from 'three'
-import { Color } from '@src/Color.js'
 import { applyTransformations } from '@src/helpers.js'
 import { TextureOrMaterial } from '@src/types.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
