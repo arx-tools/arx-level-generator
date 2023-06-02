@@ -14,26 +14,24 @@ import { scaleUV } from '@tools/mesh/scaleUV.js'
 const facadeRatio = 1000 / 1319
 
 const createFloor = async (width: number, height: number) => {
-  const mesh = await createPlaneMesh(
-    new Vector2(width, height),
-    100,
-    Texture.fromCustomFile({
+  const mesh = await createPlaneMesh({
+    size: new Vector2(width, height),
+    texture: Texture.fromCustomFile({
       filename: '[stone]-concrete.jpg',
       sourcePath: 'textures',
     }),
-  )
+  })
   return ArxMap.fromThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY })
 }
 
 const createWall = async (width: number, height: number) => {
-  const mesh = await createPlaneMesh(
-    new Vector2(width, height),
-    100,
-    Texture.fromCustomFile({
+  const mesh = await createPlaneMesh({
+    size: new Vector2(width, height),
+    texture: Texture.fromCustomFile({
       filename: 'office-facade.jpg',
       sourcePath: 'projects/city/textures',
     }),
-  )
+  })
   mesh.rotateX(MathUtils.degToRad(90))
   scaleUV(new Vector2(0.1 / 1, 0.1 / (facadeRatio / 1)), mesh.geometry)
   applyTransformations(mesh)

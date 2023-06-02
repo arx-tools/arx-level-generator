@@ -20,7 +20,7 @@ import { createLight } from '@tools/createLight.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 
-const createFloor = async (position: Vector3, dimensions: Vector2) => {
+const createFloor = async (position: Vector3, size: Vector2) => {
   const floorTiles = Material.fromTexture(
     await Texture.fromCustomFile({
       filename: '[wood]-fake-floor.jpg',
@@ -31,7 +31,7 @@ const createFloor = async (position: Vector3, dimensions: Vector2) => {
     },
   )
 
-  const floor = await createPlaneMesh(dimensions, 100, floorTiles)
+  const floor = await createPlaneMesh({ size, texture: floorTiles })
   scaleUV(new Vector2(0.5, 0.5), floor.geometry)
   floor.translateX(position.x)
   floor.translateY(position.y)
@@ -40,7 +40,7 @@ const createFloor = async (position: Vector3, dimensions: Vector2) => {
   return [floor]
 }
 
-const createWall = async (position: Vector3, dimensions: Vector2, direction: 'north' | 'west' | 'east' | 'south') => {
+const createWall = async (position: Vector3, size: Vector2, direction: 'north' | 'west' | 'east' | 'south') => {
   const metal = Material.fromTexture(
     await Texture.fromCustomFile({
       filename: '[stone]-dark-brick-wall.jpg',
@@ -51,7 +51,7 @@ const createWall = async (position: Vector3, dimensions: Vector2, direction: 'no
     },
   )
 
-  const wall = await createPlaneMesh(dimensions, 100, metal)
+  const wall = await createPlaneMesh({ size: size, texture: metal })
   scaleUV(new Vector2((1 / 3) * 2, (1 / 3) * 2), wall.geometry)
   wall.rotateX(MathUtils.degToRad(90))
   if (direction === 'south') {
@@ -72,7 +72,7 @@ const createWall = async (position: Vector3, dimensions: Vector2, direction: 'no
   return [wall]
 }
 
-const createCeiling = async (position: Vector3, dimensions: Vector2) => {
+const createCeiling = async (position: Vector3, size: Vector2) => {
   const woodenStripes = Material.fromTexture(
     await Texture.fromCustomFile({
       // filename: '[wood]-stripes.jpg',
@@ -84,7 +84,7 @@ const createCeiling = async (position: Vector3, dimensions: Vector2) => {
     },
   )
 
-  const ceiling = await createPlaneMesh(dimensions, 100, woodenStripes)
+  const ceiling = await createPlaneMesh({ size, texture: woodenStripes })
   scaleUV(new Vector2(0.5, 0.5), ceiling.geometry)
   ceiling.rotateX(MathUtils.degToRad(180))
   applyTransformations(ceiling)
@@ -95,7 +95,7 @@ const createCeiling = async (position: Vector3, dimensions: Vector2) => {
   return [ceiling]
 }
 
-const createSynthPanel = async (position: Vector3, dimensions: Vector2) => {
+const createSynthPanel = async (position: Vector3, size: Vector2) => {
   const metal = Material.fromTexture(
     await Texture.fromCustomFile({
       filename: 'dark-[metal]-grid.jpg',
@@ -106,7 +106,7 @@ const createSynthPanel = async (position: Vector3, dimensions: Vector2) => {
     },
   )
 
-  const panel = await createPlaneMesh(dimensions, 100, metal)
+  const panel = await createPlaneMesh({ size, texture: metal })
   panel.rotateX(MathUtils.degToRad(90))
   scaleUV(new Vector2(0.5, 0.5), panel.geometry)
   applyTransformations(panel)

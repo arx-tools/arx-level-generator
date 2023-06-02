@@ -16,13 +16,12 @@ import { createZone } from '@tools/createZone.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 
 const createFloor = async (width: number, height: number) => {
-  const mesh = await createPlaneMesh(
-    new Vector2(width, height),
-    100,
-    Material.fromTexture(Texture.stoneHumanStoneWall1, {
+  const mesh = await createPlaneMesh({
+    size: new Vector2(width, height),
+    texture: Material.fromTexture(Texture.stoneHumanStoneWall1, {
       flags: ArxPolygonFlags.None,
     }),
-  )
+  })
 
   return ArxMap.fromThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY })
 }

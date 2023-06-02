@@ -7,19 +7,27 @@ import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 export const INDEXED = 'indexed'
 export const NONINDEXED = 'non-indexed'
 
-export const createPlaneMesh = async (
-  dimensions: Vector2,
-  tileSize: number,
-  texture: TextureOrMaterial,
-  isIndexed: typeof INDEXED | typeof NONINDEXED = INDEXED,
-) => {
-  const divisionX = Math.ceil(dimensions.x / tileSize)
-  const divisionY = Math.ceil(dimensions.y / tileSize)
+type createPlaneMeshProps = {
+  size: Vector2
+  /**
+   * @default 100
+   */
+  tileSize?: number
+  texture: TextureOrMaterial
+  /**
+   * @default INDEXED
+   */
+  isIndexed?: typeof INDEXED | typeof NONINDEXED
+}
 
-  let geometry = new PlaneGeometry(dimensions.x, dimensions.y, divisionX, divisionY)
+export const createPlaneMesh = async ({ size, tileSize = 100, texture, isIndexed = INDEXED }: createPlaneMeshProps) => {
+  const divisionX = Math.ceil(size.x / tileSize)
+  const divisionY = Math.ceil(size.y / tileSize)
+
+  let geometry = new PlaneGeometry(size.x, size.y, divisionX, divisionY)
   geometry = toArxCoordinateSystem(geometry)
 
-  scaleUV(new Vector2(dimensions.x / tileSize, dimensions.y / tileSize), geometry)
+  scaleUV(new Vector2(size.x / tileSize, size.y / tileSize), geometry)
 
   if (texture instanceof Promise) {
     texture = await texture

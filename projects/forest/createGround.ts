@@ -19,18 +19,22 @@ export const createGround = async ({
 }) => {
   const tileSize = 100
 
-  const floorMesh = await createPlaneMesh(size, tileSize, texture)
+  const floorMesh = await createPlaneMesh({
+    size,
+    tileSize,
+    texture,
+  })
   transformEdge(new Vector3(0, -30, 0), floorMesh)
   makeBumpy(30, 60, false, floorMesh.geometry)
   scaleUV(new Vector2(tileSize / 100, tileSize / 100), floorMesh.geometry)
 
-  const waterMesh = await createPlaneMesh(
+  const waterMesh = await createPlaneMesh({
     size,
     tileSize,
-    Material.fromTexture(Texture.waterCavewater, {
+    texture: Material.fromTexture(Texture.waterCavewater, {
       flags: ArxPolygonFlags.Water | ArxPolygonFlags.Transparent | ArxPolygonFlags.NoShadow,
     }),
-  )
+  })
   scaleUV(new Vector2(tileSize / 100, tileSize / 100), waterMesh.geometry)
 
   return [floorMesh, waterMesh]
