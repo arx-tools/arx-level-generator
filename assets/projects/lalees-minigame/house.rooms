@@ -47,7 +47,6 @@ room add 100 250 50 window z++ y x+
 # outside front
 cursor restore outside-front
 room add 1450 $houseHeight 400 outside-south x-- y-
-with light
 cursor restore outside-front
 room add 1450 $houseHeight 400 outside-south x++ y-
 with light

@@ -9,7 +9,7 @@ import { Variable } from '@scripting/properties/Variable.js'
 
 const ASSETS_DIR = 'projects/lalees-minigame'
 
-type PCGameVariant =
+export type PCGameVariant =
   | 'blank'
   | 'mesterlovesz'
   | 'mortyr'

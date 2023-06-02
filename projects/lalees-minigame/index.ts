@@ -7,6 +7,7 @@ import { HudElements } from '@src/HUD.js'
 import { Rotation } from '@src/Rotation.js'
 import { UiElements } from '@src/UI.js'
 import { Vector3 } from '@src/Vector3.js'
+import { pickRandoms, randomSort } from '@src/random.js'
 import { LightDoor } from '@prefabs/entity/Door.js'
 import { Rune } from '@prefabs/entity/Rune.js'
 import { loadRooms } from '@prefabs/rooms/loadRooms.js'
@@ -14,7 +15,7 @@ import { Interactivity } from '@scripting/properties/Interactivity.js'
 import { Scale } from '@scripting/properties/Scale.js'
 import { Speed } from '@scripting/properties/Speed.js'
 import { createZone } from '@tools/createZone.js'
-import { PCGame } from './PCGame.js'
+import { PCGame, PCGameVariant } from './PCGame.js'
 
 export default async () => {
   const {
@@ -46,6 +47,17 @@ export default async () => {
     map.add(room, true)
   })
 
+  const gameVariants = randomSort([
+    'mesterlovesz',
+    'mortyr',
+    'wolfschanze',
+    'traktor-racer',
+    'americas-10-most-wanted',
+    'big-rigs',
+    'streets-racer',
+    'bikini-karate-babes',
+  ] as PCGameVariant[])
+
   const runeSpacium = new Rune('spacium')
   const runeComunicatum = new Rune('comunicatum')
 
@@ -65,10 +77,13 @@ export default async () => {
   })
 
   const game1 = new PCGame({
-    variant: 'mesterlovesz',
+    variant: gameVariants[0],
     position: new Vector3(1700, -5, -50),
     orientation: new Rotation(MathUtils.degToRad(45), MathUtils.degToRad(80), MathUtils.degToRad(15)),
   })
+
+  // game2 -> in the dark outside south
+
   const fern = Entity.fern.withScript()
   fern.position = new Vector3(1650, 0, -60)
   fern.orientation = new Rotation(MathUtils.degToRad(0), MathUtils.degToRad(90), MathUtils.degToRad(0))
@@ -87,54 +102,6 @@ export default async () => {
     orientation: new Rotation(0, MathUtils.degToRad(-90), MathUtils.degToRad(180)),
   })
   map.entities.push(doorToRoomA, doorToRoomB)
-
-  /*
-  const floor = ArxMap.fromThreeJsMesh(floorMesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
-  map.add(floor, true)
-
-  map.entities.push(
-    new PCGame({
-      variant: 'mesterlovesz',
-      position: new Vector3(randomBetween(-100, 100), randomBetween(-20, 0), randomBetween(-100, 100)),
-      orientation: new Rotation(0, MathUtils.degToRad(randomBetween(-90, 90)), 0),
-    }),
-    new PCGame({
-      variant: 'mortyr',
-      position: new Vector3(randomBetween(-100, 100), randomBetween(-20, 0), randomBetween(-100, 100)),
-      orientation: new Rotation(0, MathUtils.radToDeg(randomBetween(-90, 90)), 0),
-    }),
-    new PCGame({
-      variant: 'wolfschanze',
-      position: new Vector3(randomBetween(-100, 100), randomBetween(-20, 0), randomBetween(-100, 100)),
-      orientation: new Rotation(0, MathUtils.radToDeg(randomBetween(-90, 90)), 0),
-    }),
-    new PCGame({
-      variant: 'traktor-racer',
-      position: new Vector3(randomBetween(-100, 100), randomBetween(-20, 0), randomBetween(-100, 100)),
-      orientation: new Rotation(0, MathUtils.radToDeg(randomBetween(-90, 90)), 0),
-    }),
-    new PCGame({
-      variant: 'americas-10-most-wanted',
-      position: new Vector3(randomBetween(-100, 100), randomBetween(-20, 0), randomBetween(-100, 100)),
-      orientation: new Rotation(0, MathUtils.radToDeg(randomBetween(-90, 90)), 0),
-    }),
-    new PCGame({
-      variant: 'big-rigs',
-      position: new Vector3(randomBetween(-100, 100), randomBetween(-20, 0), randomBetween(-100, 100)),
-      orientation: new Rotation(0, MathUtils.radToDeg(randomBetween(-90, 90)), 0),
-    }),
-    new PCGame({
-      variant: 'streets-racer',
-      position: new Vector3(randomBetween(-100, 100), randomBetween(-20, 0), randomBetween(-100, 100)),
-      orientation: new Rotation(0, MathUtils.radToDeg(randomBetween(-90, 90)), 0),
-    }),
-    new PCGame({
-      variant: 'bikini-karate-babes',
-      position: new Vector3(randomBetween(-100, 100), randomBetween(-20, 0), randomBetween(-100, 100)),
-      orientation: new Rotation(0, MathUtils.radToDeg(randomBetween(-90, 90)), 0),
-    }),
-  )
-  */
 
   const spawnZone = createZone({
     name: 'spawn',
