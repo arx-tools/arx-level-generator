@@ -78,7 +78,7 @@ export default async () => {
   const zones = new Zones(cursor)
   const roomDefinitions: Record<string, RoomProps> = {}
 
-  const defaultMap = path.resolve('assets/projects/the-backrooms/maps/default.ini')
+  const defaultMap = path.resolve('assets/projects/the-backrooms/default.mapdef')
   const rawInput = await fs.promises.readFile(defaultMap, 'utf-8')
 
   const lines = rawInput.split(/\r?\n/)
