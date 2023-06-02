@@ -52,8 +52,8 @@ export const loadRooms = async (filename: string) => {
           case 'ceiling':
             if (tokens[3] === 'custom') {
               roomDefinitions[definitionName].textures[tokens[2]] = await Texture.fromCustomFile({
-                filename: tokens[3],
-                sourcePath: tokens[4],
+                filename: tokens[4],
+                sourcePath: tokens[5],
               })
             } else {
               roomDefinitions[definitionName].textures[tokens[2]] = new Texture({ filename: tokens[3], size: 128 })
