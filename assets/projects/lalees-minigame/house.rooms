@@ -10,6 +10,9 @@ define door ceiling L2_GOBEL_[WOOD]_BOARD05.jpg
 define door wall L2_GOBEL_[WOOD]_BOARD05.jpg
 # define door floor ?same as floor of other rooms?
 
+$houseHeight = 350
+$outsideHeight = 500
+
 # dining room
 room add 700 350 1100 default
 with light
@@ -17,7 +20,7 @@ cursor save dining-room
 
 ## 3 windows on the back
 room add 100 250 50 window z-- y
-room add 500 350 300 outside z-- y
+room add 500 $houseHeight 400 outside z-- y
 with light
 cursor save outside-front
 room add 100 250 50 window z++ y x-
@@ -26,26 +29,37 @@ room add 100 250 50 window z++ y x+
 
 ## outside front
 cursor restore outside-front
-room add 1400 350 300 outside x-- y
+room add 1400 $houseHeight 400 outside x-- y-
 with light
 cursor restore outside-front
-room add 1400 350 300 outside x++ y
+room add 1400 $houseHeight 400 outside x++ y-
 with light
+room add 300 $houseHeight 300 outside x+ z++ y-
 
 ## door on the front
 cursor restore dining-room
 room add 200 250 50 door z++ y-
 
 # outside back
-room add 3100 500 2000 outside z++ y-
+# room add 3100 $outsideHeight 2000 outside z++ y-
+
+# right corridor
+cursor restore dining-room
+room add 50 250 200 default x++ y-
+room add 400 250 200 default x++ y-
+cursor save right-corridor
+# todo: make room A
+cursor restore right-corridor
+room add 50 250 200 default x++ y-
+room add 400 250 200 default x++ y-
+room add 400 250 450 default z-- y-
+with light
+room add 200 250 50 door z-- y-
 
 
 
 
 
-
-# room add 50 250 200 default x++ y-
-# room add 500 250 200 default x++ y-
 # cursor save room-a-entrance
 # with light
 # room add 50 250 200 default x++ y-
