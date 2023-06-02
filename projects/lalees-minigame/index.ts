@@ -1,9 +1,11 @@
 import path from 'node:path'
 import seedrandom from 'seedrandom'
 import { ArxMap } from '@src/ArxMap.js'
+import { Color } from '@src/Color.js'
 import { UiElements } from '@src/UI.js'
 import { Vector3 } from '@src/Vector3.js'
 import { loadRooms } from '@prefabs/rooms/loadRooms.js'
+import { createZone } from '@tools/createZone.js'
 
 export default async () => {
   const {
@@ -27,7 +29,7 @@ export default async () => {
 
   // --------------
 
-  const rooms = await loadRooms('assets/projects/the-backrooms/default.rooms')
+  const rooms = await loadRooms('assets/projects/lalees-minigame/house.rooms')
 
   rooms.forEach((room) => {
     map.add(room, true)
@@ -87,14 +89,14 @@ export default async () => {
       orientation: new Rotation(0, MathUtils.radToDeg(randomBetween(-90, 90)), 0),
     }),
   )
+  */
 
   const spawnZone = createZone({
     name: 'spawn',
-    backgroundColor: Color.fromCSS('white').darken(30),
+    backgroundColor: Color.fromCSS('white').darken(80),
     drawDistance: 5000,
   })
   map.zones.push(spawnZone)
-  */
 
   // --------------
 

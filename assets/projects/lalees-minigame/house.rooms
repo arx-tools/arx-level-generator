@@ -1,0 +1,56 @@
+define outside ceiling alpha.bmp
+# define outside wall ?forest?
+define outside floor L2_TROLL_[SAND]_GROUND04.jpg
+
+define window ceiling L2_GOBEL_[WOOD]_BOARD05.jpg
+define window wall L2_GOBEL_[WOOD]_BOARD05.jpg
+define window floor L2_GOBEL_[WOOD]_BOARD05.jpg
+
+define door ceiling L2_GOBEL_[WOOD]_BOARD05.jpg
+define door wall L2_GOBEL_[WOOD]_BOARD05.jpg
+# define door floor ?same as floor of other rooms?
+
+# dining room
+room add 700 350 1100 default
+with light
+cursor save dining-room
+
+## 3 windows on the back
+room add 100 250 50 window z-- y
+room add 500 350 300 outside z-- y
+with light
+cursor save outside-front
+room add 100 250 50 window z++ y x-
+cursor restore outside-front
+room add 100 250 50 window z++ y x+
+
+## outside front
+cursor restore outside-front
+room add 1400 350 300 outside x-- y
+with light
+cursor restore outside-front
+room add 1400 350 300 outside x++ y
+with light
+
+## door on the front
+cursor restore dining-room
+room add 200 250 50 door z++ y-
+
+# outside back
+room add 3100 500 2000 outside z++ y-
+
+
+
+
+
+
+# room add 50 250 200 default x++ y-
+# room add 500 250 200 default x++ y-
+# cursor save room-a-entrance
+# with light
+# room add 50 250 200 default x++ y-
+# room add 500 250 200 default x++ y-
+# with light
+# room add 50 250 200 default x++ y-
+
+# room add 500 350 500 default x- z++ y-

@@ -52,9 +52,6 @@ export class Rooms {
 
   async addRoom(dimensions: Vector3, props: RoomProps, ...adjustments: CursorDir[]) {
     this.cursor.newSize = dimensions
-    if (none(startsWith('y'), adjustments)) {
-      adjustments.push('y-')
-    }
     this.cursor.move(...adjustments)
 
     this.currentRoom = await createRoom(dimensions, props)

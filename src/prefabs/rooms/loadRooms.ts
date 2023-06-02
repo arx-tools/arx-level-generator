@@ -1,7 +1,6 @@
 import fs from 'node:fs'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
-import { randomBetween } from '@src/random.js'
 import { Cursor, CursorDir } from '@prefabs/rooms/Cursor.js'
 import { Rooms } from '@prefabs/rooms/Rooms.js'
 import { RoomProps } from '@prefabs/rooms/room.js'
@@ -10,7 +9,15 @@ import { createLight } from '@tools/createLight.js'
 export const loadRooms = async (filename: string) => {
   const cursor = new Cursor()
   const rooms = new Rooms(cursor)
-  const roomDefinitions: Record<string, RoomProps> = {}
+  const roomDefinitions: Record<string, RoomProps> = {
+    default: {
+      textures: {
+        ceiling: Texture.missingTexture,
+        wall: Texture.missingTexture,
+        floor: Texture.missingTexture,
+      },
+    },
+  }
 
   const rawInput = await fs.promises.readFile(filename, 'utf-8')
 

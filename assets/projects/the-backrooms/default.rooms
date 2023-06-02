@@ -35,8 +35,8 @@ with light
 cursor restore spawn
 
 # extrude north
-room add 200 300 400 room2 z++
-room add 600 400 600 room1 z++
+room add 200 300 400 room2 z++ y-
+room add 600 400 600 room1 z++ y-
 with light
 
 # save the current position for later
@@ -48,16 +48,16 @@ with light
 
 # go back to the saved position and extrude east
 cursor restore branching
-room add 1000 300 200 room2 x++
-room add 400 400 400 room1 x++
+room add 1000 300 200 room2 x++ y-
+room add 400 400 400 room1 x++ y-
 with light
 room add 200 100 200 lichthof y++
 with light
 
 # extrude west
 cursor restore branching
-room add 1000 300 200 room2 x--
-room add 400 400 400 room1 x--
+room add 1000 300 200 room2 x-- y-
+room add 400 400 400 room1 x-- y-
 with light
 room add 200 100 200 lichthof y++
 with light
