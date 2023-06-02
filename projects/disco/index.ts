@@ -4,21 +4,18 @@ import seedrandom from 'seedrandom'
 import { MathUtils, Vector2 } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
 import { Audio } from '@src/Audio.js'
-import { Color } from '@src/Color.js'
 import { Material } from '@src/Material.js'
 import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
 import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations } from '@src/helpers.js'
-import { Cube } from '@prefabs/entity/Cube.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { Button } from '@projects/disco/Button.js'
 import { Cursor } from '@projects/disco/Cursor.js'
 import { Lever } from '@projects/disco/Lever.js'
 import { SoundPlayer } from '@projects/disco/SoundPlayer.js'
 import { Timer } from '@projects/disco/Timer.js'
-import { TweakSkin } from '@scripting/commands/TweakSkin.js'
 import { createLight } from '@tools/createLight.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
@@ -34,7 +31,7 @@ const createFloor = async (position: Vector3, dimensions: Vector2) => {
     },
   )
 
-  const floor = await createPlaneMesh(dimensions, 100, Color.white.darken(50), floorTiles)
+  const floor = await createPlaneMesh(dimensions, 100, floorTiles)
   scaleUV(new Vector2(0.5, 0.5), floor.geometry)
   floor.translateX(position.x)
   floor.translateY(position.y)
@@ -54,7 +51,7 @@ const createWall = async (position: Vector3, dimensions: Vector2, direction: 'no
     },
   )
 
-  const wall = await createPlaneMesh(dimensions, 100, Color.white.darken(50), metal)
+  const wall = await createPlaneMesh(dimensions, 100, metal)
   scaleUV(new Vector2((1 / 3) * 2, (1 / 3) * 2), wall.geometry)
   wall.rotateX(MathUtils.degToRad(90))
   if (direction === 'south') {
@@ -87,7 +84,7 @@ const createCeiling = async (position: Vector3, dimensions: Vector2) => {
     },
   )
 
-  const ceiling = await createPlaneMesh(dimensions, 100, Color.white.darken(50), woodenStripes)
+  const ceiling = await createPlaneMesh(dimensions, 100, woodenStripes)
   scaleUV(new Vector2(0.5, 0.5), ceiling.geometry)
   ceiling.rotateX(MathUtils.degToRad(180))
   applyTransformations(ceiling)
@@ -109,7 +106,7 @@ const createSynthPanel = async (position: Vector3, dimensions: Vector2) => {
     },
   )
 
-  const panel = await createPlaneMesh(dimensions, 100, Color.white.darken(50), metal)
+  const panel = await createPlaneMesh(dimensions, 100, metal)
   panel.rotateX(MathUtils.degToRad(90))
   scaleUV(new Vector2(0.5, 0.5), panel.geometry)
   applyTransformations(panel)

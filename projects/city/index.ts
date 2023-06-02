@@ -17,7 +17,6 @@ const createFloor = async (width: number, height: number) => {
   const mesh = await createPlaneMesh(
     new Vector2(width, height),
     100,
-    Color.white.darken(50),
     Texture.fromCustomFile({
       filename: '[stone]-concrete.jpg',
       sourcePath: 'textures',
@@ -30,7 +29,6 @@ const createWall = async (width: number, height: number) => {
   const mesh = await createPlaneMesh(
     new Vector2(width, height),
     100,
-    Color.white.darken(50),
     Texture.fromCustomFile({
       filename: 'office-facade.jpg',
       sourcePath: 'projects/city/textures',

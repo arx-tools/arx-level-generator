@@ -1,5 +1,4 @@
 import { MathUtils, Vector2, BoxGeometry, MeshBasicMaterial, Mesh, Group, CylinderGeometry } from 'three'
-import { Color } from '@src/Color.js'
 import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
@@ -18,7 +17,6 @@ const createIronPole = (position: Vector3, { x: width, y: height }: Vector2) => 
   geometry.translate(position.x, position.y - height / 2 + 10, position.z)
 
   const material = new MeshBasicMaterial({
-    color: Color.white.darken(50).getHex(),
     map: Texture.l4DwarfIronBoard02,
   })
 
@@ -34,7 +32,6 @@ const createHorizontalBar = (position: Vector3) => {
   geometry.translate(position.x + 110 - 20, position.y - 50, position.z)
 
   const material = new MeshBasicMaterial({
-    color: Color.white.darken(50).getHex(),
     map: Texture.l4DwarfIronBoard02,
   })
 

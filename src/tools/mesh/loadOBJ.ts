@@ -92,7 +92,6 @@ export const loadOBJ = async (
 
         const material = new MeshBasicMaterial({
           name,
-          color: Color.white.getHex(),
           map: textureMap,
         })
 
@@ -104,14 +103,12 @@ export const loadOBJ = async (
       console.error(`Error while parsing ${name}.mtl file:`, e)
       materials = new MeshBasicMaterial({
         name,
-        color: Color.white.getHex(),
         map: fallbackTexture ?? defaultTexture,
       })
     }
   } else {
     materials = new MeshBasicMaterial({
       name,
-      color: Color.white.getHex(),
       map: fallbackTexture ?? defaultTexture,
     })
   }

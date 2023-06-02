@@ -17,7 +17,6 @@ export const createMoon = ({ position, size }: { position: Vector3; size: number
   translateUV(new Vector2(0.7, 0.7), geometry)
 
   const material = new MeshBasicMaterial({
-    color: Color.white.getHex(),
     map: Material.fromTexture(Texture.itemCheese, {
       flags: ArxPolygonFlags.Glow,
     }),

@@ -11,7 +11,6 @@ export const NONINDEXED = 'non-indexed'
 export const createPlaneMesh = async (
   dimensions: Vector2,
   tileSize: number,
-  color: Color,
   texture: TextureOrMaterial,
   isIndexed: typeof INDEXED | typeof NONINDEXED = INDEXED,
 ) => {
@@ -28,7 +27,6 @@ export const createPlaneMesh = async (
   }
 
   const material = new MeshBasicMaterial({
-    color: color.getHex(),
     map: texture,
   })
 

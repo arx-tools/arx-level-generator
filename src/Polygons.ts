@@ -25,6 +25,11 @@ export type MeshImportProps = {
 
 type TextureContainer = ArxTextureContainer & { remaining: number; maxRemaining: number }
 
+type VertexWithMaterialIndex = {
+  vertex: Vertex
+  materialIndex: number | undefined
+}
+
 export class Polygons extends Array<Polygon> {
   async exportTextures(outputDir: string) {
     const files: Record<string, string> = {}
@@ -140,25 +145,15 @@ export class Polygons extends Array<Polygon> {
     if (threeJsObj instanceof Mesh) {
       const uvs: BufferAttribute = threeJsObj.geometry.getAttribute('uv') as BufferAttribute
 
-      let color: Color | Color[] = Color.white
       let texture: Texture | undefined | (Texture | undefined)[] = undefined
 
       if (threeJsObj.material instanceof MeshBasicMaterial) {
-        color = Color.fromThreeJsColor(threeJsObj.material.color as ThreeJsColor)
         if (threeJsObj.material.map instanceof Texture) {
           texture = threeJsObj.material.map
         } else {
           console.warn('Unsupported texture map in material when adding threejs mesh')
         }
       } else if (Array.isArray(threeJsObj.material)) {
-        color = threeJsObj.material.map((material) => {
-          if (material instanceof MeshBasicMaterial) {
-            return Color.fromThreeJsColor(material.color as ThreeJsColor)
-          } else {
-            console.warn('Unsupported material found when adding threejs mesh')
-            return Color.white
-          }
-        })
         texture = threeJsObj.material.map((material) => {
           if (material instanceof MeshBasicMaterial) {
             if (material.map instanceof Texture) {
@@ -176,11 +171,6 @@ export class Polygons extends Array<Polygon> {
         console.warn('Unsupported material found when adding threejs mesh')
       }
 
-      type VertexWithMaterialIndex = {
-        vertex: Vertex
-        materialIndex: number | undefined
-      }
-
       const vertexPrecision = 10
       const vertices = getNonIndexedVertices(threeJsObj.geometry).map(({ idx, vector, materialIndex }) => {
         return {
@@ -190,7 +180,7 @@ export class Polygons extends Array<Polygon> {
             roundToNDecimals(vertexPrecision, vector.z),
             uvs.getX(idx),
             uvs.getY(idx),
-            Array.isArray(color) ? color[materialIndex ?? 0] : color,
+            Color.white,
           ),
           materialIndex,
         } as VertexWithMaterialIndex

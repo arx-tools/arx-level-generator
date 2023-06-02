@@ -1,5 +1,4 @@
 import { Vector2 } from 'three'
-import { Color } from '@src/Color.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
@@ -8,12 +7,7 @@ import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { transformEdge } from '@tools/mesh/transformEdge.js'
 
 export const createGround = async (width: number, depth: number) => {
-  const floorMesh = await createPlaneMesh(
-    new Vector2(width + 200, depth + 200),
-    30,
-    Color.white,
-    Texture.l5CavesGravelGround05,
-  )
+  const floorMesh = await createPlaneMesh(new Vector2(width + 200, depth + 200), 30, Texture.l5CavesGravelGround05)
   floorMesh.translateX(width / 2 - 200)
 
   transformEdge(new Vector3(0, -5, 0), floorMesh)

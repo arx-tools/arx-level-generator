@@ -40,7 +40,6 @@ export const createStoneBlocks = (rowSize: number, depth: number, achievementMan
   translateUV(new Vector2(0.1, 0), stoneBlockGeometry)
 
   const material = new MeshBasicMaterial({
-    color: Color.white.darken(50).getHex(),
     map: Texture.l4YlsideStoneGround01,
   })
 

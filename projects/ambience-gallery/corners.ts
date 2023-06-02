@@ -14,7 +14,6 @@ const createWoodenPole = ({ position }: { position: Vector3 }) => {
   geometry = toArxCoordinateSystem(geometry)
 
   const material = new MeshBasicMaterial({
-    color: Color.white.darken(50).getHex(),
     map: Texture.l2TrollWoodPillar08,
   })
 

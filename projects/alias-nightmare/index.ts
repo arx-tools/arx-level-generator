@@ -14,12 +14,7 @@ import { transformEdge } from '@src/tools/mesh/transformEdge.js'
 import { createZone } from '@tools/createZone.js'
 
 const createIsland = async (width: number, height: number) => {
-  const floorMesh = await createPlaneMesh(
-    new Vector2(width, height),
-    100,
-    Color.white.darken(50),
-    Texture.stoneHumanAkbaa2F,
-  )
+  const floorMesh = await createPlaneMesh(new Vector2(width, height), 100, Texture.stoneHumanAkbaa2F)
   transformEdge(new Vector3(0, -30, 0), floorMesh)
   makeBumpy(10, 60, false, floorMesh.geometry)
   return ArxMap.fromThreeJsMesh(floorMesh, { tryToQuadify: DONT_QUADIFY })

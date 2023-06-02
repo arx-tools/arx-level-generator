@@ -19,7 +19,6 @@ const createFloor = async (width: number, height: number) => {
   const mesh = await createPlaneMesh(
     new Vector2(width, height),
     100,
-    Color.white.darken(50),
     Material.fromTexture(Texture.stoneHumanStoneWall1, {
       flags: ArxPolygonFlags.None,
     }),
