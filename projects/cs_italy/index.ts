@@ -52,7 +52,10 @@ export default async () => {
       }
 
       // TODO: turn polygons inside out by reversing polygon winding
-      let flags = ArxPolygonFlags.None | ArxPolygonFlags.DoubleSided
+
+      let flags = ArxPolygonFlags.None
+
+      // TODO: which polygons to mark as tilable?
 
       const textureIdx = parseInt(texture.filename.split('_')[3])
 
