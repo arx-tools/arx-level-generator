@@ -22,12 +22,6 @@ type OBJProperties = {
   fallbackTexture?: Texture
 }
 
-const missingTexture = Texture.fromCustomFile({
-  filename: 'jorge-[stone].jpg',
-  sourcePath: 'textures',
-  size: 32,
-})
-
 const isTriangulatedMesh = (rawObj: string) => {
   const rows = rawObj.replace(/\\\n/g, '').split(/\r?\n/)
 
@@ -57,12 +51,12 @@ export const loadOBJ = async (
 
   let defaultTexture: Material
   if (typeof materialFlags === 'function') {
-    const flags = materialFlags(await missingTexture)
-    defaultTexture = Material.fromTexture(await missingTexture, {
+    const flags = materialFlags(await Texture.missingTexture)
+    defaultTexture = Material.fromTexture(await Texture.missingTexture, {
       flags: flags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
     })
   } else {
-    defaultTexture = Material.fromTexture(await missingTexture, {
+    defaultTexture = Material.fromTexture(await Texture.missingTexture, {
       flags: materialFlags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
     })
   }
