@@ -1,5 +1,5 @@
 define outside ceiling alpha.bmp
-# define outside wall ?forest?
+define outside wall custom forest3.bmp projects/forest/textures
 define outside floor L2_TROLL_[SAND]_GROUND04.jpg
 
 define window ceiling L2_GOBEL_[WOOD]_BOARD05.jpg
