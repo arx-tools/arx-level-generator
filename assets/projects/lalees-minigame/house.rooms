@@ -1,6 +1,22 @@
-define outside ceiling alpha.bmp
-define outside wall custom forest3.bmp projects/forest/textures
-define outside floor L2_TROLL_[SAND]_GROUND04.jpg
+define outside-south ceiling alpha.bmp
+define outside-south wall custom forest3.bmp projects/forest/textures
+define outside-south wall-north custom [stone]-dark-brick-wall.jpg textures
+define outside-south floor L2_TROLL_[SAND]_GROUND04.jpg
+
+define outside-east ceiling alpha.bmp
+define outside-east wall custom forest3.bmp projects/forest/textures
+define outside-east wall-west custom [stone]-dark-brick-wall.jpg textures
+define outside-east floor L2_TROLL_[SAND]_GROUND04.jpg
+
+define outside-north ceiling alpha.bmp
+define outside-north wall custom forest3.bmp projects/forest/textures
+define outside-north wall-south custom [stone]-dark-brick-wall.jpg textures
+define outside-north floor L2_TROLL_[SAND]_GROUND04.jpg
+
+define outside-west ceiling alpha.bmp
+define outside-west wall custom forest3.bmp projects/forest/textures
+define outside-west wall-east custom [stone]-dark-brick-wall.jpg textures
+define outside-west floor L2_TROLL_[SAND]_GROUND04.jpg
 
 define window ceiling L2_GOBEL_[WOOD]_BOARD05.jpg
 define window wall L2_GOBEL_[WOOD]_BOARD05.jpg
@@ -10,8 +26,9 @@ define door ceiling L2_GOBEL_[WOOD]_BOARD05.jpg
 define door wall L2_GOBEL_[WOOD]_BOARD05.jpg
 # define door floor ?same as floor of other rooms?
 
+# ------------------------------
+
 $houseHeight = 350
-$outsideHeight = 500
 
 # dining room
 room add 700 350 1100 default
@@ -20,41 +37,61 @@ cursor save dining-room
 
 ## 3 windows on the back
 room add 100 250 50 window z-- y
-room add 500 $houseHeight 400 outside z-- y
+room add 500 $houseHeight 400 outside-south z-- y
 with light
 cursor save outside-front
 room add 100 250 50 window z++ y x-
 cursor restore outside-front
 room add 100 250 50 window z++ y x+
 
-## outside front
+# outside front
 cursor restore outside-front
-room add 1400 $houseHeight 400 outside x-- y-
+room add 1450 $houseHeight 400 outside-south x-- y-
 with light
 cursor restore outside-front
-room add 1400 $houseHeight 400 outside x++ y-
+room add 1450 $houseHeight 400 outside-south x++ y-
 with light
-room add 300 $houseHeight 300 outside x+ z++ y-
+
+# east alleyway
+room add 100 $houseHeight 700 outside-east x+ z++ y-
+with light
 
 ## door on the front
 cursor restore dining-room
 room add 200 250 50 door z++ y-
 
 # outside back
-# room add 3100 $outsideHeight 2000 outside z++ y-
+# room add 3300 $houseHeight 1200 outside-north z++ y-
+# with light
 
 # right corridor
 cursor restore dining-room
 room add 50 250 200 default x++ y-
 room add 400 250 200 default x++ y-
 cursor save right-corridor
-# todo: make room A
+
+# room A
+room add 150 200 50 door z++ y- x+
+room add 400 $houseHeight 400 default z++ y- x+
+with light
+# TODO: add window
+
 cursor restore right-corridor
 room add 50 250 200 default x++ y-
-room add 400 250 200 default x++ y-
-room add 400 250 450 default z-- y-
+room add 600 250 200 default x++ y-
+cursor save right-corridor
+
+# room B
+room add 150 200 50 door z++ y- x-
+room add 600 $houseHeight 400 default z++ y- x-
+with light
+# TODO: add window
+
+cursor restore right-corridor
+room add 400 250 450 default z-- y- x+
 with light
 room add 200 250 50 door z-- y-
+
 
 
 

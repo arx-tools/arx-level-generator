@@ -246,4 +246,8 @@ export class Entity {
   static get boneBassin() {
     return new Entity({ src: 'items/movable/bones/bone_bassin.asl' })
   }
+
+  static get barrel() {
+    return new Entity({ src: 'fix_inter/barrel/barrel.asl' })
+  }
 }

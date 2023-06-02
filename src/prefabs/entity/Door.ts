@@ -61,7 +61,7 @@ export class Portcullis extends Door {
 }
 
 /**
- * 150 wide / 200 high
+ * 150 wide / 220 high
  */
 export class LightDoor extends Door {
   protected propType: Variable<string>
@@ -100,7 +100,7 @@ export class CatacombHeavyDoor extends LightDoor {
 }
 
 /**
- * 150 wide / 200 high
+ * 150 wide / 250 high
  */
 export class YlsideDoor extends LightDoor {
   constructor(props: DoorConstructorPropsWithFixSrc = {}) {

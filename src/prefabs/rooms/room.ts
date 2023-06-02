@@ -5,7 +5,6 @@ import { DONT_QUADIFY, QUADIFY } from '@src/Polygons.js'
 import { Vector3 } from '@src/Vector3.js'
 import { TextureOrMaterial } from '@src/types.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
-import { scaleUV } from '@tools/mesh/scaleUV.js'
 
 export type RoomTextures = {
   wall: TextureOrMaterial | QuadrupleOf<TextureOrMaterial>
@@ -24,7 +23,7 @@ export type RoomProps = {
 
 const createFloor = async (size: Vector3, texture: TextureOrMaterial, tileSize: number) => {
   const { x: width, y: height, z: depth } = size
-  const mesh = await createPlaneMesh({ size: new Vector2(width, depth), tileSize, texture })
+  const mesh = await createPlaneMesh({ size: new Vector2(width, depth), tileSize, texture, tileUV: false })
   // scaleUV(new Vector2(tileSize / 100, tileSize / 100), mesh.geometry)
   return mesh
 }
@@ -39,14 +38,19 @@ const createNorthWall = async (
 
   const group = new Group()
 
-  const wall = await createPlaneMesh({ size: new Vector2(width, height), tileSize, texture })
+  const wall = await createPlaneMesh({ size: new Vector2(width, height), tileSize, texture, tileUV: false })
   wall.translateZ(depth / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90))
   // scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
   group.add(wall)
 
   if (decal) {
-    const decalOnWall = await createPlaneMesh({ size: new Vector2(width, tileSize), tileSize, texture: decal })
+    const decalOnWall = await createPlaneMesh({
+      size: new Vector2(width, tileSize),
+      tileSize,
+      texture: decal,
+      tileUV: false,
+    })
     decalOnWall.translateZ(depth / 2).translateY(-50)
     decalOnWall.rotateX(MathUtils.degToRad(90))
     // scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
@@ -66,14 +70,19 @@ const createSouthWall = async (
 
   const group = new Group()
 
-  const wall = await createPlaneMesh({ size: new Vector2(width, height), tileSize, texture })
+  const wall = await createPlaneMesh({ size: new Vector2(width, height), tileSize, texture, tileUV: false })
   wall.translateZ(-depth / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(180))
   // scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
   group.add(wall)
 
   if (decal) {
-    const decalOnWall = await createPlaneMesh({ size: new Vector2(width, tileSize), tileSize, texture: decal })
+    const decalOnWall = await createPlaneMesh({
+      size: new Vector2(width, tileSize),
+      tileSize,
+      texture: decal,
+      tileUV: false,
+    })
     decalOnWall.translateZ(-depth / 2).translateY(-50)
     decalOnWall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(180))
     // scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
@@ -93,14 +102,19 @@ const createWestWall = async (
 
   const group = new Group()
 
-  const wall = await createPlaneMesh({ size: new Vector2(depth, height), tileSize, texture })
+  const wall = await createPlaneMesh({ size: new Vector2(depth, height), tileSize, texture, tileUV: false })
   wall.translateX(-width / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(90))
   // scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
   group.add(wall)
 
   if (decal) {
-    const decalOnWall = await createPlaneMesh({ size: new Vector2(depth, tileSize), tileSize, texture: decal })
+    const decalOnWall = await createPlaneMesh({
+      size: new Vector2(depth, tileSize),
+      tileSize,
+      texture: decal,
+      tileUV: false,
+    })
     decalOnWall.translateX(-width / 2).translateY(-50)
     decalOnWall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(90))
     // scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
@@ -120,14 +134,19 @@ const createEastWall = async (
 
   const group = new Group()
 
-  const wall = await createPlaneMesh({ size: new Vector2(depth, height), tileSize, texture })
+  const wall = await createPlaneMesh({ size: new Vector2(depth, height), tileSize, texture, tileUV: false })
   wall.translateX(width / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(-90))
   // scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
   group.add(wall)
 
   if (decal) {
-    const decalOnWall = await createPlaneMesh({ size: new Vector2(depth, tileSize), tileSize, texture: decal })
+    const decalOnWall = await createPlaneMesh({
+      size: new Vector2(depth, tileSize),
+      tileSize,
+      texture: decal,
+      tileUV: false,
+    })
     decalOnWall.translateX(width / 2).translateY(-50)
     decalOnWall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(-90))
     // scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
@@ -140,7 +159,7 @@ const createEastWall = async (
 const createCeiling = async (size: Vector3, texture: TextureOrMaterial, tileSize: number) => {
   const { x: width, y: height, z: depth } = size
 
-  const mesh = await createPlaneMesh({ size: new Vector2(width, depth), tileSize, texture })
+  const mesh = await createPlaneMesh({ size: new Vector2(width, depth), tileSize, texture, tileUV: false })
   mesh.translateY(-height)
   mesh.rotateX(MathUtils.degToRad(180))
   // scaleUV(new Vector2(tileSize / 100, tileSize / 100), mesh.geometry)

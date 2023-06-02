@@ -1,6 +1,8 @@
 import fs from 'node:fs'
+import { QuadrupleOf } from 'arx-convert/utils'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
+import { TextureOrMaterial } from '@src/types.js'
 import { Cursor, CursorDir } from '@prefabs/rooms/Cursor.js'
 import { Rooms } from '@prefabs/rooms/Rooms.js'
 import { RoomProps } from '@prefabs/rooms/room.js'
@@ -35,32 +37,69 @@ export const loadRooms = async (filename: string) => {
 
     switch (tokens[0]) {
       case 'define':
-        // TODO: validate arguments
         const definitionName = tokens[1]
+        const side = tokens[2]
+
         if (typeof roomDefinitions[definitionName] === 'undefined') {
           roomDefinitions[definitionName] = {
             textures: {
               ceiling: Texture.missingTexture,
-              wall: Texture.missingTexture,
+              wall: [Texture.missingTexture, Texture.missingTexture, Texture.missingTexture, Texture.missingTexture],
               floor: Texture.missingTexture,
             },
           }
         }
-        switch (tokens[2]) {
+
+        switch (side) {
           case 'floor':
-          case 'wall':
           case 'ceiling':
-            if (tokens[3] === 'custom') {
-              roomDefinitions[definitionName].textures[tokens[2]] = await Texture.fromCustomFile({
-                filename: tokens[4],
-                sourcePath: tokens[5],
-              })
-            } else {
-              roomDefinitions[definitionName].textures[tokens[2]] = new Texture({ filename: tokens[3], size: 128 })
+            {
+              if (tokens[3] === 'custom') {
+                roomDefinitions[definitionName].textures[side] = await Texture.fromCustomFile({
+                  filename: tokens[4],
+                  sourcePath: tokens[5],
+                })
+              } else {
+                // TODO: an arx texture might not always be 128x128
+                roomDefinitions[definitionName].textures[side] = new Texture({ filename: tokens[3], size: 128 })
+              }
+            }
+            break
+          case 'wall':
+            {
+              let texture: Texture
+              if (tokens[3] === 'custom') {
+                texture = await Texture.fromCustomFile({ filename: tokens[4], sourcePath: tokens[5] })
+              } else {
+                // TODO: an arx texture might not always be 128x128
+                texture = new Texture({ filename: tokens[3], size: 128 })
+              }
+              const wall = roomDefinitions[definitionName].textures.wall as QuadrupleOf<TextureOrMaterial>
+              wall[0] = texture
+              wall[1] = texture
+              wall[2] = texture
+              wall[3] = texture
+            }
+            break
+          case 'wall-north':
+          case 'wall-east':
+          case 'wall-south':
+          case 'wall-west':
+            {
+              let texture: Texture
+              if (tokens[3] === 'custom') {
+                texture = await Texture.fromCustomFile({ filename: tokens[4], sourcePath: tokens[5] })
+              } else {
+                // TODO: an arx texture might not always be 128x128
+                texture = new Texture({ filename: tokens[3], size: 128 })
+              }
+              const wall = roomDefinitions[definitionName].textures.wall as QuadrupleOf<TextureOrMaterial>
+              const wallIdx = side.endsWith('north') ? 0 : side.endsWith('east') ? 1 : side.endsWith('south') ? 2 : 3
+              wall[wallIdx] = texture
             }
             break
           default:
-          // TODO
+            console.error(`Unknown side "${side}" at line ${i + 1}`)
         }
         break
       case 'room':
@@ -71,12 +110,9 @@ export const loadRooms = async (filename: string) => {
             const posY = parseInt(tokens[3].startsWith('$') ? variables[tokens[3]] : tokens[3])
             const posZ = parseInt(tokens[4].startsWith('$') ? variables[tokens[4]] : tokens[4])
             const definitionName = tokens[5]
+            const adjustments = tokens.slice(6) as CursorDir[]
 
-            await rooms.addRoom(
-              new Vector3(posX, posY, posZ),
-              roomDefinitions[definitionName],
-              ...(tokens.slice(6) as CursorDir[]),
-            )
+            await rooms.addRoom(new Vector3(posX, posY, posZ), roomDefinitions[definitionName], ...adjustments)
             break
           default:
             console.error(`Unknown parameter "${tokens[1]}" after "room" at line ${i + 1}`)
