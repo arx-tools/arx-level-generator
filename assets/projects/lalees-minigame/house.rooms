@@ -1,37 +1,48 @@
 define outside-south ceiling alpha.bmp
+# TODO: scale this to fit height
 define outside-south wall custom forest3.bmp projects/forest/textures
 define outside-south wall-north custom [stone]-dark-brick-wall.jpg textures
 define outside-south floor L2_TROLL_[SAND]_GROUND04.jpg
 
 define outside-east ceiling alpha.bmp
+# TODO: scale this to fit height
 define outside-east wall custom forest3.bmp projects/forest/textures
 define outside-east wall-west custom [stone]-dark-brick-wall.jpg textures
 define outside-east floor L2_TROLL_[SAND]_GROUND04.jpg
 
 define outside-north ceiling alpha.bmp
+# TODO: scale this to fit height
 define outside-north wall custom forest3.bmp projects/forest/textures
 define outside-north wall-south custom [stone]-dark-brick-wall.jpg textures
 define outside-north floor L2_TROLL_[SAND]_GROUND04.jpg
 
 define outside-west ceiling alpha.bmp
+# TODO: scale this to fit height
 define outside-west wall custom forest3.bmp projects/forest/textures
 define outside-west wall-east custom [stone]-dark-brick-wall.jpg textures
 define outside-west floor L2_TROLL_[SAND]_GROUND04.jpg
 
-define window ceiling L2_GOBEL_[WOOD]_BOARD05.jpg
-define window wall L2_GOBEL_[WOOD]_BOARD05.jpg
-define window floor L2_GOBEL_[WOOD]_BOARD05.jpg
+define window ceiling ALICIAROOM_MUR02.jpg
+define window wall ALICIAROOM_MUR02.jpg
+define window floor ALICIAROOM_MUR02.jpg
 
-define door ceiling L2_GOBEL_[WOOD]_BOARD05.jpg
-define door wall L2_GOBEL_[WOOD]_BOARD05.jpg
-# define door floor ?same as floor of other rooms?
+define door ceiling ALICIAROOM_MUR02.jpg
+define door wall ALICIAROOM_MUR02.jpg
+define door floor custom [wood]-fake-floor.jpg textures
+
+define room ceiling custom [stone]-office-ceiling-tile.jpg textures
+define room wall ALICIAROOM_MUR02.jpg
+define room floor custom [wood]-fake-floor.jpg textures
+
+# TODO: all other textures should be tiling to 100/100 tiles
+# even if tileSize is 50
 
 # ------------------------------
 
 $houseHeight = 350
 
 # dining room
-room add 700 350 1100 default
+room add 700 350 1100 room
 with light
 cursor save dining-room
 
@@ -65,29 +76,29 @@ room add 200 250 50 door z++ y-
 
 # right corridor
 cursor restore dining-room
-room add 50 250 200 default x++ y-
-room add 400 250 200 default x++ y-
+room add 50 250 200 room x++ y-
+room add 400 250 200 room x++ y-
 cursor save right-corridor
 
 # room A
 room add 150 200 50 door z++ y- x+
-room add 400 $houseHeight 400 default z++ y- x+
+room add 400 $houseHeight 400 room z++ y- x+
 with light
 # TODO: add window
 
 cursor restore right-corridor
-room add 50 250 200 default x++ y-
-room add 600 250 200 default x++ y-
+room add 50 250 200 room x++ y-
+room add 600 250 200 room x++ y-
 cursor save right-corridor
 
 # room B
 room add 150 200 50 door z++ y- x-
-room add 600 $houseHeight 400 default z++ y- x-
+room add 600 $houseHeight 400 room z++ y- x-
 with light
 # TODO: add window
 
 cursor restore right-corridor
-room add 400 250 450 default z-- y- x+
+room add 400 250 450 room z-- y- x+
 with light
 room add 200 250 50 door z-- y-
 

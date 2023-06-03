@@ -47,6 +47,8 @@ export default async () => {
     map.add(room, true)
   })
 
+  // TODO: add window to the windows
+
   const gameVariants = randomSort([
     'mesterlovesz',
     'mortyr',
@@ -82,7 +84,8 @@ export default async () => {
     orientation: new Rotation(MathUtils.degToRad(45), MathUtils.degToRad(80), MathUtils.degToRad(15)),
   })
 
-  // game2 -> in the dark outside south
+  // TODO: game2 -> in the dark outside south
+  // TODO: allow the player to pick up a lantern
 
   const fern = Entity.fern.withScript()
   fern.position = new Vector3(1650, 0, -60)
