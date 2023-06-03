@@ -53,7 +53,8 @@ export default async () => {
 
       // TODO: turn polygons inside out by reversing polygon winding
 
-      let flags = ArxPolygonFlags.None
+      // let flags = ArxPolygonFlags.None
+      let flags = ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled // debug
 
       // TODO: which polygons to mark as tilable?
 
