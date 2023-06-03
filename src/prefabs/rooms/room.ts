@@ -1,10 +1,14 @@
+import { ArxPolygonFlags } from 'arx-convert/types'
 import { QuadrupleOf } from 'arx-convert/utils'
 import { Group, MathUtils, Object3D, Vector2 } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
+import { Material } from '@src/Material.js'
 import { DONT_QUADIFY, QUADIFY } from '@src/Polygons.js'
 import { Vector3 } from '@src/Vector3.js'
+import { applyTransformations } from '@src/helpers.js'
 import { TextureOrMaterial } from '@src/types.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
+import { scaleUV } from '@tools/mesh/scaleUV.js'
 
 export type RoomTextures = {
   wall: TextureOrMaterial | QuadrupleOf<TextureOrMaterial>
@@ -23,9 +27,24 @@ export type RoomProps = {
 
 const createFloor = async (size: Vector3, texture: TextureOrMaterial, tileSize: number) => {
   const { x: width, y: height, z: depth } = size
-  const mesh = await createPlaneMesh({ size: new Vector2(width, depth), tileSize, texture, tileUV: false })
 
-  // scaleUV(new Vector2(tileSize / 100, tileSize / 100), mesh.geometry)
+  texture = await texture
+
+  const mesh = await createPlaneMesh({
+    size: new Vector2(width, depth),
+    tileSize,
+    texture: Material.fromTexture(texture, {
+      flags: ArxPolygonFlags.Tiled,
+    }),
+    tileUV: !texture.filename.toLowerCase().includes('forest'),
+  })
+
+  if (texture.filename.toLowerCase().includes('forest')) {
+    // TODO
+  } else {
+    scaleUV(new Vector2(tileSize / 100, tileSize / 100), mesh.geometry)
+  }
+
   return mesh
 }
 
@@ -37,24 +56,44 @@ const createNorthWall = async (
 ) => {
   const { x: width, y: height, z: depth } = size
 
+  texture = await texture
+
   const group = new Group()
 
-  const wall = await createPlaneMesh({ size: new Vector2(width, height), tileSize, texture, tileUV: false })
+  const wall = await createPlaneMesh({
+    size: new Vector2(width, height),
+    tileSize,
+    texture: Material.fromTexture(texture, {
+      flags: ArxPolygonFlags.Tiled,
+    }),
+    tileUV: !texture.filename.toLowerCase().includes('forest'),
+  })
   wall.translateZ(depth / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90))
-  // scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
+  if (texture.filename.toLowerCase().includes('forest')) {
+    // TODO
+  } else {
+    scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
+  }
   group.add(wall)
 
   if (decal) {
+    decal = await decal
     const decalOnWall = await createPlaneMesh({
       size: new Vector2(width, tileSize),
       tileSize,
-      texture: decal,
-      tileUV: false,
+      texture: Material.fromTexture(decal, {
+        flags: ArxPolygonFlags.Tiled,
+      }),
+      tileUV: !texture.filename.toLowerCase().includes('forest'),
     })
     decalOnWall.translateZ(depth / 2).translateY(-50)
     decalOnWall.rotateX(MathUtils.degToRad(90))
-    // scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
+    if (decal.filename.includes('forest')) {
+      // TODO
+    } else {
+      scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
+    }
     group.add(decalOnWall)
   }
 
@@ -69,24 +108,45 @@ const createSouthWall = async (
 ) => {
   const { x: width, y: height, z: depth } = size
 
+  texture = await texture
+
   const group = new Group()
 
-  const wall = await createPlaneMesh({ size: new Vector2(width, height), tileSize, texture, tileUV: false })
+  const wall = await createPlaneMesh({
+    size: new Vector2(width, height),
+    tileSize,
+    texture: Material.fromTexture(texture, {
+      flags: ArxPolygonFlags.Tiled,
+    }),
+    tileUV: !texture.filename.toLowerCase().includes('forest'),
+  })
   wall.translateZ(-depth / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(180))
   // scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
+  if (texture.filename.toLowerCase().includes('forest')) {
+    // TODO
+  } else {
+    scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
+  }
   group.add(wall)
 
   if (decal) {
+    decal = await decal
     const decalOnWall = await createPlaneMesh({
       size: new Vector2(width, tileSize),
       tileSize,
-      texture: decal,
-      tileUV: false,
+      texture: Material.fromTexture(decal, {
+        flags: ArxPolygonFlags.Tiled,
+      }),
+      tileUV: !texture.filename.toLowerCase().includes('forest'),
     })
     decalOnWall.translateZ(-depth / 2).translateY(-50)
     decalOnWall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(180))
-    // scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
+    if (decal.filename.includes('forest')) {
+      // TODO
+    } else {
+      scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
+    }
     group.add(decalOnWall)
   }
 
@@ -101,24 +161,44 @@ const createWestWall = async (
 ) => {
   const { x: width, y: height, z: depth } = size
 
+  texture = await texture
+
   const group = new Group()
 
-  const wall = await createPlaneMesh({ size: new Vector2(depth, height), tileSize, texture, tileUV: false })
+  const wall = await createPlaneMesh({
+    size: new Vector2(depth, height),
+    tileSize,
+    texture: Material.fromTexture(texture, {
+      flags: ArxPolygonFlags.Tiled,
+    }),
+    tileUV: !texture.filename.toLowerCase().includes('forest'),
+  })
   wall.translateX(-width / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(90))
-  // scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
+  if (texture.filename.toLowerCase().includes('forest')) {
+    // TODO
+  } else {
+    scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
+  }
   group.add(wall)
 
   if (decal) {
+    decal = await decal
     const decalOnWall = await createPlaneMesh({
       size: new Vector2(depth, tileSize),
       tileSize,
-      texture: decal,
-      tileUV: false,
+      texture: Material.fromTexture(decal, {
+        flags: ArxPolygonFlags.Tiled,
+      }),
+      tileUV: !texture.filename.toLowerCase().includes('forest'),
     })
     decalOnWall.translateX(-width / 2).translateY(-50)
     decalOnWall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(90))
-    // scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
+    if (decal.filename.includes('forest')) {
+      // TODO
+    } else {
+      scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
+    }
     group.add(decalOnWall)
   }
 
@@ -133,24 +213,44 @@ const createEastWall = async (
 ) => {
   const { x: width, y: height, z: depth } = size
 
+  texture = await texture
+
   const group = new Group()
 
-  const wall = await createPlaneMesh({ size: new Vector2(depth, height), tileSize, texture, tileUV: false })
+  const wall = await createPlaneMesh({
+    size: new Vector2(depth, height),
+    tileSize,
+    texture: Material.fromTexture(texture, {
+      flags: ArxPolygonFlags.Tiled,
+    }),
+    tileUV: !texture.filename.toLowerCase().includes('forest'),
+  })
   wall.translateX(width / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(-90))
-  // scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
+  if (texture.filename.toLowerCase().includes('forest')) {
+    // TODO
+  } else {
+    scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
+  }
   group.add(wall)
 
   if (decal) {
+    decal = await decal
     const decalOnWall = await createPlaneMesh({
       size: new Vector2(depth, tileSize),
       tileSize,
-      texture: decal,
-      tileUV: false,
+      texture: Material.fromTexture(decal, {
+        flags: ArxPolygonFlags.Tiled,
+      }),
+      tileUV: !texture.filename.toLowerCase().includes('forest'),
     })
     decalOnWall.translateX(width / 2).translateY(-50)
     decalOnWall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(-90))
-    // scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
+    if (decal.filename.includes('forest')) {
+      // TODO
+    } else {
+      scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
+    }
     group.add(decalOnWall)
   }
 
@@ -160,10 +260,25 @@ const createEastWall = async (
 const createCeiling = async (size: Vector3, texture: TextureOrMaterial, tileSize: number) => {
   const { x: width, y: height, z: depth } = size
 
-  const mesh = await createPlaneMesh({ size: new Vector2(width, depth), tileSize, texture, tileUV: false })
+  texture = await texture
+
+  const mesh = await createPlaneMesh({
+    size: new Vector2(width, depth),
+    tileSize,
+    texture: Material.fromTexture(texture, {
+      flags: ArxPolygonFlags.Tiled,
+    }),
+    tileUV: !texture.filename.toLowerCase().includes('forest'),
+  })
   mesh.translateY(-height)
   mesh.rotateX(MathUtils.degToRad(180))
-  // scaleUV(new Vector2(tileSize / 100, tileSize / 100), mesh.geometry)
+
+  if (texture.filename.toLowerCase().includes('forest')) {
+    // TODO
+  } else {
+    scaleUV(new Vector2(tileSize / 100, tileSize / 100), mesh.geometry)
+  }
+  applyTransformations(mesh)
   return mesh
 }
 
