@@ -23,6 +23,10 @@ export class Sound {
     return `play ${flags} ${filename}`
   }
 
+  /**
+   * only works if the sound has the unique flag
+   * @see SoundFlags.Unique
+   */
   stop() {
     const flags = '-s'
     const filename = this.getFilename()
@@ -61,5 +65,9 @@ export class Sound {
     }
 
     return (letters === '' ? '' : '-') + letters
+  }
+
+  isStoppable() {
+    return (this.flags & SoundFlags.Unique) !== 0
   }
 }

@@ -1,3 +1,5 @@
+import { Expand } from 'arx-convert/utils'
+import { Audio } from '@src/Audio.js'
 import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 import { LoadAnim } from '@scripting/commands/LoadAnim.js'
 import { Interactivity } from '@scripting/properties/Interactivity.js'
@@ -6,15 +8,25 @@ import { Scale } from '@scripting/properties/Scale.js'
 import { Speed } from '@scripting/properties/Speed.js'
 import { Variable } from '@scripting/properties/Variable.js'
 
+type LeverConstructorProps = Expand<
+  EntityConstructorPropsWithoutSrc & {
+    isSilent?: boolean
+  }
+>
+
 export class Lever extends Entity {
   private propIsPulled: Variable<boolean>
 
-  constructor(props: EntityConstructorPropsWithoutSrc = {}) {
+  constructor({ isSilent = false, ...props }: LeverConstructorProps = {}) {
     super({
       src: 'fix_inter/lever',
       ...props,
     })
     this.withScript()
+
+    if (isSilent) {
+      Audio.mute(Audio.lever)
+    }
 
     this.propIsPulled = new Variable('bool', 'pulled', false)
     this.script?.properties.push(new Scale(0.7), new Label('sound on/off'), this.propIsPulled, new Speed(3))

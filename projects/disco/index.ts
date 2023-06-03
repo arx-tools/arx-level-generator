@@ -10,11 +10,11 @@ import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations } from '@src/helpers.js'
+import { Lever } from '@prefabs/entity/Lever.js'
+import { SoundPlayer } from '@prefabs/entity/SoundPlayer.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { Button } from '@projects/disco/Button.js'
 import { Cursor } from '@projects/disco/Cursor.js'
-import { Lever } from '@projects/disco/Lever.js'
-import { SoundPlayer } from '@projects/disco/SoundPlayer.js'
 import { Timer } from '@projects/disco/Timer.js'
 import { createLight } from '@tools/createLight.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
@@ -205,6 +205,7 @@ export default async () => {
   const lever = new Lever({
     position: new Vector3(-40 + offsetLeft, -220 + (buttonPattern.length / 2) * 30 - 20, 400),
     orientation: new Rotation(MathUtils.degToRad(90), 0, 0),
+    isSilent: true,
   })
 
   const cursor = new Cursor({
@@ -277,8 +278,6 @@ export default async () => {
       }
     `
   })
-
-  Audio.mute(Audio.lever)
 
   // ----------------------
 

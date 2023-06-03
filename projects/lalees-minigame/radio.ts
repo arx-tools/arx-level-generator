@@ -1,6 +1,6 @@
 import { Audio } from '@src/Audio.js'
 import { Vector3 } from '@src/Vector3.js'
-import { SoundPlayer } from '@projects/disco/SoundPlayer.js'
+import { SoundPlayer } from '@prefabs/entity/SoundPlayer.js'
 import { SoundFlags } from '@scripting/classes/Sound.js'
 
 type createRadioProps = {
@@ -16,11 +16,13 @@ export const createRadio = async ({ position }: createRadioProps) => {
   const musicPlayer = new SoundPlayer({
     audio: music,
     position,
-    flags: SoundFlags.Loop,
+    flags: SoundFlags.Loop | SoundFlags.Unique,
     autoplay: true,
   })
 
   return {
     entities: [musicPlayer],
+    on: () => musicPlayer.on(),
+    off: () => musicPlayer.off(),
   }
 }

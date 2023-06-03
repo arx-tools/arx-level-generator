@@ -38,7 +38,7 @@ const achievementListenLarge = new ScriptSubroutine('achievement_found_games_lar
   `
 })
 
-export const createMainMarker = () => {
+export const createGameStateMarker = () => {
   const marker = Entity.marker.withScript()
   marker.script?.subroutines.push(
     tutorialWelcom,

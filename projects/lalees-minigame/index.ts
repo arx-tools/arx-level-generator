@@ -16,11 +16,12 @@ import { times } from '@src/faux-ramda.js'
 import { applyTransformations } from '@src/helpers.js'
 import { pickRandom, randomBetween, randomSort } from '@src/random.js'
 import { CatacombHeavyDoor, LightDoor } from '@prefabs/entity/Door.js'
+import { Lever } from '@prefabs/entity/Lever.js'
 import { Rune } from '@prefabs/entity/Rune.js'
+import { SoundPlayer } from '@prefabs/entity/SoundPlayer.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { loadRooms } from '@prefabs/rooms/loadRooms.js'
 import { createMoon } from '@projects/ambience-gallery/moon.js'
-import { SoundPlayer } from '@projects/disco/SoundPlayer.js'
 import { SoundFlags } from '@scripting/classes/Sound.js'
 import { Interactivity } from '@scripting/properties/Interactivity.js'
 import { Scale } from '@scripting/properties/Scale.js'
@@ -29,7 +30,7 @@ import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 import { Goblin } from './Goblin.js'
 import { PCGame, PCGameVariant } from './PCGame.js'
-import { createMainMarker } from './mainMarker.js'
+import { createGameStateMarker } from './gameStateMarker.js'
 import { createRadio } from './radio.js'
 
 export default async () => {
@@ -260,7 +261,7 @@ export default async () => {
   runeSpacium.position = new Vector3(-300, -107, 450)
   map.entities.push(runeSpacium)
 
-  const gameState = createMainMarker()
+  const gameStateMarker = createGameStateMarker()
 
   const goblin = new Goblin({
     position: new Vector3(-200, -2, 425),
@@ -270,7 +271,7 @@ export default async () => {
   goblin.script?.on('combine', () => {
     return `
     if (^$param1 isclass pcgame) {
-      sendevent gave_game_to_goblin ${gameState.ref} nop
+      sendevent gave_game_to_goblin ${gameStateMarker.ref} nop
 
       random 20 {
         speak [goblin_victory3_shorter]
@@ -285,12 +286,31 @@ export default async () => {
     `
   })
 
-  map.entities.push(gameState, goblin)
+  map.entities.push(gameStateMarker, goblin)
 
   const radio = await createRadio({
     position: new Vector3(300, -100, 450),
   })
   map.entities.push(...radio.entities)
+
+  const radioOnOffLever = new Lever({
+    position: new Vector3(300, -100, 450),
+    orientation: new Rotation(MathUtils.degToRad(90), 0, 0),
+    isSilent: true,
+  })
+  radioOnOffLever.isPulled = true
+  radioOnOffLever.script?.properties.push(new Scale(0.5))
+  radioOnOffLever.script?.on('custom', () => {
+    return `
+      if (^$param1 == "on") {
+        ${radio.on()}
+      }
+      if (^$param1 == "off") {
+        ${radio.off()}
+      }
+    `
+  })
+  map.entities.push(radioOnOffLever)
 
   // --------------
 
