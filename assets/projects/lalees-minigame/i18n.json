@@ -22,5 +22,22 @@
   },
   "game--bikini-karate-babes": {
     "english": "Bikini Karate Babes"
+  },
+
+  "tutorial--welcome": {
+    "english": "Welcome to LaLee's minigame. Your task is to find 8 shitty pc games and give them to your goblin friend. He's a real collector you know..."
+  },
+  "tutorial--gave-game-to-goblin": {
+    "english": "Good job, you gave a game to the goblin! That should keep him entertained for a while. See if you can find more."
+  },
+
+  "achievement--found-games-small": {
+    "english": "Achievement reached: Found 2 games."
+  },
+  "achievement--found-games-medium": {
+    "english": "Achievement reached: Found 5 games."
+  },
+  "achievement--found-games-large": {
+    "english": "Achievement reached: Found all games. Enjoy your collection!"
   }
 }

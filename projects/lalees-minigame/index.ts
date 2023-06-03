@@ -30,6 +30,7 @@ import { createZone } from '@tools/createZone.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 import { PCGame, PCGameVariant } from './PCGame.js'
+import { createMainMarker } from './mainMarker.js'
 
 export default async () => {
   const {
@@ -259,6 +260,8 @@ export default async () => {
   runeSpacium.position = new Vector3(-300, -107, 450)
   map.entities.push(runeSpacium)
 
+  const mainMarker = createMainMarker()
+
   const goblin = new Entity({
     src: 'npc/goblin_base',
     position: new Vector3(-200, -2, 425),
@@ -275,6 +278,7 @@ export default async () => {
     return `
     if (^$param1 isclass pcgame) {
       speak [goblin_ok]
+      sendevent gave_game_to_goblin ${mainMarker.ref} ~^$param1~
       destroy ^$param1
     } else {
       speak [goblin_mad]
@@ -286,7 +290,6 @@ export default async () => {
       speak [goblin_misc]
     `
   })
-
   goblin.script?.on('initend', () => {
     return `
     behavior friendly
@@ -295,7 +298,7 @@ export default async () => {
     `
   })
 
-  map.entities.push(goblin)
+  map.entities.push(mainMarker, goblin)
 
   // --------------
 
