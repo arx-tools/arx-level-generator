@@ -393,7 +393,7 @@ export class ArxMap {
 
     const scripts: Record<string, string> = {}
     const models: Record<string, string> = {}
-    const otherStuff: Record<string, string> = {}
+    const otherDependencies: Record<string, string> = {}
 
     for (let entity of this.entities) {
       if (entity.script !== undefined) {
@@ -422,9 +422,9 @@ export class ArxMap {
         }
       }
 
-      const stuffToExport = await entity.exportOtherStuff(outputDir)
-      for (let target in stuffToExport) {
-        otherStuff[target] = stuffToExport[target]
+      const dependenciesToExport = await entity.exportOtherDependencies(outputDir)
+      for (let target in dependenciesToExport) {
+        otherDependencies[target] = dependenciesToExport[target]
       }
     }
 
@@ -462,7 +462,7 @@ export class ArxMap {
       files: [
         ...Object.keys(textures),
         ...Object.keys(models),
-        ...Object.keys(otherStuff),
+        ...Object.keys(otherDependencies),
         ...Object.keys(sounds),
         ...Object.keys(hudElements),
         ...Object.keys(uiElements),
@@ -492,7 +492,7 @@ export class ArxMap {
       ...Object.entries(uiElements),
       ...Object.entries(ambienceTracks),
       ...Object.entries(models),
-      ...Object.entries(otherStuff),
+      ...Object.entries(otherDependencies),
       ...Object.entries(sounds),
     ]
 
