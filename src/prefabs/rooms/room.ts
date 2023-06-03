@@ -36,14 +36,9 @@ const createFloor = async (size: Vector3, texture: TextureOrMaterial, tileSize: 
     texture: Material.fromTexture(texture, {
       flags: ArxPolygonFlags.Tiled,
     }),
-    tileUV: !texture.filename.toLowerCase().includes('forest'),
   })
 
-  if (texture.filename.toLowerCase().includes('forest')) {
-    // TODO
-  } else {
-    scaleUV(new Vector2(tileSize / 100, tileSize / 100), mesh.geometry)
-  }
+  scaleUV(new Vector2(tileSize / 100, tileSize / 100), mesh.geometry)
 
   return mesh
 }
@@ -66,12 +61,15 @@ const createNorthWall = async (
     texture: Material.fromTexture(texture, {
       flags: ArxPolygonFlags.Tiled,
     }),
-    tileUV: !texture.filename.toLowerCase().includes('forest'),
   })
   wall.translateZ(depth / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90))
-  if (texture.filename.toLowerCase().includes('forest')) {
-    // TODO
+  const fitX = false
+  const fitY = texture.filename.toLowerCase().includes('forest')
+  if (fitX) {
+    scaleUV(new Vector2(tileSize / width, tileSize / width), wall.geometry)
+  } else if (fitY) {
+    scaleUV(new Vector2(tileSize / height, tileSize / height), wall.geometry)
   } else {
     scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
   }
@@ -85,15 +83,10 @@ const createNorthWall = async (
       texture: Material.fromTexture(decal, {
         flags: ArxPolygonFlags.Tiled,
       }),
-      tileUV: !texture.filename.toLowerCase().includes('forest'),
     })
     decalOnWall.translateZ(depth / 2).translateY(-50)
     decalOnWall.rotateX(MathUtils.degToRad(90))
-    if (decal.filename.includes('forest')) {
-      // TODO
-    } else {
-      scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
-    }
+    scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
     group.add(decalOnWall)
   }
 
@@ -118,12 +111,15 @@ const createSouthWall = async (
     texture: Material.fromTexture(texture, {
       flags: ArxPolygonFlags.Tiled,
     }),
-    tileUV: !texture.filename.toLowerCase().includes('forest'),
   })
   wall.translateZ(-depth / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(180))
-  if (texture.filename.toLowerCase().includes('forest')) {
-    // TODO
+  const fitX = false
+  const fitY = texture.filename.toLowerCase().includes('forest')
+  if (fitX) {
+    scaleUV(new Vector2(tileSize / width, tileSize / width), wall.geometry)
+  } else if (fitY) {
+    scaleUV(new Vector2(tileSize / height, tileSize / height), wall.geometry)
   } else {
     scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
   }
@@ -141,11 +137,7 @@ const createSouthWall = async (
     })
     decalOnWall.translateZ(-depth / 2).translateY(-50)
     decalOnWall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(180))
-    if (decal.filename.includes('forest')) {
-      // TODO
-    } else {
-      scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
-    }
+    scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
     group.add(decalOnWall)
   }
 
@@ -170,12 +162,15 @@ const createWestWall = async (
     texture: Material.fromTexture(texture, {
       flags: ArxPolygonFlags.Tiled,
     }),
-    tileUV: !texture.filename.toLowerCase().includes('forest'),
   })
   wall.translateX(-width / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(90))
-  if (texture.filename.toLowerCase().includes('forest')) {
-    // TODO
+  const fitX = false
+  const fitY = texture.filename.toLowerCase().includes('forest')
+  if (fitX) {
+    scaleUV(new Vector2(tileSize / width, tileSize / width), wall.geometry)
+  } else if (fitY) {
+    scaleUV(new Vector2(tileSize / height, tileSize / height), wall.geometry)
   } else {
     scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
   }
@@ -193,11 +188,7 @@ const createWestWall = async (
     })
     decalOnWall.translateX(-width / 2).translateY(-50)
     decalOnWall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(90))
-    if (decal.filename.includes('forest')) {
-      // TODO
-    } else {
-      scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
-    }
+    scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
     group.add(decalOnWall)
   }
 
@@ -222,12 +213,15 @@ const createEastWall = async (
     texture: Material.fromTexture(texture, {
       flags: ArxPolygonFlags.Tiled,
     }),
-    tileUV: !texture.filename.toLowerCase().includes('forest'),
   })
   wall.translateX(width / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(-90))
-  if (texture.filename.toLowerCase().includes('forest')) {
-    // TODO
+  const fitX = false
+  const fitY = texture.filename.toLowerCase().includes('forest')
+  if (fitX) {
+    scaleUV(new Vector2(tileSize / width, tileSize / width), wall.geometry)
+  } else if (fitY) {
+    scaleUV(new Vector2(tileSize / height, tileSize / height), wall.geometry)
   } else {
     scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
   }
@@ -245,11 +239,7 @@ const createEastWall = async (
     })
     decalOnWall.translateX(width / 2).translateY(-50)
     decalOnWall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(-90))
-    if (decal.filename.includes('forest')) {
-      // TODO
-    } else {
-      scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
-    }
+    scaleUV(new Vector2(tileSize / 100, tileSize / 100), decalOnWall.geometry)
     group.add(decalOnWall)
   }
 
@@ -267,16 +257,11 @@ const createCeiling = async (size: Vector3, texture: TextureOrMaterial, tileSize
     texture: Material.fromTexture(texture, {
       flags: ArxPolygonFlags.Tiled,
     }),
-    tileUV: !texture.filename.toLowerCase().includes('forest'),
   })
   mesh.translateY(-height)
   mesh.rotateX(MathUtils.degToRad(180))
 
-  if (texture.filename.toLowerCase().includes('forest')) {
-    // TODO
-  } else {
-    scaleUV(new Vector2(tileSize / 100, tileSize / 100), mesh.geometry)
-  }
+  scaleUV(new Vector2(tileSize / 100, tileSize / 100), mesh.geometry)
   applyTransformations(mesh)
   return mesh
 }
