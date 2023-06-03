@@ -1,20 +1,23 @@
 import path from 'node:path'
+import { ArxPolygonFlags } from 'arx-convert/types'
 import seedrandom from 'seedrandom'
-import { MathUtils } from 'three'
+import { BoxGeometry, MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
 import { Audio } from '@src/Audio.js'
 import { Entity } from '@src/Entity.js'
 import { HudElements } from '@src/HUD.js'
-import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
+import { Material } from '@src/Material.js'
+import { DONT_QUADIFY, SHADING_FLAT, SHADING_SMOOTH } from '@src/Polygons.js'
 import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { UiElements } from '@src/UI.js'
 import { Vector3 } from '@src/Vector3.js'
 import { times } from '@src/faux-ramda.js'
 import { applyTransformations } from '@src/helpers.js'
-import { pickRandom, pickRandoms, randomBetween, randomSort } from '@src/random.js'
+import { pickRandom, randomBetween, randomSort } from '@src/random.js'
 import { CatacombHeavyDoor, LightDoor } from '@prefabs/entity/Door.js'
 import { Rune } from '@prefabs/entity/Rune.js'
+import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { loadRooms } from '@prefabs/rooms/loadRooms.js'
 import { createMoon } from '@projects/ambience-gallery/moon.js'
 import { SoundPlayer } from '@projects/disco/SoundPlayer.js'
@@ -24,6 +27,7 @@ import { Scale } from '@scripting/properties/Scale.js'
 import { Speed } from '@scripting/properties/Speed.js'
 import { createZone } from '@tools/createZone.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
+import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 import { PCGame, PCGameVariant } from './PCGame.js'
 
 export default async () => {
@@ -56,8 +60,6 @@ export default async () => {
     map.add(room, true)
   })
 
-  // TODO: add window to the windows
-
   const gameVariants = randomSort([
     'mesterlovesz',
     'mortyr',
@@ -69,7 +71,6 @@ export default async () => {
     'bikini-karate-babes',
   ] as PCGameVariant[])
 
-  const runeSpacium = new Rune('spacium')
   const runeComunicatum = new Rune('comunicatum')
 
   const barrel = Entity.barrel
@@ -80,12 +81,7 @@ export default async () => {
     return `inventory addfromscene ${runeComunicatum.ref}`
   })
 
-  map.entities.push(runeSpacium, runeComunicatum, barrel)
-
-  map.player.script?.properties.push(new Speed(1.3))
-  map.player.script?.on('init', () => {
-    return `inventory addfromscene ${runeSpacium.ref}`
-  })
+  map.entities.push(runeComunicatum, barrel)
 
   const game1 = new PCGame({
     variant: gameVariants[0],
@@ -170,7 +166,19 @@ export default async () => {
   })
   map.entities.push(lantern)
 
-  const smoothMeshes = [moon.meshes, tree]
+  const windowGlass = await createPlaneMesh({
+    size: new Vector2(500, 350),
+    texture: Material.fromTexture(Texture.glassGlass01, {
+      opacity: 0.7,
+      flags: ArxPolygonFlags.DoubleSided | ArxPolygonFlags.NoShadow,
+    }),
+    tileUV: true,
+  })
+  windowGlass.translateY(-200)
+  windowGlass.translateZ(-575)
+  windowGlass.rotateX(MathUtils.degToRad(-90))
+
+  const smoothMeshes = [moon.meshes, tree, windowGlass]
 
   smoothMeshes.flat().forEach((mesh) => {
     applyTransformations(mesh)
@@ -214,6 +222,41 @@ export default async () => {
   })
 
   map.entities.push(crickets1, crickets2, crickets3, crickets4)
+
+  const tableMaterial = new MeshBasicMaterial({
+    map: Texture.l4DwarfWoodBoard02,
+  })
+  let tableTopGeometry = new BoxGeometry(300, 10, 100, 3, 1, 1)
+  tableTopGeometry = toArxCoordinateSystem(tableTopGeometry)
+  const tableTop = new Mesh(tableTopGeometry, tableMaterial)
+  tableTop.translateX(map.config.offset.x - 300)
+  tableTop.translateY(map.config.offset.y - 100)
+  tableTop.translateZ(map.config.offset.z + 450)
+  tableTop.rotateY(MathUtils.degToRad(90))
+  applyTransformations(tableTop)
+  map.polygons.addThreeJsMesh(tableTop, { shading: SHADING_FLAT, tryToQuadify: DONT_QUADIFY })
+
+  let tableLegGeometry = new BoxGeometry(10, 100, 10, 1, 1, 1)
+  tableLegGeometry = toArxCoordinateSystem(tableLegGeometry)
+  const tableLeg1 = new Mesh(tableLegGeometry.clone(), tableMaterial)
+  tableLeg1.translateX(map.config.offset.x - 280)
+  tableLeg1.translateY(map.config.offset.y - 50)
+  tableLeg1.translateZ(map.config.offset.z + 525)
+  tableLeg1.rotateY(MathUtils.degToRad(90))
+  applyTransformations(tableLeg1)
+  map.polygons.addThreeJsMesh(tableLeg1, { shading: SHADING_FLAT, tryToQuadify: DONT_QUADIFY })
+
+  const tableLeg2 = new Mesh(tableLegGeometry.clone(), tableMaterial)
+  tableLeg2.translateX(map.config.offset.x - 280)
+  tableLeg2.translateY(map.config.offset.y - 50)
+  tableLeg2.translateZ(map.config.offset.z + 325)
+  tableLeg2.rotateY(MathUtils.degToRad(90))
+  applyTransformations(tableLeg2)
+  map.polygons.addThreeJsMesh(tableLeg2, { shading: SHADING_FLAT, tryToQuadify: DONT_QUADIFY })
+
+  const runeSpacium = new Rune('spacium')
+  runeSpacium.position = new Vector3(-300, -107, 450)
+  map.entities.push(runeSpacium)
 
   // --------------
 
