@@ -50,61 +50,61 @@ room add 700 350 1100 room
 with light
 cursor save dining-room
 
-## 3 windows on the back
-room add 100 250 50 window z-- y
-room add 500 $houseHeight 400 outside-south z-- y
-with light
-cursor save outside-front
-room add 100 250 50 window z++ y x-
-cursor restore outside-front
-room add 100 250 50 window z++ y x+
+# ## 3 windows on the back
+# room add 100 250 50 window z-- y
+# room add 500 $houseHeight 400 outside-south z-- y
+# with light
+# cursor save outside-front
+# room add 100 250 50 window z++ y x-
+# cursor restore outside-front
+# room add 100 250 50 window z++ y x+
 
-# outside front
-cursor restore outside-front
-room add 1450 $houseHeight 400 outside-south x-- y-
-cursor restore outside-front
-room add 1450 $houseHeight 400 outside-south x++ y-
-with light
+# # outside front
+# cursor restore outside-front
+# room add 1450 $houseHeight 400 outside-south x-- y-
+# cursor restore outside-front
+# room add 1450 $houseHeight 400 outside-south x++ y-
+# with light
 
-# east alleyway
-room add 100 $houseHeight 700 outside-east x+ z++ y-
-with light
+# # east alleyway
+# room add 100 $houseHeight 700 outside-east x+ z++ y-
+# with light
 
-## door on the front
-cursor restore dining-room
-room add 200 250 50 door z++ y-
+# ## door on the front
+# cursor restore dining-room
+# room add 200 250 50 door z++ y-
 
-# outside back
-room add 1000 $houseHeight 1200 outside-north z++ y-
-room add 1000 500 1200 outside-sky y++
+# # outside back
+# room add 1000 $houseHeight 1200 outside-north z++ y-
+# room add 1000 500 1200 outside-sky y++
 
-# right corridor
-cursor restore dining-room
-room add 50 250 200 room x++ y-
-room add 400 250 200 room x++ y-
-cursor save right-corridor
+# # right corridor
+# cursor restore dining-room
+# room add 50 250 200 room x++ y-
+# room add 400 250 200 room x++ y-
+# cursor save right-corridor
 
-# room A
-room add 150 200 50 door z++ y- x+
-room add 400 $houseHeight 400 room z++ y- x+
-with light
-# TODO: add window
+# # room A
+# room add 150 200 50 door z++ y- x+
+# room add 400 $houseHeight 400 room z++ y- x+
+# with light
+# # TODO: add window
 
-cursor restore right-corridor
-room add 50 250 200 room x++ y-
-room add 600 250 200 room x++ y-
-cursor save right-corridor
+# cursor restore right-corridor
+# room add 50 250 200 room x++ y-
+# room add 600 250 200 room x++ y-
+# cursor save right-corridor
 
-# room B
-room add 150 200 50 door z++ y- x-
-room add 600 $houseHeight 400 room z++ y- x-
-with light
-# TODO: add window
+# # room B
+# room add 150 200 50 door z++ y- x-
+# room add 600 $houseHeight 400 room z++ y- x-
+# with light
+# # TODO: add window
 
-cursor restore right-corridor
-room add 400 250 450 room z-- y- x+
-with light
-room add 200 250 50 door z-- y-
+# cursor restore right-corridor
+# room add 400 250 450 room z-- y- x+
+# with light
+# room add 200 250 50 door z-- y-
 
 
 

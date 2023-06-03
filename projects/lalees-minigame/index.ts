@@ -186,17 +186,6 @@ export default async () => {
     position: new Vector3(-300, -100, 400),
   })
 
-  const smoothMeshes = [moon.meshes, tree, windowGlass, leftTable]
-
-  smoothMeshes.flat().forEach((mesh) => {
-    applyTransformations(mesh)
-    mesh.translateX(map.config.offset.x)
-    mesh.translateY(map.config.offset.y)
-    mesh.translateZ(map.config.offset.z)
-    applyTransformations(mesh)
-    map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
-  })
-
   map.lights.push(...moon.lights)
 
   const soundOfCrickets = await Audio.fromCustomFile({
@@ -263,7 +252,8 @@ export default async () => {
   map.entities.push(gameStateMarker, goblin)
 
   const radio = await createRadio({
-    position: new Vector3(300, -100, 450),
+    // position: new Vector3(300, -100, 450),
+    position: new Vector3(100, -100, 250),
   })
   map.entities.push(...radio.entities)
 
@@ -285,6 +275,17 @@ export default async () => {
     `
   })
   map.entities.push(radioOnOffLever)
+
+  const meshes = [moon.meshes, tree, windowGlass, leftTable, radio.meshes]
+
+  meshes.flat().forEach((mesh) => {
+    applyTransformations(mesh)
+    mesh.translateX(map.config.offset.x)
+    mesh.translateY(map.config.offset.y)
+    mesh.translateZ(map.config.offset.z)
+    applyTransformations(mesh)
+    map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
+  })
 
   // --------------
 
