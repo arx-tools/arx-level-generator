@@ -20,7 +20,7 @@ export class SoundPlayer extends Marker {
     super(props)
     this.withScript()
 
-    this.otherStuff.push(audio)
+    this.otherDependencies.push(audio)
 
     const sound = new Sound(audio.filename, flags)
 

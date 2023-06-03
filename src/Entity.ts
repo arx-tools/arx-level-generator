@@ -29,7 +29,7 @@ export type EntityConstructorProps = {
   /**
    * stuff that I can't put elsewhere, but needs to get exported
    */
-  otherStuff?: Audio[]
+  otherDependencies?: (Audio | Promise<Audio>)[]
 }
 
 export type EntityConstructorPropsWithoutSrc = Expand<Omit<EntityConstructorProps, 'src'>>
@@ -55,7 +55,7 @@ export class Entity {
   /**
    * stuff that I can't put elsewhere, but needs to get exported
    */
-  otherStuff: Audio[] = []
+  otherDependencies: (Audio | Promise<Audio>)[] = []
 
   constructor(props: EntityConstructorProps) {
     this.src = props.src
@@ -76,7 +76,7 @@ export class Entity {
       this.model = { ...props.model, textures: props.model.textures ?? [] }
     }
 
-    this.otherStuff = props.otherStuff ?? []
+    this.otherDependencies = props.otherDependencies ?? []
   }
 
   get entityName() {
@@ -213,10 +213,10 @@ export class Entity {
     }
   }
 
-  async exportOtherStuff(outputDir: string): Promise<Record<string, string>> {
+  async exportOtherDependencies(outputDir: string): Promise<Record<string, string>> {
     const files: Record<string, string> = {}
 
-    for (let stuff of this.otherStuff) {
+    for (let stuff of this.otherDependencies) {
       stuff = await stuff
       if (!stuff.isNative) {
         const [source, target] = await stuff.exportSourceAndTarget(outputDir)
