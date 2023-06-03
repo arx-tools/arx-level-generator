@@ -1,24 +1,32 @@
 import path from 'node:path'
 import { Expand } from 'arx-convert/utils'
 
+export type AudioType = 'speech' | 'sfx'
+
 type AudioConstructorProps = {
   filename: string
   isNative?: boolean
   sourcePath?: string
+  /**
+   * @default "sfx"
+   */
+  type?: AudioType
 }
 
 export class Audio {
-  static targetPath = 'sfx'
   static replacements: Record<string, Audio> = {}
 
   filename: string
   isNative: boolean
   sourcePath?: string
+  targetPath: string
 
   constructor(props: AudioConstructorProps) {
     this.filename = props.filename
     this.isNative = props.isNative ?? true
     this.sourcePath = props.sourcePath
+    // TODO: find a way to support other languages too, not just english
+    this.targetPath = props.type === 'speech' ? 'speech/english' : 'sfx'
   }
 
   static async fromCustomFile(props: Expand<Omit<AudioConstructorProps, 'isNative'>>) {
@@ -33,8 +41,8 @@ export class Audio {
       throw new Error('trying to export a native Audio')
     }
 
-    const source = path.resolve('assets', this.sourcePath ?? Audio.targetPath, this.filename)
-    const target = path.resolve(outputDir, Audio.targetPath, this.filename)
+    const source = path.resolve('assets', this.sourcePath ?? this.targetPath, this.filename)
+    const target = path.resolve(outputDir, this.targetPath, this.filename)
 
     return [source, target]
   }
@@ -61,12 +69,12 @@ export class Audio {
     )
   }
 
-  static async exportReplacements(outputDir: string) {
+  static async exportReplacements(outputDir: string, type: AudioType = 'sfx') {
     const pairs: Record<string, string> = {}
 
     for (let key in this.replacements) {
       const [source] = await this.replacements[key].exportSourceAndTarget(outputDir)
-      const target = path.resolve(outputDir, Audio.targetPath, key)
+      const target = path.resolve(outputDir, type, key)
       pairs[target] = source
     }
 
