@@ -23,11 +23,11 @@ import { createMoon } from '@projects/ambience-gallery/moon.js'
 import { SoundPlayer } from '@projects/disco/SoundPlayer.js'
 import { SoundFlags } from '@scripting/classes/Sound.js'
 import { Interactivity } from '@scripting/properties/Interactivity.js'
-import { Invulnerability } from '@scripting/properties/Invulnerability.js'
 import { Scale } from '@scripting/properties/Scale.js'
 import { createZone } from '@tools/createZone.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
+import { Goblin } from './Goblin.js'
 import { PCGame, PCGameVariant } from './PCGame.js'
 import { createMainMarker } from './mainMarker.js'
 
@@ -261,37 +261,23 @@ export default async () => {
 
   const mainMarker = createMainMarker()
 
-  const goblin = new Entity({
-    src: 'npc/goblin_base',
+  const goblin = new Goblin({
     position: new Vector3(-200, -2, 425),
     orientation: new Rotation(0, MathUtils.degToRad(-100), 0),
   })
-  goblin.withScript()
-  goblin.script?.properties.push(Invulnerability.on)
-  goblin.script?.on('chat', () => {
-    return `
-    speak [goblin_misc6] NOP
-    `
-  })
+
   goblin.script?.on('combine', () => {
     return `
     if (^$param1 isclass pcgame) {
-      speak [goblin_ok] sendevent gave_game_to_goblin ${mainMarker.ref} nop
-      destroy ^$param1
+      random 20 {
+        speak [goblin_victory3_shorter] sendevent gave_game_to_goblin ${mainMarker.ref} nop
+      } else {
+        speak [goblin_ok] sendevent gave_game_to_goblin ${mainMarker.ref} nop
+      }
+      // destroy ^$param1
     } else {
       speak -a [goblin_mad]
     }
-    `
-  })
-  goblin.script?.on('idle', () => {
-    return `
-      speak [goblin_misc]
-    `
-  })
-  goblin.script?.on('initend', () => {
-    return `
-    speak [goblin_misc6]
-    TIMERmisc_reflection -i 0 10 SENDEVENT IDLE SELF ""
     `
   })
 
