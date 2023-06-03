@@ -186,11 +186,33 @@ export class Polygons extends Array<Polygon> {
         } as VertexWithMaterialIndex
       })
 
+      if (tryToQuadify === QUADIFY) {
+        // TODO
+      } else {
+        for (let i = 0; i < vertices.length; i += 3) {
+          const currentPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<VertexWithMaterialIndex>
+          const materialIndex = currentPolygon[0].materialIndex
+          const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
+          const polygon = new Polygon({
+            vertices: [...currentPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
+            texture: currentTexture,
+            flags: (currentTexture instanceof Material ? currentTexture.flags | flags : flags) & ~ArxPolygonFlags.Quad,
+          })
+          if (currentTexture instanceof Material && currentTexture.opacity !== 100) {
+            polygon.setOpacity(currentTexture.opacity, currentTexture.opacityMode)
+          }
+          polygons.push(polygon)
+        }
+      }
+
+      /*
       let previousPolygon: TripleOf<VertexWithMaterialIndex> | undefined = undefined
       let currentPolygon: TripleOf<VertexWithMaterialIndex>
+
       for (let i = 0; i < vertices.length; i += 3) {
         if (typeof previousPolygon === 'undefined') {
           previousPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<VertexWithMaterialIndex>
+          // TODO: this continue makes the whole code add an incorrect texture to the 1st polygon
           continue
         }
 
@@ -233,6 +255,7 @@ export class Polygons extends Array<Polygon> {
         }
         polygons.push(polygon)
         previousPolygon = currentPolygon
+
       }
 
       if (typeof previousPolygon !== 'undefined') {
@@ -248,6 +271,7 @@ export class Polygons extends Array<Polygon> {
         }
         polygons.push(polygon)
       }
+      */
     }
 
     threeJsObj.children.forEach((child) => {
