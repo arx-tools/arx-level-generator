@@ -29,7 +29,7 @@ export class Lever extends Entity {
     }
 
     this.propIsPulled = new Variable('bool', 'pulled', false)
-    this.script?.properties.push(new Scale(0.7), new Label('sound on/off'), this.propIsPulled, new Speed(3))
+    this.script?.properties.push(new Scale(0.7), this.propIsPulled, new Speed(3))
     this.script?.on('init', new LoadAnim('action1', 'lever_up'))
     this.script?.on('init', new LoadAnim('action2', 'lever_down'))
     this.script?.on('init', () => {

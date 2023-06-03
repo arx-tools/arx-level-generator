@@ -16,6 +16,7 @@ import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { Button } from '@projects/disco/Button.js'
 import { Cursor } from '@projects/disco/Cursor.js'
 import { Timer } from '@projects/disco/Timer.js'
+import { Label } from '@scripting/properties/Label.js'
 import { createLight } from '@tools/createLight.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
@@ -207,6 +208,7 @@ export default async () => {
     orientation: new Rotation(MathUtils.degToRad(90), 0, 0),
     isSilent: true,
   })
+  lever.script?.properties.push(new Label('sound on/off'))
 
   const cursor = new Cursor({
     position: new Vector3(offsetLeft, -220 - 30, 400),
