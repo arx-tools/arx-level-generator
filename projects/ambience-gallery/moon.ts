@@ -9,7 +9,25 @@ import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 import { translateUV } from '@tools/mesh/translateUV.js'
 
-export const createMoon = ({ position, size }: { position: Vector3; size: number }) => {
+type createMoonProps = {
+  position: Vector3
+  size: number
+  /**
+   * @default new Vector3(-100, 100, -50)
+   */
+  moonOffset?: Vector3
+  /**
+   * @default 5000
+   */
+  lightRadius?: number
+}
+
+export const createMoon = ({
+  position,
+  size,
+  moonOffset = new Vector3(-100, 100, -50),
+  lightRadius = 5000,
+}: createMoonProps) => {
   let geometry = new SphereGeometry(size, 10, 10)
   geometry = toArxCoordinateSystem(geometry)
 
@@ -23,16 +41,16 @@ export const createMoon = ({ position, size }: { position: Vector3; size: number
   })
 
   const mesh = new Mesh(geometry, material)
-  mesh.translateX(position.x - 100)
-  mesh.translateY(position.y + 100)
-  mesh.translateZ(position.z - 50)
+  mesh.translateX(position.x + moonOffset.x)
+  mesh.translateY(position.y + moonOffset.y)
+  mesh.translateZ(position.z + moonOffset.z)
   mesh.rotateY(MathUtils.degToRad(180))
 
   const light = createLight({
     position,
     color: Color.white.darken(30),
     fallStart: 200,
-    radius: 5000,
+    radius: lightRadius,
   })
 
   return {

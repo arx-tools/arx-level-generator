@@ -5,6 +5,7 @@ import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
+import { Audio } from './Audio.js'
 
 const instanceCatalog: Record<string, Entity[]> = {}
 
@@ -25,12 +26,22 @@ export type EntityConstructorProps = {
     filename: string
     textures?: (Texture | Promise<Texture>)[]
   }
+  /**
+   * stuff that I can't put elsewhere, but needs to get exported
+   */
+  otherStuff?: Audio[]
 }
 
 export type EntityConstructorPropsWithoutSrc = Expand<Omit<EntityConstructorProps, 'src'>>
 
 export class Entity {
   id: number
+  /**
+   * specify the script file for the entity with `.asl` extension
+   *
+   * if the ASL file for the entity has the same name as it's container folder
+   * like `items/magic/fern/fern.asl` then you can shorten it to `items/magic/fern`
+   */
   src: string
   position: Vector3
   orientation: Rotation
@@ -41,6 +52,10 @@ export class Entity {
     filename: string
     textures: (Texture | Promise<Texture>)[]
   }
+  /**
+   * stuff that I can't put elsewhere, but needs to get exported
+   */
+  otherStuff: Audio[] = []
 
   constructor(props: EntityConstructorProps) {
     this.src = props.src
@@ -60,6 +75,8 @@ export class Entity {
     if (typeof props.model !== 'undefined') {
       this.model = { ...props.model, textures: props.model.textures ?? [] }
     }
+
+    this.otherStuff = props.otherStuff ?? []
   }
 
   get entityName() {
@@ -196,6 +213,20 @@ export class Entity {
     }
   }
 
+  async exportOtherStuff(outputDir: string): Promise<Record<string, string>> {
+    const files: Record<string, string> = {}
+
+    for (let stuff of this.otherStuff) {
+      stuff = await stuff
+      if (!stuff.isNative) {
+        const [source, target] = await stuff.exportSourceAndTarget(outputDir)
+        files[target] = source
+      }
+    }
+
+    return files
+  }
+
   // ----------------
 
   static get marker() {
@@ -249,5 +280,21 @@ export class Entity {
 
   static get barrel() {
     return new Entity({ src: 'fix_inter/barrel/barrel.asl' })
+  }
+
+  static get brokenBottle() {
+    return new Entity({ src: 'items/movable/broken_bottle' })
+  }
+
+  static get brokenShield() {
+    return new Entity({ src: 'items/movable/broken_shield' })
+  }
+
+  static get brokenStool() {
+    return new Entity({ src: 'items/movable/broken_stool' })
+  }
+
+  static get akbaaBloodChickenHead() {
+    return new Entity({ src: 'items/moveable/akbaa_blood_chicken_head' })
   }
 }

@@ -5,15 +5,29 @@ import { Sound, SoundFlags } from '@scripting/classes/Sound.js'
 
 type SoundPlayerConstructorProps = EntityConstructorPropsWithoutSrc & {
   audio: Audio
+  /**
+   * @default SoundFlags.EmitFromPlayer
+   */
+  flags?: SoundFlags
+  /**
+   * @default false
+   */
+  autoplay?: boolean
 }
 
 export class SoundPlayer extends Marker {
-  constructor({ audio, ...props }: SoundPlayerConstructorProps) {
+  constructor({ audio, flags = SoundFlags.EmitFromPlayer, autoplay = false, ...props }: SoundPlayerConstructorProps) {
     super(props)
     this.withScript()
 
-    const sound = new Sound(audio.filename, SoundFlags.EmitFromPlayer)
+    this.otherStuff.push(audio)
+
+    const sound = new Sound(audio.filename, flags)
 
     this.script?.on('play', () => sound.play())
+
+    if (autoplay) {
+      this.script?.on('init', () => sound.play())
+    }
   }
 }

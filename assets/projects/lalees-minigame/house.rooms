@@ -1,24 +1,28 @@
+define outside-sky ceiling alpha.bmp
+define outside-sky wall alpha.bmp
+define outside-sky floor alpha.bmp
+
 define outside-south ceiling alpha.bmp
-# TODO: scale this to fit height
-define outside-south wall custom forest3.bmp projects/forest/textures
+# TODO: handle fit-y switch
+define outside-south wall custom forest3.bmp projects/forest/textures fit-y
 define outside-south wall-north custom [stone]-dark-brick-wall.jpg textures
 define outside-south floor L2_TROLL_[SAND]_GROUND04.jpg
 
 define outside-east ceiling alpha.bmp
-# TODO: scale this to fit height
-define outside-east wall custom forest3.bmp projects/forest/textures
+# TODO: handle fit-y switch
+define outside-east wall custom forest3.bmp projects/forest/textures fit-y
 define outside-east wall-west custom [stone]-dark-brick-wall.jpg textures
 define outside-east floor L2_TROLL_[SAND]_GROUND04.jpg
 
 define outside-north ceiling alpha.bmp
-# TODO: scale this to fit height
-define outside-north wall custom forest3.bmp projects/forest/textures
+# TODO: handle fit-y switch
+define outside-north wall custom forest3.bmp projects/forest/textures fit-y
 define outside-north wall-south custom [stone]-dark-brick-wall.jpg textures
 define outside-north floor L2_TROLL_[SAND]_GROUND04.jpg
 
 define outside-west ceiling alpha.bmp
-# TODO: scale this to fit height
-define outside-west wall custom forest3.bmp projects/forest/textures
+# TODO: handle fit-y switch
+define outside-west wall custom forest3.bmp projects/forest/textures fit-y
 define outside-west wall-east custom [stone]-dark-brick-wall.jpg textures
 define outside-west floor L2_TROLL_[SAND]_GROUND04.jpg
 
@@ -71,8 +75,8 @@ cursor restore dining-room
 room add 200 250 50 door z++ y-
 
 # outside back
-# room add 3300 $houseHeight 1200 outside-north z++ y-
-# with light
+room add 1000 $houseHeight 1200 outside-north z++ y-
+room add 1000 500 1200 outside-sky y++
 
 # right corridor
 cursor restore dining-room
