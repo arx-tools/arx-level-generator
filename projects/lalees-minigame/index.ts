@@ -23,6 +23,7 @@ import { createMoon } from '@projects/ambience-gallery/moon.js'
 import { SoundPlayer } from '@projects/disco/SoundPlayer.js'
 import { SoundFlags } from '@scripting/classes/Sound.js'
 import { Interactivity } from '@scripting/properties/Interactivity.js'
+import { Invulnerability } from '@scripting/properties/Invulnerability.js'
 import { Scale } from '@scripting/properties/Scale.js'
 import { Speed } from '@scripting/properties/Speed.js'
 import { createZone } from '@tools/createZone.js'
@@ -257,6 +258,44 @@ export default async () => {
   const runeSpacium = new Rune('spacium')
   runeSpacium.position = new Vector3(-300, -107, 450)
   map.entities.push(runeSpacium)
+
+  const goblin = new Entity({
+    src: 'npc/goblin_base',
+    position: new Vector3(-200, -2, 425),
+    orientation: new Rotation(0, MathUtils.degToRad(-100), 0),
+  })
+  goblin.withScript()
+  goblin.script?.properties.push(Invulnerability.on)
+  goblin.script?.on('chat', () => {
+    return `
+    speak [goblin_misc6] NOP
+    `
+  })
+  goblin.script?.on('combine', () => {
+    return `
+    if (^$param1 isclass pcgame) {
+      speak [goblin_ok]
+      destroy ^$param1
+    } else {
+      speak [goblin_mad]
+    }
+    `
+  })
+  goblin.script?.on('idle', () => {
+    return `
+      speak [goblin_misc]
+    `
+  })
+
+  goblin.script?.on('initend', () => {
+    return `
+    behavior friendly
+    speak [goblin_misc6]
+    TIMERmisc_reflection -i 0 10 SENDEVENT IDLE SELF ""
+    `
+  })
+
+  map.entities.push(goblin)
 
   // --------------
 

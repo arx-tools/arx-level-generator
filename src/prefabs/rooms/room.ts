@@ -24,6 +24,7 @@ export type RoomProps = {
 const createFloor = async (size: Vector3, texture: TextureOrMaterial, tileSize: number) => {
   const { x: width, y: height, z: depth } = size
   const mesh = await createPlaneMesh({ size: new Vector2(width, depth), tileSize, texture, tileUV: false })
+
   // scaleUV(new Vector2(tileSize / 100, tileSize / 100), mesh.geometry)
   return mesh
 }
