@@ -187,7 +187,21 @@ export class Polygons extends Array<Polygon> {
       })
 
       if (tryToQuadify === QUADIFY) {
-        // TODO
+        // TODO: quadify polygons
+        for (let i = 0; i < vertices.length; i += 3) {
+          const currentPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<VertexWithMaterialIndex>
+          const materialIndex = currentPolygon[0].materialIndex
+          const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
+          const polygon = new Polygon({
+            vertices: [...currentPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
+            texture: currentTexture,
+            flags: (currentTexture instanceof Material ? currentTexture.flags | flags : flags) & ~ArxPolygonFlags.Quad,
+          })
+          if (currentTexture instanceof Material && currentTexture.opacity !== 100) {
+            polygon.setOpacity(currentTexture.opacity, currentTexture.opacityMode)
+          }
+          polygons.push(polygon)
+        }
       } else {
         for (let i = 0; i < vertices.length; i += 3) {
           const currentPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<VertexWithMaterialIndex>
