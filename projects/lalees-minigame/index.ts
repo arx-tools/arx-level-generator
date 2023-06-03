@@ -277,11 +277,10 @@ export default async () => {
   goblin.script?.on('combine', () => {
     return `
     if (^$param1 isclass pcgame) {
-      speak [goblin_ok]
-      sendevent gave_game_to_goblin ${mainMarker.ref} ~^$param1~
+      speak [goblin_ok] sendevent gave_game_to_goblin ${mainMarker.ref} nop
       destroy ^$param1
     } else {
-      speak [goblin_mad]
+      speak -a [goblin_mad]
     }
     `
   })
@@ -292,7 +291,6 @@ export default async () => {
   })
   goblin.script?.on('initend', () => {
     return `
-    behavior friendly
     speak [goblin_misc6]
     TIMERmisc_reflection -i 0 10 SENDEVENT IDLE SELF ""
     `

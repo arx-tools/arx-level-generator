@@ -20,7 +20,8 @@ export const createMainMarker = () => {
   marker.script?.on('gave_game_to_goblin', () => {
     return `
     INC §gave_game_to_goblin 1
-    if (§gave_game_to_goblin == 0) {
+
+    if (§gave_game_to_goblin == 1) {
       play -o "system"
       herosay [tutorial--gave-game-to-goblin]
       quest [tutorial--gave-game-to-goblin]
