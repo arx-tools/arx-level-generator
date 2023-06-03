@@ -98,7 +98,7 @@ export default async () => {
   map.entities.push(game1, fern)
 
   const game2 = new PCGame({
-    variant: gameVariants[0],
+    variant: gameVariants[1],
     position: new Vector3(-1650, -5, -670),
   })
 

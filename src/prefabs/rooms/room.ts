@@ -122,7 +122,6 @@ const createSouthWall = async (
   })
   wall.translateZ(-depth / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(180))
-  // scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
   if (texture.filename.toLowerCase().includes('forest')) {
     // TODO
   } else {
