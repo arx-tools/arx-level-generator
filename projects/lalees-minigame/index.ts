@@ -30,6 +30,7 @@ import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 import { Goblin } from './Goblin.js'
 import { PCGame, PCGameVariant } from './PCGame.js'
 import { createMainMarker } from './mainMarker.js'
+import { createRadio } from './radio.js'
 
 export default async () => {
   const {
@@ -259,7 +260,7 @@ export default async () => {
   runeSpacium.position = new Vector3(-300, -107, 450)
   map.entities.push(runeSpacium)
 
-  const mainMarker = createMainMarker()
+  const gameState = createMainMarker()
 
   const goblin = new Goblin({
     position: new Vector3(-200, -2, 425),
@@ -269,19 +270,27 @@ export default async () => {
   goblin.script?.on('combine', () => {
     return `
     if (^$param1 isclass pcgame) {
+      sendevent gave_game_to_goblin ${gameState.ref} nop
+
       random 20 {
-        speak [goblin_victory3_shorter] sendevent gave_game_to_goblin ${mainMarker.ref} nop
+        speak [goblin_victory3_shorter]
       } else {
-        speak [goblin_ok] sendevent gave_game_to_goblin ${mainMarker.ref} nop
+        speak [goblin_ok]
       }
-      // destroy ^$param1
+
+      destroy ^$param1
     } else {
       speak -a [goblin_mad]
     }
     `
   })
 
-  map.entities.push(mainMarker, goblin)
+  map.entities.push(gameState, goblin)
+
+  const radio = await createRadio({
+    position: new Vector3(300, -100, 450),
+  })
+  map.entities.push(...radio.entities)
 
   // --------------
 
