@@ -109,3 +109,13 @@ export class YlsideDoor extends LightDoor {
     this.script?.on('load', new UseMesh('door_ylsides/door_ylsides.teo'))
   }
 }
+
+/**
+ * ? wide / ? high
+ */
+export class GoblinVeryLightDoor extends LightDoor {
+  constructor(props: DoorConstructorPropsWithFixSrc = {}) {
+    super(props)
+    this.script?.on('load', new UseMesh('door_goblin_light_very/door_goblin_light_very.teo'))
+  }
+}

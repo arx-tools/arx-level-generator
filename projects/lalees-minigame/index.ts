@@ -30,6 +30,7 @@ import { createZone } from '@tools/createZone.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { Goblin } from './Goblin.js'
 import { PCGame, PCGameVariant } from './PCGame.js'
+import { createCounter } from './counter.js'
 import { createGameStateMarker } from './gameStateMarker.js'
 import { createRadio } from './radio.js'
 import { createTable } from './table.js'
@@ -182,7 +183,7 @@ export default async () => {
   windowGlass.translateZ(-575)
   windowGlass.rotateX(MathUtils.degToRad(-90))
 
-  const leftTable = createTable({
+  const table = createTable({
     position: new Vector3(-300, -100, 400),
   })
 
@@ -221,7 +222,7 @@ export default async () => {
   map.entities.push(crickets1, crickets2, crickets3, crickets4)
 
   const runeSpacium = new Rune('spacium')
-  runeSpacium.position = new Vector3(-300, -107, 450)
+  runeSpacium.position = new Vector3(-300, -107, 400)
   map.entities.push(runeSpacium)
 
   const gameStateMarker = createGameStateMarker()
@@ -262,7 +263,12 @@ export default async () => {
   })
   map.entities.push(...radio.entities)
 
-  const meshes = [moon.meshes, tree, windowGlass, leftTable, radio.meshes]
+  const counter1 = await createCounter({
+    position: new Vector3(300, -100, 450),
+  })
+  map.entities.push(...counter1.entities)
+
+  const meshes = [moon.meshes, tree, windowGlass, table.meshes, radio.meshes, counter1.meshes]
 
   meshes.flat().forEach((mesh) => {
     applyTransformations(mesh)

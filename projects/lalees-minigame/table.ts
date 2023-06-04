@@ -58,5 +58,7 @@ export const createTable = ({ position }: { position: Vector3 }) => {
   tableLeg4.translateZ(position.z - 110)
   tableLeg4.rotateY(MathUtils.degToRad(90))
 
-  return [tableTop, tableLeg1, tableLeg2, tableLeg3, tableLeg4]
+  return {
+    meshes: [tableTop, tableLeg1, tableLeg2, tableLeg3, tableLeg4],
+  }
 }
