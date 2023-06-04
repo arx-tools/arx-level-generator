@@ -163,11 +163,12 @@ export default async () => {
     fallbackTexture: Texture.l2TrollWoodPillar08,
   })
 
-  const lantern = new Entity({
-    src: 'items/provisions/lamp',
-    position: new Vector3(140, 7, 1370),
+  const game3 = new PCGame({
+    variant: gameVariants[2],
+    position: new Vector3(240, 7 - 10, 1380),
+    orientation: new Rotation(MathUtils.degToRad(-60), MathUtils.degToRad(-90), MathUtils.degToRad(0)),
   })
-  map.entities.push(lantern)
+  map.entities.push(game3)
 
   const windowGlass = await createPlaneMesh({
     size: new Vector2(500, 350),
@@ -293,12 +294,20 @@ export default async () => {
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
   })
 
-  const game3 = new PCGame({
-    variant: gameVariants[2],
+  const game4 = new PCGame({
+    variant: gameVariants[3],
     position: new Vector3(300, 0, 380 + 23),
     orientation: new Rotation(MathUtils.degToRad(-60), MathUtils.degToRad(-90), MathUtils.degToRad(0)),
   })
-  map.entities.push(game3)
+  map.entities.push(game4)
+
+  const lantern = new Entity({
+    src: 'items/provisions/lamp',
+    position: new Vector3(300, 0, -200 + 40),
+  })
+  lantern.withScript()
+  lantern.script?.properties.push(new Scale(0.7))
+  map.entities.push(lantern)
 
   // --------------
 
