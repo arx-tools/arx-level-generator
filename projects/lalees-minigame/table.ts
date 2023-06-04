@@ -12,7 +12,7 @@ export const createTable = ({ position }: { position: Vector3 }) => {
     map: Texture.l2TrollWoodPillar08,
   })
 
-  const tableHeight = 100
+  const tableHeight = 80
 
   const tableTopSize = new Vector3(300, 6, 100)
   let tableTopGeometry = new BoxGeometry(

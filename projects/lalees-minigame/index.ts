@@ -150,7 +150,7 @@ export default async () => {
   doorToRoomB.setKey(keyForRoomB)
 
   const doorToBackGarden = new CatacombHeavyDoor({
-    position: new Vector3(100, 10, 580),
+    position: new Vector3(100, 10, 565),
     orientation: new Rotation(0, MathUtils.degToRad(-90), 0),
   })
   doorToBackGarden.script?.properties.push(new Scale(1.35))
@@ -196,7 +196,7 @@ export default async () => {
   windowGlass.rotateX(MathUtils.degToRad(-90))
 
   const table = createTable({
-    position: new Vector3(-300, -100, 400),
+    position: new Vector3(-300, -80, 400),
   })
 
   map.lights.push(...moon.lights)
@@ -234,7 +234,7 @@ export default async () => {
   map.entities.push(crickets1, crickets2, crickets3, crickets4)
 
   const runeSpacium = new Rune('spacium')
-  runeSpacium.position = new Vector3(-300, -107 + 8, 280)
+  runeSpacium.position = new Vector3(-300, -79, 280)
   runeSpacium.orientation.y = MathUtils.degToRad(180)
   map.entities.push(runeSpacium)
 
