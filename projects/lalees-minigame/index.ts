@@ -260,6 +260,7 @@ export default async () => {
       filename: 'lalee-theme-song.wav',
       sourcePath: 'projects/lalees-minigame/sfx',
     }),
+    isOn: false,
   })
   map.entities.push(...radio.entities)
 

@@ -1,7 +1,7 @@
 import { Entity } from '@src/Entity.js'
 import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
 
-const tutorialWelcom = new ScriptSubroutine('tutorial_welcome', () => {
+const tutorialWelcome = new ScriptSubroutine('tutorial_welcome', () => {
   return `
     play -o "system"
     herosay [tutorial--welcome]
@@ -41,13 +41,14 @@ const achievementListenLarge = new ScriptSubroutine('achievement_found_games_lar
 export const createGameStateMarker = () => {
   const marker = Entity.marker.withScript()
   marker.script?.subroutines.push(
-    tutorialWelcom,
+    tutorialWelcome,
+    tutorialFirstGameGivenToGoblin,
     achievementListenSmall,
     achievementListenMedium,
     achievementListenLarge,
   )
   marker.script?.on('init', () => {
-    return `TIMERwelcome -m 1 3000 gosub ${tutorialWelcom.name}`
+    return `TIMERwelcome -m 1 3000 gosub ${tutorialWelcome.name}`
   })
   marker.script?.on('init', () => {
     return `set §gave_game_to_goblin 0`
