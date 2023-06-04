@@ -39,5 +39,12 @@
   },
   "achievement--found-games-large": {
     "english": "Achievement reached: Found all games. Enjoy your collection!"
+  },
+
+  "key-roomA": {
+    "english": "Bedroom key"
+  },
+  "key-roomB": {
+    "english": "Bathroom key"
   }
 }

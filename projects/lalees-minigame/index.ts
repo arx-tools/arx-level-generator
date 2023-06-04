@@ -23,6 +23,7 @@ import { loadRooms } from '@prefabs/rooms/loadRooms.js'
 import { createMoon } from '@projects/ambience-gallery/moon.js'
 import { SoundFlags } from '@scripting/classes/Sound.js'
 import { Interactivity } from '@scripting/properties/Interactivity.js'
+import { Label } from '@scripting/properties/Label.js'
 import { Scale } from '@scripting/properties/Scale.js'
 import { createZone } from '@tools/createZone.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
@@ -136,6 +137,18 @@ export default async () => {
   })
   map.entities.push(doorToRoomA, doorToRoomB)
 
+  const keyForRoomA = Entity.key
+  keyForRoomA.withScript()
+  keyForRoomA.script?.properties.push(new Label('[key-roomA]'))
+  map.entities.push(keyForRoomA)
+  doorToRoomA.setKey(keyForRoomA)
+
+  const keyForRoomB = Entity.key
+  keyForRoomB.withScript()
+  keyForRoomB.script?.properties.push(new Label('[key-roomB]'))
+  map.entities.push(keyForRoomB)
+  doorToRoomB.setKey(keyForRoomB)
+
   const doorToBackGarden = new CatacombHeavyDoor({
     position: new Vector3(100, 10, 580),
     orientation: new Rotation(0, MathUtils.degToRad(-90), 0),
@@ -221,7 +234,8 @@ export default async () => {
   map.entities.push(crickets1, crickets2, crickets3, crickets4)
 
   const runeSpacium = new Rune('spacium')
-  runeSpacium.position = new Vector3(-300, -107, 400)
+  runeSpacium.position = new Vector3(-300, -107 + 8, 280)
+  runeSpacium.orientation.y = MathUtils.degToRad(180)
   map.entities.push(runeSpacium)
 
   const gameStateMarker = createGameStateMarker()
@@ -303,11 +317,17 @@ export default async () => {
 
   const lantern = new Entity({
     src: 'items/provisions/lamp',
-    position: new Vector3(300, 0, -200 + 40),
+    position: new Vector3(300, 0, -160),
   })
   lantern.withScript()
   lantern.script?.properties.push(new Scale(0.7))
   map.entities.push(lantern)
+
+  const bucket = new Entity({
+    src: 'items/movable/bucket',
+    position: new Vector3(310, 0, 335),
+  })
+  map.entities.push(bucket)
 
   // --------------
 

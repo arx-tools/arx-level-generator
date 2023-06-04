@@ -32,7 +32,11 @@ define window floor ALICIAROOM_MUR02.jpg
 
 define door ceiling ALICIAROOM_MUR02.jpg
 define door wall ALICIAROOM_MUR02.jpg
-define door floor custom [wood]-fake-floor.jpg textures
+define door floor L2_TROLL_[WOOD]_PILLAR06.jpg
+
+define entrance ceiling ALICIAROOM_MUR02.jpg
+define entrance wall ALICIAROOM_MUR02.jpg
+define entrance floor L2_TROLL_[WOOD]_PILLAR06.jpg
 
 define room ceiling custom [stone]-office-ceiling-tile.jpg textures
 define room wall ALICIAROOM_MUR02.jpg
@@ -44,6 +48,9 @@ define room floor custom [wood]-fake-floor.jpg textures
 # ------------------------------
 
 $houseHeight = 350
+$corridorHeight = 300
+$doorHeight = 200
+$entranceHeight = 250
 
 # dining room
 room add 700 350 1100 room
@@ -72,7 +79,7 @@ with light
 
 # door on the front
 cursor restore dining-room
-room add 200 250 50 door z++ y-
+room add 200 $entranceHeight 50 entrance z++ y-
 
 # outside back
 room add 1000 $houseHeight 1200 outside-north z++ y-
@@ -80,31 +87,31 @@ room add 1000 500 1200 outside-sky y++
 
 # right corridor
 cursor restore dining-room
-room add 50 250 200 room x++ y-
-room add 400 250 200 room x++ y-
+room add 50 $corridorHeight 200 room x++ y-
+room add 400 $corridorHeight 200 room x++ y-
 cursor save right-corridor
 
 # room A
-room add 150 200 50 door z++ y- x+
+room add 150 $doorHeight 50 door z++ y- x+
 room add 400 $houseHeight 400 room z++ y- x+
 with light
 # TODO: add window
 
 cursor restore right-corridor
-room add 50 250 200 room x++ y-
-room add 600 250 200 room x++ y-
+room add 50 $corridorHeight 200 room x++ y-
+room add 600 $corridorHeight 200 room x++ y-
 cursor save right-corridor
 
 # room B
-room add 150 200 50 door z++ y- x-
+room add 150 $doorHeight 50 door z++ y- x-
 room add 600 $houseHeight 400 room z++ y- x-
 with light
 # TODO: add window
 
 cursor restore right-corridor
-room add 400 250 450 room z-- y- x+
+room add 400 $corridorHeight 450 room z-- y- x+
 with light
-room add 200 250 50 door z-- y-
+room add 200 $entranceHeight 50 entrance z-- y-
 
 
 
