@@ -243,24 +243,7 @@ export default async () => {
   const goblin = new Goblin({
     position: new Vector3(-200, -2, 425),
     orientation: new Rotation(0, MathUtils.degToRad(-100), 0),
-  })
-
-  goblin.script?.on('combine', () => {
-    return `
-    if (^$param1 isclass pcgame) {
-      sendevent gave_game_to_goblin ${gameStateMarker.ref} nop
-
-      random 20 {
-        speak [goblin_victory3_shorter]
-      } else {
-        speak [goblin_ok]
-      }
-
-      destroy ^$param1
-    } else {
-      speak -a [goblin_mad]
-    }
-    `
+    gameStateMarker,
   })
 
   map.entities.push(gameStateMarker, goblin)
