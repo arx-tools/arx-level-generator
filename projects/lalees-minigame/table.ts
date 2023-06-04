@@ -4,7 +4,7 @@ import { Vector3 } from '@src/Vector3.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
 export const createTable = ({ position }: { position: Vector3 }) => {
-  const tableToMaterial = new MeshBasicMaterial({
+  const tableTopMaterial = new MeshBasicMaterial({
     map: Texture.l4DwarfWoodBoard02,
   })
 
@@ -18,7 +18,7 @@ export const createTable = ({ position }: { position: Vector3 }) => {
   let tableTopGeometry = new BoxGeometry(300, 6, tableHeight, 3, 1, 1)
   tableTopGeometry = toArxCoordinateSystem(tableTopGeometry)
 
-  const tableTop = new Mesh(tableTopGeometry, tableToMaterial)
+  const tableTop = new Mesh(tableTopGeometry, tableTopMaterial)
   tableTop.translateX(position.x)
   tableTop.translateY(position.y + 3)
   tableTop.translateZ(position.z)
