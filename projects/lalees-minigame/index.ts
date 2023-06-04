@@ -252,29 +252,11 @@ export default async () => {
   map.entities.push(gameStateMarker, goblin)
 
   const radio = await createRadio({
-    // position: new Vector3(300, -100, 450),
-    position: new Vector3(100, -100, 250),
+    position: new Vector3(300, -100, 450),
+    angleY: 60,
+    scale: 0.1,
   })
   map.entities.push(...radio.entities)
-
-  const radioOnOffLever = new Lever({
-    position: new Vector3(300, -100, 450),
-    orientation: new Rotation(MathUtils.degToRad(90), 0, 0),
-    isSilent: true,
-  })
-  radioOnOffLever.isPulled = true
-  radioOnOffLever.script?.properties.push(new Scale(0.5), new Label('turn on/off radio'))
-  radioOnOffLever.script?.on('custom', () => {
-    return `
-      if (^$param1 == "on") {
-        ${radio.on()}
-      }
-      if (^$param1 == "off") {
-        ${radio.off()}
-      }
-    `
-  })
-  map.entities.push(radioOnOffLever)
 
   const meshes = [moon.meshes, tree, windowGlass, leftTable, radio.meshes]
 
