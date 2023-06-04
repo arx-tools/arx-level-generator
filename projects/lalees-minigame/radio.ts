@@ -14,11 +14,22 @@ import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
 type createRadioProps = {
   position: Vector3
-  angleY: number
-  scale: number
+  /**
+   * @default 0
+   */
+  angleY?: number
+  /**
+   * @default 1
+   */
+  scale?: number
+  music: Audio
+  /**
+   * @default true
+   */
+  isOn?: boolean
 }
 
-export const createRadio = async ({ position, angleY, scale }: createRadioProps) => {
+export const createRadio = async ({ position, angleY = 0, scale = 1, music, isOn = true }: createRadioProps) => {
   const radioTextures = {
     front: Material.fromTexture(
       await Texture.fromCustomFile({
@@ -69,16 +80,11 @@ export const createRadio = async ({ position, angleY, scale }: createRadioProps)
 
   const boxSize = new Vector3(500 * scale, 300 * scale, 100 * scale)
 
-  const music = await Audio.fromCustomFile({
-    filename: 'lalee-theme-song.wav',
-    sourcePath: 'projects/lalees-minigame/sfx',
-  })
-
   const musicPlayer = new SoundPlayer({
     audio: music,
     position: position.clone(),
     flags: SoundFlags.Loop | SoundFlags.Unique,
-    autoplay: true,
+    autoplay: isOn,
   })
 
   const radioOnOffLever = new Lever({
@@ -86,7 +92,7 @@ export const createRadio = async ({ position, angleY, scale }: createRadioProps)
     orientation: new Rotation(MathUtils.degToRad(angleY), MathUtils.degToRad(90), MathUtils.degToRad(-90)),
     isSilent: true,
   })
-  radioOnOffLever.isPulled = true
+  radioOnOffLever.isPulled = isOn
   radioOnOffLever.script?.properties.push(new Scale(scale * 3), new Label('turn on/off radio'))
   radioOnOffLever.script?.on('custom', () => {
     return `
@@ -114,7 +120,6 @@ export const createRadio = async ({ position, angleY, scale }: createRadioProps)
   boxGeometry.rotateY(MathUtils.degToRad(angleY))
   boxGeometry.translate(position.x, position.y, position.z)
 
-  // talán azzal van gond, hogy 1 face/group több polygon-t is tartalmaz?
   const radioMesh = new Mesh(boxGeometry, [
     new MeshBasicMaterial({ map: radioTextures.side }),
     new MeshBasicMaterial({ map: radioTextures.side }),
