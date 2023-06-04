@@ -12,42 +12,49 @@ export const createTable = ({ position }: { position: Vector3 }) => {
     map: Texture.l2TrollWoodPillar08,
   })
 
-  const tableTopHeight = 6
   const tableHeight = 100
 
-  let tableTopGeometry = new BoxGeometry(300, 6, tableHeight, 3, 1, 1)
+  const tableTopSize = new Vector3(300, 6, 100)
+  let tableTopGeometry = new BoxGeometry(
+    tableTopSize.x,
+    tableTopSize.y,
+    tableTopSize.z,
+    Math.ceil(tableTopSize.x / 100),
+    Math.ceil(tableTopSize.y / 100),
+    Math.ceil(tableTopSize.z / 100),
+  )
   tableTopGeometry = toArxCoordinateSystem(tableTopGeometry)
 
   const tableTop = new Mesh(tableTopGeometry, tableTopMaterial)
   tableTop.translateX(position.x)
-  tableTop.translateY(position.y + 3)
+  tableTop.translateY(position.y + tableTopSize.y / 2)
   tableTop.translateZ(position.z)
   tableTop.rotateY(MathUtils.degToRad(90))
 
-  let tableLegGeometry = new CylinderGeometry(5, 5, tableHeight - tableTopHeight, 5, 1)
+  let tableLegGeometry = new CylinderGeometry(5, 5, tableHeight - tableTopSize.y, 5, 1)
   tableLegGeometry = toArxCoordinateSystem(tableLegGeometry)
 
   const tableLeg1 = new Mesh(tableLegGeometry.clone(), tableLegMaterial)
   tableLeg1.translateX(position.x + 30)
-  tableLeg1.translateY(position.y + (tableHeight - tableTopHeight) / 2 + tableTopHeight)
+  tableLeg1.translateY(position.y + (tableHeight - tableTopSize.y) / 2 + tableTopSize.y)
   tableLeg1.translateZ(position.z + 110)
   tableLeg1.rotateY(MathUtils.degToRad(90))
 
   const tableLeg2 = new Mesh(tableLegGeometry.clone(), tableLegMaterial)
   tableLeg2.translateX(position.x + 30)
-  tableLeg2.translateY(position.y + (tableHeight - tableTopHeight) / 2 + tableTopHeight)
+  tableLeg2.translateY(position.y + (tableHeight - tableTopSize.y) / 2 + tableTopSize.y)
   tableLeg2.translateZ(position.z - 110)
   tableLeg2.rotateY(MathUtils.degToRad(90))
 
   const tableLeg3 = new Mesh(tableLegGeometry.clone(), tableLegMaterial)
   tableLeg3.translateX(position.x - 30)
-  tableLeg3.translateY(position.y + (tableHeight - tableTopHeight) / 2 + tableTopHeight)
+  tableLeg3.translateY(position.y + (tableHeight - tableTopSize.y) / 2 + tableTopSize.y)
   tableLeg3.translateZ(position.z + 110)
   tableLeg3.rotateY(MathUtils.degToRad(90))
 
   const tableLeg4 = new Mesh(tableLegGeometry.clone(), tableLegMaterial)
   tableLeg4.translateX(position.x - 30)
-  tableLeg4.translateY(position.y + (tableHeight - tableTopHeight) / 2 + tableTopHeight)
+  tableLeg4.translateY(position.y + (tableHeight - tableTopSize.y) / 2 + tableTopSize.y)
   tableLeg4.translateZ(position.z - 110)
   tableLeg4.rotateY(MathUtils.degToRad(90))
 
