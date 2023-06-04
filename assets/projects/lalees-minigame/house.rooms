@@ -50,7 +50,7 @@ room add 700 350 1100 room
 with light
 cursor save dining-room
 
-## 3 windows on the back
+# 3 windows on the back
 room add 100 250 50 window z-- y
 room add 500 $houseHeight 400 outside-south z-- y
 with light
@@ -70,7 +70,7 @@ with light
 room add 100 $houseHeight 700 outside-east x+ z++ y-
 with light
 
-## door on the front
+# door on the front
 cursor restore dining-room
 room add 200 250 50 door z++ y-
 

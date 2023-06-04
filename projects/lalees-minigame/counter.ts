@@ -18,7 +18,7 @@ export const createCounter = async ({ position }: { position: Vector3 }) => {
     map: Texture.l4DwarfWoodBoard02,
   })
 
-  const counterTopSize = new Vector3(140, 4, 100)
+  const counterTopSize = new Vector3(150, 4, 100)
 
   let counterTopGeometry = new BoxGeometry(
     counterTopSize.x,
@@ -36,13 +36,23 @@ export const createCounter = async ({ position }: { position: Vector3 }) => {
   counterTop.translateZ(position.z)
   counterTop.rotateY(MathUtils.degToRad(90))
 
-  // let counterWallGeometry = new BoxGeometry(100, 10, 100, 1, 1, 1)
-  // counterWallGeometry = toArxCoordinateSystem(counterWallGeometry)
+  let counterLeftWallGeometry = new BoxGeometry(80, 6, 90, 1, 1, 1)
+  counterLeftWallGeometry = toArxCoordinateSystem(counterLeftWallGeometry)
+  const counterLeftWall = new Mesh(counterLeftWallGeometry, counterMaterial)
+  counterLeftWall.translateX(position.x + 5)
+  counterLeftWall.translateY(position.y + 58)
+  counterLeftWall.translateZ(position.z + 70)
+  counterLeftWall.rotateY(MathUtils.degToRad(90))
+  counterLeftWall.rotateZ(MathUtils.degToRad(90))
 
-  // const counterBackWall = new Mesh(counterWallGeometry, counterMaterial)
-  // const counterLeftWall =
-  // const counterRightWall =
-  // const counterFloor =
+  let counterRightWallGeometry = new BoxGeometry(80, 6, 90, 1, 1, 1)
+  counterRightWallGeometry = toArxCoordinateSystem(counterRightWallGeometry)
+  const counterRightWall = new Mesh(counterRightWallGeometry, counterMaterial)
+  counterRightWall.translateX(position.x + 5)
+  counterRightWall.translateY(position.y + 58)
+  counterRightWall.translateZ(position.z - 70)
+  counterRightWall.rotateY(MathUtils.degToRad(90))
+  counterRightWall.rotateZ(MathUtils.degToRad(90))
 
   const leftDoor = new GoblinVeryLightDoor({
     position: position.clone().add(new Vector3(-40, 108, 70)),
@@ -57,6 +67,6 @@ export const createCounter = async ({ position }: { position: Vector3 }) => {
 
   return {
     entities: [leftDoor, rightDoor],
-    meshes: [counterTop],
+    meshes: [counterTop, counterLeftWall, counterRightWall],
   }
 }

@@ -16,7 +16,6 @@ import { times } from '@src/faux-ramda.js'
 import { applyTransformations } from '@src/helpers.js'
 import { pickRandom, randomBetween, randomSort } from '@src/random.js'
 import { CatacombHeavyDoor, LightDoor } from '@prefabs/entity/Door.js'
-import { Lever } from '@prefabs/entity/Lever.js'
 import { Rune } from '@prefabs/entity/Rune.js'
 import { SoundPlayer } from '@prefabs/entity/SoundPlayer.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
@@ -24,7 +23,6 @@ import { loadRooms } from '@prefabs/rooms/loadRooms.js'
 import { createMoon } from '@projects/ambience-gallery/moon.js'
 import { SoundFlags } from '@scripting/classes/Sound.js'
 import { Interactivity } from '@scripting/properties/Interactivity.js'
-import { Label } from '@scripting/properties/Label.js'
 import { Scale } from '@scripting/properties/Scale.js'
 import { createZone } from '@tools/createZone.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
@@ -260,16 +258,31 @@ export default async () => {
       filename: 'lalee-theme-song.wav',
       sourcePath: 'projects/lalees-minigame/sfx',
     }),
-    isOn: false,
+    isOn: true,
   })
   map.entities.push(...radio.entities)
 
   const counter1 = await createCounter({
     position: new Vector3(300, -100, 450),
   })
-  map.entities.push(...counter1.entities)
+  const counter2 = await createCounter({
+    position: new Vector3(300, -100, 300 - 5),
+  })
+  const counter3 = await createCounter({
+    position: new Vector3(300, -100, -200),
+  })
+  map.entities.push(...counter1.entities, ...counter2.entities, ...counter3.entities)
 
-  const meshes = [moon.meshes, tree, windowGlass, table.meshes, radio.meshes, counter1.meshes]
+  const meshes = [
+    moon.meshes,
+    tree,
+    windowGlass,
+    table.meshes,
+    radio.meshes,
+    counter1.meshes,
+    counter2.meshes,
+    counter3.meshes,
+  ]
 
   meshes.flat().forEach((mesh) => {
     applyTransformations(mesh)
@@ -279,6 +292,13 @@ export default async () => {
     applyTransformations(mesh)
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
   })
+
+  const game3 = new PCGame({
+    variant: gameVariants[2],
+    position: new Vector3(300, 0, 380 + 23),
+    orientation: new Rotation(MathUtils.degToRad(-60), MathUtils.degToRad(-90), MathUtils.degToRad(0)),
+  })
+  map.entities.push(game3)
 
   // --------------
 
