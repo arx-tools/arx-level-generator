@@ -29,6 +29,7 @@ import { createZone } from '@tools/createZone.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { Goblin } from './Goblin.js'
 import { PCGame, PCGameVariant } from './PCGame.js'
+import { createComputer } from './computer.js'
 import { createCounter } from './counter.js'
 import { createGameStateMarker } from './gameStateMarker.js'
 import { createRadio } from './radio.js'
@@ -64,13 +65,12 @@ export default async () => {
     map.add(room, true)
   })
 
-  const gameVariants = randomSort([
+  const randomizedGameVariants = randomSort([
     'mesterlovesz',
     'mortyr',
     'wolfschanze',
     'traktor-racer',
     'americas-10-most-wanted',
-    'big-rigs',
     'streets-racer',
     'bikini-karate-babes',
   ] as PCGameVariant[])
@@ -88,7 +88,7 @@ export default async () => {
   map.entities.push(runeComunicatum, barrel)
 
   const game1 = new PCGame({
-    variant: gameVariants[0],
+    variant: randomizedGameVariants[0],
     position: new Vector3(1700, -5, -50),
     orientation: new Rotation(MathUtils.degToRad(45), MathUtils.degToRad(80), MathUtils.degToRad(15)),
   })
@@ -101,7 +101,7 @@ export default async () => {
   map.entities.push(game1, fern)
 
   const game2 = new PCGame({
-    variant: gameVariants[1],
+    variant: randomizedGameVariants[1],
     position: new Vector3(-1650, -5, -670),
   })
 
@@ -126,10 +126,11 @@ export default async () => {
   map.entities.push(game2, ...randomJunk)
 
   const doorToRoomA = new LightDoor({
-    isLocked: true,
+    // isLocked: false,
     position: new Vector3(800, 20, 120),
     orientation: new Rotation(0, MathUtils.degToRad(-90), 0),
   })
+
   const doorToRoomB = new LightDoor({
     isLocked: true,
     position: new Vector3(850, -200, 120),
@@ -177,7 +178,7 @@ export default async () => {
   })
 
   const game3 = new PCGame({
-    variant: gameVariants[2],
+    variant: randomizedGameVariants[2],
     position: new Vector3(240, 7 - 10, 1380),
     orientation: new Rotation(MathUtils.degToRad(-60), MathUtils.degToRad(-90), MathUtils.degToRad(0)),
   })
@@ -271,6 +272,12 @@ export default async () => {
   })
   map.entities.push(...counter1.entities, ...counter2.entities, ...counter3.entities)
 
+  const tableInRoomA = await createTable({ position: new Vector3(450, -80, 350) })
+
+  const computer = await createComputer({
+    position: new Vector3(450, -80, 350),
+  })
+
   const meshes = [
     moon.meshes,
     tree,
@@ -280,6 +287,8 @@ export default async () => {
     counter1.meshes,
     counter2.meshes,
     counter3.meshes,
+    tableInRoomA.meshes,
+    computer.meshes,
   ]
 
   meshes.flat().forEach((mesh) => {
@@ -292,7 +301,7 @@ export default async () => {
   })
 
   const game4 = new PCGame({
-    variant: gameVariants[3],
+    variant: randomizedGameVariants[3],
     position: new Vector3(300, 0, 380 + 23),
     orientation: new Rotation(MathUtils.degToRad(-60), MathUtils.degToRad(-90), MathUtils.degToRad(0)),
   })
