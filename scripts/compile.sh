@@ -30,7 +30,8 @@ if [ -z "$OUTPUTDIR" ]; then
   OUTPUTDIR=$(pwd)/dist/
 fi
 
-echo "$OUTPUTDIR"
+echo "output directory: $OUTPUTDIR"
+echo ""
 
 arx-convert --version
 
@@ -62,6 +63,7 @@ cat level$LEVEL.dlf.repacked | implode -b -l --offset=$(arx-header-size level$LE
 rm level$LEVEL.dlf.repacked
 
 if [ "$CALCULATE_LIGHTING" == "1" ]; then
+  echo ""
   echo "Fredlllll's lighting calculation"
 
   # DistanceAngle | DistanceAngleShadow | DistanceAngleShadowNoTransparency
