@@ -42,6 +42,10 @@ define room ceiling custom [stone]-office-ceiling-tile.jpg textures
 define room wall ALICIAROOM_MUR02.jpg
 define room floor custom [wood]-fake-floor.jpg textures
 
+define room-with-carpet ceiling custom [stone]-office-ceiling-tile.jpg textures
+define room-with-carpet wall ALICIAROOM_MUR02.jpg
+define room-with-carpet floor custom [fabric]-carpet.jpg textures
+
 # TODO: all other textures should be tiling to 100/100 tiles
 # even if tileSize is 50
 
@@ -93,7 +97,7 @@ cursor save right-corridor
 
 # room A
 room add 150 $doorHeight 50 door z++ y- x+
-room add 400 $houseHeight 400 room z++ y- x+
+room add 400 $houseHeight 400 room-with-carpet z++ y- x+
 with light
 # TODO: add window
 
