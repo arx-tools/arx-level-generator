@@ -11,6 +11,12 @@ The packages caches levels that are loaded from the original game into the `.cac
 `arx-convert` and it changes the format of the json structure, then just delete the `.cache` folder and you're
 good to go.
 
+## Important commands
+
+`./scripts/dev.sh` - generate a level and load the level in arx immediately
+
+`./scripts/publish` - prepare a map as a zip file for publishing to moddb
+
 ## Known issues with the stack so far
 
 https://github.com/evanw/esbuild/issues/1975

@@ -8,14 +8,7 @@
     "npm": ">=8.0.0",
     "node": ">=18.0.0"
   },
-  "scripts": {
-    "publish-map": "export OUTPUTDIR=$(pwd)/dist/ && npm run generate && npm run compile && npm run pack",
-    "dev": "npm run generate && npm run compile && npm run run",
-    "generate": "tsc && tsc-alias && node --require dotenv/config --enable-source-maps ./build/projects/index.js",
-    "compile": "./scripts/compile.sh",
-    "run": "./scripts/run.sh",
-    "pack": "./scripts/pack.sh"
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/arx-tools/arx-level-generator.git"

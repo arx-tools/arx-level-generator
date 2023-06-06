@@ -24,7 +24,7 @@ if [ -z "$OUTPUTDIR" ]; then
   OUTPUTDIR=$(pwd)/dist/
 fi
 
-echo $OUTPUTDIR
+echo "$OUTPUTDIR"
 
 arx-convert --version
 
@@ -58,9 +58,10 @@ rm level$LEVEL.dlf.repacked
 if [ "$CALCULATE_LIGHTING" == "1" ]; then
   echo "Fredlllll's lighting calculation"
 
-  # ${REPO_ROOT}lib/fredlllll-lighting-calculator/linux/ArxLibertatisLightingCalculator --level "level${LEVEL}" --arx-data-dir $OUTPUTDIR --lighting-profile DistanceAngle
-  # ${REPO_ROOT}lib/fredlllll-lighting-calculator/linux/ArxLibertatisLightingCalculator --level "level${LEVEL}" --arx-data-dir $OUTPUTDIR --lighting-profile DistanceAngleShadow
-  ${REPO_ROOT}lib/fredlllll-lighting-calculator/linux/ArxLibertatisLightingCalculator --level "level${LEVEL}" --arx-data-dir $OUTPUTDIR --lighting-profile DistanceAngleShadowNoTransparency
+  # DistanceAngle | DistanceAngleShadow | DistanceAngleShadowNoTransparency
+  LIGHTING_MODE="DistanceAngleShadowNoTransparency"
+
+  ${REPO_ROOT}lib/fredlllll-lighting-calculator/linux/ArxLibertatisLightingCalculator --level "level${LEVEL}" --arx-data-dir "$OUTPUTDIR" --lighting-profile "$LIGHTING_MODE"
 fi
 
 echo ""
