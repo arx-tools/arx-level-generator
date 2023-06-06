@@ -14,8 +14,7 @@ function union(map1: ArxMap, map2: ArxMap) {
   const map1BB = map1.getBoundingBox()
   const map2BB = map2.getBoundingBox()
 
-  const isColliding = map1BB.intersectsBox(map2BB)
-  if (!isColliding) {
+  if (!map1BB.intersectsBox(map2BB)) {
     return
   }
 
