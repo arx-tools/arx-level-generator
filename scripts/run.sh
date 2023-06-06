@@ -1,5 +1,11 @@
 #!/bin/bash
 
+echo ""
+echo "----------------------------"
+echo "  RUN"
+echo "----------------------------"
+echo ""
+
 set -e
 
 REPO_ROOT="$(realpath $(dirname "$(realpath "${BASH_SOURCE:-$0}")")/../)/"

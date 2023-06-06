@@ -1,5 +1,11 @@
 #!/bin/bash
 
+echo ""
+echo "----------------------------"
+echo "  COMPILE"
+echo "----------------------------"
+echo ""
+
 set -e
 
 REPO_ROOT="$(realpath $(dirname "$(realpath "${BASH_SOURCE:-$0}")")/../)/"
@@ -64,7 +70,7 @@ if [ "$CALCULATE_LIGHTING" == "1" ]; then
   ${REPO_ROOT}lib/fredlllll-lighting-calculator/linux/ArxLibertatisLightingCalculator --level "level${LEVEL}" --arx-data-dir "$OUTPUTDIR" --lighting-profile "$LIGHTING_MODE"
 fi
 
+set +e
+
 echo ""
 echo "done"
-
-set +e

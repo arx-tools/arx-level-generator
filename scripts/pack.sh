@@ -1,5 +1,11 @@
 #!/bin/bash
 
+echo ""
+echo "----------------------------"
+echo "  PACK"
+echo "----------------------------"
+echo ""
+
 set -e
 
 REPO_ROOT="$(realpath $(dirname "$(realpath "${BASH_SOURCE:-$0}")")/../)/"
@@ -33,7 +39,7 @@ sha256sum $PROJECT.zip | cut -f 1 -d " " > $PROJECT.zip.hash
 # going back to the previous directory (quasi "cd -" without the pwd part)
 cd $OLDPWD
 
+set +e
+
 echo ""
 echo "done"
-
-set +e
