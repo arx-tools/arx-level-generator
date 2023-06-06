@@ -5,7 +5,13 @@ import { Variable } from '@scripting/properties/Variable.js'
 
 export type DoorConstructorProps = Expand<
   EntityConstructorProps & {
+    /**
+     * @default false
+     */
     isOpen?: boolean
+    /**
+     * @default false
+     */
     isLocked?: boolean
     lockpickDifficulty?: number
   }
