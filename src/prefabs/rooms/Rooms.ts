@@ -1,10 +1,36 @@
 import { ArxMap } from '@src/ArxMap.js'
 import { Vector3 } from '@src/Vector3.js'
-import { removeByValue } from '@src/helpers.js'
 import { Cursor, CursorDir } from '@prefabs/rooms/Cursor.js'
 import { createRoom, RoomProps } from '@prefabs/rooms/room.js'
 
 // ---------------------------
+
+/**
+ * @input [1, 2, 3, 5, 6, 7, 10]
+ * @output [
+ *  { start: 1, length: 3 },
+ *  { start: 5, length: 3 },
+ *  { start: 10, length: 1 },
+ * ]
+ */
+function groupSequences(numbers: number[]) {
+  return numbers.reduce((acc, n) => {
+    if (acc.length === 0) {
+      acc.push({ start: n, length: 1 })
+      return acc
+    }
+
+    const lastGroup = acc[acc.length - 1]
+    if (lastGroup.start - 1 === n || lastGroup.start + lastGroup.length === n) {
+      lastGroup.start = Math.min(n, lastGroup.start)
+      lastGroup.length += 1
+    } else {
+      acc.push({ start: n, length: 1 })
+    }
+
+    return acc
+  }, [] as { start: number; length: number }[])
+}
 
 // only works when everything is aligned to the same grid with the same tileSize
 function union(map1: ArxMap, map2: ArxMap) {
@@ -18,28 +44,46 @@ function union(map1: ArxMap, map2: ArxMap) {
     return
   }
 
-  const toBeRemoved1 = map1.polygons.filter((p) => {
+  // check which polygons need to be removed and store their index
+
+  const toBeRemoved1 = map1.polygons.reduce((acc, p, idx) => {
     if (p.isPartiallyWithin(map2BB)) {
-      return true
+      // TODO: we don't touch partially overlapping polygons yet
+      return acc
     }
+
     const matchesAnotherPolygon = map2.polygons.find((q) => p.equals(q, Number.EPSILON * 10 ** 3)) !== undefined
-    return matchesAnotherPolygon
-  })
-
-  const toBeRemoved2 = map2.polygons.filter((p) => {
-    if (p.isPartiallyWithin(map1BB)) {
-      return true
+    if (matchesAnotherPolygon) {
+      acc.push(idx)
     }
+
+    return acc
+  }, [] as number[])
+
+  const toBeRemoved2 = map2.polygons.reduce((acc, p, idx) => {
+    if (p.isPartiallyWithin(map1BB)) {
+      // TODO: we don't touch partially overlapping polygons yet
+      return acc
+    }
+
     const matchesAnotherPolygon = map1.polygons.find((q) => p.equals(q, Number.EPSILON * 10 ** 3)) !== undefined
-    return matchesAnotherPolygon
+    if (matchesAnotherPolygon) {
+      acc.push(idx)
+    }
+
+    return acc
+  }, [] as number[])
+
+  // remove groups from right to left
+
+  const groupedToBeRemoved1 = groupSequences(toBeRemoved1.reverse())
+  groupedToBeRemoved1.forEach((indices) => {
+    map1.polygons.splice(indices.start, indices.length)
   })
 
-  toBeRemoved1.forEach((p) => {
-    removeByValue(p, map1.polygons)
-  })
-
-  toBeRemoved2.forEach((p) => {
-    removeByValue(p, map2.polygons)
+  const groupedToBeRemoved2 = groupSequences(toBeRemoved2.reverse())
+  groupedToBeRemoved2.forEach((indices) => {
+    map2.polygons.splice(indices.start, indices.length)
   })
 }
 

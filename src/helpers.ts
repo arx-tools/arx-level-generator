@@ -59,11 +59,6 @@ export const percentOf = (percentage: number, maxValue: number) => {
   return (maxValue / 100) * percentage
 }
 
-export const removeByValue = <T>(value: T, array: T[]) => {
-  const idx = array.indexOf(value)
-  array.splice(idx, 1)
-}
-
 /**
  * @see https://en.wikipedia.org/wiki/ISO/IEC_8859-15
  */
