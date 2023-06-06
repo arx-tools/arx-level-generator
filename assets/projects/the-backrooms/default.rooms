@@ -1,18 +1,24 @@
 # use shellscript syntax highlighting
 
 # define the looks of a room which we'll refer to as room1
-define room1 ceiling [stone]_human_stone_wall1.jpg
-define room1 wall [stone]_human_stone_wall1.jpg
-define room1 floor l1_temple_[stone]_wall03.jpg
+define room1 {
+  ceiling [stone]_human_stone_wall1.jpg
+  wall [stone]_human_stone_wall1.jpg
+  floor l1_temple_[stone]_wall03.jpg
+}
 
 # another room looks definition
-define room2 ceiling [stone]_human_stone_wall.jpg
-define room2 wall [stone]_human_stone_wall.jpg
-define room2 floor l1_temple_[stone]_wall03.jpg
+define room2 {
+  ceiling [stone]_human_stone_wall.jpg
+  wall [stone]_human_stone_wall.jpg
+  floor l1_temple_[stone]_wall03.jpg
+}
 
-define lichthof ceiling L2_CAVES_[WOOD]_PILL02.jpg
-define lichthof wall L2_CAVES_[WOOD]_PILL02.jpg
-define lichthof floor L2_CAVES_[WOOD]_PILL02.jpg
+define lichthof {
+  ceiling L2_CAVES_[WOOD]_PILL02.jpg
+  wall L2_CAVES_[WOOD]_PILL02.jpg
+  floor L2_CAVES_[WOOD]_PILL02.jpg
+}
 
 # extrusion directions:
 #   x++ east

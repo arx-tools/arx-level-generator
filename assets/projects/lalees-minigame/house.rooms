@@ -1,50 +1,66 @@
-define outside-sky ceiling alpha.bmp
-define outside-sky wall alpha.bmp
-define outside-sky floor alpha.bmp
+define outside-sky {
+  ceiling alpha.bmp
+  wall alpha.bmp
+  floor alpha.bmp
+}
 
-define outside-south ceiling alpha.bmp
-# TODO: handle fit-y switch
-define outside-south wall custom forest3.bmp projects/forest/textures fit-y
-define outside-south wall-north custom [stone]-dark-brick-wall.jpg textures
-define outside-south floor L2_TROLL_[SAND]_GROUND04.jpg
+define outside-south {
+  ceiling alpha.bmp
+  wall custom projects/forest/textures forest3.bmp
+  wall-north custom textures [stone]-dark-brick-wall.jpg
+  floor L2_TROLL_[SAND]_GROUND04.jpg
+}
 
-define outside-east ceiling alpha.bmp
-# TODO: handle fit-y switch
-define outside-east wall custom forest3.bmp projects/forest/textures fit-y
-define outside-east wall-west custom [stone]-dark-brick-wall.jpg textures
-define outside-east floor L2_TROLL_[SAND]_GROUND04.jpg
+define outside-east {
+  ceiling alpha.bmp
+  wall custom projects/forest/textures forest3.bmp
+  wall-west custom textures [stone]-dark-brick-wall.jpg
+  floor L2_TROLL_[SAND]_GROUND04.jpg
+}
 
-define outside-north ceiling alpha.bmp
-# TODO: handle fit-y switch
-define outside-north wall custom forest3.bmp projects/forest/textures fit-y
-define outside-north wall-south custom [stone]-dark-brick-wall.jpg textures
-define outside-north floor L2_TROLL_[SAND]_GROUND04.jpg
+define outside-north {
+  ceiling alpha.bmp
+  wall custom projects/forest/textures forest3.bmp
+  wall-south custom textures [stone]-dark-brick-wall.jpg
+  floor L2_TROLL_[SAND]_GROUND04.jpg
+}
 
-define outside-west ceiling alpha.bmp
-# TODO: handle fit-y switch
-define outside-west wall custom forest3.bmp projects/forest/textures fit-y
-define outside-west wall-east custom [stone]-dark-brick-wall.jpg textures
-define outside-west floor L2_TROLL_[SAND]_GROUND04.jpg
+define outside-west {
+  ceiling alpha.bmp
+  wall custom projects/forest/textures forest3.bmp
+  wall-east custom textures [stone]-dark-brick-wall.jpg
+  floor L2_TROLL_[SAND]_GROUND04.jpg
+}
 
-define window ceiling ALICIAROOM_MUR02.jpg
-define window wall ALICIAROOM_MUR02.jpg
-define window floor ALICIAROOM_MUR02.jpg
+define window {
+  ceiling ALICIAROOM_MUR02.jpg
+  wall ALICIAROOM_MUR02.jpg
+  floor ALICIAROOM_MUR02.jpg
+}
 
-define door ceiling ALICIAROOM_MUR02.jpg
-define door wall ALICIAROOM_MUR02.jpg
-define door floor L2_TROLL_[WOOD]_PILLAR06.jpg
+define door {
+  ceiling ALICIAROOM_MUR02.jpg
+  wall ALICIAROOM_MUR02.jpg
+  floor L2_TROLL_[WOOD]_PILLAR06.jpg
+}
 
-define entrance ceiling ALICIAROOM_MUR02.jpg
-define entrance wall ALICIAROOM_MUR02.jpg
-define entrance floor L2_TROLL_[WOOD]_PILLAR06.jpg
+define entrance {
+  ceiling ALICIAROOM_MUR02.jpg
+  wall ALICIAROOM_MUR02.jpg
+  floor L2_TROLL_[WOOD]_PILLAR06.jpg
+}
 
-define room ceiling custom [stone]-office-ceiling-tile.jpg textures
-define room wall ALICIAROOM_MUR02.jpg
-define room floor custom [wood]-fake-floor.jpg textures
+define room {
+  ceiling custom textures [stone]-office-ceiling-tile.jpg
+  wall ALICIAROOM_MUR02.jpg
+  floor custom textures [wood]-fake-floor.jpg
+}
 
-define room-with-carpet ceiling custom [stone]-office-ceiling-tile.jpg textures
-define room-with-carpet wall ALICIAROOM_MUR02.jpg
-define room-with-carpet floor custom [fabric]-carpet.jpg textures
+define room-with-carpet {
+  ceiling custom textures [stone]-office-ceiling-tile.jpg
+  wall ALICIAROOM_MUR02.jpg
+  floor custom textures [fabric]-carpet.jpg
+}
 
 # TODO: all other textures should be tiling to 100/100 tiles
 # even if tileSize is 50
