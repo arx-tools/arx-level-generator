@@ -1,19 +1,23 @@
 import { ArxMap } from '@src/ArxMap.js'
 import { Vector3 } from '@src/Vector3.js'
-import { none, startsWith } from '@src/faux-ramda.js'
 import { removeByValue } from '@src/helpers.js'
 import { Cursor, CursorDir } from '@prefabs/rooms/Cursor.js'
 import { createRoom, RoomProps } from '@prefabs/rooms/room.js'
 
 // ---------------------------
 
-// only works when everything is aligned to a 100/100/100 grid
+// only works when everything is aligned to the same grid with the same tileSize
 function union(map1: ArxMap, map2: ArxMap) {
   // TODO: this removes both polygons when they overlap, which is ideal for walls
   // but not for ceilings and floors
 
   const map1BB = map1.getBoundingBox()
   const map2BB = map2.getBoundingBox()
+
+  const isColliding = map1BB.intersectsBox(map2BB)
+  if (!isColliding) {
+    return
+  }
 
   const toBeRemoved1 = map1.polygons.filter((p) => {
     if (p.isPartiallyWithin(map2BB)) {
@@ -56,10 +60,6 @@ export class Rooms {
 
     this.currentRoom = await createRoom(dimensions, props)
     this.currentRoom.move(this.cursor.cursor)
-
-    // if (this.previousRoom !== undefined) {
-    //   union(this.previousRoom, this.currentRoom)
-    // }
     this.entries.push(this.currentRoom)
 
     this.previousRoom = this.currentRoom
@@ -67,7 +67,7 @@ export class Rooms {
   }
 
   unionAll() {
-    if (this.entries.length < 2) {
+    if (this.entries.length <= 1) {
       return
     }
 
