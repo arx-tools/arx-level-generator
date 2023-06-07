@@ -1,5 +1,5 @@
 import { ArxPolygonFlags } from 'arx-convert/types'
-import { BoxGeometry, MathUtils, Mesh, MeshBasicMaterial } from 'three'
+import { MathUtils, Vector2 } from 'three'
 import { Audio } from '@src/Audio.js'
 import { Material } from '@src/Material.js'
 import { Rotation } from '@src/Rotation.js'
@@ -7,10 +7,10 @@ import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Lever } from '@prefabs/entity/Lever.js'
 import { SoundPlayer } from '@prefabs/entity/SoundPlayer.js'
+import { createBox } from '@prefabs/mesh/box.js'
 import { SoundFlags } from '@scripting/classes/Sound.js'
 import { Label } from '@scripting/properties/Label.js'
 import { Scale } from '@scripting/properties/Scale.js'
-import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
 type createRadioProps = {
   position: Vector3
@@ -29,55 +29,45 @@ type createRadioProps = {
   isOn?: boolean
 }
 
-export const createRadio = async ({ position, angleY = 0, scale = 1, music, isOn = true }: createRadioProps) => {
-  const radioTextures = {
-    front: Material.fromTexture(
-      await Texture.fromCustomFile({
-        filename: 'radio-front.jpg',
-        sourcePath: 'projects/lalees-minigame/textures',
-      }),
-      {
-        flags: ArxPolygonFlags.NoShadow,
-      },
-    ),
-    back: Material.fromTexture(
-      await Texture.fromCustomFile({
-        filename: 'radio-back.jpg',
-        sourcePath: 'projects/lalees-minigame/textures',
-      }),
-      {
-        flags: ArxPolygonFlags.NoShadow,
-      },
-    ),
-    top: Material.fromTexture(
-      await Texture.fromCustomFile({
-        filename: 'radio-top.jpg',
-        sourcePath: 'projects/lalees-minigame/textures',
-      }),
-      {
-        flags: ArxPolygonFlags.NoShadow,
-      },
-    ),
-    side: Material.fromTexture(
-      await Texture.fromCustomFile({
-        filename: 'radio-side.jpg',
-        sourcePath: 'projects/lalees-minigame/textures',
-      }),
-      {
-        flags: ArxPolygonFlags.NoShadow,
-      },
-    ),
-    bottom: Material.fromTexture(
-      await Texture.fromCustomFile({
-        filename: 'radio-bottom.jpg',
-        sourcePath: 'projects/lalees-minigame/textures',
-      }),
-      {
-        flags: ArxPolygonFlags.NoShadow,
-      },
-    ),
-  }
+const radioTextures = {
+  front: Material.fromTexture(
+    await Texture.fromCustomFile({
+      filename: 'radio-front.jpg',
+      sourcePath: 'projects/lalees-minigame/textures',
+    }),
+    { flags: ArxPolygonFlags.NoShadow },
+  ),
+  back: Material.fromTexture(
+    await Texture.fromCustomFile({
+      filename: 'radio-back.jpg',
+      sourcePath: 'projects/lalees-minigame/textures',
+    }),
+    { flags: ArxPolygonFlags.NoShadow },
+  ),
+  top: Material.fromTexture(
+    await Texture.fromCustomFile({
+      filename: 'radio-top.jpg',
+      sourcePath: 'projects/lalees-minigame/textures',
+    }),
+    { flags: ArxPolygonFlags.NoShadow },
+  ),
+  side: Material.fromTexture(
+    await Texture.fromCustomFile({
+      filename: 'radio-side.jpg',
+      sourcePath: 'projects/lalees-minigame/textures',
+    }),
+    { flags: ArxPolygonFlags.NoShadow },
+  ),
+  bottom: Material.fromTexture(
+    await Texture.fromCustomFile({
+      filename: 'radio-bottom.jpg',
+      sourcePath: 'projects/lalees-minigame/textures',
+    }),
+    { flags: ArxPolygonFlags.NoShadow },
+  ),
+}
 
+export const createRadio = async ({ position, angleY = 0, scale = 1, music, isOn = true }: createRadioProps) => {
   const boxSize = new Vector3(500 * scale, 300 * scale, 100 * scale)
 
   const musicPlayer = new SoundPlayer({
@@ -105,29 +95,20 @@ export const createRadio = async ({ position, angleY = 0, scale = 1, music, isOn
     `
   })
 
-  let boxGeometry = new BoxGeometry(
-    boxSize.x,
-    boxSize.y,
-    boxSize.z,
-    Math.ceil(boxSize.x / 100),
-    Math.ceil(boxSize.y / 100),
-    Math.ceil(boxSize.z / 100),
-  )
-  boxGeometry = toArxCoordinateSystem(boxGeometry)
-  boxGeometry.rotateY(MathUtils.degToRad(180))
-  boxGeometry.rotateZ(MathUtils.degToRad(180))
-  boxGeometry.translate(-boxSize.x / 2, 0, 0)
-  boxGeometry.rotateY(MathUtils.degToRad(angleY))
-  boxGeometry.translate(position.x, position.y, position.z)
-
-  const radioMesh = new Mesh(boxGeometry, [
-    new MeshBasicMaterial({ map: radioTextures.side }),
-    new MeshBasicMaterial({ map: radioTextures.side }),
-    new MeshBasicMaterial({ map: radioTextures.bottom }),
-    new MeshBasicMaterial({ map: radioTextures.top }),
-    new MeshBasicMaterial({ map: radioTextures.front }),
-    new MeshBasicMaterial({ map: radioTextures.back }),
-  ])
+  const radioMesh = createBox({
+    position,
+    origin: new Vector2(-1, 0),
+    size: boxSize,
+    angleY,
+    materials: [
+      radioTextures.side,
+      radioTextures.side,
+      radioTextures.bottom,
+      radioTextures.top,
+      radioTextures.front,
+      radioTextures.back,
+    ],
+  })
 
   return {
     entities: [musicPlayer, radioOnOffLever],
