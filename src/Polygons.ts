@@ -207,6 +207,10 @@ export class Polygons extends Array<Polygon> {
           }
 
           const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
+          if (currentTexture instanceof Material && currentTexture.opacity === 100) {
+            // remove opacity
+            currentTexture.flags & ~ArxPolygonFlags.Transparent
+          }
 
           if (isQuadable) {
             const [a, b, c] = previousPolygon
@@ -240,6 +244,10 @@ export class Polygons extends Array<Polygon> {
         if (typeof previousPolygon !== 'undefined') {
           const materialIndex = previousPolygon[0].materialIndex
           const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
+          if (currentTexture instanceof Material && currentTexture.opacity === 100) {
+            // remove opacity
+            currentTexture.flags & ~ArxPolygonFlags.Transparent
+          }
           const polygon = new Polygon({
             vertices: [...previousPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
             texture: currentTexture,
@@ -255,6 +263,10 @@ export class Polygons extends Array<Polygon> {
           const currentPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<VertexWithMaterialIndex>
           const materialIndex = currentPolygon[0].materialIndex
           const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
+          if (currentTexture instanceof Material && currentTexture.opacity === 100) {
+            // remove opacity
+            currentTexture.flags & ~ArxPolygonFlags.Transparent
+          }
           const polygon = new Polygon({
             vertices: [...currentPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
             texture: currentTexture,
