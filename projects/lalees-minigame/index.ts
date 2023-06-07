@@ -23,8 +23,11 @@ import { loadRooms } from '@prefabs/rooms/loadRooms.js'
 import { createMoon } from '@projects/ambience-gallery/moon.js'
 import { SoundFlags } from '@scripting/classes/Sound.js'
 import { Interactivity } from '@scripting/properties/Interactivity.js'
-import { Label } from '@scripting/properties/Label.js'
+// import { Label } from '@scripting/properties/Label.js'
 import { Scale } from '@scripting/properties/Scale.js'
+import { Shadow } from '@scripting/properties/Shadow.js'
+import { Speed } from '@scripting/properties/Speed.js'
+import { createLight } from '@tools/createLight.js'
 import { createZone } from '@tools/createZone.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { Goblin } from './Goblin.js'
@@ -51,6 +54,7 @@ export default async () => {
   map.config.offset = new Vector3(6000, 0, 6000)
   map.player.position.adjustToPlayerHeight()
   map.player.withScript()
+  map.player.script?.properties.push(new Speed(1))
   map.hud.hide('all')
   map.hud.show(HudElements.Manabar)
   map.hud.show(HudElements.BookIcon)
@@ -138,17 +142,17 @@ export default async () => {
   })
   map.entities.push(doorToRoomA, doorToRoomB)
 
-  const keyForRoomA = Entity.key
-  keyForRoomA.withScript()
-  keyForRoomA.script?.properties.push(new Label('[key-roomA]'))
-  map.entities.push(keyForRoomA)
-  doorToRoomA.setKey(keyForRoomA)
+  // const keyForRoomA = Entity.key
+  // keyForRoomA.withScript()
+  // keyForRoomA.script?.properties.push(new Label('[key-roomA]'))
+  // map.entities.push(keyForRoomA)
+  // doorToRoomA.setKey(keyForRoomA)
 
-  const keyForRoomB = Entity.key
-  keyForRoomB.withScript()
-  keyForRoomB.script?.properties.push(new Label('[key-roomB]'))
-  map.entities.push(keyForRoomB)
-  doorToRoomB.setKey(keyForRoomB)
+  // const keyForRoomB = Entity.key
+  // keyForRoomB.withScript()
+  // keyForRoomB.script?.properties.push(new Label('[key-roomB]'))
+  // map.entities.push(keyForRoomB)
+  // doorToRoomB.setKey(keyForRoomB)
 
   const doorToBackGarden = new CatacombHeavyDoor({
     position: new Vector3(100, 10, 565),
@@ -185,19 +189,20 @@ export default async () => {
   map.entities.push(game3)
 
   const windowGlass = await createPlaneMesh({
-    size: new Vector2(500, 350),
+    size: new Vector2(500, 300),
     texture: Material.fromTexture(Texture.glassGlass01, {
-      opacity: 0.7,
+      opacity: 70,
       flags: ArxPolygonFlags.DoubleSided | ArxPolygonFlags.NoShadow,
     }),
     tileUV: true,
   })
-  windowGlass.translateY(-200)
+  windowGlass.translateY(-175)
   windowGlass.translateZ(-575)
   windowGlass.rotateX(MathUtils.degToRad(-90))
 
   const table = createTable({
     position: new Vector3(-300, -80, 400),
+    angleY: -90,
   })
 
   map.lights.push(...moon.lights)
@@ -272,10 +277,11 @@ export default async () => {
   })
   map.entities.push(...counter1.entities, ...counter2.entities, ...counter3.entities)
 
-  const tableInRoomA = await createTable({ position: new Vector3(450, -80, 350) })
+  const tableInRoomA = await createTable({ position: new Vector3(600, -80, 500) })
 
   const computer = await createComputer({
-    position: new Vector3(450, -80, 350),
+    position: new Vector3(600, -113, 480),
+    angleY: -27,
   })
 
   const meshes = [
@@ -320,6 +326,36 @@ export default async () => {
     position: new Vector3(310, 0, 335),
   })
   map.entities.push(bucket)
+
+  const hangedGoblin = Entity.hangedGob
+  hangedGoblin.position = new Vector3(505, -120, 260)
+  hangedGoblin.orientation = new Rotation(0, MathUtils.degToRad(-45), 0)
+  map.entities.push(hangedGoblin)
+
+  const monitorLightInRoomA = createLight({
+    position: new Vector3(617, -113, 450),
+    radius: 200,
+  })
+  const roomAAmbientLight = createLight({
+    position: new Vector3(650, -200, 400),
+    radius: 500,
+    intensity: 0.1,
+  })
+  map.lights.push(monitorLightInRoomA, roomAAmbientLight)
+
+  const bigRigs = new PCGame({
+    variant: 'big-rigs',
+    position: new Vector3(540, 0, 290),
+    orientation: new Rotation(0, MathUtils.degToRad(128), 0),
+  })
+  map.entities.push(bigRigs)
+
+  const tippedStool = Entity.seatStool1
+  tippedStool.position = new Vector3(490, -43, 250)
+  tippedStool.orientation = new Rotation(MathUtils.degToRad(-33), MathUtils.degToRad(-28), MathUtils.degToRad(90))
+  tippedStool.withScript()
+  tippedStool.script?.properties.push(Shadow.off)
+  map.entities.push(tippedStool)
 
   // --------------
 
