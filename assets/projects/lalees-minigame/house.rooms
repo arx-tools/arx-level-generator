@@ -114,7 +114,6 @@ cursor save right-corridor
 # room A
 room add 150 $doorHeight 50 door z++ y- x+
 room add 400 $houseHeight 400 room-with-carpet z++ y- x+
-with light
 # TODO: add window
 
 cursor restore right-corridor
