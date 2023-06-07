@@ -10,7 +10,7 @@ type MaterialExtraProps = {
    */
   opacity?: number
   /**
-   * @default "subtractive"
+   * @default "additive"
    */
   opacityMode?: TransparencyType
 }
@@ -25,7 +25,7 @@ export class Material extends Texture {
   constructor({
     flags = ArxPolygonFlags.None,
     opacity = 100,
-    opacityMode = 'subtractive',
+    opacityMode = 'additive',
     ...props
   }: MaterialConstructorProps) {
     super(props)
