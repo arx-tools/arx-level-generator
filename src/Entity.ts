@@ -293,6 +293,9 @@ export class Entity {
   static get brokenStool() {
     return new Entity({ src: 'items/movable/broken_stool' })
   }
+  static get seatStool1() {
+    return new Entity({ src: 'items/movable/seat_stool1' })
+  }
 
   static get akbaaBloodChickenHead() {
     return new Entity({ src: 'items/moveable/akbaa_blood_chicken_head' })
