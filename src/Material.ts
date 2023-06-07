@@ -4,7 +4,14 @@ import { Texture, TextureConstructorProps } from '@src/Texture.js'
 
 type MaterialExtraProps = {
   flags?: ArxPolygonFlags
+  /**
+   * number between 0 and 100 (0..99 = min..max transparency, 100 = opaque - transparency flag should be removed)
+   * @default 100
+   */
   opacity?: number
+  /**
+   * @default "subtractive"
+   */
   opacityMode?: TransparencyType
 }
 
