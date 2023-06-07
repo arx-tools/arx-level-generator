@@ -4,7 +4,6 @@ import { ArxPolygonFlags } from 'arx-convert/types'
 import { BufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial, Vector2 } from 'three'
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
-import { Color } from '@src/Color.js'
 import { Material } from '@src/Material.js'
 import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
@@ -70,7 +69,8 @@ export const loadOBJ = async (
       const nameMaterialPairs: [string, MeshBasicMaterial][] = []
 
       for (const [name, materialInfo] of entriesOfMaterials) {
-        let textureMap: Texture = fallbackTexture ?? defaultTexture
+        let texture: Texture = fallbackTexture ?? defaultTexture
+        let material: Material
 
         if (typeof materialInfo.map_kd !== 'undefined') {
           const textureFromFile = await Texture.fromCustomFile({
@@ -80,22 +80,28 @@ export const loadOBJ = async (
 
           if (typeof materialFlags === 'function') {
             const flags = materialFlags(textureFromFile)
-            textureMap = Material.fromTexture(textureFromFile, {
+            material = Material.fromTexture(textureFromFile, {
               flags: flags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
             })
           } else {
-            textureMap = Material.fromTexture(textureFromFile, {
+            material = Material.fromTexture(textureFromFile, {
               flags: materialFlags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
             })
           }
+        } else {
+          material = Material.fromTexture(texture)
         }
 
-        const material = new MeshBasicMaterial({
+        if (material.flags & ArxPolygonFlags.Transparent) {
+          material.opacity = 50
+        }
+
+        const meshMaterial = new MeshBasicMaterial({
           name,
-          map: textureMap,
+          map: material,
         })
 
-        nameMaterialPairs.push([name, material])
+        nameMaterialPairs.push([name, meshMaterial])
       }
 
       materials = Object.fromEntries(nameMaterialPairs)
