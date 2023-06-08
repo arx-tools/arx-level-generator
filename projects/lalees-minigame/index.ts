@@ -4,6 +4,7 @@ import seedrandom from 'seedrandom'
 import { MathUtils, Vector2 } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
 import { Audio } from '@src/Audio.js'
+import { Color } from '@src/Color.js'
 import { Entity } from '@src/Entity.js'
 import { HudElements } from '@src/HUD.js'
 import { Material } from '@src/Material.js'
@@ -329,7 +330,7 @@ export default async () => {
 
   const hangedGoblin = Entity.hangedGob
   hangedGoblin.position = new Vector3(505, -120, 260)
-  hangedGoblin.orientation = new Rotation(0, MathUtils.degToRad(-45), 0)
+  hangedGoblin.orientation = new Rotation(0, MathUtils.degToRad(-45 + 180), 0)
   map.entities.push(hangedGoblin)
 
   const monitorLightInRoomA = createLight({
@@ -339,7 +340,8 @@ export default async () => {
   const roomAAmbientLight = createLight({
     position: new Vector3(650, -200, 400),
     radius: 500,
-    intensity: 0.1,
+    intensity: 0.3,
+    color: Color.fromCSS('pink'),
   })
   map.lights.push(monitorLightInRoomA, roomAAmbientLight)
 
