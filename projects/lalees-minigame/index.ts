@@ -274,7 +274,7 @@ export default async () => {
     position: new Vector3(300, -100, 300 - 5),
   })
   const counter3 = await createCounter({
-    position: new Vector3(300, -100, -200),
+    position: new Vector3(300, -100, -250),
   })
   map.entities.push(...counter1.entities, ...counter2.entities, ...counter3.entities)
 
@@ -313,7 +313,7 @@ export default async () => {
 
   const lantern = new Entity({
     src: 'items/provisions/lamp',
-    position: new Vector3(300, 0, -160),
+    position: new Vector3(300, 0, -210),
   })
   lantern.withScript()
   lantern.script?.properties.push(new Scale(0.7))

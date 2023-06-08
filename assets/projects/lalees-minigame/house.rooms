@@ -67,7 +67,7 @@ define room-with-carpet {
 
 # ------------------------------
 
-$houseHeight = 350
+$roomHeight = 350
 $corridorHeight = 300
 $doorHeight = 200
 $entranceHeight = 250
@@ -79,7 +79,7 @@ cursor save dining-room
 
 # 3 windows on the back
 room add 100 250 50 window z-- y
-room add 500 $houseHeight 400 outside-south z-- y
+room add 500 $roomHeight 400 outside-south z-- y
 with light
 cursor save outside-front
 room add 100 250 50 window z++ y x-
@@ -88,13 +88,13 @@ room add 100 250 50 window z++ y x+
 
 # outside front
 cursor restore outside-front
-room add 1450 $houseHeight 400 outside-south x-- y-
+room add 1450 $roomHeight 400 outside-south x-- y-
 cursor restore outside-front
-room add 1450 $houseHeight 400 outside-south x++ y-
+room add 1450 $roomHeight 400 outside-south x++ y-
 with light
 
 # east alleyway
-room add 100 $houseHeight 700 outside-east x+ z++ y-
+room add 100 $roomHeight 700 outside-east x+ z++ y-
 with light
 
 # door on the front
@@ -102,7 +102,7 @@ cursor restore dining-room
 room add 200 $entranceHeight 50 entrance z++ y-
 
 # outside back
-room add 1000 $houseHeight 1200 outside-north z++ y-
+room add 1000 $roomHeight 1200 outside-north z++ y-
 room add 1000 500 1200 outside-sky y++
 
 # right corridor
@@ -113,7 +113,7 @@ cursor save right-corridor
 
 # room A
 room add 150 $doorHeight 50 door z++ y- x+
-room add 400 $houseHeight 400 room-with-carpet z++ y- x+
+room add 400 $roomHeight 400 room-with-carpet z++ y- x+
 # TODO: add window
 
 cursor restore right-corridor
@@ -123,7 +123,7 @@ cursor save right-corridor
 
 # room B
 room add 150 $doorHeight 50 door z++ y- x-
-room add 600 $houseHeight 400 room z++ y- x-
+room add 600 $roomHeight 400 room z++ y- x-
 with light
 # TODO: add window
 
@@ -132,16 +132,6 @@ room add 400 $corridorHeight 450 room z-- y- x+
 with light
 room add 200 $entranceHeight 50 entrance z-- y-
 
-
-
-
-
-
-# cursor save room-a-entrance
-# with light
-# room add 50 250 200 default x++ y-
-# room add 500 250 200 default x++ y-
-# with light
-# room add 50 250 200 default x++ y-
-
-# room add 500 350 500 default x- z++ y-
+cursor restore dining-room
+room add 50 $roomHeight 150 room z- x++ y-
+room add 600 $roomHeight 300 room z- x++ y-
