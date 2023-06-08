@@ -25,13 +25,14 @@ https://github.com/evanw/esbuild/issues/1975
 
 make sure that all assets are lowercase
 
-`jpg` files should be saved without progressive option
+`jpg` files should be saved without progressive option (the level generator can handle this)
 
-`bmp` files should only contain 3x8bit channels, alpha channel should be removed (24 bit, not 32)
+`bmp` files should only contain 3x8bit channels, alpha channel should be removed (24 bit, not 32) and also check the
+"do not write color space information" checkbox in compatibility options (the level generator CAN'T handle this - https://github.com/shaozilee/bmp-js/issues/39)
 
 audio should be Microsoft ADCPM `wav`
 
-`asl` scripts should be exported with ISO 8859-15 encoding and `\r\n` line endings
+`asl` scripts should be exported with ISO 8859-15 encoding and `\r\n` line endings (the level generator can handle this)
 
 ## Notable dependencies
 
