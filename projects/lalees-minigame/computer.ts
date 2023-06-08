@@ -95,7 +95,7 @@ const createMonitor = async ({ position, angleY = 0 }: { position: Vector3; angl
 
   const monitorFrontBevel = createBox({
     position: position,
-    origin: new Vector2(0, 5.6), // NEM JÓ MÉG
+    origin: new Vector2(0, 5.6),
     size: new Vector3(46, 46 * (3 / 4), 3),
     angleY: angleY + 180,
     materials: [
