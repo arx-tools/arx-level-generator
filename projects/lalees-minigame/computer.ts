@@ -6,11 +6,12 @@ import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations } from '@src/helpers.js'
 import { createBox } from '@prefabs/mesh/box.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
+import { scaleUV } from '@tools/mesh/scaleUV.js'
 
 const computerTextures = {
   monitorFront: Material.fromTexture(
     await Texture.fromCustomFile({
-      filename: 'monitor-front.jpg',
+      filename: 'monitor-front.bmp',
       sourcePath: 'projects/lalees-minigame/textures',
     }),
     { flags: ArxPolygonFlags.NoShadow },
@@ -92,32 +93,65 @@ const createMonitor = async ({ position, angleY = 0 }: { position: Vector3; angl
     materials: computerTextures.monitorOtherSide,
   })
 
-  const screenSize = 46
-  const monitorImage = await createPlaneMesh({
-    size: new Vector2(screenSize, screenSize * (3 / 4)),
-    tileUV: false,
-    texture: Material.fromTexture(
-      await Texture.fromCustomFile({
-        filename: 'youre-winner.jpg',
-        sourcePath: 'projects/lalees-minigame/textures',
-      }),
-      {
-        flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.Glow,
-      },
-    ),
+  const monitorFrontBevel = createBox({
+    position: position,
+    origin: new Vector2(0, 5.6), // NEM JÓ MÉG
+    size: new Vector3(46, 46 * (3 / 4), 3),
+    angleY: angleY + 180,
+    materials: [
+      Material.fromTexture(
+        await Texture.fromCustomFile({
+          filename: 'monitor-other-side.jpg',
+          sourcePath: 'projects/lalees-minigame/textures',
+        }),
+        {
+          flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided,
+        },
+      ),
+      Material.fromTexture(
+        await Texture.fromCustomFile({
+          filename: 'monitor-other-side.jpg',
+          sourcePath: 'projects/lalees-minigame/textures',
+        }),
+        {
+          flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided,
+        },
+      ),
+      Material.fromTexture(
+        await Texture.fromCustomFile({
+          filename: 'monitor-other-side.jpg',
+          sourcePath: 'projects/lalees-minigame/textures',
+        }),
+        {
+          flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided,
+        },
+      ),
+      Material.fromTexture(
+        await Texture.fromCustomFile({
+          filename: 'monitor-other-side.jpg',
+          sourcePath: 'projects/lalees-minigame/textures',
+        }),
+        {
+          flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided,
+        },
+      ),
+      Material.fromTexture(
+        await Texture.fromCustomFile({
+          filename: 'youre-winner.jpg',
+          sourcePath: 'projects/lalees-minigame/textures',
+        }),
+        {
+          flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.Glow | ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
+        },
+      ),
+      Material.fromTexture(Texture.alpha),
+    ],
   })
-  monitorImage.rotateX(MathUtils.degToRad(90))
-  applyTransformations(monitorImage)
-  monitorImage.geometry.translate(0, 0, -10.25)
-  monitorImage.rotateY(MathUtils.degToRad(angleY))
-  applyTransformations(monitorImage)
-  monitorImage.translateX(position.x)
-  monitorImage.translateY(position.y)
-  monitorImage.translateZ(position.z)
+  scaleUV(new Vector2(-1, 1), monitorFrontBevel.geometry)
 
   return {
     entities: [],
-    meshes: [monitorBody, monitorHead, monitorPlinth, monitorLeg, monitorImage],
+    meshes: [monitorBody, monitorHead, monitorPlinth, monitorLeg, monitorFrontBevel],
   }
 }
 
