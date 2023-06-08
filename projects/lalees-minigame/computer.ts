@@ -1,79 +1,82 @@
 import { ArxPolygonFlags } from 'arx-convert/types'
-import { MathUtils, Vector2 } from 'three'
+import { Vector2 } from 'three'
 import { Material } from '@src/Material.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
-import { applyTransformations } from '@src/helpers.js'
 import { createBox } from '@prefabs/mesh/box.js'
-import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 
-const computerTextures = {
-  monitorFront: Material.fromTexture(
-    await Texture.fromCustomFile({
-      filename: 'monitor-front.bmp',
-      sourcePath: 'projects/lalees-minigame/textures',
-    }),
-    { flags: ArxPolygonFlags.NoShadow },
-  ),
-  monitorBack: Material.fromTexture(
-    await Texture.fromCustomFile({
-      filename: 'monitor-back.jpg',
-      sourcePath: 'projects/lalees-minigame/textures',
-    }),
-    { flags: ArxPolygonFlags.NoShadow },
-  ),
-  monitorLeft: Material.fromTexture(
-    await Texture.fromCustomFile({
-      filename: 'monitor-left.jpg',
-      sourcePath: 'projects/lalees-minigame/textures',
-    }),
-    { flags: ArxPolygonFlags.NoShadow },
-  ),
-  monitorRight: Material.fromTexture(
-    await Texture.fromCustomFile({
-      filename: 'monitor-right.jpg',
-      sourcePath: 'projects/lalees-minigame/textures',
-    }),
-    { flags: ArxPolygonFlags.NoShadow },
-  ),
-  monitorOtherSide: Material.fromTexture(
-    await Texture.fromCustomFile({
-      filename: 'monitor-other-side.jpg',
-      sourcePath: 'projects/lalees-minigame/textures',
-    }),
-    { flags: ArxPolygonFlags.NoShadow },
-  ),
+const textures = {
+  monitorFront: await Texture.fromCustomFile({
+    filename: 'monitor-front.bmp',
+    sourcePath: 'projects/lalees-minigame/textures',
+  }),
+  monitorBack: await Texture.fromCustomFile({
+    filename: 'monitor-back.jpg',
+    sourcePath: 'projects/lalees-minigame/textures',
+  }),
+  monitorLeft: await Texture.fromCustomFile({
+    filename: 'monitor-left.jpg',
+    sourcePath: 'projects/lalees-minigame/textures',
+  }),
+  monitorRight: await Texture.fromCustomFile({
+    filename: 'monitor-right.jpg',
+    sourcePath: 'projects/lalees-minigame/textures',
+  }),
+  computerPlastic: await Texture.fromCustomFile({
+    filename: 'computer-plastic.jpg',
+    sourcePath: 'projects/lalees-minigame/textures',
+  }),
+  youreWinner: await Texture.fromCustomFile({
+    filename: 'youre-winner.jpg',
+    sourcePath: 'projects/lalees-minigame/textures',
+  }),
+  keyboardTop: await Texture.fromCustomFile({
+    filename: 'keyboard-top.jpg',
+    sourcePath: 'projects/lalees-minigame/textures',
+  }),
+  computerCaseFront: await Texture.fromCustomFile({
+    filename: 'computer-case-front.jpg',
+    sourcePath: 'projects/lalees-minigame/textures',
+  }),
 }
 
-const createMonitor = async ({ position, angleY = 0 }: { position: Vector3; angleY?: number }) => {
+const createMonitor = async ({
+  position,
+  image,
+  angleY = 0,
+}: {
+  position: Vector3
+  image: Texture
+  angleY?: number
+}) => {
   const monitorBody = createBox({
-    position: position,
+    position,
     origin: new Vector2(0, 1),
     size: 40,
     angleY,
     materials: [
-      computerTextures.monitorLeft,
-      computerTextures.monitorRight,
-      computerTextures.monitorOtherSide,
-      computerTextures.monitorOtherSide,
-      computerTextures.monitorOtherSide,
-      computerTextures.monitorBack,
+      Material.fromTexture(textures.monitorLeft, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.monitorRight, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.monitorBack, { flags: ArxPolygonFlags.NoShadow }),
     ],
   })
 
   const monitorHead = createBox({
-    position: position,
+    position,
     origin: new Vector2(0, -1),
     size: new Vector3(50, 50, 10),
     angleY,
     materials: [
-      computerTextures.monitorOtherSide,
-      computerTextures.monitorOtherSide,
-      computerTextures.monitorOtherSide,
-      computerTextures.monitorOtherSide,
-      computerTextures.monitorFront,
-      computerTextures.monitorOtherSide,
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.monitorFront, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
     ],
   })
 
@@ -82,7 +85,7 @@ const createMonitor = async ({ position, angleY = 0 }: { position: Vector3; angl
     origin: new Vector2(0, 1.5),
     size: new Vector3(30, 6, 30),
     angleY,
-    materials: computerTextures.monitorOtherSide,
+    materials: Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
   })
 
   const monitorLeg = createBox({
@@ -90,76 +93,84 @@ const createMonitor = async ({ position, angleY = 0 }: { position: Vector3; angl
     origin: new Vector2(0, 2.25),
     size: new Vector3(20, 10, 20),
     angleY,
-    materials: computerTextures.monitorOtherSide,
+    materials: Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
   })
 
   const monitorFrontBevel = createBox({
-    position: position,
+    position,
     origin: new Vector2(0, 5.6),
     size: new Vector3(46, 46 * (3 / 4), 3),
     angleY: angleY + 180,
     materials: [
-      Material.fromTexture(
-        await Texture.fromCustomFile({
-          filename: 'monitor-other-side.jpg',
-          sourcePath: 'projects/lalees-minigame/textures',
-        }),
-        {
-          flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided,
-        },
-      ),
-      Material.fromTexture(
-        await Texture.fromCustomFile({
-          filename: 'monitor-other-side.jpg',
-          sourcePath: 'projects/lalees-minigame/textures',
-        }),
-        {
-          flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided,
-        },
-      ),
-      Material.fromTexture(
-        await Texture.fromCustomFile({
-          filename: 'monitor-other-side.jpg',
-          sourcePath: 'projects/lalees-minigame/textures',
-        }),
-        {
-          flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided,
-        },
-      ),
-      Material.fromTexture(
-        await Texture.fromCustomFile({
-          filename: 'monitor-other-side.jpg',
-          sourcePath: 'projects/lalees-minigame/textures',
-        }),
-        {
-          flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided,
-        },
-      ),
-      Material.fromTexture(
-        await Texture.fromCustomFile({
-          filename: 'youre-winner.jpg',
-          sourcePath: 'projects/lalees-minigame/textures',
-        }),
-        {
-          flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.Glow | ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
-        },
-      ),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided }),
+      Material.fromTexture(image, {
+        flags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Glow | ArxPolygonFlags.Tiled,
+      }),
       Material.fromTexture(Texture.alpha),
     ],
   })
   scaleUV(new Vector2(-1, 1), monitorFrontBevel.geometry)
 
   return {
-    entities: [],
     meshes: [monitorBody, monitorHead, monitorPlinth, monitorLeg, monitorFrontBevel],
   }
 }
 
-export const createComputer = async ({ position, angleY = 0 }: { position: Vector3; angleY?: number }) => {
-  const monitor = await createMonitor({ position, angleY })
+const createKeyboard = async ({ position, angleY = 0 }: { position: Vector3; angleY?: number }) => {
+  const keyboard = createBox({
+    position,
+    origin: new Vector2(0, -1),
+    size: new Vector3(50, 2, 21),
+    angleY,
+    materials: [
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.keyboardTop, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+    ],
+  })
 
   return {
-    entities: [...monitor.entities],
-    meshes: [...monitor.meshes],
+    meshes: [keyboard],
+  }
+}
+
+const createComputerCase = async ({ position, angleY = 0 }: { position: Vector3; angleY?: number }) => {
+  const keyboard = createBox({
+    position,
+    origin: new Vector2(-1, 0),
+    size: new Vector3(22, 50, 60),
+    angleY,
+    materials: [
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.computerCaseFront, { flags: ArxPolygonFlags.NoShadow }),
+      Material.fromTexture(textures.computerPlastic, { flags: ArxPolygonFlags.NoShadow }),
+    ],
+  })
+
+  return {
+    meshes: [keyboard],
+  }
+}
+
+export const createComputer = async ({ position, angleY = 0 }: { position: Vector3; angleY?: number }) => {
+  const monitor = await createMonitor({
+    position: position.clone().add(new Vector3(0, -32, 20)),
+    angleY: angleY - 3,
+    image: textures.youreWinner,
+  })
+  const keyboard = await createKeyboard({ position: position.clone().add(new Vector3(-5, 0, 0)), angleY })
+  const computerCase = await createComputerCase({ position: position.clone().add(new Vector3(70, -25, 20)), angleY })
+
+  return {
+    meshes: [...monitor.meshes, ...keyboard.meshes, ...computerCase.meshes],
   }
 }

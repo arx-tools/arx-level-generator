@@ -55,7 +55,7 @@ export default async () => {
   map.config.offset = new Vector3(6000, 0, 6000)
   map.player.position.adjustToPlayerHeight()
   map.player.withScript()
-  map.player.script?.properties.push(new Speed(1))
+  map.player.script?.properties.push(new Speed(2))
   map.hud.hide('all')
   map.hud.show(HudElements.Manabar)
   map.hud.show(HudElements.BookIcon)
@@ -280,10 +280,7 @@ export default async () => {
 
   const tableInRoomA = await createTable({ position: new Vector3(600, -80, 500) })
 
-  const computer = await createComputer({
-    position: new Vector3(600, -113, 480),
-    angleY: -27,
-  })
+  const computer = await createComputer({ position: new Vector3(600, -81, 480) })
 
   const meshes = [
     moon.meshes,
