@@ -19,6 +19,10 @@ type OBJProperties = {
   rotation?: Rotation
   materialFlags?: ArxPolygonFlags | ((texture: Texture) => ArxPolygonFlags | undefined)
   fallbackTexture?: Texture
+  /**
+   * @default false
+   */
+  reversedPolygonWinding?: boolean
 }
 
 const isTriangulatedMesh = (rawObj: string) => {
@@ -35,9 +39,32 @@ const isTriangulatedMesh = (rawObj: string) => {
   return !isNotTriangulated
 }
 
+const reversePolygonWinding = (rawObj: string) => {
+  let rows = rawObj.replace(/\\\n/g, '').split(/\r?\n/)
+
+  rows = rows.map((row) => {
+    if (!row.startsWith('f')) {
+      return row
+    }
+
+    const [, ...coords] = row.trim().split(' ')
+    return 'f ' + coords.reverse().join(' ')
+  })
+
+  return rows.join('\n')
+}
+
 export const loadOBJ = async (
   filenameWithoutExtension: string,
-  { position, scale, scaleUV, rotation, materialFlags, fallbackTexture }: OBJProperties = {},
+  {
+    position,
+    scale,
+    scaleUV,
+    rotation,
+    materialFlags,
+    fallbackTexture,
+    reversedPolygonWinding = false,
+  }: OBJProperties = {},
 ) => {
   const mtlLoader = new MTLLoader()
   const objLoader = new OBJLoader()
@@ -120,10 +147,14 @@ export const loadOBJ = async (
   }
 
   const objSrc = path.resolve('assets/' + dir + '/' + name + '.obj')
-  const rawObj = await fs.promises.readFile(objSrc, 'utf-8')
+  let rawObj = await fs.promises.readFile(objSrc, 'utf-8')
 
   if (!isTriangulatedMesh(rawObj)) {
     console.warn(`loadOBJ warning: ${name}.obj is not triangulated`)
+  }
+
+  if (reversedPolygonWinding) {
+    rawObj = reversePolygonWinding(rawObj)
   }
 
   let obj = objLoader.parse(rawObj)
