@@ -1,7 +1,6 @@
 import path from 'node:path'
 import { ArxPolygonFlags } from 'arx-convert/types'
 import seedrandom from 'seedrandom'
-import { Vector2 } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
 import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
 import { Vector3 } from '@src/Vector3.js'
@@ -19,14 +18,14 @@ export default async () => {
   console.log(`seed: ${SEED}`)
 
   const map = new ArxMap()
-  map.meta.mapName = 'Union1 Office'
+  map.meta.mapName = 'Union 1 Office'
   map.meta.seed = SEED
   map.config.offset = new Vector3(6000, 0, 6000)
   map.player.position.adjustToPlayerHeight()
   map.player.withScript()
+  map.hud.hide('all')
 
   const level = await loadOBJ('projects/union-1-office/Office', {
-    // scaleUV: new Vector2(-1, -1),
     materialFlags: ArxPolygonFlags.None,
   })
 
