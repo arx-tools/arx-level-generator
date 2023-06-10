@@ -39,3 +39,7 @@ audio should be Microsoft ADCPM `wav`
 Fred's lighting calculator: https://github.com/fredlllll/ArxLibertatisLightingCalculator
 
 Requires dotnet framework 6.0 to be installed
+
+## Other docs
+
+[documentation of the custom 'rooms' format](docs/rooms.md)
