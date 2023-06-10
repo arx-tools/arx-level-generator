@@ -1,15 +1,16 @@
 import path from 'node:path'
+import { ArxPolygonFlags } from 'arx-convert/types'
 import seedrandom from 'seedrandom'
 import { MathUtils } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
 import { Color } from '@src/Color.js'
-import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
+import { DONT_QUADIFY, SHADING_FLAT, SHADING_SMOOTH } from '@src/Polygons.js'
 import { Rotation } from '@src/Rotation.js'
 import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations } from '@src/helpers.js'
+import { loadRooms } from '@prefabs/rooms/loadRooms.js'
 import { createZone } from '@tools/createZone.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
-import { createRooms } from './map.js'
 
 // import { createLight } from '@tools/createLight.js'
 
@@ -33,8 +34,7 @@ export default async () => {
 
   // --------------
 
-  const rooms = await createRooms()
-
+  const rooms = await loadRooms('projects/escape-from-office/escape-from-office.rooms')
   rooms.forEach((room) => {
     map.add(room, true)
   })
@@ -43,19 +43,23 @@ export default async () => {
     position: new Vector3(-250, -30, 410),
     rotation: new Rotation(0, MathUtils.degToRad(30), 0),
     scale: 0.3,
+    materialFlags: ArxPolygonFlags.NoShadow,
   })
 
   const ceilingLampOffice1 = await loadOBJ('models/ceiling-lamp/ceiling-lamp', {
     position: new Vector3(-24, -308, 54),
     scale: 0.65,
+    materialFlags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.Glow,
   })
 
   const ceilingLampOffice2 = await loadOBJ('models/ceiling-lamp/ceiling-lamp', {
     position: new Vector3(-24, -308, 54 + 840),
     scale: 0.65,
+    materialFlags: ArxPolygonFlags.NoShadow | ArxPolygonFlags.Glow,
   })
 
-  const models = [...wetFloorSign, ...ceilingLampOffice1, ...ceilingLampOffice2]
+  const hardModels = [...wetFloorSign]
+  const smoothModels = [...ceilingLampOffice1, ...ceilingLampOffice2]
 
   const spawnZone = createZone({
     position: new Vector3(0, 10, 0),
@@ -71,7 +75,15 @@ export default async () => {
 
   // --------------
 
-  models.forEach((mesh) => {
+  hardModels.forEach((mesh) => {
+    mesh.translateX(map.config.offset.x)
+    mesh.translateY(map.config.offset.y)
+    mesh.translateZ(map.config.offset.z)
+    applyTransformations(mesh)
+    map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_FLAT })
+  })
+
+  smoothModels.forEach((mesh) => {
     mesh.translateX(map.config.offset.x)
     mesh.translateY(map.config.offset.y)
     mesh.translateZ(map.config.offset.z)
