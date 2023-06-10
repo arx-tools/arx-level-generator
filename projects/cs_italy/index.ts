@@ -46,15 +46,13 @@ export default async () => {
   const cs_italy = await loadOBJ('projects/counter-strike/models/cs_italy/cs_italy', {
     position: new Vector3(700, 3200, -2600),
     scale: new Vector3(-0.025, 0.025, 0.025),
+    reversedPolygonWinding: true,
     materialFlags: (texture) => {
       if (!texture.filename.startsWith('cs_italy_texture_')) {
         return undefined
       }
 
-      // TODO: turn polygons inside out by reversing polygon winding
-
-      // let flags = ArxPolygonFlags.None
-      let flags = ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled // debug
+      let flags = ArxPolygonFlags.Tiled
 
       // TODO: which polygons to mark as tilable?
 
