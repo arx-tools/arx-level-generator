@@ -1,0 +1,86 @@
+# pragma tile-size 50
+
+define office {
+  # also has mold decal
+  wall custom projects/the-backrooms/textures backrooms-[stone]-wall.jpg
+  floor custom projects/the-backrooms/textures backrooms-[fabric]-carpet-dirty.jpg
+  ceiling custom projects/the-backrooms/textures backrooms-[stone]-ceiling-tile.jpg
+}
+
+define corridor {
+  # also has mold decal
+  wall custom projects/the-backrooms/textures backrooms-[stone]-wall2.jpg
+  floor custom projects/the-backrooms/textures backrooms-[fabric]-carpet-dirty.jpg
+  ceiling custom projects/the-backrooms/textures backrooms-[stone]-ceiling-tile.jpg
+}
+
+define pool {
+  wall custom projects/the-backrooms/textures pool-room-white-mosaic-tile.jpg
+  floor custom projects/the-backrooms/textures pool-room-white-mosaic-tile.jpg
+  ceiling custom projects/the-backrooms/textures pool-room-white-mosaic-tile.jpg
+}
+
+define broken-wall {
+  wall arx l1_temple_[stone]_wall03.jpg
+  floor arx l1_temple_[stone]_wall03.jpg
+  ceiling arx l1_temple_[stone]_wall03.jpg
+}
+
+# -------------------------
+
+# TODO: scale of the textures should be independent of tile-size
+
+room add 800 500 1000 office
+with light
+cursor save spawn
+
+room add 200 300 400 corridor z++
+room add 600 400 600 office z++
+with light
+cursor save branch-point
+room add 1000 300 200 corridor x--
+room add 400 400 400 office x--
+with light
+
+room add 200 200 100 broken-wall y z--
+
+# ---------------------------------
+
+room add 1200 400 800 pool y z--
+cursor save 1st-pool
+room add 1200 400 100 pool y z--
+cursor save 1st-pool-pillar-margin
+
+room add 200 400 100 pool x- y z--
+cursor restore 1st-pool-pillar-margin
+room add 200 400 100 pool x+ y z--
+cursor restore 1st-pool-pillar-margin
+room add 600 400 100 pool y z--
+
+room add 1200 400 600 pool y z--
+cursor save 2nd-pool-pillar-margin
+room add 200 400 100 pool x- y z--
+cursor restore 2nd-pool-pillar-margin
+room add 200 400 100 pool x+ y z--
+cursor restore 2nd-pool-pillar-margin
+room add 600 400 100 pool y z--
+
+room add 1200 400 800 pool y z--
+
+cursor restore 1st-pool
+room add 600 100 600 pool y-- z-
+with light
+room add 400 100 300 pool y- z--
+room add 600 100 400 pool y- z--
+with light
+cursor save 2nd-pool
+room add 400 100 300 pool y- z--
+room add 600 100 500 pool y- z--
+with light
+
+# ---------------------------------
+
+cursor restore branch-point
+room add 1000 300 200 corridor x++
+room add 400 400 400 office x++
+with light
