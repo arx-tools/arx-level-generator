@@ -290,7 +290,7 @@ export default async () => {
 
   // const discoTile = new Cube({
   //   position: new Vector3(0, 0, 0),
-  //   orientation: new Rotation(MathUtils.degToRad(0), MathUtils.degToRad(0), MathUtils.degToRad(0)),
+  //   orientation: new Rotation(0, 0, 0),
   // })
   // discoTile.withScript()
   // discoTile.script?.on('initend', new TweakSkin(Texture.stoneGroundCavesWet05, discoTileTexture))
