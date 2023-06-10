@@ -1,69 +1,68 @@
+# pragma tile-size 50
+
 define outside-sky {
-  ceiling alpha.bmp
-  wall alpha.bmp
-  floor alpha.bmp
+  ceiling arx alpha.bmp
+  wall arx alpha.bmp
+  floor arx alpha.bmp
 }
 
 define outside-south {
-  ceiling alpha.bmp
+  ceiling arx alpha.bmp
   wall custom projects/forest/textures forest3.bmp
   wall-north custom textures [stone]-dark-brick-wall.jpg
-  floor L2_TROLL_[SAND]_GROUND04.jpg
+  floor arx l2_troll_[sand]_ground04.jpg
 }
 
 define outside-east {
-  ceiling alpha.bmp
+  ceiling arx alpha.bmp
   wall custom projects/forest/textures forest3.bmp
   wall-west custom textures [stone]-dark-brick-wall.jpg
-  floor L2_TROLL_[SAND]_GROUND04.jpg
+  floor arx l2_troll_[sand]_ground04.jpg
 }
 
 define outside-north {
-  ceiling alpha.bmp
+  ceiling arx alpha.bmp
   wall custom projects/forest/textures forest3.bmp
   wall-south custom textures [stone]-dark-brick-wall.jpg
-  floor L2_TROLL_[SAND]_GROUND04.jpg
+  floor arx l2_troll_[sand]_ground04.jpg
 }
 
 define outside-west {
-  ceiling alpha.bmp
+  ceiling arx alpha.bmp
   wall custom projects/forest/textures forest3.bmp
   wall-east custom textures [stone]-dark-brick-wall.jpg
-  floor L2_TROLL_[SAND]_GROUND04.jpg
+  floor arx l2_troll_[sand]_ground04.jpg
 }
 
 define window {
-  ceiling ALICIAROOM_MUR02.jpg
-  wall ALICIAROOM_MUR02.jpg
-  floor ALICIAROOM_MUR02.jpg
+  ceiling arx aliciaroom_mur02.jpg
+  wall arx aliciaroom_mur02.jpg
+  floor arx aliciaroom_mur02.jpg
 }
 
 define door {
-  ceiling ALICIAROOM_MUR02.jpg
-  wall ALICIAROOM_MUR02.jpg
-  floor L2_TROLL_[WOOD]_PILLAR06.jpg
+  ceiling arx aliciaroom_mur02.jpg
+  wall arx aliciaroom_mur02.jpg
+  floor arx L2_TROLL_[WOOD]_PILLAR06.jpg
 }
 
 define entrance {
-  ceiling ALICIAROOM_MUR02.jpg
-  wall ALICIAROOM_MUR02.jpg
-  floor L2_TROLL_[WOOD]_PILLAR06.jpg
+  ceiling arx aliciaroom_mur02.jpg
+  wall arx aliciaroom_mur02.jpg
+  floor arx L2_TROLL_[WOOD]_PILLAR06.jpg
 }
 
 define room {
   ceiling custom textures [stone]-office-ceiling-tile.jpg
-  wall ALICIAROOM_MUR02.jpg
+  wall arx aliciaroom_mur02.jpg
   floor custom textures [wood]-fake-floor.jpg
 }
 
 define room-with-carpet {
   ceiling custom textures [stone]-office-ceiling-tile.jpg
-  wall ALICIAROOM_MUR02.jpg
+  wall arx aliciaroom_mur02.jpg
   floor custom textures [fabric]-carpet.jpg
 }
-
-# TODO: all other textures should be tiling to 100/100 tiles
-# even if tileSize is 50
 
 # ------------------------------
 

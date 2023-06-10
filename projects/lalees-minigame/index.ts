@@ -65,7 +65,7 @@ export default async () => {
 
   // --------------
 
-  const rooms = await loadRooms('assets/projects/lalees-minigame/house.rooms')
+  const rooms = await loadRooms('projects/lalees-minigame/lalees-minigame.rooms')
   rooms.forEach((room) => {
     map.add(room, true)
   })
@@ -100,7 +100,7 @@ export default async () => {
 
   const fern = Entity.fern.withScript()
   fern.position = new Vector3(1650, 0, -60)
-  fern.orientation = new Rotation(MathUtils.degToRad(0), MathUtils.degToRad(90), MathUtils.degToRad(0))
+  fern.orientation = new Rotation(0, MathUtils.degToRad(90), 0)
   fern.script?.properties.push(Interactivity.off, new Scale(2))
 
   map.entities.push(game1, fern)
@@ -185,7 +185,7 @@ export default async () => {
   const game3 = new PCGame({
     variant: randomizedGameVariants[2],
     position: new Vector3(240, 7 - 10, 1380),
-    orientation: new Rotation(MathUtils.degToRad(-60), MathUtils.degToRad(-90), MathUtils.degToRad(0)),
+    orientation: new Rotation(MathUtils.degToRad(-60), MathUtils.degToRad(-90), 0),
   })
   map.entities.push(game3)
 
@@ -307,7 +307,7 @@ export default async () => {
   const game4 = new PCGame({
     variant: randomizedGameVariants[3],
     position: new Vector3(300, 0, 380 + 23),
-    orientation: new Rotation(MathUtils.degToRad(-60), MathUtils.degToRad(-90), MathUtils.degToRad(0)),
+    orientation: new Rotation(MathUtils.degToRad(-60), MathUtils.degToRad(-90), 0),
   })
   map.entities.push(game4)
 
@@ -327,7 +327,7 @@ export default async () => {
 
   const hangedGoblin = Entity.hangedGob
   hangedGoblin.position = new Vector3(505, -120, 260)
-  hangedGoblin.orientation = new Rotation(0, MathUtils.degToRad(-45 + 180), 0)
+  hangedGoblin.orientation = new Rotation(0, MathUtils.degToRad(180 - 45), 0)
   map.entities.push(hangedGoblin)
 
   const monitorLightInRoomA = createLight({
