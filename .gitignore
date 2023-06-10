@@ -4,3 +4,4 @@ dist
 .env
 tsconfig.tsbuildinfo
 .cache
+assets/projects/union-1-office/textures

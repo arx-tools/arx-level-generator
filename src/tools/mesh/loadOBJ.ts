@@ -37,7 +37,7 @@ const isTriangulatedMesh = (rawObj: string) => {
 
 export const loadOBJ = async (
   filenameWithoutExtension: string,
-  { position, scale, scaleUV, rotation, materialFlags, fallbackTexture }: OBJProperties,
+  { position, scale, scaleUV, rotation, materialFlags, fallbackTexture }: OBJProperties = {},
 ) => {
   const mtlLoader = new MTLLoader()
   const objLoader = new OBJLoader()
@@ -147,7 +147,8 @@ export const loadOBJ = async (
         return materials instanceof MeshBasicMaterial ? materials : materials[name]
       })
     } else {
-      material = materials instanceof MeshBasicMaterial ? materials : Object.values(materials)[0]
+      const name = (child.material as MeshPhongMaterial).name
+      material = materials instanceof MeshBasicMaterial ? materials : materials[name] ?? defaultTexture
     }
 
     const geometry = child.geometry
