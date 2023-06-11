@@ -43,6 +43,9 @@ export default async () => {
 
   // ---------------------------------
 
+  /**
+   * @see https://free3d.com/3d-model/cs-italy-64059.html
+   */
   const cs_italy = await loadOBJ('projects/counter-strike/models/cs_italy/cs_italy', {
     position: new Vector3(700, 3200, -2600),
     scale: new Vector3(-0.025, 0.025, 0.025),
