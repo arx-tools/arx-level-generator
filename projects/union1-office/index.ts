@@ -1,6 +1,7 @@
 import path from 'node:path'
 import { ArxPolygonFlags } from 'arx-convert/types'
 import seedrandom from 'seedrandom'
+import { Vector2 } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
 import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
 import { Vector3 } from '@src/Vector3.js'
@@ -26,7 +27,48 @@ export default async () => {
   map.hud.hide('all')
 
   const level = await loadOBJ('projects/union-1-office/Office', {
-    materialFlags: ArxPolygonFlags.None,
+    // scaleUV: new Vector2(1, -1),
+    materialFlags: (texture) => {
+      let flags = ArxPolygonFlags.None
+
+      const tileableTextures = [
+        'bark.jpg',
+        'book4.jpg',
+        'brass.jpg',
+        'copper.jpg',
+        'cream.jpg',
+        'eraser.jpg',
+        'fan-vent-grey.jpg',
+        'floor.jpg',
+        'glass.jpg',
+        'green.jpg',
+        'grey-archive.jpg',
+        'net.jpg',
+        'pc-side.jpg',
+        'phone-color.jpg',
+        'shiny.jpg',
+        'silver.jpg',
+        'sockets.jpg',
+        'sockets-utp.jpg',
+        'soil.jpg',
+        'walltexture.jpg',
+        'wallwood.jpg',
+        'yellow.jpg',
+        'yellow-flower.jpg',
+      ]
+
+      if (tileableTextures.includes(texture.filename)) {
+        flags |= ArxPolygonFlags.Tiled
+      }
+
+      const doubleSidedTextures = ['black-wood.jpg', 'cream.jpg', 'walltexture.jpg', 'wallwood.jpg']
+
+      if (doubleSidedTextures.includes(texture.filename)) {
+        flags |= ArxPolygonFlags.DoubleSided
+      }
+
+      if (texture.filename) return flags
+    },
   })
 
   level.flat().forEach((mesh) => {

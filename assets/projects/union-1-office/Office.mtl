@@ -9,7 +9,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/grey-archive.png
+map_Kd textures/grey-archive.jpg
 
 newmtl backside
 Ns 250.000000
@@ -99,7 +99,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/yellow.png
+map_Kd textures/yellow.jpg
 
 newmtl buttons
 Ns 250.000000
@@ -209,7 +209,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/eraser.png
+map_Kd textures/eraser.jpg
 
 newmtl eraser.001
 Ns 250.000000
@@ -219,7 +219,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/eraser.png
+map_Kd textures/eraser.jpg
 
 newmtl fan-grey
 Ns 250.000000
@@ -229,7 +229,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/fan-vent-grey.png
+map_Kd textures/fan-vent-grey.jpg
 
 newmtl floor
 Ns 250.000000
@@ -279,7 +279,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/green.png
+map_Kd textures/green.jpg
 
 newmtl grey.001
 Ns 250.000000
@@ -309,7 +309,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/silver.png
+map_Kd textures/silver.jpg
 
 newmtl image
 Ns 250.000000
@@ -359,7 +359,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/silver.png
+map_Kd textures/silver.jpg
 
 newmtl leaf
 Ns 250.000000
@@ -389,7 +389,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/Banner2_discord.png
+map_Kd textures/discord-banner.jpg
 
 newmtl logo2.001
 Ns 250.000000
@@ -399,7 +399,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/Banner2_discord.png
+map_Kd textures/discord-banner.jpg
 
 newmtl long_flower
 Ns 250.000000
@@ -449,7 +449,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/net.png
+map_Kd textures/net.jpg
 
 newmtl pc-back
 Ns 250.000000
@@ -479,7 +479,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/pc-side.png
+map_Kd textures/pc-side.jpg
 
 newmtl pencil
 Ns 250.000000
@@ -529,7 +529,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/phone-color.png
+map_Kd textures/phone-color.jpg
 
 newmtl picture3
 Ns 250.000000
@@ -579,7 +579,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/piucture2.jpg
+map_Kd textures/picture2.jpg
 
 newmtl rope
 Ns 250.000000
@@ -609,7 +609,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/shiny.png
+map_Kd textures/shiny.jpg
 
 newmtl skybox
 Ns 250.000000
@@ -629,7 +629,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/Sockets.png
+map_Kd textures/sockets.jpg
 
 newmtl socket_utp
 Ns 250.000000
@@ -639,7 +639,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/Sockets_UTP.png
+map_Kd textures/sockets-utp.jpg
 
 newmtl soil
 Ns 250.000000
@@ -679,7 +679,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/Walltexture.png
+map_Kd textures/walltexture.jpg
 
 newmtl wallpaper-wood
 Ns 250.000000
@@ -709,4 +709,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/yellow-flower.png
+map_Kd textures/yellow-flower.jpg
