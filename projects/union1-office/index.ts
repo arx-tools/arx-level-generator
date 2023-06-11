@@ -27,12 +27,13 @@ export default async () => {
   map.hud.hide('all')
 
   const level = await loadOBJ('projects/union-1-office/Office', {
-    // scaleUV: new Vector2(1, -1),
+    scaleUV: new Vector2(-1, -1),
     materialFlags: (texture) => {
       let flags = ArxPolygonFlags.None
 
       const tileableTextures = [
         'bark.jpg',
+        'book2.jpg',
         'book4.jpg',
         'brass.jpg',
         'copper.jpg',
@@ -43,6 +44,8 @@ export default async () => {
         'glass.jpg',
         'green.jpg',
         'grey-archive.jpg',
+        'mahogany.jpg',
+        'mirror.jpg',
         'net.jpg',
         'pc-side.jpg',
         'phone-color.jpg',
@@ -51,20 +54,24 @@ export default async () => {
         'sockets.jpg',
         'sockets-utp.jpg',
         'soil.jpg',
+        'stem.jpg',
         'walltexture.jpg',
         'wallwood.jpg',
         'yellow.jpg',
         'yellow-flower.jpg',
       ]
-
       if (tileableTextures.includes(texture.filename)) {
         flags |= ArxPolygonFlags.Tiled
       }
 
       const doubleSidedTextures = ['black-wood.jpg', 'cream.jpg', 'walltexture.jpg', 'wallwood.jpg']
-
       if (doubleSidedTextures.includes(texture.filename)) {
         flags |= ArxPolygonFlags.DoubleSided
+      }
+
+      const glowingTextures = ['glass.jpg', 'mirror.jpg']
+      if (glowingTextures.includes(texture.filename)) {
+        flags |= ArxPolygonFlags.Glow
       }
 
       if (texture.filename) return flags
