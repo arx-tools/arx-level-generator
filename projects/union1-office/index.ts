@@ -28,7 +28,27 @@ export default async () => {
   map.hud.hide('all')
 
   const level = await loadOBJ('projects/union-1-office/Office', {
-    scaleUV: new Vector2(-1, -1),
+    scaleUV: (texture) => {
+      const nonTiledTextures = [
+        'buttons.jpg',
+        'calendar.jpg',
+        'discord-banner.jpg',
+        'keyboard.jpg',
+        'pc-back.jpg',
+        'pc-front.jpg',
+        'picture1.jpg',
+        'picture2.jpg',
+        'picture3.jpg',
+        'picture4.jpg',
+        'picture5.jpg',
+        'winxpdesk.jpg',
+      ]
+      if (nonTiledTextures.includes(texture.filename)) {
+        return new Vector2(1, 1)
+      }
+
+      return new Vector2(-1, -1)
+    },
     materialFlags: (texture) => {
       let flags = ArxPolygonFlags.None | ArxPolygonFlags.NoShadow
 
