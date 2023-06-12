@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { ArxPolygonFlags } from 'arx-convert/types'
-import { BufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial, Vector2 } from 'three'
+import { BufferAttribute, BufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial, Vector2 } from 'three'
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import { Material } from '@src/Material.js'
@@ -9,13 +9,14 @@ import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations, fileExists } from '@src/helpers.js'
+import { getVertices } from '@tools/mesh/getVertices.js'
 import { scaleUV as scaleUVTool } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
 type OBJProperties = {
   position?: Vector3
   scale?: number | Vector3
-  scaleUV?: number | Vector2
+  scaleUV?: number | Vector2 | ((texture: Texture) => number | Vector2)
   rotation?: Rotation
   materialFlags?: ArxPolygonFlags | ((texture: Texture) => ArxPolygonFlags | undefined)
   fallbackTexture?: Texture
@@ -96,7 +97,7 @@ export const loadOBJ = async (
       const nameMaterialPairs: [string, MeshBasicMaterial][] = []
 
       for (const [name, materialInfo] of entriesOfMaterials) {
-        let texture: Texture = fallbackTexture ?? defaultTexture
+        const texture = fallbackTexture ?? defaultTexture
         let material: Material
 
         if (typeof materialInfo.map_kd !== 'undefined') {
@@ -168,7 +169,9 @@ export const loadOBJ = async (
 
   const meshes: Mesh[] = []
 
-  const children = obj.children.filter((child) => child instanceof Mesh) as Mesh<BufferGeometry, MeshPhongMaterial[]>[]
+  const children = obj.children.filter((child) => {
+    return child instanceof Mesh
+  }) as Mesh<BufferGeometry, MeshPhongMaterial[]>[]
 
   children.forEach((child) => {
     let material: MeshBasicMaterial | MeshBasicMaterial[]
@@ -179,7 +182,14 @@ export const loadOBJ = async (
       })
     } else {
       const name = (child.material as MeshPhongMaterial).name
-      material = materials instanceof MeshBasicMaterial ? materials : materials[name] ?? defaultTexture
+      material =
+        materials instanceof MeshBasicMaterial
+          ? materials
+          : materials[name] ??
+            new MeshBasicMaterial({
+              name: 'fallback-texture',
+              map: defaultTexture,
+            })
     }
 
     const geometry = child.geometry
@@ -203,12 +213,37 @@ export const loadOBJ = async (
     }
 
     if (scaleUV) {
-      // TODO: this only scales the 1st texture
-      // TODO: Texture._makeTileable resizing when texture is not square needs to be done
       if (typeof scaleUV === 'number') {
         scaleUVTool(new Vector2(scaleUV, scaleUV), geometry)
-      } else {
+      } else if (scaleUV instanceof Vector2) {
         scaleUVTool(scaleUV, geometry)
+      } else {
+        if (Array.isArray(material)) {
+          // we have multiple materials
+          material.forEach((singleMaterial, indexOfMaterial) => {
+            const rawScale = scaleUV(singleMaterial.map as Texture)
+            const scale = typeof rawScale === 'number' ? new Vector2(rawScale, rawScale) : rawScale
+            if (geometry.groups.length === 0) {
+              // the geometry only has 1 material
+              scaleUVTool(scale, geometry)
+            } else {
+              // the geometry has groups, we only rescale UVs for vertices which have the same
+              // materialIndex as our currently selected material
+              const uv = geometry.getAttribute('uv') as BufferAttribute
+              getVertices(geometry).forEach(({ idx, materialIndex }) => {
+                if (indexOfMaterial === materialIndex) {
+                  const u = uv.getX(idx) * scale.x
+                  const v = uv.getY(idx) * scale.y
+                  uv.setXY(idx, u, v)
+                }
+              })
+            }
+          })
+        } else {
+          const rawScale = scaleUV(material.map as Texture)
+          const scale = typeof rawScale === 'number' ? new Vector2(rawScale, rawScale) : rawScale
+          scaleUVTool(scale, geometry)
+        }
       }
     }
 
