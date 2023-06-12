@@ -106,8 +106,6 @@ export default async () => {
   })
   map.lights.push(mainLight)
 
-  // TODO: ask Fredlllll about double sided faces
-
   map.finalize()
   map.saveToDisk(OUTPUTDIR, parseInt(LEVEL))
 }
