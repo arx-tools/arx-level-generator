@@ -109,7 +109,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/buttons.png
+map_Kd textures/buttons.jpg
 
 newmtl cat
 Ns 250.000000
@@ -169,7 +169,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/curtains.png
+map_Kd textures/curtains.jpg
 
 newmtl dark-leather
 Ns 250.000000
@@ -199,7 +199,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/calendar.png
+map_Kd textures/calendar.jpg
 
 newmtl eraser
 Ns 250.000000
@@ -409,7 +409,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/orange-flower.png
+map_Kd textures/orange-flower.jpg
 
 newmtl mahogany
 Ns 250.000000
@@ -469,7 +469,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/pc-front.png
+map_Kd textures/pc-front.jpg
 
 newmtl pc-sides
 Ns 250.000000
@@ -489,7 +489,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/pencil.png
+map_Kd textures/pencil.jpg
 
 newmtl pencil-wood
 Ns 250.000000
@@ -519,7 +519,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/pencil.png
+map_Kd textures/pencil.jpg
 
 newmtl phone
 Ns 250.000000
@@ -539,7 +539,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd textures/picture3.jpeg
+map_Kd textures/picture3.jpg
 
 newmtl picture4
 Ns 250.000000

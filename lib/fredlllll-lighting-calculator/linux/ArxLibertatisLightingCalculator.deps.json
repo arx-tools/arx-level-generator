@@ -1,15 +1,14 @@
 {
   "runtimeTarget": {
-    "name": ".NETCoreApp,Version=v6.0/linux-x64",
+    "name": ".NETCoreApp,Version=v6.0",
     "signature": ""
   },
   "compilationOptions": {},
   "targets": {
-    ".NETCoreApp,Version=v6.0": {},
-    ".NETCoreApp,Version=v6.0/linux-x64": {
+    ".NETCoreApp,Version=v6.0": {
       "ArxLibertatisLightingCalculator/1.0.0": {
         "dependencies": {
-          "ArxLibertatisEditorIO": "1.2.0",
+          "ArxLibertatisEditorIO": "1.2.1",
           "BepuPhysics": "2.3.3",
           "CommandLineParser": "2.9.1",
           "System.Numerics.Vectors": "4.5.0"
@@ -18,14 +17,14 @@
           "ArxLibertatisLightingCalculator.dll": {}
         }
       },
-      "ArxLibertatisEditorIO/1.2.0": {
+      "ArxLibertatisEditorIO/1.2.1": {
         "dependencies": {
           "System.Numerics.Vectors": "4.5.0"
         },
         "runtime": {
           "lib/netstandard2.1/ArxLibertatisEditorIO.dll": {
-            "assemblyVersion": "1.2.0.0",
-            "fileVersion": "1.2.0.0"
+            "assemblyVersion": "1.2.1.0",
+            "fileVersion": "1.2.1.0"
           }
         }
       },
@@ -72,12 +71,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "ArxLibertatisEditorIO/1.2.0": {
+    "ArxLibertatisEditorIO/1.2.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-gtrj7rLBaTxlPTJd1JdMAU/Al8CdOZ5+my2SeZOMrN9AH+ftynSxL3hsxBjrtHowJacpvycgvTuFXi+vE1nIyw==",
-      "path": "arxlibertatiseditorio/1.2.0",
-      "hashPath": "arxlibertatiseditorio.1.2.0.nupkg.sha512"
+      "sha512": "sha512-EcGeN5mCHHZxfF+UihAQrw3YUnpD3KVzoUuiFmL53nbc8+6Ftg83ZsrpSFWYNSj/IdeKFno8vomZxZ29j0LBtg==",
+      "path": "arxlibertatiseditorio/1.2.1",
+      "hashPath": "arxlibertatiseditorio.1.2.1.nupkg.sha512"
     },
     "BepuPhysics/2.3.3": {
       "type": "package",
