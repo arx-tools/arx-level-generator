@@ -70,9 +70,9 @@ export const loadOBJ = async (
   const mtlLoader = new MTLLoader()
   const objLoader = new OBJLoader()
 
-  const { dir, name } = path.parse(filenameWithoutExtension)
+  const { dir, name: filename } = path.parse(filenameWithoutExtension)
 
-  const mtlSrc = path.resolve('assets/' + dir + '/' + name + '.mtl')
+  const mtlSrc = path.resolve('assets/' + dir + '/' + filename + '.mtl')
 
   let materials: MeshBasicMaterial | Record<string, MeshBasicMaterial>
 
@@ -97,7 +97,6 @@ export const loadOBJ = async (
       const nameMaterialPairs: [string, MeshBasicMaterial][] = []
 
       for (const [name, materialInfo] of entriesOfMaterials) {
-        const texture = fallbackTexture ?? defaultTexture
         let material: Material
 
         if (typeof materialInfo.map_kd !== 'undefined') {
@@ -117,7 +116,8 @@ export const loadOBJ = async (
             })
           }
         } else {
-          material = Material.fromTexture(texture)
+          console.info(`Material "${name}" in ${filename}.mtl doesn't have a texture, using fallback/default texture`)
+          material = Material.fromTexture(fallbackTexture ?? defaultTexture)
         }
 
         if (material.flags & ArxPolygonFlags.Transparent) {
@@ -134,20 +134,20 @@ export const loadOBJ = async (
 
       materials = Object.fromEntries(nameMaterialPairs)
     } catch (e: unknown) {
-      console.error(`Error while parsing ${name}.mtl file:`, e)
+      console.error(`Error while parsing ${filename}.mtl file:`, e)
       materials = new MeshBasicMaterial({
-        name,
+        name: filename,
         map: fallbackTexture ?? defaultTexture,
       })
     }
   } else {
     materials = new MeshBasicMaterial({
-      name,
+      name: filename,
       map: fallbackTexture ?? defaultTexture,
     })
   }
 
-  const objSrc = path.resolve('assets/' + dir + '/' + name + '.obj')
+  const objSrc = path.resolve('assets/' + dir + '/' + filename + '.obj')
   let rawObj = await fs.promises.readFile(objSrc, 'utf-8')
 
   if (!isTriangulatedMesh(rawObj)) {
