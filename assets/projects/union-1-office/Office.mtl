@@ -20,6 +20,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd textures/pc-back.jpg
 
 newmtl bark
 Ns 250.000000
@@ -40,6 +41,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd textures/black.jpg
 
 newmtl blackwood
 Ns 250.000000
@@ -250,6 +252,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd textures/fan-vent-grey.jpg
 
 newmtl glass
 Ns 250.000000
@@ -320,6 +323,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd textures/white.jpg
 
 newmtl keybord
 Ns 250.000000
@@ -590,6 +594,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd textures/copper.jpg
 
 newmtl silver-pot
 Ns 250.000000
@@ -600,6 +605,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd textures/silver.jpg
 
 newmtl silver.001
 Ns 250.000000
@@ -660,6 +666,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Kd textures/phone-color.jpg
 
 newmtl stem
 Ns 250.000000

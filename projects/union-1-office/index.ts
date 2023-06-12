@@ -4,7 +4,6 @@ import seedrandom from 'seedrandom'
 import { Vector2 } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
 import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
-import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations } from '@src/helpers.js'
 import { createLight } from '@tools/createLight.js'
@@ -29,20 +28,6 @@ export default async () => {
   map.hud.hide('all')
 
   const level = await loadOBJ('projects/union-1-office/Office', {
-    /**
-     * textures are missing from the following materials:
-     *  - backside
-     *  - black
-     *  - foot
-     *  - image
-     *  - rope
-     *  - silver-pot
-     *  - speaker
-     */
-    fallbackTexture: await Texture.fromCustomFile({
-      filename: 'yellow-flower.jpg',
-      sourcePath: 'projects/union-1-office/textures',
-    }),
     scaleUV: (texture) => {
       const nonTiledTextures = [
         'buttons.jpg',
