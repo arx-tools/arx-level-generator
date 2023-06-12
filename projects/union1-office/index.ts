@@ -6,6 +6,7 @@ import { ArxMap } from '@src/ArxMap.js'
 import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
 import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations } from '@src/helpers.js'
+import { createLight } from '@tools/createLight.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 
 export default async () => {
@@ -31,40 +32,33 @@ export default async () => {
     materialFlags: (texture) => {
       let flags = ArxPolygonFlags.None
 
-      const tileableTextures = [
-        'bark.jpg',
-        'book2.jpg',
-        'book4.jpg',
-        'brass.jpg',
-        'copper.jpg',
-        'cream.jpg',
-        'eraser.jpg',
-        'fan-vent-grey.jpg',
-        'floor.jpg',
-        'glass.jpg',
-        'green.jpg',
-        'grey-archive.jpg',
-        'mahogany.jpg',
-        'mirror.jpg',
-        'net.jpg',
-        'pc-side.jpg',
-        'phone-color.jpg',
-        'shiny.jpg',
-        'silver.jpg',
-        'sockets.jpg',
-        'sockets-utp.jpg',
-        'soil.jpg',
-        'stem.jpg',
-        'walltexture.jpg',
-        'wallwood.jpg',
-        'yellow.jpg',
-        'yellow-flower.jpg',
+      // TODO:
+      // clay.jpg
+      // curtains.png
+      // dark-leather.jpg
+      // leaf.jpg
+      // leaves1.jpg
+
+      const nonTiledTextures = [
+        'buttons.png',
+        'calendar.png',
+        'discord-banner.jpg',
+        'keyboard.jpg',
+        'pc-back.jpg',
+        'pc-front.jpg',
+        'picture1.jpg',
+        'picture2.jpg',
+        'picture3.jpg',
+        'picture4.jpg',
+        'picture5.jpg',
+        'winxpdesk.jpg',
       ]
-      if (tileableTextures.includes(texture.filename)) {
+
+      if (!nonTiledTextures.includes(texture.filename)) {
         flags |= ArxPolygonFlags.Tiled
       }
 
-      const doubleSidedTextures = ['black-wood.jpg', 'cream.jpg', 'walltexture.jpg', 'wallwood.jpg']
+      const doubleSidedTextures = ['black-wood.jpg', 'cream.jpg', 'walltexture.jpg', 'wallwood.jpg', 'window.bmp']
       if (doubleSidedTextures.includes(texture.filename)) {
         flags |= ArxPolygonFlags.DoubleSided
       }
@@ -86,6 +80,14 @@ export default async () => {
     applyTransformations(mesh)
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
   })
+
+  const mainLight = createLight({
+    position: new Vector3(0, -200, 0),
+    radius: 2000,
+  })
+  map.lights.push(mainLight)
+
+  // TODO: ask Fredlllll about double sided faces
 
   map.finalize()
   map.saveToDisk(OUTPUTDIR, parseInt(LEVEL))
