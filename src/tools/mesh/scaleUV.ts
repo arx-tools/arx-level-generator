@@ -12,6 +12,10 @@ import { BufferAttribute, BufferGeometry, Vector2 } from 'three'
  * `scaleUV(new Vector(1, -1), geometry)` will flip the texture vertically
  */
 export const scaleUV = (scale: Vector2, geometry: BufferGeometry) => {
+  if (scale.x === 1 && scale.y === 1) {
+    return
+  }
+
   const uv = geometry.getAttribute('uv') as BufferAttribute
 
   for (let idx = 0; idx < uv.count; idx++) {
