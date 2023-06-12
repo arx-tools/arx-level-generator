@@ -151,7 +151,7 @@ export const loadOBJ = async (
   let rawObj = await fs.promises.readFile(objSrc, 'utf-8')
 
   if (!isTriangulatedMesh(rawObj)) {
-    console.warn(`loadOBJ warning: ${name}.obj is not triangulated`)
+    console.warn(`loadOBJ warning: ${filename}.obj is not triangulated`)
   }
 
   if (reversedPolygonWinding) {
