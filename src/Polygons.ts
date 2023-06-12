@@ -143,7 +143,7 @@ export class Polygons extends Array<Polygon> {
     const polygons: Polygon[] = []
 
     if (threeJsObj instanceof Mesh) {
-      const uvs: BufferAttribute = threeJsObj.geometry.getAttribute('uv') as BufferAttribute
+      const uvs = threeJsObj.geometry.getAttribute('uv') as BufferAttribute
 
       let texture: Texture | undefined | (Texture | undefined)[] = undefined
 
