@@ -30,18 +30,11 @@ export default async () => {
   const level = await loadOBJ('projects/union-1-office/Office', {
     scaleUV: new Vector2(-1, -1),
     materialFlags: (texture) => {
-      let flags = ArxPolygonFlags.None
-
-      // TODO:
-      // clay.jpg
-      // curtains.png
-      // dark-leather.jpg
-      // leaf.jpg
-      // leaves1.jpg
+      let flags = ArxPolygonFlags.None | ArxPolygonFlags.NoShadow
 
       const nonTiledTextures = [
-        'buttons.png',
-        'calendar.png',
+        'buttons.jpg',
+        'calendar.jpg',
         'discord-banner.jpg',
         'keyboard.jpg',
         'pc-back.jpg',
@@ -53,12 +46,18 @@ export default async () => {
         'picture5.jpg',
         'winxpdesk.jpg',
       ]
-
       if (!nonTiledTextures.includes(texture.filename)) {
         flags |= ArxPolygonFlags.Tiled
       }
 
-      const doubleSidedTextures = ['black-wood.jpg', 'cream.jpg', 'walltexture.jpg', 'wallwood.jpg', 'window.bmp']
+      const doubleSidedTextures = [
+        'black-wood.jpg',
+        'cream.jpg',
+        'walltexture.jpg',
+        'wallwood.jpg',
+        'window.bmp',
+        'mahogany.jpg',
+      ]
       if (doubleSidedTextures.includes(texture.filename)) {
         flags |= ArxPolygonFlags.DoubleSided
       }
@@ -68,7 +67,7 @@ export default async () => {
         flags |= ArxPolygonFlags.Glow
       }
 
-      if (texture.filename) return flags
+      return flags
     },
   })
 
