@@ -1,5 +1,11 @@
-import fs from 'fs'
+import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
 import rgba from 'color-rgba'
+import fs from 'fs'
+import { dirname, resolve } from 'path'
+import { Euler, Vector3 as ThreeJsVector3 } from 'three'
+import { ambiences, exportAmbiences, useAmbience, resetAmbiences, AmbienceDefinition } from './assets/ambiences'
+import { exportTranslations, resetTranslations } from './assets/i18n'
+import { exportUsedItems, exportScripts, exportDependencies, resetItems } from './assets/items'
 import { createTextureContainers, textures, exportTextures, resetTextures, TextureDefinition } from './assets/textures'
 import {
   createDlfData,
@@ -12,7 +18,6 @@ import {
   LlfData,
   ZoneData,
 } from './blankMap'
-import { countBy, partition, clone, min } from './faux-ramda'
 import {
   POLY_QUAD,
   MAP_MAX_HEIGHT,
@@ -23,9 +28,7 @@ import {
   PATH_AMBIANCE,
   PATH_FARCLIP,
 } from './constants'
-import { exportUsedItems, exportScripts, exportDependencies, resetItems } from './assets/items'
-import { ambiences, exportAmbiences, useAmbience, resetAmbiences, AmbienceDefinition } from './assets/ambiences'
-import { dirname, resolve } from 'path'
+import { countBy, partition, clone, min } from './faux-ramda'
 import {
   AbsoluteCoords,
   MapConfig,
@@ -37,9 +40,6 @@ import {
   Vector3,
   Vertex3,
 } from './types'
-import { exportTranslations, resetTranslations } from './assets/i18n'
-import { Euler, Vector3 as ThreeJsVector3 } from 'three'
-import { ArxColor } from 'arx-level-json-converter/dist/common/Color'
 
 export type MapData = {
   meta: {
@@ -88,106 +88,6 @@ const vectorToXYZ = ([x, y, z]: Vector3): Vertex3 => {
 
 export const calculateNormal = ([a, b, c]: Vector3[]) => {
   return vectorToXYZ(normalize(cross(subtractVec3(b, a), subtractVec3(c, a))))
-}
-
-export const finalize = (mapData: MapData) => {
-  const finalizedMapData: FinalizedMapData = clone(mapData)
-
-  const ungroupedPolygons = Object.values(mapData.fts.polygons).flat(1)
-  const numberOfPolygons = ungroupedPolygons.length
-
-  finalizedMapData.fts.polygons = ungroupedPolygons
-  finalizedMapData.dlf.header.numberOfBackgroundPolygons = numberOfPolygons
-  finalizedMapData.llf.header.numberOfBackgroundPolygons = numberOfPolygons
-
-  const { spawn, spawnAngle } = mapData.state
-
-  const [x, y, z] = move(0, PLAYER_HEIGHT_ADJUSTMENT, 0, move(...mapData.config.origin.coords, spawn))
-  finalizedMapData.fts.sceneHeader.mScenePosition = { x, y, z }
-
-  finalizedMapData.llf.lights.forEach((light: LightData) => {
-    light.pos.x -= spawn[0]
-    light.pos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT
-    light.pos.z -= spawn[2]
-  })
-
-  finalizedMapData.dlf.paths.forEach((zone: ZoneData) => {
-    zone.header.initPos.x -= spawn[0]
-    zone.header.initPos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT
-    zone.header.initPos.z -= spawn[2]
-
-    zone.header.pos.x -= spawn[0]
-    zone.header.pos.y -= spawn[1] + PLAYER_HEIGHT_ADJUSTMENT
-    zone.header.pos.z -= spawn[2]
-  })
-
-  finalizedMapData.dlf.header.angleEdit.b = normalizeDegree(spawnAngle)
-
-  createTextureContainers(finalizedMapData)
-  exportUsedItems(finalizedMapData)
-  calculateNormals(finalizedMapData)
-  generateLights(finalizedMapData)
-
-  return finalizedMapData
-}
-
-const addOriginPolygon = (mapData: MapData) => {
-  mapData.fts.polygons.global.push({
-    config: {
-      color: toRgba('black'),
-      isQuad: true,
-      bumpable: false,
-    },
-    vertices: [
-      { x: 0, y: 0, z: 0, u: 0, v: 0 },
-      { x: 1, y: 0, z: 0, u: 0, v: 1 },
-      { x: 0, y: 0, z: 1, u: 1, v: 0 },
-      { x: 1, y: 0, z: 1, u: 1, v: 1 },
-    ],
-    tex: 0, // no texture at all!
-    transval: 0,
-    area: 1,
-    type: POLY_QUAD | POLY_NODRAW,
-    room: 1,
-    paddy: 0,
-  })
-}
-
-const timestampToDate = (timestamp: number) => {
-  const date = new Date()
-  date.setTime(timestamp * 1000)
-  return date.toUTCString()
-}
-
-export const generateBlankMapData = (config: MapConfig) => {
-  const now = Math.floor(Date.now() / 1000)
-  const generatorVersion = require('../package.json').version as string
-
-  const mapData: MapData = {
-    meta: {
-      createdAt: timestampToDate(now),
-      generatorVersion,
-    },
-    config: {
-      ...config,
-    },
-    state: {
-      color: toRgba('white'),
-      texture: textures.none,
-      spawn: [0, 0, 0],
-      spawnAngle: 0,
-      vertexCounter: 0,
-      polygonGroup: 'global',
-    },
-    items: [],
-    dlf: createDlfData(config.levelIdx, now),
-    fts: createFtsData(config.levelIdx),
-    llf: createLlfData(now),
-  }
-
-  addOriginPolygon(mapData)
-
-  return mapData
 }
 
 export const setColor = (color: string, mapData: MapData) => {
