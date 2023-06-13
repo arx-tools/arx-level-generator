@@ -6,8 +6,6 @@ echo "  PACK"
 echo "----------------------------"
 echo ""
 
-set -e
-
 REPO_ROOT="$(realpath $(dirname "$(realpath "${BASH_SOURCE:-$0}")")/../)/"
 
 # save already set environment variables to restore later (quasi dotenv_config_override=false)
@@ -38,8 +36,6 @@ zip -qr $PROJECT.zip ./*
 sha256sum $PROJECT.zip | cut -f 1 -d " " > $PROJECT.zip.hash
 # going back to the previous directory (quasi "cd -" without the pwd part)
 cd $OLDPWD
-
-set +e
 
 echo ""
 echo "done"

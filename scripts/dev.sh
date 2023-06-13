@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 REPO_ROOT="$(realpath $(dirname "$(realpath "${BASH_SOURCE:-$0}")")/../)/"
 
 "${REPO_ROOT}scripts/generate.sh"
