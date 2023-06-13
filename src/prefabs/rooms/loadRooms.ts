@@ -65,7 +65,9 @@ export const loadRooms = async (filename: string) => {
                     size: 128,
                   })
                 } else {
-                  // TODO: error
+                  console.error(
+                    `Unknown texture type "${tokens[1]}" at line ${i + 1}, expected either "custom" or "arx"`,
+                  )
                 }
               }
               break
@@ -87,7 +89,9 @@ export const loadRooms = async (filename: string) => {
                   wall[2] = texture
                   wall[3] = texture
                 } else {
-                  // TODO: error
+                  console.error(
+                    `Unknown texture type "${tokens[1]}" at line ${i + 1}, expected either "custom" or "arx"`,
+                  )
                 }
               }
               break
@@ -119,12 +123,18 @@ export const loadRooms = async (filename: string) => {
                     : 3
                   wall[wallIdx] = texture
                 } else {
-                  // TODO: error
+                  console.error(
+                    `Unknown texture type "${tokens[1]}" at line ${i + 1}, expected either "custom" or "arx"`,
+                  )
                 }
               }
               break
             default:
-              console.error(`Unknown side "${tokens[0]}" at line ${i + 1}`)
+              console.error(
+                `Unknown side "${tokens[0]}" at line ${
+                  i + 1
+                }, expected "floor", "ceiling", "wall", "wall-east", "wall-west", "wall-north" or "wall-south"`,
+              )
           }
       }
     } else {
