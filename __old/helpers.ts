@@ -136,31 +136,6 @@ export const categorizeVertices = (polygons: FtsPolygon[]) => {
   }
 }
 
-export const raiseByMagnitude = (magnitude: number) => (vertex: PosVertex3) => {
-  if (!vertex.modified) {
-    vertex.y -= magnitude
-    vertex.modified = true
-  }
-
-  return vertex
-}
-
-export const adjustVertexBy = (
-  ref: { x: number; y: number; z: number },
-  fn: (v: PosVertex3, p: FtsPolygon) => PosVertex3,
-  polygons: FtsPolygon[],
-) => {
-  polygons.forEach((polygon) => {
-    polygon.vertices = polygon.vertices.map((vertex) => {
-      if (vertex.x === ref.x && vertex.y === ref.y && vertex.z === ref.z) {
-        return fn(vertex, polygon)
-      }
-
-      return vertex
-    })
-  })
-}
-
 // source: https://www.scratchapixel.com/lessons/3d-basic-rendering/ray-tracing-rendering-a-triangle/barycentric-coordinates
 const isPointInTriangle = (p: Vector3, a: Vector3, b: Vector3, c: Vector3) => {
   const area = triangleArea(a, b, c)
