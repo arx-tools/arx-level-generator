@@ -24,3 +24,11 @@ export const scaleUV = (scale: Vector2, geometry: BufferGeometry) => {
     uv.setXY(idx, u, v)
   }
 }
+
+export const flipUVHorizontally = (geometry: BufferGeometry) => {
+  return scaleUV(new Vector2(-1, 1), geometry)
+}
+
+export const flipUVVertically = (geometry: BufferGeometry) => {
+  return scaleUV(new Vector2(1, -1), geometry)
+}
