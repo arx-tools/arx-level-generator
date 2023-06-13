@@ -4,7 +4,7 @@ import { Material } from '@src/Material.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { createBox } from '@prefabs/mesh/box.js'
-import { scaleUV } from '@tools/mesh/scaleUV.js'
+import { flipUVHorizontally } from '@tools/mesh/scaleUV.js'
 
 const textures = {
   monitorFront: await Texture.fromCustomFile({
@@ -112,7 +112,7 @@ const createMonitor = async ({
       Material.fromTexture(Texture.alpha),
     ],
   })
-  scaleUV(new Vector2(-1, 1), monitorFrontBevel.geometry)
+  flipUVHorizontally(monitorFrontBevel.geometry)
 
   return {
     meshes: [monitorBody, monitorHead, monitorPlinth, monitorLeg, monitorFrontBevel],
