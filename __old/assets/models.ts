@@ -1,12 +1,12 @@
-import fs from 'fs'
-import { PosVertex3, Vector3, RelativeCoords } from '../types'
-import { isBetween, MapData, roundToNDecimals } from '../helpers'
-import { MAP_MAX_HEIGHT, MAP_MAX_WIDTH, POLY_NO_SHADOW, POLY_QUAD } from '../constants'
-import { useTexture } from '../assets/textures'
-import { Euler, MathUtils, Vector3 as TreeJsVector3 } from 'three'
-import { clone, identity, max, min, partition } from '../faux-ramda'
-import { doesPolygonFitIntoACell, isPolygonVisible, toTriangleHelper } from '../subdivisionHelper'
 import { ArxRotation } from 'arx-level-json-converter/types/binary/BinaryIO'
+import fs from 'fs'
+import { Euler, MathUtils, Vector3 as TreeJsVector3 } from 'three'
+import { useTexture } from '../assets/textures'
+import { MAP_MAX_HEIGHT, MAP_MAX_WIDTH, POLY_NO_SHADOW, POLY_QUAD } from '../constants'
+import { clone, identity, max, min, partition } from '../faux-ramda'
+import { isBetween, MapData, roundToNDecimals } from '../helpers'
+import { doesPolygonFitIntoACell, isPolygonVisible, toTriangleHelper } from '../subdivisionHelper'
+import { PosVertex3, Vector3, RelativeCoords } from '../types'
 
 const EOL = /\r?\n/
 
@@ -119,30 +119,6 @@ export const flipPolygonAxis = (axis: string, polygons: TexturedPolygon[]) => {
       if (axis.includes('z')) {
         vertex.z *= -1
       }
-    })
-  })
-}
-
-export const rotatePolygonData = ({ a, b, g }: ArxRotation, polygons: TexturedPolygon[]) => {
-  const rotation = new Euler(MathUtils.degToRad(a), MathUtils.degToRad(b), MathUtils.degToRad(g), 'XYZ')
-
-  polygons.forEach(({ polygon }) => {
-    polygon.forEach((vertex) => {
-      const v = new TreeJsVector3(vertex.x, vertex.y, vertex.z)
-      v.applyEuler(rotation)
-      vertex.x = v.x
-      vertex.y = v.y
-      vertex.z = v.z
-    })
-  })
-}
-
-export const scalePolygonData = (scale: number, polygons: TexturedPolygon[]) => {
-  polygons.forEach(({ polygon }) => {
-    polygon.forEach((vertex) => {
-      vertex.x = vertex.x * scale
-      vertex.y = vertex.y * scale
-      vertex.z = vertex.z * scale
     })
   })
 }
@@ -317,19 +293,5 @@ export const removeInvisiblePolygons = (polygons: TexturedPolygon[]) => {
         // TODO: decide whether a polygon with 4+ vertices is visible or not
         return true
     }
-  })
-}
-
-export const turnPolygonDataInsideOut = (polygons: TexturedPolygon[]) => {
-  polygons.forEach(({ polygon }, i) => {
-    polygons[i].polygon = polygon.reverse()
-  })
-}
-
-export const flipTextureUpsideDown = (polygons: TexturedPolygon[]) => {
-  polygons.forEach(({ polygon }) => {
-    polygon.forEach((vertex) => {
-      vertex.v *= -1
-    })
   })
 }
