@@ -1,7 +1,3 @@
-export const identity = <T>(x: T) => {
-  return x
-}
-
 export const clamp = (min: number, max: number, n: number) => {
   if (n < min) {
     return min

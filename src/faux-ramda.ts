@@ -51,12 +51,6 @@ export const none = <T>(fn: (value: T) => boolean, values: T[]) => {
   return !any(fn, values)
 }
 
-export const startsWith = (needle: string) => {
-  return (haystack: string) => {
-    return haystack.startsWith(needle)
-  }
-}
-
 /**
  * @see https://stackoverflow.com/a/14438954/1806628
  */
