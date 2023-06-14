@@ -1,6 +1,9 @@
 import { ScriptProperty } from '@scripting/ScriptProperty.js'
 
 /**
+ * A ScriptProperty for setting the name of an Entity
+ *
+ * @extends ScriptProperty
  * @see https://wiki.arx-libertatis.org/Script:setname
  */
 export class Label extends ScriptProperty<string> {

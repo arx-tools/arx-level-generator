@@ -3,6 +3,9 @@ import { ScriptProperty } from '@scripting/ScriptProperty.js'
 export type MaterialType = 'stone' | 'wood' | 'metal' | 'cloth' | 'flesh' | 'ice' | 'glass' | 'earth' | 'weapon'
 
 /**
+ * A ScriptProperty for setting the material of an Entity
+ *
+ * @extends ScriptProperty
  * @see https://wiki.arx-libertatis.org/Script:setmaterial
  */
 export class Material extends ScriptProperty<MaterialType> {

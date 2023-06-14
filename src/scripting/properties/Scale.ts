@@ -2,9 +2,13 @@ import { roundToNDecimals } from '@src/helpers.js'
 import { ScriptProperty } from '@scripting/ScriptProperty.js'
 
 /**
- * default value for scale is 1
+ * A ScriptProperty for specifying the size of an Entity.
  *
- * value precision is only 2 decimals
+ * Value precision is only 2 decimals
+ *
+ * @extends ScriptProperty
+ *
+ * default value is 1
  */
 export class Scale extends ScriptProperty<number> {
   toString() {

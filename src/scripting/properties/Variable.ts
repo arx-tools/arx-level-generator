@@ -11,6 +11,9 @@ export type VariableType =
   | 'global string'
 
 /**
+ * A ScriptProperty for declaring in-game variables for an Entity or globally
+ *
+ * @extends ScriptProperty
  * @see https://wiki.arx-libertatis.org/Script:Variables
  */
 export class Variable<T> extends ScriptProperty<T> {

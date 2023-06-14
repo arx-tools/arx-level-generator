@@ -2,11 +2,15 @@ import { roundToNDecimals } from '@src/helpers.js'
 import { ScriptProperty } from '@scripting/ScriptProperty.js'
 
 /**
- * default value for transparency is 1
+ * A ScriptProperty for setting transparency to an Entity.
+ * Value can be between 0 and 1 with 2 digits precision
+ *
+ * @extends ScriptProperty
+ *
  * fully opaque = 1
  * fully transparent = 0
  *
- * value precision is only 2 decimals
+ * default value is 1
  */
 export class Transparency extends ScriptProperty<number> {
   toString() {
