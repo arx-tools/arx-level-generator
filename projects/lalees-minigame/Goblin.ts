@@ -58,7 +58,7 @@ export class Goblin extends Entity {
 
         set ${isBusy.name} 1
         if (^$param1 isclass pcgame) {
-          sendevent goblin_got_game ${gameStateMarker.ref} nop
+          sendevent goblin_received_a_game ${gameStateMarker.ref} nop
 
           random 20 {
             speak -h [goblin_victory3_shorter] set ${isBusy.name} 0

@@ -25,10 +25,13 @@
   },
 
   "tutorial--welcome": {
-    "english": "Welcome to LaLee's minigame. Your task is to find 8 shitty pc games and give them to your goblin friend. He's a real collector you know..."
+    "english": "Welcome to LaLee's minigame! Your goblin friend started collecting shitty pc games. Help him complete his collection by finding 8 games hidden around the map!"
+  },
+  "tutorial--found-a-game": {
+    "english": "Very good, you found a game! Show it to your goblin friend!"
   },
   "tutorial--gave-game-to-goblin": {
-    "english": "Good job, you gave a game to the goblin! That should keep him entertained for a while. See if you can find more."
+    "english": "Good job, the game is now in the collection! See if you can find some more!"
   },
 
   "achievement--found-games-small": {

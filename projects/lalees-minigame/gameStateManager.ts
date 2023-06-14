@@ -1,5 +1,6 @@
 import { Entity } from '@src/Entity.js'
 import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
+import { Variable } from '@scripting/properties/Variable.js'
 
 const tutorialWelcome = new ScriptSubroutine('tutorial_welcome', () => {
   return `
@@ -8,7 +9,14 @@ const tutorialWelcome = new ScriptSubroutine('tutorial_welcome', () => {
     quest [tutorial--welcome]
   `
 })
-const tutorialFirstGameGivenToGoblin = new ScriptSubroutine('tutorial_first_game_given_to_goblin', () => {
+const tutorialFoundAGame = new ScriptSubroutine('tutorial_found_a_game', () => {
+  return `
+    play -o "system"
+    herosay [tutorial--found-a-game]
+    quest [tutorial--found-a-game]
+  `
+})
+const tutorialGaveGameToGoblin = new ScriptSubroutine('tutorial_gave_game_to_goblin', () => {
   return `
     play -o "system"
     herosay [tutorial--gave-game-to-goblin]
@@ -38,42 +46,55 @@ const achievementListenLarge = new ScriptSubroutine('achievement_found_games_lar
   `
 })
 
-export const createGameStateMarker = () => {
-  const marker = Entity.marker.withScript()
-  marker.script?.subroutines.push(
+export const createGameStateManager = () => {
+  const manager = Entity.marker.withScript()
+
+  const numberOfGamesTheGoblinHas = new Variable('int', 'number_of_games_the_goblin_has', 0)
+  const playerFoundAnyGames = new Variable('bool', 'player_found_any_games', false)
+
+  manager.script?.properties.push(numberOfGamesTheGoblinHas, playerFoundAnyGames)
+
+  manager.script?.subroutines.push(
     tutorialWelcome,
-    tutorialFirstGameGivenToGoblin,
+    tutorialFoundAGame,
+    tutorialGaveGameToGoblin,
     achievementListenSmall,
     achievementListenMedium,
     achievementListenLarge,
   )
-  marker.script?.on('init', () => {
+  manager.script?.on('init', () => {
     return `TIMERwelcome -m 1 3000 gosub ${tutorialWelcome.name}`
   })
-  marker.script?.on('init', () => {
-    return `set §gave_game_to_goblin 0`
-  })
-  marker.script?.on('gave_game_to_goblin', () => {
-    return `
-    INC §gave_game_to_goblin 1
 
-    if (§gave_game_to_goblin == 1) {
-      gosub ${tutorialFirstGameGivenToGoblin.name}
+  manager.script?.on('goblin_received_a_game', () => {
+    return `
+    inc ${numberOfGamesTheGoblinHas.name} 1
+
+    if (${numberOfGamesTheGoblinHas.name} == 1) {
+      gosub ${tutorialGaveGameToGoblin.name}
     }
 
-    if (§gave_game_to_goblin == 2) {
+    if (${numberOfGamesTheGoblinHas.name} == 2) {
       gosub ${achievementListenSmall.name}
     }
 
-    if (§gave_game_to_goblin == 5) {
+    if (${numberOfGamesTheGoblinHas.name} == 5) {
       gosub ${achievementListenMedium.name}
     }
 
-    if (§gave_game_to_goblin == 8) {
+    if (${numberOfGamesTheGoblinHas.name} == 8) {
       gosub ${achievementListenLarge.name}
     }
     `
   })
+  manager.script?.on('player_found_a_game', () => {
+    return `
+    if (${playerFoundAnyGames.name} == 0) {
+      set ${playerFoundAnyGames.name} 1
+      gosub ${tutorialFoundAGame.name}
+    }
+    `
+  })
 
-  return marker
+  return manager
 }

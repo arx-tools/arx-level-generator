@@ -35,7 +35,7 @@ import { Goblin } from './Goblin.js'
 import { PCGame, PCGameVariant } from './PCGame.js'
 import { createComputer } from './computer.js'
 import { createCounter } from './counter.js'
-import { createGameStateMarker } from './gameStateMarker.js'
+import { createGameStateManager } from './gameStateManager.js'
 import { createRadio } from './radio.js'
 import { createTable } from './table.js'
 
@@ -70,6 +70,9 @@ export default async () => {
     map.add(room, true)
   })
 
+  const gameStateManager = createGameStateManager()
+  map.entities.push(gameStateManager)
+
   const randomizedGameVariants = randomSort([
     'mesterlovesz',
     'mortyr',
@@ -97,6 +100,7 @@ export default async () => {
     position: new Vector3(1700, -5, -50),
     orientation: new Rotation(MathUtils.degToRad(45), MathUtils.degToRad(80), MathUtils.degToRad(15)),
   })
+  game1.script?.on('inventoryin', () => `sendevent player_found_a_game ${gameStateManager.ref} ${game1.variant}`)
 
   const fern = Entity.fern.withScript()
   fern.position = new Vector3(1650, 0, -60)
@@ -109,6 +113,7 @@ export default async () => {
     variant: randomizedGameVariants[1],
     position: new Vector3(-1650, -5, -670),
   })
+  game2.script?.on('inventoryin', () => `sendevent player_found_a_game ${gameStateManager.ref} ${game2.variant}`)
 
   const randomJunk = times(() => {
     const item = pickRandom([
@@ -187,6 +192,7 @@ export default async () => {
     position: new Vector3(240, 7 - 10, 1380),
     orientation: new Rotation(MathUtils.degToRad(-60), MathUtils.degToRad(-90), 0),
   })
+  game3.script?.on('inventoryin', () => `sendevent player_found_a_game ${gameStateManager.ref} ${game3.variant}`)
   map.entities.push(game3)
 
   const windowGlass = await createPlaneMesh({
@@ -245,15 +251,13 @@ export default async () => {
   runeSpacium.orientation.y = MathUtils.degToRad(180)
   map.entities.push(runeSpacium)
 
-  const gameStateMarker = createGameStateMarker()
-
   const goblin = new Goblin({
     position: new Vector3(-200, -2, 425),
     orientation: new Rotation(0, MathUtils.degToRad(-100), 0),
-    gameStateMarker,
+    gameStateMarker: gameStateManager,
   })
 
-  map.entities.push(gameStateMarker, goblin)
+  map.entities.push(goblin)
 
   const radio = await createRadio({
     position: new Vector3(300, -100, 450),
@@ -309,6 +313,7 @@ export default async () => {
     position: new Vector3(300, 0, 380 + 23),
     orientation: new Rotation(MathUtils.degToRad(-60), MathUtils.degToRad(-90), 0),
   })
+  game4.script?.on('inventoryin', () => `sendevent player_found_a_game ${gameStateManager.ref} ${game4.variant}`)
   map.entities.push(game4)
 
   const lantern = new Entity({
@@ -347,6 +352,7 @@ export default async () => {
     position: new Vector3(540, 0, 290),
     orientation: new Rotation(0, MathUtils.degToRad(128), 0),
   })
+  bigRigs.script?.on('inventoryin', () => `sendevent player_found_a_game ${gameStateManager.ref} ${bigRigs.variant}`)
   map.entities.push(bigRigs)
 
   const tippedStool = Entity.seatStool1
