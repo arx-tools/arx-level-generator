@@ -1,14 +1,17 @@
+import { Expand } from 'arx-convert/utils'
 import { EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 import { roundToNDecimals } from '@src/helpers.js'
 import { Marker } from '@prefabs/entity/Marker.js'
 import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
 import { Variable } from '@scripting/properties/Variable.js'
 
-type TimerConstructorProps = EntityConstructorPropsWithoutSrc & {
-  numberOfSteps: number
-  notesPerBeat: number
-  bpm: number
-}
+type TimerConstructorProps = Expand<
+  EntityConstructorPropsWithoutSrc & {
+    numberOfSteps: number
+    notesPerBeat: number
+    bpm: number
+  }
+>
 
 export class Timer extends Marker {
   private propStep: Variable<number>
