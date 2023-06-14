@@ -1,3 +1,4 @@
+import { Expand } from 'arx-convert/utils'
 import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 import { Texture } from '@src/Texture.js'
 import { TweakSkin } from '@scripting/commands/TweakSkin.js'
@@ -59,9 +60,11 @@ const TEXTURES: Record<PCGameVariant, Texture | Promise<Texture>> = {
   }),
 }
 
-type PCGameConstructorProps = EntityConstructorPropsWithoutSrc & {
-  variant: PCGameVariant
-}
+type PCGameConstructorProps = Expand<
+  EntityConstructorPropsWithoutSrc & {
+    variant: PCGameVariant
+  }
+>
 
 export class PCGame extends Entity {
   private propVariant: Variable<string>
