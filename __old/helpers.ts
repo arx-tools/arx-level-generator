@@ -157,73 +157,6 @@ export const isPointInPolygon = (point: Vector3, polygon: FtsPolygon) => {
   }
 }
 
-export const addLight = ([x, y, z]: Vector3, props: Partial<LightData>, mapData: MapData) => {
-  mapData.llf.lights.push({
-    pos: { x, y, z },
-    rgb: toArxColor(mapData.state.color),
-    fallstart: 100,
-    fallend: 180,
-    intensity: 1.3,
-    i: 0,
-    exFlicker: toArxColor(toRgba('black')), // this gets subtracted from light.rgb when flickering
-    exRadius: 0,
-    exFrequency: 0.01,
-    exSize: 0,
-    exSpeed: 0,
-    exFlareSize: 0,
-    extras: 0,
-    ...props,
-  })
-}
-
-export const addZone = (
-  pos: RelativeCoords,
-  size: [number, number, number],
-  name: string,
-  ambience: AmbienceDefinition = ambiences.none,
-  drawDistance = 2000,
-  flags = PATH_RGB | PATH_AMBIANCE | PATH_FARCLIP,
-) => {
-  return (mapData: MapData) => {
-    let [x, y, z] = pos.coords
-
-    useAmbience(ambience)
-
-    const zoneData: ZoneData = {
-      header: {
-        name,
-        idx: 0,
-        flags,
-        initPos: { x, y, z },
-        pos: { x, y, z },
-        rgb: toArxColor(mapData.state.color),
-        farClip: drawDistance,
-        reverb: 0,
-        ambianceMaxVolume: 100,
-        height: size[1] === 0 ? -1 : size[1],
-        ambiance: ambience.name,
-      },
-      pathways: [
-        { rpos: { x: -size[0] / 2, y: 0, z: size[2] / 2 }, flag: 0, time: 0 },
-        {
-          rpos: { x: -size[0] / 2, y: 0, z: -size[2] / 2 },
-          flag: 0,
-          time: 2000,
-        },
-        {
-          rpos: { x: size[0] / 2, y: 0, z: -size[2] / 2 },
-          flag: 0,
-          time: 2000,
-        },
-        { rpos: { x: size[0] / 2, y: 0, z: size[2] / 2 }, flag: 0, time: 0 },
-      ],
-    }
-
-    mapData.dlf.paths.push(zoneData)
-    return mapData
-  }
-}
-
 export const flipPolygon = ([a, b, c, d]: Polygon): Polygon => {
   // vertices are laid down in a cyrillic i shape (И):
   // a c
@@ -258,14 +191,6 @@ export const cleanupCache = () => {
   resetAmbiences()
   resetTextures()
   resetTranslations()
-}
-
-export const normalizeDegree = (degree: number) => {
-  let normalizedDegree = degree % 360
-  if (normalizedDegree < 0) {
-    normalizedDegree += 360
-  }
-  return Math.abs(normalizedDegree)
 }
 
 export const flipUVHorizontally = ([a, b, c, d]: UVQuad): UVQuad => {
