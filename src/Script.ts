@@ -38,10 +38,15 @@ export class Script {
       }
 
       for (let handler of handlers) {
-        eventString += '  ' + (handler instanceof ScriptCommand ? await handler.toString() : await handler()) + '\n'
+        const handlerResult = handler instanceof ScriptCommand ? await handler.toString() : await handler()
+        if (handlerResult.trim() !== '') {
+          eventString += '  ' + handlerResult + '\n'
+        }
       }
 
-      eventStrings.push(`on ${eventName} {\n${eventString}  accept\n}`)
+      if (eventString !== '') {
+        eventStrings.push(`on ${eventName} {\n${eventString}  accept\n}`)
+      }
     }
 
     const subroutines: string[] = []
