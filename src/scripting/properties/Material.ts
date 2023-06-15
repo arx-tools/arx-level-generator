@@ -13,8 +13,6 @@ export class Material extends ScriptProperty<MaterialType> {
     return `set_material ${this.value}`
   }
 
-  // ----------------
-
   static get stone() {
     return new Material('stone')
   }
