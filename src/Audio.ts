@@ -104,4 +104,13 @@ export class Audio {
   static get lever() {
     return new Audio({ filename: 'lever.wav' })
   }
+  static get system() {
+    return new Audio({ filename: 'system' })
+  }
+  static get system2() {
+    return new Audio({ filename: 'system2' })
+  }
+  static get system3() {
+    return new Audio({ filename: 'system3' })
+  }
 }
