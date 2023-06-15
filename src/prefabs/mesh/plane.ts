@@ -45,9 +45,7 @@ export const createPlaneMesh = async ({
     texture = await texture
   }
 
-  const material = new MeshBasicMaterial({
-    map: texture,
-  })
+  const material = new MeshBasicMaterial({ map: texture })
 
   const mesh = new Mesh(isIndexed === INDEXED ? geometry : geometry.toNonIndexed(), material)
   mesh.rotateX(MathUtils.degToRad(90))
