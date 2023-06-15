@@ -307,4 +307,8 @@ export class Texture extends ThreeJsTextue {
       size: 32,
     })
   }
+
+  static get itemRuneAam() {
+    return new Texture({ filename: 'item_rune_aam', size: 64 })
+  }
 }
