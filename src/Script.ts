@@ -3,11 +3,21 @@ import { ScriptProperty } from '@scripting/ScriptProperty.js'
 import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
 import { isUsesTextures } from '@scripting/interfaces/UsesTextures.js'
 
+type ScriptHandlerBase =
+  | string
+  | string[]
+  | Promise<string>
+  | Promise<string[]>
+  | ScriptCommand
+  | ScriptCommand[]
+  | Promise<ScriptCommand>
+  | Promise<ScriptCommand[]>
+
+export type ScriptHandler = ScriptHandlerBase | (() => ScriptHandlerBase)
+
 type ScriptConstructorProps = {
   filename: string
 }
-
-export type ScriptHandler = ScriptCommand | (() => string | Promise<string>)
 
 export class Script {
   static readonly EOL = '\r\n'
@@ -38,13 +48,10 @@ export class Script {
       }
 
       for (let handler of handlers) {
-        const handlerResult = handler instanceof ScriptCommand ? await handler.toString() : await handler()
-        if (handlerResult.trim() !== '') {
-          eventString += '  ' + handlerResult + '\n'
-        }
+        eventString += await Script.handlerToString(handler)
       }
 
-      if (eventString !== '') {
+      if (eventString.trim() !== '') {
         eventStrings.push(`on ${eventName} {\n${eventString}  accept\n}`)
       }
     }
@@ -76,5 +83,26 @@ export class Script {
 
   makeIntoRoot() {
     this.isRoot = true
+  }
+
+  static async handlerToString(handler: ScriptHandler) {
+    const isHandlerNotAFunction =
+      typeof handler === 'string' ||
+      handler instanceof Promise ||
+      handler instanceof ScriptCommand ||
+      Array.isArray(handler)
+
+    const tmp = await (isHandlerNotAFunction ? handler : handler())
+    const tmp2 = (Array.isArray(tmp) ? tmp : [tmp]) as string[] | ScriptCommand[]
+
+    let result = ''
+
+    for (let h of tmp2) {
+      const handlerResult = h instanceof ScriptCommand ? await h.toString() : h
+      const handlerResults = Array.isArray(handlerResult) ? handlerResult : [handlerResult]
+      result += handlerResults.filter((r) => r.trim() !== '').join('\n') + '\n'
+    }
+
+    return result
   }
 }
