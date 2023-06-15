@@ -4,10 +4,10 @@ import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import { UsesTextures } from '@scripting/interfaces/UsesTextures.js'
 
 export class TweakSkin extends ScriptCommand implements UsesTextures {
-  oldTexture: Texture | Promise<Texture>
-  newTexture: Texture | Promise<Texture>
+  oldTexture: Texture | Promise<Texture> | string
+  newTexture: Texture | Promise<Texture> | string
 
-  constructor(oldTexture: Texture | Promise<Texture>, newTexture: Texture | Promise<Texture>) {
+  constructor(oldTexture: Texture | Promise<Texture> | string, newTexture: Texture | Promise<Texture> | string) {
     super()
     this.oldTexture = oldTexture
     this.newTexture = newTexture
@@ -17,8 +17,8 @@ export class TweakSkin extends ScriptCommand implements UsesTextures {
     const oldTexture = await this.oldTexture
     const newTexture = await this.newTexture
 
-    const oldFilename = path.parse(oldTexture.filename).name
-    const newFilename = path.parse(newTexture.filename).name
+    const oldFilename = typeof oldTexture === 'string' ? oldTexture : path.parse(oldTexture.filename).name
+    const newFilename = typeof newTexture === 'string' ? newTexture : path.parse(newTexture.filename).name
 
     return `tweak skin "${oldFilename}" "${newFilename}"`
   }
@@ -27,14 +27,13 @@ export class TweakSkin extends ScriptCommand implements UsesTextures {
     let files: Record<string, string> = {}
 
     const oldTexture = await this.oldTexture
-    const newTexture = await this.newTexture
-
-    if (!oldTexture.isNative) {
+    if (typeof oldTexture !== 'string' && !oldTexture.isNative) {
       const [source, target] = await oldTexture.exportSourceAndTarget(outputDir, false)
       files[target] = source
     }
 
-    if (!newTexture.isNative) {
+    const newTexture = await this.newTexture
+    if (typeof newTexture !== 'string' && !newTexture.isNative) {
       const [source, target] = await newTexture.exportSourceAndTarget(outputDir, false)
       files[target] = source
     }
