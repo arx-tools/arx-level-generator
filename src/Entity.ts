@@ -298,7 +298,7 @@ export class Entity {
   }
 
   static get akbaaBloodChickenHead() {
-    return new Entity({ src: 'items/moveable/akbaa_blood_chicken_head' })
+    return new Entity({ src: 'items/movable/akbaa_blood_chicken_head' })
   }
 
   static get hangedGob() {
