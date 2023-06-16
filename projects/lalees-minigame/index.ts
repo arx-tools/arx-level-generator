@@ -88,6 +88,11 @@ export default async () => {
   })
   rootRune.script?.makeIntoRoot()
   map.entities.push(rootRune)
+  const rootPCGame = new PCGame({
+    variant: 'blank',
+  })
+  rootPCGame.script?.makeIntoRoot()
+  map.entities.push(rootPCGame)
 
   const runeComunicatum = new Rune('comunicatum')
 

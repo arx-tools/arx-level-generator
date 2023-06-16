@@ -21,40 +21,40 @@ export type PCGameVariant =
   | 'streets-racer'
   | 'bikini-karate-babes'
 
-const TEXTURES: Record<PCGameVariant, Texture | Promise<Texture>> = {
-  blank: Texture.fromCustomFile({
+const TEXTURES: Record<PCGameVariant, Texture> = {
+  blank: await Texture.fromCustomFile({
     filename: 'pcgame_box_art_blank.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
-  mesterlovesz: Texture.fromCustomFile({
+  mesterlovesz: await Texture.fromCustomFile({
     filename: 'pcgame_box_art_mesterlovesz.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
-  mortyr: Texture.fromCustomFile({
+  mortyr: await Texture.fromCustomFile({
     filename: 'pcgame_box_art_mortyr.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
-  wolfschanze: Texture.fromCustomFile({
+  wolfschanze: await Texture.fromCustomFile({
     filename: 'pcgame_box_art_wolfschanze.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
-  'traktor-racer': Texture.fromCustomFile({
+  'traktor-racer': await Texture.fromCustomFile({
     filename: 'pcgame_box_art_traktor_racer.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
-  'americas-10-most-wanted': Texture.fromCustomFile({
+  'americas-10-most-wanted': await Texture.fromCustomFile({
     filename: 'pcgame_box_art_americas_10_most_wanted.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
-  'big-rigs': Texture.fromCustomFile({
+  'big-rigs': await Texture.fromCustomFile({
     filename: 'pcgame_box_art_big_rigs.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
-  'streets-racer': Texture.fromCustomFile({
+  'streets-racer': await Texture.fromCustomFile({
     filename: 'pcgame_box_art_streets_racer.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
-  'bikini-karate-babes': Texture.fromCustomFile({
+  'bikini-karate-babes': await Texture.fromCustomFile({
     filename: 'pcgame_box_art_bikini_karate_babes.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
@@ -88,17 +88,53 @@ export class PCGame extends Entity {
 
     this.withScript()
 
-    this.propVariant = new Variable('string', 'variant', 'blank')
+    this.propVariant = new Variable('string', 'variant', variant)
 
-    this.script?.properties.push(
-      Shadow.off,
-      Material.stone,
-      StackSize.unstackable,
-      this.propVariant,
-      new Label(`[game--${variant}]`),
-    )
+    this.script?.properties.push(this.propVariant)
 
-    this.script?.on('init', new TweakSkin(TEXTURES['blank'], TEXTURES[variant]))
+    this.script?.on('init', () => {
+      if (!this.script?.isRoot) {
+        return ''
+      }
+
+      return [Shadow.off, Material.stone, StackSize.unstackable]
+    })
+
+    this.script?.on('initend', () => {
+      if (!this.script?.isRoot) {
+        return ''
+      }
+
+      return [
+        new Label(`[game--${variant}]`),
+        `
+        if (${this.propVariant.name} == "mesterlovesz") {
+          ${new TweakSkin(TEXTURES['blank'], TEXTURES['mesterlovesz'])}
+        }
+        if (${this.propVariant.name} == "mortyr") {
+          ${new TweakSkin(TEXTURES['blank'], TEXTURES['mortyr'])}
+        }
+        if (${this.propVariant.name} == "wolfschanze") {
+          ${new TweakSkin(TEXTURES['blank'], TEXTURES['wolfschanze'])}
+        }
+        if (${this.propVariant.name} == "traktor-racer") {
+          ${new TweakSkin(TEXTURES['blank'], TEXTURES['traktor-racer'])}
+        }
+        if (${this.propVariant.name} == "americas-10-most-wanted") {
+          ${new TweakSkin(TEXTURES['blank'], TEXTURES['americas-10-most-wanted'])}
+        }
+        if (${this.propVariant.name} == "big-rigs") {
+          ${new TweakSkin(TEXTURES['blank'], TEXTURES['big-rigs'])}
+        }
+        if (${this.propVariant.name} == "streets-racer") {
+          ${new TweakSkin(TEXTURES['blank'], TEXTURES['streets-racer'])}
+        }
+        if (${this.propVariant.name} == "bikini-karate-babes") {
+          ${new TweakSkin(TEXTURES['blank'], TEXTURES['bikini-karate-babes'])}
+        }
+        `,
+      ]
+    })
   }
 
   get variant() {
