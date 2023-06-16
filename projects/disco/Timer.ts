@@ -55,9 +55,9 @@ export class Timer extends Marker {
     this.script?.subroutines.push(this.mainLoop)
 
     this.script?.on('initend', () => {
-      return `TIMERrun_main_loop -m 0 ${roundToNDecimals(3, 1 / notesPerBeat / (bpm / 60)) * 1000} GOSUB ${
-        this.mainLoop.name
-      }`
+      return `TIMERrun_main_loop -m 0 ${
+        roundToNDecimals(3, 1 / notesPerBeat / (bpm / 60)) * 1000
+      } ${this.mainLoop.invoke()}`
     })
 
     this.script?.on('custom', () => {
