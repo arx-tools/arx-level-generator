@@ -278,7 +278,6 @@ export class Texture extends ThreeJsTextue {
   static get stoneHumanPriest4() {
     return new Texture({ filename: '[stone]_human_priest4.jpg', size: 256 })
   }
-
   static get itemFishingPole2() {
     return new Texture({ filename: 'item_fishing pole2.bmp', size: 128 })
   }
@@ -291,15 +290,12 @@ export class Texture extends ThreeJsTextue {
   static get stoneGroundCavesWet05() {
     return new Texture({ filename: '[stone]_ground_caves_wet05', size: 128 })
   }
-
   static get glassGlass01() {
     return new Texture({ filename: '[glass]_glass01.jpg', size: 128 })
   }
-
   static get itemCheese() {
     return new Texture({ filename: 'item_cheese.jpg', size: 64 })
   }
-
   static get missingTexture() {
     return Texture.fromCustomFile({
       filename: 'jorge-[stone].jpg',
@@ -307,7 +303,6 @@ export class Texture extends ThreeJsTextue {
       size: 32,
     })
   }
-
   static get itemRuneAam() {
     return new Texture({ filename: 'item_rune_aam', size: 64 })
   }
