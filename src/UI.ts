@@ -21,7 +21,7 @@ export class UI {
     return this.customElements[element]
   }
 
-  async exportSourcesAndTargets(outputDir: string) {
+  exportSourcesAndTargets(outputDir: string) {
     const files: Record<string, string> = {}
 
     if (this.customElements[UiElements.MainMenuBackground] !== undefined) {

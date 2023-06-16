@@ -365,8 +365,8 @@ export class ArxMap {
 
     let textures = await this.polygons.exportTextures(outputDir)
 
-    const hudElements = await this.hud.exportSourcesAndTargets(outputDir, levelIdx)
-    const uiElements = await this.ui.exportSourcesAndTargets(outputDir)
+    const hudElements = this.hud.exportSourcesAndTargets(outputDir, levelIdx)
+    const uiElements = this.ui.exportSourcesAndTargets(outputDir)
 
     const ambienceTracks = this.zones.reduce((acc, zone) => {
       if (zone.ambience === undefined || zone.ambience.isNative) {
