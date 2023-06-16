@@ -29,7 +29,7 @@ export class Audio {
     this.targetPath = props.type === 'speech' ? 'speech/english' : 'sfx'
   }
 
-  static async fromCustomFile(props: Expand<Omit<AudioConstructorProps, 'isNative'>>) {
+  static fromCustomFile(props: Expand<Omit<AudioConstructorProps, 'isNative'>>) {
     return new Audio({
       ...props,
       isNative: false,
@@ -47,19 +47,19 @@ export class Audio {
     return [source, target]
   }
 
-  static async replace(from: Audio, to: Audio | Promise<Audio>) {
+  static replace(from: Audio, to: Audio) {
     if (!from.isNative) {
       throw new Error('you can only replace native audio files')
     }
 
-    if ((await to).isNative) {
-      throw new Error('you can only replace audio files with a custom audio file')
+    if (to.isNative) {
+      throw new Error('you can only replace audio files with custom audio files')
     }
 
-    this.replacements[from.filename] = await to
+    this.replacements[from.filename] = to
   }
 
-  static async mute(sound: Audio) {
+  static mute(sound: Audio) {
     this.replace(
       sound,
       Audio.fromCustomFile({
