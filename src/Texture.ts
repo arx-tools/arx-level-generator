@@ -53,18 +53,33 @@ export class Texture extends ThreeJsTextue {
     return copy
   }
 
-  static async fromCustomFile(props: Expand<Omit<TextureConstructorProps, 'isNative'>>) {
-    const source = path.resolve('assets', props.sourcePath ?? Texture.targetPath, props.filename)
+  async getMetadata() {
+    // TODO: memoize the result of this function
 
-    const image = props.filename.toLowerCase().endsWith('bmp') ? (sharpFromBmp(source) as Sharp) : sharp(source)
+    const source = path.resolve('assets', this.sourcePath ?? Texture.targetPath, this.filename)
+    const image = this.filename.toLowerCase().endsWith('bmp') ? (sharpFromBmp(source) as Sharp) : sharp(source)
     const metadata = await image.metadata()
 
-    return new Texture({
+    return metadata
+  }
+
+  static async fromCustomFile(props: Expand<Omit<TextureConstructorProps, 'isNative'>>) {
+    const texture = new Texture({
       ...props,
       isNative: false,
-      width: metadata.width,
-      height: metadata.height,
     })
+
+    // TODO: only calculate width and height when needed
+    if (texture.width === SIZE_UNKNOWN) {
+      const { width } = await texture.getMetadata()
+      texture.width = width ?? SIZE_UNKNOWN
+    }
+    if (texture.height === SIZE_UNKNOWN) {
+      const { height } = await texture.getMetadata()
+      texture.height = height ?? SIZE_UNKNOWN
+    }
+
+    return texture
   }
 
   static fromArxTextureContainer(texture: ArxTextureContainer) {
