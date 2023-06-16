@@ -10,7 +10,12 @@ export class ScriptSubroutine {
   }
 
   async toString() {
-    return [`>>${this.name} {`, await Script.handlerToString(this.command), '  return', '}'].join('\n')
+    const renderedScript = await Script.handlerToString(this.command)
+    if (renderedScript.trim() === '') {
+      return ''
+    }
+
+    return [`>>${this.name} {`, renderedScript, '  return', '}'].join('\n')
   }
 
   invoke() {
