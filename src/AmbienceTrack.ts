@@ -1,5 +1,6 @@
 import path from 'node:path'
 import { ArxKey, ArxSettingFlag, ArxTrack, ArxTrackFlags } from 'arx-convert/types'
+import { Audio } from './Audio.js'
 
 type AmbienceTrackConstructorProps = {
   filename: string
@@ -36,6 +37,18 @@ export class AmbienceTrack {
     ]
   }
 
+  static fromAudio(audio: Audio) {
+    if (audio.isNative) {
+      throw new Error(`AmbienceTrack: using a native Audio "${audio.filename}" is not supported (yet?)`)
+    }
+
+    return new AmbienceTrack({
+      filename: audio.filename,
+      sourcePath: audio.sourcePath,
+      flags: ArxTrackFlags.Master,
+    })
+  }
+
   exportSourceAndTarget(outputDir: string): [string, string] {
     const source = path.resolve('assets', this.sourcePath ?? AmbienceTrack.targetPath, this.filename)
     const target = path.resolve(outputDir, AmbienceTrack.targetPath, this.filename)
@@ -45,7 +58,7 @@ export class AmbienceTrack {
 
   toArxTrack(): ArxTrack {
     return {
-      filename: (this.sourcePath ?? AmbienceTrack.targetPath) + '/' + this.filename,
+      filename: AmbienceTrack.targetPath + '/' + this.filename,
       flags: this.flags,
       keys: this.keys,
     }
