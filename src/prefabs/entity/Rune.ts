@@ -1,5 +1,13 @@
 import { Expand } from 'arx-convert/utils'
+import { Audio } from '@src/Audio.js'
 import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
+import { Script, ScriptHandler } from '@src/Script.js'
+import { Texture } from '@src/Texture.js'
+import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
+import { Sound, SoundFlags } from '@scripting/classes/Sound.js'
+import { TweakSkin } from '@scripting/commands/TweakSkin.js'
+import { Label } from '@scripting/properties/Label.js'
+import { Material } from '@scripting/properties/Material.js'
 import { Variable } from '@scripting/properties/Variable.js'
 
 /**
@@ -29,15 +37,18 @@ type RuneVariant =
 
 type RuneConstructorProps = Expand<
   EntityConstructorPropsWithoutSrc & {
+    /**
+     * default value is true when Entity is root
+     */
     arxTutorialEnabled?: boolean
   }
 >
 
 export class Rune extends Entity {
   private propRuneName: Variable<string>
-  private propArxTutorialEnabled: Variable<boolean>
+  private propArxTutorialEnabled: Variable<boolean> | undefined
 
-  constructor(variant: RuneVariant, { arxTutorialEnabled = true, ...props }: RuneConstructorProps = {}) {
+  constructor(variant: RuneVariant, { arxTutorialEnabled, ...props }: RuneConstructorProps = {}) {
     super({
       src: 'items/magic/rune_aam',
       ...props,
@@ -45,61 +56,121 @@ export class Rune extends Entity {
     this.withScript()
 
     this.propRuneName = new Variable('string', 'rune_name', variant)
-    this.propArxTutorialEnabled = new Variable('bool', 'arx_tutorial_enabled', arxTutorialEnabled)
 
-    this.script?.properties.push(this.propRuneName, this.propArxTutorialEnabled)
+    this.script?.properties.push(this.propRuneName)
 
-    // TODO: only add the following script if isRoot:
+    const system = new Sound(Audio.system.filename, SoundFlags.EmitFromPlayer)
+    const system2 = new Sound(Audio.system2.filename, SoundFlags.EmitFromPlayer)
 
-    /*
-    ON INIT {
- SET £rune_name aam
- SET_MATERIAL STONE
- SET_GROUP PROVISIONS
- SET_PRICE 1000
- SET_STEAL 50
- SET_WEIGHT 0
- ACCEPT
-}
+    const whenRoot = (handler: () => ScriptHandler) => {
+      return () => {
+        if (!this.script?.isRoot) {
+          return Promise.resolve('')
+        }
 
-ON INITEND {
- SETNAME [system_~£rune_name~] 
- TWEAK ICON rune_~£rune_name~[icon]
- TWEAK SKIN "item_rune_aam" item_rune_~£rune_name~
- ACCEPT
-}
+        return Script.handlerToString(handler())
+      }
+    }
 
-ON INVENTORYUSE {
- PLAY "system2"
- RUNE -a ~£rune_name~
- IF (#TUTORIAL_MAGIC < 9) INC #TUTORIAL_MAGIC 3
- IF (#TUTORIAL_MAGIC == 8) GOTO TUTO
- IF (#TUTORIAL_MAGIC == 7) GOTO TUTO
- IF (#TUTORIAL_MAGIC == 6) {
-  >>TUTO
-  SET #TUTORIAL_MAGIC 9
-  PLAY "system"
-  HEROSAY [system_tutorial_6bis]
-  QUEST [system_tutorial_6bis]
-  DESTROY SELF
-  ACCEPT
- }
- DESTROY SELF
- ACCEPT
-}
+    const tutorialMagic = new Variable('global int', 'TUTORIAL_MAGIC', 0, true)
 
-ON INVENTORYIN {
- IF (#TUTORIAL_MAGIC > 1) ACCEPT
- INC #TUTORIAL_MAGIC 1
- IF (#TUTORIAL_MAGIC == 2) {
-  PLAY "system"
-  HEROSAY [system_tutorial_6]
-  QUEST [system_tutorial_6]
-  ACCEPT
- }
- ACCEPT
-}
-    */
+    this.script?.on('init', () => {
+      if (this.script?.isRoot) {
+        this.propArxTutorialEnabled = new Variable('bool', 'arx_tutorial_enabled', arxTutorialEnabled ?? true)
+        return [this.propArxTutorialEnabled, tutorialMagic]
+      }
+
+      if (typeof arxTutorialEnabled !== 'undefined') {
+        this.propArxTutorialEnabled = new Variable('bool', 'arx_tutorial_enabled', arxTutorialEnabled)
+        return [this.propArxTutorialEnabled]
+      }
+
+      return []
+    })
+
+    this.script?.on(
+      'init',
+      whenRoot(() => {
+        return [Material.stone, 'set_group provisions', 'set_price 1000', 'set_steal 50', 'set_weight 0']
+      }),
+    )
+
+    this.script?.on(
+      'initend',
+      whenRoot(() => {
+        return [
+          new Label(`[system_~${this.propRuneName.name}~]`),
+          `tweak icon rune_~${this.propRuneName.name}~[icon]`,
+          new TweakSkin(Texture.itemRuneAam, `item_rune_~${this.propRuneName.name}~`),
+        ]
+      }),
+    )
+
+    const tutorialFoundRunes = new ScriptSubroutine(
+      'tutorial_found_runes',
+      whenRoot(() => {
+        return `
+          ${system.play()}
+          herosay [system_tutorial_6]
+          quest [system_tutorial_6]
+        `
+      }),
+    )
+
+    const tutorialAddedRunesToBook = new ScriptSubroutine(
+      'tutorial_added_runes_to_book',
+      whenRoot(() => {
+        return `
+          ${system.play()}
+          herosay [system_tutorial_6bis]
+          quest [system_tutorial_6bis]
+        `
+      }),
+    )
+
+    this.script?.subroutines.push(tutorialFoundRunes, tutorialAddedRunesToBook)
+
+    this.script?.on(
+      'inventoryuse',
+      whenRoot(() => {
+        return `
+          ${system2.play()}
+          rune -a ~${this.propRuneName.name}~
+
+          if (${this.propArxTutorialEnabled?.name} == 1) {
+            if (${tutorialMagic.name} < 9) {
+              inc ${tutorialMagic.name} 3
+            }
+
+            if (${tutorialMagic.name} >= 6) {
+              set ${tutorialMagic.name} 9
+              ${tutorialAddedRunesToBook.invoke()}
+            }
+          }
+
+          destroy self
+        `
+      }),
+    )
+
+    this.script?.on(
+      'inventoryin',
+      whenRoot(() => {
+        return `
+          if (${this.propArxTutorialEnabled?.name} == 1) {
+            if (${tutorialMagic.name} > 1) {
+              accept
+            }
+
+            inc ${tutorialMagic.name} 1
+
+            if (${tutorialMagic.name} == 2) {
+              ${tutorialFoundRunes.invoke()}
+            }
+          }
+        `
+      }),
+    )
   }
 
   get variant() {
