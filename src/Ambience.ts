@@ -1,6 +1,7 @@
 import path from 'node:path'
 import { ArxAMB, ArxTrackFlags } from 'arx-convert/types'
 import { AmbienceTrack } from '@src/AmbienceTrack.js'
+import { Audio } from './Audio.js'
 
 type AmbienceConstructorProps = {
   name: string
@@ -33,17 +34,11 @@ export class Ambience {
     })
   }
 
-  static fromCustomAudio(ambienceName: string, filename: string, sourcePath?: string) {
-    const track = new AmbienceTrack({
-      filename,
-      sourcePath,
-      flags: ArxTrackFlags.Master,
-    })
-
+  static fromAudio(ambienceName: string, audio: Audio) {
     return new Ambience({
       name: ambienceName,
       isNative: false,
-      tracks: [track],
+      tracks: [AmbienceTrack.fromAudio(audio)],
     })
   }
 
