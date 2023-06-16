@@ -83,6 +83,12 @@ export default async () => {
     'bikini-karate-babes',
   ] as PCGameVariant[])
 
+  const rootRune = new Rune('aam', {
+    arxTutorialEnabled: false,
+  })
+  rootRune.script?.makeIntoRoot()
+  map.entities.push(rootRune)
+
   const runeComunicatum = new Rune('comunicatum')
 
   const barrel = Entity.barrel
