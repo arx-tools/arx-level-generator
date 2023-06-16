@@ -225,7 +225,7 @@ export default async () => {
 
   map.lights.push(...moon.lights)
 
-  const soundOfCrickets = await Audio.fromCustomFile({
+  const soundOfCrickets = Audio.fromCustomFile({
     filename: 'crickets.wav',
     sourcePath: 'projects/forest/sounds',
   })
@@ -274,7 +274,7 @@ export default async () => {
     position: new Vector3(300, -100, 450),
     angleY: 60,
     scale: 0.1,
-    music: await Audio.fromCustomFile({
+    music: Audio.fromCustomFile({
       filename: 'lalee-theme-song.wav',
       sourcePath: 'projects/lalees-minigame/sfx',
     }),
