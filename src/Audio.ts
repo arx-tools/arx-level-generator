@@ -8,7 +8,7 @@ type AudioConstructorProps = {
   isNative?: boolean
   sourcePath?: string
   /**
-   * @default "sfx"
+   * default value is "sfx"
    */
   type?: AudioType
 }
