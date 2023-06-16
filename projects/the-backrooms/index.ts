@@ -189,45 +189,6 @@ export default async () => {
   }
   */
 
-  // ---------------
-
-  /*
-  const shape = new Shape()
-  shape.lineTo(100, 0)
-  shape.lineTo(0, 100)
-  shape.lineTo(0, 200)
-  shape.lineTo(-200, 50)
-
-  const geometry = new ShapeGeometry(shape)
-  const edge = new EdgesGeometry(geometry)
-  edge.rotateX(MathUtils.degToRad(70))
-
-  // TODO: replace this with createZone()
-  const zone = Zone.fromThreejsGeometry(edge, {
-    name: 'spawn',
-    ambience: Ambience.fromCustomAudio('loop_sirs', 'loop_sirs.wav'),
-  })
-
-  map.zones.push(zone)
-
-  const shape2 = new Shape()
-  shape2.lineTo(100, 0)
-  shape2.lineTo(100, 100)
-  shape2.lineTo(0, 100)
-
-  const geometry2 = new ShapeGeometry(shape2)
-  const edge2 = new EdgesGeometry(geometry2)
-  edge2.rotateX(MathUtils.degToRad(90))
-  edge2.translate(0, 0, 1100)
-
-  const zone2 = Zone.fromThreejsGeometry(edge2, {
-    name: 'other zone',
-    ambience: Ambience.jailStress,
-  })
-
-  map.zones.push(zone2)
-  */
-
   map.finalize()
 
   map.saveToDisk(OUTPUTDIR, parseInt(LEVEL))
