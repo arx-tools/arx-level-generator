@@ -1,24 +1,29 @@
+import { Audio } from '@src/Audio.js'
 import { Entity } from '@src/Entity.js'
 import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
+import { Sound, SoundFlags } from '@scripting/classes/Sound.js'
 import { Variable } from '@scripting/properties/Variable.js'
+
+const notification = new Sound(Audio.system.filename, SoundFlags.EmitFromPlayer)
+const achievement = new Sound(Audio.system3.filename, SoundFlags.EmitFromPlayer)
 
 const tutorialWelcome = new ScriptSubroutine('tutorial_welcome', () => {
   return `
-    play -o "system"
+    ${notification.play()}
     herosay [tutorial--welcome]
     quest [tutorial--welcome]
   `
 })
 const tutorialFoundAGame = new ScriptSubroutine('tutorial_found_a_game', () => {
   return `
-    play -o "system"
+    ${notification.play()}
     herosay [tutorial--found-a-game]
     quest [tutorial--found-a-game]
   `
 })
 const tutorialGaveGameToGoblin = new ScriptSubroutine('tutorial_gave_game_to_goblin', () => {
   return `
-    play -o "system"
+    ${notification.play()}
     herosay [tutorial--gave-game-to-goblin]
     quest [tutorial--gave-game-to-goblin]
   `
@@ -26,21 +31,21 @@ const tutorialGaveGameToGoblin = new ScriptSubroutine('tutorial_gave_game_to_gob
 
 const achievementListenSmall = new ScriptSubroutine('achievement_found_games_small', () => {
   return `
-    play -o "system3"
+    ${achievement.play()}
     herosay [achievement--found-games-small]
     quest [achievement--found-games-small]
   `
 })
 const achievementListenMedium = new ScriptSubroutine('achievement_found_games_medium', () => {
   return `
-    play -o "system3"
+    ${achievement.play()}
     herosay [achievement--found-games-medium]
     quest [achievement--found-games-medium]
   `
 })
 const achievementListenLarge = new ScriptSubroutine('achievement_found_games_large', () => {
   return `
-    play -o "system3"
+    ${achievement.play()}
     herosay [achievement--found-games-large]
     quest [achievement--found-games-large]
   `
@@ -63,7 +68,7 @@ export const createGameStateManager = () => {
     achievementListenLarge,
   )
   manager.script?.on('init', () => {
-    return `TIMERwelcome -m 1 3000 gosub ${tutorialWelcome.name}`
+    return `TIMERwelcome -m 1 3000 ${tutorialWelcome.invoke()}`
   })
 
   manager.script?.on('goblin_received_a_game', () => {
@@ -71,19 +76,16 @@ export const createGameStateManager = () => {
     inc ${numberOfGamesTheGoblinHas.name} 1
 
     if (${numberOfGamesTheGoblinHas.name} == 1) {
-      gosub ${tutorialGaveGameToGoblin.name}
+      ${tutorialGaveGameToGoblin.invoke()}
     }
-
     if (${numberOfGamesTheGoblinHas.name} == 2) {
-      gosub ${achievementListenSmall.name}
+      ${achievementListenSmall.invoke()}
     }
-
     if (${numberOfGamesTheGoblinHas.name} == 5) {
-      gosub ${achievementListenMedium.name}
+      ${achievementListenMedium.invoke()}
     }
-
     if (${numberOfGamesTheGoblinHas.name} == 8) {
-      gosub ${achievementListenLarge.name}
+      ${achievementListenLarge.invoke()}
     }
     `
   })
@@ -91,7 +93,7 @@ export const createGameStateManager = () => {
     return `
     if (${playerFoundAnyGames.name} == 0) {
       set ${playerFoundAnyGames.name} 1
-      gosub ${tutorialFoundAGame.name}
+      ${tutorialFoundAGame.invoke()}
     }
     `
   })
