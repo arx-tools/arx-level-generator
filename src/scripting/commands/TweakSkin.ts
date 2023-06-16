@@ -4,21 +4,20 @@ import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import { UsesTextures } from '@scripting/interfaces/UsesTextures.js'
 
 export class TweakSkin extends ScriptCommand implements UsesTextures {
-  oldTexture: Texture | Promise<Texture> | string
-  newTexture: Texture | Promise<Texture> | string
+  oldTexture: Texture | string
+  newTexture: Texture | string
 
-  constructor(oldTexture: Texture | Promise<Texture> | string, newTexture: Texture | Promise<Texture> | string) {
+  constructor(oldTexture: Texture | string, newTexture: Texture | string) {
     super()
     this.oldTexture = oldTexture
     this.newTexture = newTexture
   }
 
-  async toString() {
-    const oldTexture = await this.oldTexture
-    const newTexture = await this.newTexture
-
-    const oldFilename = typeof oldTexture === 'string' ? oldTexture : path.parse(oldTexture.filename).name
-    const newFilename = typeof newTexture === 'string' ? newTexture : path.parse(newTexture.filename).name
+  toString() {
+    const oldFilename =
+      typeof this.oldTexture === 'string' ? this.oldTexture : path.parse(this.oldTexture.filename).name
+    const newFilename =
+      typeof this.newTexture === 'string' ? this.newTexture : path.parse(this.newTexture.filename).name
 
     return `tweak skin "${oldFilename}" "${newFilename}"`
   }
@@ -26,13 +25,13 @@ export class TweakSkin extends ScriptCommand implements UsesTextures {
   async exportTextures(outputDir: string) {
     let files: Record<string, string> = {}
 
-    const oldTexture = await this.oldTexture
+    const oldTexture = this.oldTexture
     if (typeof oldTexture !== 'string' && !oldTexture.isNative) {
       const [source, target] = await oldTexture.exportSourceAndTarget(outputDir, false)
       files[target] = source
     }
 
-    const newTexture = await this.newTexture
+    const newTexture = this.newTexture
     if (typeof newTexture !== 'string' && !newTexture.isNative) {
       const [source, target] = await newTexture.exportSourceAndTarget(outputDir, false)
       files[target] = source
