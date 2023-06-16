@@ -3,6 +3,7 @@ import seedrandom from 'seedrandom'
 import { Vector2 } from 'three'
 import { Ambience } from '@src/Ambience.js'
 import { ArxMap } from '@src/ArxMap.js'
+import { Audio } from '@src/Audio.js'
 import { Color } from '@src/Color.js'
 import { HudElements } from '@src/HUD.js'
 import { DONT_QUADIFY } from '@src/Polygons.js'
@@ -46,7 +47,13 @@ export default async () => {
     createZone({
       name: 'spawn',
       backgroundColor: Color.fromCSS('hsla(0, 64%, 8%, 1)'),
-      ambience: Ambience.fromCustomAudio('loop_sirs', 'loop_sirs.wav'),
+      ambience: Ambience.fromAudio(
+        'loop_sirs',
+        Audio.fromCustomFile({
+          filename: 'loop_sirs.wav',
+          sourcePath: 'projects/alias-nightmare/sfx',
+        }),
+      ),
     }),
   )
 
