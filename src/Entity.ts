@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { ArxInteractiveObject } from 'arx-convert/types'
-import { Expand } from 'arx-convert/utils'
+import { Expand, Optional } from 'arx-convert/utils'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
 import { Texture } from '@src/Texture.js'
@@ -27,7 +27,7 @@ export type EntityConstructorProps = {
   position?: Vector3
   orientation?: Rotation
   inventoryIcon?: Texture
-  model?: ModelDescriptor
+  model?: Expand<Optional<ModelDescriptor, 'textures'>>
   /**
    * stuff that I can't put elsewhere, but needs to get exported
    */

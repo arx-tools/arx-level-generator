@@ -88,7 +88,7 @@ export class Script {
 
     for (let h of tmp2) {
       const handlerResult = h instanceof ScriptCommand ? h.toString() : h
-      const handlerResults = Array.isArray(handlerResult) ? handlerResult : [handlerResult]
+      const handlerResults = (Array.isArray(handlerResult) ? handlerResult : [handlerResult]) as string[]
       result += handlerResults.filter((r) => r.trim() !== '').join('\n') + '\n'
     }
 

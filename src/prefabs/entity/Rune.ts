@@ -65,7 +65,7 @@ export class Rune extends Entity {
     const whenRoot = (handler: () => ScriptHandler) => {
       return () => {
         if (!this.script?.isRoot) {
-          return Promise.resolve('')
+          return ''
         }
 
         return Script.handlerToString(handler())
