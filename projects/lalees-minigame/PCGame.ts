@@ -22,39 +22,39 @@ export type PCGameVariant =
   | 'bikini-karate-babes'
 
 const TEXTURES: Record<PCGameVariant, Texture> = {
-  blank: await Texture.fromCustomFile({
+  blank: Texture.fromCustomFile({
     filename: 'pcgame_box_art_blank.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
-  mesterlovesz: await Texture.fromCustomFile({
+  mesterlovesz: Texture.fromCustomFile({
     filename: 'pcgame_box_art_mesterlovesz.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
-  mortyr: await Texture.fromCustomFile({
+  mortyr: Texture.fromCustomFile({
     filename: 'pcgame_box_art_mortyr.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
-  wolfschanze: await Texture.fromCustomFile({
+  wolfschanze: Texture.fromCustomFile({
     filename: 'pcgame_box_art_wolfschanze.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
-  'traktor-racer': await Texture.fromCustomFile({
+  'traktor-racer': Texture.fromCustomFile({
     filename: 'pcgame_box_art_traktor_racer.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
-  'americas-10-most-wanted': await Texture.fromCustomFile({
+  'americas-10-most-wanted': Texture.fromCustomFile({
     filename: 'pcgame_box_art_americas_10_most_wanted.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
-  'big-rigs': await Texture.fromCustomFile({
+  'big-rigs': Texture.fromCustomFile({
     filename: 'pcgame_box_art_big_rigs.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
-  'streets-racer': await Texture.fromCustomFile({
+  'streets-racer': Texture.fromCustomFile({
     filename: 'pcgame_box_art_streets_racer.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),
-  'bikini-karate-babes': await Texture.fromCustomFile({
+  'bikini-karate-babes': Texture.fromCustomFile({
     filename: 'pcgame_box_art_bikini_karate_babes.png',
     sourcePath: ASSETS_DIR + '/textures',
   }),

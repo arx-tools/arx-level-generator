@@ -5,7 +5,7 @@ import { Texture } from '@src/Texture.js'
 export const TEXTURE_DIR = 'projects/the-backrooms/textures'
 
 export const carpet = Material.fromTexture(
-  await Texture.fromCustomFile({
+  Texture.fromCustomFile({
     sourcePath: TEXTURE_DIR,
     filename: 'backrooms-[fabric]-carpet-dirty.jpg',
   }),
@@ -15,7 +15,7 @@ export const carpet = Material.fromTexture(
 )
 
 export const wallpaper = Material.fromTexture(
-  await Texture.fromCustomFile({
+  Texture.fromCustomFile({
     sourcePath: TEXTURE_DIR,
     filename: 'backrooms-[stone]-wall.jpg',
   }),
@@ -25,7 +25,7 @@ export const wallpaper = Material.fromTexture(
 )
 
 export const wallpaperDotted = Material.fromTexture(
-  await Texture.fromCustomFile({
+  Texture.fromCustomFile({
     sourcePath: TEXTURE_DIR,
     filename: 'backrooms-[stone]-wall2.jpg',
   }),
@@ -35,7 +35,7 @@ export const wallpaperDotted = Material.fromTexture(
 )
 
 export const ceilingTile = Material.fromTexture(
-  await Texture.fromCustomFile({
+  Texture.fromCustomFile({
     sourcePath: TEXTURE_DIR,
     filename: 'backrooms-[stone]-ceiling-tile.jpg',
   }),
@@ -45,7 +45,7 @@ export const ceilingTile = Material.fromTexture(
 )
 
 export const mold = Material.fromTexture(
-  await Texture.fromCustomFile({
+  Texture.fromCustomFile({
     sourcePath: TEXTURE_DIR,
     filename: 'mold-edge.jpg',
   }),
@@ -55,7 +55,7 @@ export const mold = Material.fromTexture(
 )
 
 export const whiteMosaicTiles = Material.fromTexture(
-  await Texture.fromCustomFile({
+  Texture.fromCustomFile({
     sourcePath: TEXTURE_DIR,
     filename: 'pool-room-white-mosaic-tile.jpg',
   }),
@@ -65,7 +65,7 @@ export const whiteMosaicTiles = Material.fromTexture(
 )
 
 export const fireExitDoor = Material.fromTexture(
-  await Texture.fromCustomFile({
+  Texture.fromCustomFile({
     sourcePath: TEXTURE_DIR,
     filename: 'fire-exit-door.bmp',
   }),

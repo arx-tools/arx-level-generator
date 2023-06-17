@@ -20,11 +20,11 @@ export type EntityConstructorProps = {
   src: string
   position?: Vector3
   orientation?: Rotation
-  inventoryIcon?: Texture | Promise<Texture>
+  inventoryIcon?: Texture
   model?: {
     sourcePath: string
     filename: string
-    textures?: (Texture | Promise<Texture>)[]
+    textures?: Texture[]
   }
   /**
    * stuff that I can't put elsewhere, but needs to get exported

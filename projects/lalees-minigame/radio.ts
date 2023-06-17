@@ -31,35 +31,35 @@ type createRadioProps = {
 
 const radioTextures = {
   front: Material.fromTexture(
-    await Texture.fromCustomFile({
+    Texture.fromCustomFile({
       filename: 'radio-front.jpg',
       sourcePath: 'projects/lalees-minigame/textures',
     }),
     { flags: ArxPolygonFlags.NoShadow },
   ),
   back: Material.fromTexture(
-    await Texture.fromCustomFile({
+    Texture.fromCustomFile({
       filename: 'radio-back.jpg',
       sourcePath: 'projects/lalees-minigame/textures',
     }),
     { flags: ArxPolygonFlags.NoShadow },
   ),
   top: Material.fromTexture(
-    await Texture.fromCustomFile({
+    Texture.fromCustomFile({
       filename: 'radio-top.jpg',
       sourcePath: 'projects/lalees-minigame/textures',
     }),
     { flags: ArxPolygonFlags.NoShadow },
   ),
   side: Material.fromTexture(
-    await Texture.fromCustomFile({
+    Texture.fromCustomFile({
       filename: 'radio-side.jpg',
       sourcePath: 'projects/lalees-minigame/textures',
     }),
     { flags: ArxPolygonFlags.NoShadow },
   ),
   bottom: Material.fromTexture(
-    await Texture.fromCustomFile({
+    Texture.fromCustomFile({
       filename: 'radio-bottom.jpg',
       sourcePath: 'projects/lalees-minigame/textures',
     }),

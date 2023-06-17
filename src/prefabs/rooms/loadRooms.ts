@@ -54,7 +54,7 @@ export const loadRooms = async (filename: string) => {
             case 'ceiling':
               {
                 if (tokens[1] === 'custom') {
-                  roomDefinitions[currentBlock.name].textures[tokens[0]] = await Texture.fromCustomFile({
+                  roomDefinitions[currentBlock.name].textures[tokens[0]] = Texture.fromCustomFile({
                     filename: tokens[3],
                     sourcePath: tokens[2],
                   })
@@ -76,7 +76,7 @@ export const loadRooms = async (filename: string) => {
                 const wall = roomDefinitions[currentBlock.name].textures.wall as QuadrupleOf<TextureOrMaterial>
 
                 if (tokens[1] === 'custom') {
-                  const texture = await Texture.fromCustomFile({ filename: tokens[3], sourcePath: tokens[2] })
+                  const texture = Texture.fromCustomFile({ filename: tokens[3], sourcePath: tokens[2] })
                   wall[0] = texture
                   wall[1] = texture
                   wall[2] = texture
@@ -102,7 +102,7 @@ export const loadRooms = async (filename: string) => {
               {
                 const wall = roomDefinitions[currentBlock.name].textures.wall as QuadrupleOf<TextureOrMaterial>
                 if (tokens[1] === 'custom') {
-                  const texture = await Texture.fromCustomFile({ filename: tokens[3], sourcePath: tokens[2] })
+                  const texture = Texture.fromCustomFile({ filename: tokens[3], sourcePath: tokens[2] })
                   const wallIdx = tokens[0].endsWith('north')
                     ? 0
                     : tokens[0].endsWith('east')

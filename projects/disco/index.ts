@@ -23,7 +23,7 @@ import { scaleUV } from '@tools/mesh/scaleUV.js'
 
 const createFloor = async (position: Vector3, size: Vector2) => {
   const floorTiles = Material.fromTexture(
-    await Texture.fromCustomFile({
+    Texture.fromCustomFile({
       filename: '[wood]-fake-floor.jpg',
       sourcePath: 'textures',
     }),
@@ -43,7 +43,7 @@ const createFloor = async (position: Vector3, size: Vector2) => {
 
 const createWall = async (position: Vector3, size: Vector2, direction: 'north' | 'west' | 'east' | 'south') => {
   const metal = Material.fromTexture(
-    await Texture.fromCustomFile({
+    Texture.fromCustomFile({
       filename: '[stone]-dark-brick-wall.jpg',
       sourcePath: 'textures',
     }),
@@ -75,8 +75,7 @@ const createWall = async (position: Vector3, size: Vector2, direction: 'north' |
 
 const createCeiling = async (position: Vector3, size: Vector2) => {
   const woodenStripes = Material.fromTexture(
-    await Texture.fromCustomFile({
-      // filename: '[wood]-stripes.jpg',
+    Texture.fromCustomFile({
       filename: '[stone]-polished-concrete3.png',
       sourcePath: 'textures',
     }),
@@ -98,7 +97,7 @@ const createCeiling = async (position: Vector3, size: Vector2) => {
 
 const createSynthPanel = async (position: Vector3, size: Vector2) => {
   const metal = Material.fromTexture(
-    await Texture.fromCustomFile({
+    Texture.fromCustomFile({
       filename: 'dark-[metal]-grid.jpg',
       sourcePath: 'textures',
     }),

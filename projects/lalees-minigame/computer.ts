@@ -7,35 +7,35 @@ import { createBox } from '@prefabs/mesh/box.js'
 import { flipUVHorizontally } from '@tools/mesh/scaleUV.js'
 
 const textures = {
-  monitorFront: await Texture.fromCustomFile({
+  monitorFront: Texture.fromCustomFile({
     filename: 'monitor-front.bmp',
     sourcePath: 'projects/lalees-minigame/textures',
   }),
-  monitorBack: await Texture.fromCustomFile({
+  monitorBack: Texture.fromCustomFile({
     filename: 'monitor-back.jpg',
     sourcePath: 'projects/lalees-minigame/textures',
   }),
-  monitorLeft: await Texture.fromCustomFile({
+  monitorLeft: Texture.fromCustomFile({
     filename: 'monitor-left.jpg',
     sourcePath: 'projects/lalees-minigame/textures',
   }),
-  monitorRight: await Texture.fromCustomFile({
+  monitorRight: Texture.fromCustomFile({
     filename: 'monitor-right.jpg',
     sourcePath: 'projects/lalees-minigame/textures',
   }),
-  computerPlastic: await Texture.fromCustomFile({
+  computerPlastic: Texture.fromCustomFile({
     filename: 'computer-plastic.jpg',
     sourcePath: 'projects/lalees-minigame/textures',
   }),
-  youreWinner: await Texture.fromCustomFile({
+  youreWinner: Texture.fromCustomFile({
     filename: 'youre-winner.jpg',
     sourcePath: 'projects/lalees-minigame/textures',
   }),
-  keyboardTop: await Texture.fromCustomFile({
+  keyboardTop: Texture.fromCustomFile({
     filename: 'keyboard-top.jpg',
     sourcePath: 'projects/lalees-minigame/textures',
   }),
-  computerCaseFront: await Texture.fromCustomFile({
+  computerCaseFront: Texture.fromCustomFile({
     filename: 'computer-case-front.jpg',
     sourcePath: 'projects/lalees-minigame/textures',
   }),

@@ -113,7 +113,7 @@ export default async () => {
     position: new Vector3(-1230, 150, -1100),
     scale: 0.4,
     rotation: new Rotation(0, MathUtils.degToRad(180), 0),
-    fallbackTexture: await Texture.fromCustomFile({
+    fallbackTexture: Texture.fromCustomFile({
       filename: '[stone]-concrete.jpg',
       sourcePath: 'textures',
     }),

@@ -6,9 +6,9 @@ import { GoblinVeryLightDoor } from '@prefabs/entity/Door.js'
 import { Scale } from '@scripting/properties/Scale.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
-export const createCounter = async ({ position }: { position: Vector3 }) => {
+export const createCounter = ({ position }: { position: Vector3 }) => {
   const counterTopMaterial = new MeshBasicMaterial({
-    map: await Texture.fromCustomFile({
+    map: Texture.fromCustomFile({
       filename: '[stone]-granite.jpg',
       sourcePath: 'textures',
     }),
