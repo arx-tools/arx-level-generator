@@ -31,7 +31,7 @@ export const max = (arr: number[]) => {
 }
 
 export const sum = (numbers: number[]) => {
-  return numbers.reduce((sum, n) => sum + n, 0)
+  return numbers.reduce((total, n) => total + n, 0)
 }
 
 export const clone = <T>(data: T): T => {
@@ -39,12 +39,7 @@ export const clone = <T>(data: T): T => {
 }
 
 export const any = <T>(fn: (value: T) => boolean, values: T[]) => {
-  for (let value of values) {
-    if (fn(value)) {
-      return true
-    }
-  }
-  return false
+  return values.some(fn)
 }
 
 export const none = <T>(fn: (value: T) => boolean, values: T[]) => {
