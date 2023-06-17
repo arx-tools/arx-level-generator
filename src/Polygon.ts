@@ -111,13 +111,17 @@ export class Polygon {
     })
   }
 
+  hasTexture(): this is { texture: Texture } {
+    return typeof this.texture !== 'undefined'
+  }
+
   async toArxPolygon(textureContainers: (ArxTextureContainer & { remaining: number })[]): Promise<ArxPolygon> {
     const vertices = this.vertices.map((vertex) => {
       return vertex.toArxVertex()
     }) as QuadrupleOf<ArxVertex>
 
     let textureContainerId = NO_TEXTURE_CONTAINER
-    if (typeof this.texture !== 'undefined') {
+    if (this.hasTexture()) {
       const needsToBeTileable = (this.flags & ArxPolygonFlags.Tiled) !== 0
       const textureFilename =
         needsToBeTileable && !(await this.texture.isTileable())
