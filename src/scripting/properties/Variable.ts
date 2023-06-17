@@ -58,8 +58,8 @@ export class Variable<T> extends ScriptProperty<T> {
 
   get scriptValue() {
     switch (this.propType) {
-      case 'global bool':
       case 'bool':
+      case 'global bool':
         return `${this.value ? 1 : 0}`
       case 'int':
       case 'float':
