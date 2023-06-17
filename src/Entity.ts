@@ -9,6 +9,12 @@ import { Audio } from './Audio.js'
 
 const instanceCatalog: Record<string, Entity[]> = {}
 
+type ModelDescriptor = {
+  sourcePath: string
+  filename: string
+  textures: Texture[]
+}
+
 export type EntityConstructorProps = {
   id?: number
   /**
@@ -21,15 +27,11 @@ export type EntityConstructorProps = {
   position?: Vector3
   orientation?: Rotation
   inventoryIcon?: Texture
-  model?: {
-    sourcePath: string
-    filename: string
-    textures?: Texture[]
-  }
+  model?: ModelDescriptor
   /**
    * stuff that I can't put elsewhere, but needs to get exported
    */
-  otherDependencies?: (Audio | Promise<Audio>)[]
+  otherDependencies?: Audio[]
 }
 
 export type EntityConstructorPropsWithoutSrc = Expand<Omit<EntityConstructorProps, 'src'>>
@@ -45,17 +47,13 @@ export class Entity {
   src: string
   position: Vector3
   orientation: Rotation
-  inventoryIcon?: Texture | Promise<Texture>
+  inventoryIcon?: Texture
   script?: Script
-  model?: {
-    sourcePath: string
-    filename: string
-    textures: (Texture | Promise<Texture>)[]
-  }
+  model?: ModelDescriptor
   /**
    * stuff that I can't put elsewhere, but needs to get exported
    */
-  otherDependencies: (Audio | Promise<Audio>)[] = []
+  otherDependencies: Audio[] = []
 
   constructor(props: EntityConstructorProps) {
     this.src = props.src
@@ -83,9 +81,21 @@ export class Entity {
     return path.parse(this.src).name
   }
 
+  hasScript(): this is { script: Script } {
+    return typeof this.script !== 'undefined'
+  }
+
+  hasModel(): this is { model: ModelDescriptor } {
+    return typeof this.model !== 'undefined'
+  }
+
+  hasInventoryIcon(): this is { inventoryIcon: Texture } {
+    return typeof this.inventoryIcon !== 'undefined'
+  }
+
   withScript() {
-    if (typeof this.script !== 'undefined') {
-      throw new Error('trying to add a script to an Entity which already has one')
+    if (this.hasScript()) {
+      return this
     }
 
     this.script = new Script({
@@ -137,7 +147,7 @@ export class Entity {
   }
 
   exportScriptTarget(outputDir: string) {
-    if (typeof this.script === 'undefined') {
+    if (!this.hasScript()) {
       throw new Error("trying to export an Entity which doesn't have a script")
     }
 
@@ -159,17 +169,18 @@ export class Entity {
     )
   }
 
-  async exportInventoryIcon(outputDir: string): Promise<Record<string, string>> {
-    if (this.inventoryIcon === undefined) {
-      return {}
+  async exportInventoryIcon(outputDir: string) {
+    const files: Record<string, string> = {}
+
+    if (!this.hasInventoryIcon()) {
+      return files
     }
 
-    const inventoryIcon = await this.inventoryIcon
-    if (inventoryIcon.isNative) {
-      return {}
+    if (this.inventoryIcon.isNative) {
+      return files
     }
 
-    const [source] = await inventoryIcon.exportSourceAndTarget(outputDir, false)
+    const [source] = await this.inventoryIcon.exportSourceAndTarget(outputDir, false)
 
     let target: string
     if (this.src.endsWith('.asl')) {
@@ -178,17 +189,16 @@ export class Entity {
       target = path.resolve(outputDir, 'graph/obj3d/interactive', this.src, this.entityName + `[icon].bmp`)
     }
 
-    return {
-      [target]: source,
-    }
+    files[target] = source
+
+    return files
   }
 
-  async exportTextures(outputDir: string): Promise<Record<string, string>> {
+  async exportTextures(outputDir: string) {
     const files: Record<string, string> = {}
 
-    if (typeof this.model !== 'undefined') {
+    if (this.hasModel()) {
       for (let texture of this.model.textures) {
-        texture = await texture
         if (!texture.isNative) {
           const [source, target] = await texture.exportSourceAndTarget(outputDir, false)
           files[target] = source
@@ -199,27 +209,26 @@ export class Entity {
     return files
   }
 
-  async exportModel(outputDir: string): Promise<Record<string, string>> {
-    if (this.model === undefined) {
-      return {}
+  exportModel(outputDir: string) {
+    const files: Record<string, string> = {}
+
+    if (this.hasModel()) {
+      // TODO: handle this.src containing file extension
+      const source = path.resolve('assets', this.model.sourcePath, this.model.filename)
+      const target = path.resolve(outputDir, 'game/graph/obj3d/interactive', this.src, this.entityName + '.ftl')
+
+      files[target] = source
     }
 
-    // TODO: handle this.src containing file extension
-    const source = path.resolve('assets', this.model.sourcePath, this.model.filename)
-    const target = path.resolve(outputDir, 'game/graph/obj3d/interactive', this.src, this.entityName + '.ftl')
-
-    return {
-      [target]: source,
-    }
+    return files
   }
 
-  async exportOtherDependencies(outputDir: string): Promise<Record<string, string>> {
+  exportOtherDependencies(outputDir: string) {
     const files: Record<string, string> = {}
 
     for (let stuff of this.otherDependencies) {
-      stuff = await stuff
       if (!stuff.isNative) {
-        const [source, target] = await stuff.exportSourceAndTarget(outputDir)
+        const [source, target] = stuff.exportSourceAndTarget(outputDir)
         files[target] = source
       }
     }
