@@ -67,7 +67,7 @@ const radioTextures = {
   ),
 }
 
-export const createRadio = async ({ position, angleY = 0, scale = 1, music, isOn = true }: createRadioProps) => {
+export const createRadio = ({ position, angleY = 0, scale = 1, music, isOn = true }: createRadioProps) => {
   const boxSize = new Vector3(500 * scale, 300 * scale, 100 * scale)
 
   const musicPlayer = new SoundPlayer({

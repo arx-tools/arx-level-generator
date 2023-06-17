@@ -41,15 +41,7 @@ const textures = {
   }),
 }
 
-const createMonitor = async ({
-  position,
-  image,
-  angleY = 0,
-}: {
-  position: Vector3
-  image: Texture
-  angleY?: number
-}) => {
+const createMonitor = ({ position, image, angleY = 0 }: { position: Vector3; image: Texture; angleY?: number }) => {
   const monitorBody = createBox({
     position,
     origin: new Vector2(0, 1),
@@ -119,7 +111,7 @@ const createMonitor = async ({
   }
 }
 
-const createKeyboard = async ({ position, angleY = 0 }: { position: Vector3; angleY?: number }) => {
+const createKeyboard = ({ position, angleY = 0 }: { position: Vector3; angleY?: number }) => {
   const keyboard = createBox({
     position,
     origin: new Vector2(0, -1),
@@ -140,7 +132,7 @@ const createKeyboard = async ({ position, angleY = 0 }: { position: Vector3; ang
   }
 }
 
-const createComputerCase = async ({ position, angleY = 0 }: { position: Vector3; angleY?: number }) => {
+const createComputerCase = ({ position, angleY = 0 }: { position: Vector3; angleY?: number }) => {
   const keyboard = createBox({
     position,
     origin: new Vector2(-1, 0),
@@ -161,14 +153,14 @@ const createComputerCase = async ({ position, angleY = 0 }: { position: Vector3;
   }
 }
 
-export const createComputer = async ({ position, angleY = 0 }: { position: Vector3; angleY?: number }) => {
-  const monitor = await createMonitor({
+export const createComputer = ({ position, angleY = 0 }: { position: Vector3; angleY?: number }) => {
+  const monitor = createMonitor({
     position: position.clone().add(new Vector3(0, -32, 20)),
     angleY: angleY - 3,
     image: textures.youreWinner,
   })
-  const keyboard = await createKeyboard({ position: position.clone().add(new Vector3(-5, 0, 0)), angleY })
-  const computerCase = await createComputerCase({ position: position.clone().add(new Vector3(70, -25, 20)), angleY })
+  const keyboard = createKeyboard({ position: position.clone().add(new Vector3(-5, 0, 0)), angleY })
+  const computerCase = createComputerCase({ position: position.clone().add(new Vector3(70, -25, 20)), angleY })
 
   return {
     meshes: [...monitor.meshes, ...keyboard.meshes, ...computerCase.meshes],

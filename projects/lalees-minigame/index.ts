@@ -270,7 +270,7 @@ export default async () => {
 
   map.entities.push(goblin)
 
-  const radio = await createRadio({
+  const radio = createRadio({
     position: new Vector3(300, -100, 450),
     angleY: 60,
     scale: 0.1,
@@ -282,20 +282,13 @@ export default async () => {
   })
   map.entities.push(...radio.entities)
 
-  const counter1 = await createCounter({
-    position: new Vector3(300, -100, 450),
-  })
-  const counter2 = await createCounter({
-    position: new Vector3(300, -100, 300 - 5),
-  })
-  const counter3 = await createCounter({
-    position: new Vector3(300, -100, -250),
-  })
+  const counter1 = createCounter({ position: new Vector3(300, -100, 450) })
+  const counter2 = createCounter({ position: new Vector3(300, -100, 300 - 5) })
+  const counter3 = createCounter({ position: new Vector3(300, -100, -250) })
   map.entities.push(...counter1.entities, ...counter2.entities, ...counter3.entities)
 
-  const tableInRoomA = await createTable({ position: new Vector3(600, -80, 500) })
-
-  const computer = await createComputer({ position: new Vector3(600, -81, 480) })
+  const tableInRoomA = createTable({ position: new Vector3(600, -80, 500) })
+  const computer = createComputer({ position: new Vector3(600, -81, 480) })
 
   const meshes = [
     moon.meshes,
