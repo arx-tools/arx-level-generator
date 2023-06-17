@@ -31,6 +31,14 @@ export class Zone {
   drawDistance?: number
   ambience?: Ambience
 
+  hasBackgroundColor(): this is { backgroundColor: Color } {
+    return typeof this.backgroundColor !== 'undefined'
+  }
+
+  hasAmbience(): this is { ambience: Ambience } {
+    return typeof this.ambience !== 'undefined'
+  }
+
   constructor(props: ZoneConstructorProps) {
     this.name = props.name
     this.height = props.height ?? Infinity
