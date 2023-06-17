@@ -31,4 +31,4 @@ export type OriginalLevel =
   | 22
   | 23
 
-export type TextureOrMaterial = Texture | Promise<Texture> | Material | Promise<Material>
+export type TextureOrMaterial = Texture | Material
