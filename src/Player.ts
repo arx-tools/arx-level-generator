@@ -14,9 +14,13 @@ export class Player {
     this.position = new Vector3(0, 0, 0)
   }
 
+  hasScript(): this is { script: Script } {
+    return typeof this.script !== 'undefined'
+  }
+
   withScript() {
-    if (typeof this.script !== 'undefined') {
-      throw new Error('trying to add a script to a Player which already has one')
+    if (this.hasScript()) {
+      return this
     }
 
     this.script = new Script({
@@ -152,7 +156,7 @@ export class Player {
   }
 
   exportTarget(outputDir: string) {
-    if (typeof this.script === 'undefined') {
+    if (!this.hasScript()) {
       throw new Error("trying to export a Player which doesn't have a script")
     }
 
