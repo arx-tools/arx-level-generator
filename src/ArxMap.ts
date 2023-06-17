@@ -369,7 +369,7 @@ export class ArxMap {
     const uiElements = this.ui.exportSourcesAndTargets(outputDir)
 
     const ambienceTracks = this.zones.reduce((acc, zone) => {
-      if (zone.ambience === undefined || zone.ambience.isNative) {
+      if (!zone.hasAmbience() || zone.ambience.isNative) {
         return acc
       }
 
@@ -381,7 +381,7 @@ export class ArxMap {
     }, {} as Record<string, string>)
 
     const customAmbiences = this.zones.reduce((acc, zone) => {
-      if (zone.ambience === undefined || zone.ambience.isNative) {
+      if (!zone.hasAmbience() || zone.ambience.isNative) {
         return acc
       }
 
@@ -396,23 +396,23 @@ export class ArxMap {
     const otherDependencies: Record<string, string> = {}
 
     for (let entity of this.entities) {
-      if (entity.script !== undefined) {
-        scripts[entity.exportScriptTarget(outputDir)] = await entity.script.toArxData()
+      if (entity.hasScript()) {
+        scripts[entity.exportScriptTarget(outputDir)] = entity.script.toArxData()
         const texturesToExport = await entity.script.exportTextures(outputDir)
         for (let target in texturesToExport) {
           textures[target] = texturesToExport[target]
         }
       }
 
-      if (entity.inventoryIcon !== undefined) {
+      if (entity.hasInventoryIcon()) {
         const texturesToExport = await entity.exportInventoryIcon(outputDir)
         for (let target in texturesToExport) {
           textures[target] = texturesToExport[target]
         }
       }
 
-      if (entity.model !== undefined) {
-        const modelToExport = await entity.exportModel(outputDir)
+      if (entity.hasModel()) {
+        const modelToExport = entity.exportModel(outputDir)
         for (let target in modelToExport) {
           models[target] = modelToExport[target]
         }
@@ -428,24 +428,18 @@ export class ArxMap {
       }
     }
 
-    const sounds = await Audio.exportReplacements(outputDir)
+    const sounds = Audio.exportReplacements(outputDir)
 
-    // TODO: removing root entities in a hacky way
-    const filteredEntities = new Entities()
-    this.entities
-      .filter((entity) => {
-        if (entity.script === undefined) {
-          return true
-        }
-        return !entity.script.isRoot
-      })
-      .forEach((entity) => {
-        filteredEntities.push(entity)
-      })
-    this.entities = filteredEntities
+    // removing root entities while also making sure the entities land in an Entities object and not in an array
+    this.entities = this.entities
+      .filter((entity) => !entity.hasScript() || !entity.script.isRoot)
+      .reduce((acc, entity) => {
+        acc.push(entity)
+        return acc
+      }, new Entities())
 
-    if (this.player.script !== undefined) {
-      scripts[this.player.exportTarget(outputDir)] = await this.player.script.toArxData()
+    if (this.player.hasScript()) {
+      scripts[this.player.exportTarget(outputDir)] = this.player.script.toArxData()
       textures = { ...textures, ...(await this.player.script.exportTextures(outputDir)) }
     }
 
