@@ -172,11 +172,7 @@ export class Entity {
   async exportInventoryIcon(outputDir: string) {
     const files: Record<string, string> = {}
 
-    if (!this.hasInventoryIcon()) {
-      return files
-    }
-
-    if (this.inventoryIcon.isNative) {
+    if (!this.hasInventoryIcon() || this.inventoryIcon.isNative) {
       return files
     }
 

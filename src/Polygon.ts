@@ -116,9 +116,7 @@ export class Polygon {
   }
 
   async toArxPolygon(textureContainers: (ArxTextureContainer & { remaining: number })[]): Promise<ArxPolygon> {
-    const vertices = this.vertices.map((vertex) => {
-      return vertex.toArxVertex()
-    }) as QuadrupleOf<ArxVertex>
+    const vertices = this.vertices.map((vertex) => vertex.toArxVertex()) as QuadrupleOf<ArxVertex>
 
     let textureContainerId = NO_TEXTURE_CONTAINER
     if (this.hasTexture()) {

@@ -151,15 +151,9 @@ export class ArxMap {
       scene: {
         levelIdx,
       },
-      fogs: this.fogs.map((fog) => {
-        return fog.toArxFog()
-      }),
-      paths: this.paths.map((path) => {
-        return path.toArxPath()
-      }),
-      zones: this.zones.map((zone) => {
-        return zone.toArxZone()
-      }),
+      fogs: this.fogs.map((fog) => fog.toArxFog()),
+      paths: this.paths.map((path) => path.toArxPath()),
+      zones: this.zones.map((zone) => zone.toArxZone()),
       ...this.entities.toArxData(),
     }
 
@@ -173,9 +167,7 @@ export class ArxMap {
       },
       cells: this.todo.cells,
       anchors: this.todo.anchors,
-      portals: this.portals.map((portal) => {
-        return portal.toArxPortal()
-      }),
+      portals: this.portals.map((portal) => portal.toArxPortal()),
       rooms: this.todo.rooms,
       roomDistances: this.todo.roomDistances,
       ...(await this.polygons.toArxData()),
