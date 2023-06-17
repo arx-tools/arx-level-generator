@@ -9,8 +9,8 @@ export class ScriptSubroutine {
     this.command = command
   }
 
-  async toString() {
-    const renderedScript = await Script.handlerToString(this.command)
+  toString() {
+    const renderedScript = Script.handlerToString(this.command)
     if (renderedScript.trim() === '') {
       return ''
     }

@@ -3,15 +3,7 @@ import { ScriptProperty } from '@scripting/ScriptProperty.js'
 import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
 import { isUsesTextures } from '@scripting/interfaces/UsesTextures.js'
 
-type ScriptHandlerBase =
-  | string
-  | string[]
-  | Promise<string>
-  | Promise<string[]>
-  | ScriptCommand
-  | ScriptCommand[]
-  | Promise<ScriptCommand>
-  | Promise<ScriptCommand[]>
+type ScriptHandlerBase = string | string[] | ScriptCommand | ScriptCommand[]
 
 export type ScriptHandler = ScriptHandlerBase | (() => ScriptHandlerBase)
 
@@ -36,7 +28,7 @@ export class Script {
     this.filename = props.filename
   }
 
-  async toArxData() {
+  toArxData() {
     const eventStrings: string[] = []
 
     const eventHandlerPairs = Object.entries(this.eventHandlers)
@@ -48,7 +40,7 @@ export class Script {
       }
 
       for (let handler of handlers) {
-        eventString += await Script.handlerToString(handler)
+        eventString += Script.handlerToString(handler)
       }
 
       if (eventString.trim() !== '') {
@@ -58,7 +50,7 @@ export class Script {
 
     const subroutines: string[] = []
     for (let subroutine of this.subroutines) {
-      subroutines.push(await subroutine.toString())
+      subroutines.push(subroutine.toString())
     }
 
     return eventStrings.join('\n') + '\n\n' + subroutines.join('\n')
@@ -85,20 +77,17 @@ export class Script {
     this.isRoot = true
   }
 
-  static async handlerToString(handler: ScriptHandler) {
+  static handlerToString(handler: ScriptHandler) {
     const isHandlerNotAFunction =
-      typeof handler === 'string' ||
-      handler instanceof Promise ||
-      handler instanceof ScriptCommand ||
-      Array.isArray(handler)
+      typeof handler === 'string' || handler instanceof ScriptCommand || Array.isArray(handler)
 
-    const tmp = await (isHandlerNotAFunction ? handler : handler())
+    const tmp = isHandlerNotAFunction ? handler : handler()
     const tmp2 = (Array.isArray(tmp) ? tmp : [tmp]) as string[] | ScriptCommand[]
 
     let result = ''
 
     for (let h of tmp2) {
-      const handlerResult = h instanceof ScriptCommand ? await h.toString() : h
+      const handlerResult = h instanceof ScriptCommand ? h.toString() : h
       const handlerResults = Array.isArray(handlerResult) ? handlerResult : [handlerResult]
       result += handlerResults.filter((r) => r.trim() !== '').join('\n') + '\n'
     }
