@@ -36,7 +36,7 @@ export class Audio {
     })
   }
 
-  async exportSourceAndTarget(outputDir: string) {
+  exportSourceAndTarget(outputDir: string): [string, string] {
     if (this.isNative) {
       throw new Error('trying to export a native Audio')
     }
@@ -69,11 +69,11 @@ export class Audio {
     )
   }
 
-  static async exportReplacements(outputDir: string, type: AudioType = 'sfx') {
+  static exportReplacements(outputDir: string, type: AudioType = 'sfx') {
     const pairs: Record<string, string> = {}
 
     for (let key in this.replacements) {
-      const [source] = await this.replacements[key].exportSourceAndTarget(outputDir)
+      const [source] = this.replacements[key].exportSourceAndTarget(outputDir)
       const target = path.resolve(outputDir, type, key)
       pairs[target] = source
     }
