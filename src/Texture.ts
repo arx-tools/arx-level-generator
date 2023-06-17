@@ -2,10 +2,10 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { ArxTextureContainer } from 'arx-convert/types'
 import { Expand } from 'arx-convert/utils'
-import sharp, { Sharp } from 'sharp'
-import { sharpFromBmp, sharpToBmp } from 'sharp-bmp'
+import { sharpToBmp } from 'sharp-bmp'
 import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
 import { fileExists } from '@src/helpers.js'
+import { getMetadata, getSharpInstance } from '@services/image.js'
 
 export type TextureConstructorProps = {
   filename: string
@@ -53,31 +53,14 @@ export class Texture extends ThreeJsTextue {
     return copy
   }
 
-  async getMetadata() {
-    // TODO: memoize the result of this function
-
-    const source = path.resolve('assets', this.sourcePath ?? Texture.targetPath, this.filename)
-    const image = this.filename.toLowerCase().endsWith('bmp') ? (sharpFromBmp(source) as Sharp) : sharp(source)
-    const metadata = await image.metadata()
-
-    return metadata
-  }
-
   static async fromCustomFile(props: Expand<Omit<TextureConstructorProps, 'isNative'>>) {
     const texture = new Texture({
       ...props,
       isNative: false,
     })
 
-    // TODO: only calculate width and height when needed
-    if (texture.width === SIZE_UNKNOWN) {
-      const { width } = await texture.getMetadata()
-      texture.width = width ?? SIZE_UNKNOWN
-    }
-    if (texture.height === SIZE_UNKNOWN) {
-      const { height } = await texture.getMetadata()
-      texture.height = height ?? SIZE_UNKNOWN
-    }
+    await texture.getWidth()
+    await texture.getHeight()
 
     return texture
   }
@@ -86,6 +69,28 @@ export class Texture extends ThreeJsTextue {
     return new Texture({
       filename: texture.filename,
     })
+  }
+
+  private getFilename() {
+    return path.resolve('assets', this.sourcePath ?? Texture.targetPath, this.filename)
+  }
+
+  private async getWidth() {
+    if (this.width === SIZE_UNKNOWN) {
+      const { width } = await getMetadata(this.getFilename())
+      this.width = width ?? SIZE_UNKNOWN
+    }
+
+    return this.width
+  }
+
+  private async getHeight() {
+    if (this.height === SIZE_UNKNOWN) {
+      const { height } = await getMetadata(this.getFilename())
+      this.height = height ?? SIZE_UNKNOWN
+    }
+
+    return this.height
   }
 
   isTileable() {
@@ -109,9 +114,8 @@ export class Texture extends ThreeJsTextue {
     const isBMP = ext === '.bmp'
     const newFilename = isBMP ? this.filename : `${name}.jpg`
 
-    const originalSource = path.resolve('assets', this.sourcePath ?? Texture.targetPath, this.filename)
+    const originalSource = this.getFilename()
     const convertedSource = path.resolve('.cache', this.sourcePath ?? Texture.targetPath, newFilename)
-
     const convertedTarget = path.resolve(outputDir, Texture.targetPath, newFilename)
 
     await this.createCacheFolderIfNotExists(path.dirname(convertedSource))
@@ -120,7 +124,7 @@ export class Texture extends ThreeJsTextue {
       return [convertedSource, convertedTarget]
     }
 
-    const image = isBMP ? (sharpFromBmp(originalSource) as Sharp) : sharp(originalSource)
+    const image = await getSharpInstance(originalSource)
 
     if (isBMP) {
       await sharpToBmp(image, convertedSource)
@@ -141,23 +145,22 @@ export class Texture extends ThreeJsTextue {
     const isBMP = ext === '.bmp'
     const newFilename = 'tileable-' + (isBMP ? this.filename : `${name}.jpg`)
 
-    const originalSource = path.resolve('assets', this.sourcePath ?? Texture.targetPath, this.filename)
-    const resizedSource = path.resolve('.cache', this.sourcePath ?? Texture.targetPath, newFilename)
-
-    const resizedTarget = path.resolve(outputDir, Texture.targetPath, newFilename)
+    const originalSource = this.getFilename()
+    const convertedSource = path.resolve('.cache', this.sourcePath ?? Texture.targetPath, newFilename)
+    const convertedTarget = path.resolve(outputDir, Texture.targetPath, newFilename)
 
     if (this.alreadyMadeTileable) {
-      return [resizedSource, resizedTarget]
+      return [convertedSource, convertedTarget]
     }
 
-    await this.createCacheFolderIfNotExists(path.dirname(resizedSource))
+    await this.createCacheFolderIfNotExists(path.dirname(convertedSource))
 
-    if (await fileExists(resizedSource)) {
+    if (await fileExists(convertedSource)) {
       this.alreadyMadeTileable = true
-      return [resizedSource, resizedTarget]
+      return [convertedSource, convertedTarget]
     }
 
-    const image = isBMP ? (sharpFromBmp(originalSource) as Sharp) : sharp(originalSource)
+    const image = await getSharpInstance(originalSource)
 
     const powerOfTwo = MathUtils.floorPowerOfTwo(this.width)
 
@@ -166,19 +169,19 @@ export class Texture extends ThreeJsTextue {
     })
 
     if (isBMP) {
-      await sharpToBmp(image, resizedSource)
+      await sharpToBmp(image, convertedSource)
     } else {
       await image
         .jpeg({
           quality: 100,
           progressive: false,
         })
-        .toFile(resizedSource)
+        .toFile(convertedSource)
     }
 
     this.alreadyMadeTileable = true
 
-    return [resizedSource, resizedTarget]
+    return [convertedSource, convertedTarget]
   }
 
   private async createCacheFolderIfNotExists(folder: string) {
