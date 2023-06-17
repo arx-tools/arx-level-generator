@@ -53,16 +53,11 @@ export class Texture extends ThreeJsTextue {
     return copy
   }
 
-  static async fromCustomFile(props: Expand<Omit<TextureConstructorProps, 'isNative'>>) {
-    const texture = new Texture({
+  static fromCustomFile(props: Expand<Omit<TextureConstructorProps, 'isNative'>>) {
+    return new Texture({
       ...props,
       isNative: false,
     })
-
-    await texture.getWidth()
-    await texture.getHeight()
-
-    return texture
   }
 
   static fromArxTextureContainer(texture: ArxTextureContainer) {
