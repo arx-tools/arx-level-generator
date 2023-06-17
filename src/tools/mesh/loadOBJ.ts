@@ -55,6 +55,11 @@ const reversePolygonWinding = (rawObj: string) => {
   return rows.join('\n')
 }
 
+/**
+ * Loads an obj and an optional mtl file
+ *
+ * @see https://en.wikipedia.org/wiki/Wavefront_.obj_file
+ */
 export const loadOBJ = async (
   filenameWithoutExtension: string,
   {
