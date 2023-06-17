@@ -1,4 +1,4 @@
-import { ArxColor, ArxPolygonFlags, ArxTextureContainer, ArxVertex } from 'arx-convert/types'
+import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVertex } from 'arx-convert/types'
 import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf, TripleOf } from 'arx-convert/utils'
 import { Mesh, MeshBasicMaterial, Object3D, Color as ThreeJsColor, BufferAttribute } from 'three'
 import { Color } from '@src/Color.js'
@@ -49,13 +49,14 @@ export class Polygons extends Array<Polygon> {
     return files
   }
 
-  toArxData() {
+  async toArxData() {
     const textureContainers = this.getTextureContainers()
 
     // watch out, we're mutating textureContainers!
-    const arxPolygons = this.map((polygon) => {
-      return polygon.toArxPolygon(textureContainers)
-    })
+    const arxPolygons: ArxPolygon[] = []
+    for (let polygon of this) {
+      arxPolygons.push(await polygon.toArxPolygon(textureContainers))
+    }
 
     const arxTextureContainers = textureContainers
       .filter(({ remaining, maxRemaining }) => remaining !== maxRemaining)

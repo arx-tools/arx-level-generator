@@ -178,7 +178,7 @@ export class ArxMap {
       }),
       rooms: this.todo.rooms,
       roomDistances: this.todo.roomDistances,
-      ...this.polygons.toArxData(),
+      ...(await this.polygons.toArxData()),
     }
 
     const llf: ArxLLF = {

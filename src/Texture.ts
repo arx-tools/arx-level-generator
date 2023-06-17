@@ -25,8 +25,8 @@ export class Texture extends ThreeJsTextue {
   alreadyMadeTileable: boolean = false
   filename: string
   isNative: boolean
-  width: number
-  height: number
+  _width: number
+  _height: number
   sourcePath?: string
 
   constructor(props: TextureConstructorProps) {
@@ -36,8 +36,8 @@ export class Texture extends ThreeJsTextue {
     this.isNative = props.isNative ?? true
     this.sourcePath = props.sourcePath
 
-    this.width = props.size ?? props.width ?? SIZE_UNKNOWN
-    this.height = props.size ?? props.height ?? SIZE_UNKNOWN
+    this._width = props.size ?? props.width ?? SIZE_UNKNOWN
+    this._height = props.size ?? props.height ?? SIZE_UNKNOWN
   }
 
   clone() {
@@ -45,8 +45,8 @@ export class Texture extends ThreeJsTextue {
 
     copy.filename = this.filename
     copy.isNative = this.isNative
-    copy.width = this.width
-    copy.height = this.height
+    copy._width = this._width
+    copy._height = this._height
     copy.sourcePath = this.sourcePath
     copy.alreadyMadeTileable = this.alreadyMadeTileable
 
@@ -75,26 +75,26 @@ export class Texture extends ThreeJsTextue {
     return path.resolve('assets', this.sourcePath ?? Texture.targetPath, this.filename)
   }
 
-  private async getWidth() {
-    if (this.width === SIZE_UNKNOWN) {
+  async getWidth() {
+    if (this._width === SIZE_UNKNOWN) {
       const { width } = await getMetadata(this.getFilename())
-      this.width = width ?? SIZE_UNKNOWN
+      this._width = width ?? SIZE_UNKNOWN
     }
 
-    return this.width
+    return this._width
   }
 
-  private async getHeight() {
-    if (this.height === SIZE_UNKNOWN) {
+  async getHeight() {
+    if (this._height === SIZE_UNKNOWN) {
       const { height } = await getMetadata(this.getFilename())
-      this.height = height ?? SIZE_UNKNOWN
+      this._height = height ?? SIZE_UNKNOWN
     }
 
-    return this.height
+    return this._height
   }
 
-  isTileable() {
-    return this.width === this.height && MathUtils.isPowerOfTwo(this.width)
+  async isTileable() {
+    return (await this.getWidth()) === (await this.getHeight()) && MathUtils.isPowerOfTwo(await this.getWidth())
   }
 
   async exportSourceAndTarget(outputDir: string, needsToBeTileable: boolean) {
@@ -102,7 +102,7 @@ export class Texture extends ThreeJsTextue {
       throw new Error('trying to export a native Texture')
     }
 
-    if (needsToBeTileable && !this.isTileable()) {
+    if (needsToBeTileable && !(await this.isTileable())) {
       return this.makeTileable(outputDir)
     } else {
       return this.makeCopy(outputDir)
@@ -162,7 +162,7 @@ export class Texture extends ThreeJsTextue {
 
     const image = await getSharpInstance(originalSource)
 
-    const powerOfTwo = MathUtils.floorPowerOfTwo(this.width)
+    const powerOfTwo = MathUtils.floorPowerOfTwo(this._width)
 
     image.resize(powerOfTwo, powerOfTwo, {
       fit: 'cover',

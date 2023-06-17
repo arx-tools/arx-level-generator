@@ -38,8 +38,8 @@ export class Material extends Texture {
     return new Material({
       filename: texture.filename,
       isNative: texture.isNative,
-      width: texture.width,
-      height: texture.height,
+      width: texture._width,
+      height: texture._height,
       sourcePath: texture.sourcePath,
       ...props,
     })

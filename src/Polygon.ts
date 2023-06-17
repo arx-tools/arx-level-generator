@@ -111,7 +111,7 @@ export class Polygon {
     })
   }
 
-  toArxPolygon(textureContainers: (ArxTextureContainer & { remaining: number })[]): ArxPolygon {
+  async toArxPolygon(textureContainers: (ArxTextureContainer & { remaining: number })[]): Promise<ArxPolygon> {
     const vertices = this.vertices.map((vertex) => {
       return vertex.toArxVertex()
     }) as QuadrupleOf<ArxVertex>
@@ -120,7 +120,9 @@ export class Polygon {
     if (typeof this.texture !== 'undefined') {
       const needsToBeTileable = (this.flags & ArxPolygonFlags.Tiled) !== 0
       const textureFilename =
-        needsToBeTileable && !this.texture.isTileable() ? 'tileable-' + this.texture.filename : this.texture.filename
+        needsToBeTileable && !(await this.texture.isTileable())
+          ? 'tileable-' + this.texture.filename
+          : this.texture.filename
       const nindices = this.getNindices()
       const textureContainer = textureContainers.find(({ filename, remaining }) => {
         return remaining - nindices >= 0 && filename === textureFilename
