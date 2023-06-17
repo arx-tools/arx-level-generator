@@ -25,12 +25,10 @@ export type RoomProps = {
   tileSize?: number
 }
 
-const createFloor = async (size: Vector3, texture: TextureOrMaterial, tileSize: number) => {
+const createFloor = (size: Vector3, texture: TextureOrMaterial, tileSize: number) => {
   const { x: width, y: height, z: depth } = size
 
-  texture = await texture
-
-  const mesh = await createPlaneMesh({
+  const mesh = createPlaneMesh({
     size: new Vector2(width, depth),
     tileSize,
     texture: Material.fromTexture(texture, {
@@ -43,19 +41,12 @@ const createFloor = async (size: Vector3, texture: TextureOrMaterial, tileSize: 
   return mesh
 }
 
-const createNorthWall = async (
-  size: Vector3,
-  texture: TextureOrMaterial,
-  tileSize: number,
-  decal?: TextureOrMaterial,
-) => {
+const createNorthWall = (size: Vector3, texture: TextureOrMaterial, tileSize: number, decal?: TextureOrMaterial) => {
   const { x: width, y: height, z: depth } = size
-
-  texture = await texture
 
   const group = new Group()
 
-  const wall = await createPlaneMesh({
+  const wall = createPlaneMesh({
     size: new Vector2(width, height),
     tileSize,
     texture: Material.fromTexture(texture, {
@@ -76,8 +67,7 @@ const createNorthWall = async (
   group.add(wall)
 
   if (decal) {
-    decal = await decal
-    const decalOnWall = await createPlaneMesh({
+    const decalOnWall = createPlaneMesh({
       size: new Vector2(width, tileSize),
       tileSize,
       texture: Material.fromTexture(decal, {
@@ -93,19 +83,12 @@ const createNorthWall = async (
   return group
 }
 
-const createSouthWall = async (
-  size: Vector3,
-  texture: TextureOrMaterial,
-  tileSize: number,
-  decal?: TextureOrMaterial,
-) => {
+const createSouthWall = (size: Vector3, texture: TextureOrMaterial, tileSize: number, decal?: TextureOrMaterial) => {
   const { x: width, y: height, z: depth } = size
-
-  texture = await texture
 
   const group = new Group()
 
-  const wall = await createPlaneMesh({
+  const wall = createPlaneMesh({
     size: new Vector2(width, height),
     tileSize,
     texture: Material.fromTexture(texture, {
@@ -126,8 +109,7 @@ const createSouthWall = async (
   group.add(wall)
 
   if (decal) {
-    decal = await decal
-    const decalOnWall = await createPlaneMesh({
+    const decalOnWall = createPlaneMesh({
       size: new Vector2(width, tileSize),
       tileSize,
       texture: Material.fromTexture(decal, {
@@ -144,19 +126,12 @@ const createSouthWall = async (
   return group
 }
 
-const createWestWall = async (
-  size: Vector3,
-  texture: TextureOrMaterial,
-  tileSize: number,
-  decal?: TextureOrMaterial,
-) => {
+const createWestWall = (size: Vector3, texture: TextureOrMaterial, tileSize: number, decal?: TextureOrMaterial) => {
   const { x: width, y: height, z: depth } = size
-
-  texture = await texture
 
   const group = new Group()
 
-  const wall = await createPlaneMesh({
+  const wall = createPlaneMesh({
     size: new Vector2(depth, height),
     tileSize,
     texture: Material.fromTexture(texture, {
@@ -177,8 +152,7 @@ const createWestWall = async (
   group.add(wall)
 
   if (decal) {
-    decal = await decal
-    const decalOnWall = await createPlaneMesh({
+    const decalOnWall = createPlaneMesh({
       size: new Vector2(depth, tileSize),
       tileSize,
       texture: Material.fromTexture(decal, {
@@ -195,19 +169,12 @@ const createWestWall = async (
   return group
 }
 
-const createEastWall = async (
-  size: Vector3,
-  texture: TextureOrMaterial,
-  tileSize: number,
-  decal?: TextureOrMaterial,
-) => {
+const createEastWall = (size: Vector3, texture: TextureOrMaterial, tileSize: number, decal?: TextureOrMaterial) => {
   const { x: width, y: height, z: depth } = size
-
-  texture = await texture
 
   const group = new Group()
 
-  const wall = await createPlaneMesh({
+  const wall = createPlaneMesh({
     size: new Vector2(depth, height),
     tileSize,
     texture: Material.fromTexture(texture, {
@@ -228,8 +195,7 @@ const createEastWall = async (
   group.add(wall)
 
   if (decal) {
-    decal = await decal
-    const decalOnWall = await createPlaneMesh({
+    const decalOnWall = createPlaneMesh({
       size: new Vector2(depth, tileSize),
       tileSize,
       texture: Material.fromTexture(decal, {
@@ -246,12 +212,10 @@ const createEastWall = async (
   return group
 }
 
-const createCeiling = async (size: Vector3, texture: TextureOrMaterial, tileSize: number) => {
+const createCeiling = (size: Vector3, texture: TextureOrMaterial, tileSize: number) => {
   const { x: width, y: height, z: depth } = size
 
-  texture = await texture
-
-  const mesh = await createPlaneMesh({
+  const mesh = createPlaneMesh({
     size: new Vector2(width, depth),
     tileSize,
     texture: Material.fromTexture(texture, {
@@ -266,29 +230,26 @@ const createCeiling = async (size: Vector3, texture: TextureOrMaterial, tileSize
   return mesh
 }
 
-export const createRoomMesh = async (
+export const createRoomMesh = (
   size: Vector3,
   { decal, textures: { wall, floor, ceiling }, tileSize = 50 }: RoomProps,
 ) => {
   const group = new Group()
 
-  group.add(await createFloor(size, floor, tileSize))
-  group.add(await createNorthWall(size, Array.isArray(wall) ? wall[0] : wall, tileSize, decal))
-  group.add(await createEastWall(size, Array.isArray(wall) ? wall[1] : wall, tileSize, decal))
-  group.add(await createSouthWall(size, Array.isArray(wall) ? wall[2] : wall, tileSize, decal))
-  group.add(await createWestWall(size, Array.isArray(wall) ? wall[3] : wall, tileSize, decal))
-  group.add(await createCeiling(size, ceiling, tileSize))
+  group.add(createFloor(size, floor, tileSize))
+  group.add(createNorthWall(size, Array.isArray(wall) ? wall[0] : wall, tileSize, decal))
+  group.add(createEastWall(size, Array.isArray(wall) ? wall[1] : wall, tileSize, decal))
+  group.add(createSouthWall(size, Array.isArray(wall) ? wall[2] : wall, tileSize, decal))
+  group.add(createWestWall(size, Array.isArray(wall) ? wall[3] : wall, tileSize, decal))
+  group.add(createCeiling(size, ceiling, tileSize))
 
   return group
 }
 
-export const createRoomFromMesh = async (
-  mesh: Object3D,
-  tryToQuadify: typeof QUADIFY | typeof DONT_QUADIFY = QUADIFY,
-) => {
+export const createArxMapFromMesh = (mesh: Object3D, tryToQuadify: typeof QUADIFY | typeof DONT_QUADIFY = QUADIFY) => {
   return ArxMap.fromThreeJsMesh(mesh, { tryToQuadify })
 }
 
-export const createRoom = async (dimensions: Vector3, props: RoomProps) => {
-  return await createRoomFromMesh(await createRoomMesh(dimensions, props))
+export const createRoom = (dimensions: Vector3, props: RoomProps) => {
+  return createArxMapFromMesh(createRoomMesh(dimensions, props))
 }

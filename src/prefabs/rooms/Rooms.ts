@@ -97,11 +97,11 @@ export class Rooms {
     this.cursor = cursor
   }
 
-  async addRoom(dimensions: Vector3, props: RoomProps, ...adjustments: CursorDir[]) {
+  addRoom(dimensions: Vector3, props: RoomProps, ...adjustments: CursorDir[]) {
     this.cursor.newSize = dimensions
     this.cursor.move(...adjustments)
 
-    this.currentRoom = await createRoom(dimensions, props)
+    this.currentRoom = createRoom(dimensions, props)
     this.currentRoom.move(this.cursor.cursor)
     this.entries.push(this.currentRoom)
 

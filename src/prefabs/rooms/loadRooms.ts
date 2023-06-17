@@ -181,7 +181,7 @@ export const loadRooms = async (filename: string) => {
               }
               const adjustments = tokens.slice(6) as CursorDir[]
 
-              await rooms.addRoom(new Vector3(posX, posY, posZ), roomDefinitions[definitionName], ...adjustments)
+              rooms.addRoom(new Vector3(posX, posY, posZ), roomDefinitions[definitionName], ...adjustments)
               break
             default:
               console.error(`Unknown parameter "${tokens[1]}" after "room" at line ${i + 1}`)

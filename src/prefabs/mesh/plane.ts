@@ -24,7 +24,7 @@ type createPlaneMeshProps = {
   isIndexed?: typeof INDEXED | typeof NONINDEXED
 }
 
-export const createPlaneMesh = async ({
+export const createPlaneMesh = ({
   size,
   tileSize = 100,
   texture,
@@ -39,10 +39,6 @@ export const createPlaneMesh = async ({
 
   if (tileUV) {
     scaleUV(new Vector2(size.x / tileSize, size.y / tileSize), geometry)
-  }
-
-  if (texture instanceof Promise) {
-    texture = await texture
   }
 
   const material = new MeshBasicMaterial({ map: texture })
