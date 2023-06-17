@@ -5,7 +5,7 @@ import { ArxMap } from '@src/ArxMap.js'
 import { HudElements } from '@src/HUD.js'
 import { DONT_QUADIFY } from '@src/Polygons.js'
 import { Vector3 } from '@src/Vector3.js'
-import { createRoomFromMesh, createRoomMesh } from '@prefabs/rooms/room.js'
+import { createArxMapFromMesh, createRoomMesh } from '@prefabs/rooms/room.js'
 import { carpet, ceilingTile, wallpaper } from '@projects/the-backrooms/materials.js'
 
 export default async () => {
@@ -26,7 +26,7 @@ export default async () => {
   map.player.orientation.y = MathUtils.degToRad(-90)
   map.hud.hide(HudElements.Minimap)
 
-  const roomMesh = await createRoomMesh(new Vector3(700, 400, 700), {
+  const roomMesh = createRoomMesh(new Vector3(700, 400, 700), {
     textures: {
       wall: wallpaper,
       floor: carpet,
@@ -35,7 +35,7 @@ export default async () => {
   })
   roomMesh.position.add(new Vector3(100, 0, 100))
   roomMesh.rotateZ(MathUtils.degToRad(20))
-  map.add(await createRoomFromMesh(roomMesh, DONT_QUADIFY), true)
+  map.add(createArxMapFromMesh(roomMesh, DONT_QUADIFY), true)
 
   map.finalize()
 

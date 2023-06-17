@@ -15,8 +15,8 @@ import { createLight } from '@tools/createLight.js'
 import { createZone } from '@tools/createZone.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 
-const createFloor = async (width: number, height: number) => {
-  const mesh = await createPlaneMesh({
+const createFloor = (width: number, height: number) => {
+  const mesh = createPlaneMesh({
     size: new Vector2(width, height),
     texture: Material.fromTexture(Texture.stoneHumanStoneWall1, {
       flags: ArxPolygonFlags.None,
@@ -54,7 +54,7 @@ export default async () => {
   map.player.withScript()
   map.hud.hide('all')
 
-  map.add(await createFloor(1000, 2000), true)
+  map.add(createFloor(1000, 2000), true)
 
   const ceilingLamp = await loadOBJ('models/ceiling-lamp/ceiling-lamp', {
     position: new Vector3(0, -300, 500),

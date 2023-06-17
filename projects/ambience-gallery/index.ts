@@ -132,7 +132,7 @@ export default async () => {
 
   const smoothMeshes = [
     moon.meshes,
-    await createGround(width, depth),
+    createGround(width, depth),
     createEastWestWall(new Vector3(-160, 0, 850), 14),
     createEastWestWall(new Vector3(-160, 0, -850), 14),
     createNorthSouthWall(new Vector3(-200, 0, 850), 8),

@@ -206,7 +206,7 @@ export default async () => {
   game3.script?.on('inventoryin', () => `sendevent player_found_a_game ${gameStateManager.ref} ${game3.variant}`)
   map.entities.push(game3)
 
-  const windowGlass = await createPlaneMesh({
+  const windowGlass = createPlaneMesh({
     size: new Vector2(500, 300),
     texture: Material.fromTexture(Texture.glassGlass01, {
       opacity: 70,

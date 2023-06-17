@@ -21,7 +21,7 @@ import { createLight } from '@tools/createLight.js'
 import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 
-const createFloor = async (position: Vector3, size: Vector2) => {
+const createFloor = (position: Vector3, size: Vector2) => {
   const floorTiles = Material.fromTexture(
     Texture.fromCustomFile({
       filename: '[wood]-fake-floor.jpg',
@@ -32,7 +32,7 @@ const createFloor = async (position: Vector3, size: Vector2) => {
     },
   )
 
-  const floor = await createPlaneMesh({ size, texture: floorTiles })
+  const floor = createPlaneMesh({ size, texture: floorTiles })
   scaleUV(new Vector2(0.5, 0.5), floor.geometry)
   floor.translateX(position.x)
   floor.translateY(position.y)
@@ -41,7 +41,7 @@ const createFloor = async (position: Vector3, size: Vector2) => {
   return [floor]
 }
 
-const createWall = async (position: Vector3, size: Vector2, direction: 'north' | 'west' | 'east' | 'south') => {
+const createWall = (position: Vector3, size: Vector2, direction: 'north' | 'west' | 'east' | 'south') => {
   const metal = Material.fromTexture(
     Texture.fromCustomFile({
       filename: '[stone]-dark-brick-wall.jpg',
@@ -52,7 +52,7 @@ const createWall = async (position: Vector3, size: Vector2, direction: 'north' |
     },
   )
 
-  const wall = await createPlaneMesh({ size: size, texture: metal })
+  const wall = createPlaneMesh({ size: size, texture: metal })
   scaleUV(new Vector2((1 / 3) * 2, (1 / 3) * 2), wall.geometry)
   wall.rotateX(MathUtils.degToRad(90))
   if (direction === 'south') {
@@ -73,7 +73,7 @@ const createWall = async (position: Vector3, size: Vector2, direction: 'north' |
   return [wall]
 }
 
-const createCeiling = async (position: Vector3, size: Vector2) => {
+const createCeiling = (position: Vector3, size: Vector2) => {
   const woodenStripes = Material.fromTexture(
     Texture.fromCustomFile({
       filename: '[stone]-polished-concrete3.png',
@@ -84,7 +84,7 @@ const createCeiling = async (position: Vector3, size: Vector2) => {
     },
   )
 
-  const ceiling = await createPlaneMesh({ size, texture: woodenStripes })
+  const ceiling = createPlaneMesh({ size, texture: woodenStripes })
   scaleUV(new Vector2(0.5, 0.5), ceiling.geometry)
   ceiling.rotateX(MathUtils.degToRad(180))
   applyTransformations(ceiling)
@@ -95,7 +95,7 @@ const createCeiling = async (position: Vector3, size: Vector2) => {
   return [ceiling]
 }
 
-const createSynthPanel = async (position: Vector3, size: Vector2) => {
+const createSynthPanel = (position: Vector3, size: Vector2) => {
   const metal = Material.fromTexture(
     Texture.fromCustomFile({
       filename: 'dark-[metal]-grid.jpg',
@@ -106,7 +106,7 @@ const createSynthPanel = async (position: Vector3, size: Vector2) => {
     },
   )
 
-  const panel = await createPlaneMesh({ size, texture: metal })
+  const panel = createPlaneMesh({ size, texture: metal })
   panel.rotateX(MathUtils.degToRad(90))
   scaleUV(new Vector2(0.5, 0.5), panel.geometry)
   applyTransformations(panel)
@@ -318,19 +318,19 @@ export default async () => {
     materialFlags: ArxPolygonFlags.None,
   })
 
-  const synthPanel = await createSynthPanel(
+  const synthPanel = createSynthPanel(
     new Vector3(6000 + 0, -150, 6000 + 400),
     new Vector2(formattedButtonPattern[0].length * 20 + 70, 190),
   )
 
-  const floor = await createFloor(new Vector3(6000, 0, 6000 - 425), new Vector2(1200, 1700))
+  const floor = createFloor(new Vector3(6000, 0, 6000 - 425), new Vector2(1200, 1700))
 
-  const wallN = await createWall(new Vector3(6000, -150, 6000 + 425), new Vector2(1200, 300), 'north')
-  const wallS = await createWall(new Vector3(6000, -150, 6000 - 850 - 425), new Vector2(1200, 300), 'south')
-  const wallW = await createWall(new Vector3(6000 - 600, -150, 6000 - 425), new Vector2(1700, 300), 'west')
-  const wallE = await createWall(new Vector3(6000 + 600, -150, 6000 - 425), new Vector2(1700, 300), 'east')
+  const wallN = createWall(new Vector3(6000, -150, 6000 + 425), new Vector2(1200, 300), 'north')
+  const wallS = createWall(new Vector3(6000, -150, 6000 - 850 - 425), new Vector2(1200, 300), 'south')
+  const wallW = createWall(new Vector3(6000 - 600, -150, 6000 - 425), new Vector2(1700, 300), 'west')
+  const wallE = createWall(new Vector3(6000 + 600, -150, 6000 - 425), new Vector2(1700, 300), 'east')
 
-  const ceiling = await createCeiling(new Vector3(6000, -300, 6000 - 425), new Vector2(1200, 1700))
+  const ceiling = createCeiling(new Vector3(6000, -300, 6000 - 425), new Vector2(1200, 1700))
 
   const meshes = [speakerL, speakerR, synthPanel, floor, wallN, wallS, wallW, wallE, ceiling].flat()
 

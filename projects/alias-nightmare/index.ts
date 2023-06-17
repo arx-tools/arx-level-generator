@@ -14,8 +14,8 @@ import { makeBumpy } from '@src/tools/mesh/makeBumpy.js'
 import { transformEdge } from '@src/tools/mesh/transformEdge.js'
 import { createZone } from '@tools/createZone.js'
 
-const createIsland = async (width: number, height: number) => {
-  const floorMesh = await createPlaneMesh({
+const createIsland = (width: number, height: number) => {
+  const floorMesh = createPlaneMesh({
     size: new Vector2(width, height),
     texture: Texture.stoneHumanAkbaa2F,
   })
@@ -41,7 +41,7 @@ export default async () => {
   map.player.position.adjustToPlayerHeight()
   map.hud.hide(HudElements.Minimap)
 
-  map.add(await createIsland(1000, 1000), true)
+  map.add(createIsland(1000, 1000), true)
 
   map.zones.push(
     createZone({

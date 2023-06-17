@@ -47,7 +47,7 @@ export default async () => {
     map.add(room, true)
   })
 
-  const water = await createPlaneMesh({
+  const water = createPlaneMesh({
     size: new Vector2(600, 2100),
     texture: Material.fromTexture(Texture.waterCavewater, {
       flags: ArxPolygonFlags.Water | ArxPolygonFlags.NoShadow,

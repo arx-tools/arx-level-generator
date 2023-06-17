@@ -20,12 +20,12 @@ export class Button extends Cube {
 
     const onSkin = new TweakSkin(Texture.stoneGroundCavesWet05, Texture.aliciaRoomMur02)
     const offSkin = new TweakSkin(Texture.stoneGroundCavesWet05, Texture.stoneHumanPriest4)
-    const updateSkin = new ScriptSubroutine('update_skin', async () => {
+    const updateSkin = new ScriptSubroutine('update_skin', () => {
       return `
         if (${this.propIsOn.name} == 1) {
-          ${await onSkin.toString()}
+          ${onSkin.toString()}
         } else {
-          ${await offSkin.toString()}
+          ${offSkin.toString()}
         }
       `
     })

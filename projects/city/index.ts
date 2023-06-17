@@ -13,8 +13,8 @@ import { scaleUV } from '@tools/mesh/scaleUV.js'
 
 const facadeRatio = 1000 / 1319
 
-const createFloor = async (width: number, height: number) => {
-  const mesh = await createPlaneMesh({
+const createFloor = (width: number, height: number) => {
+  const mesh = createPlaneMesh({
     size: new Vector2(width, height),
     texture: Texture.fromCustomFile({
       filename: '[stone]-concrete.jpg',
@@ -24,8 +24,8 @@ const createFloor = async (width: number, height: number) => {
   return ArxMap.fromThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY })
 }
 
-const createWall = async (width: number, height: number) => {
-  const mesh = await createPlaneMesh({
+const createWall = (width: number, height: number) => {
+  const mesh = createPlaneMesh({
     size: new Vector2(width, height),
     texture: Texture.fromCustomFile({
       filename: 'office-facade.jpg',
@@ -59,9 +59,9 @@ export default async () => {
   map.player.position.adjustToPlayerHeight()
   map.hud.hide('all')
 
-  map.add(await createFloor(1000, 1000), true)
+  map.add(createFloor(1000, 1000), true)
 
-  map.add(await createWall(1000, 1000 * facadeRatio), true)
+  map.add(createWall(1000, 1000 * facadeRatio), true)
 
   map.zones.push(
     createZone({
@@ -71,6 +71,5 @@ export default async () => {
   )
 
   map.finalize()
-
   map.saveToDisk(OUTPUTDIR, parseInt(LEVEL))
 }

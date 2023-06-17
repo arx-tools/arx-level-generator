@@ -9,7 +9,7 @@ import { makeBumpy } from '@tools/mesh/makeBumpy.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { transformEdge } from '@tools/mesh/transformEdge.js'
 
-export const createGround = async ({
+export const createGround = ({
   size,
   texture = Texture.l5CavesGravelGround05,
 }: {
@@ -18,12 +18,12 @@ export const createGround = async ({
 }) => {
   const tileSize = 100
 
-  const floorMesh = await createPlaneMesh({ size, tileSize, texture })
+  const floorMesh = createPlaneMesh({ size, tileSize, texture })
   transformEdge(new Vector3(0, -30, 0), floorMesh)
   makeBumpy(30, 60, false, floorMesh.geometry)
   scaleUV(new Vector2(tileSize / 100, tileSize / 100), floorMesh.geometry)
 
-  const waterMesh = await createPlaneMesh({
+  const waterMesh = createPlaneMesh({
     size,
     tileSize,
     texture: Material.fromTexture(Texture.waterCavewater, {

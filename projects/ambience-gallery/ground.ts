@@ -6,8 +6,8 @@ import { makeBumpy } from '@tools/mesh/makeBumpy.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { transformEdge } from '@tools/mesh/transformEdge.js'
 
-export const createGround = async (width: number, depth: number) => {
-  const floorMesh = await createPlaneMesh({
+export const createGround = (width: number, depth: number) => {
+  const floorMesh = createPlaneMesh({
     size: new Vector2(width + 200, depth + 200),
     tileSize: 30,
     texture: Texture.l5CavesGravelGround05,

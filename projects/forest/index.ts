@@ -31,7 +31,7 @@ export default async () => {
 
   // ---------------------------
 
-  meshes.push(...(await createGround({ size: new Vector2(2000, 2000) })))
+  meshes.push(...createGround({ size: new Vector2(2000, 2000) }))
 
   meshes.forEach((mesh) => {
     mesh.translateX(map.config.offset.x)
