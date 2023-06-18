@@ -8,7 +8,7 @@ export const INDEXED = 'indexed'
 export const NONINDEXED = 'non-indexed'
 
 type createPlaneMeshProps = {
-  size: Vector2
+  size: Vector2 | number
   /**
    * @default 100
    */
@@ -31,14 +31,15 @@ export const createPlaneMesh = ({
   isIndexed = INDEXED,
   tileUV = true,
 }: createPlaneMeshProps) => {
-  const divisionX = Math.ceil(size.x / tileSize)
-  const divisionY = Math.ceil(size.y / tileSize)
+  const { x: width, y: depth } = typeof size === 'number' ? new Vector2(size, size) : size
+  const divisionX = Math.ceil(width / tileSize)
+  const divisionY = Math.ceil(depth / tileSize)
 
-  let geometry = new PlaneGeometry(size.x, size.y, divisionX, divisionY)
+  let geometry = new PlaneGeometry(width, depth, divisionX, divisionY)
   geometry = toArxCoordinateSystem(geometry)
 
   if (tileUV) {
-    scaleUV(new Vector2(size.x / tileSize, size.y / tileSize), geometry)
+    scaleUV(new Vector2(width / tileSize, depth / tileSize), geometry)
   }
 
   const material = new MeshBasicMaterial({ map: texture })
