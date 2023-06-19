@@ -1,5 +1,4 @@
 import { ExtrudeGeometry, MathUtils, Mesh, MeshBasicMaterial, Shape, Vector2 } from 'three'
-import { Color } from '@src/Color.js'
 import { Entity } from '@src/Entity.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
