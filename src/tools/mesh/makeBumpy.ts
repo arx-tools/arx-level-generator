@@ -7,14 +7,20 @@ import { getVertices } from '@tools/mesh/getVertices.js'
 type VertexData = { y: number; position: Vector3; idx: number }
 
 /**
- * @param magnitude - the maximum amount in both directions which the peeks will reach
+ * @param magnitude - the maximum amount in both directions which the peeks will reach, or if an array with 2
+ * numbers specified then that will be used as minimum maximum range
  * @param percentage - for every vertex there's a certain percentage chance that it will be a peek. control the
  * percentage with this parameter
  * @param smoothenPeeks - whether to apply smoothing around the peeks
  * @param geometry - any threejs geometry
  * @returns the vectors of the peeks
  */
-export const makeBumpy = (magnitude: number, percentage: number, smoothenPeeks: boolean, geometry: BufferGeometry) => {
+export const makeBumpy = (
+  magnitude: number | [number, number],
+  percentage: number,
+  smoothenPeeks: boolean,
+  geometry: BufferGeometry,
+) => {
   const vertices = getVertices(geometry)
   const coords = geometry.getAttribute('position') as BufferAttribute
 
@@ -28,7 +34,11 @@ export const makeBumpy = (magnitude: number, percentage: number, smoothenPeeks: 
 
     let newY = v.vector.y
     if (isToBePeeked) {
-      newY += randomBetween(-magnitude, magnitude)
+      if (typeof magnitude === 'number') {
+        newY += randomBetween(-magnitude, magnitude)
+      } else {
+        newY += randomBetween(magnitude[0], magnitude[1])
+      }
     }
 
     const data = {
@@ -61,7 +71,12 @@ export const makeBumpy = (magnitude: number, percentage: number, smoothenPeeks: 
         }
       })
 
-      const addition = MathUtils.clamp(sum(diffs), -magnitude, magnitude)
+      let addition
+      if (typeof magnitude === 'number') {
+        addition = MathUtils.clamp(sum(diffs), -magnitude, magnitude)
+      } else {
+        addition = MathUtils.clamp(sum(diffs), magnitude[0], magnitude[1])
+      }
 
       coords.setY(idx, y + addition)
     })
