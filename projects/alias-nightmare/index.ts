@@ -36,7 +36,7 @@ import { createBox } from '@prefabs/mesh/box.js'
 import { Speed } from '@scripting/properties/Speed.js'
 import { createLight } from '@tools/createLight.js'
 import { createZone } from '@tools/createZone.js'
-import { GeometryVertex, getNonIndexedVertices, getVertices } from '@tools/mesh/getVertices.js'
+import { getNonIndexedVertices, getVertices } from '@tools/mesh/getVertices.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
@@ -187,7 +187,7 @@ const createTerrain = ({
     const islandTop = createPlaneMesh({ size, texture: t })
     if (hasBumps) {
       transformEdge(new Vector3(0, 30, 0), islandTop)
-      makeBumpy(10, 60, false, islandTop.geometry)
+      makeBumpy(20, 60, true, islandTop.geometry)
     }
 
     if (typeof _orientation !== 'undefined') {
@@ -254,10 +254,13 @@ const createTerrain = ({
   }
 
   if (hasLight) {
-    const radius = typeof size === 'number' ? size : Math.max(size.x, size.y)
+    let radius = typeof size === 'number' ? size : Math.max(size.x, size.y)
+    radius *= 1.6
     const light = createLight({
       position: position.clone().add(new Vector3(0, -radius / 2, 0)),
       radius: radius,
+      intensity: 0.5,
+      color: Color.fromCSS('hsla(0, 64%, 83%, 1)'),
     })
     lights.push(light)
   }
@@ -387,7 +390,7 @@ const createSpawnZone = (position: Vector3 = new Vector3(0, 0, 0)) => {
     name: 'spawn',
     position,
     drawDistance: 4000,
-    backgroundColor: Color.fromCSS('hsla(0, 64%, 8%, 1)'),
+    backgroundColor: Color.fromCSS('hsla(0, 64%, 23%, 1)'),
     ambience: Ambience.fromAudio(
       'loop_sirs',
       Audio.fromCustomFile({
