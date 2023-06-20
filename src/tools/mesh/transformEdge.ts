@@ -3,6 +3,8 @@ import { Vector3 } from '@src/Vector3.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
 
 export const transformEdge = (offset: Vector3, mesh: Mesh) => {
+  // TODO: instead of EdgesGeometry try using the edge detection code from the Alia's nightmare level
+  // EdgesGeometry fails if the geometry is already bumped
   const edge = new EdgesGeometry(mesh.geometry)
   const edgeVertices = getVertices(edge)
 
