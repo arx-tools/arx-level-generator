@@ -1,7 +1,18 @@
 import path from 'node:path'
 import { ArxPolygonFlags } from 'arx-convert/types'
 import seedrandom from 'seedrandom'
-import { CylinderGeometry, MathUtils, Mesh, MeshBasicMaterial, Quaternion, Vector2 } from 'three'
+import {
+  Box3,
+  BufferAttribute,
+  BufferGeometry,
+  CylinderGeometry,
+  EdgesGeometry,
+  MathUtils,
+  Mesh,
+  MeshBasicMaterial,
+  Quaternion,
+  Vector2,
+} from 'three'
 import { Ambience } from '@src/Ambience.js'
 import { ArxMap } from '@src/ArxMap.js'
 import { Audio } from '@src/Audio.js'
@@ -14,14 +25,18 @@ import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
 import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
+import { any, uniq } from '@src/faux-ramda.js'
 import { applyTransformations } from '@src/helpers.js'
 import { createPlaneMesh } from '@src/prefabs/mesh/plane.js'
 import { randomBetween } from '@src/random.js'
 import { makeBumpy } from '@src/tools/mesh/makeBumpy.js'
 import { transformEdge } from '@src/tools/mesh/transformEdge.js'
 import { TextureOrMaterial } from '@src/types.js'
+import { createBox } from '@prefabs/mesh/box.js'
+import { Speed } from '@scripting/properties/Speed.js'
 import { createLight } from '@tools/createLight.js'
 import { createZone } from '@tools/createZone.js'
+import { GeometryVertex, getNonIndexedVertices, getVertices } from '@tools/mesh/getVertices.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
@@ -56,6 +71,97 @@ type createTerrainProps = {
    * default value is true
    */
   hasCenterMarker?: boolean
+  type: 'island' | 'bridge'
+}
+
+// -----------------------------
+
+const complement = (fn: (...args: any[]) => boolean) => {
+  return (...args: any[]) => !fn(...args)
+}
+
+const partition = <T>(fn: (arg: T) => boolean, values: T[]): [T[], T[]] => {
+  return [values.filter(fn), values.filter(complement(fn))]
+}
+
+const countBy = <T>(fn: (value: T) => string, values: T[]) => {
+  return values.reduce((acc, value) => {
+    const key = fn(value)
+    acc[key] = (acc[key] ?? 0) + 1
+    return acc
+  }, {} as Record<string, number>)
+}
+
+type HashAndAmount = [string, number]
+
+const unpackCoords = (coords: HashAndAmount[]) => {
+  return coords.map(([hash, amount]) => {
+    const [x, y, z] = hash.split('|').map((x) => parseFloat(x))
+    return new Vector3(x, y, z)
+  })
+}
+
+/**
+ * This function expects geometry to be triangulated, no quads or anything
+ */
+const categorizeVertices = (geometry: BufferGeometry) => {
+  const polygons = getNonIndexedVertices(geometry)
+
+  const summary = Object.entries(
+    countBy(({ vector }) => `${vector.x}|${vector.y}|${vector.z}`, polygons),
+  ) as HashAndAmount[]
+
+  const [corner, edgeOrMiddle] = partition(([hash, amount]) => amount === 1 || amount === 2 || amount === 5, summary)
+  const [edge, middle] = partition(([hash, amount]) => amount === 3, edgeOrMiddle)
+
+  /*
+  // TODO: for quadified meshes
+  const [corner, edgeOrMiddle] = partition(([hash, amount]) => amount === 1 || amount === 3, summary)
+  const [edge, middle] = partition(([hash, amount]) => amount === 2, edgeOrMiddle)
+  */
+
+  return {
+    corners: unpackCoords(corner),
+    edges: unpackCoords(edge),
+    middles: unpackCoords(middle),
+  }
+}
+
+// --------------------------
+
+/**
+ * Connect the edge vertices of "source" to the edge vertices of "target"
+ */
+const connectEdgeTo = (source: BufferGeometry, target: BufferGeometry) => {
+  const categorizedSourceVertices = categorizeVertices(source)
+  const sourceEdgeVertices = [...categorizedSourceVertices.edges, ...categorizedSourceVertices.corners]
+
+  const sourceVertices = getVertices(source)
+  const sourceCoords = source.getAttribute('position') as BufferAttribute
+
+  const categorizedTargetVertices = categorizeVertices(target)
+  const targetEdgeVertices = [...categorizedTargetVertices.edges, ...categorizedTargetVertices.corners]
+
+  sourceVertices.forEach((vertex) => {
+    const edgeIdx = sourceEdgeVertices.findIndex((edgeVertex) => {
+      return edgeVertex.equals(vertex.vector)
+    })
+    if (edgeIdx !== -1) {
+      const [edgePoint] = sourceEdgeVertices.splice(edgeIdx, 1)
+
+      const closestTargetVertex = targetEdgeVertices.slice(1).reduce((closestSoFar, candidate) => {
+        if (candidate.distanceTo(edgePoint) < closestSoFar.distanceTo(edgePoint)) {
+          return candidate
+        } else {
+          return closestSoFar
+        }
+      }, targetEdgeVertices[0])
+
+      sourceCoords.setX(vertex.idx, closestTargetVertex.x)
+      sourceCoords.setY(vertex.idx, closestTargetVertex.y)
+      sourceCoords.setZ(vertex.idx, closestTargetVertex.z)
+    }
+  })
 }
 
 const createTerrain = ({
@@ -67,27 +173,85 @@ const createTerrain = ({
   hasLight = true,
   hasCenterMarker = true,
   texture,
+  type,
 }: createTerrainProps) => {
   const meshes: Mesh[] = []
   const lights: Light[] = []
   const entities: Entity[] = []
 
-  const floorMesh = createPlaneMesh({ size, texture: texture ?? Texture.stoneHumanAkbaa2F })
-  if (hasBumps) {
-    transformEdge(new Vector3(0, 30, 0), floorMesh)
-    makeBumpy(10, 60, false, floorMesh.geometry)
-  }
+  const t = texture ?? Texture.stoneHumanAkbaa2F
 
-  if (typeof _orientation !== 'undefined') {
-    floorMesh.geometry.rotateX(_orientation.x)
-    floorMesh.geometry.rotateY(_orientation.y)
-    floorMesh.geometry.rotateZ(_orientation.z)
+  if (type === 'island') {
+    // -------------------------------
+
+    const islandTop = createPlaneMesh({ size, texture: t })
+    if (hasBumps) {
+      transformEdge(new Vector3(0, 30, 0), islandTop)
+      makeBumpy(10, 60, false, islandTop.geometry)
+    }
+
+    if (typeof _orientation !== 'undefined') {
+      islandTop.geometry.rotateX(_orientation.x)
+      islandTop.geometry.rotateY(_orientation.y)
+      islandTop.geometry.rotateZ(_orientation.z)
+    } else {
+      islandTop.geometry.rotateY(MathUtils.degToRad(angleY))
+    }
+
+    islandTop.geometry.translate(position.x, position.y, position.z)
+
+    // ---------------
+
+    const islandBottom = createPlaneMesh({ size, texture: t })
+    if (hasBumps) {
+      makeBumpy([0, -100], 10, true, islandBottom.geometry)
+      makeBumpy([0, -60], 40, true, islandBottom.geometry)
+      makeBumpy([0, -20], 60, true, islandBottom.geometry)
+    }
+
+    if (typeof _orientation !== 'undefined') {
+      // TODO: rotation needs to be reversed as the island bottom is flipped upside down
+      islandBottom.geometry.rotateX(_orientation.x)
+      islandBottom.geometry.rotateY(_orientation.y)
+      islandBottom.geometry.rotateZ(_orientation.z)
+    } else {
+      islandBottom.geometry.rotateY(MathUtils.degToRad(-angleY))
+    }
+
+    // rotate it upside down
+    islandBottom.geometry.rotateX(MathUtils.degToRad(180))
+
+    islandBottom.geometry.translate(position.x, position.y + 85, position.z)
+
+    // -------------------------------
+
+    connectEdgeTo(islandBottom.geometry, islandTop.geometry)
+
+    meshes.push(islandTop, islandBottom)
   } else {
-    floorMesh.geometry.rotateY(MathUtils.degToRad(angleY))
-  }
+    const s = typeof size === 'number' ? new Vector2(size, size) : size
 
-  floorMesh.geometry.translate(position.x, position.y, position.z)
-  meshes.push(floorMesh)
+    // TODO: rotate face textures
+    // https://stackoverflow.com/a/50859810/1806628
+    const bridge = createBox({
+      position: new Vector3(0, 0, 0),
+      size: new Vector3(s.x, 10, s.y),
+      materials: t instanceof Texture ? Material.fromTexture(t) : t,
+    })
+
+    scaleUV(new Vector2(s.x / 100, s.y / 100), bridge.geometry)
+
+    if (typeof _orientation !== 'undefined') {
+      bridge.geometry.rotateX(_orientation.x)
+      bridge.geometry.rotateY(_orientation.y)
+      bridge.geometry.rotateZ(_orientation.z)
+    } else {
+      bridge.geometry.rotateY(MathUtils.degToRad(angleY))
+    }
+
+    bridge.geometry.translate(position.x, position.y, position.z)
+    meshes.push(bridge)
+  }
 
   if (hasLight) {
     const radius = typeof size === 'number' ? size : Math.max(size.x, size.y)
@@ -110,8 +274,6 @@ const createTerrain = ({
     entities,
   }
 }
-
-// ------------------------
 
 const getVectorRadians = (vec: Vector2) => {
   const tau = Math.PI * 2
@@ -139,8 +301,6 @@ const getIntersectionAtAngle = (origin: Vector2, rectangle: Vector2, alpha: numb
   const v = new Vector2((Math.cos(alpha) * rectangle.x) / 2, (Math.sin(alpha) * rectangle.y) / 2)
   return v.multiplyScalar(getSquarePolarRadius(alpha)).add(origin)
 }
-
-// ----------------
 
 const bridgeBetween = (a: createTerrainProps, b: createTerrainProps): createTerrainProps => {
   const aSize = typeof a.size === 'number' ? new Vector2(a.size, a.size) : a.size
@@ -180,7 +340,7 @@ const bridgeBetween = (a: createTerrainProps, b: createTerrainProps): createTerr
     bTarget.y += 30
   }
 
-  // ---------------------------
+  // ----
 
   const a2bLength = bTarget.clone().sub(aTarget)
   const na2bLength = a2bLength.clone().normalize()
@@ -195,7 +355,7 @@ const bridgeBetween = (a: createTerrainProps, b: createTerrainProps): createTerr
 
   rotation.z *= -1
 
-  // ---------------------------
+  // ----
 
   return {
     size: new Vector2(100, a2bLength.length() + 50),
@@ -207,7 +367,19 @@ const bridgeBetween = (a: createTerrainProps, b: createTerrainProps): createTerr
     hasBumps: false,
     hasLight: false,
     hasCenterMarker: false,
+    type: 'bridge',
   }
+}
+
+const getGeometryBoundingBox = (geometry: BufferGeometry) => {
+  const bbox = new Box3()
+  const vertices = getVertices(geometry)
+
+  vertices.forEach(({ vector }) => {
+    bbox.expandByPoint(vector)
+  })
+
+  return bbox
 }
 
 const createSpawnZone = (position: Vector3 = new Vector3(0, 0, 0)) => {
@@ -241,6 +413,8 @@ export default async () => {
   map.meta.seed = SEED
   map.config.offset = new Vector3(6000, 0, 6000)
   map.player.position.adjustToPlayerHeight()
+  map.player.withScript()
+  map.player.script?.properties.push(new Speed(2))
   map.hud.hide(HudElements.Minimap)
 
   // ----------------------
@@ -250,31 +424,49 @@ export default async () => {
       size: 800,
       position: new Vector3(100, 0, 100),
       angleY: randomBetween(-20, 20),
+      type: 'island',
     },
     {
       size: 500,
       position: new Vector3(0, -100, 1000),
       angleY: randomBetween(-20, 20),
+      type: 'island',
     },
     {
       size: 700,
       position: new Vector3(-1000, -50, 700),
       angleY: randomBetween(-20, 20),
+      type: 'island',
     },
     {
       size: 500,
       position: new Vector3(-30, -70, 3000),
       angleY: randomBetween(-20, 20),
+      type: 'island',
     },
     {
       size: 600,
       position: new Vector3(1800, 300, 1000),
       angleY: randomBetween(-20, 20),
+      type: 'island',
     },
     {
       size: 700,
       position: new Vector3(-2600, 0, 300),
       angleY: randomBetween(-20, 20),
+      type: 'island',
+    },
+    {
+      size: 300,
+      position: new Vector3(-270, 300, -1570),
+      angleY: randomBetween(-20, 20),
+      type: 'island',
+    },
+    {
+      size: 500,
+      position: new Vector3(1400, -150, 2500),
+      angleY: randomBetween(-20, 20),
+      type: 'island',
     },
   ]
 
@@ -285,17 +477,34 @@ export default async () => {
     createTerrain(islands[3]),
     createTerrain(islands[4]),
     createTerrain(islands[5]),
+    createTerrain(islands[6]),
+    createTerrain(islands[7]),
     createTerrain(bridgeBetween(islands[0], islands[1])),
     createTerrain(bridgeBetween(islands[1], islands[2])),
     createTerrain(bridgeBetween(islands[0], islands[2])),
     createTerrain(bridgeBetween(islands[1], islands[3])),
     createTerrain(bridgeBetween(islands[0], islands[4])),
     createTerrain(bridgeBetween(islands[2], islands[5])),
+    createTerrain(bridgeBetween(islands[6], islands[0])),
+    createTerrain(bridgeBetween(islands[7], islands[3])),
+    createTerrain(bridgeBetween(islands[4], islands[7])),
   ]
 
-  for (let i = 0; i < 80; i++) {
-    const pos = new Vector3(randomBetween(-3000, 3000), 0, randomBetween(-3000, 3000))
+  const boundingBoxes = terrain.flatMap(({ meshes }) => meshes).map((mesh) => getGeometryBoundingBox(mesh.geometry))
+
+  for (let i = 0; i < 150; i++) {
     const size = new Vector2(5, 5000)
+
+    let pos: Vector3
+    let columnBBox: Box3
+
+    do {
+      pos = new Vector3(randomBetween(-4000, 4000), 0, randomBetween(-2000, 5000))
+      columnBBox = new Box3(
+        new Vector3(pos.x - size.x / 2, pos.y - size.y / 2, pos.z - size.x / 2),
+        new Vector3(pos.x + size.x / 2, pos.y + size.y / 2, pos.z + size.x / 2),
+      )
+    } while (any((bbox) => bbox.intersectsBox(columnBBox), boundingBoxes))
 
     let geometry = new CylinderGeometry(size.x, size.x, size.y, 4, 4)
     geometry = toArxCoordinateSystem(geometry)
