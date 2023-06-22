@@ -13,6 +13,18 @@
     ".": {
       "default": "./build/src/index.js",
       "types": "./build/src/index.d.ts"
+    },
+    "./prefabs": {
+      "default": "./build/src/prefabs/index.js",
+      "types": "./build/src/prefabs/index.d.ts"
+    },
+    "./scripting": {
+      "default": "./build/src/scripting/index.js",
+      "types": "./build/src/scripting/index.d.ts"
+    },
+    "./tools": {
+      "default": "./build/src/tools/index.js",
+      "types": "./build/src/tools/index.d.ts"
     }
   },
   "scripts": {},
