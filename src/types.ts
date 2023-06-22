@@ -1,10 +1,13 @@
 import { ArxColor, ArxVertex } from 'arx-convert/types'
+import { Expand } from 'arx-convert/utils'
 import { Material } from '@src/Material.js'
 import { Texture } from '@src/Texture.js'
 
-export type ArxVertexWithColor = ArxVertex & {
-  color?: ArxColor
-}
+export type ArxVertexWithColor = Expand<
+  ArxVertex & {
+    color?: ArxColor
+  }
+>
 
 export type OriginalLevel =
   | 0
