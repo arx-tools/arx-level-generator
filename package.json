@@ -2,11 +2,18 @@
   "name": "arx-level-generator",
   "version": "0.17.0",
   "description": "A tool for creating Arx Fatalis maps",
-  "main": "build/projects/index.js",
+  "main": "build/src/index.js",
+  "types": "build/src/index.d.ts",
   "type": "module",
   "engines": {
     "npm": ">=8.0.0",
     "node": ">=18.0.0"
+  },
+  "exports": {
+    ".": {
+      "default": "./build/src/index.js",
+      "types": "./build/src/index.d.ts"
+    }
   },
   "scripts": {},
   "repository": {
