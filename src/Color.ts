@@ -49,6 +49,10 @@ export class Color {
     return { r: this.r, g: this.g, b: this.b, a: this.a }
   }
 
+  toScriptColor() {
+    return `${this.r / 256} ${this.g / 256} ${this.b / 256}`
+  }
+
   clone() {
     return new Color(this.r, this.g, this.b, this.a)
   }
