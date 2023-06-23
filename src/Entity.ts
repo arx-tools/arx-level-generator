@@ -77,6 +77,9 @@ export class Entity {
     this.otherDependencies = props.otherDependencies ?? []
   }
 
+  /**
+   * returns the name of the entity without any id, for example "marker"
+   */
   get entityName() {
     return path.parse(this.src).name
   }
@@ -140,6 +143,10 @@ export class Entity {
     }
   }
 
+  /**
+   * returns the reference to the entity that can be used in scripts,
+   * for example "marker_0001"
+   */
   get ref() {
     const numericId = this.id.toString().padStart(4, '0')
 
