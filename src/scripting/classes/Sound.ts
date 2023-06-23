@@ -12,6 +12,10 @@ export class Sound {
   filename: string | Variable<string>
   flags: SoundFlags
 
+  /**
+   * Don't forget to add the audio to an entity's otherDependencies if you are
+   * using custom files
+   */
   constructor(filename: string | Variable<string>, flags: SoundFlags = SoundFlags.None) {
     this.filename = filename
     this.flags = flags
