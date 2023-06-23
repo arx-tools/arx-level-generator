@@ -10,16 +10,16 @@ export const NONINDEXED = 'non-indexed'
 type createPlaneMeshProps = {
   size: Vector2 | number
   /**
-   * @default 100
+   * default value is 100
    */
   tileSize?: number
   texture: TextureOrMaterial
   /**
-   * @default true
+   * default value is true
    */
   tileUV?: boolean
   /**
-   * @default INDEXED
+   * default value is INDEXED
    */
   isIndexed?: typeof INDEXED | typeof NONINDEXED
 }
