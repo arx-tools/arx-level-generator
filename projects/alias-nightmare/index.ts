@@ -6,7 +6,6 @@ import {
   BufferAttribute,
   BufferGeometry,
   CylinderGeometry,
-  EdgesGeometry,
   MathUtils,
   Mesh,
   MeshBasicMaterial,
@@ -25,7 +24,8 @@ import { DONT_QUADIFY, SHADING_SMOOTH } from '@src/Polygons.js'
 import { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
-import { any, uniq } from '@src/faux-ramda.js'
+import { Zone } from '@src/Zone.js'
+import { any } from '@src/faux-ramda.js'
 import { applyTransformations } from '@src/helpers.js'
 import { createPlaneMesh } from '@src/prefabs/mesh/plane.js'
 import { randomBetween } from '@src/random.js'
@@ -33,7 +33,11 @@ import { makeBumpy } from '@src/tools/mesh/makeBumpy.js'
 import { transformEdge } from '@src/tools/mesh/transformEdge.js'
 import { TextureOrMaterial } from '@src/types.js'
 import { createBox } from '@prefabs/mesh/box.js'
+import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
+import { Sound, SoundFlags } from '@scripting/classes/Sound.js'
+import { ControlZone } from '@scripting/properties/ControlZone.js'
 import { Speed } from '@scripting/properties/Speed.js'
+import { Variable } from '@scripting/properties/Variable.js'
 import { createLight } from '@tools/createLight.js'
 import { createZone } from '@tools/createZone.js'
 import { getNonIndexedVertices, getVertices } from '@tools/mesh/getVertices.js'
@@ -72,6 +76,13 @@ type createTerrainProps = {
    */
   hasCenterMarker?: boolean
   type: 'island' | 'bridge'
+}
+
+type TerrainItem = {
+  meshes: Mesh[]
+  lights: Light[]
+  entities: Entity[]
+  zones: Zone[]
 }
 
 // -----------------------------
@@ -174,7 +185,7 @@ const createTerrain = ({
   hasCenterMarker = true,
   texture,
   type,
-}: createTerrainProps) => {
+}: createTerrainProps): TerrainItem => {
   const meshes: Mesh[] = []
   const lights: Light[] = []
   const entities: Entity[] = []
@@ -275,6 +286,7 @@ const createTerrain = ({
     meshes,
     lights,
     entities,
+    zones: [],
   }
 }
 
@@ -390,7 +402,7 @@ const createSpawnZone = (position: Vector3 = new Vector3(0, 0, 0)) => {
     name: 'spawn',
     position,
     drawDistance: 4000,
-    backgroundColor: Color.fromCSS('hsla(0, 64%, 23%, 1)'),
+    backgroundColor: Color.fromCSS('hsla(0, 64%, 12%, 1)'),
     ambience: Ambience.fromAudio(
       'loop_sirs',
       Audio.fromCustomFile({
@@ -399,6 +411,127 @@ const createSpawnZone = (position: Vector3 = new Vector3(0, 0, 0)) => {
       }),
     ),
   })
+}
+
+const createColumns = (terrainBBox: Box3, boundingBoxes: Box3[]): TerrainItem => {
+  const terrainSize = terrainBBox.max.clone().sub(terrainBBox.min)
+  const terrainCenter = terrainBBox.min.clone().add(terrainSize.clone().divideScalar(2))
+  const margin = 1500
+
+  const columnSize = new Vector2(5, 5000)
+
+  const columns: Mesh[] = []
+
+  for (let i = 0; i < 150; i++) {
+    let pos: Vector3
+    let columnBBox: Box3
+
+    do {
+      pos = new Vector3(
+        randomBetween(terrainBBox.min.x - margin, terrainBBox.max.x + margin),
+        terrainCenter.y,
+        randomBetween(terrainBBox.min.z - margin, terrainBBox.max.z + margin),
+      )
+      columnBBox = new Box3(
+        new Vector3(pos.x - columnSize.x / 2, pos.y - columnSize.y / 2, pos.z - columnSize.x / 2),
+        new Vector3(pos.x + columnSize.x / 2, pos.y + columnSize.y / 2, pos.z + columnSize.x / 2),
+      )
+    } while (any((bbox) => bbox.intersectsBox(columnBBox), boundingBoxes))
+
+    let geometry = new CylinderGeometry(columnSize.x, columnSize.x, columnSize.y, 4, 4)
+    geometry = toArxCoordinateSystem(geometry)
+
+    scaleUV(new Vector2(columnSize.x / 100, columnSize.y / 100), geometry)
+
+    const material = new MeshBasicMaterial({ map: Texture.stoneHumanAkbaa4F })
+    const column = new Mesh(geometry, material)
+
+    column.geometry.translate(pos.x, pos.y, pos.z)
+
+    columns.push(column)
+  }
+
+  return {
+    meshes: columns,
+    entities: [],
+    lights: [],
+    zones: [],
+  }
+}
+
+const createFallInducer = (terrainBBox: Box3, fallbackToThisPoint: Vector3): TerrainItem => {
+  const terrainSize = terrainBBox.max.clone().sub(terrainBBox.min.clone())
+  const terrainCenter = terrainBBox.min.clone().add(terrainSize.clone().divideScalar(2))
+  const terrainBottomCenter = new Vector3(terrainCenter.x, terrainBBox.max.y, terrainCenter.z)
+
+  const margin = 1000
+  const planeDepth = 8000
+  const fallDetectorDepth = 1000
+
+  const planeSize = new Vector2(terrainSize.x + margin * 2, terrainSize.z + margin * 2)
+
+  const plane = createPlaneMesh({ size: planeSize, texture: Texture.alpha })
+  plane.geometry.translate(terrainBottomCenter.x, terrainBottomCenter.y + planeDepth, terrainBottomCenter.z)
+
+  // ------------------
+
+  const fallDetector = createZone({
+    name: 'fall-detector',
+    size: new Vector3(planeSize.x, 200, planeSize.y),
+    position: new Vector3(terrainCenter.x, -terrainBBox.max.y - fallDetectorDepth, terrainCenter.z),
+  })
+
+  // ------------------
+
+  const fallbackPoint = Entity.marker
+  fallbackPoint.position = fallbackToThisPoint.clone()
+
+  const uruLink = Audio.fromCustomFile({
+    filename: 'uru-link.wav',
+    sourcePath: 'projects/alias-nightmare/sfx',
+  })
+  const uruLinkPlayer = new Sound(uruLink.filename, SoundFlags.EmitFromPlayer)
+
+  const fallSaver = Entity.marker.withScript()
+  const isPlayerBeingSaved = new Variable('bool', 'isPlayerBeingSaved', false)
+  fallSaver.script?.properties.push(new ControlZone(fallDetector), isPlayerBeingSaved)
+  fallSaver.otherDependencies.push(uruLink)
+
+  const fadeOut = new ScriptSubroutine('fadeout', () => {
+    return `
+      worldfade out 300 ${Color.fromCSS('#333333').toScriptColor()}
+      ${uruLinkPlayer.play()}
+    `
+  })
+  const fadeIn = new ScriptSubroutine('fadein', () => {
+    return `
+      teleport -p ${fallbackPoint.ref}
+      set ${isPlayerBeingSaved.name} 0
+      TIMERfadein -m 1 2000 worldfade in 1000
+    `
+  })
+
+  fallSaver.script?.on('controlledzone_enter', () => {
+    return `
+      if (${isPlayerBeingSaved.name} == 1) {
+        accept
+      }
+      set ${isPlayerBeingSaved.name} 1
+      ${fadeOut.invoke()}
+      TIMERfadein -m 1 300 ${fadeIn.invoke()} nop
+    `
+  })
+
+  fallSaver.script?.subroutines.push(fadeOut, fadeIn)
+
+  // ------------------
+
+  return {
+    meshes: [plane],
+    entities: [fallSaver, fallbackPoint],
+    lights: [],
+    zones: [fallDetector],
+  }
 }
 
 export default async () => {
@@ -473,7 +606,7 @@ export default async () => {
     },
   ]
 
-  const terrain = [
+  const terrainItems: TerrainItem[] = [
     createTerrain(islands[0]),
     createTerrain(islands[1]),
     createTerrain(islands[2]),
@@ -493,40 +626,20 @@ export default async () => {
     createTerrain(bridgeBetween(islands[4], islands[7])),
   ]
 
-  const boundingBoxes = terrain.flatMap(({ meshes }) => meshes).map((mesh) => getGeometryBoundingBox(mesh.geometry))
+  const boundingBoxes = terrainItems
+    .flatMap(({ meshes }) => meshes)
+    .map((mesh) => getGeometryBoundingBox(mesh.geometry))
 
-  for (let i = 0; i < 150; i++) {
-    const size = new Vector2(5, 5000)
+  const terrainBBox = boundingBoxes.reduce((acc, curr) => {
+    acc.expandByPoint(curr.min)
+    acc.expandByPoint(curr.max)
+    return acc
+  }, new Box3())
 
-    let pos: Vector3
-    let columnBBox: Box3
+  terrainItems.push(createColumns(terrainBBox, boundingBoxes))
+  terrainItems.push(createFallInducer(terrainBBox, islands[0].position ?? new Vector3(0, 0, 0)))
 
-    do {
-      pos = new Vector3(randomBetween(-4000, 4000), 0, randomBetween(-2000, 5000))
-      columnBBox = new Box3(
-        new Vector3(pos.x - size.x / 2, pos.y - size.y / 2, pos.z - size.x / 2),
-        new Vector3(pos.x + size.x / 2, pos.y + size.y / 2, pos.z + size.x / 2),
-      )
-    } while (any((bbox) => bbox.intersectsBox(columnBBox), boundingBoxes))
-
-    let geometry = new CylinderGeometry(size.x, size.x, size.y, 4, 4)
-    geometry = toArxCoordinateSystem(geometry)
-
-    scaleUV(new Vector2(size.x / 100, size.y / 100), geometry)
-
-    const material = new MeshBasicMaterial({ map: Texture.stoneHumanAkbaa4F })
-    const column = new Mesh(geometry, material)
-
-    column.geometry.translate(pos.x, pos.y, pos.z)
-
-    terrain.push({
-      meshes: [column],
-      lights: [],
-      entities: [],
-    })
-  }
-
-  terrain
+  terrainItems
     .flatMap(({ meshes }) => meshes)
     .forEach((mesh) => {
       applyTransformations(mesh)
@@ -537,9 +650,10 @@ export default async () => {
       map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
     })
 
-  terrain.forEach(({ lights, entities }) => {
+  terrainItems.forEach(({ lights, entities, zones }) => {
     map.lights.push(...lights)
     map.entities.push(...entities)
+    map.zones.push(...zones)
   })
 
   map.zones.push(createSpawnZone(new Vector3(0, 0, 0)))
