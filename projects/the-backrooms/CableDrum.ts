@@ -13,7 +13,7 @@ export class CableDrum extends Entity {
         filename: 'cable-drum.bmp',
       }),
       model: {
-        sourcePath: 'projects/alias-nightmare',
+        sourcePath: 'projects/the-backrooms',
         // this is a renamed copy of GAME/GRAPH/OBJ3D/INTERACTIVE/ITEMS/PROVISIONS/ROPE/ROPE.FTL
         filename: 'cable-drum.ftl',
       },
