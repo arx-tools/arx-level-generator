@@ -404,9 +404,9 @@ const createSpawnZone = (position: Vector3 = new Vector3(0, 0, 0)) => {
     drawDistance: 4000,
     backgroundColor: Color.fromCSS('hsla(0, 64%, 12%, 1)'),
     ambience: Ambience.fromAudio(
-      'creepy-ambiance',
+      'main-ambiance',
       Audio.fromCustomFile({
-        filename: 'creepy-ambiance.wav',
+        filename: 'thunderstorm.wav',
         sourcePath: 'projects/alias-nightmare/sfx',
       }),
     ),
