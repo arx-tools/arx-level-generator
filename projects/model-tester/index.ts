@@ -82,17 +82,6 @@ export default async () => {
     scaleUV: new Vector2(1, -1),
   })
 
-  const cableDrum = await loadOBJ('models/cable-drum/cable-drum', {
-    position: new Vector3(-200, -15, 600),
-    scale: 0.1,
-  })
-
-  const teddy = await loadOBJ('models/teddy-bear/teddy-bear', {
-    position: new Vector3(-175, -150, 600),
-    scale: 0.1,
-    rotation: new Rotation(0, 0, MathUtils.degToRad(-30)),
-  })
-
   const megaphone = await loadOBJ('models/megaphone/megaphone', {
     position: new Vector3(0, -100, 700),
     scale: 0.2,
@@ -116,18 +105,7 @@ export default async () => {
     scaleUV: new Vector2(8, 8),
   })
 
-  const importedModels = [
-    teddy,
-    tree,
-    cableDrum,
-    ceilingLamp,
-    fountain,
-    ladder,
-    megaphone,
-    speaker,
-    pole,
-    blenderDefaultCube,
-  ]
+  const importedModels = [tree, ceilingLamp, fountain, ladder, megaphone, speaker, pole, blenderDefaultCube]
 
   importedModels.flat().forEach((mesh) => {
     mesh.translateX(map.config.offset.x)
