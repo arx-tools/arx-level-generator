@@ -18,7 +18,6 @@ import { Cursor } from '@projects/disco/Cursor.js'
 import { Timer } from '@projects/disco/Timer.js'
 import { Label } from '@scripting/properties/Label.js'
 import { createLight } from '@tools/createLight.js'
-import { loadOBJ } from '@tools/mesh/loadOBJ.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 
 const createFloor = (position: Vector3, size: Vector2) => {
