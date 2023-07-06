@@ -43,8 +43,8 @@ export default async () => {
 
   map.lights.push(
     createLight({
-      position: new Vector3(0, -300, 0),
-      radius: 600,
+      position: new Vector3(0, -500, 0),
+      radius: 1000,
       color: Color.white,
     }),
   )
