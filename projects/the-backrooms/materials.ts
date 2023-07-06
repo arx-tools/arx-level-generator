@@ -63,13 +63,3 @@ export const whiteMosaicTiles = Material.fromTexture(
     flags: ArxPolygonFlags.Tiled,
   },
 )
-
-export const fireExitDoor = Material.fromTexture(
-  Texture.fromCustomFile({
-    sourcePath: TEXTURE_DIR,
-    filename: 'fire-exit-door.bmp',
-  }),
-  {
-    flags: ArxPolygonFlags.Tiled,
-  },
-)

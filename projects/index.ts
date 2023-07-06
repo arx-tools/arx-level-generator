@@ -1,6 +1,5 @@
 import aliasNightmare from '@projects/alias-nightmare/index.js'
 import ambienceGallery from '@projects/ambience-gallery/index.js'
-import city from '@projects/city/index.js'
 import csItaly from '@projects/cs_italy/index.js'
 import disco from '@projects/disco/index.js'
 import escapeFromOffice from '@projects/escape-from-office/index.js'
@@ -34,9 +33,6 @@ switch (PROJECT) {
     break
   case 'model-tester':
     modelTester()
-    break
-  case 'city':
-    city()
     break
   case 'escape-from-office':
     escapeFromOffice()

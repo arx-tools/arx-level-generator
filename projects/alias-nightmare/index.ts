@@ -404,9 +404,9 @@ const createSpawnZone = (position: Vector3 = new Vector3(0, 0, 0)) => {
     drawDistance: 4000,
     backgroundColor: Color.fromCSS('hsla(0, 64%, 12%, 1)'),
     ambience: Ambience.fromAudio(
-      'loop_sirs',
+      'creepy-ambiance',
       Audio.fromCustomFile({
-        filename: 'loop_sirs.wav',
+        filename: 'creepy-ambiance.wav',
         sourcePath: 'projects/alias-nightmare/sfx',
       }),
     ),
@@ -477,7 +477,7 @@ const createFallInducer = (terrainBBox: Box3, fallbackToThisPoint: Vector3): Ter
 
   const fallDetector = createZone({
     name: 'fall-detector',
-    size: new Vector3(planeSize.x, 200, planeSize.y),
+    size: new Vector3(planeSize.x, 300, planeSize.y),
     position: new Vector3(terrainCenter.x, -terrainBBox.max.y - fallDetectorDepth, terrainCenter.z),
   })
 
