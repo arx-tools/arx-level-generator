@@ -7,6 +7,7 @@ import { DONT_QUADIFY } from '@src/Polygons.js'
 import { Vector3 } from '@src/Vector3.js'
 import { createArxMapFromMesh, createRoomMesh } from '@prefabs/rooms/room.js'
 import { carpet, ceilingTile, wallpaper } from '@projects/the-backrooms/materials.js'
+import { createLight } from '@tools/createLight.js'
 
 export default async () => {
   const {
@@ -36,6 +37,12 @@ export default async () => {
   roomMesh.position.add(new Vector3(100, 0, 100))
   roomMesh.rotateZ(MathUtils.degToRad(20))
   map.add(createArxMapFromMesh(roomMesh, DONT_QUADIFY), true)
+
+  const light = createLight({
+    position: new Vector3(200, -200, 100),
+    radius: 600,
+  })
+  map.lights.push(light)
 
   map.finalize()
 
