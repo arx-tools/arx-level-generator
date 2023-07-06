@@ -109,16 +109,6 @@ export default async () => {
     materialFlags: ArxPolygonFlags.None,
   })
 
-  const area51Shaft = await loadOBJ('models/area51-shaft/area51-shaft', {
-    position: new Vector3(-1230, 150, -1100),
-    scale: 0.4,
-    rotation: new Rotation(0, MathUtils.degToRad(180), 0),
-    fallbackTexture: Texture.fromCustomFile({
-      filename: '[stone]-concrete.jpg',
-      sourcePath: 'textures',
-    }),
-  })
-
   // it's 2m x 2m x 2m
   const blenderDefaultCube = await loadOBJ('models/blender-default-cube/blender-default-cube', {
     position: new Vector3(-350, -50, 50),
@@ -136,7 +126,6 @@ export default async () => {
     megaphone,
     speaker,
     pole,
-    area51Shaft,
     blenderDefaultCube,
   ]
 

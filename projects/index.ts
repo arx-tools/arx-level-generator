@@ -10,7 +10,6 @@ import laleesMinigame from '@projects/lalees-minigame/index.js'
 import modelTester from '@projects/model-tester/index.js'
 import theBackrooms from '@projects/the-backrooms/index.js'
 import tiltedRoomDemo from '@projects/tilted-room-demo/index.js'
-import union1Office from '@projects/union-1-office/index.js'
 
 const { PROJECT } = process.env
 
@@ -50,9 +49,6 @@ switch (PROJECT) {
     break
   case 'lalees-minigame':
     laleesMinigame()
-    break
-  case 'union-1-office':
-    union1Office()
     break
   default:
     throw new Error(`project "${PROJECT}" not found`)
