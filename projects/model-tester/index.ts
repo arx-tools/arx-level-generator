@@ -56,13 +56,6 @@ export default async () => {
 
   map.add(createFloor(1000, 2000), true)
 
-  const ceilingLamp = await loadOBJ('models/ceiling-lamp/ceiling-lamp', {
-    position: new Vector3(0, -300, 500),
-    scale: 0.5,
-    scaleUV: 5,
-    materialFlags: ArxPolygonFlags.Glow,
-  })
-
   const fountain = await loadOBJ('models/fountain/fountain', {
     position: new Vector3(0, -3, 500),
     scale: 0.02,
@@ -82,30 +75,7 @@ export default async () => {
     scaleUV: new Vector2(1, -1),
   })
 
-  const megaphone = await loadOBJ('models/megaphone/megaphone', {
-    position: new Vector3(0, -100, 700),
-    scale: 0.2,
-  })
-
-  const speaker = await loadOBJ('models/speaker/speaker', {
-    position: new Vector3(-310, -50, 850),
-    scale: 0.1,
-  })
-
-  const pole = await loadOBJ('models/pole/pole', {
-    position: new Vector3(-200, -50, 850),
-    scale: 0.1,
-    materialFlags: ArxPolygonFlags.None,
-  })
-
-  // it's 2m x 2m x 2m
-  const blenderDefaultCube = await loadOBJ('models/blender-default-cube/blender-default-cube', {
-    position: new Vector3(-350, -50, 50),
-    scale: 0.5,
-    scaleUV: new Vector2(8, 8),
-  })
-
-  const importedModels = [tree, ceilingLamp, fountain, ladder, megaphone, speaker, pole, blenderDefaultCube]
+  const importedModels = [tree, fountain, ladder]
 
   importedModels.flat().forEach((mesh) => {
     mesh.translateX(map.config.offset.x)
