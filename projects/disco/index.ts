@@ -304,20 +304,6 @@ export default async () => {
 
   // ----------------------
 
-  const speakerL = await loadOBJ('models/speaker/speaker', {
-    position: new Vector3(6000 - 540, -200, 6000 + 350),
-    scale: 0.3,
-    rotation: new Rotation(MathUtils.degToRad(15), MathUtils.degToRad(60), MathUtils.degToRad(15)),
-    materialFlags: ArxPolygonFlags.None,
-  })
-
-  const speakerR = await loadOBJ('models/speaker/speaker', {
-    position: new Vector3(6000 + 540, -200, 6000 + 350),
-    scale: 0.3,
-    rotation: new Rotation(MathUtils.degToRad(-15), MathUtils.degToRad(180 - 60), MathUtils.degToRad(-15)),
-    materialFlags: ArxPolygonFlags.None,
-  })
-
   const synthPanel = createSynthPanel(
     new Vector3(6000 + 0, -150, 6000 + 400),
     new Vector2(formattedButtonPattern[0].length * 20 + 70, 190),
@@ -332,7 +318,7 @@ export default async () => {
 
   const ceiling = createCeiling(new Vector3(6000, -300, 6000 - 425), new Vector2(1200, 1700))
 
-  const meshes = [speakerL, speakerR, synthPanel, floor, wallN, wallS, wallW, wallE, ceiling].flat()
+  const meshes = [synthPanel, floor, wallN, wallS, wallW, wallE, ceiling].flat()
 
   meshes.forEach((mesh) => {
     map.polygons.addThreeJsMesh(mesh, { tryToQuadify: DONT_QUADIFY, shading: SHADING_SMOOTH })
@@ -340,7 +326,7 @@ export default async () => {
 
   map.entities.push(...buttons.flat(), timer, lever, cursor, ...instruments /*, discoTile*/)
 
-  const light = createLight({ position: new Vector3(0, -300, 0), radius: 2000 })
+  const light = createLight({ position: new Vector3(0, -100, 0), radius: 2000 })
   map.lights.push(light)
 
   map.finalize()
