@@ -25,14 +25,6 @@ const createWoodenPole = ({ position }: { position: Vector3 }) => {
   return pole
 }
 
-const createMegaphone = async ({ position, rotation }: { position: Vector3; rotation?: Rotation }) => {
-  return loadOBJ('models/megaphone/megaphone', {
-    position,
-    rotation,
-    scale: 0.2,
-  })
-}
-
 export const createNWCorner = async () => {
   const pos = new Vector3(-200, 50, 850)
   const pole = createWoodenPole({ position: pos })
@@ -42,13 +34,9 @@ export const createNWCorner = async () => {
     intensity: 0.4,
     color: Color.fromCSS('white'),
   })
-  const megaphone = await createMegaphone({
-    position: pos.clone().add(new Vector3(50, -550, -30)),
-    rotation: new Rotation(MathUtils.degToRad(20), MathUtils.degToRad(-60), 0),
-  })
 
   return {
-    meshes: [pole, megaphone].flat(),
+    meshes: [pole].flat(),
     lights: [poleLight].flat(),
   }
 }
@@ -62,13 +50,9 @@ export const createSWCorner = async () => {
     intensity: 0.3,
     color: Color.fromCSS('white'),
   })
-  const megaphone = await createMegaphone({
-    position: pos.clone().add(new Vector3(50, -550, 30)),
-    rotation: new Rotation(MathUtils.degToRad(20), MathUtils.degToRad(-180 + 60), 0),
-  })
 
   return {
-    meshes: [pole, megaphone].flat(),
+    meshes: [pole].flat(),
     lights: [poleLight].flat(),
   }
 }
@@ -82,13 +66,9 @@ export const createNECorner = async () => {
     intensity: 0.3,
     color: Color.fromCSS('white'),
   })
-  const megaphone = await createMegaphone({
-    position: pos.clone().add(new Vector3(-50, -550, -30)),
-    rotation: new Rotation(MathUtils.degToRad(20), MathUtils.degToRad(60), 0),
-  })
 
   return {
-    meshes: [pole, megaphone].flat(),
+    meshes: [pole].flat(),
     lights: [poleLight].flat(),
   }
 }
@@ -102,13 +82,9 @@ export const createSECorner = async () => {
     intensity: 0.3,
     color: Color.fromCSS('white'),
   })
-  const megaphone = await createMegaphone({
-    position: pos.clone().add(new Vector3(-50, -550, 30)),
-    rotation: new Rotation(MathUtils.degToRad(20), MathUtils.degToRad(180 - 60), 0),
-  })
 
   return {
-    meshes: [pole, megaphone].flat(),
+    meshes: [pole].flat(),
     lights: [poleLight].flat(),
   }
 }
