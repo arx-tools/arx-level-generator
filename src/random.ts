@@ -1,12 +1,12 @@
-import { clone, repeat, sum } from '@src/faux-ramda.js'
+import { repeat, sum } from '@src/faux-ramda.js'
 
 export const randomSort = <T>(items: T[]) => {
-  const clonedItems = clone(items)
+  const copyOfItems = [...items]
   const sortedItems: T[] = []
 
-  while (clonedItems.length) {
-    const idx = pickRandomIdx(clonedItems)
-    sortedItems.push(clonedItems.splice(idx, 1)[0])
+  while (copyOfItems.length) {
+    const idx = pickRandomIdx(copyOfItems)
+    sortedItems.push(copyOfItems.splice(idx, 1)[0])
   }
 
   return sortedItems
