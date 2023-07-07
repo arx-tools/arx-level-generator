@@ -34,7 +34,6 @@
     "paths": {
       "@services/*": ["src/services/*"],
       "@prefabs/*": ["src/prefabs/*"],
-      "@projects/*": ["projects/*"],
       "@scripting/*": ["src/scripting/*"],
       "@tools/*": ["src/tools/*"],
       "@src/*": ["src/*"]
