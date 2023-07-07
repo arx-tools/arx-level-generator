@@ -28,15 +28,15 @@ import { Zone } from '@src/Zone.js'
 import { any } from '@src/faux-ramda.js'
 import { applyTransformations } from '@src/helpers.js'
 import { createPlaneMesh } from '@src/prefabs/mesh/plane.js'
-import { randomBetween } from '@src/random.js'
+import { randomBetween, randomSort } from '@src/random.js'
 import { makeBumpy } from '@src/tools/mesh/makeBumpy.js'
 import { transformEdge } from '@src/tools/mesh/transformEdge.js'
 import { TextureOrMaterial } from '@src/types.js'
+import { Rune } from '@prefabs/entity/Rune.js'
 import { createBox } from '@prefabs/mesh/box.js'
 import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
 import { Sound, SoundFlags } from '@scripting/classes/Sound.js'
 import { ControlZone } from '@scripting/properties/ControlZone.js'
-import { Speed } from '@scripting/properties/Speed.js'
 import { Variable } from '@scripting/properties/Variable.js'
 import { createLight } from '@tools/createLight.js'
 import { createZone } from '@tools/createZone.js'
@@ -71,11 +71,11 @@ type createTerrainProps = {
    */
   hasLight?: boolean
   texture?: TextureOrMaterial
-  /**
-   * default value is true
-   */
-  hasCenterMarker?: boolean
   type: 'island' | 'bridge'
+  /**
+   * default value is empty array (no loot)
+   */
+  loot?: Entity[]
 }
 
 type TerrainItem = {
@@ -84,6 +84,8 @@ type TerrainItem = {
   entities: Entity[]
   zones: Zone[]
 }
+
+const THEME_MAIN_COLOR = Color.fromCSS('hsla(226, 10%, 45%, 1)')
 
 // -----------------------------
 
@@ -182,23 +184,22 @@ const createTerrain = ({
   _orientation,
   hasBumps = true,
   hasLight = true,
-  hasCenterMarker = true,
   texture,
   type,
+  loot = [],
 }: createTerrainProps): TerrainItem => {
   const meshes: Mesh[] = []
   const lights: Light[] = []
   const entities: Entity[] = []
 
   const t = texture ?? Texture.stoneHumanAkbaa2F
+  const s = typeof size === 'number' ? new Vector2(size, size) : size
 
   if (type === 'island') {
-    // -------------------------------
-
     const islandTop = createPlaneMesh({ size, texture: t })
     if (hasBumps) {
-      transformEdge(new Vector3(0, 30, 0), islandTop)
-      makeBumpy(20, 60, true, islandTop.geometry)
+      transformEdge(new Vector3(0, 15, 0), islandTop)
+      makeBumpy(5, 60, true, islandTop.geometry)
     }
 
     if (typeof _orientation !== 'undefined') {
@@ -240,8 +241,6 @@ const createTerrain = ({
 
     meshes.push(islandTop, islandBottom)
   } else {
-    const s = typeof size === 'number' ? new Vector2(size, size) : size
-
     // TODO: rotate face textures
     // https://stackoverflow.com/a/50859810/1806628
     const bridge = createBox({
@@ -265,22 +264,22 @@ const createTerrain = ({
   }
 
   if (hasLight) {
-    let radius = typeof size === 'number' ? size : Math.max(size.x, size.y)
-    radius *= 1.6
+    const radius = Math.max(s.x, s.y) * 1.6
     const light = createLight({
       position: position.clone().add(new Vector3(0, -radius / 2, 0)),
       radius: radius,
-      intensity: 0.5,
-      color: Color.fromCSS('hsla(0, 64%, 83%, 1)'),
+      intensity: 1,
+      color: THEME_MAIN_COLOR.clone().lighten(30),
     })
     lights.push(light)
   }
 
-  if (hasCenterMarker) {
-    const centerMarker = Entity.mushroom
-    centerMarker.position = position
-    entities.push(centerMarker)
-  }
+  loot.forEach((entity) => {
+    const lateralOffset = new Vector3(randomBetween(-s.x / 4, s.x / 4), 0, randomBetween(-s.y / 4, s.y / 4))
+    entity.position = position.clone().add(lateralOffset)
+    entity.orientation = new Rotation(0, MathUtils.degToRad(randomBetween(0, 360)), 0)
+    entities.push(entity)
+  })
 
   return {
     meshes,
@@ -381,7 +380,6 @@ const bridgeBetween = (a: createTerrainProps, b: createTerrainProps): createTerr
     }),
     hasBumps: false,
     hasLight: false,
-    hasCenterMarker: false,
     type: 'bridge',
   }
 }
@@ -402,7 +400,7 @@ const createSpawnZone = (position: Vector3 = new Vector3(0, 0, 0)) => {
     name: 'spawn',
     position,
     drawDistance: 4000,
-    backgroundColor: Color.fromCSS('hsla(0, 64%, 12%, 1)'),
+    backgroundColor: THEME_MAIN_COLOR.clone(),
     ambience: Ambience.fromAudio(
       'main-ambiance',
       Audio.fromCustomFile({
@@ -499,7 +497,7 @@ const createFallInducer = (terrainBBox: Box3, fallbackToThisPoint: Vector3): Ter
 
   const fadeOut = new ScriptSubroutine('fadeout', () => {
     return `
-      worldfade out 300 ${Color.fromCSS('#333333').toScriptColor()}
+      worldfade out 300 ${THEME_MAIN_COLOR.clone().darken(50).toScriptColor()}
       ${uruLinkPlayer.play()}
     `
   })
@@ -550,10 +548,24 @@ export default async () => {
   map.config.offset = new Vector3(6000, 0, 6000)
   map.player.position.adjustToPlayerHeight()
   map.player.withScript()
-  map.player.script?.properties.push(new Speed(2))
+  // map.player.script?.properties.push(new Speed(2))
   map.hud.hide(HudElements.Minimap)
 
   // ----------------------
+
+  const rootRune = new Rune('aam', {
+    arxTutorialEnabled: false,
+  })
+  rootRune.script?.makeIntoRoot()
+
+  const lootRootEntities = [rootRune] as Entity[]
+
+  const allLoot = randomSort([
+    new Rune('mega'),
+    new Rune('spacium'),
+    new Rune('movis'),
+    // TODO
+  ] as Entity[])
 
   const islands: createTerrainProps[] = [
     {
@@ -561,50 +573,64 @@ export default async () => {
       position: new Vector3(100, 0, 100),
       angleY: randomBetween(-20, 20),
       type: 'island',
+      loot: [...lootRootEntities],
     },
     {
       size: 500,
       position: new Vector3(0, -100, 1000),
       angleY: randomBetween(-20, 20),
       type: 'island',
+      loot: [],
     },
     {
       size: 700,
       position: new Vector3(-1000, -50, 700),
       angleY: randomBetween(-20, 20),
       type: 'island',
+      loot: [],
     },
     {
       size: 500,
       position: new Vector3(-30, -70, 3000),
       angleY: randomBetween(-20, 20),
       type: 'island',
+      loot: [],
     },
     {
       size: 600,
       position: new Vector3(1800, 300, 1000),
       angleY: randomBetween(-20, 20),
       type: 'island',
+      loot: [],
     },
     {
       size: 700,
       position: new Vector3(-2600, 0, 300),
       angleY: randomBetween(-20, 20),
       type: 'island',
+      loot: [],
     },
     {
       size: 300,
       position: new Vector3(-270, 300, -1570),
       angleY: randomBetween(-20, 20),
       type: 'island',
+      loot: [],
     },
     {
       size: 500,
       position: new Vector3(1400, -150, 2500),
       angleY: randomBetween(-20, 20),
       type: 'island',
+      loot: [],
     },
   ]
+
+  const islandIdxs = randomSort([...islands.keys()])
+  allLoot.forEach((entity, idx) => {
+    const island = islands[islandIdxs[idx % islands.length]]
+    island.loot?.push(entity)
+  })
 
   const terrainItems: TerrainItem[] = [
     createTerrain(islands[0]),
