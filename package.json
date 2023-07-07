@@ -2,8 +2,8 @@
   "name": "arx-level-generator",
   "version": "0.17.0",
   "description": "A tool for creating Arx Fatalis maps",
-  "main": "build/src/index.js",
-  "types": "build/src/index.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "type": "module",
   "engines": {
     "npm": ">=8.0.0",
@@ -11,47 +11,50 @@
   },
   "exports": {
     ".": {
-      "default": "./build/src/index.js",
-      "types": "./build/src/index.d.ts"
+      "default": "./dist/src/index.js",
+      "types": "./dist/src/index.d.ts"
     },
     "./prefabs/entity": {
-      "default": "./build/src/prefabs/entity/index.js",
-      "types": "./build/src/prefabs/entity/index.d.ts"
+      "default": "./dist/src/prefabs/entity/index.js",
+      "types": "./dist/src/prefabs/entity/index.d.ts"
     },
     "./prefabs/mesh": {
-      "default": "./build/src/prefabs/mesh/index.js",
-      "types": "./build/src/prefabs/mesh/index.d.ts"
+      "default": "./dist/src/prefabs/mesh/index.js",
+      "types": "./dist/src/prefabs/mesh/index.d.ts"
     },
     "./prefabs/rooms": {
-      "default": "./build/src/prefabs/rooms/index.js",
-      "types": "./build/src/prefabs/rooms/index.d.ts"
+      "default": "./dist/src/prefabs/rooms/index.js",
+      "types": "./dist/src/prefabs/rooms/index.d.ts"
     },
     "./scripting": {
-      "default": "./build/src/scripting/index.js",
-      "types": "./build/src/scripting/index.d.ts"
+      "default": "./dist/src/scripting/index.js",
+      "types": "./dist/src/scripting/index.d.ts"
     },
     "./scripting/classes": {
-      "default": "./build/src/scripting/classes/index.js",
-      "types": "./build/src/scripting/classes/index.d.ts"
+      "default": "./dist/src/scripting/classes/index.js",
+      "types": "./dist/src/scripting/classes/index.d.ts"
     },
     "./scripting/commands": {
-      "default": "./build/src/scripting/commands/index.js",
-      "types": "./build/src/scripting/commands/index.d.ts"
+      "default": "./dist/src/scripting/commands/index.js",
+      "types": "./dist/src/scripting/commands/index.d.ts"
     },
     "./scripting/properties": {
-      "default": "./build/src/scripting/properties/index.js",
-      "types": "./build/src/scripting/properties/index.d.ts"
+      "default": "./dist/src/scripting/properties/index.js",
+      "types": "./dist/src/scripting/properties/index.d.ts"
     },
     "./tools": {
-      "default": "./build/src/tools/index.js",
-      "types": "./build/src/tools/index.d.ts"
+      "default": "./dist/src/tools/index.js",
+      "types": "./dist/src/tools/index.d.ts"
     },
     "./tools/mesh": {
-      "default": "./build/src/tools/mesh/index.js",
-      "types": "./build/src/tools/mesh/index.d.ts"
+      "default": "./dist/src/tools/mesh/index.js",
+      "types": "./dist/src/tools/mesh/index.d.ts"
     }
   },
-  "scripts": {},
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "prepublishOnly": "rm -rf dist && npm run build"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/arx-tools/arx-level-generator.git"

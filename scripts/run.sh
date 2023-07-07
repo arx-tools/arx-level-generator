@@ -19,7 +19,7 @@ if [ "$LEVEL" = "" ]; then
 fi
 
 if [ -z "$OUTPUTDIR" ]; then
-  OUTPUTDIR=$(pwd)/dist/
+  OUTPUTDIR=$(pwd)/generated/
 fi
 
 # windows
