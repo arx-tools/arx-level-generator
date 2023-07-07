@@ -15,7 +15,7 @@ good to go.
 
 `./scripts/dev.sh` - generate a level and load the level in arx immediately
 
-`./scripts/publish` - prepare a map as a zip file for publishing to moddb
+`./scripts/publish.sh` - prepare a map as a zip file for publishing to moddb
 
 ## Known issues with the stack so far
 
@@ -38,7 +38,7 @@ audio should be Microsoft ADCPM `wav`
 
 Fred's lighting calculator: https://github.com/fredlllll/ArxLibertatisLightingCalculator
 
-Requires dotnet framework 6.0 to be installed
+Requires dotnet framework 6.0+ to be installed
 
 ## Other docs
 
