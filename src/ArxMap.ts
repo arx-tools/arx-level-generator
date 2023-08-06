@@ -334,39 +334,30 @@ export class ArxMap {
     })
   }
 
-  async saveToDisk(outputDir: string, levelIdx: number, settings: Settings, prettify = false) {
+  async saveToDisk(settings: Settings, prettify = false) {
     if (!this.config.isFinalized) {
       throw new MapNotFinalizedError()
     }
 
-    const defaultOutputDir = path.resolve('./dist') + '/'
-    outputDir = path.resolve(outputDir) + '/'
+    console.log('output directory:', settings.outputDir)
 
-    console.log('output directory:', outputDir)
-
-    if (outputDir === defaultOutputDir) {
-      try {
-        await fs.promises.rm(defaultOutputDir, { recursive: true })
-      } catch (e) {}
-    } else {
-      await uninstall(outputDir)
-    }
+    await uninstall(settings.outputDir)
 
     this.meta.generatorVersion = await getPackageVersion()
 
     // ------------------------
 
-    let textures = await this.polygons.exportTextures(outputDir, settings)
+    let textures = await this.polygons.exportTextures(settings.outputDir, settings)
 
-    const hudElements = this.hud.exportSourcesAndTargets(outputDir, levelIdx)
-    const uiElements = this.ui.exportSourcesAndTargets(outputDir)
+    const hudElements = this.hud.exportSourcesAndTargets(settings.outputDir, settings.levelIdx)
+    const uiElements = this.ui.exportSourcesAndTargets(settings.outputDir)
 
     const ambienceTracks = this.zones.reduce((acc, zone) => {
       if (!zone.hasAmbience() || zone.ambience.isNative) {
         return acc
       }
 
-      zone.ambience.exportSourcesAndTargets(outputDir).forEach(([source, target]) => {
+      zone.ambience.exportSourcesAndTargets(settings.outputDir).forEach(([source, target]) => {
         acc[target] = source
       })
 
@@ -380,7 +371,7 @@ export class ArxMap {
 
       return {
         ...acc,
-        ...zone.ambience.toArxData(outputDir),
+        ...zone.ambience.toArxData(settings.outputDir),
       }
     }, {} as Record<string, ArxAMB>)
 
@@ -390,38 +381,38 @@ export class ArxMap {
 
     for (let entity of this.entities) {
       if (entity.hasScript()) {
-        scripts[entity.exportScriptTarget(outputDir)] = entity.script.toArxData()
-        const texturesToExport = await entity.script.exportTextures(outputDir, settings)
+        scripts[entity.exportScriptTarget(settings.outputDir)] = entity.script.toArxData()
+        const texturesToExport = await entity.script.exportTextures(settings.outputDir, settings)
         for (let target in texturesToExport) {
           textures[target] = texturesToExport[target]
         }
       }
 
       if (entity.hasInventoryIcon()) {
-        const texturesToExport = await entity.exportInventoryIcon(outputDir, settings)
+        const texturesToExport = await entity.exportInventoryIcon(settings.outputDir, settings)
         for (let target in texturesToExport) {
           textures[target] = texturesToExport[target]
         }
       }
 
       if (entity.hasModel()) {
-        const modelToExport = entity.exportModel(outputDir)
+        const modelToExport = entity.exportModel(settings.outputDir)
         for (let target in modelToExport) {
           models[target] = modelToExport[target]
         }
-        const texturesToExport = await entity.exportTextures(outputDir, settings)
+        const texturesToExport = await entity.exportTextures(settings.outputDir, settings)
         for (let target in texturesToExport) {
           textures[target] = texturesToExport[target]
         }
       }
 
-      const dependenciesToExport = entity.exportOtherDependencies(outputDir)
+      const dependenciesToExport = entity.exportOtherDependencies(settings.outputDir)
       for (let target in dependenciesToExport) {
         otherDependencies[target] = dependenciesToExport[target]
       }
     }
 
-    const sounds = Audio.exportReplacements(outputDir)
+    const sounds = Audio.exportReplacements(settings.outputDir)
 
     // removing root entities while also making sure the entities land in an Entities object and not in an array
     this.entities = this.entities
@@ -432,19 +423,25 @@ export class ArxMap {
       }, new Entities())
 
     if (this.player.hasScript()) {
-      scripts[this.player.exportTarget(outputDir)] = this.player.script.toArxData()
+      scripts[this.player.exportTarget(settings.outputDir)] = this.player.script.toArxData()
       textures = {
         ...textures,
-        ...(await this.player.script.exportTextures(outputDir, settings)),
+        ...(await this.player.script.exportTextures(settings.outputDir, settings)),
       }
     }
 
-    const translations = this.i18n.exportSourcesAndTargets(outputDir)
+    const translations = this.i18n.exportSourcesAndTargets(settings.outputDir)
 
     const files = {
-      dlf: path.resolve(outputDir, `graph/levels/level${levelIdx}/level${levelIdx}.dlf.json`),
-      fts: path.resolve(outputDir, `game/graph/levels/level${levelIdx}/fast.fts.json`),
-      llf: path.resolve(outputDir, `graph/levels/level${levelIdx}/level${levelIdx}.llf.json`),
+      dlf: path.resolve(
+        settings.outputDir,
+        `graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.dlf.json`,
+      ),
+      fts: path.resolve(settings.outputDir, `game/graph/levels/level${settings.levelIdx}/fast.fts.json`),
+      llf: path.resolve(
+        settings.outputDir,
+        `graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.llf.json`,
+      ),
     }
 
     const manifest = {
@@ -519,7 +516,7 @@ export class ArxMap {
 
     // ------------------------
 
-    const { dlf, fts, llf } = await this.toArxData(levelIdx)
+    const { dlf, fts, llf } = await this.toArxData(settings.levelIdx)
 
     const stringifiedDlf = prettify ? JSON.stringify(dlf, null, 2) : JSON.stringify(dlf)
     const stringifiedFts = prettify ? JSON.stringify(fts, null, 2) : JSON.stringify(fts)
@@ -530,11 +527,11 @@ export class ArxMap {
     await fs.promises.writeFile(files.llf, stringifiedLlf)
 
     manifest.files = manifest.files.map((file) => {
-      return file.replace(outputDir, '')
+      return file.replace(settings.outputDir, '')
     })
 
     await fs.promises.writeFile(
-      path.resolve(outputDir, 'arx-level-generator-manifest.json'),
+      path.resolve(settings.outputDir, 'arx-level-generator-manifest.json'),
       JSON.stringify(manifest, null, 2),
     )
   }
