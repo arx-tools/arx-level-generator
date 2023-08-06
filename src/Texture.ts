@@ -4,6 +4,7 @@ import { ArxTextureContainer } from 'arx-convert/types'
 import { Expand } from 'arx-convert/utils'
 import { sharpToBmp } from 'sharp-bmp'
 import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
+import { Settings } from '@src/Settings.js'
 import { fileExists } from '@src/helpers.js'
 import { getMetadata, getSharpInstance } from '@services/image.js'
 
@@ -92,25 +93,25 @@ export class Texture extends ThreeJsTextue {
     return (await this.getWidth()) === (await this.getHeight()) && MathUtils.isPowerOfTwo(await this.getWidth())
   }
 
-  async exportSourceAndTarget(outputDir: string, needsToBeTileable: boolean) {
+  async exportSourceAndTarget(outputDir: string, needsToBeTileable: boolean, settings: Settings) {
     if (this.isNative) {
       throw new Error('trying to export a native Texture')
     }
 
     if (needsToBeTileable && !(await this.isTileable())) {
-      return this.makeTileable(outputDir)
+      return this.makeTileable(outputDir, settings)
     } else {
-      return this.makeCopy(outputDir)
+      return this.makeCopy(outputDir, settings)
     }
   }
 
-  private async makeCopy(outputDir: string): Promise<[string, string]> {
+  private async makeCopy(outputDir: string, settings: Settings): Promise<[string, string]> {
     const { ext, name } = path.parse(this.filename)
     const isBMP = ext === '.bmp'
     const newFilename = isBMP ? this.filename : `${name}.jpg`
 
     const originalSource = this.getFilename()
-    const convertedSource = path.resolve('.cache', this.sourcePath ?? Texture.targetPath, newFilename)
+    const convertedSource = path.resolve(settings.cacheFolder, this.sourcePath ?? Texture.targetPath, newFilename)
     const convertedTarget = path.resolve(outputDir, Texture.targetPath, newFilename)
 
     await this.createCacheFolderIfNotExists(path.dirname(convertedSource))
@@ -135,13 +136,13 @@ export class Texture extends ThreeJsTextue {
     return [convertedSource, convertedTarget]
   }
 
-  private async makeTileable(outputDir: string): Promise<[string, string]> {
+  private async makeTileable(outputDir: string, settings: Settings): Promise<[string, string]> {
     const { ext, name } = path.parse(this.filename)
     const isBMP = ext === '.bmp'
     const newFilename = 'tileable-' + (isBMP ? this.filename : `${name}.jpg`)
 
     const originalSource = this.getFilename()
-    const convertedSource = path.resolve('.cache', this.sourcePath ?? Texture.targetPath, newFilename)
+    const convertedSource = path.resolve(settings.cacheFolder, this.sourcePath ?? Texture.targetPath, newFilename)
     const convertedTarget = path.resolve(outputDir, Texture.targetPath, newFilename)
 
     if (this.alreadyMadeTileable) {

@@ -1,3 +1,4 @@
+import { Settings } from '@src/Settings.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import { ScriptProperty } from '@scripting/ScriptProperty.js'
 import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
@@ -61,13 +62,16 @@ export class Script {
     this.eventHandlers[eventName].push(handler)
   }
 
-  async exportTextures(outputDir: string) {
+  async exportTextures(outputDir: string, settings: Settings) {
     let files: Record<string, string> = {}
 
     const handlers = Object.values(this.eventHandlers).flat(1).filter(isUsesTextures)
 
     for (let handler of handlers) {
-      files = { ...files, ...(await handler.exportTextures(outputDir)) }
+      files = {
+        ...files,
+        ...(await handler.exportTextures(outputDir, settings)),
+      }
     }
 
     return files

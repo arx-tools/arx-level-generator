@@ -26,9 +26,10 @@ export { Vectors } from '@src/Vectors.js'
 export { Vector3 } from '@src/Vector3.js'
 export { Vertex } from '@src/Vertex.js'
 export { Zone } from '@src/Zone.js'
+export { Settings } from '@src/Settings.js'
 
+// TODO: expose things from the files below
 // errors.ts
 // faux-ramda.ts
-// globals.d.ts
 // helpers.ts
 // random.ts

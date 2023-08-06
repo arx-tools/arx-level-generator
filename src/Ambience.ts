@@ -1,7 +1,7 @@
 import path from 'node:path'
-import { ArxAMB, ArxTrackFlags } from 'arx-convert/types'
+import { ArxAMB } from 'arx-convert/types'
 import { AmbienceTrack } from '@src/AmbienceTrack.js'
-import { Audio } from './Audio.js'
+import { Audio } from '@src/Audio.js'
 
 type AmbienceConstructorProps = {
   name: string

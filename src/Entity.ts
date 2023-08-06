@@ -1,11 +1,12 @@
 import path from 'node:path'
 import { ArxInteractiveObject } from 'arx-convert/types'
 import { Expand, Optional } from 'arx-convert/utils'
+import { Audio } from '@src/Audio.js'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
+import { Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
-import { Audio } from './Audio.js'
 
 const instanceCatalog: Record<string, Entity[]> = {}
 
@@ -176,14 +177,14 @@ export class Entity {
     )
   }
 
-  async exportInventoryIcon(outputDir: string) {
+  async exportInventoryIcon(outputDir: string, settings: Settings) {
     const files: Record<string, string> = {}
 
     if (!this.hasInventoryIcon() || this.inventoryIcon.isNative) {
       return files
     }
 
-    const [source] = await this.inventoryIcon.exportSourceAndTarget(outputDir, false)
+    const [source] = await this.inventoryIcon.exportSourceAndTarget(outputDir, false, settings)
 
     let target: string
     if (this.src.endsWith('.asl')) {
@@ -197,13 +198,13 @@ export class Entity {
     return files
   }
 
-  async exportTextures(outputDir: string) {
+  async exportTextures(outputDir: string, settings: Settings) {
     const files: Record<string, string> = {}
 
     if (this.hasModel()) {
       for (let texture of this.model.textures) {
         if (!texture.isNative) {
-          const [source, target] = await texture.exportSourceAndTarget(outputDir, false)
+          const [source, target] = await texture.exportSourceAndTarget(outputDir, false, settings)
           files[target] = source
         }
       }

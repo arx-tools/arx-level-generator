@@ -2,15 +2,16 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { DLF, FTS, LLF } from 'arx-convert'
 import { ArxDLF, ArxFTS, ArxLLF } from 'arx-convert/types'
+import { Settings } from '@src/Settings.js'
 import { OriginalLevel } from '@src/types.js'
-
-const { LEVELFILES = path.resolve('../pkware-test-files') } = process.env
 
 export class LevelLoader {
   levelIdx: OriginalLevel
+  settings: Settings
 
-  constructor(levelIdx: OriginalLevel) {
+  constructor(levelIdx: OriginalLevel, settings: Settings) {
     this.levelIdx = levelIdx
+    this.settings = settings
   }
 
   async readDlf() {
@@ -80,11 +81,11 @@ export class LevelLoader {
   }
 
   private getJsonFolder() {
-    return path.resolve(`../.cache/levels/level${this.levelIdx}`)
+    return path.resolve(this.settings.cacheFolder, `./levels/level${this.levelIdx}`)
   }
 
   private getBinaryFolder() {
-    return path.resolve(LEVELFILES, `./arx-fatalis/level${this.levelIdx}`)
+    return path.resolve(this.settings.originalLevelFiles, `./arx-fatalis/level${this.levelIdx}`)
   }
 
   private async createCacheFolderIfNotExists() {

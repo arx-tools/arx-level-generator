@@ -31,6 +31,7 @@ import { MeshImportProps, Polygons } from '@src/Polygons.js'
 import { Portal } from '@src/Portal.js'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
+import { Settings } from '@src/Settings.js'
 import { Translations } from '@src/Translations.js'
 import { UI } from '@src/UI.js'
 import { Vector3 } from '@src/Vector3.js'
@@ -196,8 +197,8 @@ export class ArxMap {
    * Requires the pkware-test-files repo
    * @see https://github.com/meszaros-lajos-gyorgy/pkware-test-files
    */
-  static async fromOriginalLevel(levelIdx: OriginalLevel) {
-    const loader = new LevelLoader(levelIdx)
+  static async fromOriginalLevel(levelIdx: OriginalLevel, settings: Settings) {
+    const loader = new LevelLoader(levelIdx, settings)
 
     const dlf = await loader.readDlf()
     const fts = await loader.readFts()
@@ -333,7 +334,7 @@ export class ArxMap {
     })
   }
 
-  async saveToDisk(outputDir: string, levelIdx: number, prettify = false) {
+  async saveToDisk(outputDir: string, levelIdx: number, settings: Settings, prettify = false) {
     if (!this.config.isFinalized) {
       throw new MapNotFinalizedError()
     }
@@ -355,7 +356,7 @@ export class ArxMap {
 
     // ------------------------
 
-    let textures = await this.polygons.exportTextures(outputDir)
+    let textures = await this.polygons.exportTextures(outputDir, settings)
 
     const hudElements = this.hud.exportSourcesAndTargets(outputDir, levelIdx)
     const uiElements = this.ui.exportSourcesAndTargets(outputDir)
@@ -390,14 +391,14 @@ export class ArxMap {
     for (let entity of this.entities) {
       if (entity.hasScript()) {
         scripts[entity.exportScriptTarget(outputDir)] = entity.script.toArxData()
-        const texturesToExport = await entity.script.exportTextures(outputDir)
+        const texturesToExport = await entity.script.exportTextures(outputDir, settings)
         for (let target in texturesToExport) {
           textures[target] = texturesToExport[target]
         }
       }
 
       if (entity.hasInventoryIcon()) {
-        const texturesToExport = await entity.exportInventoryIcon(outputDir)
+        const texturesToExport = await entity.exportInventoryIcon(outputDir, settings)
         for (let target in texturesToExport) {
           textures[target] = texturesToExport[target]
         }
@@ -408,13 +409,13 @@ export class ArxMap {
         for (let target in modelToExport) {
           models[target] = modelToExport[target]
         }
-        const texturesToExport = await entity.exportTextures(outputDir)
+        const texturesToExport = await entity.exportTextures(outputDir, settings)
         for (let target in texturesToExport) {
           textures[target] = texturesToExport[target]
         }
       }
 
-      const dependenciesToExport = await entity.exportOtherDependencies(outputDir)
+      const dependenciesToExport = entity.exportOtherDependencies(outputDir)
       for (let target in dependenciesToExport) {
         otherDependencies[target] = dependenciesToExport[target]
       }
@@ -432,7 +433,10 @@ export class ArxMap {
 
     if (this.player.hasScript()) {
       scripts[this.player.exportTarget(outputDir)] = this.player.script.toArxData()
-      textures = { ...textures, ...(await this.player.script.exportTextures(outputDir)) }
+      textures = {
+        ...textures,
+        ...(await this.player.script.exportTextures(outputDir, settings)),
+      }
     }
 
     const translations = this.i18n.exportSourcesAndTargets(outputDir)
