@@ -80,7 +80,6 @@
     "@trivago/prettier-plugin-sort-imports": "^4.1.1",
     "@types/color-rgba": "^2.1.0",
     "@types/node": "^20.2.5",
-    "@types/seedrandom": "^3.0.5",
     "@types/sharp": "^0.31.1",
     "@types/three": "^0.152.1",
     "tsc-alias": "^1.8.6",
