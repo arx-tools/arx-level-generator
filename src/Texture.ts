@@ -15,6 +15,10 @@ export type TextureConstructorProps = {
   height?: number
   size?: number
   sourcePath?: string
+  /**
+   * default value is false
+   */
+  isInternalAsset?: boolean
 }
 
 export const SIZE_UNKNOWN = -1
@@ -29,6 +33,7 @@ export class Texture extends ThreeJsTextue {
   _width: number
   _height: number
   sourcePath?: string
+  isInternalAsset: boolean
 
   constructor(props: TextureConstructorProps) {
     super(undefined, UVMapping, ClampToEdgeWrapping, ClampToEdgeWrapping)
@@ -36,6 +41,7 @@ export class Texture extends ThreeJsTextue {
     this.filename = props.filename
     this.isNative = props.isNative ?? true
     this.sourcePath = props.sourcePath
+    this.isInternalAsset = props.isInternalAsset ?? false
 
     this._width = props.size ?? props.width ?? SIZE_UNKNOWN
     this._height = props.size ?? props.height ?? SIZE_UNKNOWN
@@ -49,6 +55,7 @@ export class Texture extends ThreeJsTextue {
     copy._width = this._width
     copy._height = this._height
     copy.sourcePath = this.sourcePath
+    copy.isInternalAsset = this.isInternalAsset
     copy.alreadyMadeTileable = this.alreadyMadeTileable
 
     return copy
@@ -68,7 +75,11 @@ export class Texture extends ThreeJsTextue {
   }
 
   private getFilename(settings: Settings) {
-    return path.resolve(settings.assetsDir, this.sourcePath ?? Texture.targetPath, this.filename)
+    return path.resolve(
+      this.isInternalAsset ? settings.internalAssetsDir : settings.assetsDir,
+      this.sourcePath ?? Texture.targetPath,
+      this.filename,
+    )
   }
 
   async getWidth(settings: Settings) {
@@ -317,6 +328,7 @@ export class Texture extends ThreeJsTextue {
       filename: 'jorge-[stone].jpg',
       sourcePath: 'textures',
       size: 32,
+      isInternalAsset: true,
     })
   }
   static get itemRuneAam() {
