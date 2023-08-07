@@ -1,6 +1,6 @@
 import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVertex } from 'arx-convert/types'
 import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf, TripleOf } from 'arx-convert/utils'
-import { Mesh, MeshBasicMaterial, Object3D, Color as ThreeJsColor, BufferAttribute } from 'three'
+import { Mesh, MeshBasicMaterial, Object3D, BufferAttribute } from 'three'
 import { Color } from '@src/Color.js'
 import { Material } from '@src/Material.js'
 import { Polygon, TransparencyType } from '@src/Polygon.js'
