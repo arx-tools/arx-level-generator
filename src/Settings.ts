@@ -9,12 +9,18 @@ type SettingsConstructorProps = {
    * default value is "./.cache" relative to the project root
    */
   cacheFolder?: string
-  outputDir: string
-  levelIdx: number
+  /**
+   * default value is "./output" relative to the project root
+   */
+  outputDir?: string
+  /**
+   * default value is 1
+   */
+  levelIdx?: number
   /**
    * default value is "./assets" relative to the project root
    */
-  assetsDir: string
+  assetsDir?: string
 }
 
 export class Settings {
@@ -28,11 +34,11 @@ export class Settings {
    */
   readonly internalAssetsDir: string
 
-  constructor(props: SettingsConstructorProps) {
+  constructor(props: SettingsConstructorProps = {}) {
     this.originalLevelFiles = props.originalLevelFiles ?? path.resolve('../pkware-test-files')
     this.cacheFolder = props.cacheFolder ?? path.resolve('./.cache')
-    this.outputDir = props.outputDir
-    this.levelIdx = props.levelIdx
+    this.outputDir = props.outputDir ?? path.resolve('./output')
+    this.levelIdx = props.levelIdx ?? 1
     this.assetsDir = props.assetsDir ?? path.resolve('./assets')
     this.internalAssetsDir = path.resolve(__dirname, '../assets')
   }
