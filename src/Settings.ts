@@ -45,6 +45,6 @@ export class Settings {
     const __filename = fileURLToPath(import.meta.url)
     const __dirname = path.dirname(__filename)
 
-    this.internalAssetsDir = path.resolve(__dirname, '../assets')
+    this.internalAssetsDir = path.resolve(__dirname, '../../assets')
   }
 }
