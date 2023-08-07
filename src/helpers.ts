@@ -1,12 +1,16 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { Mesh, Object3D } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { mean } from '@src/faux-ramda.js'
 
 export const getPackageVersion = async () => {
   try {
-    const rawIn = await fs.promises.readFile(path.resolve('./package.json'), 'utf-8')
+    const __filename = fileURLToPath(import.meta.url)
+    const __dirname = path.dirname(__filename)
+
+    const rawIn = await fs.promises.readFile(path.resolve(__dirname, '../../package.json'), 'utf-8')
     const { version } = JSON.parse(rawIn) as { version: string }
     return version
   } catch (error) {
