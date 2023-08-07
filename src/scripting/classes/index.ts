@@ -1,1 +1,1 @@
-export { Sound } from '@scripting/classes/Sound.js'
+export { Sound, SoundFlags } from '@scripting/classes/Sound.js'
