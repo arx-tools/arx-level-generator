@@ -12,6 +12,10 @@ type AudioConstructorProps = {
    * default value is "sfx"
    */
   type?: AudioType
+  /**
+   * default value is false
+   */
+  isInternalAsset?: boolean
 }
 
 export class Audio {
@@ -21,6 +25,7 @@ export class Audio {
   isNative: boolean
   sourcePath?: string
   targetPath: string
+  isInternalAsset: boolean
 
   constructor(props: AudioConstructorProps) {
     this.filename = props.filename
@@ -28,6 +33,7 @@ export class Audio {
     this.sourcePath = props.sourcePath
     // TODO: find a way to support other languages too, not just english
     this.targetPath = props.type === 'speech' ? 'speech/english' : 'sfx'
+    this.isInternalAsset = props.isInternalAsset ?? false
   }
 
   static fromCustomFile(props: Expand<Omit<AudioConstructorProps, 'isNative'>>) {
@@ -42,7 +48,11 @@ export class Audio {
       throw new Error('trying to export a native Audio')
     }
 
-    const source = path.resolve(settings.assetsDir, this.sourcePath ?? this.targetPath, this.filename)
+    const source = path.resolve(
+      this.isInternalAsset ? settings.internalAssetsDir : settings.assetsDir,
+      this.sourcePath ?? this.targetPath,
+      this.filename,
+    )
     const target = path.resolve(settings.outputDir, this.targetPath, this.filename)
 
     return [source, target]
@@ -66,6 +76,7 @@ export class Audio {
       Audio.fromCustomFile({
         filename: 'no-sound.wav',
         sourcePath: 'reset',
+        isInternalAsset: true,
       }),
     )
   }
