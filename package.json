@@ -49,6 +49,18 @@
     "./tools/mesh": {
       "default": "./dist/src/tools/mesh/index.js",
       "types": "./dist/src/tools/mesh/index.d.ts"
+    },
+    "./utils": {
+      "default": "./dist/src/utils.js",
+      "types": "./dist/src/utils.d.ts"
+    },
+    "./utils/random": {
+      "default": "./dist/src/random.js",
+      "types": "./dist/src/random.d.ts"
+    },
+    "./utils/faux-ramda": {
+      "default": "./dist/src/faux-ramda.js",
+      "types": "./dist/src/faux-ramda.d.ts"
     }
   },
   "scripts": {

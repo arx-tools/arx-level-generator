@@ -28,8 +28,4 @@ export { Vertex } from '@src/Vertex.js'
 export { Zone } from '@src/Zone.js'
 export { Settings } from '@src/Settings.js'
 
-// TODO: expose things from the files below
-// errors.ts
-// faux-ramda.ts
-// helpers.ts
-// random.ts
+export { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
