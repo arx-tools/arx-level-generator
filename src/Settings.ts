@@ -22,6 +22,11 @@ type SettingsConstructorProps = {
    * default value is "./assets" relative to the project root
    */
   assetsDir?: string
+  /**
+   * default value is true
+   * if there are no lights, then this gets set to false
+   */
+  calculateLighting?: boolean
 }
 
 export class Settings {
@@ -30,6 +35,7 @@ export class Settings {
   outputDir: string
   levelIdx: number
   assetsDir: string
+  calculateLighting: boolean
   /**
    * arx-level-generator comes with its own assets folder
    */
@@ -41,6 +47,7 @@ export class Settings {
     this.outputDir = props.outputDir ?? path.resolve('./output')
     this.levelIdx = props.levelIdx ?? 1
     this.assetsDir = props.assetsDir ?? path.resolve('./assets')
+    this.calculateLighting = props.calculateLighting ?? true
 
     const __filename = fileURLToPath(import.meta.url)
     const __dirname = path.dirname(__filename)
