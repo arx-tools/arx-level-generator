@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 type SettingsConstructorProps = {
   /**
@@ -40,6 +41,10 @@ export class Settings {
     this.outputDir = props.outputDir ?? path.resolve('./output')
     this.levelIdx = props.levelIdx ?? 1
     this.assetsDir = props.assetsDir ?? path.resolve('./assets')
+
+    const __filename = fileURLToPath(import.meta.url)
+    const __dirname = path.dirname(__filename)
+
     this.internalAssetsDir = path.resolve(__dirname, '../assets')
   }
 }
