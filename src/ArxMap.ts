@@ -137,7 +137,7 @@ export class ArxMap {
     this.todo.roomDistances = fts.roomDistances
   }
 
-  private async toArxData(levelIdx: number) {
+  private async toArxData(settings: Settings) {
     const now = Math.floor(Date.now() / 1000)
     const generatorId = await ArxMap.getGeneratorId()
 
@@ -150,7 +150,7 @@ export class ArxMap {
         numberOfBackgroundPolygons: this.polygons.length,
       },
       scene: {
-        levelIdx,
+        levelIdx: settings.levelIdx,
       },
       fogs: this.fogs.map((fog) => fog.toArxFog()),
       paths: this.paths.map((path) => path.toArxPath()),
@@ -160,7 +160,7 @@ export class ArxMap {
 
     const fts: ArxFTS = {
       header: {
-        levelIdx,
+        levelIdx: settings.levelIdx,
       },
       uniqueHeaders: this.todo.uniqueHeaders,
       sceneHeader: {
@@ -171,7 +171,7 @@ export class ArxMap {
       portals: this.portals.map((portal) => portal.toArxPortal()),
       rooms: this.todo.rooms,
       roomDistances: this.todo.roomDistances,
-      ...(await this.polygons.toArxData()),
+      ...(await this.polygons.toArxData(settings)),
     }
 
     const llf: ArxLLF = {
@@ -347,17 +347,17 @@ export class ArxMap {
 
     // ------------------------
 
-    let textures = await this.polygons.exportTextures(settings.outputDir, settings)
+    let textures = await this.polygons.exportTextures(settings)
 
-    const hudElements = this.hud.exportSourcesAndTargets(settings.outputDir, settings.levelIdx)
-    const uiElements = this.ui.exportSourcesAndTargets(settings.outputDir)
+    const hudElements = this.hud.exportSourcesAndTargets(settings)
+    const uiElements = this.ui.exportSourcesAndTargets(settings)
 
     const ambienceTracks = this.zones.reduce((acc, zone) => {
       if (!zone.hasAmbience() || zone.ambience.isNative) {
         return acc
       }
 
-      zone.ambience.exportSourcesAndTargets(settings.outputDir).forEach(([source, target]) => {
+      zone.ambience.exportSourcesAndTargets(settings).forEach(([source, target]) => {
         acc[target] = source
       })
 
@@ -371,7 +371,7 @@ export class ArxMap {
 
       return {
         ...acc,
-        ...zone.ambience.toArxData(settings.outputDir),
+        ...zone.ambience.toArxData(settings),
       }
     }, {} as Record<string, ArxAMB>)
 
@@ -381,38 +381,38 @@ export class ArxMap {
 
     for (let entity of this.entities) {
       if (entity.hasScript()) {
-        scripts[entity.exportScriptTarget(settings.outputDir)] = entity.script.toArxData()
-        const texturesToExport = await entity.script.exportTextures(settings.outputDir, settings)
+        scripts[entity.exportScriptTarget(settings)] = entity.script.toArxData()
+        const texturesToExport = await entity.script.exportTextures(settings)
         for (let target in texturesToExport) {
           textures[target] = texturesToExport[target]
         }
       }
 
       if (entity.hasInventoryIcon()) {
-        const texturesToExport = await entity.exportInventoryIcon(settings.outputDir, settings)
+        const texturesToExport = await entity.exportInventoryIcon(settings)
         for (let target in texturesToExport) {
           textures[target] = texturesToExport[target]
         }
       }
 
       if (entity.hasModel()) {
-        const modelToExport = entity.exportModel(settings.outputDir)
+        const modelToExport = entity.exportModel(settings)
         for (let target in modelToExport) {
           models[target] = modelToExport[target]
         }
-        const texturesToExport = await entity.exportTextures(settings.outputDir, settings)
+        const texturesToExport = await entity.exportTextures(settings)
         for (let target in texturesToExport) {
           textures[target] = texturesToExport[target]
         }
       }
 
-      const dependenciesToExport = entity.exportOtherDependencies(settings.outputDir)
+      const dependenciesToExport = entity.exportOtherDependencies(settings)
       for (let target in dependenciesToExport) {
         otherDependencies[target] = dependenciesToExport[target]
       }
     }
 
-    const sounds = Audio.exportReplacements(settings.outputDir)
+    const sounds = Audio.exportReplacements(settings)
 
     // removing root entities while also making sure the entities land in an Entities object and not in an array
     this.entities = this.entities
@@ -423,14 +423,14 @@ export class ArxMap {
       }, new Entities())
 
     if (this.player.hasScript()) {
-      scripts[this.player.exportTarget(settings.outputDir)] = this.player.script.toArxData()
+      scripts[this.player.exportTarget(settings)] = this.player.script.toArxData()
       textures = {
         ...textures,
-        ...(await this.player.script.exportTextures(settings.outputDir, settings)),
+        ...(await this.player.script.exportTextures(settings)),
       }
     }
 
-    const translations = this.i18n.exportSourcesAndTargets(settings.outputDir)
+    const translations = this.i18n.exportSourcesAndTargets(settings)
 
     const files = {
       dlf: path.resolve(
@@ -516,7 +516,7 @@ export class ArxMap {
 
     // ------------------------
 
-    const { dlf, fts, llf } = await this.toArxData(settings.levelIdx)
+    const { dlf, fts, llf } = await this.toArxData(settings)
 
     const stringifiedDlf = prettify ? JSON.stringify(dlf, null, 2) : JSON.stringify(dlf)
     const stringifiedFts = prettify ? JSON.stringify(fts, null, 2) : JSON.stringify(fts)

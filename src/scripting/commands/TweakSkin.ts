@@ -23,18 +23,18 @@ export class TweakSkin extends ScriptCommand implements UsesTextures {
     return `tweak skin "${oldFilename}" "${newFilename}"`
   }
 
-  async exportTextures(outputDir: string, settings: Settings) {
+  async exportTextures(settings: Settings) {
     let files: Record<string, string> = {}
 
     const oldTexture = this.oldTexture
     if (typeof oldTexture !== 'string' && !oldTexture.isNative) {
-      const [source, target] = await oldTexture.exportSourceAndTarget(outputDir, false, settings)
+      const [source, target] = await oldTexture.exportSourceAndTarget(settings, false)
       files[target] = source
     }
 
     const newTexture = this.newTexture
     if (typeof newTexture !== 'string' && !newTexture.isNative) {
-      const [source, target] = await newTexture.exportSourceAndTarget(outputDir, false, settings)
+      const [source, target] = await newTexture.exportSourceAndTarget(settings, false)
       files[target] = source
     }
 

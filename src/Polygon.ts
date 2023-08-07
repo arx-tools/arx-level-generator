@@ -2,6 +2,7 @@ import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVector3,
 import { MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf } from 'arx-convert/utils'
 import { Box3, Triangle } from 'three'
 import { Color } from '@src/Color.js'
+import { Settings } from '@src/Settings.js'
 import { NO_TEXTURE_CONTAINER, Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
@@ -115,14 +116,17 @@ export class Polygon {
     return typeof this.texture !== 'undefined'
   }
 
-  async toArxPolygon(textureContainers: (ArxTextureContainer & { remaining: number })[]): Promise<ArxPolygon> {
+  async toArxPolygon(
+    textureContainers: (ArxTextureContainer & { remaining: number })[],
+    settings: Settings,
+  ): Promise<ArxPolygon> {
     const vertices = this.vertices.map((vertex) => vertex.toArxVertex()) as QuadrupleOf<ArxVertex>
 
     let textureContainerId = NO_TEXTURE_CONTAINER
     if (this.hasTexture()) {
       const needsToBeTileable = (this.flags & ArxPolygonFlags.Tiled) !== 0
       const textureFilename =
-        needsToBeTileable && !(await this.texture.isTileable())
+        needsToBeTileable && !(await this.texture.isTileable(settings))
           ? 'tileable-' + this.texture.filename
           : this.texture.filename
       const nindices = this.getNindices()

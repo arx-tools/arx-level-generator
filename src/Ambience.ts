@@ -2,6 +2,7 @@ import path from 'node:path'
 import { ArxAMB } from 'arx-convert/types'
 import { AmbienceTrack } from '@src/AmbienceTrack.js'
 import { Audio } from '@src/Audio.js'
+import { Settings } from '@src/Settings.js'
 
 type AmbienceConstructorProps = {
   name: string
@@ -42,7 +43,7 @@ export class Ambience {
     })
   }
 
-  exportSourcesAndTargets(outputDir: string) {
+  exportSourcesAndTargets(settings: Settings) {
     if (this.isNative) {
       throw new Error('trying to export a native Ambience')
     }
@@ -50,14 +51,14 @@ export class Ambience {
     const results: [string, string][] = []
 
     for (let track of this.tracks) {
-      results.push(track.exportSourceAndTarget(outputDir))
+      results.push(track.exportSourceAndTarget(settings))
     }
 
     return results
   }
 
-  toArxData(outputDir: string): Record<string, ArxAMB> {
-    const target = path.resolve(outputDir, Ambience.targetPath, `${this.name}.amb.json`)
+  toArxData(settings: Settings): Record<string, ArxAMB> {
+    const target = path.resolve(settings.outputDir, Ambience.targetPath, `${this.name}.amb.json`)
 
     return {
       [target]: {

@@ -67,52 +67,54 @@ export class Texture extends ThreeJsTextue {
     })
   }
 
-  private getFilename() {
-    return path.resolve('assets', this.sourcePath ?? Texture.targetPath, this.filename)
+  private getFilename(settings: Settings) {
+    return path.resolve(settings.assetsDir, this.sourcePath ?? Texture.targetPath, this.filename)
   }
 
-  async getWidth() {
+  async getWidth(settings: Settings) {
     if (this._width === SIZE_UNKNOWN) {
-      const { width } = await getMetadata(this.getFilename())
+      const { width } = await getMetadata(this.getFilename(settings))
       this._width = width ?? SIZE_UNKNOWN
     }
 
     return this._width
   }
 
-  async getHeight() {
+  async getHeight(settings: Settings) {
     if (this._height === SIZE_UNKNOWN) {
-      const { height } = await getMetadata(this.getFilename())
+      const { height } = await getMetadata(this.getFilename(settings))
       this._height = height ?? SIZE_UNKNOWN
     }
 
     return this._height
   }
 
-  async isTileable() {
-    return (await this.getWidth()) === (await this.getHeight()) && MathUtils.isPowerOfTwo(await this.getWidth())
+  async isTileable(settings: Settings) {
+    const width = await this.getWidth(settings)
+    const height = await this.getHeight(settings)
+    return width === height && MathUtils.isPowerOfTwo(width)
   }
 
-  async exportSourceAndTarget(outputDir: string, needsToBeTileable: boolean, settings: Settings) {
+  async exportSourceAndTarget(settings: Settings, needsToBeTileable: boolean) {
     if (this.isNative) {
       throw new Error('trying to export a native Texture')
     }
 
-    if (needsToBeTileable && !(await this.isTileable())) {
-      return this.makeTileable(outputDir, settings)
+    if (needsToBeTileable && !(await this.isTileable(settings))) {
+      return this.makeTileable(settings)
     } else {
-      return this.makeCopy(outputDir, settings)
+      return this.makeCopy(settings)
     }
   }
 
-  private async makeCopy(outputDir: string, settings: Settings): Promise<[string, string]> {
+  private async makeCopy(settings: Settings): Promise<[string, string]> {
     const { ext, name } = path.parse(this.filename)
     const isBMP = ext === '.bmp'
     const newFilename = isBMP ? this.filename : `${name}.jpg`
 
-    const originalSource = this.getFilename()
+    const originalSource = this.getFilename(settings)
     const convertedSource = path.resolve(settings.cacheFolder, this.sourcePath ?? Texture.targetPath, newFilename)
-    const convertedTarget = path.resolve(outputDir, Texture.targetPath, newFilename)
+    const convertedTarget = path.resolve(settings.outputDir, Texture.targetPath, newFilename)
 
     await this.createCacheFolderIfNotExists(path.dirname(convertedSource))
 
@@ -136,14 +138,14 @@ export class Texture extends ThreeJsTextue {
     return [convertedSource, convertedTarget]
   }
 
-  private async makeTileable(outputDir: string, settings: Settings): Promise<[string, string]> {
+  private async makeTileable(settings: Settings): Promise<[string, string]> {
     const { ext, name } = path.parse(this.filename)
     const isBMP = ext === '.bmp'
     const newFilename = 'tileable-' + (isBMP ? this.filename : `${name}.jpg`)
 
-    const originalSource = this.getFilename()
+    const originalSource = this.getFilename(settings)
     const convertedSource = path.resolve(settings.cacheFolder, this.sourcePath ?? Texture.targetPath, newFilename)
-    const convertedTarget = path.resolve(outputDir, Texture.targetPath, newFilename)
+    const convertedTarget = path.resolve(settings.outputDir, Texture.targetPath, newFilename)
 
     if (this.alreadyMadeTileable) {
       return [convertedSource, convertedTarget]

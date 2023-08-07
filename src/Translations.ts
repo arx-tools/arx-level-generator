@@ -1,10 +1,11 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { Settings } from '@src/Settings.js'
 
 export class Translations {
   translations: Record<string, Record<string, string>> = {}
 
-  exportSourcesAndTargets(outputDir: string) {
+  exportSourcesAndTargets(settings: Settings) {
     const translations: Record<string, Record<string, string>> = {}
 
     Object.entries(this.translations).forEach(([key, valuesByLanguage]) => {
@@ -21,7 +22,7 @@ export class Translations {
     Object.entries(translations).forEach(([language, dictionary]) => {
       const content = this.stringifyDictionary(dictionary)
       if (content.length) {
-        const filename = path.resolve(outputDir, `localisation/xtext_${language}_002_arx-level-generator.ini`)
+        const filename = path.resolve(settings.outputDir, `localisation/xtext_${language}_002_arx-level-generator.ini`)
         results[filename] = content
       }
     })
@@ -47,9 +48,9 @@ export class Translations {
     }
   }
 
-  async addFromFile(filename: string) {
+  async addFromFile(filename: string, settings: Settings) {
     try {
-      const rawIn = await fs.promises.readFile(path.resolve('assets', filename), 'utf-8')
+      const rawIn = await fs.promises.readFile(path.resolve(settings.assetsDir, filename), 'utf-8')
       const translations = JSON.parse(rawIn) as Record<string, Record<string, string>>
       this.add(translations)
     } catch (error) {

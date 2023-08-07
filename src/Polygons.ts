@@ -32,7 +32,7 @@ type VertexWithMaterialIndex = {
 }
 
 export class Polygons extends Array<Polygon> {
-  async exportTextures(outputDir: string, settings: Settings) {
+  async exportTextures(settings: Settings) {
     const files: Record<string, string> = {}
 
     for (let polygon of this) {
@@ -42,7 +42,7 @@ export class Polygons extends Array<Polygon> {
 
       const needsToBeTileable = (polygon.flags & ArxPolygonFlags.Tiled) !== 0
 
-      const [source, target] = await polygon.texture.exportSourceAndTarget(outputDir, needsToBeTileable, settings)
+      const [source, target] = await polygon.texture.exportSourceAndTarget(settings, needsToBeTileable)
 
       files[target] = source
     }
@@ -50,13 +50,13 @@ export class Polygons extends Array<Polygon> {
     return files
   }
 
-  async toArxData() {
+  async toArxData(settings: Settings) {
     const textureContainers = this.getTextureContainers()
 
     // watch out, we're mutating textureContainers!
     const arxPolygons: ArxPolygon[] = []
     for (let polygon of this) {
-      arxPolygons.push(await polygon.toArxPolygon(textureContainers))
+      arxPolygons.push(await polygon.toArxPolygon(textureContainers, settings))
     }
 
     const arxTextureContainers = textureContainers

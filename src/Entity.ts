@@ -154,14 +154,14 @@ export class Entity {
     return `${this.entityName}_${numericId}`
   }
 
-  exportScriptTarget(outputDir: string) {
+  exportScriptTarget(settings: Settings) {
     if (!this.hasScript()) {
       throw new Error("trying to export an Entity which doesn't have a script")
     }
 
     if (this.script.isRoot) {
       return path.resolve(
-        outputDir,
+        settings.outputDir,
         Script.targetPath,
         this.src.replace(this.script.filename, ''),
         this.script.filename,
@@ -169,7 +169,7 @@ export class Entity {
     }
 
     return path.resolve(
-      outputDir,
+      settings.outputDir,
       Script.targetPath,
       this.src.replace(this.script.filename, ''),
       this.ref,
@@ -177,20 +177,20 @@ export class Entity {
     )
   }
 
-  async exportInventoryIcon(outputDir: string, settings: Settings) {
+  async exportInventoryIcon(settings: Settings) {
     const files: Record<string, string> = {}
 
     if (!this.hasInventoryIcon() || this.inventoryIcon.isNative) {
       return files
     }
 
-    const [source] = await this.inventoryIcon.exportSourceAndTarget(outputDir, false, settings)
+    const [source] = await this.inventoryIcon.exportSourceAndTarget(settings, false)
 
     let target: string
     if (this.src.endsWith('.asl')) {
-      target = path.resolve(outputDir, 'graph/obj3d/interactive', this.src.replace(/.asl$/, '[icon].bmp'))
+      target = path.resolve(settings.outputDir, 'graph/obj3d/interactive', this.src.replace(/.asl$/, '[icon].bmp'))
     } else {
-      target = path.resolve(outputDir, 'graph/obj3d/interactive', this.src, this.entityName + `[icon].bmp`)
+      target = path.resolve(settings.outputDir, 'graph/obj3d/interactive', this.src, this.entityName + `[icon].bmp`)
     }
 
     files[target] = source
@@ -198,13 +198,13 @@ export class Entity {
     return files
   }
 
-  async exportTextures(outputDir: string, settings: Settings) {
+  async exportTextures(settings: Settings) {
     const files: Record<string, string> = {}
 
     if (this.hasModel()) {
       for (let texture of this.model.textures) {
         if (!texture.isNative) {
-          const [source, target] = await texture.exportSourceAndTarget(outputDir, false, settings)
+          const [source, target] = await texture.exportSourceAndTarget(settings, false)
           files[target] = source
         }
       }
@@ -213,13 +213,18 @@ export class Entity {
     return files
   }
 
-  exportModel(outputDir: string) {
+  exportModel(settings: Settings) {
     const files: Record<string, string> = {}
 
     if (this.hasModel()) {
       // TODO: handle this.src containing file extension
-      const source = path.resolve('assets', this.model.sourcePath, this.model.filename)
-      const target = path.resolve(outputDir, 'game/graph/obj3d/interactive', this.src, this.entityName + '.ftl')
+      const source = path.resolve(settings.assetsDir, this.model.sourcePath, this.model.filename)
+      const target = path.resolve(
+        settings.outputDir,
+        'game/graph/obj3d/interactive',
+        this.src,
+        this.entityName + '.ftl',
+      )
 
       files[target] = source
     }
@@ -227,12 +232,12 @@ export class Entity {
     return files
   }
 
-  exportOtherDependencies(outputDir: string) {
+  exportOtherDependencies(settings: Settings) {
     const files: Record<string, string> = {}
 
     for (let stuff of this.otherDependencies) {
       if (!stuff.isNative) {
-        const [source, target] = stuff.exportSourceAndTarget(outputDir)
+        const [source, target] = stuff.exportSourceAndTarget(settings)
         files[target] = source
       }
     }

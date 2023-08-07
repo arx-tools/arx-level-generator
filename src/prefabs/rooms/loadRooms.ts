@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { QuadrupleOf } from 'arx-convert/utils'
+import { Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { TextureOrMaterial } from '@src/types.js'
@@ -9,7 +10,7 @@ import { Rooms } from '@prefabs/rooms/Rooms.js'
 import { RoomProps } from '@prefabs/rooms/room.js'
 import { createLight } from '@tools/createLight.js'
 
-export const loadRooms = async (filename: string) => {
+export const loadRooms = async (filename: string, settings: Settings) => {
   const cursor = new Cursor()
   const rooms = new Rooms(cursor)
 
@@ -24,7 +25,7 @@ export const loadRooms = async (filename: string) => {
   }
   const variables: Record<string, string> = {}
 
-  const rawInput = await fs.promises.readFile(path.resolve('assets', filename), 'utf-8')
+  const rawInput = await fs.promises.readFile(path.resolve(settings.assetsDir, filename), 'utf-8')
   const lines = rawInput.split(/\r?\n/)
 
   let currentBlock:

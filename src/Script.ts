@@ -62,7 +62,7 @@ export class Script {
     this.eventHandlers[eventName].push(handler)
   }
 
-  async exportTextures(outputDir: string, settings: Settings) {
+  async exportTextures(settings: Settings) {
     let files: Record<string, string> = {}
 
     const handlers = Object.values(this.eventHandlers).flat(1).filter(isUsesTextures)
@@ -70,7 +70,7 @@ export class Script {
     for (let handler of handlers) {
       files = {
         ...files,
-        ...(await handler.exportTextures(outputDir, settings)),
+        ...(await handler.exportTextures(settings)),
       }
     }
 

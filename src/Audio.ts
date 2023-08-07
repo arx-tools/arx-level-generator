@@ -1,5 +1,6 @@
 import path from 'node:path'
 import { Expand } from 'arx-convert/utils'
+import { Settings } from '@src/Settings.js'
 
 export type AudioType = 'speech' | 'sfx'
 
@@ -36,13 +37,13 @@ export class Audio {
     })
   }
 
-  exportSourceAndTarget(outputDir: string): [string, string] {
+  exportSourceAndTarget(settings: Settings): [string, string] {
     if (this.isNative) {
       throw new Error('trying to export a native Audio')
     }
 
-    const source = path.resolve('assets', this.sourcePath ?? this.targetPath, this.filename)
-    const target = path.resolve(outputDir, this.targetPath, this.filename)
+    const source = path.resolve(settings.assetsDir, this.sourcePath ?? this.targetPath, this.filename)
+    const target = path.resolve(settings.outputDir, this.targetPath, this.filename)
 
     return [source, target]
   }
@@ -69,12 +70,12 @@ export class Audio {
     )
   }
 
-  static exportReplacements(outputDir: string, type: AudioType = 'sfx') {
+  static exportReplacements(settings: Settings, type: AudioType = 'sfx') {
     const pairs: Record<string, string> = {}
 
     for (let key in this.replacements) {
-      const [source] = this.replacements[key].exportSourceAndTarget(outputDir)
-      const target = path.resolve(outputDir, type, key)
+      const [source] = this.replacements[key].exportSourceAndTarget(settings)
+      const target = path.resolve(settings.outputDir, type, key)
       pairs[target] = source
     }
 
