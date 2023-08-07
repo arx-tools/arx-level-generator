@@ -7,15 +7,9 @@ as it contains all the arx fatalis levels readily unpacked. The level generator 
 inside `../pkware-test-files` relative to where you have installed the `arx-level-generator` (the 2 packages
 should be in the same folder next to each other)
 
-The packages caches levels that are loaded from the original game into the `.cache` folder. If you update
-`arx-convert` and it changes the format of the json structure, then just delete the `.cache` folder and you're
-good to go.
-
-## Important commands
-
-`./scripts/dev.sh` - generate a level and load the level in arx immediately
-
-`./scripts/publish.sh` - prepare a map as a zip file for publishing to moddb
+The packages caches levels that are loaded from the original game into the `.cache` folder inside the repo that uses
+the arx-level-generator. If you update any textures or update `arx-convert` and it changes the format of the json
+structure, then just delete the `.cache` folder and you're good to go.
 
 ## Known issues with the stack so far
 
