@@ -11,10 +11,6 @@ The packages caches levels that are loaded from the original game into the `.cac
 the arx-level-generator. If you update any textures or update `arx-convert` and it changes the format of the json
 structure, then just delete the `.cache` folder and you're good to go.
 
-## Known issues with the stack so far
-
-https://github.com/evanw/esbuild/issues/1975
-
 ## notes on formats
 
 make sure that all assets are lowercase
@@ -33,7 +29,7 @@ audio should be Microsoft ADCPM `wav`
 
 Fred's lighting calculator: https://github.com/fredlllll/ArxLibertatisLightingCalculator
 
-Requires dotnet framework 6.0+ to be installed
+Requires dotnet 6.0+ to be installed
 
 ## Other docs
 
