@@ -1,6 +1,14 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
+type LightingCalculatorModes =
+  | 'Distance'
+  | 'Danae'
+  | 'DistanceAngle'
+  | 'DistanceAngleShadow'
+  | 'DistanceAngleShadowNoTransparency'
+  | 'GI'
+
 type SettingsConstructorProps = {
   /**
    * default value is "../pkware-test-files" relative to the project root
@@ -27,6 +35,10 @@ type SettingsConstructorProps = {
    * if there are no lights, then this gets set to false
    */
   calculateLighting?: boolean
+  /**
+   * default value is "DistanceAngleShadowNoTransparency"
+   */
+  lightingCalculatorMode?: LightingCalculatorModes
 }
 
 export class Settings {
@@ -36,6 +48,7 @@ export class Settings {
   levelIdx: number
   assetsDir: string
   calculateLighting: boolean
+  lightingCalculatorMode: LightingCalculatorModes
   /**
    * arx-level-generator comes with its own assets folder
    */
@@ -48,6 +61,7 @@ export class Settings {
     this.levelIdx = props.levelIdx ?? 1
     this.assetsDir = props.assetsDir ?? path.resolve('./assets')
     this.calculateLighting = props.calculateLighting ?? true
+    this.lightingCalculatorMode = props.lightingCalculatorMode ?? 'DistanceAngleShadowNoTransparency'
 
     const __filename = fileURLToPath(import.meta.url)
     const __dirname = path.dirname(__filename)

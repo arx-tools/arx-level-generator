@@ -1,6 +1,10 @@
+import { exec } from 'node:child_process'
 import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 import { Readable } from 'node:stream'
+import { fileURLToPath } from 'node:url'
+import { promisify } from 'node:util'
 import { DLF, FTS, LLF } from 'arx-convert'
 import { ArxDLF, ArxFTS, ArxLLF } from 'arx-convert/types'
 import { getHeaderSize } from 'arx-header-size'
@@ -72,8 +76,50 @@ const compileDLF = async (settings: Settings) => {
     .pipe(fs.createWriteStream(path.join(dlfPath, `level${settings.levelIdx}.dlf`)))
 }
 
-export const compile = async (settings: Settings) => {
-  await Promise.all([compileFTS(settings), compileLLF(settings), compileDLF(settings)])
+const hasLights = async (settings: Settings) => {
+  const llfPath = path.join(settings.outputDir, `graph/levels/level${settings.levelIdx}`)
+  const llfJSONRaw = await fs.promises.readFile(path.join(llfPath, `level${settings.levelIdx}.llf.json`), 'utf-8')
+  const llfJSON = JSON.parse(llfJSONRaw) as ArxLLF
 
-  // calculate lighting
+  return llfJSON.lights.length > 0
+}
+
+export const compile = async (settings: Settings) => {
+  await Promise.allSettled([compileFTS(settings), compileLLF(settings), compileDLF(settings)])
+
+  if (settings.calculateLighting && (await hasLights(settings))) {
+    const operatingSystem = os.platform()
+
+    if (operatingSystem !== 'win32' && operatingSystem !== 'linux') {
+      console.error('ArxLibertatisLightingCalculator: unsupported platform')
+      return
+    }
+
+    const args = [
+      `--level "level${settings.levelIdx}"`,
+      `--arx-data-dir "${settings.outputDir}"`,
+      `--lighting-profile "${settings.lightingCalculatorMode}"`,
+    ]
+
+    const __filename = fileURLToPath(import.meta.url)
+    const __dirname = path.dirname(__filename)
+
+    const libPath = path.resolve(__dirname, '../../lib')
+
+    let exeFile: string
+    switch (operatingSystem) {
+      case 'win32':
+        exeFile = path.resolve(libPath, `fredlllll-lighting-calculator/win/ArxLibertatisLightingCalculator.exe`)
+        break
+      case 'linux':
+        exeFile = path.resolve(libPath, `fredlllll-lighting-calculator/linux/ArxLibertatisLightingCalculator`)
+        break
+    }
+
+    const { stdout, stderr } = await promisify(exec)(`${exeFile} ${args.join(' ')}`)
+    console.log(stdout)
+    if (stderr !== '') {
+      console.error(stderr)
+    }
+  }
 }
