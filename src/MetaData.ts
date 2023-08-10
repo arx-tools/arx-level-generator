@@ -4,6 +4,7 @@ export class MetaData {
   generatorVersion: string = ''
   credits: string =
     'This map was made using tools created by Lajos Mészáros and Frederik Gelder - Visit https://arx-tools.github.io/ to find out more.'
+  seed: string = ''
 
   toData() {
     return {
@@ -11,6 +12,7 @@ export class MetaData {
       generator: this.generator,
       generatorVersion: this.generatorVersion,
       credits: this.credits,
+      seed: this.seed,
     }
   }
 }
