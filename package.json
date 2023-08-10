@@ -38,6 +38,10 @@
       "default": "./dist/src/scripting/commands/index.js",
       "types": "./dist/src/scripting/commands/index.d.ts"
     },
+    "./scripting/interfaces": {
+      "default": "./dist/src/scripting/interfaces/index.js",
+      "types": "./dist/src/scripting/interfaces/index.d.ts"
+    },
     "./scripting/properties": {
       "default": "./dist/src/scripting/properties/index.js",
       "types": "./dist/src/scripting/properties/index.d.ts"

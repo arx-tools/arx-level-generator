@@ -10,3 +10,6 @@ export { Speed } from '@scripting/properties/Speed.js'
 export { StackSize } from '@scripting/properties/StackSize.js'
 export { Transparency } from '@scripting/properties/Transparency.js'
 export { Variable } from '@scripting/properties/Variable.js'
+
+export type { MaterialType } from '@scripting/properties/Material.js'
+export type { VariableType } from '@scripting/properties/Variable.js'
