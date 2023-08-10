@@ -82,6 +82,7 @@
     "arx-header-size": "^2.2.0",
     "color-rgba": "^2.4.0",
     "node-pkware": "^3.0.4",
+    "seedrandom": "^3.0.5",
     "sharp": "^0.32.4",
     "sharp-bmp": "^0.1.5",
     "three": "^0.155.0"
@@ -90,6 +91,7 @@
     "@trivago/prettier-plugin-sort-imports": "^4.2.0",
     "@types/color-rgba": "^2.1.0",
     "@types/node": "^20.4.9",
+    "@types/seedrandom": "^3.0.5",
     "@types/sharp": "^0.31.1",
     "@types/three": "^0.155.0",
     "tsc-alias": "^1.8.7",
