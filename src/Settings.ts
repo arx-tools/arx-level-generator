@@ -1,5 +1,7 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import seedrandom from 'seedrandom'
+import { randomBetween } from './random.js'
 
 type LightingCalculatorModes =
   | 'Distance'
@@ -39,16 +41,21 @@ type SettingsConstructorProps = {
    * default value is "DistanceAngleShadowNoTransparency"
    */
   lightingCalculatorMode?: LightingCalculatorModes
+  /**
+   * default value is a random number between 100.000.000 and 999.999.999
+   */
+  seed?: string
 }
 
 export class Settings {
-  originalLevelFiles: string
-  cacheFolder: string
-  outputDir: string
-  levelIdx: number
-  assetsDir: string
-  calculateLighting: boolean
-  lightingCalculatorMode: LightingCalculatorModes
+  readonly originalLevelFiles: string
+  readonly cacheFolder: string
+  readonly outputDir: string
+  readonly levelIdx: number
+  readonly assetsDir: string
+  readonly calculateLighting: boolean
+  readonly lightingCalculatorMode: LightingCalculatorModes
+  readonly seed: string
   /**
    * arx-level-generator comes with its own assets folder
    */
@@ -62,6 +69,9 @@ export class Settings {
     this.assetsDir = props.assetsDir ?? path.resolve('./assets')
     this.calculateLighting = props.calculateLighting ?? true
     this.lightingCalculatorMode = props.lightingCalculatorMode ?? 'DistanceAngleShadowNoTransparency'
+    this.seed = props.seed ?? randomBetween(100_000_000, 999_999_999).toString()
+
+    seedrandom(this.seed, { global: true })
 
     const __filename = fileURLToPath(import.meta.url)
     const __dirname = path.dirname(__filename)
