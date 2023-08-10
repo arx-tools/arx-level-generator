@@ -29,3 +29,5 @@ export { Zone } from '@src/Zone.js'
 export { Settings } from '@src/Settings.js'
 
 export { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
+
+export type { EntityConstructorProps, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
