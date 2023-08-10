@@ -10,10 +10,20 @@ import { getMetadata, getSharpInstance } from '@services/image.js'
 
 export type TextureConstructorProps = {
   filename: string
+  /**
+   * whether the texture is from the main game or a custom added file
+   *
+   * default value is true (meaning that the texture is from the game)
+   */
   isNative?: boolean
   width?: number
   height?: number
   size?: number
+  /**
+   * this path is relative to the project's "assets" folder
+   *
+   * default value is "graph/obj3d/texture"
+   */
   sourcePath?: string
   /**
    * default value is false
