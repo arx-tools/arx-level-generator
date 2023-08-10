@@ -1,6 +1,6 @@
 {
   "name": "arx-level-generator",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A tool for creating Arx Fatalis maps",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
