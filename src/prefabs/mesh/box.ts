@@ -14,12 +14,13 @@ export const createBox = ({
   /**
    * align the point of rotation on the X/Z axis when angleY is not 0
    * 0/0 = center/center, 1/0 = right/center, -1/0 = left/center, -1/-1 = left/top, 0/1 = center/bottom
-   * @default Vector2(0, 0)
+   *
+   * default value is Vector2(0, 0)
    */
   origin?: Vector2
   size: number | Vector3
   /**
-   * @default 0
+   * default value is 0
    */
   angleY?: number
   /**

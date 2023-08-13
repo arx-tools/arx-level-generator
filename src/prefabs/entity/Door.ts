@@ -6,11 +6,11 @@ import { Variable } from '@scripting/properties/Variable.js'
 export type DoorConstructorProps = Expand<
   EntityConstructorProps & {
     /**
-     * @default false
+     * default value is false
      */
     isOpen?: boolean
     /**
-     * @default false
+     * default value is false
      */
     isLocked?: boolean
     lockpickDifficulty?: number

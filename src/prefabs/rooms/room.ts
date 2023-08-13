@@ -20,7 +20,7 @@ export type RoomProps = {
   decal?: TextureOrMaterial
   textures: RoomTextures
   /**
-   * @default 50
+   * default value is 50
    */
   tileSize?: number
 }

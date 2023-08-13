@@ -8,11 +8,11 @@ type SoundPlayerConstructorProps = Expand<
   EntityConstructorPropsWithoutSrc & {
     audio: Audio
     /**
-     * @default SoundFlags.EmitFromPlayer
+     * default value is SoundFlags.EmitFromPlayer
      */
     flags?: SoundFlags
     /**
-     * @default false
+     * default value is false
      */
     autoplay?: boolean
   }
