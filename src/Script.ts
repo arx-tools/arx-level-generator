@@ -64,6 +64,8 @@ export class Script {
   on(eventName: string, handler: ScriptHandler) {
     this.eventHandlers[eventName] = this.eventHandlers[eventName] ?? []
     this.eventHandlers[eventName].push(handler)
+
+    return this
   }
 
   async exportTextures(settings: Settings) {
@@ -83,6 +85,8 @@ export class Script {
 
   makeIntoRoot() {
     this.isRoot = true
+
+    return this
   }
 
   static handlerToString(handler: ScriptHandler) {
