@@ -25,9 +25,21 @@ export type EntityConstructorProps = {
    * like `items/magic/fern/fern.asl` then you can shorten it to `items/magic/fern`
    */
   src: string
+  /**
+   * default value is Vector3(0, 0, 0)
+   */
   position?: Vector3
+  /**
+   * default value is Rotation(0, 0, 0)
+   */
   orientation?: Rotation
+  /**
+   * default value is undefined
+   */
   inventoryIcon?: Texture
+  /**
+   * default value is undefined
+   */
   model?: Expand<Optional<ModelDescriptor, 'textures'>>
   /**
    * stuff that I can't put elsewhere, but needs to get exported
