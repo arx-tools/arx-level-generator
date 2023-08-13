@@ -17,8 +17,6 @@ export class Rotation extends Euler {
   }
 
   toArxRotation(): ArxRotation {
-    this.reorder('XYZ')
-
     return {
       a: MathUtils.radToDeg(this.x),
       b: MathUtils.radToDeg(this.y),
