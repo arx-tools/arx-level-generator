@@ -14,14 +14,32 @@ import { scaleUV as scaleUVTool } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
 type loadOBJProperties = {
+  /**
+   * default value is undefined
+   */
   position?: Vector3
+  /**
+   * default value is undefined
+   */
   scale?: number | Vector3
+  /**
+   * default value is undefined
+   */
   scaleUV?: number | Vector2 | ((texture: Texture) => number | Vector2)
+  /**
+   * default value is undefined
+   */
   rotation?: Rotation
+  /**
+   * default value is (ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled)
+   */
   materialFlags?: ArxPolygonFlags | ((texture: Texture) => ArxPolygonFlags | undefined)
+  /**
+   * default value is Texture.missingTexture with the same flags as materialFlags
+   */
   fallbackTexture?: Texture
   /**
-   * @default false
+   * default value is false
    */
   reversedPolygonWinding?: boolean
 }
@@ -83,12 +101,12 @@ export const loadOBJ = async (
 
   let defaultTexture: Material
   if (typeof materialFlags === 'function') {
-    const flags = materialFlags(await Texture.missingTexture)
-    defaultTexture = Material.fromTexture(await Texture.missingTexture, {
+    const flags = materialFlags(Texture.missingTexture)
+    defaultTexture = Material.fromTexture(Texture.missingTexture, {
       flags: flags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
     })
   } else {
-    defaultTexture = Material.fromTexture(await Texture.missingTexture, {
+    defaultTexture = Material.fromTexture(Texture.missingTexture, {
       flags: materialFlags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
     })
   }
