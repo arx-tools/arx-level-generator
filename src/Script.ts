@@ -37,7 +37,11 @@ export class Script {
       let eventString = ''
 
       if (eventName === 'init') {
-        eventString += this.properties.map((property) => '  ' + property.toString() + '\n').join('')
+        eventString += this.properties
+          .map((property) => {
+            return `  ${property.toString()}\n`
+          })
+          .join('')
       }
 
       for (let handler of handlers) {
