@@ -109,6 +109,18 @@ export class Entity {
     return this
   }
 
+  at({ position, orientation }: { position?: Vector3; orientation?: Rotation }) {
+    if (typeof position !== 'undefined') {
+      this.position = position
+    }
+
+    if (typeof orientation !== 'undefined') {
+      this.orientation = orientation
+    }
+
+    return this
+  }
+
   public clone() {
     return new Entity({
       id: this.id,
