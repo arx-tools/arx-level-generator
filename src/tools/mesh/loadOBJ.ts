@@ -13,7 +13,7 @@ import { getVertices } from '@tools/mesh/getVertices.js'
 import { scaleUV as scaleUVTool } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
-type OBJProperties = {
+type loadOBJProperties = {
   position?: Vector3
   scale?: number | Vector3
   scaleUV?: number | Vector2 | ((texture: Texture) => number | Vector2)
@@ -70,7 +70,7 @@ export const loadOBJ = async (
     materialFlags,
     fallbackTexture,
     reversedPolygonWinding = false,
-  }: OBJProperties = {},
+  }: loadOBJProperties = {},
 ) => {
   const mtlLoader = new MTLLoader()
   const objLoader = new OBJLoader()
