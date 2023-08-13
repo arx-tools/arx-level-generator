@@ -7,10 +7,12 @@ export class Rotation extends Euler {
   }
 
   toArxRotation(): ArxRotation {
+    const { x, y, z } = this.reorder('XYZ')
+
     return {
-      a: MathUtils.radToDeg(this.x),
-      b: MathUtils.radToDeg(this.y),
-      g: MathUtils.radToDeg(this.z),
+      a: MathUtils.radToDeg(x),
+      b: MathUtils.radToDeg(y),
+      g: MathUtils.radToDeg(z),
     }
   }
 }
