@@ -1,5 +1,9 @@
 import { BufferAttribute, BufferGeometry, Vector2 } from 'three'
 
+/**
+ * @param offset Vector2 with the 2 values representing X and Y axis. Both axis are expected to be
+ * floats between 0 and 1
+ */
 export const translateUV = (offset: Vector2, geometry: BufferGeometry) => {
   const uv = geometry.getAttribute('uv') as BufferAttribute
 
