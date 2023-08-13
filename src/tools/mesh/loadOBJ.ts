@@ -56,7 +56,7 @@ const reversePolygonWinding = (rawObj: string) => {
 }
 
 /**
- * Loads an obj and an optional mtl file
+ * Loads an obj file and an optional mtl file
  *
  * @see https://en.wikipedia.org/wiki/Wavefront_.obj_file
  */
