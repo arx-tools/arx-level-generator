@@ -29,7 +29,7 @@ type loadOBJProperties = {
   /**
    * default value is undefined
    */
-  rotation?: Rotation
+  orientation?: Rotation
   /**
    * default value is (ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled)
    */
@@ -84,7 +84,7 @@ export const loadOBJ = async (
     position,
     scale,
     scaleUV,
-    rotation,
+    orientation,
     materialFlags,
     fallbackTexture,
     reversedPolygonWinding = false,
@@ -225,10 +225,10 @@ export const loadOBJ = async (
       }
     }
 
-    if (rotation) {
-      geometry.rotateX(rotation.x)
-      geometry.rotateY(rotation.y)
-      geometry.rotateZ(rotation.z)
+    if (orientation) {
+      geometry.rotateX(orientation.x)
+      geometry.rotateY(orientation.y)
+      geometry.rotateZ(orientation.z)
     }
 
     if (position) {
