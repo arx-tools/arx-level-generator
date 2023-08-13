@@ -418,7 +418,9 @@ export class ArxMap {
 
     // removing root entities while also making sure the entities land in an Entities object and not in an array
     this.entities = this.entities
-      .filter((entity) => !entity.hasScript() || !entity.script.isRoot)
+      .filter((entity) => {
+        return !entity.hasScript() || !entity.script.isRoot
+      })
       .reduce((acc, entity) => {
         acc.push(entity)
         return acc
