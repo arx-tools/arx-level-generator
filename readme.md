@@ -30,9 +30,11 @@ generator CAN handle this)
 ## Versions
 
 Since `1.4.0` the `Settings` class has a `version` field with 2 values: `"normal"` and `"premium"`.
-Here are the differences:
 
-- jpg textures will be exported with 50% quality in normal mode and 100% in premium
+In normal mode:
+
+- jpg textures will be exported with 70% quality as opposed to 100%
+- all textures except the icons (ending in `[icon].bmp`) will be resized to half the original resolution
 
 ## Other docs
 
