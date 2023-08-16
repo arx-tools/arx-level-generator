@@ -110,6 +110,10 @@ export class Texture extends ThreeJsTextue {
     return this._height
   }
 
+  /**
+   * this also gives value to this._width and this._height
+   * if any of them is SIZE_UNKNOWN
+   */
   async isTileable(settings: Settings) {
     const width = await this.getWidth(settings)
     const height = await this.getHeight(settings)
@@ -121,7 +125,9 @@ export class Texture extends ThreeJsTextue {
       throw new Error('trying to export a native Texture')
     }
 
-    if (needsToBeTileable && !(await this.isTileable(settings))) {
+    const isTileable = await this.isTileable(settings)
+
+    if (needsToBeTileable && !isTileable) {
       return this.makeTileable(settings)
     } else {
       return this.makeCopy(settings)
@@ -145,15 +151,16 @@ export class Texture extends ThreeJsTextue {
 
     const image = await getSharpInstance(originalSource)
 
+    let quality = 100
+    if (settings.version !== Versions.Premium && !this.filename.endsWith('[icon].bmp')) {
+      image.resize(Math.floor(this._width / 2), Math.floor(this._height / 2), { fit: 'cover' })
+      quality = 75
+    }
+
     if (isBMP) {
       await sharpToBmp(image, convertedSource)
     } else {
-      await image
-        .jpeg({
-          quality: settings.version === Versions.Premium ? 100 : 50,
-          progressive: false,
-        })
-        .toFile(convertedSource)
+      await image.jpeg({ quality, progressive: false }).toFile(convertedSource)
     }
 
     return [convertedSource, convertedTarget]
@@ -183,19 +190,19 @@ export class Texture extends ThreeJsTextue {
 
     const powerOfTwo = MathUtils.floorPowerOfTwo(this._width)
 
-    image.resize(powerOfTwo, powerOfTwo, {
-      fit: 'cover',
-    })
+    let newSize = powerOfTwo
+    let quality = 100
+    if (settings.version !== Versions.Premium && !this.filename.endsWith('[icon].bmp')) {
+      newSize = newSize / 2
+      quality = 70
+    }
+
+    image.resize(newSize, newSize, { fit: 'cover' })
 
     if (isBMP) {
       await sharpToBmp(image, convertedSource)
     } else {
-      await image
-        .jpeg({
-          quality: settings.version === Versions.Premium ? 100 : 50,
-          progressive: false,
-        })
-        .toFile(convertedSource)
+      await image.jpeg({ quality, progressive: false }).toFile(convertedSource)
     }
 
     this.alreadyMadeTileable = true
