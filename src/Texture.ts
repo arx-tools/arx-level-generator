@@ -4,7 +4,7 @@ import { ArxTextureContainer } from 'arx-convert/types'
 import { Expand } from 'arx-convert/utils'
 import { sharpToBmp } from 'sharp-bmp'
 import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
-import { Settings } from '@src/Settings.js'
+import { Settings, Versions } from '@src/Settings.js'
 import { fileExists } from '@src/helpers.js'
 import { getMetadata, getSharpInstance } from '@services/image.js'
 
@@ -150,7 +150,7 @@ export class Texture extends ThreeJsTextue {
     } else {
       await image
         .jpeg({
-          quality: 100,
+          quality: settings.version === Versions.Premium ? 100 : 50,
           progressive: false,
         })
         .toFile(convertedSource)
@@ -192,7 +192,7 @@ export class Texture extends ThreeJsTextue {
     } else {
       await image
         .jpeg({
-          quality: 100,
+          quality: settings.version === Versions.Premium ? 100 : 50,
           progressive: false,
         })
         .toFile(convertedSource)
