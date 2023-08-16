@@ -222,6 +222,9 @@ export class Texture extends ThreeJsTextue {
   static get stoneHumanPaving1() {
     return new Texture({ filename: '[stone]_human_paving1.bmp', size: 128 })
   }
+  static get aliciaRoomMur01() {
+    return new Texture({ filename: 'aliciaroom_mur01.jpg', size: 128 })
+  }
   static get aliciaRoomMur02() {
     return new Texture({ filename: 'aliciaroom_mur02.jpg', size: 128 })
   }
