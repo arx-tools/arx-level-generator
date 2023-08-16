@@ -11,6 +11,11 @@ type LightingCalculatorModes =
   | 'DistanceAngleShadowNoTransparency'
   | 'GI'
 
+export enum Versions {
+  Normal = 'normal',
+  Premium = 'premium',
+}
+
 type SettingsConstructorProps = {
   /**
    * default value is "../pkware-test-files" relative to the project root
@@ -45,6 +50,7 @@ type SettingsConstructorProps = {
    * default value is a random number between 100.000.000 and 999.999.999
    */
   seed?: string
+  version?: Versions
 }
 
 export class Settings {
@@ -56,6 +62,7 @@ export class Settings {
   readonly calculateLighting: boolean
   readonly lightingCalculatorMode: LightingCalculatorModes
   readonly seed: string
+  readonly version: Versions
   /**
    * arx-level-generator comes with its own assets folder
    */
@@ -70,6 +77,7 @@ export class Settings {
     this.calculateLighting = props.calculateLighting ?? true
     this.lightingCalculatorMode = props.lightingCalculatorMode ?? 'DistanceAngleShadowNoTransparency'
     this.seed = props.seed ?? randomBetween(100_000_000, 999_999_999).toString()
+    this.version = props.version ?? Versions.Normal
 
     seedrandom(this.seed, { global: true })
 
