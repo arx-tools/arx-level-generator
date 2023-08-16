@@ -1,5 +1,5 @@
 import { ArxPolygonFlags } from 'arx-convert/types'
-import { QuadrupleOf } from 'arx-convert/utils'
+import { Expand, QuadrupleOf } from 'arx-convert/utils'
 import { Group, MathUtils, Object3D, Vector2 } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
 import { Material } from '@src/Material.js'
@@ -14,6 +14,7 @@ export type TextureDefinition = {
   texture: TextureOrMaterial
   fitX: boolean
   fitY: boolean
+  isRemoved: boolean
 }
 
 export type RoomTextures = {
@@ -23,7 +24,7 @@ export type RoomTextures = {
 }
 
 export type RoomProps = {
-  decal?: TextureDefinition
+  decal?: Expand<Omit<TextureDefinition, 'isRemoved'>>
   textures: RoomTextures
   /**
    * default value is 50
@@ -48,7 +49,12 @@ const createFloor = (size: Vector3, textureDef: TextureDefinition, tileSize: num
   return mesh
 }
 
-const createNorthWall = (size: Vector3, textureDef: TextureDefinition, tileSize: number, decal?: TextureDefinition) => {
+const createNorthWall = (
+  size: Vector3,
+  textureDef: TextureDefinition,
+  tileSize: number,
+  decal?: Expand<Omit<TextureDefinition, 'isRemoved'>>,
+) => {
   const { x: width, y: height, z: depth } = size
   const { texture, fitX, fitY } = textureDef
 
@@ -89,7 +95,12 @@ const createNorthWall = (size: Vector3, textureDef: TextureDefinition, tileSize:
   return group
 }
 
-const createSouthWall = (size: Vector3, textureDef: TextureDefinition, tileSize: number, decal?: TextureDefinition) => {
+const createSouthWall = (
+  size: Vector3,
+  textureDef: TextureDefinition,
+  tileSize: number,
+  decal?: Expand<Omit<TextureDefinition, 'isRemoved'>>,
+) => {
   const { x: width, y: height, z: depth } = size
   const { texture, fitX, fitY } = textureDef
 
@@ -131,7 +142,12 @@ const createSouthWall = (size: Vector3, textureDef: TextureDefinition, tileSize:
   return group
 }
 
-const createWestWall = (size: Vector3, textureDef: TextureDefinition, tileSize: number, decal?: TextureDefinition) => {
+const createWestWall = (
+  size: Vector3,
+  textureDef: TextureDefinition,
+  tileSize: number,
+  decal?: Expand<Omit<TextureDefinition, 'isRemoved'>>,
+) => {
   const { x: width, y: height, z: depth } = size
   const { texture, fitX, fitY } = textureDef
 
@@ -173,7 +189,12 @@ const createWestWall = (size: Vector3, textureDef: TextureDefinition, tileSize: 
   return group
 }
 
-const createEastWall = (size: Vector3, textureDef: TextureDefinition, tileSize: number, decal?: TextureDefinition) => {
+const createEastWall = (
+  size: Vector3,
+  textureDef: TextureDefinition,
+  tileSize: number,
+  decal?: Expand<Omit<TextureDefinition, 'isRemoved'>>,
+) => {
   const { x: width, y: height, z: depth } = size
   const { texture, fitX, fitY } = textureDef
 
@@ -240,12 +261,26 @@ export const createRoomMesh = (
 ) => {
   const group = new Group()
 
-  group.add(createFloor(size, floor, tileSize))
-  group.add(createNorthWall(size, Array.isArray(wall) ? wall[0] : wall, tileSize, decal))
-  group.add(createEastWall(size, Array.isArray(wall) ? wall[1] : wall, tileSize, decal))
-  group.add(createSouthWall(size, Array.isArray(wall) ? wall[2] : wall, tileSize, decal))
-  group.add(createWestWall(size, Array.isArray(wall) ? wall[3] : wall, tileSize, decal))
-  group.add(createCeiling(size, ceiling, tileSize))
+  const walls = Array.isArray(wall) ? wall : [wall, wall, wall, wall]
+
+  if (!floor.isRemoved) {
+    group.add(createFloor(size, floor, tileSize))
+  }
+  if (!walls[0].isRemoved) {
+    group.add(createNorthWall(size, walls[0], tileSize, decal))
+  }
+  if (!walls[1].isRemoved) {
+    group.add(createEastWall(size, walls[1], tileSize, decal))
+  }
+  if (!walls[2].isRemoved) {
+    group.add(createSouthWall(size, walls[2], tileSize, decal))
+  }
+  if (!walls[3].isRemoved) {
+    group.add(createWestWall(size, walls[3], tileSize, decal))
+  }
+  if (!ceiling.isRemoved) {
+    group.add(createCeiling(size, ceiling, tileSize))
+  }
 
   return group
 }

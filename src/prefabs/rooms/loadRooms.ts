@@ -4,7 +4,6 @@ import { QuadrupleOf } from 'arx-convert/utils'
 import { Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
-import { TextureOrMaterial } from '@src/types.js'
 import { Cursor, CursorDir } from '@prefabs/rooms/Cursor.js'
 import { Rooms } from '@prefabs/rooms/Rooms.js'
 import { RoomProps, TextureDefinition } from '@prefabs/rooms/room.js'
@@ -17,9 +16,9 @@ export const loadRooms = async (filename: string, settings: Settings) => {
   const roomDefinitions: Record<string, RoomProps> = {
     default: {
       textures: {
-        ceiling: { texture: Texture.missingTexture, fitX: false, fitY: false },
-        wall: { texture: Texture.missingTexture, fitX: false, fitY: false },
-        floor: { texture: Texture.missingTexture, fitX: false, fitY: false },
+        ceiling: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+        wall: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+        floor: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
       },
     },
   }
@@ -65,9 +64,13 @@ export const loadRooms = async (filename: string, settings: Settings) => {
                     filename: tokens[2],
                     size: 128,
                   })
+                } else if (tokens[1] === 'removed') {
+                  roomDefinitions[currentBlock.name].textures[tokens[0]].isRemoved = true
                 } else {
                   console.error(
-                    `Unknown texture type "${tokens[1]}" at line ${i + 1}, expected either "custom" or "arx"`,
+                    `Unknown texture type "${tokens[1]}" at line ${
+                      i + 1
+                    }, expected either "custom", "arx" or "removed"`,
                   )
                 }
               }
@@ -81,10 +84,10 @@ export const loadRooms = async (filename: string, settings: Settings) => {
                   const fitX = tokens[4] === 'fit-x'
                   const fitY = tokens[4] === 'fit-y'
 
-                  wall[0] = { texture, fitX, fitY }
-                  wall[1] = { texture, fitX, fitY }
-                  wall[2] = { texture, fitX, fitY }
-                  wall[3] = { texture, fitX, fitY }
+                  wall[0] = { texture, fitX, fitY, isRemoved: false }
+                  wall[1] = { texture, fitX, fitY, isRemoved: false }
+                  wall[2] = { texture, fitX, fitY, isRemoved: false }
+                  wall[3] = { texture, fitX, fitY, isRemoved: false }
                 } else if (tokens[1] === 'arx') {
                   // TODO: an arx texture might not always be 128x128
                   const textureSize = 128
@@ -93,13 +96,20 @@ export const loadRooms = async (filename: string, settings: Settings) => {
                   const fitX = tokens[3] === 'fit-x'
                   const fitY = tokens[3] === 'fit-y'
 
-                  wall[0] = { texture, fitX, fitY }
-                  wall[1] = { texture, fitX, fitY }
-                  wall[2] = { texture, fitX, fitY }
-                  wall[3] = { texture, fitX, fitY }
+                  wall[0] = { texture, fitX, fitY, isRemoved: false }
+                  wall[1] = { texture, fitX, fitY, isRemoved: false }
+                  wall[2] = { texture, fitX, fitY, isRemoved: false }
+                  wall[3] = { texture, fitX, fitY, isRemoved: false }
+                } else if (tokens[1] === 'removed') {
+                  wall[0].isRemoved = true
+                  wall[1].isRemoved = true
+                  wall[2].isRemoved = true
+                  wall[3].isRemoved = true
                 } else {
                   console.error(
-                    `Unknown texture type "${tokens[1]}" at line ${i + 1}, expected either "custom" or "arx"`,
+                    `Unknown texture type "${tokens[1]}" at line ${
+                      i + 1
+                    }, expected either "custom", "arx", or "removed"`,
                   )
                 }
               }
@@ -123,7 +133,7 @@ export const loadRooms = async (filename: string, settings: Settings) => {
                   const fitX = tokens[4] === 'fit-x'
                   const fitY = tokens[4] === 'fit-y'
 
-                  wall[wallIdx] = { texture, fitX, fitY }
+                  wall[wallIdx] = { texture, fitX, fitY, isRemoved: false }
                 } else if (tokens[1] === 'arx') {
                   // TODO: an arx texture might not always be 128x128
                   const textureSize = 128
@@ -132,10 +142,14 @@ export const loadRooms = async (filename: string, settings: Settings) => {
                   const fitX = tokens[3] === 'fit-x'
                   const fitY = tokens[3] === 'fit-y'
 
-                  wall[wallIdx] = { texture, fitX, fitY }
+                  wall[wallIdx] = { texture, fitX, fitY, isRemoved: false }
+                } else if (tokens[1] === 'removed') {
+                  wall[wallIdx].isRemoved = true
                 } else {
                   console.error(
-                    `Unknown texture type "${tokens[1]}" at line ${i + 1}, expected either "custom" or "arx"`,
+                    `Unknown texture type "${tokens[1]}" at line ${
+                      i + 1
+                    }, expected either "custom", "arx" or "removed"`,
                   )
                 }
               }
@@ -164,14 +178,14 @@ export const loadRooms = async (filename: string, settings: Settings) => {
               if (typeof roomDefinitions[tokens[1]] === 'undefined') {
                 roomDefinitions[tokens[1]] = {
                   textures: {
-                    ceiling: { texture: Texture.missingTexture, fitX: false, fitY: false },
+                    ceiling: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
                     wall: [
-                      { texture: Texture.missingTexture, fitX: false, fitY: false },
-                      { texture: Texture.missingTexture, fitX: false, fitY: false },
-                      { texture: Texture.missingTexture, fitX: false, fitY: false },
-                      { texture: Texture.missingTexture, fitX: false, fitY: false },
+                      { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+                      { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+                      { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+                      { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
                     ],
-                    floor: { texture: Texture.missingTexture, fitX: false, fitY: false },
+                    floor: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
                   },
                 }
               }
