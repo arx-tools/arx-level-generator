@@ -10,14 +10,20 @@ import { TextureOrMaterial } from '@src/types.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 
+export type TextureDefinition = {
+  texture: TextureOrMaterial
+  fitX: boolean
+  fitY: boolean
+}
+
 export type RoomTextures = {
-  wall: TextureOrMaterial | QuadrupleOf<TextureOrMaterial>
-  floor: TextureOrMaterial
-  ceiling: TextureOrMaterial
+  wall: TextureDefinition | QuadrupleOf<TextureDefinition>
+  floor: TextureDefinition
+  ceiling: TextureDefinition
 }
 
 export type RoomProps = {
-  decal?: TextureOrMaterial
+  decal?: TextureDefinition
   textures: RoomTextures
   /**
    * default value is 50
@@ -25,8 +31,9 @@ export type RoomProps = {
   tileSize?: number
 }
 
-const createFloor = (size: Vector3, texture: TextureOrMaterial, tileSize: number) => {
+const createFloor = (size: Vector3, textureDef: TextureDefinition, tileSize: number) => {
   const { x: width, y: height, z: depth } = size
+  const { texture } = textureDef
 
   const mesh = createPlaneMesh({
     size: new Vector2(width, depth),
@@ -41,8 +48,9 @@ const createFloor = (size: Vector3, texture: TextureOrMaterial, tileSize: number
   return mesh
 }
 
-const createNorthWall = (size: Vector3, texture: TextureOrMaterial, tileSize: number, decal?: TextureOrMaterial) => {
+const createNorthWall = (size: Vector3, textureDef: TextureDefinition, tileSize: number, decal?: TextureDefinition) => {
   const { x: width, y: height, z: depth } = size
+  const { texture, fitX, fitY } = textureDef
 
   const group = new Group()
 
@@ -55,8 +63,6 @@ const createNorthWall = (size: Vector3, texture: TextureOrMaterial, tileSize: nu
   })
   wall.translateZ(depth / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90))
-  const fitX = false
-  const fitY = texture.filename.toLowerCase().includes('forest')
   if (fitX) {
     scaleUV(new Vector2(tileSize / width, tileSize / width), wall.geometry)
   } else if (fitY) {
@@ -70,7 +76,7 @@ const createNorthWall = (size: Vector3, texture: TextureOrMaterial, tileSize: nu
     const decalOnWall = createPlaneMesh({
       size: new Vector2(width, tileSize),
       tileSize,
-      texture: Material.fromTexture(decal, {
+      texture: Material.fromTexture(decal.texture, {
         flags: ArxPolygonFlags.Tiled,
       }),
     })
@@ -83,8 +89,9 @@ const createNorthWall = (size: Vector3, texture: TextureOrMaterial, tileSize: nu
   return group
 }
 
-const createSouthWall = (size: Vector3, texture: TextureOrMaterial, tileSize: number, decal?: TextureOrMaterial) => {
+const createSouthWall = (size: Vector3, textureDef: TextureDefinition, tileSize: number, decal?: TextureDefinition) => {
   const { x: width, y: height, z: depth } = size
+  const { texture, fitX, fitY } = textureDef
 
   const group = new Group()
 
@@ -97,8 +104,6 @@ const createSouthWall = (size: Vector3, texture: TextureOrMaterial, tileSize: nu
   })
   wall.translateZ(-depth / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(180))
-  const fitX = false
-  const fitY = texture.filename.toLowerCase().includes('forest')
   if (fitX) {
     scaleUV(new Vector2(tileSize / width, tileSize / width), wall.geometry)
   } else if (fitY) {
@@ -112,7 +117,7 @@ const createSouthWall = (size: Vector3, texture: TextureOrMaterial, tileSize: nu
     const decalOnWall = createPlaneMesh({
       size: new Vector2(width, tileSize),
       tileSize,
-      texture: Material.fromTexture(decal, {
+      texture: Material.fromTexture(decal.texture, {
         flags: ArxPolygonFlags.Tiled,
       }),
       tileUV: !texture.filename.toLowerCase().includes('forest'),
@@ -126,8 +131,9 @@ const createSouthWall = (size: Vector3, texture: TextureOrMaterial, tileSize: nu
   return group
 }
 
-const createWestWall = (size: Vector3, texture: TextureOrMaterial, tileSize: number, decal?: TextureOrMaterial) => {
+const createWestWall = (size: Vector3, textureDef: TextureDefinition, tileSize: number, decal?: TextureDefinition) => {
   const { x: width, y: height, z: depth } = size
+  const { texture, fitX, fitY } = textureDef
 
   const group = new Group()
 
@@ -140,8 +146,6 @@ const createWestWall = (size: Vector3, texture: TextureOrMaterial, tileSize: num
   })
   wall.translateX(-width / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(90))
-  const fitX = false
-  const fitY = texture.filename.toLowerCase().includes('forest')
   if (fitX) {
     scaleUV(new Vector2(tileSize / width, tileSize / width), wall.geometry)
   } else if (fitY) {
@@ -155,7 +159,7 @@ const createWestWall = (size: Vector3, texture: TextureOrMaterial, tileSize: num
     const decalOnWall = createPlaneMesh({
       size: new Vector2(depth, tileSize),
       tileSize,
-      texture: Material.fromTexture(decal, {
+      texture: Material.fromTexture(decal.texture, {
         flags: ArxPolygonFlags.Tiled,
       }),
       tileUV: !texture.filename.toLowerCase().includes('forest'),
@@ -169,8 +173,9 @@ const createWestWall = (size: Vector3, texture: TextureOrMaterial, tileSize: num
   return group
 }
 
-const createEastWall = (size: Vector3, texture: TextureOrMaterial, tileSize: number, decal?: TextureOrMaterial) => {
+const createEastWall = (size: Vector3, textureDef: TextureDefinition, tileSize: number, decal?: TextureDefinition) => {
   const { x: width, y: height, z: depth } = size
+  const { texture, fitX, fitY } = textureDef
 
   const group = new Group()
 
@@ -183,8 +188,6 @@ const createEastWall = (size: Vector3, texture: TextureOrMaterial, tileSize: num
   })
   wall.translateX(width / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(-90))
-  const fitX = false
-  const fitY = texture.filename.toLowerCase().includes('forest')
   if (fitX) {
     scaleUV(new Vector2(tileSize / width, tileSize / width), wall.geometry)
   } else if (fitY) {
@@ -198,7 +201,7 @@ const createEastWall = (size: Vector3, texture: TextureOrMaterial, tileSize: num
     const decalOnWall = createPlaneMesh({
       size: new Vector2(depth, tileSize),
       tileSize,
-      texture: Material.fromTexture(decal, {
+      texture: Material.fromTexture(decal.texture, {
         flags: ArxPolygonFlags.Tiled,
       }),
       tileUV: !texture.filename.toLowerCase().includes('forest'),
@@ -212,8 +215,9 @@ const createEastWall = (size: Vector3, texture: TextureOrMaterial, tileSize: num
   return group
 }
 
-const createCeiling = (size: Vector3, texture: TextureOrMaterial, tileSize: number) => {
+const createCeiling = (size: Vector3, textureDef: TextureDefinition, tileSize: number) => {
   const { x: width, y: height, z: depth } = size
+  const { texture } = textureDef
 
   const mesh = createPlaneMesh({
     size: new Vector2(width, depth),

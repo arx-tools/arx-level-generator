@@ -7,7 +7,7 @@ import { Vector3 } from '@src/Vector3.js'
 import { TextureOrMaterial } from '@src/types.js'
 import { Cursor, CursorDir } from '@prefabs/rooms/Cursor.js'
 import { Rooms } from '@prefabs/rooms/Rooms.js'
-import { RoomProps } from '@prefabs/rooms/room.js'
+import { RoomProps, TextureDefinition } from '@prefabs/rooms/room.js'
 import { createLight } from '@tools/createLight.js'
 
 export const loadRooms = async (filename: string, settings: Settings) => {
@@ -17,9 +17,9 @@ export const loadRooms = async (filename: string, settings: Settings) => {
   const roomDefinitions: Record<string, RoomProps> = {
     default: {
       textures: {
-        ceiling: Texture.missingTexture,
-        wall: Texture.missingTexture,
-        floor: Texture.missingTexture,
+        ceiling: { texture: Texture.missingTexture, fitX: false, fitY: false },
+        wall: { texture: Texture.missingTexture, fitX: false, fitY: false },
+        floor: { texture: Texture.missingTexture, fitX: false, fitY: false },
       },
     },
   }
@@ -55,13 +55,13 @@ export const loadRooms = async (filename: string, settings: Settings) => {
             case 'ceiling':
               {
                 if (tokens[1] === 'custom') {
-                  roomDefinitions[currentBlock.name].textures[tokens[0]] = Texture.fromCustomFile({
+                  roomDefinitions[currentBlock.name].textures[tokens[0]].texture = Texture.fromCustomFile({
                     filename: tokens[3],
                     sourcePath: tokens[2],
                   })
                 } else if (tokens[1] === 'arx') {
                   // TODO: an arx texture might not always be 128x128
-                  roomDefinitions[currentBlock.name].textures[tokens[0]] = new Texture({
+                  roomDefinitions[currentBlock.name].textures[tokens[0]].texture = new Texture({
                     filename: tokens[2],
                     size: 128,
                   })
@@ -74,21 +74,29 @@ export const loadRooms = async (filename: string, settings: Settings) => {
               break
             case 'wall':
               {
-                const wall = roomDefinitions[currentBlock.name].textures.wall as QuadrupleOf<TextureOrMaterial>
+                const wall = roomDefinitions[currentBlock.name].textures.wall as QuadrupleOf<TextureDefinition>
 
                 if (tokens[1] === 'custom') {
                   const texture = Texture.fromCustomFile({ filename: tokens[3], sourcePath: tokens[2] })
-                  wall[0] = texture
-                  wall[1] = texture
-                  wall[2] = texture
-                  wall[3] = texture
+                  const fitX = tokens[4] === 'fit-x'
+                  const fitY = tokens[4] === 'fit-y'
+
+                  wall[0] = { texture, fitX, fitY }
+                  wall[1] = { texture, fitX, fitY }
+                  wall[2] = { texture, fitX, fitY }
+                  wall[3] = { texture, fitX, fitY }
                 } else if (tokens[1] === 'arx') {
                   // TODO: an arx texture might not always be 128x128
-                  const texture = new Texture({ filename: tokens[2], size: 128 })
-                  wall[0] = texture
-                  wall[1] = texture
-                  wall[2] = texture
-                  wall[3] = texture
+                  const textureSize = 128
+
+                  const texture = new Texture({ filename: tokens[2], size: textureSize })
+                  const fitX = tokens[3] === 'fit-x'
+                  const fitY = tokens[3] === 'fit-y'
+
+                  wall[0] = { texture, fitX, fitY }
+                  wall[1] = { texture, fitX, fitY }
+                  wall[2] = { texture, fitX, fitY }
+                  wall[3] = { texture, fitX, fitY }
                 } else {
                   console.error(
                     `Unknown texture type "${tokens[1]}" at line ${i + 1}, expected either "custom" or "arx"`,
@@ -101,28 +109,30 @@ export const loadRooms = async (filename: string, settings: Settings) => {
             case 'wall-south':
             case 'wall-west':
               {
-                const wall = roomDefinitions[currentBlock.name].textures.wall as QuadrupleOf<TextureOrMaterial>
+                const wallIdx = tokens[0].endsWith('north')
+                  ? 0
+                  : tokens[0].endsWith('east')
+                  ? 1
+                  : tokens[0].endsWith('south')
+                  ? 2
+                  : 3
+
+                const wall = roomDefinitions[currentBlock.name].textures.wall as QuadrupleOf<TextureDefinition>
                 if (tokens[1] === 'custom') {
                   const texture = Texture.fromCustomFile({ filename: tokens[3], sourcePath: tokens[2] })
-                  const wallIdx = tokens[0].endsWith('north')
-                    ? 0
-                    : tokens[0].endsWith('east')
-                    ? 1
-                    : tokens[0].endsWith('south')
-                    ? 2
-                    : 3
-                  wall[wallIdx] = texture
+                  const fitX = tokens[4] === 'fit-x'
+                  const fitY = tokens[4] === 'fit-y'
+
+                  wall[wallIdx] = { texture, fitX, fitY }
                 } else if (tokens[1] === 'arx') {
                   // TODO: an arx texture might not always be 128x128
-                  const texture = new Texture({ filename: tokens[2], size: 128 })
-                  const wallIdx = tokens[0].endsWith('north')
-                    ? 0
-                    : tokens[0].endsWith('east')
-                    ? 1
-                    : tokens[0].endsWith('south')
-                    ? 2
-                    : 3
-                  wall[wallIdx] = texture
+                  const textureSize = 128
+
+                  const texture = new Texture({ filename: tokens[2], size: textureSize })
+                  const fitX = tokens[3] === 'fit-x'
+                  const fitY = tokens[3] === 'fit-y'
+
+                  wall[wallIdx] = { texture, fitX, fitY }
                 } else {
                   console.error(
                     `Unknown texture type "${tokens[1]}" at line ${i + 1}, expected either "custom" or "arx"`,
@@ -154,14 +164,14 @@ export const loadRooms = async (filename: string, settings: Settings) => {
               if (typeof roomDefinitions[tokens[1]] === 'undefined') {
                 roomDefinitions[tokens[1]] = {
                   textures: {
-                    ceiling: Texture.missingTexture,
+                    ceiling: { texture: Texture.missingTexture, fitX: false, fitY: false },
                     wall: [
-                      Texture.missingTexture,
-                      Texture.missingTexture,
-                      Texture.missingTexture,
-                      Texture.missingTexture,
+                      { texture: Texture.missingTexture, fitX: false, fitY: false },
+                      { texture: Texture.missingTexture, fitX: false, fitY: false },
+                      { texture: Texture.missingTexture, fitX: false, fitY: false },
+                      { texture: Texture.missingTexture, fitX: false, fitY: false },
                     ],
-                    floor: Texture.missingTexture,
+                    floor: { texture: Texture.missingTexture, fitX: false, fitY: false },
                   },
                 }
               }
