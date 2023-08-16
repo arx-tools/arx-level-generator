@@ -154,7 +154,7 @@ export class Texture extends ThreeJsTextue {
     let quality = 100
     if (settings.version !== Versions.Premium && !this.filename.endsWith('[icon].bmp')) {
       image.resize(Math.floor(this._width / 2), Math.floor(this._height / 2), { fit: 'cover' })
-      quality = 75
+      quality = 70
     }
 
     if (isBMP) {
