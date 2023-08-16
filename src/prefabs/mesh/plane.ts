@@ -8,17 +8,30 @@ export const INDEXED = 'indexed'
 export const NONINDEXED = 'non-indexed'
 
 type createPlaneMeshProps = {
+  /**
+   * width and height of the plane
+   */
   size: Vector2 | number
   /**
+   * the plane will be made from smaller squares with the size given via this prop
+   * setting tileSize to 50 will subdivide the mesh into 50x50 squares
+   *
    * default value is 100
    */
   tileSize?: number
   texture: TextureOrMaterial
   /**
+   * If set to true, then the texture will be placed on every tile, otherwise the
+   * texture will be stretched throughout the whole mesh
+   *
    * default value is true
    */
   tileUV?: boolean
   /**
+   * when a mesh is indexed, then polygons reuse the vertices: moving one vertex
+   * will modify multiple polygons. If non-indexed, then all polygons have their
+   * own vertices.
+   *
    * default value is INDEXED
    */
   isIndexed?: typeof INDEXED | typeof NONINDEXED
