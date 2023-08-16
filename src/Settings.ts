@@ -50,6 +50,9 @@ type SettingsConstructorProps = {
    * default value is a random number between 100.000.000 and 999.999.999
    */
   seed?: string
+  /**
+   * default value is Versions.Normal
+   */
   version?: Versions
 }
 
