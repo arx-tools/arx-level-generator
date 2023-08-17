@@ -16,8 +16,13 @@ export enum Versions {
   Premium = 'premium',
 }
 
+type Modes = 'development' | 'production'
+
 type SettingsConstructorProps = {
   /**
+   * A folder to load the unpacked DLF, LLF and FTS files of the
+   * original game
+   *
    * default value is "../pkware-test-files" relative to the project root
    */
   originalLevelFiles?: string
@@ -38,6 +43,9 @@ type SettingsConstructorProps = {
    */
   assetsDir?: string
   /**
+   * This flag tells whether to run Fredlllll's lighting calculator
+   * after building the llf files
+   *
    * default value is true
    * if there are no lights, then this gets set to false
    */
@@ -47,25 +55,82 @@ type SettingsConstructorProps = {
    */
   lightingCalculatorMode?: LightingCalculatorModes
   /**
-   * default value is a random number between 100.000.000 and 999.999.999
+   * default value is a string with a random number
+   * between 100.000.000 and 999.999.999
    */
   seed?: string
   /**
+   * This field allows branching between normal and premium versions
+   *
    * default value is Versions.Normal
    */
   version?: Versions
+  /**
+   * This field allows branching the code based on what phase the project
+   * is in. For example a cutscene in the beginning of a map can be turned
+   * off while developing the map in development mode, but re-enabled in
+   * production mode
+   *
+   * default value is "production"
+   */
+  mode?: Modes
 }
 
 export class Settings {
+  /**
+   * A folder to load the unpacked DLF, LLF and FTS files of the
+   * original game
+   *
+   * default value is "../pkware-test-files" relative to the project root
+   */
   readonly originalLevelFiles: string
+  /**
+   * default value is "./.cache" relative to the project root
+   */
   readonly cacheFolder: string
+  /**
+   * default value is "./output" relative to the project root
+   */
   readonly outputDir: string
+  /**
+   * default value is 1
+   */
   readonly levelIdx: number
+  /**
+   * default value is "./assets" relative to the project root
+   */
   readonly assetsDir: string
+  /**
+   * This flag tells whether to run Fredlllll's lighting calculator
+   * after building the llf files
+   *
+   * default value is true
+   * if there are no lights, then this gets set to false
+   */
   readonly calculateLighting: boolean
+  /**
+   * default value is "DistanceAngleShadowNoTransparency"
+   */
   readonly lightingCalculatorMode: LightingCalculatorModes
+  /**
+   * default value is a string with a random number
+   * between 100.000.000 and 999.999.999
+   */
   readonly seed: string
+  /**
+   * This field allows branching between normal and premium versions
+   *
+   * default value is Versions.Normal
+   */
   readonly version: Versions
+  /**
+   * This field allows branching the code based on what phase the project
+   * is in. For example a cutscene in the beginning of a map can be turned
+   * off when in development mode
+   *
+   * default value is "production"
+   */
+  readonly mode: Modes
   /**
    * arx-level-generator comes with its own assets folder
    */
@@ -81,6 +146,7 @@ export class Settings {
     this.lightingCalculatorMode = props.lightingCalculatorMode ?? 'DistanceAngleShadowNoTransparency'
     this.seed = props.seed ?? randomBetween(100_000_000, 999_999_999).toString()
     this.version = props.version ?? Versions.Normal
+    this.mode = props.mode ?? 'production'
 
     seedrandom(this.seed, { global: true })
 
