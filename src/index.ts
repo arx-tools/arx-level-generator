@@ -19,7 +19,7 @@ export { Polygons, QUADIFY, DONT_QUADIFY, SHADING_FLAT, SHADING_SMOOTH } from '@
 export { Portal } from '@src/Portal.js'
 export { Rotation } from '@src/Rotation.js'
 export { Script } from '@src/Script.js'
-export { Settings, Versions } from '@src/Settings.js'
+export { Settings } from '@src/Settings.js'
 export { Texture, SIZE_UNKNOWN, NO_TEXTURE_CONTAINER } from '@src/Texture.js'
 export { Translations } from '@src/Translations.js'
 export { UI, UiElements } from '@src/UI.js'

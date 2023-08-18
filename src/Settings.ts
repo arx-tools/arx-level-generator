@@ -11,10 +11,7 @@ type LightingCalculatorModes =
   | 'DistanceAngleShadowNoTransparency'
   | 'GI'
 
-export enum Versions {
-  Normal = 'normal',
-  Premium = 'premium',
-}
+type Versions = 'normal' | 'premium'
 
 type Modes = 'development' | 'production'
 
@@ -118,9 +115,9 @@ export class Settings {
    */
   readonly seed: string
   /**
-   * This field allows branching between normal and premium versions
+   * This field allows branching between "normal" and "premium" versions
    *
-   * default value is Versions.Normal
+   * default value is "normal"
    */
   readonly version: Versions
   /**
@@ -145,7 +142,7 @@ export class Settings {
     this.calculateLighting = props.calculateLighting ?? true
     this.lightingCalculatorMode = props.lightingCalculatorMode ?? 'DistanceAngleShadowNoTransparency'
     this.seed = props.seed ?? Math.round(randomBetween(100_000_000, 999_999_999)).toString()
-    this.version = props.version ?? Versions.Normal
+    this.version = props.version ?? 'normal'
     this.mode = props.mode ?? 'production'
 
     seedrandom(this.seed, { global: true })
