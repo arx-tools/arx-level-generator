@@ -68,7 +68,7 @@ export const loadRooms = async (filename: string, settings: Settings) => {
                   roomDefinitions[currentBlock.name].textures[tokens[0]].isRemoved = true
                 } else {
                   console.error(
-                    `Unknown texture type "${tokens[1]}" at line ${
+                    `[error] loadRooms: Unknown texture type "${tokens[1]}" at line ${
                       i + 1
                     }, expected either "custom", "arx" or "removed"`,
                   )
@@ -107,7 +107,7 @@ export const loadRooms = async (filename: string, settings: Settings) => {
                   wall[3].isRemoved = true
                 } else {
                   console.error(
-                    `Unknown texture type "${tokens[1]}" at line ${
+                    `[error] loadRooms: Unknown texture type "${tokens[1]}" at line ${
                       i + 1
                     }, expected either "custom", "arx", or "removed"`,
                   )
@@ -147,7 +147,7 @@ export const loadRooms = async (filename: string, settings: Settings) => {
                   wall[wallIdx].isRemoved = true
                 } else {
                   console.error(
-                    `Unknown texture type "${tokens[1]}" at line ${
+                    `[error] loadRooms: Unknown texture type "${tokens[1]}" at line ${
                       i + 1
                     }, expected either "custom", "arx" or "removed"`,
                   )
@@ -156,7 +156,7 @@ export const loadRooms = async (filename: string, settings: Settings) => {
               break
             default:
               console.error(
-                `Unknown side "${tokens[0]}" at line ${
+                `[error] loadRooms: Unknown side "${tokens[0]}" at line ${
                   i + 1
                 }, expected "floor", "ceiling", "wall", "wall-east", "wall-west", "wall-north" or "wall-south"`,
               )
@@ -166,10 +166,10 @@ export const loadRooms = async (filename: string, settings: Settings) => {
       switch (tokens[0]) {
         case 'define':
           if (typeof tokens[1] === undefined) {
-            console.error(`missing define block's name at line ${i + 1}`)
+            console.error(`[error] loadRooms: missing define block's name at line ${i + 1}`)
           } else {
             if (tokens[2] !== '{') {
-              console.error(`missing { at line ${i + 1}`)
+              console.error(`[error] loadRooms: missing { at line ${i + 1}`)
             } else {
               currentBlock = {
                 type: 'define',
@@ -201,7 +201,7 @@ export const loadRooms = async (filename: string, settings: Settings) => {
               const posZ = parseInt(tokens[4].startsWith('$') ? variables[tokens[4]] : tokens[4])
               let definitionName = tokens[5]
               if (typeof roomDefinitions[definitionName] === 'undefined') {
-                console.error(`Unknown texture definition "${tokens[5]}" at line ${i + 1}`)
+                console.error(`[error] loadRooms: Unknown texture definition "${tokens[5]}" at line ${i + 1}`)
                 definitionName = 'default'
               }
               const adjustments = tokens.slice(6) as CursorDir[]
@@ -209,7 +209,7 @@ export const loadRooms = async (filename: string, settings: Settings) => {
               rooms.addRoom(new Vector3(posX, posY, posZ), roomDefinitions[definitionName], ...adjustments)
               break
             default:
-              console.error(`Unknown parameter "${tokens[1]}" after "room" at line ${i + 1}`)
+              console.error(`[error] loadRooms: Unknown parameter "${tokens[1]}" after "room" at line ${i + 1}`)
           }
           break
         case 'with':
@@ -227,7 +227,7 @@ export const loadRooms = async (filename: string, settings: Settings) => {
               }
               break
             default:
-              console.error(`Unknown parameter "${tokens[1]}" after "with" at line ${i + 1}`)
+              console.error(`[error] loadRooms: Unknown parameter "${tokens[1]}" after "with" at line ${i + 1}`)
           }
           break
         case 'cursor':
@@ -241,7 +241,7 @@ export const loadRooms = async (filename: string, settings: Settings) => {
               cursor.restore(tokens[2])
               break
             default:
-              console.error(`Unknown parameter "${tokens[1]}" after "cursor" at line ${i + 1}`)
+              console.error(`[error] loadRooms: Unknown parameter "${tokens[1]}" after "cursor" at line ${i + 1}`)
           }
           break
         default:
@@ -250,13 +250,13 @@ export const loadRooms = async (filename: string, settings: Settings) => {
               if (typeof tokens[2] !== 'undefined') {
                 variables[tokens[0]] = tokens[2]
               } else {
-                console.error(`Missing value for variable at line ${i + 1}`)
+                console.error(`[error] loadRooms: Missing value for variable at line ${i + 1}`)
               }
             } else {
-              console.error(`Unexpected token "${tokens[1]}" after variable at line ${i + 1}`)
+              console.error(`[error] loadRooms: Unexpected token "${tokens[1]}" after variable at line ${i + 1}`)
             }
           } else {
-            console.error(`Unknown command "${tokens[0]}" at line ${i + 1}`)
+            console.error(`[error] loadRooms: Unknown command "${tokens[0]}" at line ${i + 1}`)
           }
       }
     }

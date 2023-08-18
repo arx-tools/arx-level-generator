@@ -99,14 +99,14 @@ const calculateLighting = async (settings: Settings) => {
 
   if (operatingSystem !== 'win32' && operatingSystem !== 'linux') {
     console.error(
-      `lighting generator: unsupported platform (expected "win32" or "linux", but got "${operatingSystem}")`,
+      `[error] compile: lighting generator: unsupported platform (expected "win32" or "linux", but got "${operatingSystem}")`,
     )
     return
   }
 
   if (!(await hasDotnet6OrNewer())) {
     console.error(
-      `lighting generator: no compatible version found (expected "dotnet --version" to return 6.x.x, 7.x.x or newer)`,
+      `[error] compile: lighting generator: no compatible version found (expected "dotnet --version" to return 6.x.x, 7.x.x or newer)`,
     )
     return
   }

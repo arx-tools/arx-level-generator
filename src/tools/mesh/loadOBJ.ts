@@ -139,7 +139,9 @@ export const loadOBJ = async (
             })
           }
         } else {
-          console.info(`Material "${name}" in ${filename}.mtl doesn't have a texture, using fallback/default texture`)
+          console.info(
+            `[info] loadOBJ: Material "${name}" in ${filename}.mtl doesn't have a texture, using fallback/default texture`,
+          )
           material = Material.fromTexture(fallbackTexture ?? defaultTexture)
         }
 
@@ -157,7 +159,7 @@ export const loadOBJ = async (
 
       materials = Object.fromEntries(nameMaterialPairs)
     } catch (e: unknown) {
-      console.error(`Error while parsing ${filename}.mtl file:`, e)
+      console.error(`[error] loadOBJ: error while parsing ${filename}.mtl file:`, e)
       materials = new MeshBasicMaterial({
         name: filename,
         map: fallbackTexture ?? defaultTexture,
@@ -174,7 +176,7 @@ export const loadOBJ = async (
   let rawObj = await fs.promises.readFile(objSrc, 'utf-8')
 
   if (!isTriangulatedMesh(rawObj)) {
-    console.warn(`loadOBJ warning: ${filename}.obj is not triangulated`)
+    console.warn(`[warning] loadOBJ: ${filename}.obj is not triangulated`)
   }
 
   if (reversedPolygonWinding) {

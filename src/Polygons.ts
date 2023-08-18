@@ -153,7 +153,7 @@ export class Polygons extends Array<Polygon> {
         if (threeJsObj.material.map instanceof Texture) {
           texture = threeJsObj.material.map
         } else {
-          console.warn('Unsupported texture map in material when adding threejs mesh')
+          console.warn('[warning] Polygons: Unsupported texture map in material when adding threejs mesh')
         }
       } else if (Array.isArray(threeJsObj.material)) {
         texture = threeJsObj.material.map((material) => {
@@ -161,16 +161,16 @@ export class Polygons extends Array<Polygon> {
             if (material.map instanceof Texture) {
               return material.map
             } else {
-              console.warn('Unsupported texture map in material when adding threejs mesh')
+              console.warn('[warning] Polygons: Unsupported texture map in material when adding threejs mesh')
               return undefined
             }
           } else {
-            console.warn('Unsupported material found when adding threejs mesh')
+            console.warn('[warning] Polygons: Unsupported material found when adding threejs mesh')
             return undefined
           }
         })
       } else if (typeof threeJsObj.material !== 'undefined') {
-        console.warn('Unsupported material found when adding threejs mesh')
+        console.warn('[warning] Polygons: Unsupported material found when adding threejs mesh')
       }
 
       const vertexPrecision = 10

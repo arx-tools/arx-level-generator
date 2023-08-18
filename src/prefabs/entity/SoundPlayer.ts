@@ -47,7 +47,7 @@ export class SoundPlayer extends Marker {
   on() {
     if (this.autoplay && !this.sound.isStoppable()) {
       console.warn(
-        `Attempting to trigger play event on "${this.sound.filename}" in SoundPlayer that is on autoplay, but not unique (can't be stopped)`,
+        `[warning] SoundPlayer: Attempting to trigger play event on "${this.sound.filename}" in SoundPlayer that is on autoplay, but not unique (can't be stopped)`,
       )
       return ''
     }
@@ -57,7 +57,9 @@ export class SoundPlayer extends Marker {
 
   off() {
     if (!this.sound.isStoppable()) {
-      console.warn(`Attempting to trigger stop event on "${this.sound.filename}" in SoundPlayer which is not stoppable`)
+      console.warn(
+        `[warning] SoundPlayer: Attempting to trigger stop event on "${this.sound.filename}" in SoundPlayer which is not stoppable`,
+      )
       return ''
     }
 

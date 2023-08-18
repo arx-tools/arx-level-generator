@@ -228,7 +228,7 @@ export class ArxMap {
 
     if (numberOfRemovedPolygons > 0) {
       console.warn(
-        `Removed ${numberOfRemovedPolygons} polygons what are outside the 0..16000 boundary on the X or Z axis`,
+        `[warning] ArxMap: Removed ${numberOfRemovedPolygons} polygons what are outside the 0..16000 boundary on the X or Z axis`,
       )
     }
 
@@ -339,8 +339,8 @@ export class ArxMap {
       throw new MapNotFinalizedError()
     }
 
-    console.log(`seed: "${settings.seed}"`)
-    console.log(`output directory: "${settings.outputDir}"`)
+    console.log(`[info] ArxMap: seed = "${settings.seed}"`)
+    console.log(`[info] ArxMap: output directory = "${settings.outputDir}"`)
 
     await uninstall(settings.outputDir)
 
