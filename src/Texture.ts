@@ -4,7 +4,7 @@ import { ArxTextureContainer } from 'arx-convert/types'
 import { Expand } from 'arx-convert/utils'
 import { sharpToBmp } from 'sharp-bmp'
 import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
-import { Settings, Versions } from '@src/Settings.js'
+import { Settings } from '@src/Settings.js'
 import { fileExists } from '@src/helpers.js'
 import { getMetadata, getSharpInstance } from '@services/image.js'
 
@@ -152,7 +152,7 @@ export class Texture extends ThreeJsTextue {
     const image = await getSharpInstance(originalSource)
 
     let quality = 100
-    if (settings.version !== Versions.Premium && !this.filename.endsWith('[icon].bmp')) {
+    if (settings.version !== 'premium' && !this.filename.endsWith('[icon].bmp')) {
       image.resize(Math.floor(this._width / 2), Math.floor(this._height / 2), { fit: 'cover' })
       quality = 70
     }
@@ -192,7 +192,7 @@ export class Texture extends ThreeJsTextue {
 
     let newSize = powerOfTwo
     let quality = 100
-    if (settings.version !== Versions.Premium && !this.filename.endsWith('[icon].bmp')) {
+    if (settings.version !== 'premium' && !this.filename.endsWith('[icon].bmp')) {
       newSize = newSize / 2
       quality = 70
     }
