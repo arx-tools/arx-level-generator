@@ -339,8 +339,8 @@ export class ArxMap {
       throw new MapNotFinalizedError()
     }
 
-    console.log(`seed: ${settings.seed}`)
-    console.log(`output directory: ${settings.outputDir}`)
+    console.log(`seed: "${settings.seed}"`)
+    console.log(`output directory: "${settings.outputDir}"`)
 
     await uninstall(settings.outputDir)
 
