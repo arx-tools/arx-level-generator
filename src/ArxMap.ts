@@ -398,7 +398,7 @@ export class ArxMap {
       }
 
       if (entity.hasModel()) {
-        const modelToExport = entity.model.exportSourceAndTarget(settings, entity.src)
+        const modelToExport = await entity.model.exportSourceAndTarget(settings, entity.src)
         for (let target in modelToExport) {
           models[target] = modelToExport[target]
         }
