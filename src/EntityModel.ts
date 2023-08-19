@@ -12,7 +12,10 @@ import { fileExists, roundToNDecimals } from './helpers.js'
 
 type EntityModelConstructorProps = {
   filename: string
-  sourcePath: string
+  /**
+   * default value is "./" (relative to the assets folder)
+   */
+  sourcePath?: string
 }
 
 export class EntityModel {
@@ -25,7 +28,7 @@ export class EntityModel {
 
   constructor(props: EntityModelConstructorProps) {
     this.filename = props.filename
-    this.sourcePath = props.sourcePath
+    this.sourcePath = props.sourcePath ?? './'
     this.originIdx = 0
   }
 
