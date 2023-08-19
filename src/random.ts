@@ -64,8 +64,21 @@ export const pickWeightedRandoms = <T extends Record<string, any>>(
   return randomSort(weightedSet)
 }
 
+/**
+ * creates a random floating point number between a (inclusive) and b (exclusive)
+ */
 export const randomBetween = (a: number, b: number) => {
   return a + Math.random() * (b - a)
+}
+
+/**
+ * creates a random integer between min and max (both inclusive)
+ * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random#getting_a_random_integer_between_two_values_inclusive
+ */
+export const randomIntBetween = (min: number, max: number) => {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
 export const pickRandoms = <T>(n: number, set: T[]) => {
@@ -75,7 +88,7 @@ export const pickRandoms = <T>(n: number, set: T[]) => {
     let remaining = set.slice()
     let matches: T[] = []
     for (let i = 0; i < n; i++) {
-      let idx = Math.floor(randomBetween(0, remaining.length))
+      let idx = randomIntBetween(0, remaining.length - 1)
       matches = matches.concat(remaining.splice(idx, 1))
     }
     return matches

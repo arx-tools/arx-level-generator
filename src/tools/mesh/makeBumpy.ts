@@ -1,7 +1,7 @@
 import { BufferAttribute, BufferGeometry, MathUtils } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { sum } from '@src/faux-ramda.js'
-import { randomBetween } from '@src/random.js'
+import { randomBetween, randomIntBetween } from '@src/random.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
 
 type VertexData = { y: number; position: Vector3; idx: number }
@@ -30,7 +30,7 @@ export const makeBumpy = (
   // split vertices into peeks and not-peeks while also calculating the peek heights.
   // this does not yet apply the height change for the peeks
   vertices.forEach((v) => {
-    const isToBePeeked = randomBetween(0, 100) < percentage
+    const isToBePeeked = randomIntBetween(0, 100) < percentage
 
     let newY = v.vector.y
     if (isToBePeeked) {

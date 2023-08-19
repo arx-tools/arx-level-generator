@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import seedrandom from 'seedrandom'
-import { randomBetween } from './random.js'
+import { randomIntBetween } from './random.js'
 
 type LightingCalculatorModes =
   | 'Distance'
@@ -141,7 +141,7 @@ export class Settings {
     this.assetsDir = props.assetsDir ?? path.resolve('./assets')
     this.calculateLighting = props.calculateLighting ?? true
     this.lightingCalculatorMode = props.lightingCalculatorMode ?? 'DistanceAngleShadowNoTransparency'
-    this.seed = props.seed ?? Math.round(randomBetween(100_000_000, 999_999_999)).toString()
+    this.seed = props.seed ?? randomIntBetween(100_000_000, 999_999_999).toString()
     this.version = props.version ?? 'normal'
     this.mode = props.mode ?? 'production'
 
