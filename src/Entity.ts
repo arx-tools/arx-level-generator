@@ -7,14 +7,10 @@ import { Script } from '@src/Script.js'
 import { Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
+import { EntityModel } from './EntityModel.js'
+import { TextureOrMaterial } from './types.js'
 
 const instanceCatalog: Record<string, Entity[]> = {}
-
-type ModelDescriptor = {
-  sourcePath: string
-  filename: string
-  textures: Texture[]
-}
 
 export type EntityConstructorProps = {
   id?: number
@@ -40,11 +36,11 @@ export type EntityConstructorProps = {
   /**
    * default value is undefined
    */
-  model?: Expand<Optional<ModelDescriptor, 'textures'>>
+  model?: EntityModel
   /**
    * stuff that I can't put elsewhere, but needs to get exported
    */
-  otherDependencies?: Audio[]
+  otherDependencies?: (Audio | TextureOrMaterial)[]
 }
 
 export type EntityConstructorPropsWithoutSrc = Expand<Omit<EntityConstructorProps, 'src'>>
@@ -62,11 +58,11 @@ export class Entity {
   orientation: Rotation
   inventoryIcon?: Texture
   script?: Script
-  model?: ModelDescriptor
+  model?: EntityModel
   /**
    * stuff that I can't put elsewhere, but needs to get exported
    */
-  otherDependencies: Audio[] = []
+  otherDependencies: (Audio | TextureOrMaterial)[] = []
 
   constructor(props: EntityConstructorProps) {
     this.src = props.src
@@ -83,9 +79,7 @@ export class Entity {
 
     this.inventoryIcon = props.inventoryIcon
 
-    if (typeof props.model !== 'undefined') {
-      this.model = { ...props.model, textures: props.model.textures ?? [] }
-    }
+    this.model = props.model
 
     this.otherDependencies = props.otherDependencies ?? []
   }
@@ -101,7 +95,7 @@ export class Entity {
     return typeof this.script !== 'undefined'
   }
 
-  hasModel(): this is { model: ModelDescriptor } {
+  hasModel(): this is { model: EntityModel } {
     return typeof this.model !== 'undefined'
   }
 
@@ -139,14 +133,10 @@ export class Entity {
       src: this.src,
       position: this.position.clone(),
       orientation: this.orientation.clone(),
-      /*
-      // TODO: clone these aswell
-      inventoryIcon?: Texture | Promise<Texture>
-      model?: {
-        sourcePath: string
-        filename: string
-      }
-      */
+      inventoryIcon: this.inventoryIcon?.clone(),
+      // script: TODO,
+      model: this.model?.clone(),
+      otherDependencies: this.otherDependencies.map((dependency) => dependency.clone()),
     })
   }
 
@@ -222,46 +212,12 @@ export class Entity {
     return files
   }
 
-  async exportTextures(settings: Settings) {
-    const files: Record<string, string> = {}
-
-    if (this.hasModel()) {
-      for (let texture of this.model.textures) {
-        if (!texture.isNative) {
-          const [source, target] = await texture.exportSourceAndTarget(settings, false)
-          files[target] = source
-        }
-      }
-    }
-
-    return files
-  }
-
-  exportModel(settings: Settings) {
-    const files: Record<string, string> = {}
-
-    if (this.hasModel()) {
-      // TODO: handle this.src containing file extension
-      const source = path.resolve(settings.assetsDir, this.model.sourcePath, this.model.filename)
-      const target = path.resolve(
-        settings.outputDir,
-        'game/graph/obj3d/interactive',
-        this.src,
-        this.entityName + '.ftl',
-      )
-
-      files[target] = source
-    }
-
-    return files
-  }
-
-  exportOtherDependencies(settings: Settings) {
+  async exportOtherDependencies(settings: Settings) {
     const files: Record<string, string> = {}
 
     for (let stuff of this.otherDependencies) {
       if (!stuff.isNative) {
-        const [source, target] = stuff.exportSourceAndTarget(settings)
+        const [source, target] = await stuff.exportSourceAndTarget(settings)
         files[target] = source
       }
     }

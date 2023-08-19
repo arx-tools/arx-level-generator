@@ -398,17 +398,13 @@ export class ArxMap {
       }
 
       if (entity.hasModel()) {
-        const modelToExport = entity.exportModel(settings)
+        const modelToExport = entity.model.exportSourceAndTarget(settings, entity.src)
         for (let target in modelToExport) {
           models[target] = modelToExport[target]
         }
-        const texturesToExport = await entity.exportTextures(settings)
-        for (let target in texturesToExport) {
-          textures[target] = texturesToExport[target]
-        }
       }
 
-      const dependenciesToExport = entity.exportOtherDependencies(settings)
+      const dependenciesToExport = await entity.exportOtherDependencies(settings)
       for (let target in dependenciesToExport) {
         otherDependencies[target] = dependenciesToExport[target]
       }
