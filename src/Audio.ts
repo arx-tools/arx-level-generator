@@ -36,6 +36,16 @@ export class Audio {
     this.isInternalAsset = props.isInternalAsset ?? false
   }
 
+  clone() {
+    return new Audio({
+      filename: this.filename,
+      isNative: this.isNative,
+      sourcePath: this.sourcePath,
+      type: this.targetPath === 'sfx' ? 'sfx' : 'speech',
+      isInternalAsset: this.isInternalAsset,
+    })
+  }
+
   static fromCustomFile(props: Expand<Omit<AudioConstructorProps, 'isNative'>>) {
     return new Audio({
       ...props,
