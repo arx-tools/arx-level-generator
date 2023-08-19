@@ -107,3 +107,19 @@ export const median = (values: number[]) => {
 
   return mean([a, b])
 }
+
+export const complement = (fn: (...args: any[]) => boolean) => {
+  return (...args: any[]) => !fn(...args)
+}
+
+export const partition = <T>(fn: (arg: T) => boolean, values: T[]): [T[], T[]] => {
+  return [values.filter(fn), values.filter(complement(fn))]
+}
+
+export const countBy = <T>(fn: (value: T) => string, values: T[]) => {
+  return values.reduce((acc, value) => {
+    const key = fn(value)
+    acc[key] = (acc[key] ?? 0) + 1
+    return acc
+  }, {} as Record<string, number>)
+}
