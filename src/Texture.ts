@@ -120,7 +120,10 @@ export class Texture extends ThreeJsTextue {
     return width === height && MathUtils.isPowerOfTwo(width)
   }
 
-  async exportSourceAndTarget(settings: Settings, needsToBeTileable: boolean) {
+  /**
+   * default value for needsToBeTileable is false
+   */
+  async exportSourceAndTarget(settings: Settings, needsToBeTileable: boolean = false) {
     if (this.isNative) {
       throw new Error('trying to export a native Texture')
     }
