@@ -35,6 +35,16 @@ export class Material extends Texture {
     this.opacityMode = opacityMode
   }
 
+  clone() {
+    const copy = super.clone()
+
+    copy.flags = this.flags
+    copy.opacity = this.opacity
+    copy.opacityMode = this.opacityMode
+
+    return copy
+  }
+
   static fromTexture(texture: Texture, props: MaterialExtraProps = {}) {
     return new Material({
       filename: texture.filename,
