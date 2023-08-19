@@ -1,20 +1,20 @@
-import { BufferAttribute, EdgesGeometry, Mesh } from 'three'
+import { BufferAttribute, Mesh } from 'three'
 import { Vector3 } from '@src/Vector3.js'
+import { categorizeVertices } from '@tools/mesh/categorizeVertices.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
 
 export const transformEdge = (offset: Vector3, mesh: Mesh) => {
-  // TODO: instead of EdgesGeometry try using the edge detection code from the Alia's nightmare level
-  // EdgesGeometry fails if the geometry is already bumped
-  const edge = new EdgesGeometry(mesh.geometry)
-  const edgeVertices = getVertices(edge)
+  const { edges, corners } = categorizeVertices(mesh.geometry)
+  const edgeVertices = [...edges, ...corners]
 
   const vertices = getVertices(mesh.geometry)
   const coords = mesh.geometry.getAttribute('position') as BufferAttribute
 
   vertices.forEach((vertex) => {
     const edgeIdx = edgeVertices.findIndex((edgeVertex) => {
-      return edgeVertex.vector.equals(vertex.vector)
+      return edgeVertex.equals(vertex.vector)
     })
+
     if (edgeIdx !== -1) {
       edgeVertices.splice(edgeIdx, 1)
       coords.setX(vertex.idx, vertex.vector.x + offset.x)

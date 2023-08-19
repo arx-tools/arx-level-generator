@@ -19,6 +19,7 @@ export const connectEdgeTo = (source: BufferGeometry, target: BufferGeometry) =>
     const edgeIdx = sourceEdgeVertices.findIndex((edgeVertex) => {
       return edgeVertex.equals(vertex.vector)
     })
+
     if (edgeIdx !== -1) {
       const [edgePoint] = sourceEdgeVertices.splice(edgeIdx, 1)
 
