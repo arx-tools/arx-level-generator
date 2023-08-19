@@ -75,6 +75,15 @@ export class EntityModel {
     return files
   }
 
+  // TODO: this is the same as Texture.createCacheFolderIfNotExists
+  private async createCacheFolderIfNotExists(folder: string) {
+    try {
+      await fs.promises.access(folder, fs.promises.constants.R_OK | fs.promises.constants.W_OK)
+    } catch (e) {
+      await fs.promises.mkdir(folder, { recursive: true })
+    }
+  }
+
   /**
    * this method assumes that this.treeJsObj is defined
    */
@@ -190,6 +199,7 @@ export class EntityModel {
     }
 
     const ftl = FTL.save(ftlData)
+    await this.createCacheFolderIfNotExists(path.dirname(target))
     await fs.promises.writeFile(target, ftl)
 
     return target
