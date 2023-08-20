@@ -18,6 +18,14 @@ type EntityModelConstructorProps = {
   sourcePath?: string
 }
 
+/**
+ * a, b and c are normal vectors
+ * @see https://stackoverflow.com/a/35205710/1806628
+ */
+const getFaceNormal = (a: Vector3, b: Vector3, c: Vector3) => {
+  return new Vector3().crossVectors(b.clone().sub(a), c.clone().sub(a)).normalize()
+}
+
 export class EntityModel {
   static targetPath = 'game/graph/obj3d/interactive'
 
@@ -150,7 +158,7 @@ export class EntityModel {
       const a = vertices[aIdx]
       const b = vertices[bIdx]
       const c = vertices[cIdx]
-      const faceNormal = new Vector3().crossVectors(b.norm.clone().sub(a.norm), c.norm.clone().sub(a.norm)).normalize()
+      const faceNormal = getFaceNormal(a.norm, b.norm, c.norm)
 
       return {
         faceType: ArxFaceType.Flat,
