@@ -11,7 +11,7 @@ type LightingCalculatorModes =
   | 'DistanceAngleShadowNoTransparency'
   | 'GI'
 
-type Versions = 'normal' | 'premium'
+export type Variant = 'normal' | 'premium'
 
 type Modes = 'development' | 'production'
 
@@ -57,11 +57,11 @@ type SettingsConstructorProps = {
    */
   seed?: string
   /**
-   * This field allows branching between normal and premium versions
+   * This field allows branching between "normal" and "premium" variants
    *
-   * default value is Versions.Normal
+   * default value is "normal"
    */
-  version?: Versions
+  variant?: Variant
   /**
    * This field allows branching the code based on what phase the project
    * is in. For example a cutscene in the beginning of a map can be turned
@@ -115,11 +115,11 @@ export class Settings {
    */
   readonly seed: string
   /**
-   * This field allows branching between "normal" and "premium" versions
+   * This field allows branching between "normal" and "premium" variants
    *
    * default value is "normal"
    */
-  readonly version: Versions
+  readonly variant: Variant
   /**
    * This field allows branching the code based on what phase the project
    * is in. For example a cutscene in the beginning of a map can be turned
@@ -142,7 +142,7 @@ export class Settings {
     this.calculateLighting = props.calculateLighting ?? true
     this.lightingCalculatorMode = props.lightingCalculatorMode ?? 'DistanceAngleShadowNoTransparency'
     this.seed = props.seed ?? randomIntBetween(100_000_000, 999_999_999).toString()
-    this.version = props.version ?? 'normal'
+    this.variant = props.variant ?? 'normal'
     this.mode = props.mode ?? 'production'
 
     seedrandom(this.seed, { global: true })

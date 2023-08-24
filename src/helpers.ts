@@ -5,7 +5,7 @@ import { Mesh, Object3D } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { mean } from '@src/faux-ramda.js'
 
-type PackageJsonProps = {
+export type PackageJsonProps = {
   name: string
   version: string
   description: string

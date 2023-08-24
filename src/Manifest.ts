@@ -1,11 +1,11 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { ArxMap } from '@src/ArxMap.js'
-import { MetaData } from '@src/MetaData.js'
+import { MetaData, generateMetadata } from '@src/MetaData.js'
 import { Settings } from '@src/Settings.js'
 import { fileExists } from './helpers.js'
 
-export type ManifestData = ReturnType<MetaData['toData']> & {
+export type ManifestData = MetaData & {
   files: string[]
 }
 
@@ -21,17 +21,11 @@ export class Manifest {
     return await fileExists(filename)
   }
 
-  static async read(settings: Settings): Promise<ManifestData> {
+  static async read(settings: Settings): Promise<ManifestData | undefined> {
     const filename = Manifest.getPathToFilename(settings)
 
-    const emptyMetadata = new MetaData()
-    const emptyManifest = {
-      ...emptyMetadata.toData(),
-      files: [],
-    }
-
     if (!(await Manifest.exists(settings))) {
-      return emptyManifest
+      return undefined
     }
 
     try {
@@ -39,13 +33,15 @@ export class Manifest {
       return JSON.parse(rawIn)
     } catch (e: unknown) {
       console.error(`[error] Manifest: failed to read or parse "${Manifest.filename}" in "${settings.outputDir}"`)
-      return emptyManifest
+      return undefined
     }
   }
 
-  static async write(settings: Settings, map: ArxMap, files: string[], prettify: boolean = false) {
+  static async write(settings: Settings, files: string[], prettify: boolean = false) {
+    const metaData = await generateMetadata(settings)
+
     const manifest: ManifestData = {
-      ...map.meta.toData(),
+      ...metaData,
       files: files.map((file) => {
         return file.replace(settings.outputDir, '')
       }),
@@ -62,7 +58,7 @@ export class Manifest {
       return
     }
 
-    const manifest = await Manifest.read(settings)
+    const manifest = (await Manifest.read(settings)) ?? { files: [] }
 
     for (let file of manifest.files) {
       try {

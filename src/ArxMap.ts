@@ -24,7 +24,7 @@ import { LevelLoader } from '@src/LevelLoader.js'
 import { Light } from '@src/Light.js'
 import { Lights } from '@src/Lights.js'
 import { Manifest } from '@src/Manifest.js'
-import { MetaData } from '@src/MetaData.js'
+import { generateMetadata } from '@src/MetaData.js'
 import { Path } from '@src/Path.js'
 import { Player } from '@src/Player.js'
 import { Polygon } from '@src/Polygon.js'
@@ -57,7 +57,6 @@ type ToBeSortedLater = {
 }
 
 export class ArxMap {
-  meta = new MetaData()
   polygons = new Polygons()
   lights = new Lights()
   fogs: Fog[] = []
@@ -347,18 +346,7 @@ export class ArxMap {
 
     await Manifest.uninstall(settings)
 
-    const generator = await getGeneratorPackageJSON()
-    this.meta.generator = generator.name
-    this.meta.generatorVersion = generator.version
-    this.meta.generatorUrl = generator.homepage
-    this.meta.seed = settings.seed
-
-    const project = await getProjectPackageJSON()
-    this.meta.name = project.name
-    this.meta.version = project.version
-    this.meta.description = project.description
-    this.meta.author = project.author
-    this.meta.url = project.homepage
+    const meta = await generateMetadata(settings)
 
     // ------------------------
 
@@ -508,7 +496,7 @@ export class ArxMap {
     for (const [filename, translation] of Object.entries(translations)) {
       await fs.promises.writeFile(
         filename,
-        `// ${this.meta.name} v.${this.meta.version} - ${generatorId}
+        `// ${meta.name} v.${meta.version} - ${generatorId}
   
   ${translation}`,
         'utf8',
@@ -547,7 +535,7 @@ export class ArxMap {
 
     // ------------------------
 
-    await Manifest.write(settings, this, pathsOfTheFiles)
+    await Manifest.write(settings, pathsOfTheFiles)
   }
 
   adjustOffsetTo(map: ArxMap) {

@@ -1,25 +1,37 @@
-export class MetaData {
-  name = ''
-  description = ''
-  version = ''
-  author = ''
-  url = ''
-  generator = ''
-  generatorUrl = ''
-  generatorVersion = ''
-  seed = ''
+import { Settings, Variant } from './Settings.js'
+import { getGeneratorPackageJSON, getProjectPackageJSON } from './helpers.js'
 
-  toData() {
-    return {
-      name: this.name,
-      description: this.description,
-      version: this.version,
-      author: this.author,
-      url: this.url,
-      generator: this.generator,
-      generatorVersion: this.generatorVersion,
-      generatorUrl: this.generatorUrl,
-      seed: this.seed,
-    }
+export type MetaData = {
+  seed: string
+  variant: Variant
+
+  generator: string
+  generatorVersion: string
+  generatorUrl: string
+
+  name: string
+  version: string
+  description: string
+  author: string
+  url: string
+}
+
+export const generateMetadata = async (settings: Settings): Promise<MetaData> => {
+  const generator = await getGeneratorPackageJSON()
+  const project = await getProjectPackageJSON()
+
+  return {
+    seed: settings.seed,
+    variant: settings.variant,
+
+    generator: generator.name,
+    generatorVersion: generator.version,
+    generatorUrl: generator.homepage,
+
+    name: project.name,
+    version: project.version,
+    description: project.description,
+    author: project.author,
+    url: project.homepage,
   }
 }

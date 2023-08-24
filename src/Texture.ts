@@ -155,7 +155,7 @@ export class Texture extends ThreeJsTextue {
     const image = await getSharpInstance(originalSource)
 
     let quality = 100
-    if (settings.version !== 'premium' && !this.filename.endsWith('[icon].bmp')) {
+    if (settings.variant !== 'premium' && !this.filename.endsWith('[icon].bmp')) {
       image.resize(Math.floor(this._width / 2), Math.floor(this._height / 2), { fit: 'cover' })
       quality = 70
     }
@@ -195,7 +195,7 @@ export class Texture extends ThreeJsTextue {
 
     let newSize = powerOfTwo
     let quality = 100
-    if (settings.version !== 'premium' && !this.filename.endsWith('[icon].bmp')) {
+    if (settings.variant !== 'premium' && !this.filename.endsWith('[icon].bmp')) {
       newSize = newSize / 2
       quality = 70
     }
