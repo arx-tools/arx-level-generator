@@ -70,14 +70,6 @@ const compileDLF = async (settings: Settings, dlf: ArxDLF) => {
     .pipe(fs.createWriteStream(path.join(dlfPath, `level${settings.levelIdx}.dlf`)))
 }
 
-const hasLights = async (settings: Settings) => {
-  const llfPath = path.join(settings.outputDir, `graph/levels/level${settings.levelIdx}`)
-  const llfJSONRaw = await fs.promises.readFile(path.join(llfPath, `level${settings.levelIdx}.llf.json`), 'utf-8')
-  const llfJSON = JSON.parse(llfJSONRaw) as ArxLLF
-
-  return llfJSON.lights.length > 0
-}
-
 const hasDotnet6OrNewer = async () => {
   try {
     const { stdout } = await promisify(exec)(`dotnet --version`)
@@ -140,7 +132,7 @@ const calculateLighting = async (settings: Settings) => {
 export const compile = async (settings: Settings, { dlf, llf, fts }: { dlf: ArxDLF; llf: ArxLLF; fts: ArxFTS }) => {
   await Promise.allSettled([compileFTS(settings, fts), compileLLF(settings, llf), compileDLF(settings, dlf)])
 
-  if (settings.calculateLighting && (await hasLights(settings))) {
+  if (settings.calculateLighting && llf.lights.length > 0) {
     await calculateLighting(settings)
   }
 }
