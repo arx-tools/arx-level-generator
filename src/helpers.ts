@@ -5,36 +5,36 @@ import { Mesh, Object3D } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { mean } from '@src/faux-ramda.js'
 
-export const getPackageVersion = async () => {
-  try {
-    const __filename = fileURLToPath(import.meta.url)
-    const __dirname = path.dirname(__filename)
-
-    const rawIn = await fs.promises.readFile(path.resolve(__dirname, '../../package.json'), 'utf-8')
-    const { version } = JSON.parse(rawIn) as { version: string }
-    return version
-  } catch (error) {
-    return 'unknown'
-  }
+type PackageJsonProps = {
+  name: string
+  version: string
+  description: string
+  author: string
+  homepage: string
 }
 
-// TODO: move this to ArxMap or somewhere more specific to handling/generating manifests
-export type Manifest = {
-  files: string[]
-}
+let cacheOfPackageJSON: PackageJsonProps
 
-// TODO: move this to ArxMap or somewhere more specific to handling/generating manifests
-export const uninstall = async (dir: string) => {
-  try {
-    const rawIn = await fs.promises.readFile(path.resolve(dir, 'arx-level-generator-manifest.json'), 'utf-8')
-    const manifest = JSON.parse(rawIn) as Manifest
-    for (let file of manifest.files) {
-      try {
-        await fs.promises.rm(path.resolve(dir, file))
-      } catch (f) {}
+export const getGeneratorPackageJSON = async (): Promise<PackageJsonProps> => {
+  if (typeof cacheOfPackageJSON === 'undefined') {
+    try {
+      const __filename = fileURLToPath(import.meta.url)
+      const __dirname = path.dirname(__filename)
+
+      const rawIn = await fs.promises.readFile(path.resolve(__dirname, '../../package.json'), 'utf-8')
+      cacheOfPackageJSON = JSON.parse(rawIn)
+    } catch (error) {
+      cacheOfPackageJSON = {
+        name: '',
+        version: '',
+        description: '',
+        author: '',
+        homepage: '',
+      }
     }
-    await fs.promises.rm(path.resolve(dir, 'arx-level-generator-manifest.json'))
-  } catch (e) {}
+  }
+
+  return cacheOfPackageJSON
 }
 
 export const evenAndRemainder = (divisor: number, n: number): [number, number] => {

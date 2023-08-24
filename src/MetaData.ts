@@ -1,17 +1,24 @@
 export class MetaData {
-  mapName: string = ''
-  generator: string = 'Arx Level Generator'
-  generatorVersion: string = ''
-  credits: string =
-    'This map was made using tools created by Lajos Mészáros and Frederik Gelder - Visit https://arx-tools.github.io/ to find out more.'
-  seed: string = ''
+  name = ''
+  description = ''
+  version = ''
+  author = ''
+  url = ''
+  generator = 'Arx Level Generator'
+  generatorUrl = ''
+  generatorVersion = ''
+  seed = ''
 
   toData() {
     return {
-      mapName: this.mapName,
+      name: this.name,
+      description: this.description,
+      version: this.version,
+      author: this.author,
+      url: this.url,
       generator: this.generator,
       generatorVersion: this.generatorVersion,
-      credits: this.credits,
+      generatorUrl: this.generatorUrl,
       seed: this.seed,
     }
   }

@@ -23,6 +23,7 @@ import { HUD } from '@src/HUD.js'
 import { LevelLoader } from '@src/LevelLoader.js'
 import { Light } from '@src/Light.js'
 import { Lights } from '@src/Lights.js'
+import { Manifest } from '@src/Manifest.js'
 import { MetaData } from '@src/MetaData.js'
 import { Path } from '@src/Path.js'
 import { Player } from '@src/Player.js'
@@ -38,7 +39,7 @@ import { Vector3 } from '@src/Vector3.js'
 import { Zone } from '@src/Zone.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { times } from '@src/faux-ramda.js'
-import { getPackageVersion, latin9ToLatin1, uninstall } from '@src/helpers.js'
+import { getGeneratorPackageJSON, latin9ToLatin1 } from '@src/helpers.js'
 import { OriginalLevel } from '@src/types.js'
 
 type ArxMapConfig = {
@@ -216,7 +217,8 @@ export class ArxMap {
   }
 
   private static async getGeneratorId() {
-    return `Arx Level Generator - version ${await getPackageVersion()}`
+    const generator = await getGeneratorPackageJSON()
+    return `Arx Level Generator - v.${generator.version}`
   }
 
   finalize() {
@@ -342,9 +344,12 @@ export class ArxMap {
     console.log(`[info] ArxMap: seed = "${settings.seed}"`)
     console.log(`[info] ArxMap: output directory = "${settings.outputDir}"`)
 
-    await uninstall(settings.outputDir)
+    await Manifest.uninstall(settings)
 
-    this.meta.generatorVersion = await getPackageVersion()
+    const generator = await getGeneratorPackageJSON()
+    // const project = await getProjectPackageJSON()
+    this.meta.generatorVersion = generator.version
+    this.meta.generatorUrl = generator.homepage
     this.meta.seed = settings.seed
 
     // ------------------------
@@ -444,29 +449,27 @@ export class ArxMap {
       ),
     }
 
-    const manifest = {
-      meta: this.meta.toData(),
-      files: [
-        ...Object.keys(textures),
-        ...Object.keys(models),
-        ...Object.keys(otherDependencies),
-        ...Object.keys(sounds),
-        ...Object.keys(hudElements),
-        ...Object.keys(uiElements),
-        ...Object.keys(ambienceTracks),
-        ...Object.keys(customAmbiences),
-        ...Object.keys(customAmbiences).map((filename) => filename.replace(/\.json$/, '')),
-        ...Object.keys(scripts),
-        ...Object.keys(translations),
-        ...Object.values(files),
-        ...Object.values(files).map((filename) => filename.replace(/\.json$/, '')),
-      ],
-    }
+    const pathsOfTheFiles = [
+      ...Object.keys(textures),
+      ...Object.keys(models),
+      ...Object.keys(otherDependencies),
+      ...Object.keys(sounds),
+      ...Object.keys(hudElements),
+      ...Object.keys(uiElements),
+      ...Object.keys(ambienceTracks),
+      ...Object.keys(customAmbiences),
+      ...Object.keys(customAmbiences).map((filename) => filename.replace(/\.json$/, '')),
+      ...Object.keys(scripts),
+      ...Object.keys(translations),
+      ...Object.values(files),
+      ...Object.values(files).map((filename) => filename.replace(/\.json$/, '')),
+    ]
 
-    const tasks = manifest.files.map((filename) => {
+    const tasks = pathsOfTheFiles.map((filename) => {
       return fs.promises.mkdir(path.dirname(filename), { recursive: true })
     })
 
+    // TODO: Promise.allSettled() ?
     for (let task of tasks) {
       await task
     }
@@ -504,10 +507,12 @@ export class ArxMap {
       await fs.promises.writeFile(target, latin1Script, 'latin1')
     }
 
+    const generatorId = await ArxMap.getGeneratorId()
+
     for (const [filename, translation] of Object.entries(translations)) {
       await fs.promises.writeFile(
         filename,
-        `// ${this.meta.mapName} - Arx Level Generator ${this.meta.generatorVersion}
+        `// ${this.meta.name} v.${this.meta.version} - ${generatorId}
   
   ${translation}`,
         'utf8',
@@ -526,14 +531,9 @@ export class ArxMap {
     await fs.promises.writeFile(files.fts, stringifiedFts)
     await fs.promises.writeFile(files.llf, stringifiedLlf)
 
-    manifest.files = manifest.files.map((file) => {
-      return file.replace(settings.outputDir, '')
-    })
+    // ------------------------
 
-    await fs.promises.writeFile(
-      path.resolve(settings.outputDir, 'arx-level-generator-manifest.json'),
-      JSON.stringify(manifest, null, 2),
-    )
+    await Manifest.write(settings, this, pathsOfTheFiles)
   }
 
   adjustOffsetTo(map: ArxMap) {
