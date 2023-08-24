@@ -41,6 +41,7 @@ import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { times } from '@src/faux-ramda.js'
 import { getGeneratorPackageJSON, latin9ToLatin1 } from '@src/helpers.js'
 import { OriginalLevel } from '@src/types.js'
+import { compile } from './compile.js'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -336,7 +337,7 @@ export class ArxMap {
     })
   }
 
-  async saveToDisk(settings: Settings, prettify = false) {
+  async saveToDisk(settings: Settings, exportJsonFiles: boolean = false, prettify: boolean = false) {
     if (!this.config.isFinalized) {
       throw new MapNotFinalizedError()
     }
@@ -457,11 +458,9 @@ export class ArxMap {
       ...Object.keys(hudElements),
       ...Object.keys(uiElements),
       ...Object.keys(ambienceTracks),
-      ...Object.keys(customAmbiences),
       ...Object.keys(customAmbiences).map((filename) => filename.replace(/\.json$/, '')),
       ...Object.keys(scripts),
       ...Object.keys(translations),
-      ...Object.values(files),
       ...Object.values(files).map((filename) => filename.replace(/\.json$/, '')),
     ]
 
@@ -492,16 +491,6 @@ export class ArxMap {
 
     // ------------------------
 
-    for (const [target, amb] of Object.entries(customAmbiences)) {
-      const stringifiedAmb = prettify ? JSON.stringify(amb, null, 2) : JSON.stringify(amb)
-      await fs.promises.writeFile(target, stringifiedAmb)
-
-      const compiledAmb = AMB.save(amb)
-      await fs.promises.writeFile(target.replace(/\.json$/, ''), compiledAmb)
-    }
-
-    // ------------------------
-
     for (const [target, script] of Object.entries(scripts)) {
       const latin1Script = latin9ToLatin1(script.replace(/\n/g, Script.EOL))
       await fs.promises.writeFile(target, latin1Script, 'latin1')
@@ -523,13 +512,31 @@ export class ArxMap {
 
     const { dlf, fts, llf } = await this.toArxData(settings)
 
-    const stringifiedDlf = prettify ? JSON.stringify(dlf, null, 2) : JSON.stringify(dlf)
-    const stringifiedFts = prettify ? JSON.stringify(fts, null, 2) : JSON.stringify(fts)
-    const stringifiedLlf = prettify ? JSON.stringify(llf, null, 2) : JSON.stringify(llf)
+    if (exportJsonFiles) {
+      const stringifiedDlf = prettify ? JSON.stringify(dlf, null, 2) : JSON.stringify(dlf)
+      await fs.promises.writeFile(files.dlf, stringifiedDlf)
 
-    await fs.promises.writeFile(files.dlf, stringifiedDlf)
-    await fs.promises.writeFile(files.fts, stringifiedFts)
-    await fs.promises.writeFile(files.llf, stringifiedLlf)
+      const stringifiedFts = prettify ? JSON.stringify(fts, null, 2) : JSON.stringify(fts)
+      await fs.promises.writeFile(files.fts, stringifiedFts)
+
+      const stringifiedLlf = prettify ? JSON.stringify(llf, null, 2) : JSON.stringify(llf)
+      await fs.promises.writeFile(files.llf, stringifiedLlf)
+
+      for (const [target, amb] of Object.entries(customAmbiences)) {
+        const stringifiedAmb = prettify ? JSON.stringify(amb, null, 2) : JSON.stringify(amb)
+        await fs.promises.writeFile(target, stringifiedAmb)
+      }
+
+      pathsOfTheFiles.push(...Object.keys(customAmbiences))
+      pathsOfTheFiles.push(...Object.values(files))
+    }
+
+    for (const [target, amb] of Object.entries(customAmbiences)) {
+      const compiledAmb = AMB.save(amb)
+      await fs.promises.writeFile(target.replace(/\.json$/, ''), compiledAmb)
+    }
+
+    await compile(settings, { dlf, fts, llf })
 
     // ------------------------
 

@@ -13,12 +13,10 @@ import { Settings } from '@src/Settings.js'
 
 const { through, transformSplitBy, splitAt, transformIdentity } = stream
 
-const compileFTS = async (settings: Settings) => {
+const compileFTS = async (settings: Settings, fts: ArxFTS) => {
   const ftsPath = path.join(settings.outputDir, `game/graph/levels/level${settings.levelIdx}`)
-  const ftsJSONRaw = await fs.promises.readFile(path.join(ftsPath, 'fast.fts.json'), 'utf-8')
-  const ftsJSON = JSON.parse(ftsJSONRaw) as ArxFTS
 
-  const repackedFts = FTS.save(ftsJSON)
+  const repackedFts = FTS.save(fts)
   const { total: ftsHeaderSize } = getHeaderSize(repackedFts, 'fts')
 
   Readable.from(repackedFts)
@@ -34,12 +32,10 @@ const compileFTS = async (settings: Settings) => {
     .pipe(fs.createWriteStream(path.join(ftsPath, 'fast.fts')))
 }
 
-const compileLLF = async (settings: Settings) => {
+const compileLLF = async (settings: Settings, llf: ArxLLF) => {
   const llfPath = path.join(settings.outputDir, `graph/levels/level${settings.levelIdx}`)
-  const llfJSONRaw = await fs.promises.readFile(path.join(llfPath, `level${settings.levelIdx}.llf.json`), 'utf-8')
-  const llfJSON = JSON.parse(llfJSONRaw) as ArxLLF
 
-  const repackedLlf = LLF.save(llfJSON)
+  const repackedLlf = LLF.save(llf)
   const { total: llfHeaderSize } = getHeaderSize(repackedLlf, 'llf')
 
   Readable.from(repackedLlf)
@@ -55,12 +51,10 @@ const compileLLF = async (settings: Settings) => {
     .pipe(fs.createWriteStream(path.join(llfPath, `level${settings.levelIdx}.llf`)))
 }
 
-const compileDLF = async (settings: Settings) => {
+const compileDLF = async (settings: Settings, dlf: ArxDLF) => {
   const dlfPath = path.join(settings.outputDir, `graph/levels/level${settings.levelIdx}`)
-  const dlfJSONRaw = await fs.promises.readFile(path.join(dlfPath, `level${settings.levelIdx}.dlf.json`), 'utf-8')
-  const dlfJSON = JSON.parse(dlfJSONRaw) as ArxDLF
 
-  const repackedDlf = DLF.save(dlfJSON)
+  const repackedDlf = DLF.save(dlf)
   const { total: dlfHeaderSize } = getHeaderSize(repackedDlf, 'dlf')
 
   Readable.from(repackedDlf)
@@ -143,8 +137,8 @@ const calculateLighting = async (settings: Settings) => {
   }
 }
 
-export const compile = async (settings: Settings) => {
-  await Promise.allSettled([compileFTS(settings), compileLLF(settings), compileDLF(settings)])
+export const compile = async (settings: Settings, { dlf, llf, fts }: { dlf: ArxDLF; llf: ArxLLF; fts: ArxFTS }) => {
+  await Promise.allSettled([compileFTS(settings, fts), compileLLF(settings, llf), compileDLF(settings, dlf)])
 
   if (settings.calculateLighting && (await hasLights(settings))) {
     await calculateLighting(settings)
