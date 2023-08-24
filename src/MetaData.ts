@@ -4,7 +4,7 @@ export class MetaData {
   version = ''
   author = ''
   url = ''
-  generator = 'Arx Level Generator'
+  generator = ''
   generatorUrl = ''
   generatorVersion = ''
   seed = ''

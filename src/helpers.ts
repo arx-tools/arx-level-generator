@@ -13,18 +13,19 @@ type PackageJsonProps = {
   homepage: string
 }
 
-let cacheOfPackageJSON: PackageJsonProps
+let cacheOfGeneratorPackageJSON: PackageJsonProps
+let cacheOfProjectPackageJSON: PackageJsonProps
 
 export const getGeneratorPackageJSON = async (): Promise<PackageJsonProps> => {
-  if (typeof cacheOfPackageJSON === 'undefined') {
+  if (typeof cacheOfGeneratorPackageJSON === 'undefined') {
     try {
       const __filename = fileURLToPath(import.meta.url)
       const __dirname = path.dirname(__filename)
 
       const rawIn = await fs.promises.readFile(path.resolve(__dirname, '../../package.json'), 'utf-8')
-      cacheOfPackageJSON = JSON.parse(rawIn)
+      cacheOfGeneratorPackageJSON = JSON.parse(rawIn)
     } catch (error) {
-      cacheOfPackageJSON = {
+      cacheOfGeneratorPackageJSON = {
         name: '',
         version: '',
         description: '',
@@ -34,7 +35,26 @@ export const getGeneratorPackageJSON = async (): Promise<PackageJsonProps> => {
     }
   }
 
-  return cacheOfPackageJSON
+  return cacheOfGeneratorPackageJSON
+}
+
+export const getProjectPackageJSON = async (): Promise<PackageJsonProps> => {
+  if (typeof cacheOfProjectPackageJSON === 'undefined') {
+    try {
+      const rawIn = await fs.promises.readFile(path.resolve('./package.json'), 'utf-8')
+      cacheOfProjectPackageJSON = JSON.parse(rawIn)
+    } catch (error) {
+      cacheOfProjectPackageJSON = {
+        name: '',
+        version: '',
+        description: '',
+        author: '',
+        homepage: '',
+      }
+    }
+  }
+
+  return cacheOfProjectPackageJSON
 }
 
 export const evenAndRemainder = (divisor: number, n: number): [number, number] => {

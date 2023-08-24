@@ -39,7 +39,7 @@ import { Vector3 } from '@src/Vector3.js'
 import { Zone } from '@src/Zone.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { times } from '@src/faux-ramda.js'
-import { getGeneratorPackageJSON, latin9ToLatin1 } from '@src/helpers.js'
+import { getGeneratorPackageJSON, getProjectPackageJSON, latin9ToLatin1 } from '@src/helpers.js'
 import { OriginalLevel } from '@src/types.js'
 import { compile } from './compile.js'
 
@@ -57,7 +57,7 @@ type ToBeSortedLater = {
 }
 
 export class ArxMap {
-  meta: MetaData = new MetaData()
+  meta = new MetaData()
   polygons = new Polygons()
   lights = new Lights()
   fogs: Fog[] = []
@@ -219,7 +219,7 @@ export class ArxMap {
 
   private static async getGeneratorId() {
     const generator = await getGeneratorPackageJSON()
-    return `Arx Level Generator - v.${generator.version}`
+    return `${generator.name} - v.${generator.version}`
   }
 
   finalize() {
@@ -348,10 +348,17 @@ export class ArxMap {
     await Manifest.uninstall(settings)
 
     const generator = await getGeneratorPackageJSON()
-    // const project = await getProjectPackageJSON()
+    this.meta.generator = generator.name
     this.meta.generatorVersion = generator.version
     this.meta.generatorUrl = generator.homepage
     this.meta.seed = settings.seed
+
+    const project = await getProjectPackageJSON()
+    this.meta.name = project.name
+    this.meta.version = project.version
+    this.meta.description = project.description
+    this.meta.author = project.author
+    this.meta.url = project.homepage
 
     // ------------------------
 
