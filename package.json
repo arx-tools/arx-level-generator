@@ -82,7 +82,7 @@
   },
   "homepage": "https://github.com/arx-tools/arx-level-generator#readme",
   "dependencies": {
-    "arx-convert": "^7.0.1",
+    "arx-convert": "^7.1.0",
     "arx-header-size": "^2.2.0",
     "color-rgba": "^2.4.0",
     "node-pkware": "^3.0.4",
@@ -94,12 +94,12 @@
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.2.0",
     "@types/color-rgba": "^2.1.0",
-    "@types/node": "^20.5.0",
+    "@types/node": "^20.5.6",
     "@types/seedrandom": "^3.0.5",
     "@types/sharp": "^0.31.1",
-    "@types/three": "^0.155.0",
+    "@types/three": "^0.155.1",
     "tsc-alias": "^1.8.7",
-    "typescript": "^5.1.6"
+    "typescript": "^5.2.2"
   },
   "keywords": [
     "arx-fatalis"
