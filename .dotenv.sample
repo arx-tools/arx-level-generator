@@ -1,0 +1,51 @@
+# points to the pkware-test-files repo's folder
+# default value is "../pkware-test-files" relative to the project directory
+originalLevelFiles=../pkware-test-files
+
+# the directory where the level generator will place all resized images
+# before adding it to the output directory
+# the folder is automatically created when needed
+# default value is "./cache" relative to the project directory
+cacheFolder=./cache
+
+# the level files will be generated here
+# set this to your arx fatalis install folder to
+# be able to run the generated map immediately
+# default value is "./output" relative to the project directory
+outputDir=output
+
+# the number of the level which will the files be generated into
+# level 1 is the level you go to when starting a new game
+levelIdx=1
+
+# this is the folder where you should place all the textures and
+# other assets of your map
+# default value is "./assets" relative to the project directory
+assetsDir=./assets
+
+# can be either "true" or "false"
+# the default value is "true"
+# if the map has no light entities, then the value will get
+# overwritten to be false
+calculateLighting=true
+
+# possible values for Fredlllll's lighting calculator:
+# - "Distance"
+# - "Danae"
+# - "DistanceAngle"
+# - "DistanceAngleShadow"
+# - "DistanceAngleShadowNoTransparency"
+# - "GI"
+# default value is "DistanceAngleShadowNoTransparency"
+lightingCalculatorMode=DistanceAngleShadowNoTransparency
+
+# any string that is used to seed the random number generator
+seed=12345
+
+# can be either "normal" or "premium"
+# the default value is "normal"
+variant=normal
+
+# can be either "production" or "development"
+# the default value is "production"
+mode=production

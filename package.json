@@ -85,6 +85,7 @@
     "arx-convert": "^7.1.0",
     "arx-header-size": "^2.2.0",
     "color-rgba": "^2.4.0",
+    "dotenv": "^16.3.1",
     "node-pkware": "^3.0.4",
     "seedrandom": "^3.0.5",
     "sharp": "^0.32.5",
