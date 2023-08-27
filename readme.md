@@ -27,9 +27,9 @@ compatibility options (the level generator CANNOT handle this - https://github.c
 `asl` - scripts should be exported with ISO 8859-15 encoding and `\r\n` line endings (the level
 generator CAN handle this)
 
-## Versions
+## Variants
 
-Since `1.4.0` the `Settings` class has a `version` field with 2 values: `"normal"` and `"premium"`.
+Since `1.4.0` the `Settings` class has a `variant` field with 2 values: `"normal"` and `"premium"`.
 
 In normal mode:
 
