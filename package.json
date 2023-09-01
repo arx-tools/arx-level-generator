@@ -9,6 +9,9 @@
     "npm": ">=8.0.0",
     "node": ">=18.0.0"
   },
+  "bin": {
+    "arx-level-generator": "dist/src/bin/cli.js"
+  },
   "exports": {
     ".": {
       "default": "./dist/src/index.js",
@@ -86,6 +89,7 @@
     "arx-header-size": "^2.2.0",
     "color-rgba": "^2.4.0",
     "dotenv": "^16.3.1",
+    "minimist-lite": "^2.2.1",
     "node-pkware": "^3.0.4",
     "seedrandom": "^3.0.5",
     "sharp": "^0.32.5",
