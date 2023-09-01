@@ -1,6 +1,6 @@
 import { BufferAttribute, BufferGeometry } from 'three'
+import { categorizeVertices } from '@tools/mesh/categorizeVertices.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
-import { categorizeVertices } from './categorizeVertices.js'
 
 /**
  * Connect the edge vertices of "source" to the edge vertices of "target"

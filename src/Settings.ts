@@ -2,7 +2,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { config as dotenvConfig } from 'dotenv'
 import seedrandom from 'seedrandom'
-import { randomIntBetween } from './random.js'
+import { randomIntBetween } from '@src/random.js'
 
 dotenvConfig()
 

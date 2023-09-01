@@ -37,11 +37,11 @@ import { Translations } from '@src/Translations.js'
 import { UI } from '@src/UI.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Zone } from '@src/Zone.js'
+import { compile } from '@src/compile.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { times } from '@src/faux-ramda.js'
-import { getGeneratorPackageJSON, getProjectPackageJSON, latin9ToLatin1 } from '@src/helpers.js'
+import { getGeneratorPackageJSON, latin9ToLatin1 } from '@src/helpers.js'
 import { OriginalLevel } from '@src/types.js'
-import { compile } from './compile.js'
 
 type ArxMapConfig = {
   isFinalized: boolean

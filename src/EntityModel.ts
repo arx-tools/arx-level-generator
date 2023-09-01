@@ -4,11 +4,11 @@ import { FTL } from 'arx-convert'
 import { ArxFTL, ArxFaceType } from 'arx-convert/types'
 import { Expand, TripleOf } from 'arx-convert/utils'
 import { BufferAttribute, Mesh, MeshBasicMaterial, Vector2 } from 'three'
+import { Settings } from '@src/Settings.js'
+import { Texture } from '@src/Texture.js'
+import { Vector3 } from '@src/Vector3.js'
+import { fileExists, roundToNDecimals } from '@src/helpers.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
-import { Settings } from './Settings.js'
-import { Texture } from './Texture.js'
-import { Vector3 } from './Vector3.js'
-import { fileExists, roundToNDecimals } from './helpers.js'
 
 type EntityModelConstructorProps = {
   filename: string

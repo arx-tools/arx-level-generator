@@ -1,5 +1,5 @@
-import { Settings, Variant } from './Settings.js'
-import { getGeneratorPackageJSON, getProjectPackageJSON } from './helpers.js'
+import { Settings, Variant } from '@src/Settings.js'
+import { getGeneratorPackageJSON, getProjectPackageJSON } from '@src/helpers.js'
 
 export type MetaData = {
   seed: string

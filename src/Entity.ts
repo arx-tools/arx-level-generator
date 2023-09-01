@@ -2,13 +2,13 @@ import path from 'node:path'
 import { ArxInteractiveObject } from 'arx-convert/types'
 import { Expand, Optional } from 'arx-convert/utils'
 import { Audio } from '@src/Audio.js'
+import { EntityModel } from '@src/EntityModel.js'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
 import { Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
-import { EntityModel } from './EntityModel.js'
-import { TextureOrMaterial } from './types.js'
+import { TextureOrMaterial } from '@src/types.js'
 
 const instanceCatalog: Record<string, Entity[]> = {}
 

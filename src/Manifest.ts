@@ -3,7 +3,7 @@ import path from 'node:path'
 import { ArxMap } from '@src/ArxMap.js'
 import { MetaData, generateMetadata } from '@src/MetaData.js'
 import { Settings } from '@src/Settings.js'
-import { fileExists } from './helpers.js'
+import { fileExists } from '@src/helpers.js'
 
 export type ManifestData = MetaData & {
   files: string[]
