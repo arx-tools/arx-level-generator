@@ -14,7 +14,9 @@ const args: AppArgs = minimist(process.argv.slice(2), {
 const settings = new Settings()
 
 if (args.rungame) {
-  await rungame(settings)
+  const otherArgs = process.argv.slice(2).filter((param) => !param.trim().startsWith('--rungame'))
+  await rungame(settings, otherArgs)
 } else {
   console.info('[info] cli: available commands: "--rungame"')
+  console.info('[info] cli: all other parameters will be passed to the arx executable')
 }

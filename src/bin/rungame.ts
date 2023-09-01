@@ -5,7 +5,7 @@ import { promisify } from 'node:util'
 import { Settings } from '@src/Settings.js'
 import { fileExists } from '@src/helpers.js'
 
-export const rungame = async (settings: Settings) => {
+export const rungame = async (settings: Settings, otherArgs: string[]) => {
   const operatingSystem = os.platform()
 
   if (operatingSystem !== 'win32' && operatingSystem !== 'linux') {
@@ -13,7 +13,7 @@ export const rungame = async (settings: Settings) => {
     return
   }
 
-  const args = [`--loadlevel ${settings.levelIdx}`]
+  const args = [`--loadlevel ${settings.levelIdx}`, ...otherArgs]
 
   let exeFile: string
   switch (operatingSystem) {
