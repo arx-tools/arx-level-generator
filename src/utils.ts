@@ -6,4 +6,5 @@ export {
   isEven,
   isOdd,
   isBetween,
+  circleOfVectors,
 } from '@src/helpers.js'

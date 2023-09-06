@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Mesh, Object3D } from 'three'
+import { Euler, Mesh, Object3D } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { mean } from '@src/faux-ramda.js'
 
@@ -129,4 +129,19 @@ export const fileExists = async (filename: string) => {
   } catch (e: unknown) {
     return false
   }
+}
+
+export const circleOfVectors = (center: Vector3, radius: number, divisions: number, theta: number = 0) => {
+  const angle = (2 * Math.PI) / divisions
+
+  const vectors: Vector3[] = []
+
+  for (let i = 0; i < divisions; i++) {
+    const point = new Vector3(0, 0, 1 * radius)
+    const rotation = new Euler(0, theta + angle * i, 0, 'XYZ')
+    point.applyEuler(rotation)
+    vectors.push(point.add(center))
+  }
+
+  return vectors
 }
