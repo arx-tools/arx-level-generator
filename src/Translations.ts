@@ -2,27 +2,63 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { Settings } from '@src/Settings.js'
 
+export type Locales =
+  | 'chinese'
+  | 'german'
+  | 'english'
+  | 'french'
+  | 'hungarian'
+  | 'italian'
+  | 'japanese'
+  | 'russian'
+  | 'spanish'
+
+const toArxLocale = (locale: Locales) => {
+  if (locale === 'german') {
+    return 'deutsch'
+  }
+
+  if (locale === 'french') {
+    return 'francais'
+  }
+
+  if (locale === 'italian') {
+    return 'italiano'
+  }
+
+  return locale
+}
+
 export class Translations {
-  translations: Record<string, Record<string, string>> = {}
+  translations: Record<string, Partial<Record<Locales, string>>> = {}
 
   exportSourcesAndTargets(settings: Settings) {
-    const translations: Record<string, Record<string, string>> = {}
+    const translations: Partial<Record<Locales, Record<string, string>>> = {}
 
-    Object.entries(this.translations).forEach(([key, valuesByLanguage]) => {
-      Object.entries(valuesByLanguage).forEach(([language, value]) => {
-        if (!translations[language]) {
-          translations[language] = {}
+    Object.entries(this.translations).forEach(([key, valuesByLocale]) => {
+      const localeValuePairs = Object.entries(valuesByLocale) as [Locales, string][]
+      localeValuePairs.forEach(([locale, value]) => {
+        const translation = translations[locale]
+        if (typeof translation === 'undefined') {
+          translations[locale] = {
+            [key]: value,
+          }
+        } else {
+          translation[key] = value
         }
-        translations[language][key] = value
       })
     })
 
     const results: Record<string, string> = {}
 
-    Object.entries(translations).forEach(([language, dictionary]) => {
+    const languageDictionaryPairs = Object.entries(translations) as [Locales, Record<string, string>][]
+    languageDictionaryPairs.forEach(([locale, dictionary]) => {
       const content = this.stringifyDictionary(dictionary)
       if (content.length) {
-        const filename = path.resolve(settings.outputDir, `localisation/xtext_${language}_002_arx-level-generator.ini`)
+        const filename = path.resolve(
+          settings.outputDir,
+          `localisation/xtext_${toArxLocale(locale)}_002_arx-level-generator.ini`,
+        )
         results[filename] = content
       }
     })
@@ -41,7 +77,7 @@ export class Translations {
       .join('')
   }
 
-  add(translations: Record<string, Record<string, string>>) {
+  add(translations: Record<string, Partial<Record<Locales, string>>>) {
     this.translations = {
       ...this.translations,
       ...translations,
@@ -51,7 +87,7 @@ export class Translations {
   async addFromFile(filename: string, settings: Settings) {
     try {
       const rawIn = await fs.promises.readFile(path.resolve(settings.assetsDir, filename), 'utf-8')
-      const translations = JSON.parse(rawIn) as Record<string, Record<string, string>>
+      const translations = JSON.parse(rawIn) as Record<string, Partial<Record<Locales, string>>>
       this.add(translations)
     } catch (error) {
       console.error(error)

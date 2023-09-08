@@ -36,6 +36,7 @@ export type { PathPoint } from '@src/Path.js'
 export type { TransparencyType } from '@src/Polygon.js'
 export type { MeshImportProps } from '@src/Polygons.js'
 export type { ScriptHandler } from '@src/Script.js'
+export type { Locales } from '@src/Translations.js'
 export type { ZonePoint } from '@src/Zone.js'
 
 export type { ArxVertexWithColor, OriginalLevel, TextureOrMaterial } from '@src/types.js'
