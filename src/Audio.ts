@@ -106,7 +106,7 @@ export class Audio {
   // ----------------
 
   static get spiderStep3() {
-    return new Audio({ filename: 'spider_step3.wav' })
+    return new Audio({ filename: 'spider_step3' })
   }
   static get metalOnWood2() {
     return new Audio({ filename: 'metal_on_wood_2' })
@@ -124,7 +124,7 @@ export class Audio {
     return new Audio({ filename: 'cloth_on_cloth_1' })
   }
   static get lever() {
-    return new Audio({ filename: 'lever.wav' })
+    return new Audio({ filename: 'lever' })
   }
   static get system() {
     return new Audio({ filename: 'system' })
