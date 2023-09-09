@@ -1,8 +1,9 @@
 import path from 'node:path'
 import { Expand } from 'arx-convert/utils'
 import { Settings } from '@src/Settings.js'
+import { Locales, toArxLocale } from '@src/Translations.js'
 
-export type AudioType = 'speech' | 'sfx'
+export type AudioType = `speech/${Locales}` | 'sfx'
 
 type AudioConstructorProps = {
   filename: string
@@ -24,15 +25,14 @@ export class Audio {
   filename: string
   isNative: boolean
   sourcePath?: string
-  targetPath: string
+  type: AudioType
   isInternalAsset: boolean
 
   constructor(props: AudioConstructorProps) {
     this.filename = props.filename
     this.isNative = props.isNative ?? true
     this.sourcePath = props.sourcePath
-    // TODO: find a way to support other languages too, not just english
-    this.targetPath = props.type === 'speech' ? 'speech/english' : 'sfx'
+    this.type = props.type ?? 'sfx'
     this.isInternalAsset = props.isInternalAsset ?? false
   }
 
@@ -41,7 +41,7 @@ export class Audio {
       filename: this.filename,
       isNative: this.isNative,
       sourcePath: this.sourcePath,
-      type: this.targetPath === 'sfx' ? 'sfx' : 'speech',
+      type: this.type,
       isInternalAsset: this.isInternalAsset,
     })
   }
@@ -58,12 +58,14 @@ export class Audio {
       throw new Error('trying to export a native Audio')
     }
 
+    const targetPath = this.type === 'sfx' ? 'sfx' : 'speech/' + toArxLocale(this.type.split('/')[1] as Locales)
+
     const source = path.resolve(
       this.isInternalAsset ? settings.internalAssetsDir : settings.assetsDir,
-      this.sourcePath ?? this.targetPath,
+      this.sourcePath ?? targetPath,
       this.filename,
     )
-    const target = path.resolve(settings.outputDir, this.targetPath, this.filename)
+    const target = path.resolve(settings.outputDir, targetPath, this.filename)
 
     return [source, target]
   }

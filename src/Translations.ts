@@ -13,7 +13,7 @@ export type Locales =
   | 'russian'
   | 'spanish'
 
-const toArxLocale = (locale: Locales) => {
+export const toArxLocale = (locale: Locales) => {
   if (locale === 'german') {
     return 'deutsch'
   }
