@@ -11,6 +11,10 @@ export class Vector3 extends ThreeJsVector3 {
     return new Vector3(parseFloat(x) || 0, parseFloat(y) || 0, parseFloat(z) || 0)
   }
 
+  static fromThreeJsVector3(vector: ThreeJsVector3) {
+    return new Vector3(vector.x, vector.y, vector.z)
+  }
+
   toArxVector3(): ArxVector3 {
     return { x: this.x, y: this.y, z: this.z }
   }

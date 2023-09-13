@@ -6,6 +6,10 @@ export class Rotation extends Euler {
     return new Rotation(MathUtils.degToRad(a), MathUtils.degToRad(b), MathUtils.degToRad(g), 'XYZ')
   }
 
+  static fromThreeJsEuler(euler: Euler) {
+    return new Rotation(euler.x, euler.y, euler.z)
+  }
+
   reorder(newOrder: EulerOrder) {
     const { x, y, z } = super.reorder(newOrder)
 
