@@ -221,6 +221,12 @@ export class Texture extends ThreeJsTextue {
     }
   }
 
+  equals(texture: Texture) {
+    const { name: aFilename } = path.parse(this.filename.toLowerCase())
+    const { name: bFilename } = path.parse(texture.filename.toLowerCase())
+    return aFilename === bFilename
+  }
+
   // ----------------
 
   static get alpha() {
