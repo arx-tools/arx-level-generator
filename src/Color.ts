@@ -95,6 +95,9 @@ export class Color {
   static get white() {
     return Color.fromCSS('white')
   }
+  static get black() {
+    return Color.fromCSS('black')
+  }
   static get yellow() {
     return Color.fromCSS('yellow')
   }
