@@ -30,6 +30,9 @@ export class Audio {
 
   constructor(props: AudioConstructorProps) {
     this.filename = props.filename
+    if (!this.filename.toLowerCase().endsWith('.wav')) {
+      this.filename += '.wav'
+    }
     this.isNative = props.isNative ?? true
     this.sourcePath = props.sourcePath
     this.type = props.type ?? 'sfx'
