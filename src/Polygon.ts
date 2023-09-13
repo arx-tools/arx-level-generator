@@ -341,6 +341,12 @@ export class Polygon {
     })
   }
 
+  scale(scale: number) {
+    this.vertices.forEach((vertex) => {
+      vertex.multiplyScalar(scale)
+    })
+  }
+
   equals(polygon: Polygon, epsilon: number = 0) {
     if (this.isQuad() !== polygon.isQuad()) {
       return false

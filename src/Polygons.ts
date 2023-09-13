@@ -130,6 +130,12 @@ export class Polygons extends Array<Polygon> {
     })
   }
 
+  scale(scale: number) {
+    this.forEach((polygon) => {
+      polygon.scale(scale)
+    })
+  }
+
   empty() {
     this.length = 0
   }
