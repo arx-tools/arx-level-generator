@@ -34,7 +34,7 @@ Since `1.4.0` the `Settings` class has a `variant` field with 2 values: `"normal
 In normal mode:
 
 - jpg textures will be exported with 70% quality as opposed to 100%
-- all textures except the icons (ending in `[icon].bmp`) will be resized to half the original resolution
+- all textures except icons (ending in `[icon].bmp`) will be resized to have a maximum width and height of 128 pixels.
 
 ## Other docs
 

@@ -156,8 +156,26 @@ export class Texture extends ThreeJsTextue {
 
     let quality = 100
     if (settings.variant !== 'premium' && !this.filename.endsWith('[icon].bmp')) {
-      image.resize(Math.floor(this._width / 2), Math.floor(this._height / 2), { fit: 'cover' })
       quality = 70
+
+      let maxWidth = 128
+      let maxHeight = 128
+
+      if (this._width > maxWidth || this._height > maxHeight) {
+        const isPortrait = this._width < this._height
+        const isLandscape = this._width > this._height
+
+        if (isPortrait) {
+          maxWidth = (maxWidth / this._width) * this._height
+        } else if (isLandscape) {
+          maxHeight = (maxHeight / this._height) * this._width
+        }
+
+        const newWidth = Math.max(maxWidth, this._width)
+        const newHeight = Math.max(maxHeight, this._height)
+
+        image.resize(newWidth, newHeight, { fit: 'cover' })
+      }
     }
 
     if (isBMP) {
@@ -196,7 +214,7 @@ export class Texture extends ThreeJsTextue {
     let newSize = powerOfTwo
     let quality = 100
     if (settings.variant !== 'premium' && !this.filename.endsWith('[icon].bmp')) {
-      newSize = newSize / 2
+      newSize = Math.max(128, newSize)
       quality = 70
     }
 
