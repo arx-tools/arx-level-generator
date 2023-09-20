@@ -1,6 +1,5 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { ArxMap } from '@src/ArxMap.js'
 import { MetaData, generateMetadata } from '@src/MetaData.js'
 import { Settings } from '@src/Settings.js'
 import { fileExists } from '@src/helpers.js'

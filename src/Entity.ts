@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { ArxInteractiveObject } from 'arx-convert/types'
-import { Expand, Optional } from 'arx-convert/utils'
+import { Expand } from 'arx-convert/utils'
 import { Audio } from '@src/Audio.js'
 import { EntityModel } from '@src/EntityModel.js'
 import { Rotation } from '@src/Rotation.js'
