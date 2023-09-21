@@ -41,6 +41,10 @@
       "default": "./dist/src/scripting/commands/index.js",
       "types": "./dist/src/scripting/commands/index.d.ts"
     },
+    "./scripting/hooks": {
+      "default": "./dist/src/scripting/hooks/index.js",
+      "types": "./dist/src/scripting/hooks/index.d.ts"
+    },
     "./scripting/interfaces": {
       "default": "./dist/src/scripting/interfaces/index.js",
       "types": "./dist/src/scripting/interfaces/index.d.ts"
