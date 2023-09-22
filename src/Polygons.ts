@@ -140,9 +140,10 @@ export class Polygons extends Array<Polygon> {
     this.length = 0
   }
 
+  addThreeJsMesh(threeJsObj: Object3D): void
   addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps): void
   addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps, isRoot: false): Polygon[]
-  addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps, isRoot: boolean = true) {
+  addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps = {}, isRoot: boolean = true) {
     if (isRoot) {
       applyTransformations(threeJsObj)
     }
