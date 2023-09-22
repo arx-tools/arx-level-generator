@@ -90,12 +90,12 @@
   "homepage": "https://github.com/arx-tools/arx-level-generator#readme",
   "dependencies": {
     "arx-header-size": "^2.2.0",
-    "color-rgba": "^2.4.0",
+    "color-rgba": "^3.0.0",
     "dotenv": "^16.3.1",
     "minimist-lite": "^2.2.1",
     "node-pkware": "^3.0.4",
     "seedrandom": "^3.0.5",
-    "sharp": "^0.32.5",
+    "sharp": "^0.32.6",
     "sharp-bmp": "^0.1.5"
   },
   "peerDependencies": {
@@ -105,11 +105,11 @@
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.2.0",
     "@types/color-rgba": "^2.1.0",
-    "@types/node": "^20.5.9",
+    "@types/node": "^20.6.3",
     "@types/seedrandom": "^3.0.5",
     "@types/sharp": "^0.31.1",
-    "@types/three": "^0.155.1",
-    "tsc-alias": "^1.8.7",
+    "@types/three": "^0.156.0",
+    "tsc-alias": "^1.8.8",
     "typescript": "^5.2.2"
   },
   "keywords": [
