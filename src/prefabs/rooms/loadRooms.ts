@@ -174,7 +174,7 @@ export const loadRooms = async (filename: string, settings: Settings) => {
                     wall[1] = { texture, fitX, fitY, isRemoved: false }
                     wall[2] = { texture, fitX, fitY, isRemoved: false }
                     wall[3] = { texture, fitX, fitY, isRemoved: false }
-                  } else if (tokens[1] === 'removed') {
+                  } else if (tokens[1] === 'off') {
                     wall[0].isRemoved = true
                     wall[1].isRemoved = true
                     wall[2].isRemoved = true
@@ -183,7 +183,7 @@ export const loadRooms = async (filename: string, settings: Settings) => {
                     console.error(
                       `[error] loadRooms: Unknown texture type "${tokens[1]}" at line ${
                         i + 1
-                      }, expected either "custom", "arx", or "removed"`,
+                      }, expected either "custom", "arx", or "off"`,
                     )
                   }
                 }
