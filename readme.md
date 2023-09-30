@@ -35,6 +35,7 @@ In normal mode:
 
 - jpg textures will be exported with 70% quality as opposed to 100%
 - all textures except icons (ending in `[icon].bmp`) will be resized to have a maximum width and height of 128 pixels.
+- sections of `.rooms` files within `premium only {` and `}` lines will be omitted
 
 ## Other docs
 
