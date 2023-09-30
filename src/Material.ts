@@ -52,6 +52,7 @@ export class Material extends Texture {
       width: texture._width,
       height: texture._height,
       sourcePath: texture.sourcePath,
+      isInternalAsset: texture.isInternalAsset,
       ...props,
     })
   }
