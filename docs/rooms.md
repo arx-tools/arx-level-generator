@@ -2,8 +2,6 @@
 
 [back to the main readme](../readme.md)
 
-_TODO: explain the rooms file format_
-
 ## Example rooms file
 
 `assets/example/example.rooms`
