@@ -27,7 +27,7 @@ _TODO: explain the rooms file format_
 define room-no-ceiling {
   ceiling arx alpha.bmp # transparent texture from arx' builtin textures
   wall arx aliciaroom_mur02.jpg # optionally you can write either fit-x or fit-y after the texture name
-  wall-north removed # don't render any walls on this side
+  wall-north off # don't render any walls on this side
   floor custom textures [fabric]-carpet.jpg # custom texture from assets/textures/
 }
 
