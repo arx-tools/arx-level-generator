@@ -17,7 +17,7 @@ export class PlayerInterface extends ScriptProperty<boolean> {
   }
 
   toString() {
-    return `playerinterface ${this.isSliding === true ? '-s' : ''} ${this.value === true ? 'on' : 'off'}`
+    return `playerinterface ${this.isSliding === true ? '-s' : ''} ${this.value === true ? 'show' : 'hide'}`
   }
 
   static get on() {
