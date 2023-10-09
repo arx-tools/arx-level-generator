@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { FTL } from 'arx-convert'
-import { ArxFTL, ArxFaceType } from 'arx-convert/types'
+import { ArxAction, ArxFTL, ArxFaceType } from 'arx-convert/types'
 import { Expand, TripleOf } from 'arx-convert/utils'
 import { BufferAttribute, Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { Settings } from '@src/Settings.js'
@@ -16,6 +16,7 @@ type EntityModelConstructorProps = {
    * default value is "./" (relative to the assets folder)
    */
   sourcePath?: string
+  actionPoints?: ArxAction[]
 }
 
 /**
@@ -33,10 +34,12 @@ export class EntityModel {
   sourcePath: string
   originIdx: number
   threeJsObj?: Mesh
+  actionPoints: ArxAction[]
 
   constructor(props: EntityModelConstructorProps) {
     this.filename = props.filename
     this.sourcePath = props.sourcePath ?? './'
+    this.actionPoints = props.actionPoints ?? []
     this.originIdx = 0
   }
 
@@ -120,7 +123,7 @@ export class EntityModel {
       faces: [],
       textureContainers: [],
       groups: [],
-      actions: [],
+      actions: this.actionPoints,
       selections: [],
     }
 
