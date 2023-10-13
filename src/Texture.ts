@@ -155,7 +155,14 @@ export class Texture extends ThreeJsTextue {
     const image = await getSharpInstance(originalSource)
 
     let quality = 100
-    if (settings.variant !== 'premium' && !this.filename.endsWith('[icon].bmp')) {
+
+    const needsDownsampling = !(
+      settings.variant === 'premium' ||
+      this.isInternalAsset ||
+      this.filename.endsWith('[icon].bmp')
+    )
+
+    if (needsDownsampling) {
       quality = 70
 
       let maxWidth = 128
@@ -213,7 +220,13 @@ export class Texture extends ThreeJsTextue {
 
     let newSize = powerOfTwo
     let quality = 100
-    if (settings.variant !== 'premium' && !this.filename.endsWith('[icon].bmp')) {
+
+    const needsDownsampling = !(
+      settings.variant === 'premium' ||
+      this.isInternalAsset ||
+      this.filename.endsWith('[icon].bmp')
+    )
+    if (needsDownsampling) {
       newSize = Math.max(128, newSize)
       quality = 70
     }
