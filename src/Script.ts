@@ -24,6 +24,10 @@ export class Script {
   eventHandlers: Record<string, ScriptHandler[]> = {
     init: [],
   }
+  rawScripts = {
+    before: '',
+    after: '',
+  }
 
   constructor(props: ScriptConstructorProps) {
     this.filename = props.filename
@@ -37,11 +41,7 @@ export class Script {
       let eventString = ''
 
       if (eventName === 'init') {
-        eventString += this.properties
-          .map((property) => {
-            return `  ${property.toString()}\n`
-          })
-          .join('')
+        eventString += this.properties.map((property) => `  ${property.toString()}\n`).join('')
       }
 
       for (let handler of handlers) {
@@ -58,7 +58,14 @@ export class Script {
       subroutines.push(subroutine.toString())
     }
 
-    return eventStrings.join('\n') + '\n\n' + subroutines.join('\n')
+    const scriptSections = [
+      this.rawScripts.before,
+      eventStrings.join('\n'),
+      subroutines.join('\n'),
+      this.rawScripts.after,
+    ]
+
+    return scriptSections.filter((section) => section !== '').join('\n\n')
   }
 
   on(eventName: string, handler: ScriptHandler) {
@@ -87,6 +94,14 @@ export class Script {
     this.isRoot = true
 
     return this
+  }
+
+  appendRaw(script: string) {
+    this.rawScripts.after += (this.rawScripts.after !== '' ? '\n' : '') + script
+  }
+
+  prependRaw(script: string) {
+    this.rawScripts.before += (this.rawScripts.before !== '' ? '\n' : '') + script
   }
 
   static handlerToString(handler: ScriptHandler) {
