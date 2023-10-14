@@ -1,5 +1,8 @@
 let delayIdx = 0
 
+/**
+ * @see https://wiki.arx-libertatis.org/Script:timer
+ */
 class Timer {
   name: string = ''
   delayOffsetInMs: number
