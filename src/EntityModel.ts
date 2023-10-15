@@ -144,9 +144,9 @@ export class EntityModel {
       })
 
       if (i % 3 === 0) {
-        faceIndexes.push([idx, -1, -1])
+        faceIndexes.push([-1, -1, i])
       } else {
-        faceIndexes[faceIndexes.length - 1][i % 3] = idx
+        faceIndexes[faceIndexes.length - 1][2 - (i % 3)] = i
       }
     })
 
