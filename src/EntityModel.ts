@@ -3,7 +3,7 @@ import path from 'node:path'
 import { FTL } from 'arx-convert'
 import { ArxAction, ArxFTL, ArxFaceType } from 'arx-convert/types'
 import { Expand, TripleOf } from 'arx-convert/utils'
-import { BufferAttribute, Mesh, MeshBasicMaterial, Vector2 } from 'three'
+import { BufferAttribute, MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
@@ -110,6 +110,8 @@ export class EntityModel {
     }
 
     const { geometry, material } = this.threeJsObj as Mesh
+
+    geometry.rotateY(MathUtils.degToRad(90))
 
     const normals = geometry.getAttribute('normal') as BufferAttribute
     const uvs = geometry.getAttribute('uv') as BufferAttribute
