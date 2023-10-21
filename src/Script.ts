@@ -23,6 +23,8 @@ export class Script {
   properties: ScriptProperty<any>[] = []
   subroutines: ScriptSubroutine[] = []
   eventHandlers: Record<string, ScriptHandler[]> = {
+    '::before': [],
+    '::after': [],
     init: [],
   }
 
