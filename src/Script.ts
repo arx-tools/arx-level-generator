@@ -24,9 +24,9 @@ export class Script {
   eventHandlers: Record<string, ScriptHandler[]> = {
     init: [],
   }
-  rawScripts = {
-    before: '',
-    after: '',
+  rawScripts: { before: ScriptHandler[]; after: ScriptHandler[] } = {
+    before: [],
+    after: [],
   }
 
   constructor(props: ScriptConstructorProps) {
@@ -59,10 +59,10 @@ export class Script {
     }
 
     const scriptSections = [
-      this.rawScripts.before,
+      this.rawScripts.before.map((script) => Script.handlerToString(script)).join('\n'),
       eventStrings.join('\n'),
       subroutines.join('\n'),
-      this.rawScripts.after,
+      this.rawScripts.after.map((script) => Script.handlerToString(script)).join('\n'),
     ]
 
     return scriptSections.filter((section) => section !== '').join('\n\n')
@@ -96,12 +96,12 @@ export class Script {
     return this
   }
 
-  appendRaw(script: string) {
-    this.rawScripts.after += (this.rawScripts.after !== '' ? '\n' : '') + script
+  appendRaw(script: ScriptHandler) {
+    this.rawScripts.after.push(script)
   }
 
-  prependRaw(script: string) {
-    this.rawScripts.before += (this.rawScripts.before !== '' ? '\n' : '') + script
+  prependRaw(script: ScriptHandler) {
+    this.rawScripts.before.push(script)
   }
 
   static handlerToString(handler: ScriptHandler) {
