@@ -1,3 +1,4 @@
+import { eventNames } from 'node:process'
 import { Settings } from '@src/Settings.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import { ScriptProperty } from '@scripting/ScriptProperty.js'
@@ -24,10 +25,6 @@ export class Script {
   eventHandlers: Record<string, ScriptHandler[]> = {
     init: [],
   }
-  rawScripts: { before: ScriptHandler[]; after: ScriptHandler[] } = {
-    before: [],
-    after: [],
-  }
 
   constructor(props: ScriptConstructorProps) {
     this.filename = props.filename
@@ -38,6 +35,10 @@ export class Script {
 
     const eventHandlerPairs = Object.entries(this.eventHandlers)
     for (let [eventName, handlers] of eventHandlerPairs) {
+      if (eventName === '::before' || eventName === '::after') {
+        continue
+      }
+
       let eventString = ''
 
       if (eventName === 'init') {
@@ -58,11 +59,14 @@ export class Script {
       subroutines.push(subroutine.toString())
     }
 
+    const beforeScripts = this.eventHandlers['::before'].map((script) => Script.handlerToString(script))
+    const afterScripts = this.eventHandlers['::after'].map((script) => Script.handlerToString(script))
+
     const scriptSections = [
-      this.rawScripts.before.map((script) => Script.handlerToString(script)).join('\n'),
+      beforeScripts.join('\n'),
       eventStrings.join('\n'),
       subroutines.join('\n'),
-      this.rawScripts.after.map((script) => Script.handlerToString(script)).join('\n'),
+      afterScripts.join('\n'),
     ]
 
     return scriptSections.filter((section) => section !== '').join('\n\n')
@@ -96,12 +100,12 @@ export class Script {
     return this
   }
 
-  appendRaw(script: ScriptHandler) {
-    this.rawScripts.after.push(script)
+  prependRaw(handler: ScriptHandler) {
+    this.on('::before', handler)
   }
 
-  prependRaw(script: ScriptHandler) {
-    this.rawScripts.before.push(script)
+  appendRaw(handler: ScriptHandler) {
+    this.on('::after', handler)
   }
 
   static handlerToString(handler: ScriptHandler) {
@@ -120,5 +124,45 @@ export class Script {
     }
 
     return result
+  }
+
+  whenRoot() {
+    const preparedObject = {
+      on: (eventName: string, handler: ScriptHandler) => {
+        this.on(eventName, () => {
+          if (!this.isRoot) {
+            return ''
+          }
+
+          return Script.handlerToString(handler)
+        })
+
+        return preparedObject
+      },
+      prependRaw: (handler: ScriptHandler) => {
+        this.prependRaw(() => {
+          if (!this.isRoot) {
+            return ''
+          }
+
+          return Script.handlerToString(handler)
+        })
+
+        return preparedObject
+      },
+      appendRaw: (handler: ScriptHandler) => {
+        this.appendRaw(() => {
+          if (!this.isRoot) {
+            return ''
+          }
+
+          return Script.handlerToString(handler)
+        })
+
+        return preparedObject
+      },
+    }
+
+    return preparedObject
   }
 }
