@@ -99,7 +99,7 @@
     "sharp-bmp": "^0.1.5"
   },
   "peerDependencies": {
-    "three": "0.157.0",
+    "three": "0.158.0",
     "arx-convert": "7.1.0"
   },
   "devDependencies": {
