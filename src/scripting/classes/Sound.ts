@@ -37,7 +37,7 @@ export class Sound {
     return `play ${flags} ${filename}`
   }
 
-  getFilename() {
+  private getFilename() {
     if (typeof this.filename === 'string') {
       return '"' + this.filename + '"'
     } else {
@@ -52,7 +52,7 @@ export class Sound {
    * [p] = variable pitch
    * [s] = stop (only if unique)
    */
-  stringifyFlags() {
+  private stringifyFlags() {
     let letters = ''
 
     if (this.flags & SoundFlags.EmitFromPlayer) {
