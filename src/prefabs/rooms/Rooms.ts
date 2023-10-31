@@ -50,13 +50,11 @@ function union(map1: ArxMap, map2: ArxMap) {
 
   // remove groups from right to left
 
-  const groupedToBeRemoved1 = groupSequences(toBeRemoved1.reverse())
-  groupedToBeRemoved1.forEach(([start, size]) => {
+  groupSequences(toBeRemoved1.reverse()).forEach(([start, size]) => {
     map1.polygons.splice(start, size)
   })
 
-  const groupedToBeRemoved2 = groupSequences(toBeRemoved2.reverse())
-  groupedToBeRemoved2.forEach(([start, size]) => {
+  groupSequences(toBeRemoved2.reverse()).forEach(([start, size]) => {
     map1.polygons.splice(start, size)
   })
 }
