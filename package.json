@@ -57,6 +57,10 @@
       "default": "./dist/src/tools/index.js",
       "types": "./dist/src/tools/index.d.ts"
     },
+    "./tools/map": {
+      "default": "./dist/src/tools/map/index.js",
+      "types": "./dist/src/tools/map/index.d.ts"
+    },
     "./tools/mesh": {
       "default": "./dist/src/tools/mesh/index.js",
       "types": "./dist/src/tools/mesh/index.d.ts"
