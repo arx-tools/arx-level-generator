@@ -5,6 +5,7 @@ import { Expand } from 'arx-convert/utils'
 import { sharpToBmp } from 'sharp-bmp'
 import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
 import { Settings } from '@src/Settings.js'
+import { any } from '@src/faux-ramda.js'
 import { fileExists } from '@src/helpers.js'
 import { getMetadata, getSharpInstance } from '@services/image.js'
 
@@ -256,6 +257,14 @@ export class Texture extends ThreeJsTextue {
     const { name: aFilename } = path.parse(this.filename.toLowerCase())
     const { name: bFilename } = path.parse(texture.filename.toLowerCase())
     return aFilename === bFilename
+  }
+
+  equalsAny(textures: Texture[]) {
+    if (textures.length === 0) {
+      return false
+    }
+
+    return any(this.equals.bind(this), textures)
   }
 
   // ----------------
