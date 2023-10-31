@@ -8,16 +8,15 @@ export const removePolygonsByTextures = (textures: Texture[], polygons: Polygons
   }
 
   const toBeRemoved: number[] = []
-
-  const numberOfPolygons = polygons.length
-  for (let i = numberOfPolygons - 1; i > 0; i--) {
-    const polygon = polygons[i]
+  polygons.forEach((polygon, idx) => {
     if (polygon.texture?.equalsAny(textures)) {
-      toBeRemoved.push(i)
+      toBeRemoved.push(idx)
     }
-  }
-
-  groupSequences(toBeRemoved).forEach(([start, size]) => {
-    polygons.splice(start, size)
   })
+
+  groupSequences(toBeRemoved)
+    .reverse()
+    .forEach(([start, size]) => {
+      polygons.splice(start, size)
+    })
 }
