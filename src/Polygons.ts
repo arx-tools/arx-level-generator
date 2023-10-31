@@ -399,40 +399,59 @@ export class Polygons extends Array<Polygon> {
 
   // -------------------------
 
+  clearSelection() {
+    this.selection = []
+    return this
+  }
+
+  hasSelection() {
+    return this.selection.length > 0
+  }
+
+  selectAll() {
+    this.selection = Array.from(this.keys())
+    return this
+  }
+
   /**
    * selects polygons which go outside the 0-160 meters boundary on the horizontal axis
+   *
+   * if there are already polygons selected then this filters those further
    */
-  selectOutOfBound() {
-    this.selection = []
+  selectOutOfBounds() {
+    if (!this.hasSelection()) {
+      this.selectAll()
+    }
 
-    this.forEach((polygon, idx) => {
-      if (polygon.isOutOfBounds()) {
-        this.selection.push(idx)
-      }
+    this.selection = this.selection.filter((idx) => {
+      const polygon = this[idx]
+      return polygon.isOutOfBounds()
     })
 
     return this
   }
 
   selectWithinBox(box: Box3) {
-    this.selection = []
+    if (!this.hasSelection()) {
+      this.selectAll()
+    }
 
-    this.forEach((polygon, idx) => {
-      if (polygon.isWithin(box)) {
-        this.selection.push(idx)
-      }
+    this.selection = this.selection.filter((idx) => {
+      const polygon = this[idx]
+      return polygon.isWithin(box)
     })
 
     return this
   }
 
   selectByTextures(textures: Texture[]) {
-    this.selection = []
+    if (!this.hasSelection()) {
+      this.selectAll()
+    }
 
-    this.forEach((polygon, idx) => {
-      if (polygon.texture?.equalsAny(textures)) {
-        this.selection.push(idx)
-      }
+    this.selection = this.selection.filter((idx) => {
+      const polygon = this[idx]
+      return polygon.texture?.equalsAny(textures)
     })
 
     return this
