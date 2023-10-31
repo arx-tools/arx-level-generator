@@ -1,10 +1,10 @@
 import { ArxPolygonFlags } from 'arx-convert/types'
-import { ArxMap } from '@src/ArxMap.js'
+import { Polygons } from '@src/Polygons.js'
 
-export const makePolygonsDoubleSided = (map: ArxMap) => {
-  const numberOfPolygons = map.polygons.length
+export const makePolygonsDoubleSided = (polygons: Polygons) => {
+  const numberOfPolygons = polygons.length
   for (let i = numberOfPolygons - 1; i > 0; i--) {
-    const polygon = map.polygons[i]
+    const polygon = polygons[i]
     polygon.flags = polygon.flags | ArxPolygonFlags.DoubleSided
   }
 }
