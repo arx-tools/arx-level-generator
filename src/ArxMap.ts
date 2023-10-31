@@ -226,7 +226,7 @@ export class ArxMap {
       throw new MapFinalizedError()
     }
 
-    const numberOfRemovedPolygons = this.polygons.removeOutOfBoundPolygons()
+    const numberOfRemovedPolygons = this.polygons.selectOutOfBound().removeSelected()
 
     if (numberOfRemovedPolygons > 0) {
       console.warn(

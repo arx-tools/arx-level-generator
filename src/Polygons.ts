@@ -32,6 +32,8 @@ type VertexWithMaterialIndex = {
 }
 
 export class Polygons extends Array<Polygon> {
+  private selection: number[] = []
+
   async exportTextures(settings: Settings) {
     const files: Record<string, string> = {}
 
@@ -398,59 +400,63 @@ export class Polygons extends Array<Polygon> {
   // -------------------------
 
   /**
-   * removes polygons, which go outside the 0-160 meters bound on the horizontal axis
+   * selects polygons which go outside the 0-160 meters bound on the horizontal axis
+   */
+  selectOutOfBound() {
+    this.selection = []
+
+    this.forEach((polygon, idx) => {
+      if (polygon.isOutOfBounds()) {
+        this.selection.push(idx)
+      }
+    })
+
+    return this
+  }
+
+  selectWithinBox(box: Box3) {
+    this.selection = []
+
+    this.forEach((polygon, idx) => {
+      if (polygon.isWithin(box)) {
+        this.selection.push(idx)
+      }
+    })
+
+    return this
+  }
+
+  selectByTextures(textures: Texture[]) {
+    this.selection = []
+
+    this.forEach((polygon, idx) => {
+      if (polygon.texture?.equalsAny(textures)) {
+        this.selection.push(idx)
+      }
+    })
+
+    return this
+  }
+
+  /**
+   * Removes polygons which have been selected
    *
    * @returns the number of polygons that have ben removed
    */
-  removeOutOfBoundPolygons() {
-    const selection: number[] = []
-    this.forEach((polygon, idx) => {
-      if (polygon.isOutOfBounds()) {
-        selection.push(idx)
-      }
-    })
+  removeSelected() {
+    const selectedAmount = this.selection.length
 
-    groupSequences(selection)
-      .reverse()
-      .forEach(([start, size]) => {
-        this.splice(start, size)
-      })
+    if (selectedAmount > 0) {
+      groupSequences(this.selection)
+        .reverse()
+        .forEach(([start, size]) => {
+          this.splice(start, size)
+        })
 
-    return selection.length
-  }
+      this.selection = []
+    }
 
-  removeWithinBox(box: Box3) {
-    const selection: number[] = []
-    this.forEach((polygon, idx) => {
-      if (polygon.isWithin(box)) {
-        selection.push(idx)
-      }
-    })
-
-    groupSequences(selection)
-      .reverse()
-      .forEach(([start, size]) => {
-        this.splice(start, size)
-      })
-
-    return selection.length
-  }
-
-  removeByTextures(textures: Texture[]) {
-    const selection: number[] = []
-    this.forEach((polygon, idx) => {
-      if (polygon.texture?.equalsAny(textures)) {
-        selection.push(idx)
-      }
-    })
-
-    groupSequences(selection)
-      .reverse()
-      .forEach(([start, size]) => {
-        this.splice(start, size)
-      })
-
-    return selection.length
+    return selectedAmount
   }
 
   // -------------------------
