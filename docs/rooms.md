@@ -48,7 +48,7 @@ cursor save main-room # save the current position as "main-room" and restore it 
 
 room add 200 200 200 default y- z++ # add another room with the default "jorge" texture - bottoms aligned, room is extruded north
 room add 400 $roomHeight 400 default y- z++ # another room extruded north
-with light
+with light # optional third argument: percentage like 70% or "dim" = 50%. No 3rd argument means 100% full brightness
 cursor save north-room # save as many cursor points as you want
 
 # go back to the main room and extrude south

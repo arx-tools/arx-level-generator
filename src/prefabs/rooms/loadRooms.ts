@@ -75,6 +75,19 @@ export const loadRooms = async (filename: string, settings: Settings) => {
               position: new Vector3(cursor.cursor.x, cursor.cursor.y - cursor.newSize.y / 2, cursor.cursor.z),
             })
 
+            if (typeof tokens[2] !== 'undefined') {
+              const brightness = tokens[2].trim()
+              if (brightness === 'dim') {
+                mainLight.intensity = 0.5
+              } else if (brightness.match(/\d+%/)) {
+                mainLight.intensity = parseInt(brightness) / 100
+              } else {
+                console.warn(
+                  `[warn] loadRooms: Ignoring unknown brightness "${tokens[2]}" after "with light" at line ${i + 1}`,
+                )
+              }
+            }
+
             rooms.currentRoom.lights.push(mainLight)
           }
           break
