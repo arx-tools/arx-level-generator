@@ -1,36 +1,10 @@
 import { ArxMap } from '@src/ArxMap.js'
 import { Vector3 } from '@src/Vector3.js'
+import { groupSequences } from '@src/faux-ramda.js'
 import { Cursor, CursorDir } from '@prefabs/rooms/Cursor.js'
 import { createRoom, RoomProps } from '@prefabs/rooms/room.js'
 
 // ---------------------------
-
-/**
- * @input [1, 2, 3, 5, 6, 7, 10]
- * @output [
- *  { start: 1, length: 3 },
- *  { start: 5, length: 3 },
- *  { start: 10, length: 1 },
- * ]
- */
-function groupSequences(numbers: number[]) {
-  return numbers.reduce((acc, n) => {
-    if (acc.length === 0) {
-      acc.push({ start: n, length: 1 })
-      return acc
-    }
-
-    const lastGroup = acc[acc.length - 1]
-    if (lastGroup.start - 1 === n || lastGroup.start + lastGroup.length === n) {
-      lastGroup.start = Math.min(n, lastGroup.start)
-      lastGroup.length += 1
-    } else {
-      acc.push({ start: n, length: 1 })
-    }
-
-    return acc
-  }, [] as { start: number; length: number }[])
-}
 
 // only works when everything is aligned to the same grid with the same tileSize
 function union(map1: ArxMap, map2: ArxMap) {
@@ -77,13 +51,13 @@ function union(map1: ArxMap, map2: ArxMap) {
   // remove groups from right to left
 
   const groupedToBeRemoved1 = groupSequences(toBeRemoved1.reverse())
-  groupedToBeRemoved1.forEach((indices) => {
-    map1.polygons.splice(indices.start, indices.length)
+  groupedToBeRemoved1.forEach(([start, size]) => {
+    map1.polygons.splice(start, size)
   })
 
   const groupedToBeRemoved2 = groupSequences(toBeRemoved2.reverse())
-  groupedToBeRemoved2.forEach((indices) => {
-    map2.polygons.splice(indices.start, indices.length)
+  groupedToBeRemoved2.forEach(([start, size]) => {
+    map1.polygons.splice(start, size)
   })
 }
 

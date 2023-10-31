@@ -123,3 +123,39 @@ export const countBy = <T>(fn: (value: T) => string, values: T[]) => {
     return acc
   }, {} as Record<string, number>)
 }
+
+/**
+ * Groups the values of a given array of numbers into infos about the sequences inside
+ *
+ * @input [1, 2, 3, 5, 6, 7, 10]
+ * @output [[1, 3], [5, 3], [10, 1]]
+ *
+ * This function is similar to ramda's groupWith((a, b) => a + 1 === b, numbers)
+ * but instead of having the result as `[[1, 2, 3], [5, 6, 7], [10]]`
+ * the function gives back pairs of the first number and the size of each sequence
+ *
+ * The function does not perform any sorting on the numbers:
+ * `[20, 19, 1, 2, 18, 3]` will become `[[19, 2], [1, 2], [18, 1], [3, 1]]`
+ *
+ * The first number in each pair holds the smallest number of the sequence
+ * The second number is the size of the sequence
+ */
+export const groupSequences = (numbers: number[]) => {
+  return numbers.reduce((acc, n) => {
+    if (acc.length === 0) {
+      acc.push([n, 1])
+      return acc
+    }
+
+    const lastGroup = acc[acc.length - 1]
+    const [start, size] = lastGroup
+    if (start - 1 === n || start + size === n) {
+      lastGroup[0] = Math.min(n, start)
+      lastGroup[1] += 1
+    } else {
+      acc.push([n, 1])
+    }
+
+    return acc
+  }, [] as [number, number][])
+}
