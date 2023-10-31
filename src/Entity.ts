@@ -302,4 +302,44 @@ export class Entity {
   static get hangedGob() {
     return new Entity({ src: 'npc/hanged_gob' })
   }
+
+  static get lampGoblin1() {
+    return new Entity({ src: 'fix_inter/lamp_goblin1' })
+  }
+  static get lampGoblin2() {
+    return new Entity({ src: 'fix_inter/lamp_goblin2' })
+  }
+  static get lampGoblin3() {
+    return new Entity({ src: 'fix_inter/lamp_goblin3' })
+  }
+  static get lampHuman1() {
+    return new Entity({ src: 'fix_inter/lamp_human1' })
+  }
+  static get lampHuman2() {
+    return new Entity({ src: 'fix_inter/lamp_human2' })
+  }
+  static get lampHuman3() {
+    return new Entity({ src: 'fix_inter/lamp_human3' })
+  }
+  static get lampHumanPalace() {
+    return new Entity({ src: 'fix_inter/lamp_human_palace' })
+  }
+  static get lampHumanPalaceRoom() {
+    return new Entity({ src: 'fix_inter/lamp_human_palace_room' })
+  }
+  static get lampHumanSnake1() {
+    return new Entity({ src: 'fix_inter/lamp_human_snake1' })
+  }
+  static get lampHumanSnake2() {
+    return new Entity({ src: 'fix_inter/lamp_human_snake2' })
+  }
+  static get lampHumanTorch1() {
+    return new Entity({ src: 'fix_inter/lamp_human_torch1' })
+  }
+  static get lampSnake1() {
+    return new Entity({ src: 'fix_inter/lamp_snake1' })
+  }
+  static get lampSnake2() {
+    return new Entity({ src: 'fix_inter/lamp_snake2' })
+  }
 }
