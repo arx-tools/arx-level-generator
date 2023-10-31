@@ -18,45 +18,47 @@ function union(map1: ArxMap, map2: ArxMap) {
     return
   }
 
-  // check which polygons need to be removed and store their index
+  // check which polygons need to be removed and store their indices
 
-  const toBeRemoved1 = map1.polygons.reduce((acc, p, idx) => {
+  const toBeRemoved1: number[] = []
+  map1.polygons.forEach((p, idx) => {
     if (p.isPartiallyWithin(map2BB)) {
       // TODO: we don't touch partially overlapping polygons yet
-      return acc
+      return
     }
 
     const matchesAnotherPolygon = map2.polygons.find((q) => p.equals(q, Number.EPSILON * 10 ** 3)) !== undefined
     if (matchesAnotherPolygon) {
-      acc.push(idx)
+      toBeRemoved1.push(idx)
     }
+  })
 
-    return acc
-  }, [] as number[])
-
-  const toBeRemoved2 = map2.polygons.reduce((acc, p, idx) => {
+  const toBeRemoved2: number[] = []
+  map2.polygons.forEach((p, idx) => {
     if (p.isPartiallyWithin(map1BB)) {
       // TODO: we don't touch partially overlapping polygons yet
-      return acc
+      return
     }
 
     const matchesAnotherPolygon = map1.polygons.find((q) => p.equals(q, Number.EPSILON * 10 ** 3)) !== undefined
     if (matchesAnotherPolygon) {
-      acc.push(idx)
+      toBeRemoved2.push(idx)
     }
-
-    return acc
-  }, [] as number[])
+  })
 
   // remove groups from right to left
 
-  groupSequences(toBeRemoved1.reverse()).forEach(([start, size]) => {
-    map1.polygons.splice(start, size)
-  })
+  groupSequences(toBeRemoved1)
+    .reverse()
+    .forEach(([start, size]) => {
+      map1.polygons.splice(start, size)
+    })
 
-  groupSequences(toBeRemoved2.reverse()).forEach(([start, size]) => {
-    map1.polygons.splice(start, size)
-  })
+  groupSequences(toBeRemoved2)
+    .reverse()
+    .forEach(([start, size]) => {
+      map1.polygons.splice(start, size)
+    })
 }
 
 export class Rooms {
