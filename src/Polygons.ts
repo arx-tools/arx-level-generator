@@ -400,7 +400,7 @@ export class Polygons extends Array<Polygon> {
   // -------------------------
 
   /**
-   * selects polygons which go outside the 0-160 meters bound on the horizontal axis
+   * selects polygons which go outside the 0-160 meters boundary on the horizontal axis
    */
   selectOutOfBound() {
     this.selection = []
