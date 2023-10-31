@@ -473,6 +473,11 @@ export class Polygons extends Array<Polygon> {
     })
   }
 
+  copySelected() {
+    const copiedPolygons = this.selection.map((idx) => this[idx].clone())
+    return new Polygons(...copiedPolygons)
+  }
+
   // -------------------------
 
   makeDoubleSided() {
