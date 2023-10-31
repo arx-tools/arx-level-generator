@@ -466,7 +466,7 @@ export class Polygons extends Array<Polygon> {
     return selectedAmount
   }
 
-  applyToSelection(fn: (polygon: Polygon) => void) {
+  applyToSelected(fn: (polygon: Polygon) => void) {
     this.selection.forEach((idx) => {
       const polygon = this[idx]
       fn(polygon)
