@@ -1,6 +1,6 @@
 import { ArxMap } from '@src/ArxMap.js'
 import { Vector3 } from '@src/Vector3.js'
-import { groupSequences } from '@src/faux-ramda.js'
+import { any } from '@src/faux-ramda.js'
 import { Cursor, CursorDir } from '@prefabs/rooms/Cursor.js'
 import { createRoom, RoomProps } from '@prefabs/rooms/room.js'
 
@@ -18,47 +18,29 @@ function union(map1: ArxMap, map2: ArxMap) {
     return
   }
 
-  // check which polygons need to be removed and store their indices
+  // we need to compare maps from both directions before
+  // actually deleting anything!
 
-  const toBeRemoved1: number[] = []
-  map1.polygons.forEach((p, idx) => {
+  map1.polygons.clearSelection().selectBy((p) => {
+    // TODO: we don't touch partially overlapping polygons yet
     if (p.isPartiallyWithin(map2BB)) {
-      // TODO: we don't touch partially overlapping polygons yet
-      return
+      return false
     }
 
-    const matchesAnotherPolygon = map2.polygons.find((q) => p.equals(q, Number.EPSILON * 10 ** 3)) !== undefined
-    if (matchesAnotherPolygon) {
-      toBeRemoved1.push(idx)
-    }
+    return any((q) => p.equals(q, Number.EPSILON * 10 ** 3), map2.polygons)
   })
 
-  const toBeRemoved2: number[] = []
-  map2.polygons.forEach((p, idx) => {
+  map2.polygons.clearSelection().selectBy((p) => {
+    // TODO: we don't touch partially overlapping polygons yet
     if (p.isPartiallyWithin(map1BB)) {
-      // TODO: we don't touch partially overlapping polygons yet
-      return
+      return false
     }
 
-    const matchesAnotherPolygon = map1.polygons.find((q) => p.equals(q, Number.EPSILON * 10 ** 3)) !== undefined
-    if (matchesAnotherPolygon) {
-      toBeRemoved2.push(idx)
-    }
+    return any((q) => p.equals(q, Number.EPSILON * 10 ** 3), map1.polygons)
   })
 
-  // remove groups from right to left
-
-  groupSequences(toBeRemoved1)
-    .reverse()
-    .forEach(([start, size]) => {
-      map1.polygons.splice(start, size)
-    })
-
-  groupSequences(toBeRemoved2)
-    .reverse()
-    .forEach(([start, size]) => {
-      map1.polygons.splice(start, size)
-    })
+  map1.polygons.removeSelected()
+  map2.polygons.removeSelected()
 }
 
 export class Rooms {
