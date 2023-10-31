@@ -1,6 +1,6 @@
 import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVertex } from 'arx-convert/types'
 import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf, TripleOf } from 'arx-convert/utils'
-import { Mesh, MeshBasicMaterial, Object3D, BufferAttribute } from 'three'
+import { Mesh, MeshBasicMaterial, Object3D, BufferAttribute, Box3 } from 'three'
 import { Color } from '@src/Color.js'
 import { Material } from '@src/Material.js'
 import { Polygon, TransparencyType } from '@src/Polygon.js'
@@ -8,7 +8,7 @@ import { Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
-import { sum, times } from '@src/faux-ramda.js'
+import { groupSequences, sum, times } from '@src/faux-ramda.js'
 import { applyTransformations, averageVectors, evenAndRemainder, roundToNDecimals } from '@src/helpers.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 
@@ -414,5 +414,45 @@ export class Polygons extends Array<Polygon> {
     }
 
     return numberOfRemovedPolygons
+  }
+
+  removeWithinBox(box: Box3) {
+    const toBeRemoved: number[] = []
+    this.forEach((polygon, idx) => {
+      if (polygon.isWithin(box)) {
+        toBeRemoved.push(idx)
+      }
+    })
+
+    groupSequences(toBeRemoved)
+      .reverse()
+      .forEach(([start, size]) => {
+        this.splice(start, size)
+      })
+  }
+
+  removeByTextures(textures: Texture[]) {
+    if (textures.length === 0) {
+      return
+    }
+
+    const toBeRemoved: number[] = []
+    this.forEach((polygon, idx) => {
+      if (polygon.texture?.equalsAny(textures)) {
+        toBeRemoved.push(idx)
+      }
+    })
+
+    groupSequences(toBeRemoved)
+      .reverse()
+      .forEach(([start, size]) => {
+        this.splice(start, size)
+      })
+  }
+
+  makeDoubleSided() {
+    this.forEach((polygon) => {
+      polygon.makeDoubleSided()
+    })
   }
 }

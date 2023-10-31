@@ -375,4 +375,8 @@ export class Polygon {
 
     return outOfBoundVertex !== undefined
   }
+
+  makeDoubleSided() {
+    this.flags = this.flags | ArxPolygonFlags.DoubleSided
+  }
 }
