@@ -395,60 +395,65 @@ export class Polygons extends Array<Polygon> {
     })
   }
 
+  // -------------------------
+
   /**
    * removes polygons, which go outside the 0-160 meters bound on the horizontal axis
    *
    * @returns the number of polygons that have ben removed
    */
   removeOutOfBoundPolygons() {
-    let numberOfRemovedPolygons = 0
-
-    let i = 0
-    while (i < this.length) {
-      if (this[i].isOutOfBounds()) {
-        this.splice(i, 1)
-        numberOfRemovedPolygons += 1
-      } else {
-        i++
+    const selection: number[] = []
+    this.forEach((polygon, idx) => {
+      if (polygon.isOutOfBounds()) {
+        selection.push(idx)
       }
-    }
+    })
 
-    return numberOfRemovedPolygons
+    groupSequences(selection)
+      .reverse()
+      .forEach(([start, size]) => {
+        this.splice(start, size)
+      })
+
+    return selection.length
   }
 
   removeWithinBox(box: Box3) {
-    const toBeRemoved: number[] = []
+    const selection: number[] = []
     this.forEach((polygon, idx) => {
       if (polygon.isWithin(box)) {
-        toBeRemoved.push(idx)
+        selection.push(idx)
       }
     })
 
-    groupSequences(toBeRemoved)
+    groupSequences(selection)
       .reverse()
       .forEach(([start, size]) => {
         this.splice(start, size)
       })
+
+    return selection.length
   }
 
   removeByTextures(textures: Texture[]) {
-    if (textures.length === 0) {
-      return
-    }
-
-    const toBeRemoved: number[] = []
+    const selection: number[] = []
     this.forEach((polygon, idx) => {
       if (polygon.texture?.equalsAny(textures)) {
-        toBeRemoved.push(idx)
+        selection.push(idx)
       }
     })
 
-    groupSequences(toBeRemoved)
+    groupSequences(selection)
       .reverse()
       .forEach(([start, size]) => {
         this.splice(start, size)
       })
+
+    return selection.length
   }
+
+  // -------------------------
 
   makeDoubleSided() {
     this.forEach((polygon) => {
