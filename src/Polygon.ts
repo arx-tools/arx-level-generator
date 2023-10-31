@@ -70,6 +70,24 @@ export class Polygon {
     this.config = { ...this.config, ...(props.config ?? {}) }
   }
 
+  clone() {
+    return new Polygon({
+      vertices: this.vertices.map((v) => v.clone()) as QuadrupleOf<Vertex>,
+      norm: this.norm.clone(),
+      norm2: this.norm2.clone(),
+      texture: this.texture?.clone(),
+      flags: this.flags,
+      normals: this.normals?.map((n) => n.clone()) as QuadrupleOf<Vector3>,
+      transval: this.transval,
+      area: this.area,
+      room: this.room,
+      paddy: this.paddy,
+      config: {
+        areNormalsCalculated: this.config.areNormalsCalculated,
+      },
+    })
+  }
+
   static fromArxPolygon(
     polygon: ArxPolygon,
     colors: ArxColor[],
