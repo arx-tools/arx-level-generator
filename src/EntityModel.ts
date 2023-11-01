@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { FTL } from 'arx-convert'
-import { ArxAction, ArxFTL, ArxFaceType } from 'arx-convert/types'
+import { ArxAction, ArxFTL, ArxFaceType, ArxFace, ArxFtlVertex } from 'arx-convert/types'
 import { Expand, QuadrupleOf, TripleOf } from 'arx-convert/utils'
 import { BufferAttribute, MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { Polygons } from '@src/Polygons.js'
@@ -141,24 +141,70 @@ export class EntityModel {
     if (mesh instanceof Polygons) {
       mesh.calculateNormals()
 
-      const vertices = mesh.flatMap((polygon) => polygon.vertices.slice(polygon.isQuad() ? 3 : 4))
+      // TODO: rotate +90 degrees on Y axis
+
+      const vertices = mesh.flatMap((polygon) => polygon.vertices.slice(0, polygon.isQuad() ? 3 : 4))
 
       const origin = vertices[ftlData.header.origin].clone()
 
       ftlData.vertices = mesh.flatMap((polygon) => {
+        const vertices: ArxFtlVertex[] = []
         const normals = polygon.normals as QuadrupleOf<Vector3>
 
-        const vertices = [
+        vertices.push(
           { vector: polygon.vertices[0].clone().sub(origin).toArxVector3(), norm: normals[0] },
           { vector: polygon.vertices[1].clone().sub(origin).toArxVector3(), norm: normals[1] },
           { vector: polygon.vertices[2].clone().sub(origin).toArxVector3(), norm: normals[2] },
-        ]
+        )
 
         if (polygon.isQuad()) {
-          vertices.push({ vector: polygon.vertices[3].clone().sub(origin).toArxVector3(), norm: normals[3] })
+          vertices.push(
+            { vector: polygon.vertices[2].clone().sub(origin).toArxVector3(), norm: normals[2] },
+            { vector: polygon.vertices[1].clone().sub(origin).toArxVector3(), norm: normals[1] },
+            { vector: polygon.vertices[3].clone().sub(origin).toArxVector3(), norm: normals[3] },
+          )
         }
 
         return vertices
+      })
+
+      ftlData.textureContainers = mesh
+        .getTextureContainers()
+        .filter(({ filename }) => !filename.startsWith('tileable-'))
+
+      let vertexIdxCntr = 0
+      ftlData.faces = mesh.flatMap((polygon) => {
+        const faces: ArxFace[] = []
+        const normals = polygon.normals as QuadrupleOf<Vector3>
+
+        const faceNormal = getFaceNormal(normals[0], normals[1], normals[2])
+        const textureIdx = ftlData.textureContainers.findIndex(({ filename }) => polygon.texture?.equals(filename))
+        faces.push({
+          faceType: ArxFaceType.Flat,
+          vertexIdx: [vertexIdxCntr, vertexIdxCntr + 1, vertexIdxCntr + 2],
+          textureIdx,
+          u: [polygon.vertices[0].uv.x, polygon.vertices[1].uv.x, polygon.vertices[2].uv.x],
+          v: [polygon.vertices[0].uv.y, polygon.vertices[1].uv.y, polygon.vertices[2].uv.y],
+          norm: faceNormal.toArxVector3(),
+        })
+
+        vertexIdxCntr += 3
+
+        if (polygon.isQuad()) {
+          const faceNormal = getFaceNormal(normals[2], normals[1], normals[3])
+          faces.push({
+            faceType: ArxFaceType.Flat,
+            vertexIdx: [vertexIdxCntr, vertexIdxCntr + 1, vertexIdxCntr + 2],
+            textureIdx,
+            u: [polygon.vertices[2].uv.x, polygon.vertices[1].uv.x, polygon.vertices[3].uv.x],
+            v: [polygon.vertices[2].uv.y, polygon.vertices[1].uv.y, polygon.vertices[3].uv.y],
+            norm: faceNormal.toArxVector3(),
+          })
+
+          vertexIdxCntr += 3
+        }
+
+        return faces
       })
     } else {
       const { geometry, material } = mesh as Mesh
