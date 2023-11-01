@@ -254,6 +254,7 @@ export class Texture extends ThreeJsTextue {
 
   /**
    * compares filenames of textures without the extensions
+   * comparision is case insensitive
    *
    * For example:
    *  - texture.jpg == TEXTURE.JPG
