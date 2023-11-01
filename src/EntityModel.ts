@@ -2,8 +2,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { FTL } from 'arx-convert'
 import { ArxAction, ArxFTL, ArxFaceType } from 'arx-convert/types'
-import { Expand, TripleOf } from 'arx-convert/utils'
+import { Expand, QuadrupleOf, TripleOf } from 'arx-convert/utils'
 import { BufferAttribute, MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
+import { Polygons } from '@src/Polygons.js'
 import { Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
@@ -33,7 +34,7 @@ export class EntityModel {
   filename: string
   sourcePath: string
   originIdx: number
-  threeJsObj?: Mesh
+  mesh?: Mesh | Polygons
   actionPoints: ArxAction[]
 
   constructor(props: EntityModelConstructorProps) {
@@ -49,7 +50,19 @@ export class EntityModel {
   static fromThreeJsObj(threeJsObj: Mesh, props: Expand<EntityModelConstructorProps & { originIdx?: number }>) {
     const model = new EntityModel(props)
 
-    model.threeJsObj = threeJsObj
+    model.mesh = threeJsObj
+    model.originIdx = props.originIdx ?? 0
+
+    return model
+  }
+
+  /**
+   * props.originIdx is optional, its default value is 0
+   */
+  static fromPolygons(polygons: Polygons, props: Expand<EntityModelConstructorProps & { originIdx?: number }>) {
+    const model = new EntityModel(props)
+
+    model.mesh = polygons
     model.originIdx = props.originIdx ?? 0
 
     return model
@@ -61,7 +74,7 @@ export class EntityModel {
       sourcePath: this.sourcePath,
     })
 
-    copy.threeJsObj = this.threeJsObj
+    copy.mesh = this.mesh
 
     return copy
   }
@@ -73,7 +86,7 @@ export class EntityModel {
   async exportSourceAndTarget(settings: Settings, targetName: string) {
     let source: string
 
-    if (typeof this.threeJsObj === 'undefined') {
+    if (typeof this.mesh === 'undefined') {
       source = path.resolve(settings.assetsDir, this.sourcePath, this.filename)
     } else {
       source = await this.generateFtl(settings, targetName)
@@ -99,7 +112,7 @@ export class EntityModel {
   }
 
   /**
-   * this method assumes that this.treeJsObj is defined
+   * this method assumes that this.mesh is defined
    */
   private async generateFtl(settings: Settings, targetName: string) {
     const { name: entityName } = path.parse(targetName)
@@ -108,13 +121,6 @@ export class EntityModel {
     if (await fileExists(target)) {
       return target
     }
-
-    const { geometry, material } = this.threeJsObj as Mesh
-
-    geometry.rotateY(MathUtils.degToRad(90))
-
-    const normals = geometry.getAttribute('normal') as BufferAttribute
-    const uvs = geometry.getAttribute('uv') as BufferAttribute
 
     const ftlData: ArxFTL = {
       header: {
@@ -129,89 +135,123 @@ export class EntityModel {
       selections: [],
     }
 
-    const vertices: { vector: Vector3; norm: Vector3; uv: Vector2; textureIdx: number }[] = []
-    const faceIndexes: TripleOf<number>[] = []
-
     const vertexPrecision = 5
-    getNonIndexedVertices(geometry).forEach(({ idx, vector, materialIndex }, i) => {
-      vertices.push({
-        vector: new Vector3(
-          roundToNDecimals(vertexPrecision, vector.x),
-          roundToNDecimals(vertexPrecision, vector.y),
-          roundToNDecimals(vertexPrecision, vector.z),
-        ),
-        norm: new Vector3(normals.getX(idx), normals.getY(idx), normals.getZ(idx)),
-        uv: new Vector2(uvs.getX(idx), uvs.getY(idx)),
-        textureIdx: materialIndex ?? 0,
+
+    const mesh = this.mesh
+    if (mesh instanceof Polygons) {
+      mesh.calculateNormals()
+
+      const vertices = mesh.flatMap((polygon) => polygon.vertices.slice(polygon.isQuad() ? 3 : 4))
+
+      const origin = vertices[ftlData.header.origin].clone()
+
+      ftlData.vertices = mesh.flatMap((polygon) => {
+        const vectors = polygon.vertices.slice(polygon.isQuad() ? 3 : 4)
+        const normals = polygon.normals as QuadrupleOf<Vector3>
+
+        const vertices = [
+          { vector: vectors[0].clone().sub(origin).toArxVector3(), norm: normals[0] },
+          { vector: vectors[1].clone().sub(origin).toArxVector3(), norm: normals[1] },
+          { vector: vectors[2].clone().sub(origin).toArxVector3(), norm: normals[2] },
+        ]
+
+        if (polygon.isQuad()) {
+          vertices.push({ vector: vectors[3].clone().sub(origin).toArxVector3(), norm: normals[3] })
+        }
+
+        return vertices
+      })
+    } else {
+      const { geometry, material } = mesh as Mesh
+
+      geometry.rotateY(MathUtils.degToRad(90))
+
+      const normals = geometry.getAttribute('normal') as BufferAttribute
+      const uvs = geometry.getAttribute('uv') as BufferAttribute
+
+      const vertices: { vector: Vector3; norm: Vector3; uv: Vector2; textureIdx: number }[] = []
+      const faceIndexes: TripleOf<number>[] = []
+
+      getNonIndexedVertices(geometry).forEach(({ idx, vector, materialIndex }, i) => {
+        vertices.push({
+          vector: new Vector3(
+            roundToNDecimals(vertexPrecision, vector.x),
+            roundToNDecimals(vertexPrecision, vector.y),
+            roundToNDecimals(vertexPrecision, vector.z),
+          ),
+          norm: new Vector3(normals.getX(idx), normals.getY(idx), normals.getZ(idx)),
+          uv: new Vector2(uvs.getX(idx), uvs.getY(idx)),
+          textureIdx: materialIndex ?? 0,
+        })
+
+        if (i % 3 === 0) {
+          faceIndexes.push([-1, -1, i])
+        } else {
+          faceIndexes[faceIndexes.length - 1][2 - (i % 3)] = i
+        }
       })
 
-      if (i % 3 === 0) {
-        faceIndexes.push([-1, -1, i])
-      } else {
-        faceIndexes[faceIndexes.length - 1][2 - (i % 3)] = i
-      }
-    })
+      const origin = vertices[ftlData.header.origin].vector.clone()
 
-    const origin = vertices[ftlData.header.origin].vector.clone()
+      ftlData.vertices = vertices.map(({ vector, norm }) => ({
+        vector: vector.clone().sub(origin).toArxVector3(),
+        norm: norm.toArxVector3(),
+      }))
 
-    ftlData.vertices = vertices.map(({ vector, norm }) => ({
-      vector: vector.sub(origin).toArxVector3(),
-      norm: norm.toArxVector3(),
-    }))
+      ftlData.faces = faceIndexes.map(([aIdx, bIdx, cIdx]) => {
+        const a = vertices[aIdx]
+        const b = vertices[bIdx]
+        const c = vertices[cIdx]
+        const faceNormal = getFaceNormal(a.norm, b.norm, c.norm)
 
-    ftlData.faces = faceIndexes.map(([aIdx, bIdx, cIdx]) => {
-      const a = vertices[aIdx]
-      const b = vertices[bIdx]
-      const c = vertices[cIdx]
-      const faceNormal = getFaceNormal(a.norm, b.norm, c.norm)
+        return {
+          faceType: ArxFaceType.Flat,
+          vertexIdx: [aIdx, bIdx, cIdx],
+          textureIdx: a.textureIdx,
+          u: [a.uv.x, b.uv.x, c.uv.x],
+          v: [a.uv.y, b.uv.y, c.uv.y],
+          norm: faceNormal.toArxVector3(),
+        }
+      })
 
-      return {
-        faceType: ArxFaceType.Flat,
-        vertexIdx: [aIdx, bIdx, cIdx],
-        textureIdx: a.textureIdx,
-        u: [a.uv.x, b.uv.x, c.uv.x],
-        v: [a.uv.y, b.uv.y, c.uv.y],
-        norm: faceNormal.toArxVector3(),
-      }
-    })
-
-    let texture: Texture | undefined | (Texture | undefined)[] = undefined
-    if (material instanceof MeshBasicMaterial) {
-      if (material.map instanceof Texture) {
-        texture = material.map
-      } else {
-        console.warn('[warning] EntityModel: Unsupported texture map in material when adding threejs mesh')
-      }
-    } else if (Array.isArray(material)) {
-      texture = material.map((material) => {
-        if (material instanceof MeshBasicMaterial) {
-          if (material.map instanceof Texture) {
-            return material.map
+      let texture: Texture | undefined | (Texture | undefined)[] = undefined
+      if (material instanceof MeshBasicMaterial) {
+        if (material.map instanceof Texture) {
+          texture = material.map
+        } else {
+          console.warn('[warning] EntityModel: Unsupported texture map in material when adding threejs mesh')
+        }
+      } else if (Array.isArray(material)) {
+        texture = material.map((material) => {
+          if (material instanceof MeshBasicMaterial) {
+            if (material.map instanceof Texture) {
+              return material.map
+            } else {
+              console.warn('[warning] EntityModel: Unsupported texture map in material when adding threejs mesh')
+              return undefined
+            }
           } else {
-            console.warn('[warning] EntityModel: Unsupported texture map in material when adding threejs mesh')
+            console.warn('[warning] EntityModel: Unsupported material found when adding threejs mesh')
             return undefined
           }
-        } else {
-          console.warn('[warning] EntityModel: Unsupported material found when adding threejs mesh')
-          return undefined
-        }
-      })
-    } else if (typeof material !== 'undefined') {
-      console.warn('[warning] EntityModel: Unsupported material found when adding threejs mesh')
-    }
+        })
+      } else if (typeof material !== 'undefined') {
+        console.warn('[warning] EntityModel: Unsupported material found when adding threejs mesh')
+      }
 
-    if (Array.isArray(texture)) {
-      texture.forEach((t) => {
-        if (typeof t !== 'undefined') {
-          ftlData.textureContainers.push({
-            filename: t.filename,
-          })
-        }
-      })
-    } else if (typeof texture !== 'undefined') {
-      ftlData.textureContainers.push({
-        filename: texture.filename,
-      })
+      if (Array.isArray(texture)) {
+        texture.forEach((t) => {
+          if (typeof t !== 'undefined') {
+            ftlData.textureContainers.push({
+              filename: t.filename,
+            })
+          }
+        })
+      } else if (typeof texture !== 'undefined') {
+        ftlData.textureContainers.push({
+          filename: texture.filename,
+        })
+      }
     }
 
     const ftl = FTL.save(ftlData)
