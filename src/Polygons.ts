@@ -130,16 +130,23 @@ export class Polygons extends Array<Polygon> {
     this.length = 0
   }
 
+  calculateNormals() {
+    this.forEach((polygon) => {
+      polygon.calculateNormals()
+      polygon.normals = [polygon.norm.clone(), polygon.norm.clone(), polygon.norm.clone(), polygon.norm2.clone()]
+    })
+  }
+
   addThreeJsMesh(threeJsObj: Object3D): void
   addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps): void
-  addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps, isRoot: false): Polygon[]
+  addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps, isRoot: false): Polygons
   addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps = {}, isRoot: boolean = true) {
     if (isRoot) {
       applyTransformations(threeJsObj)
     }
 
     const { tryToQuadify = QUADIFY, shading = SHADING_FLAT, flags = ArxPolygonFlags.None } = meshImportProps
-    const polygons: Polygon[] = []
+    const polygons = new Polygons()
 
     if (threeJsObj instanceof Mesh) {
       const uvs = threeJsObj.geometry.getAttribute('uv') as BufferAttribute
@@ -292,10 +299,9 @@ export class Polygons extends Array<Polygon> {
 
       // TODO: calculate smooth normals for quads too
 
-      polygons.forEach((polygon) => {
-        polygon.calculateNormals()
-        polygon.normals = [polygon.norm.clone(), polygon.norm.clone(), polygon.norm.clone(), polygon.norm2.clone()]
+      polygons.calculateNormals()
 
+      polygons.forEach((polygon) => {
         const [a, b, c] = polygon.vertices
         if (Array.isArray(polygonsOfVertices[a.toString()])) {
           polygonsOfVertices[a.toString()].push([0, polygon])
