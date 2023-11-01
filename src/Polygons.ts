@@ -421,7 +421,7 @@ export class Polygons extends Array<Polygon> {
     return this.selectBy((polygon) => polygon.isWithin(box))
   }
 
-  selectByTextures(textures: Texture[]) {
+  selectByTextures(textures: (Texture | string)[]) {
     return this.selectBy((polygon) => polygon.texture?.equalsAny(textures) ?? false)
   }
 

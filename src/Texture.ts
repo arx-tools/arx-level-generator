@@ -252,13 +252,22 @@ export class Texture extends ThreeJsTextue {
     }
   }
 
-  equals(texture: Texture) {
+  /**
+   * compares filenames of textures without the extensions
+   *
+   * For example:
+   *  - texture.jpg == TEXTURE.JPG
+   *  - texture.bmp == texture.jpg
+   */
+  equals(texture: Texture | string) {
     const { name: aFilename } = path.parse(this.filename.toLowerCase())
-    const { name: bFilename } = path.parse(texture.filename.toLowerCase())
+    const { name: bFilename } = path.parse(
+      typeof texture === 'string' ? texture.toLowerCase() : texture.filename.toLowerCase(),
+    )
     return aFilename === bFilename
   }
 
-  equalsAny(textures: Texture[]) {
+  equalsAny(textures: (Texture | string)[]) {
     if (textures.length === 0) {
       return false
     }
