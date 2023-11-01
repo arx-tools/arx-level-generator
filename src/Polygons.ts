@@ -107,20 +107,15 @@ export class Polygons extends Array<Polygon> {
     Object.entries(nindices).forEach(([filename, nindices]) => {
       const maxNindices = sum(Object.values(nindices))
 
-      const [wholeBlocks, remainder] = evenAndRemainder(65535, maxNindices)
+      const [wholeBlocks, remaining] = evenAndRemainder(65535, maxNindices)
 
       times(() => {
         textureContainers.push({ id: ++cntr, filename, remaining: 65535, maxRemaining: 65535 })
         textureContainers.push({ id: ++cntr, filename: 'tileable-' + filename, remaining: 65535, maxRemaining: 65535 })
       }, wholeBlocks)
 
-      textureContainers.push({ id: ++cntr, filename, remaining: remainder, maxRemaining: remainder })
-      textureContainers.push({
-        id: ++cntr,
-        filename: 'tileable-' + filename,
-        remaining: remainder,
-        maxRemaining: remainder,
-      })
+      textureContainers.push({ id: ++cntr, filename, remaining, maxRemaining: remaining })
+      textureContainers.push({ id: ++cntr, filename: 'tileable-' + filename, remaining, maxRemaining: remaining })
     })
 
     return textureContainers
