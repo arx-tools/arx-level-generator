@@ -388,15 +388,13 @@ export class Polygons extends Array<Polygon> {
   }
 
   moveToRoom1() {
-    this.forEach((polygon) => {
+    return this.applyToSelected((polygon) => {
       if (polygon.room < 1) {
         return
       }
 
       polygon.room = 1
     })
-
-    return this
   }
 
   // -------------------------
@@ -473,6 +471,8 @@ export class Polygons extends Array<Polygon> {
       const polygon = this[idx]
       fn(polygon)
     })
+
+    return this
   }
 
   copySelected() {
