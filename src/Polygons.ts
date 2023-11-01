@@ -388,7 +388,7 @@ export class Polygons extends Array<Polygon> {
   }
 
   moveToRoom1() {
-    return this.applyToSelected((polygon) => {
+    return this.apply((polygon) => {
       if (polygon.room < 1) {
         return
       }
@@ -466,24 +466,45 @@ export class Polygons extends Array<Polygon> {
     return selectedAmount
   }
 
-  applyToSelected(fn: (polygon: Polygon) => void) {
+  apply(fn: (polygon: Polygon) => void) {
+    const applyToAll = !this.hasSelection()
+
+    if (applyToAll) {
+      this.selectAll()
+    }
+
     this.selection.forEach((idx) => {
       const polygon = this[idx]
       fn(polygon)
     })
 
+    if (applyToAll) {
+      this.clearSelection()
+    }
+
     return this
   }
 
-  copySelected() {
+  copy() {
+    const applyToAll = !this.hasSelection()
+
+    if (applyToAll) {
+      this.selectAll()
+    }
+
     const copiedPolygons = this.selection.map((idx) => this[idx].clone())
+
+    if (applyToAll) {
+      this.clearSelection()
+    }
+
     return new Polygons(...copiedPolygons)
   }
 
   // -------------------------
 
   makeDoubleSided() {
-    this.forEach((polygon) => {
+    this.apply((polygon) => {
       polygon.makeDoubleSided()
     })
   }
