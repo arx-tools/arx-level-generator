@@ -146,17 +146,16 @@ export class EntityModel {
       const origin = vertices[ftlData.header.origin].clone()
 
       ftlData.vertices = mesh.flatMap((polygon) => {
-        const vectors = polygon.vertices.slice(polygon.isQuad() ? 3 : 4)
         const normals = polygon.normals as QuadrupleOf<Vector3>
 
         const vertices = [
-          { vector: vectors[0].clone().sub(origin).toArxVector3(), norm: normals[0] },
-          { vector: vectors[1].clone().sub(origin).toArxVector3(), norm: normals[1] },
-          { vector: vectors[2].clone().sub(origin).toArxVector3(), norm: normals[2] },
+          { vector: polygon.vertices[0].clone().sub(origin).toArxVector3(), norm: normals[0] },
+          { vector: polygon.vertices[1].clone().sub(origin).toArxVector3(), norm: normals[1] },
+          { vector: polygon.vertices[2].clone().sub(origin).toArxVector3(), norm: normals[2] },
         ]
 
         if (polygon.isQuad()) {
-          vertices.push({ vector: vectors[3].clone().sub(origin).toArxVector3(), norm: normals[3] })
+          vertices.push({ vector: polygon.vertices[3].clone().sub(origin).toArxVector3(), norm: normals[3] })
         }
 
         return vertices
