@@ -14,6 +14,11 @@ export class Vertex extends Vector3 {
     this.color = color
   }
 
+  clone() {
+    const copy = new Vertex(this.x, this.y, this.z, this.uv.x, this.uv.y, this.color)
+    return copy as this
+  }
+
   static fromArxVertex({ x, y, z, u, v, color }: ArxVertexWithColor) {
     if (typeof color === 'undefined') {
       return new Vertex(x, y, z, u, v)
