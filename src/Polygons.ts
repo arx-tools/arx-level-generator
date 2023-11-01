@@ -126,18 +126,6 @@ export class Polygons extends Array<Polygon> {
     return textureContainers
   }
 
-  move(offset: Vector3) {
-    this.forEach((polygon) => {
-      polygon.move(offset)
-    })
-  }
-
-  scale(scale: number) {
-    this.forEach((polygon) => {
-      polygon.scale(scale)
-    })
-  }
-
   empty() {
     this.length = 0
   }
@@ -387,17 +375,8 @@ export class Polygons extends Array<Polygon> {
     return colors
   }
 
-  moveToRoom1() {
-    return this.apply((polygon) => {
-      if (polygon.room < 1) {
-        return
-      }
-
-      polygon.room = 1
-    })
-  }
-
   // -------------------------
+  // selection api
 
   clearSelection() {
     this.selection = []
@@ -466,7 +445,7 @@ export class Polygons extends Array<Polygon> {
     return selectedAmount
   }
 
-  apply(fn: (polygon: Polygon) => void) {
+  apply(fn: (polygon: Polygon, idx: number) => void) {
     const applyToAll = !this.hasSelection()
 
     if (applyToAll) {
@@ -475,7 +454,7 @@ export class Polygons extends Array<Polygon> {
 
     this.selection.forEach((idx) => {
       const polygon = this[idx]
-      fn(polygon)
+      fn(polygon, idx)
     })
 
     if (applyToAll) {
@@ -506,6 +485,28 @@ export class Polygons extends Array<Polygon> {
   makeDoubleSided() {
     this.apply((polygon) => {
       polygon.makeDoubleSided()
+    })
+  }
+
+  moveToRoom1() {
+    return this.apply((polygon) => {
+      if (polygon.room < 1) {
+        return
+      }
+
+      polygon.room = 1
+    })
+  }
+
+  move(offset: Vector3) {
+    return this.apply((polygon) => {
+      polygon.move(offset)
+    })
+  }
+
+  scale(scale: number) {
+    return this.apply((polygon) => {
+      polygon.scale(scale)
     })
   }
 }
