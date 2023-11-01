@@ -59,17 +59,16 @@ export class Texture extends ThreeJsTextue {
   }
 
   clone() {
-    const copy = super.clone()
+    const copy = new Texture({
+      filename: this.filename,
+      isNative: this.isNative,
+      width: this._width,
+      height: this._height,
+      sourcePath: this.sourcePath,
+      isInternalAsset: this.isInternalAsset,
+    })
 
-    copy.filename = this.filename
-    copy.isNative = this.isNative
-    copy._width = this._width
-    copy._height = this._height
-    copy.sourcePath = this.sourcePath
-    copy.isInternalAsset = this.isInternalAsset
-    copy.alreadyMadeTileable = this.alreadyMadeTileable
-
-    return copy
+    return copy as this
   }
 
   static fromCustomFile(props: Expand<Omit<TextureConstructorProps, 'isNative'>>) {
