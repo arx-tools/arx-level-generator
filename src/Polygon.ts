@@ -75,7 +75,7 @@ export class Polygon {
       vertices: this.vertices.map((v) => v.clone()) as QuadrupleOf<Vertex>,
       norm: this.norm.clone(),
       norm2: this.norm2.clone(),
-      texture: this.texture?.clone(),
+      texture: this.texture,
       flags: this.flags,
       normals: this.normals?.map((n) => n.clone()) as QuadrupleOf<Vector3>,
       transval: this.transval,
