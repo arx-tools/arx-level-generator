@@ -395,6 +395,8 @@ export class Polygons extends Array<Polygon> {
 
       polygon.room = 1
     })
+
+    return this
   }
 
   // -------------------------
