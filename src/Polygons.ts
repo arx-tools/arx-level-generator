@@ -484,7 +484,7 @@ export class Polygons extends Array<Polygon> {
   // -------------------------
 
   makeDoubleSided() {
-    this.apply((polygon) => {
+    return this.apply((polygon) => {
       polygon.makeDoubleSided()
     })
   }
