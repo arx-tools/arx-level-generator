@@ -99,8 +99,8 @@
     "sharp-bmp": "^0.1.5"
   },
   "peerDependencies": {
-    "three": "0.158.0",
-    "arx-convert": "7.1.0"
+    "arx-convert": "^8.0.0-beta.1",
+    "three": "0.158.0"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.2.0",
