@@ -99,16 +99,16 @@
     "sharp-bmp": "^0.1.5"
   },
   "peerDependencies": {
-    "arx-convert": "^8.0.0-beta.1",
+    "arx-convert": "^8.0.0",
     "three": "0.158.0"
   },
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^4.2.0",
-    "@types/color-rgba": "^2.1.0",
-    "@types/node": "^20.8.0",
-    "@types/seedrandom": "^3.0.6",
+    "@trivago/prettier-plugin-sort-imports": "^4.2.1",
+    "@types/color-rgba": "^2.1.1",
+    "@types/node": "^20.8.10",
+    "@types/seedrandom": "^3.0.7",
     "@types/sharp": "^0.31.1",
-    "@types/three": "^0.156.0",
+    "@types/three": "^0.158.1",
     "tsc-alias": "^1.8.8",
     "typescript": "^5.2.2"
   },
