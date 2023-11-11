@@ -75,9 +75,10 @@ export class Cursor {
 
   restore(key: string) {
     if (key in this.saves) {
-      this.cursor = this.saves[key].cursor.clone()
-      this.oldSize = this.saves[key].oldSize.clone()
-      this.newSize = this.saves[key].newSize.clone()
+      const { cursor, oldSize, newSize } = this.saves[key]
+      this.cursor = cursor.clone()
+      this.oldSize = oldSize.clone()
+      this.newSize = newSize.clone()
     }
   }
 }
