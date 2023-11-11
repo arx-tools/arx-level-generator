@@ -4,7 +4,6 @@ export type CursorSave = {
   oldSize: Vector3
   newSize: Vector3
   cursor: Vector3
-  previousIdx: number
 }
 
 export type CursorDir =
@@ -30,7 +29,6 @@ export class Cursor {
   cursor = new Vector3(0, 0, 0)
 
   saves: Record<string, CursorSave> = {}
-  entries: number[] = []
 
   move(...dirs: CursorDir[]) {
     dirs.forEach((dir) => {
@@ -80,13 +78,11 @@ export class Cursor {
   }
 
   saveAs(key: string) {
-    const save: CursorSave = {
+    this.saves[key] = {
       cursor: this.cursor.clone(),
       oldSize: this.oldSize.clone(),
       newSize: this.newSize.clone(),
-      previousIdx: this.entries.length - 1,
     }
-    this.saves[key] = save
   }
 
   restore(key: string) {
@@ -94,9 +90,6 @@ export class Cursor {
       this.cursor = this.saves[key].cursor.clone()
       this.oldSize = this.saves[key].oldSize.clone()
       this.newSize = this.saves[key].newSize.clone()
-      return this.entries[this.saves[key].previousIdx]
     }
-
-    return undefined
   }
 }
