@@ -6,22 +6,10 @@ export type CursorSave = {
   cursor: Vector3
 }
 
-export type CursorDir =
-  | 'x--'
-  | 'x-'
-  | 'x'
-  | 'x+'
-  | 'x++'
-  | 'y--'
-  | 'y-'
-  | 'y'
-  | 'y+'
-  | 'y++'
-  | 'z--'
-  | 'z-'
-  | 'z'
-  | 'z+'
-  | 'z++'
+type Axis = 'x' | 'y' | 'z'
+type Alignments = '--' | '-' | '' | '+' | '++'
+
+export type CursorDir = `${Axis}${Alignments}`
 
 export class Cursor {
   oldSize = new Vector3(0, 0, 0)
@@ -32,8 +20,8 @@ export class Cursor {
 
   move(...dirs: CursorDir[]) {
     dirs.forEach((dir) => {
-      const axis = dir[0] as 'x' | 'y' | 'z'
-      const alignment = dir.slice(1) as '--' | '-' | '' | '+' | '++'
+      const axis = dir[0] as Axis
+      const alignment = dir.slice(1) as Alignments
 
       if (axis === 'y') {
         switch (alignment) {
