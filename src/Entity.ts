@@ -1,8 +1,9 @@
 import path from 'node:path'
-import { ArxInteractiveObject } from 'arx-convert/types'
+import { ArxInteractiveObject, ArxPolygonFlags } from 'arx-convert/types'
 import { Expand } from 'arx-convert/utils'
 import { Audio } from '@src/Audio.js'
 import { EntityModel } from '@src/EntityModel.js'
+import { Material } from '@src/Material.js'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
 import { Settings } from '@src/Settings.js'
@@ -217,8 +218,17 @@ export class Entity {
 
     for (let stuff of this.otherDependencies) {
       if (!stuff.isNative) {
-        const [source, target] = await stuff.exportSourceAndTarget(settings)
-        files[target] = source
+        if (stuff instanceof Texture) {
+          let hasTiledMaterialFlag = false
+          if (stuff instanceof Material) {
+            hasTiledMaterialFlag = (stuff.flags & ArxPolygonFlags.Tiled) > 0
+          }
+          const [source, target] = await stuff.exportSourceAndTarget(settings, hasTiledMaterialFlag)
+          files[target] = source
+        } else {
+          const [source, target] = stuff.exportSourceAndTarget(settings)
+          files[target] = source
+        }
       }
     }
 
