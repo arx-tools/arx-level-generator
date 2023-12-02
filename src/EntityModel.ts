@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { FTL } from 'arx-convert'
-import { ArxAction, ArxFTL, ArxFaceType, ArxFace, ArxFtlVertex } from 'arx-convert/types'
+import { ArxAction, ArxFTL, ArxFaceType, ArxFace, ArxFtlVertex, ArxPolygonFlags } from 'arx-convert/types'
 import { Expand, QuadrupleOf, TripleOf } from 'arx-convert/utils'
 import { BufferAttribute, MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { Polygons } from '@src/Polygons.js'
@@ -10,6 +10,7 @@ import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { fileExists, roundToNDecimals } from '@src/helpers.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
+import { Material } from './Material.js'
 
 type EntityModelConstructorProps = {
   filename: string
@@ -287,14 +288,22 @@ export class EntityModel {
       if (Array.isArray(texture)) {
         texture.forEach((t) => {
           if (typeof t !== 'undefined') {
+            let willBeTiled = false
+            if (t instanceof Material) {
+              willBeTiled = (t.flags & ArxPolygonFlags.Tiled) > 0
+            }
             ftlData.textureContainers.push({
-              filename: t.filename,
+              filename: (willBeTiled ? 'tileable-' : '') + t.filename,
             })
           }
         })
       } else if (typeof texture !== 'undefined') {
+        let willBeTiled = false
+        if (texture instanceof Material) {
+          willBeTiled = (texture.flags & ArxPolygonFlags.Tiled) > 0
+        }
         ftlData.textureContainers.push({
-          filename: texture.filename,
+          filename: (willBeTiled ? 'tileable-' : '') + texture.filename,
         })
       }
     }
