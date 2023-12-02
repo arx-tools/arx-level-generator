@@ -35,6 +35,8 @@ export type TextureConstructorProps = {
 export const SIZE_UNKNOWN = -1
 export const NO_TEXTURE_CONTAINER = 0
 
+const supportedExtensions = ['.jpg', '.png', '.bmp']
+
 export class Texture extends ThreeJsTextue {
   static targetPath = 'graph/obj3d/textures'
 
@@ -139,8 +141,8 @@ export class Texture extends ThreeJsTextue {
 
   private async makeCopy(settings: Settings): Promise<[string, string]> {
     const { ext, name } = path.parse(this.filename)
-    const isBMP = ext === '.bmp'
-    const newFilename = isBMP ? this.filename : `${name}.jpg`
+    const hasSupportedFormat = supportedExtensions.includes(ext)
+    const newFilename = hasSupportedFormat ? this.filename : `${name}.jpg`
 
     const originalSource = this.getFilename(settings)
     const convertedSource = path.resolve(settings.cacheFolder, this.sourcePath ?? Texture.targetPath, newFilename)
@@ -185,10 +187,17 @@ export class Texture extends ThreeJsTextue {
       }
     }
 
-    if (isBMP) {
-      await sharpToBmp(image, convertedSource)
-    } else {
-      await image.jpeg({ quality, progressive: false }).toFile(convertedSource)
+    switch (ext) {
+      case '.bmp':
+        await sharpToBmp(image, convertedSource)
+        break
+      case '.png':
+        await image.png({ quality }).toFile(convertedSource)
+        break
+      default:
+      case '.jpg':
+        await image.jpeg({ quality, progressive: false }).toFile(convertedSource)
+        break
     }
 
     return [convertedSource, convertedTarget]
@@ -196,8 +205,8 @@ export class Texture extends ThreeJsTextue {
 
   private async makeTileable(settings: Settings): Promise<[string, string]> {
     const { ext, name } = path.parse(this.filename)
-    const isBMP = ext === '.bmp'
-    const newFilename = 'tileable-' + (isBMP ? this.filename : `${name}.jpg`)
+    const hasSupportedFormat = supportedExtensions.includes(ext)
+    const newFilename = 'tileable-' + (hasSupportedFormat ? this.filename : `${name}.jpg`)
 
     const originalSource = this.getFilename(settings)
     const convertedSource = path.resolve(settings.cacheFolder, this.sourcePath ?? Texture.targetPath, newFilename)
@@ -233,10 +242,17 @@ export class Texture extends ThreeJsTextue {
 
     image.resize(newSize, newSize, { fit: 'cover' })
 
-    if (isBMP) {
-      await sharpToBmp(image, convertedSource)
-    } else {
-      await image.jpeg({ quality, progressive: false }).toFile(convertedSource)
+    switch (ext) {
+      case '.bmp':
+        await sharpToBmp(image, convertedSource)
+        break
+      case '.png':
+        await image.png({ quality }).toFile(convertedSource)
+        break
+      default:
+      case '.jpg':
+        await image.jpeg({ quality, progressive: false }).toFile(convertedSource)
+        break
     }
 
     this.alreadyMadeTileable = true
