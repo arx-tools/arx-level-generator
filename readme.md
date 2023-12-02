@@ -22,6 +22,8 @@ make sure that all assets are lowercase
 32 bit). When using GIMP make sure to check the "do not write color space information" checkbox in
 compatibility options (the level generator CANNOT handle this - https://github.com/shaozilee/bmp-js/issues/39)
 
+`png` - Arx Libertatis added support for png files, even supporting alpha channel
+
 `wav` - all audio files should be Microsoft ADCPM
 
 `asl` - scripts should be exported with ISO 8859-15 encoding and `\r\n` line endings (the level
@@ -33,7 +35,7 @@ Since `1.4.0` the `Settings` class has a `variant` field with 2 values: `"normal
 
 In normal mode:
 
-- jpg textures will be exported with 70% quality as opposed to 100%
+- jpg and png textures will be exported with 70% quality as opposed to 100%
 - all textures except icons (ending in `[icon].bmp`) will be resized to have a maximum width and height of 128 pixels.
 - sections of `.rooms` files within `premium only {` and `}` lines will be omitted
 
