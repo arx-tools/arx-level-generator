@@ -409,15 +409,23 @@ export class Polygon {
   }
 
   flipUVHorizontally() {
-    // [a, b, c, d]
-    this.switchUV(0, 1) // -> [b, a, c, d]
-    this.switchUV(2, 3) // -> [b, a, d, c]
+    if (this.isQuad()) {
+      // [a, b, c, d]
+      this.switchUV(0, 1) // -> [b, a, c, d]
+      this.switchUV(2, 3) // -> [b, a, d, c]
+    } else {
+      // ??
+    }
   }
 
   flipUVVertically() {
-    // [a, b, c, d]
-    this.switchUV(0, 2) // -> [c, b, a, d]
-    this.switchUV(1, 3) // -> [c, d, a, b]
+    if (this.isQuad()) {
+      // [a, b, c, d]
+      this.switchUV(0, 2) // -> [c, b, a, d]
+      this.switchUV(1, 3) // -> [c, d, a, b]
+    } else {
+      // ??
+    }
   }
 
   rotateUV(degree: number) {
@@ -428,21 +436,33 @@ export class Polygon {
         // nop
         break
       case 90:
-        // [a, b, c, d]
-        this.switchUV(0, 2) // -> [c, b, a, d]
-        this.switchUV(1, 2) // -> [c, a, b, d]
-        this.switchUV(2, 3) // -> [c, a, d, b]
+        if (this.isQuad()) {
+          // [a, b, c, d]
+          this.switchUV(0, 2) // -> [c, b, a, d]
+          this.switchUV(1, 2) // -> [c, a, b, d]
+          this.switchUV(2, 3) // -> [c, a, d, b]
+        } else {
+          // ??
+        }
         break
       case 180:
-        // [a, b, c, d]
-        this.switchUV(0, 3) // -> [d, b, c, a]
-        this.switchUV(1, 2) // -> [d, c, b, a]
+        if (this.isQuad()) {
+          // [a, b, c, d]
+          this.switchUV(0, 3) // -> [d, b, c, a]
+          this.switchUV(1, 2) // -> [d, c, b, a]
+        } else {
+          // ??
+        }
         break
       case 270:
-        // [a, b, c, d]
-        this.switchUV(0, 1) // -> [b, a, c, d]
-        this.switchUV(1, 3) // -> [b, d, c, a]
-        this.switchUV(2, 3) // -> [b, d, a, c]
+        if (this.isQuad()) {
+          // [a, b, c, d]
+          this.switchUV(0, 1) // -> [b, a, c, d]
+          this.switchUV(1, 3) // -> [b, d, c, a]
+          this.switchUV(2, 3) // -> [b, d, a, c]
+        } else {
+          // ??
+        }
         break
       default:
         console.warn(
