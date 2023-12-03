@@ -42,3 +42,7 @@ In normal mode:
 ## Other docs
 
 [documentation of the custom 'rooms' format](docs/rooms.md)
+
+## Credits
+
+`uv-reference-map-[stone].jpg` - [https://www.artstation.com/blogs/zeeshannasir/peYz/reference-uv-map-grids](https://www.artstation.com/blogs/zeeshannasir/peYz/reference-uv-map-grids)

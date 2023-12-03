@@ -417,6 +417,10 @@ export class Texture extends ThreeJsTextue {
   static get itemCheese() {
     return new Texture({ filename: 'item_cheese.jpg', size: 64 })
   }
+  static get itemRuneAam() {
+    return new Texture({ filename: 'item_rune_aam', size: 64 })
+  }
+
   static get missingTexture() {
     return Texture.fromCustomFile({
       filename: 'jorge-[stone].jpg',
@@ -425,7 +429,12 @@ export class Texture extends ThreeJsTextue {
       isInternalAsset: true,
     })
   }
-  static get itemRuneAam() {
-    return new Texture({ filename: 'item_rune_aam', size: 64 })
+  static get uvDebugTexture() {
+    return Texture.fromCustomFile({
+      filename: 'uv-reference-map-[stone].jpg',
+      sourcePath: 'textures',
+      size: 1024,
+      isInternalAsset: true,
+    })
   }
 }
