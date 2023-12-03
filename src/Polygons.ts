@@ -510,4 +510,22 @@ export class Polygons extends Array<Polygon> {
       polygon.scale(scale)
     })
   }
+
+  flipUVHorizontally() {
+    return this.apply((polygon) => {
+      polygon.flipUVHorizontally()
+    })
+  }
+
+  flipUVVertically() {
+    return this.apply((polygon) => {
+      polygon.flipUVVertically()
+    })
+  }
+
+  rotateUV(degree: number) {
+    return this.apply((polygon) => {
+      polygon.rotateUV(degree)
+    })
+  }
 }

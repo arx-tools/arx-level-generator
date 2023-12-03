@@ -6,7 +6,7 @@ import { Settings } from '@src/Settings.js'
 import { NO_TEXTURE_CONTAINER, Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
-import { isBetween, percentOf } from '@src/helpers.js'
+import { isBetween, normalizeDegree, percentOf } from '@src/helpers.js'
 import { ArxVertexWithColor } from '@src/types.js'
 
 export type TransparencyType = 'multiplicative' | 'additive' | 'blended' | 'subtractive'
@@ -396,5 +396,61 @@ export class Polygon {
 
   makeDoubleSided() {
     this.flags = this.flags | ArxPolygonFlags.DoubleSided
+  }
+
+  switchUV(aIdx: 0 | 1 | 2 | 3, bIdx: 0 | 1 | 2 | 3) {
+    if (aIdx === bIdx) {
+      return
+    }
+
+    const tmp = this.vertices[aIdx]
+    this.vertices[aIdx] = this.vertices[bIdx]
+    this.vertices[bIdx] = tmp
+  }
+
+  flipUVHorizontally() {
+    // [a, b, c, d]
+    this.switchUV(0, 1) // -> [b, a, c, d]
+    this.switchUV(2, 3) // -> [b, a, d, c]
+  }
+
+  flipUVVertically() {
+    // [a, b, c, d]
+    this.switchUV(0, 2) // -> [c, b, a, d]
+    this.switchUV(1, 3) // -> [c, d, a, b]
+  }
+
+  rotateUV(degree: number) {
+    const normalizedDegree = normalizeDegree(degree)
+
+    switch (normalizedDegree) {
+      case 0:
+        // nop
+        break
+      case 90:
+        // [a, b, c, d]
+        this.switchUV(0, 2) // -> [c, b, a, d]
+        this.switchUV(1, 2) // -> [c, a, b, d]
+        this.switchUV(2, 3) // -> [c, a, d, b]
+        break
+      case 180:
+        // [a, b, c, d]
+        this.switchUV(0, 3) // -> [d, b, c, a]
+        this.switchUV(1, 2) // -> [d, c, b, a]
+        break
+      case 270:
+        // [a, b, c, d]
+        this.switchUV(0, 1) // -> [b, a, c, d]
+        this.switchUV(1, 3) // -> [b, d, c, a]
+        this.switchUV(2, 3) // -> [b, d, a, c]
+        break
+      default:
+        console.warn(
+          '[warning] Polygon: skipping unsupported degree of rotation in rotateUV(). ' +
+            'Only 0, 90, 180, 270 or their multiples are supported but ' +
+            degree +
+            ' was given',
+        )
+    }
   }
 }

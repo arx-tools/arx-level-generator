@@ -145,3 +145,11 @@ export const circleOfVectors = (center: Vector3, radius: number, divisions: numb
 
   return vectors
 }
+
+export const normalizeDegree = (degree: number) => {
+  let normalizedDegree = degree % 360
+  if (normalizedDegree < 0) {
+    normalizedDegree += 360
+  }
+  return Math.abs(normalizedDegree)
+}
