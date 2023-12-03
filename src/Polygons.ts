@@ -511,12 +511,6 @@ export class Polygons extends Array<Polygon> {
     })
   }
 
-  switchUV(aIdx: 0 | 1 | 2 | 3, bIdx: 0 | 1 | 2 | 3) {
-    return this.apply((polygon) => {
-      polygon.switchUV(aIdx, bIdx)
-    })
-  }
-
   flipUVHorizontally() {
     return this.apply((polygon) => {
       polygon.flipUVHorizontally()
@@ -526,12 +520,6 @@ export class Polygons extends Array<Polygon> {
   flipUVVertically() {
     return this.apply((polygon) => {
       polygon.flipUVVertically()
-    })
-  }
-
-  rotateUV(degree: number) {
-    return this.apply((polygon) => {
-      polygon.rotateUV(degree)
     })
   }
 }

@@ -398,79 +398,21 @@ export class Polygon {
     this.flags = this.flags | ArxPolygonFlags.DoubleSided
   }
 
-  switchUV(aIdx: 0 | 1 | 2 | 3, bIdx: 0 | 1 | 2 | 3) {
-    if (aIdx === bIdx) {
-      return
-    }
-
-    const tmp = this.vertices[aIdx]
-    this.vertices[aIdx] = this.vertices[bIdx]
-    this.vertices[bIdx] = tmp
-  }
-
   flipUVHorizontally() {
+    this.vertices[0].uv.x *= -1
+    this.vertices[1].uv.x *= -1
+    this.vertices[2].uv.x *= -1
     if (this.isQuad()) {
-      // [a, b, c, d]
-      this.switchUV(0, 1) // -> [b, a, c, d]
-      this.switchUV(2, 3) // -> [b, a, d, c]
-    } else {
-      // ??
+      this.vertices[3].uv.x *= -1
     }
   }
 
   flipUVVertically() {
+    this.vertices[0].uv.y *= -1
+    this.vertices[1].uv.y *= -1
+    this.vertices[2].uv.y *= -1
     if (this.isQuad()) {
-      // [a, b, c, d]
-      this.switchUV(0, 2) // -> [c, b, a, d]
-      this.switchUV(1, 3) // -> [c, d, a, b]
-    } else {
-      // ??
-    }
-  }
-
-  rotateUV(degree: number) {
-    const normalizedDegree = normalizeDegree(degree)
-
-    switch (normalizedDegree) {
-      case 0:
-        // nop
-        break
-      case 90:
-        if (this.isQuad()) {
-          // [a, b, c, d]
-          this.switchUV(0, 2) // -> [c, b, a, d]
-          this.switchUV(1, 2) // -> [c, a, b, d]
-          this.switchUV(2, 3) // -> [c, a, d, b]
-        } else {
-          // ??
-        }
-        break
-      case 180:
-        if (this.isQuad()) {
-          // [a, b, c, d]
-          this.switchUV(0, 3) // -> [d, b, c, a]
-          this.switchUV(1, 2) // -> [d, c, b, a]
-        } else {
-          // ??
-        }
-        break
-      case 270:
-        if (this.isQuad()) {
-          // [a, b, c, d]
-          this.switchUV(0, 1) // -> [b, a, c, d]
-          this.switchUV(1, 3) // -> [b, d, c, a]
-          this.switchUV(2, 3) // -> [b, d, a, c]
-        } else {
-          // ??
-        }
-        break
-      default:
-        console.warn(
-          '[warning] Polygon: skipping unsupported degree of rotation in rotateUV(). ' +
-            'Only 0, 90, 180, 270 or their multiples are supported but ' +
-            degree +
-            ' was given',
-        )
+      this.vertices[3].uv.y *= -1
     }
   }
 }
