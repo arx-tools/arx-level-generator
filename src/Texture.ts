@@ -363,6 +363,12 @@ export class Texture extends ThreeJsTextue {
   static get l3DissidStoneTrans01() {
     return new Texture({ filename: 'l3_dissid_[stone]_trans01.jpg', size: 128 })
   }
+  static get l3DissidWoodFabric03() {
+    return new Texture({ filename: 'l3_dissid_[wood]_fabric03.jpg', size: 256 })
+  }
+  static get l3DissidWoodFabric04() {
+    return new Texture({ filename: 'l3_dissid_[wood]_fabric04.jpg', size: 128 })
+  }
   static get l4YlsideStoneGround01() {
     return new Texture({ filename: 'l4_ylside_[stone]_ground01.jpg', size: 64 })
   }
