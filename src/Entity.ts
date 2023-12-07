@@ -199,9 +199,19 @@ export class Entity {
       return files
     }
 
-    const [source] = await this.inventoryIcon.exportSourceAndTarget(settings, false)
-
+    let source: string
     let target: string
+
+    try {
+      source = (await this.inventoryIcon.exportSourceAndTarget(settings, false))[0]
+    } catch (e: unknown) {
+      console.error(
+        `[error] Entity: inventory icon not found: ${this.inventoryIcon.filename}, using default fallback icon`,
+      )
+      this.inventoryIcon = Texture.missingInventoryIcon
+      source = (await this.inventoryIcon.exportSourceAndTarget(settings, false))[0]
+    }
+
     if (this.src.endsWith('.asl')) {
       target = path.resolve(settings.outputDir, 'graph/obj3d/interactive', this.src.replace(/.asl$/, '[icon].bmp'))
     } else {
