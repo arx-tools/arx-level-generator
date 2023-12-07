@@ -146,6 +146,7 @@ export class Texture extends ThreeJsTextue {
       this.sourcePath = fallbackTexture.sourcePath
       this._width = fallbackTexture._width
       this._height = fallbackTexture._height
+      this.isInternalAsset = fallbackTexture.isInternalAsset
 
       return this.makeCopy(settings)
     }
