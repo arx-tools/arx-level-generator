@@ -206,7 +206,7 @@ export class Entity {
       source = (await this.inventoryIcon.exportSourceAndTarget(settings, false))[0]
     } catch (e: unknown) {
       console.error(
-        `[error] Entity: inventory icon not found: ${this.inventoryIcon.filename}, using default fallback icon`,
+        `[error] Entity: inventory icon not found: "${this.inventoryIcon.filename}", using default fallback icon`,
       )
       this.inventoryIcon = Texture.missingInventoryIcon
       source = (await this.inventoryIcon.exportSourceAndTarget(settings, false))[0]

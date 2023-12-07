@@ -139,7 +139,7 @@ export class Texture extends ThreeJsTextue {
         return this.makeCopy(settings)
       }
     } catch (e: unknown) {
-      console.error(`[error] Texture: file not found: ${this.filename}, using fallback texture`)
+      console.error(`[error] Texture: file not found: "${this.filename}", using fallback texture`)
       const fallbackTexture = Texture.missingTexture
 
       this.filename = fallbackTexture.filename
