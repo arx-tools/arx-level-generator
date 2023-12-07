@@ -223,7 +223,7 @@ export class Texture extends ThreeJsTextue {
   private async makeTileable(settings: Settings): Promise<[string, string]> {
     const { ext, name } = path.parse(this.filename)
     const hasSupportedFormat = supportedExtensions.includes(ext)
-    const newFilename = 'tileable-' + (hasSupportedFormat ? this.filename : `${name}.jpg`)
+    const newFilename = hasSupportedFormat ? this.filename : `${name}.jpg`
 
     const originalSource = this.getFilename(settings)
     const convertedSource = path.resolve(settings.cacheFolder, this.sourcePath ?? Texture.targetPath, newFilename)

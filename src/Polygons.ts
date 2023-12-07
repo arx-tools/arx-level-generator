@@ -111,11 +111,11 @@ export class Polygons extends Array<Polygon> {
 
       times(() => {
         textureContainers.push({ id: ++cntr, filename, remaining: 65535, maxRemaining: 65535 })
-        textureContainers.push({ id: ++cntr, filename: 'tileable-' + filename, remaining: 65535, maxRemaining: 65535 })
+        textureContainers.push({ id: ++cntr, filename, remaining: 65535, maxRemaining: 65535 })
       }, wholeBlocks)
 
       textureContainers.push({ id: ++cntr, filename, remaining, maxRemaining: remaining })
-      textureContainers.push({ id: ++cntr, filename: 'tileable-' + filename, remaining, maxRemaining: remaining })
+      textureContainers.push({ id: ++cntr, filename, remaining, maxRemaining: remaining })
     })
 
     return textureContainers

@@ -169,9 +169,7 @@ export class EntityModel {
         return vertices
       })
 
-      ftlData.textureContainers = mesh
-        .getTextureContainers()
-        .filter(({ filename }) => !filename.startsWith('tileable-'))
+      ftlData.textureContainers = mesh.getTextureContainers()
 
       let vertexIdxCntr = 0
       ftlData.faces = mesh.flatMap((polygon) => {
@@ -293,7 +291,7 @@ export class EntityModel {
               willBeTiled = (t.flags & ArxPolygonFlags.Tiled) > 0
             }
             ftlData.textureContainers.push({
-              filename: (willBeTiled ? 'tileable-' : '') + t.filename,
+              filename: t.filename,
             })
           }
         })
@@ -303,7 +301,7 @@ export class EntityModel {
           willBeTiled = (texture.flags & ArxPolygonFlags.Tiled) > 0
         }
         ftlData.textureContainers.push({
-          filename: (willBeTiled ? 'tileable-' : '') + texture.filename,
+          filename: texture.filename,
         })
       }
     }
