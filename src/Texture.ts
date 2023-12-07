@@ -443,4 +443,12 @@ export class Texture extends ThreeJsTextue {
       isInternalAsset: true,
     })
   }
+  static get missingInventoryIcon() {
+    return Texture.fromCustomFile({
+      filename: 'missing[icon].bmp',
+      sourcePath: 'ui',
+      size: 32,
+      isInternalAsset: true,
+    })
+  }
 }
