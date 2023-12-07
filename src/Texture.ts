@@ -130,11 +130,23 @@ export class Texture extends ThreeJsTextue {
       throw new Error('trying to export a native Texture')
     }
 
-    const isTileable = await this.isTileable(settings)
+    try {
+      const isTileable = await this.isTileable(settings)
 
-    if (needsToBeTileable && !isTileable) {
-      return this.makeTileable(settings)
-    } else {
+      if (needsToBeTileable && !isTileable) {
+        return this.makeTileable(settings)
+      } else {
+        return this.makeCopy(settings)
+      }
+    } catch (e: unknown) {
+      console.error(`[error] Texture: file not found: ${this.filename}, using fallback texture`)
+      const fallbackTexture = Texture.missingTexture
+
+      this.filename = fallbackTexture.filename
+      this.sourcePath = fallbackTexture.sourcePath
+      this._width = fallbackTexture._width
+      this._height = fallbackTexture._height
+
       return this.makeCopy(settings)
     }
   }
