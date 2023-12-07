@@ -73,6 +73,20 @@ const reversePolygonWinding = (rawObj: string) => {
   return rows.join('\n')
 }
 
+const removeLineElements = (rawObj: string) => {
+  let rows = rawObj.replace(/\\\n/g, '').split(/\r?\n/)
+
+  rows = rows.map((row) => {
+    if (!row.startsWith('l')) {
+      return row
+    }
+
+    return '# ' + row
+  })
+
+  return rows.join('\n')
+}
+
 /**
  * Loads an obj file and an optional mtl file
  *
@@ -178,6 +192,9 @@ export const loadOBJ = async (
   if (!isTriangulatedMesh(rawObj)) {
     console.warn(`[warning] loadOBJ: ${filename}.obj is not triangulated`)
   }
+
+  // objLoader can't seem to be able to load line elements
+  rawObj = removeLineElements(rawObj)
 
   if (reversedPolygonWinding) {
     rawObj = reversePolygonWinding(rawObj)
