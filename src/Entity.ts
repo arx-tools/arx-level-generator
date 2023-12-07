@@ -104,6 +104,18 @@ export class Entity {
     return typeof this.inventoryIcon !== 'undefined'
   }
 
+  needsInventoryIcon() {
+    if (!this.src.startsWith('items')) {
+      return false
+    }
+
+    if (this.src.startsWith('items/movable')) {
+      return false
+    }
+
+    return true
+  }
+
   withScript() {
     if (this.hasScript()) {
       return this
@@ -195,21 +207,30 @@ export class Entity {
   async exportInventoryIcon(settings: Settings) {
     const files: Record<string, string> = {}
 
-    if (!this.hasInventoryIcon() || this.inventoryIcon.isNative) {
+    if (!this.needsInventoryIcon()) {
+      return files
+    }
+
+    if (this.hasInventoryIcon() && this.inventoryIcon.isNative) {
       return files
     }
 
     let source: string
     let target: string
 
-    try {
-      source = (await this.inventoryIcon.exportSourceAndTarget(settings, false))[0]
-    } catch (e: unknown) {
-      console.error(
-        `[error] Entity: inventory icon not found: "${this.inventoryIcon.filename}", using default fallback icon`,
-      )
+    if (!this.hasInventoryIcon()) {
       this.inventoryIcon = Texture.missingInventoryIcon
       source = (await this.inventoryIcon.exportSourceAndTarget(settings, false))[0]
+    } else {
+      try {
+        source = (await this.inventoryIcon.exportSourceAndTarget(settings, false, true))[0]
+      } catch (e: unknown) {
+        console.error(
+          `[error] Entity: inventory icon not found: "${this.inventoryIcon.filename}", using default fallback icon`,
+        )
+        this.inventoryIcon = Texture.missingInventoryIcon
+        source = (await this.inventoryIcon.exportSourceAndTarget(settings, false))[0]
+      }
     }
 
     if (this.src.endsWith('.asl')) {
