@@ -87,25 +87,11 @@ const removeLineElements = (rawObj: string) => {
   return rows.join('\n')
 }
 
-/**
- * Loads an obj file and an optional mtl file
- *
- * @see https://en.wikipedia.org/wiki/Wavefront_.obj_file
- */
-export const loadOBJ = async (
+export const loadMaterials = async (
   filenameWithoutExtension: string,
-  {
-    position,
-    scale,
-    scaleUV,
-    orientation,
-    materialFlags,
-    fallbackTexture,
-    reversedPolygonWinding = false,
-  }: loadOBJProperties = {},
+  { materialFlags, fallbackTexture }: loadOBJProperties = {},
 ) => {
   const mtlLoader = new MTLLoader()
-  const objLoader = new OBJLoader()
 
   const { dir, name: filename } = path.parse(filenameWithoutExtension)
 
@@ -113,17 +99,10 @@ export const loadOBJ = async (
 
   let materials: MeshBasicMaterial | Record<string, MeshBasicMaterial>
 
-  let defaultTexture: Material
-  if (typeof materialFlags === 'function') {
-    const flags = materialFlags(Texture.missingTexture)
-    defaultTexture = Material.fromTexture(Texture.missingTexture, {
-      flags: flags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
-    })
-  } else {
-    defaultTexture = Material.fromTexture(Texture.missingTexture, {
-      flags: materialFlags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
-    })
-  }
+  const flags: ArxPolygonFlags =
+    (typeof materialFlags === 'function' ? materialFlags(Texture.missingTexture) : materialFlags) ??
+    ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled
+  const defaultTexture = Material.fromTexture(Texture.missingTexture, { flags })
 
   if (await fileExists(mtlSrc)) {
     try {
@@ -185,6 +164,40 @@ export const loadOBJ = async (
       map: fallbackTexture ?? defaultTexture,
     })
   }
+
+  return materials
+}
+
+/**
+ * Loads an obj file and an optional mtl file
+ *
+ * @see https://en.wikipedia.org/wiki/Wavefront_.obj_file
+ */
+export const loadOBJ = async (
+  filenameWithoutExtension: string,
+  {
+    position,
+    scale,
+    scaleUV,
+    orientation,
+    materialFlags,
+    fallbackTexture,
+    reversedPolygonWinding = false,
+  }: loadOBJProperties = {},
+) => {
+  const materials = await loadMaterials(filenameWithoutExtension, {
+    materialFlags,
+    fallbackTexture,
+  })
+
+  const flags: ArxPolygonFlags =
+    (typeof materialFlags === 'function' ? materialFlags(Texture.missingTexture) : materialFlags) ??
+    ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled
+  const defaultTexture = Material.fromTexture(Texture.missingTexture, { flags })
+
+  const objLoader = new OBJLoader()
+
+  const { dir, name: filename } = path.parse(filenameWithoutExtension)
 
   const objSrc = path.resolve('assets/' + dir + '/' + filename + '.obj')
   let rawObj = await fs.promises.readFile(objSrc, 'utf-8')
