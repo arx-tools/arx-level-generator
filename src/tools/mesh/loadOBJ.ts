@@ -87,9 +87,15 @@ const removeLineElements = (rawObj: string) => {
   return rows.join('\n')
 }
 
-export const loadMaterials = async (
+const getMaterialFlags = (texture: Texture, materialFlags: loadOBJProperties['materialFlags']) => {
+  const defaultFlags = ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled
+  const flags = typeof materialFlags === 'function' ? materialFlags(texture) : materialFlags
+  return flags ?? defaultFlags
+}
+
+const loadMTL = async (
   filenameWithoutExtension: string,
-  { materialFlags, fallbackTexture }: loadOBJProperties = {},
+  { materialFlags, fallbackTexture }: Pick<loadOBJProperties, 'materialFlags' | 'fallbackTexture'> = {},
 ) => {
   const mtlLoader = new MTLLoader()
 
@@ -97,12 +103,16 @@ export const loadMaterials = async (
 
   const mtlSrc = path.resolve('assets/' + dir + '/' + filename + '.mtl')
 
-  let materials: MeshBasicMaterial | Record<string, MeshBasicMaterial>
+  const fallbackMaterial =
+    typeof fallbackTexture === 'undefined'
+      ? Material.fromTexture(Texture.missingTexture, {
+          flags: getMaterialFlags(Texture.missingTexture, materialFlags),
+        })
+      : Material.fromTexture(fallbackTexture, {
+          flags: getMaterialFlags(fallbackTexture, materialFlags),
+        })
 
-  const flags: ArxPolygonFlags =
-    (typeof materialFlags === 'function' ? materialFlags(Texture.missingTexture) : materialFlags) ??
-    ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled
-  const defaultTexture = Material.fromTexture(Texture.missingTexture, { flags })
+  let materials: MeshBasicMaterial | Record<string, MeshBasicMaterial>
 
   if (await fileExists(mtlSrc)) {
     try {
@@ -121,21 +131,13 @@ export const loadMaterials = async (
             sourcePath: [dir, path.parse(materialInfo.map_kd).dir].filter((row) => row !== '').join('/'),
           })
 
-          if (typeof materialFlags === 'function') {
-            const flags = materialFlags(textureFromFile)
-            material = Material.fromTexture(textureFromFile, {
-              flags: flags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
-            })
-          } else {
-            material = Material.fromTexture(textureFromFile, {
-              flags: materialFlags ?? ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled,
-            })
-          }
+          const flags = getMaterialFlags(textureFromFile, materialFlags)
+          material = Material.fromTexture(textureFromFile, { flags })
         } else {
           console.info(
-            `[info] loadOBJ: Material "${name}" in ${filename}.mtl doesn't have a texture, using fallback/default texture`,
+            `[info] loadOBJ: Material "${name}" in "${filename}.mtl" doesn't have a texture, using fallback/default texture`,
           )
-          material = Material.fromTexture(fallbackTexture ?? defaultTexture)
+          material = fallbackMaterial
         }
 
         if (material.flags & ArxPolygonFlags.Transparent) {
@@ -155,17 +157,20 @@ export const loadMaterials = async (
       console.error(`[error] loadOBJ: error while parsing ${filename}.mtl file:`, e)
       materials = new MeshBasicMaterial({
         name: filename,
-        map: fallbackTexture ?? defaultTexture,
+        map: fallbackMaterial,
       })
     }
   } else {
     materials = new MeshBasicMaterial({
       name: filename,
-      map: fallbackTexture ?? defaultTexture,
+      map: fallbackMaterial,
     })
   }
 
-  return materials
+  return {
+    materials,
+    fallbackMaterial,
+  }
 }
 
 /**
@@ -185,15 +190,14 @@ export const loadOBJ = async (
     reversedPolygonWinding = false,
   }: loadOBJProperties = {},
 ) => {
-  const materials = await loadMaterials(filenameWithoutExtension, {
+  const { materials, fallbackMaterial } = await loadMTL(filenameWithoutExtension, {
     materialFlags,
     fallbackTexture,
   })
-
-  const flags: ArxPolygonFlags =
-    (typeof materialFlags === 'function' ? materialFlags(Texture.missingTexture) : materialFlags) ??
-    ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled
-  const defaultTexture = Material.fromTexture(Texture.missingTexture, { flags })
+  const fallbackMeshMaterial = new MeshBasicMaterial({
+    name: 'fallback-texture',
+    map: fallbackMaterial,
+  })
 
   const objLoader = new OBJLoader()
 
@@ -233,18 +237,11 @@ export const loadOBJ = async (
 
     if (Array.isArray(child.material)) {
       material = child.material.map(({ name }) => {
-        return materials instanceof MeshBasicMaterial ? materials : materials[name]
+        return materials instanceof MeshBasicMaterial ? materials : materials[name] ?? fallbackMeshMaterial
       })
     } else {
       const name = (child.material as MeshPhongMaterial).name
-      material =
-        materials instanceof MeshBasicMaterial
-          ? materials
-          : materials[name] ??
-            new MeshBasicMaterial({
-              name: 'fallback-texture',
-              map: defaultTexture,
-            })
+      material = materials instanceof MeshBasicMaterial ? materials : materials[name] ?? fallbackMeshMaterial
     }
 
     const geometry = child.geometry
@@ -305,5 +302,12 @@ export const loadOBJ = async (
     meshes.push(new Mesh(geometry, material))
   })
 
-  return meshes
+  const materialList = [
+    fallbackMeshMaterial,
+    ...(materials instanceof MeshBasicMaterial ? [materials] : Object.values(materials)),
+  ]
+    .map(({ map }) => map)
+    .filter((texture) => texture !== null) as Texture[]
+
+  return { meshes, materials: materialList }
 }
