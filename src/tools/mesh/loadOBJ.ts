@@ -32,8 +32,10 @@ type loadOBJProperties = {
   orientation?: Rotation
   /**
    * default value is (ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled)
+   * which is also the same as what you will get as the value for defaultFlags when
+   * you pass a function as the value
    */
-  materialFlags?: ArxPolygonFlags | ((texture: Texture) => ArxPolygonFlags | undefined)
+  materialFlags?: ArxPolygonFlags | ((texture: Texture, defaultFlags: ArxPolygonFlags) => ArxPolygonFlags)
   /**
    * default value is Texture.missingTexture with the same flags as materialFlags
    */
@@ -89,8 +91,7 @@ const removeLineElements = (rawObj: string) => {
 
 const getMaterialFlags = (texture: Texture, materialFlags: loadOBJProperties['materialFlags']) => {
   const defaultFlags = ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled
-  const flags = typeof materialFlags === 'function' ? materialFlags(texture) : materialFlags
-  return flags ?? defaultFlags
+  return typeof materialFlags === 'function' ? materialFlags(texture, defaultFlags) : materialFlags ?? defaultFlags
 }
 
 const loadMTL = async (
