@@ -7,5 +7,6 @@ export { transformEdge } from '@tools/mesh/transformEdge.js'
 export { translateUV } from '@tools/mesh/translateUV.js'
 export { connectEdgeTo } from '@tools/mesh/connectEdgeTo.js'
 export { categorizeVertices } from '@tools/mesh/categorizeVertices.js'
+export { addPoint } from '@tools/mesh/addPoint.js'
 
 export type { GeometryVertex } from '@tools/mesh/getVertices.js'
