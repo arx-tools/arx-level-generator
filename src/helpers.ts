@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { BufferGeometry, Euler, Mesh, Object3D } from 'three'
+import { BufferGeometry, Euler, Mesh, Object3D, Vector3 as ThreeJsVector3 } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { mean } from '@src/faux-ramda.js'
 
@@ -106,7 +106,7 @@ export const isEven = (n: number) => n % 2 === 0
 
 export const isOdd = (n: number) => n % 2 === 1
 
-export const averageVectors = (vectors: Vector3[]) => {
+export const averageVectors = (vectors: ThreeJsVector3[]) => {
   const xs = vectors.map(({ x }) => x)
   const ys = vectors.map(({ y }) => y)
   const zs = vectors.map(({ z }) => z)
@@ -131,7 +131,7 @@ export const fileExists = async (filename: string) => {
   }
 }
 
-export const circleOfVectors = (center: Vector3, radius: number, divisions: number, theta: number = 0) => {
+export const circleOfVectors = (center: ThreeJsVector3, radius: number, divisions: number, theta: number = 0) => {
   const angle = (2 * Math.PI) / divisions
 
   const vectors: Vector3[] = []
