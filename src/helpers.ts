@@ -1,8 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Euler, Mesh, Object3D } from 'three'
-import { Vector3 } from '@src/Vector3.js'
+import { BufferGeometry, Euler, Mesh, Object3D, Vector3 } from 'three'
 import { mean } from '@src/faux-ramda.js'
 
 export type PackageJsonProps = {
@@ -152,4 +151,8 @@ export const normalizeDegree = (degree: number) => {
     normalizedDegree += 360
   }
   return Math.abs(normalizedDegree)
+}
+
+export const numberOfVertices = (geometry: BufferGeometry) => {
+  return geometry.getAttribute('position').array.length / 3
 }

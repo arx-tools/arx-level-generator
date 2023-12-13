@@ -7,4 +7,5 @@ export {
   isOdd,
   isBetween,
   circleOfVectors,
+  numberOfVertices,
 } from '@src/helpers.js'
