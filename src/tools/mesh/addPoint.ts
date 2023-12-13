@@ -5,13 +5,13 @@ import { circleOfVectors } from '@src/helpers.js'
 /**
  * Adds a point to the mesh by turning the point into a triangle with the given radius
  *
- * @param mesh - containing the geometry and its textures
  * @param point - the location where the new polygon will be added
+ * @param mesh - containing the geometry and its textures
  * @param texture - the texture of the newly added polygon, default value is the alpha texture of Arx: Texture.alpha
  * @param radius - the size of the newly added polygon, default value is 1
  * @returns a new mesh with the updated geometry
  */
-export const addPoint = (mesh: Mesh, point: Vector3, texture: Texture = Texture.alpha, radius: number = 1) => {
+export const addPoint = (point: Vector3, mesh: Mesh, texture: Texture = Texture.alpha, radius: number = 1) => {
   const { material, geometry: _geometry } = mesh
   const materials = Array.isArray(material) ? material : [material]
 
