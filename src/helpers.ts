@@ -1,7 +1,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { BufferGeometry, Euler, Mesh, Object3D, Vector3 } from 'three'
+import { BufferGeometry, Euler, Mesh, Object3D } from 'three'
+import { Vector3 } from '@src/Vector3.js'
 import { mean } from '@src/faux-ramda.js'
 
 export type PackageJsonProps = {
