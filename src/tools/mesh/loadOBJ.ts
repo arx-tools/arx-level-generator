@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { ArxPolygonFlags } from 'arx-convert/types'
-import { BufferAttribute, BufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial, Vector2 } from 'three'
+import { Box3, BufferAttribute, BufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial, Vector2 } from 'three'
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import { Material } from '@src/Material.js'
@@ -44,6 +44,26 @@ type loadOBJProperties = {
    * default value is false
    */
   reversedPolygonWinding?: boolean
+  /**
+   * aligns the center of the model to 0/0/0
+   *
+   * default value is false
+   */
+  centralize?: boolean
+  /**
+   * when `centralize` is true then the model ends up in the center on all axis
+   * when a model is to be placed on the floor or hanging from the ceiling then
+   * this property can align the model vertically.
+   *
+   * - `"bottom"` will make all the points of the model above 0/0/0
+   * - `"top"` will make all the points of the model below 0/0/0
+   * - `"center"` keeps the model in the middle
+   *
+   * default value is "center"
+   *
+   * ignored when `centralize` is false or not set
+   */
+  verticalAlign?: 'bottom' | 'center' | 'top'
 }
 
 const isTriangulatedMesh = (rawObj: string) => {
@@ -189,6 +209,8 @@ export const loadOBJ = async (
     materialFlags,
     fallbackTexture,
     reversedPolygonWinding = false,
+    centralize = false,
+    verticalAlign = 'center',
   }: loadOBJProperties = {},
 ) => {
   const { materials, fallbackMaterial } = await loadMTL(filenameWithoutExtension, {
@@ -253,6 +275,32 @@ export const loadOBJ = async (
       } else {
         geometry.scale(scale.x, scale.y, scale.z)
       }
+    }
+
+    geometry.computeBoundingBox()
+
+    if (centralize === true) {
+      const boundingBox = geometry.boundingBox as Box3
+      const halfDimensions = boundingBox.max.clone().sub(boundingBox.min).divideScalar(2)
+
+      const x = -boundingBox.min.x - halfDimensions.x
+      const z = -boundingBox.min.z - halfDimensions.z
+
+      let y: number
+      switch (verticalAlign) {
+        case 'bottom':
+          y = -boundingBox.max.y
+          break
+        case 'center':
+          y = -boundingBox.min.y - halfDimensions.y
+          break
+        case 'top':
+          y = -boundingBox.min.y
+          break
+      }
+
+      geometry.translate(x, y, z)
+      geometry.computeBoundingBox()
     }
 
     if (orientation) {
