@@ -328,7 +328,7 @@ export class Polygons extends Array<Polygon> {
         const normal = averageVectors(normals)
 
         polygons.forEach(([vertexIndex, polygon]) => {
-          ;(polygon.normals as QuadrupleOf<Vector3>)[vertexIndex] = normal.clone()
+          ;(polygon.normals as QuadrupleOf<Vector3>)[vertexIndex] = Vector3.fromThreeJsVector3(normal)
         })
       })
     }
