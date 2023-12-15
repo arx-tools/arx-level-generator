@@ -51,17 +51,14 @@ type loadOBJProperties = {
    */
   centralize?: boolean
   /**
-   * when `centralize` is true then the model ends up in the center on all axis
-   * when a model is to be placed on the floor or hanging from the ceiling then
-   * this property can align the model vertically.
+   * Aligns an object's y axis to 0/0/0
    *
    * - `"bottom"` will make all the points of the model above 0/0/0
    * - `"top"` will make all the points of the model below 0/0/0
    * - `"center"` keeps the model in the middle
    *
-   * default value is "center"
-   *
-   * ignored when `centralize` is false or not set
+   * if centralize is true then the default value is 'center'
+   * otherwise undefined
    */
   verticalAlign?: 'bottom' | 'center' | 'top'
 }
@@ -210,7 +207,7 @@ export const loadOBJ = async (
     fallbackTexture,
     reversedPolygonWinding = false,
     centralize = false,
-    verticalAlign = 'center',
+    verticalAlign,
   }: loadOBJProperties = {},
 ) => {
   const { materials, fallbackMaterial } = await loadMTL(filenameWithoutExtension, {
@@ -279,26 +276,34 @@ export const loadOBJ = async (
 
     geometry.computeBoundingBox()
 
+    const boundingBox = geometry.boundingBox as Box3
+    const halfDimensions = boundingBox.max.clone().sub(boundingBox.min).divideScalar(2)
+
+    let x = 0
+    let y = 0
+    let z = 0
+
     if (centralize === true) {
-      const boundingBox = geometry.boundingBox as Box3
-      const halfDimensions = boundingBox.max.clone().sub(boundingBox.min).divideScalar(2)
-
-      const x = -boundingBox.min.x - halfDimensions.x
-      const z = -boundingBox.min.z - halfDimensions.z
-
-      let y: number
-      switch (verticalAlign) {
-        case 'bottom':
-          y = -boundingBox.max.y
-          break
-        case 'center':
-          y = -boundingBox.min.y - halfDimensions.y
-          break
-        case 'top':
-          y = -boundingBox.min.y
-          break
+      x = -boundingBox.min.x - halfDimensions.x
+      z = -boundingBox.min.z - halfDimensions.z
+      if (typeof verticalAlign === 'undefined') {
+        verticalAlign = 'center'
       }
+    }
 
+    switch (verticalAlign) {
+      case 'bottom':
+        y = -boundingBox.max.y
+        break
+      case 'center':
+        y = -boundingBox.min.y - halfDimensions.y
+        break
+      case 'top':
+        y = -boundingBox.min.y
+        break
+    }
+
+    if (x !== 0 || y !== 0 || z !== 0) {
       geometry.translate(x, y, z)
       geometry.computeBoundingBox()
     }
