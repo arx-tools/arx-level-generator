@@ -1,4 +1,4 @@
-import fs from 'node:fs'
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import { DLF, FTS, LLF } from 'arx-convert'
 import { ArxDLF, ArxFTS, ArxLLF } from 'arx-convert/types'
@@ -41,21 +41,21 @@ export class LevelLoader {
     let data: ArxDLF | ArxFTS | ArxLLF
 
     try {
-      const jsonData = await fs.promises.readFile(jsonFilename, 'utf-8')
+      const jsonData = await fs.readFile(jsonFilename, 'utf-8')
       data = JSON.parse(jsonData)
     } catch (e) {
       const binaryFolder = this.getBinaryFolder()
       const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename(format) + '.unpacked')
 
       try {
-        await fs.promises.access(binaryFolder, fs.promises.constants.R_OK | fs.promises.constants.W_OK)
+        await fs.access(binaryFolder, fs.constants.R_OK | fs.constants.W_OK)
       } catch (e) {
         throw new Error(`attempted to read folder containing binary level data at "${binaryFolder}"`)
       }
 
-      const binaryData = await fs.promises.readFile(binaryFilename)
+      const binaryData = await fs.readFile(binaryFilename)
       data = parser.load(binaryData)
-      await fs.promises.writeFile(jsonFilename, JSON.stringify(data), 'utf-8')
+      await fs.writeFile(jsonFilename, JSON.stringify(data), 'utf-8')
     }
 
     return data

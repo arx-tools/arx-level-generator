@@ -1,4 +1,4 @@
-import fs from 'node:fs'
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import { FTL } from 'arx-convert'
 import { ArxAction, ArxFTL, ArxFaceType, ArxFace, ArxFtlVertex, ArxPolygonFlags } from 'arx-convert/types'
@@ -300,7 +300,7 @@ export class EntityModel {
 
     const ftl = FTL.save(ftlData)
     await createCacheFolderIfNotExists(path.dirname(target))
-    await fs.promises.writeFile(target, ftl)
+    await fs.writeFile(target, ftl)
 
     return target
   }

@@ -1,4 +1,4 @@
-import fs from 'node:fs'
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { BufferGeometry, Euler, Mesh, Object3D, Vector3 as ThreeJsVector3 } from 'three'
@@ -22,7 +22,7 @@ export const getGeneratorPackageJSON = async (): Promise<PackageJsonProps> => {
       const __filename = fileURLToPath(import.meta.url)
       const __dirname = path.dirname(__filename)
 
-      const rawIn = await fs.promises.readFile(path.resolve(__dirname, '../../package.json'), 'utf-8')
+      const rawIn = await fs.readFile(path.resolve(__dirname, '../../package.json'), 'utf-8')
       cacheOfGeneratorPackageJSON = JSON.parse(rawIn)
     } catch (error) {
       cacheOfGeneratorPackageJSON = {
@@ -41,7 +41,7 @@ export const getGeneratorPackageJSON = async (): Promise<PackageJsonProps> => {
 export const getProjectPackageJSON = async (): Promise<PackageJsonProps> => {
   if (typeof cacheOfProjectPackageJSON === 'undefined') {
     try {
-      const rawIn = await fs.promises.readFile(path.resolve('./package.json'), 'utf-8')
+      const rawIn = await fs.readFile(path.resolve('./package.json'), 'utf-8')
       cacheOfProjectPackageJSON = JSON.parse(rawIn)
     } catch (error) {
       cacheOfProjectPackageJSON = {
@@ -124,7 +124,7 @@ export const isBetween = (min: number, max: number, n: number) => {
 
 export const fileExists = async (filename: string) => {
   try {
-    await fs.promises.access(filename, fs.constants.R_OK)
+    await fs.access(filename, fs.constants.R_OK)
     return true
   } catch (e: unknown) {
     return false

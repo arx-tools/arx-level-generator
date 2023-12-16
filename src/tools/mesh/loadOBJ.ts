@@ -1,4 +1,4 @@
-import fs from 'node:fs'
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import { ArxPolygonFlags } from 'arx-convert/types'
 import { Box3, BufferAttribute, BufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial, Vector2 } from 'three'
@@ -134,7 +134,7 @@ const loadMTL = async (
 
   if (await fileExists(mtlSrc)) {
     try {
-      const rawMtl = await fs.promises.readFile(mtlSrc, 'utf-8')
+      const rawMtl = await fs.readFile(mtlSrc, 'utf-8')
       const mtl = mtlLoader.parse(rawMtl, '')
 
       const entriesOfMaterials = Object.entries(mtl.materialsInfo)
@@ -224,7 +224,7 @@ export const loadOBJ = async (
   const { dir, name: filename } = path.parse(filenameWithoutExtension)
 
   const objSrc = path.resolve('assets/' + dir + '/' + filename + '.obj')
-  let rawObj = await fs.promises.readFile(objSrc, 'utf-8')
+  let rawObj = await fs.readFile(objSrc, 'utf-8')
 
   if (!isTriangulatedMesh(rawObj)) {
     console.warn(`[warning] loadOBJ: ${filename}.obj is not triangulated`)

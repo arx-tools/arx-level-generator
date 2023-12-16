@@ -1,4 +1,4 @@
-import fs from 'node:fs'
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import { Settings } from '@src/Settings.js'
 
@@ -86,7 +86,7 @@ export class Translations {
 
   async addFromFile(filename: string, settings: Settings) {
     try {
-      const rawIn = await fs.promises.readFile(path.resolve(settings.assetsDir, filename), 'utf-8')
+      const rawIn = await fs.readFile(path.resolve(settings.assetsDir, filename), 'utf-8')
       const translations = JSON.parse(rawIn) as Record<string, Partial<Record<Locales, string>>>
       this.add(translations)
     } catch (error) {

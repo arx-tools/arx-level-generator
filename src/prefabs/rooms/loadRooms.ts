@@ -1,4 +1,4 @@
-import fs from 'node:fs'
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import { QuadrupleOf } from 'arx-convert/utils'
 import { Settings } from '@src/Settings.js'
@@ -24,7 +24,7 @@ export const loadRooms = async (filename: string, settings: Settings) => {
   }
   const variables: Record<string, string> = {}
 
-  const rawInput = await fs.promises.readFile(path.resolve(settings.assetsDir, filename), 'utf-8')
+  const rawInput = await fs.readFile(path.resolve(settings.assetsDir, filename), 'utf-8')
   const lines = rawInput.split(/\r?\n/)
 
   type CurrentBlock =

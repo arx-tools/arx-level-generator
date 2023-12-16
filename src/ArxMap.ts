@@ -1,4 +1,4 @@
-import fs from 'node:fs'
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import { AMB } from 'arx-convert'
 import {
@@ -460,7 +460,7 @@ export class ArxMap {
     ]
 
     const tasks = pathsOfTheFiles.map((filename) => {
-      return fs.promises.mkdir(path.dirname(filename), { recursive: true })
+      return fs.mkdir(path.dirname(filename), { recursive: true })
     })
 
     // TODO: Promise.allSettled() ?
@@ -481,20 +481,20 @@ export class ArxMap {
     ]
 
     for (let [target, source] of filesToCopy) {
-      await fs.promises.copyFile(source, target)
+      await fs.copyFile(source, target)
     }
 
     // ------------------------
 
     for (const [target, script] of Object.entries(scripts)) {
       const latin1Script = latin9ToLatin1(script.replace(/\n/g, Script.EOL))
-      await fs.promises.writeFile(target, latin1Script, 'latin1')
+      await fs.writeFile(target, latin1Script, 'latin1')
     }
 
     const generatorId = await ArxMap.getGeneratorId()
 
     for (const [filename, translation] of Object.entries(translations)) {
-      await fs.promises.writeFile(
+      await fs.writeFile(
         filename,
         `// ${meta.name} v.${meta.version} - ${generatorId}
   
@@ -509,17 +509,17 @@ export class ArxMap {
 
     if (exportJsonFiles) {
       const stringifiedDlf = prettify ? JSON.stringify(dlf, null, 2) : JSON.stringify(dlf)
-      await fs.promises.writeFile(files.dlf, stringifiedDlf)
+      await fs.writeFile(files.dlf, stringifiedDlf)
 
       const stringifiedFts = prettify ? JSON.stringify(fts, null, 2) : JSON.stringify(fts)
-      await fs.promises.writeFile(files.fts, stringifiedFts)
+      await fs.writeFile(files.fts, stringifiedFts)
 
       const stringifiedLlf = prettify ? JSON.stringify(llf, null, 2) : JSON.stringify(llf)
-      await fs.promises.writeFile(files.llf, stringifiedLlf)
+      await fs.writeFile(files.llf, stringifiedLlf)
 
       for (const [target, amb] of Object.entries(customAmbiences)) {
         const stringifiedAmb = prettify ? JSON.stringify(amb, null, 2) : JSON.stringify(amb)
-        await fs.promises.writeFile(target, stringifiedAmb)
+        await fs.writeFile(target, stringifiedAmb)
       }
 
       pathsOfTheFiles.push(...Object.keys(customAmbiences))
@@ -528,7 +528,7 @@ export class ArxMap {
 
     for (const [target, amb] of Object.entries(customAmbiences)) {
       const compiledAmb = AMB.save(amb)
-      await fs.promises.writeFile(target.replace(/\.json$/, ''), compiledAmb)
+      await fs.writeFile(target.replace(/\.json$/, ''), compiledAmb)
     }
 
     await compile(settings, { dlf, fts, llf })

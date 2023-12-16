@@ -1,4 +1,4 @@
-import fs from 'node:fs'
+import fs from 'node:fs/promises'
 import path from 'node:path'
 import { MetaData, generateMetadata } from '@src/MetaData.js'
 import { Settings } from '@src/Settings.js'
@@ -28,7 +28,7 @@ export class Manifest {
     }
 
     try {
-      const rawIn = await fs.promises.readFile(filename, 'utf-8')
+      const rawIn = await fs.readFile(filename, 'utf-8')
       return JSON.parse(rawIn)
     } catch (e: unknown) {
       console.error(`[error] Manifest: failed to read or parse "${Manifest.filename}" in "${settings.outputDir}"`)
@@ -46,7 +46,7 @@ export class Manifest {
       }),
     }
 
-    await fs.promises.writeFile(
+    await fs.writeFile(
       Manifest.getPathToFilename(settings),
       prettify ? JSON.stringify(manifest, null, 2) : JSON.stringify(manifest),
     )
@@ -61,12 +61,12 @@ export class Manifest {
 
     for (let file of manifest.files) {
       try {
-        await fs.promises.rm(path.resolve(settings.outputDir, file))
+        await fs.rm(path.resolve(settings.outputDir, file))
       } catch (e: unknown) {}
     }
 
     try {
-      await fs.promises.rm(Manifest.getPathToFilename(settings))
+      await fs.rm(Manifest.getPathToFilename(settings))
     } catch (e: unknown) {}
   }
 }
