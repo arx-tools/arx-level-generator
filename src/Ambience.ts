@@ -50,7 +50,7 @@ export class Ambience {
 
     const results: [string, string][] = []
 
-    for (let track of this.tracks) {
+    for (const track of this.tracks) {
       results.push(track.exportSourceAndTarget(settings))
     }
 

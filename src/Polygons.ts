@@ -37,7 +37,7 @@ export class Polygons extends Array<Polygon> {
   async exportTextures(settings: Settings) {
     const files: Record<string, string> = {}
 
-    for (let polygon of this) {
+    for (const polygon of this) {
       if (typeof polygon.texture === 'undefined' || polygon.texture.isNative) {
         continue
       }
@@ -57,7 +57,7 @@ export class Polygons extends Array<Polygon> {
 
     // watch out, we're mutating textureContainers!
     const arxPolygons: ArxPolygon[] = []
-    for (let polygon of this) {
+    for (const polygon of this) {
       arxPolygons.push(await polygon.toArxPolygon(textureContainers, settings))
     }
 

@@ -36,7 +36,7 @@ export class Script {
     const eventStrings: string[] = []
 
     const eventHandlerPairs = Object.entries(this.eventHandlers)
-    for (let [eventName, handlers] of eventHandlerPairs) {
+    for (const [eventName, handlers] of eventHandlerPairs) {
       if (eventName === '::before' || eventName === '::after') {
         continue
       }
@@ -47,7 +47,7 @@ export class Script {
         eventString += this.properties.map((property) => `  ${property.toString()}\n`).join('')
       }
 
-      for (let handler of handlers) {
+      for (const handler of handlers) {
         eventString += Script.handlerToString(handler)
       }
 
@@ -57,7 +57,7 @@ export class Script {
     }
 
     const subroutines: string[] = []
-    for (let subroutine of this.subroutines) {
+    for (const subroutine of this.subroutines) {
       subroutines.push(subroutine.toString())
     }
 
@@ -86,7 +86,7 @@ export class Script {
 
     const handlers = Object.values(this.eventHandlers).flat(1).filter(isUsesTextures)
 
-    for (let handler of handlers) {
+    for (const handler of handlers) {
       files = {
         ...files,
         ...(await handler.exportTextures(settings)),
@@ -119,7 +119,7 @@ export class Script {
 
     let result = ''
 
-    for (let h of tmp2) {
+    for (const h of tmp2) {
       const handlerResult = h instanceof ScriptCommand ? h.toString() : h
       const handlerResults = (Array.isArray(handlerResult) ? handlerResult : [handlerResult]) as string[]
       result += handlerResults.filter((r) => r.trim() !== '').join('\n') + '\n'

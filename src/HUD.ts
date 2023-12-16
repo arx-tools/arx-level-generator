@@ -28,7 +28,7 @@ export class HUD {
 
   hide(hudElement: HudElements | 'all') {
     if (hudElement === 'all') {
-      for (let key in this.elementVisibility) {
+      for (const key in this.elementVisibility) {
         this.elementVisibility[key as HudElements] = false
       }
     } else {
@@ -38,7 +38,7 @@ export class HUD {
 
   show(hudElement: HudElements | 'all') {
     if (hudElement === 'all') {
-      for (let key in this.elementVisibility) {
+      for (const key in this.elementVisibility) {
         this.elementVisibility[key as HudElements] = true
       }
     } else {

@@ -85,10 +85,10 @@ export const pickRandoms = <T>(n: number, set: T[]) => {
   if (set.length <= n) {
     return set
   } else {
-    let remaining = set.slice()
+    const remaining = set.slice()
     let matches: T[] = []
     for (let i = 0; i < n; i++) {
-      let idx = randomIntBetween(0, remaining.length - 1)
+      const idx = randomIntBetween(0, remaining.length - 1)
       matches = matches.concat(remaining.splice(idx, 1))
     }
     return matches

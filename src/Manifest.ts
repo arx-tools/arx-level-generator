@@ -59,7 +59,7 @@ export class Manifest {
 
     const manifest = (await Manifest.read(settings)) ?? { files: [] }
 
-    for (let file of manifest.files) {
+    for (const file of manifest.files) {
       try {
         await fs.rm(path.resolve(settings.outputDir, file))
       } catch (e: unknown) {}

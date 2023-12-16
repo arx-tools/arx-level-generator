@@ -24,7 +24,7 @@ export class TweakSkin extends ScriptCommand implements UsesTextures {
   }
 
   async exportTextures(settings: Settings) {
-    let files: Record<string, string> = {}
+    const files: Record<string, string> = {}
 
     const oldTexture = this.oldTexture
     if (typeof oldTexture !== 'string' && !oldTexture.isNative) {

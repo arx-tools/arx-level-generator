@@ -99,7 +99,7 @@ export class Audio {
   static exportReplacements(settings: Settings, type: AudioType = 'sfx') {
     const pairs: Record<string, string> = {}
 
-    for (let key in this.replacements) {
+    for (const key in this.replacements) {
       const [source] = this.replacements[key].exportSourceAndTarget(settings)
       const target = path.resolve(settings.outputDir, type, key)
       pairs[target] = source

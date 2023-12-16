@@ -382,31 +382,31 @@ export class ArxMap {
     const models: Record<string, string> = {}
     const otherDependencies: Record<string, string> = {}
 
-    for (let entity of this.entities) {
+    for (const entity of this.entities) {
       if (entity.hasScript()) {
         scripts[entity.exportScriptTarget(settings)] = entity.script.toArxData()
         const texturesToExport = await entity.script.exportTextures(settings)
-        for (let target in texturesToExport) {
+        for (const target in texturesToExport) {
           textures[target] = texturesToExport[target]
         }
       }
 
       if (entity.hasInventoryIcon()) {
         const texturesToExport = await entity.exportInventoryIcon(settings)
-        for (let target in texturesToExport) {
+        for (const target in texturesToExport) {
           textures[target] = texturesToExport[target]
         }
       }
 
       if (entity.hasModel()) {
         const modelToExport = await entity.model.exportSourceAndTarget(settings, entity.src)
-        for (let target in modelToExport) {
+        for (const target in modelToExport) {
           models[target] = modelToExport[target]
         }
       }
 
       const dependenciesToExport = await entity.exportOtherDependencies(settings)
-      for (let target in dependenciesToExport) {
+      for (const target in dependenciesToExport) {
         otherDependencies[target] = dependenciesToExport[target]
       }
     }
@@ -464,7 +464,7 @@ export class ArxMap {
     })
 
     // TODO: Promise.allSettled() ?
-    for (let task of tasks) {
+    for (const task of tasks) {
       await task
     }
 
@@ -480,7 +480,7 @@ export class ArxMap {
       ...Object.entries(sounds),
     ]
 
-    for (let [target, source] of filesToCopy) {
+    for (const [target, source] of filesToCopy) {
       await fs.copyFile(source, target)
     }
 

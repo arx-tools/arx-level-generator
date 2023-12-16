@@ -247,7 +247,7 @@ export class Entity {
   async exportOtherDependencies(settings: Settings) {
     const files: Record<string, string> = {}
 
-    for (let stuff of this.otherDependencies) {
+    for (const stuff of this.otherDependencies) {
       if (!stuff.isNative) {
         if (stuff instanceof Texture) {
           let hasTiledMaterialFlag = false
