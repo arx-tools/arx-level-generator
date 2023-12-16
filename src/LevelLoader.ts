@@ -4,6 +4,7 @@ import { DLF, FTS, LLF } from 'arx-convert'
 import { ArxDLF, ArxFTS, ArxLLF } from 'arx-convert/types'
 import { Settings } from '@src/Settings.js'
 import { OriginalLevel } from '@src/types.js'
+import { createCacheFolderIfNotExists } from '@services/cache.js'
 
 export class LevelLoader {
   levelIdx: OriginalLevel
@@ -30,12 +31,12 @@ export class LevelLoader {
   async readData(format: 'fts'): Promise<ArxFTS>
   async readData(format: 'llf'): Promise<ArxLLF>
   async readData(format: 'dlf' | 'fts' | 'llf'): Promise<ArxDLF | ArxFTS | ArxLLF> {
-    await this.createCacheFolderIfNotExists()
-
-    const parser = this.getParser(format)
-
     const jsonFolder = this.getJsonFolder()
     const jsonFilename = path.resolve(jsonFolder, './' + this.getFilename(format) + '.json')
+
+    await createCacheFolderIfNotExists(jsonFolder)
+
+    const parser = this.getParser(format)
 
     let data: ArxDLF | ArxFTS | ArxLLF
 
@@ -86,15 +87,5 @@ export class LevelLoader {
 
   private getBinaryFolder() {
     return path.resolve(this.settings.originalLevelFiles, `./arx-fatalis/level${this.levelIdx}`)
-  }
-
-  private async createCacheFolderIfNotExists() {
-    const jsonFolder = this.getJsonFolder()
-
-    try {
-      await fs.promises.access(jsonFolder, fs.promises.constants.R_OK | fs.promises.constants.W_OK)
-    } catch (e) {
-      await fs.promises.mkdir(jsonFolder, { recursive: true })
-    }
   }
 }
