@@ -1,4 +1,3 @@
-import fs from 'node:fs'
 import path from 'node:path'
 import { ArxTextureContainer } from 'arx-convert/types'
 import { Expand } from 'arx-convert/utils'
@@ -7,6 +6,7 @@ import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } f
 import { Settings } from '@src/Settings.js'
 import { any } from '@src/faux-ramda.js'
 import { fileExists } from '@src/helpers.js'
+import { createCacheFolderIfNotExists } from '@services/cache.js'
 import { getMetadata, getSharpInstance } from '@services/image.js'
 
 export type TextureConstructorProps = {
@@ -165,7 +165,7 @@ export class Texture extends ThreeJsTextue {
     const convertedSource = path.resolve(settings.cacheFolder, this.sourcePath ?? Texture.targetPath, newFilename)
     const convertedTarget = path.resolve(settings.outputDir, Texture.targetPath, newFilename)
 
-    await this.createCacheFolderIfNotExists(path.dirname(convertedSource))
+    await createCacheFolderIfNotExists(path.dirname(convertedSource))
 
     if (await fileExists(convertedSource)) {
       return [convertedSource, convertedTarget]
@@ -233,7 +233,7 @@ export class Texture extends ThreeJsTextue {
       return [convertedSource, convertedTarget]
     }
 
-    await this.createCacheFolderIfNotExists(path.dirname(convertedSource))
+    await createCacheFolderIfNotExists(path.dirname(convertedSource))
 
     if (await fileExists(convertedSource)) {
       this.alreadyMadeTileable = true
@@ -275,14 +275,6 @@ export class Texture extends ThreeJsTextue {
     this.alreadyMadeTileable = true
 
     return [convertedSource, convertedTarget]
-  }
-
-  private async createCacheFolderIfNotExists(folder: string) {
-    try {
-      await fs.promises.access(folder, fs.promises.constants.R_OK | fs.promises.constants.W_OK)
-    } catch (e) {
-      await fs.promises.mkdir(folder, { recursive: true })
-    }
   }
 
   /**

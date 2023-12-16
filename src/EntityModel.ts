@@ -9,6 +9,7 @@ import { Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { fileExists, roundToNDecimals } from '@src/helpers.js'
+import { createCacheFolderIfNotExists } from '@services/cache.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 import { Material } from './Material.js'
 
@@ -101,15 +102,6 @@ export class EntityModel {
     }
 
     return files
-  }
-
-  // TODO: this is the same as Texture.createCacheFolderIfNotExists
-  private async createCacheFolderIfNotExists(folder: string) {
-    try {
-      await fs.promises.access(folder, fs.promises.constants.R_OK | fs.promises.constants.W_OK)
-    } catch (e) {
-      await fs.promises.mkdir(folder, { recursive: true })
-    }
   }
 
   /**
@@ -307,7 +299,7 @@ export class EntityModel {
     }
 
     const ftl = FTL.save(ftlData)
-    await this.createCacheFolderIfNotExists(path.dirname(target))
+    await createCacheFolderIfNotExists(path.dirname(target))
     await fs.promises.writeFile(target, ftl)
 
     return target
