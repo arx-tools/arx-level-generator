@@ -6,5 +6,8 @@
   "env": {
     "node": true
   },
-  "rules": {}
+  "rules": {
+    "no-extra-semi": "off",
+    "no-empty": "off"
+  }
 }
