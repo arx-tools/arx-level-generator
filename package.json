@@ -76,7 +76,7 @@
   },
   "scripts": {
     "build": "tsc && tsc-alias",
-    "prepublishOnly": "rm -rf dist && npm run build",
+    "prepublishOnly": "npm run lint:fix && rm -rf dist && npm run build",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix"
   },
