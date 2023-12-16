@@ -4,6 +4,7 @@ import { FTL } from 'arx-convert'
 import { ArxAction, ArxFTL, ArxFaceType, ArxFace, ArxFtlVertex, ArxPolygonFlags } from 'arx-convert/types'
 import { Expand, QuadrupleOf, TripleOf } from 'arx-convert/utils'
 import { BufferAttribute, MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
+import { Material } from '@src/Material.js'
 import { Polygons } from '@src/Polygons.js'
 import { Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
@@ -11,7 +12,6 @@ import { Vector3 } from '@src/Vector3.js'
 import { fileExists, roundToNDecimals } from '@src/helpers.js'
 import { createCacheFolderIfNotExists } from '@services/cache.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
-import { Material } from './Material.js'
 
 type EntityModelConstructorProps = {
   filename: string

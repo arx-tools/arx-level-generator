@@ -1,7 +1,7 @@
 #!/usr/bin/env -S node --enable-source-maps
 import minimist from 'minimist-lite'
 import { Settings } from '@src/Settings.js'
-import { rungame } from './rungame.js'
+import { rungame } from '@src/bin/rungame.js'
 
 type AppArgs = {
   rungame: boolean
