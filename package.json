@@ -77,7 +77,8 @@
   "scripts": {
     "build": "tsc && tsc-alias",
     "prepublishOnly": "rm -rf dist && npm run build",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix"
   },
   "repository": {
     "type": "git",
