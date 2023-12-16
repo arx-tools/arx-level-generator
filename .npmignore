@@ -1,6 +1,7 @@
 .editorconfig
 .gitignore
 .prettierrc
+.eslintrc.json
 tsconfig.json
 
 scripts
