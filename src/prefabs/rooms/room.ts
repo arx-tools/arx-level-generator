@@ -33,7 +33,7 @@ export type RoomProps = {
 }
 
 const createFloor = (size: Vector3, textureDef: TextureDefinition, tileSize: number) => {
-  const { x: width, y: height, z: depth } = size
+  const { x: width, z: depth } = size
   const { texture } = textureDef
 
   const mesh = createPlaneMesh({

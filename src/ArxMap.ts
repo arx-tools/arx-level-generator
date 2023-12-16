@@ -172,7 +172,7 @@ export class ArxMap {
       portals: this.portals.map((portal) => portal.toArxPortal()),
       rooms: this.todo.rooms,
       roomDistances: this.todo.roomDistances,
-      ...(await this.polygons.toArxData(settings)),
+      ...(await this.polygons.toArxData()),
     }
 
     const llf: ArxLLF = {

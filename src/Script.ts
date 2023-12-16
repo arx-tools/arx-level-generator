@@ -1,4 +1,3 @@
-import { eventNames } from 'node:process'
 import { Settings } from '@src/Settings.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import { ScriptProperty } from '@scripting/ScriptProperty.js'

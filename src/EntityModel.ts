@@ -1,10 +1,9 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { FTL } from 'arx-convert'
-import { ArxAction, ArxFTL, ArxFaceType, ArxFace, ArxFtlVertex, ArxPolygonFlags } from 'arx-convert/types'
+import { ArxAction, ArxFTL, ArxFaceType, ArxFace, ArxFtlVertex } from 'arx-convert/types'
 import { Expand, QuadrupleOf, TripleOf } from 'arx-convert/utils'
 import { BufferAttribute, MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
-import { Material } from '@src/Material.js'
 import { Polygons } from '@src/Polygons.js'
 import { Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
@@ -278,20 +277,12 @@ export class EntityModel {
       if (Array.isArray(texture)) {
         texture.forEach((t) => {
           if (typeof t !== 'undefined') {
-            let willBeTiled = false
-            if (t instanceof Material) {
-              willBeTiled = (t.flags & ArxPolygonFlags.Tiled) > 0
-            }
             ftlData.textureContainers.push({
               filename: t.filename,
             })
           }
         })
       } else if (typeof texture !== 'undefined') {
-        let willBeTiled = false
-        if (texture instanceof Material) {
-          willBeTiled = (texture.flags & ArxPolygonFlags.Tiled) > 0
-        }
         ftlData.textureContainers.push({
           filename: texture.filename,
         })

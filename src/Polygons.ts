@@ -52,13 +52,13 @@ export class Polygons extends Array<Polygon> {
     return files
   }
 
-  async toArxData(settings: Settings) {
+  async toArxData() {
     const textureContainers = this.getTextureContainers()
 
     // watch out, we're mutating textureContainers!
     const arxPolygons: ArxPolygon[] = []
     for (const polygon of this) {
-      arxPolygons.push(await polygon.toArxPolygon(textureContainers, settings))
+      arxPolygons.push(await polygon.toArxPolygon(textureContainers))
     }
 
     const arxTextureContainers = textureContainers

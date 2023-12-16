@@ -6,7 +6,7 @@ import { Settings } from '@src/Settings.js'
 import { NO_TEXTURE_CONTAINER, Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
-import { isBetween, normalizeDegree, percentOf } from '@src/helpers.js'
+import { isBetween, percentOf } from '@src/helpers.js'
 import { ArxVertexWithColor } from '@src/types.js'
 
 export type TransparencyType = 'multiplicative' | 'additive' | 'blended' | 'subtractive'
@@ -134,10 +134,7 @@ export class Polygon {
     return typeof this.texture !== 'undefined'
   }
 
-  async toArxPolygon(
-    textureContainers: (ArxTextureContainer & { remaining: number })[],
-    settings: Settings,
-  ): Promise<ArxPolygon> {
+  async toArxPolygon(textureContainers: (ArxTextureContainer & { remaining: number })[]): Promise<ArxPolygon> {
     const vertices = this.vertices.map((vertex) => vertex.toArxVertex()) as QuadrupleOf<ArxVertex>
 
     let textureContainerId = NO_TEXTURE_CONTAINER
