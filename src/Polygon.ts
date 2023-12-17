@@ -2,7 +2,6 @@ import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVector3,
 import { MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf } from 'arx-convert/utils'
 import { Box3, Triangle } from 'three'
 import { Color } from '@src/Color.js'
-import { Settings } from '@src/Settings.js'
 import { NO_TEXTURE_CONTAINER, Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
