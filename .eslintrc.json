@@ -8,6 +8,7 @@
   },
   "rules": {
     "no-extra-semi": "off",
-    "no-empty": "off"
+    "no-empty": "off",
+    "@typescript-eslint/no-explicit-any": "off"
   }
 }
