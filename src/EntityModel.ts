@@ -108,7 +108,9 @@ export class EntityModel {
    */
   private async generateFtl(settings: Settings, targetName: string) {
     const { name: entityName } = path.parse(targetName)
-    const target = path.resolve(settings.cacheFolder, EntityModel.targetPath, targetName, `${entityName}.ftl`)
+
+    const targetFolder = await createCacheFolderIfNotExists(path.join(EntityModel.targetPath, targetName), settings)
+    const target = path.join(targetFolder, `${entityName}.ftl`)
 
     if (await fileExists(target)) {
       return target
@@ -290,7 +292,6 @@ export class EntityModel {
     }
 
     const ftl = FTL.save(ftlData)
-    await createCacheFolderIfNotExists(path.dirname(target))
     await fs.writeFile(target, ftl)
 
     return target

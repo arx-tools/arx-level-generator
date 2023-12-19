@@ -31,10 +31,8 @@ export class LevelLoader {
   async readData(format: 'fts'): Promise<ArxFTS>
   async readData(format: 'llf'): Promise<ArxLLF>
   async readData(format: 'dlf' | 'fts' | 'llf'): Promise<ArxDLF | ArxFTS | ArxLLF> {
-    const jsonFolder = this.getJsonFolder()
+    const jsonFolder = await createCacheFolderIfNotExists(this.getCachedJsonFolder(), this.settings)
     const jsonFilename = path.resolve(jsonFolder, './' + this.getFilename(format) + '.json')
-
-    await createCacheFolderIfNotExists(jsonFolder)
 
     const parser = this.getParser(format)
 
@@ -81,8 +79,8 @@ export class LevelLoader {
     return `level${this.levelIdx}.${format}`
   }
 
-  private getJsonFolder() {
-    return path.resolve(this.settings.cacheFolder, `./levels/level${this.levelIdx}`)
+  private getCachedJsonFolder() {
+    return `./levels/level${this.levelIdx}`
   }
 
   private getBinaryFolder() {

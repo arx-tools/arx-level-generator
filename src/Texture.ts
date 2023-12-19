@@ -162,10 +162,10 @@ export class Texture extends ThreeJsTextue {
     const newFilename = hasSupportedFormat ? this.filename : `${name}.jpg`
 
     const originalSource = this.getFilename(settings)
-    const convertedSource = path.resolve(settings.cacheFolder, this.sourcePath ?? Texture.targetPath, newFilename)
     const convertedTarget = path.resolve(settings.outputDir, Texture.targetPath, newFilename)
 
-    await createCacheFolderIfNotExists(path.dirname(convertedSource))
+    const convertedSourceFolder = await createCacheFolderIfNotExists(this.sourcePath ?? Texture.targetPath, settings)
+    const convertedSource = path.join(convertedSourceFolder, newFilename)
 
     if (await fileExists(convertedSource)) {
       return [convertedSource, convertedTarget]
@@ -226,14 +226,14 @@ export class Texture extends ThreeJsTextue {
     const newFilename = hasSupportedFormat ? this.filename : `${name}.jpg`
 
     const originalSource = this.getFilename(settings)
-    const convertedSource = path.resolve(settings.cacheFolder, this.sourcePath ?? Texture.targetPath, newFilename)
     const convertedTarget = path.resolve(settings.outputDir, Texture.targetPath, newFilename)
+
+    const convertedSourceFolder = await createCacheFolderIfNotExists(this.sourcePath ?? Texture.targetPath, settings)
+    const convertedSource = path.join(convertedSourceFolder, newFilename)
 
     if (this.alreadyMadeTileable) {
       return [convertedSource, convertedTarget]
     }
-
-    await createCacheFolderIfNotExists(path.dirname(convertedSource))
 
     if (await fileExists(convertedSource)) {
       this.alreadyMadeTileable = true
