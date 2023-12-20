@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { BufferGeometry, Euler, Mesh, Object3D, Vector3 as ThreeJsVector3 } from 'three'
+import { Box3, BufferGeometry, Euler, Mesh, Object3D, Vector3 as ThreeJsVector3 } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { mean } from '@src/faux-ramda.js'
 
@@ -156,4 +156,18 @@ export const normalizeDegree = (degree: number) => {
 
 export const numberOfVertices = (geometry: BufferGeometry) => {
   return geometry.getAttribute('position').array.length / 3
+}
+
+/**
+ * Expands a 3D point into a Box3 object with the given size
+ *
+ * @param point - the center of the box
+ * @param size - sidelength/diameter of the box
+ * @returns the generated Box3 object
+ */
+export const pointToBox = (point: Vector3, size: number | Vector3) => {
+  size = typeof size === 'number' ? new Vector3(size, size, size) : size
+  const min = point.clone().sub(size)
+  const max = point.clone().add(size)
+  return new Box3(min, max)
 }
