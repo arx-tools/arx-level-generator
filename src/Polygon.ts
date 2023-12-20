@@ -10,6 +10,8 @@ import { ArxVertexWithColor } from '@src/types.js'
 
 export type TransparencyType = 'multiplicative' | 'additive' | 'blended' | 'subtractive'
 
+const DEFAULT_ROOM_ID = 1
+
 type PolygonConfig = {
   /** setting this to true will prevent calculation of norm, norm2 and normals properties */
   areNormalsCalculated: boolean
@@ -64,7 +66,7 @@ export class Polygon {
     this.normals = props.normals
     this.transval = props.transval ?? 0
     this.area = props.area ?? 0
-    this.room = props.room ?? 1
+    this.room = props.room ?? DEFAULT_ROOM_ID
     this.paddy = props.paddy
     this.config = { ...this.config, ...(props.config ?? {}) }
   }

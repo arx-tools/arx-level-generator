@@ -22,6 +22,10 @@ export type MeshImportProps = {
   tryToQuadify?: typeof QUADIFY | typeof DONT_QUADIFY
   shading?: typeof SHADING_FLAT | typeof SHADING_SMOOTH
   flags?: ArxPolygonFlags
+  /**
+   * room id - used when a map has portals, default value is undefined (the Polygon constructor will handle it)
+   */
+  room?: number
 }
 
 type TextureContainer = ArxTextureContainer & { remaining: number; maxRemaining: number }
@@ -140,7 +144,7 @@ export class Polygons extends Array<Polygon> {
       applyTransformations(threeJsObj)
     }
 
-    const { tryToQuadify = QUADIFY, shading = SHADING_FLAT, flags = ArxPolygonFlags.None } = meshImportProps
+    const { tryToQuadify = QUADIFY, shading = SHADING_FLAT, flags = ArxPolygonFlags.None, room } = meshImportProps
     const polygons = new Polygons()
 
     if (threeJsObj instanceof Mesh) {
@@ -221,6 +225,7 @@ export class Polygons extends Array<Polygon> {
               texture: currentTexture,
               flags: currentTexture instanceof Material ? currentTexture.flags | flags : flags,
               isQuad: true,
+              room,
             })
             if (currentTexture instanceof Material && currentTexture.opacity !== 100) {
               polygon.setOpacity(currentTexture.opacity, currentTexture.opacityMode)
