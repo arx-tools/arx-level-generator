@@ -397,14 +397,14 @@ export class Polygons extends Array<Polygon> {
    * selects polygons based on a given predicate
    * if there are already polygons selected then this filters those further
    */
-  selectBy(predicate: (polygon: Polygon) => boolean) {
+  selectBy(predicate: (polygon: Polygon, idx: number) => boolean) {
     if (!this.hasSelection()) {
       this.selectAll()
     }
 
     this.selection = this.selection.filter((idx) => {
       const polygon = this[idx]
-      return predicate(polygon)
+      return predicate(polygon, idx)
     })
 
     return this
@@ -423,6 +423,13 @@ export class Polygons extends Array<Polygon> {
 
   selectByTextures(textures: (Texture | string)[]) {
     return this.selectBy((polygon) => polygon.texture?.equalsAny(textures) ?? false)
+  }
+
+  invertSelection() {
+    const oldSelection = this.selection
+    return this.selectBy((polygon, idx) => {
+      return !oldSelection.includes(idx)
+    })
   }
 
   /**
