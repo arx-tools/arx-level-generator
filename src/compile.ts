@@ -19,17 +19,27 @@ const compileFTS = async (settings: Settings, fts: ArxFTS) => {
   const repackedFts = FTS.save(fts)
   const { total: ftsHeaderSize } = getHeaderSize(repackedFts, 'fts')
 
-  Readable.from(repackedFts)
-    .pipe(
-      through(
-        transformSplitBy(
-          splitAt(ftsHeaderSize),
-          transformIdentity(),
-          implode(Compression.Binary, DictionarySize.Large),
+  return new Promise((resolve, reject) => {
+    const writeStream = fs.createWriteStream(path.join(ftsPath, 'fast.fts'))
+    writeStream
+      .on('close', () => {
+        resolve(true)
+      })
+      .on('error', (e) => {
+        reject(e)
+      })
+    Readable.from(repackedFts)
+      .pipe(
+        through(
+          transformSplitBy(
+            splitAt(ftsHeaderSize),
+            transformIdentity(),
+            implode(Compression.Binary, DictionarySize.Large),
+          ),
         ),
-      ),
-    )
-    .pipe(fs.createWriteStream(path.join(ftsPath, 'fast.fts')))
+      )
+      .pipe(writeStream)
+  })
 }
 
 const compileLLF = async (settings: Settings, llf: ArxLLF) => {
@@ -38,17 +48,27 @@ const compileLLF = async (settings: Settings, llf: ArxLLF) => {
   const repackedLlf = LLF.save(llf)
   const { total: llfHeaderSize } = getHeaderSize(repackedLlf, 'llf')
 
-  Readable.from(repackedLlf)
-    .pipe(
-      through(
-        transformSplitBy(
-          splitAt(llfHeaderSize),
-          transformIdentity(),
-          implode(Compression.Binary, DictionarySize.Large),
+  return new Promise((resolve, reject) => {
+    const writeStream = fs.createWriteStream(path.join(llfPath, `level${settings.levelIdx}.llf`))
+    writeStream
+      .on('close', () => {
+        resolve(true)
+      })
+      .on('error', (e) => {
+        reject(e)
+      })
+    Readable.from(repackedLlf)
+      .pipe(
+        through(
+          transformSplitBy(
+            splitAt(llfHeaderSize),
+            transformIdentity(),
+            implode(Compression.Binary, DictionarySize.Large),
+          ),
         ),
-      ),
-    )
-    .pipe(fs.createWriteStream(path.join(llfPath, `level${settings.levelIdx}.llf`)))
+      )
+      .pipe(writeStream)
+  })
 }
 
 const compileDLF = async (settings: Settings, dlf: ArxDLF) => {
@@ -57,17 +77,27 @@ const compileDLF = async (settings: Settings, dlf: ArxDLF) => {
   const repackedDlf = DLF.save(dlf)
   const { total: dlfHeaderSize } = getHeaderSize(repackedDlf, 'dlf')
 
-  Readable.from(repackedDlf)
-    .pipe(
-      through(
-        transformSplitBy(
-          splitAt(dlfHeaderSize),
-          transformIdentity(),
-          implode(Compression.Binary, DictionarySize.Large),
+  return new Promise((resolve, reject) => {
+    const writeStream = fs.createWriteStream(path.join(dlfPath, `level${settings.levelIdx}.dlf`))
+    writeStream
+      .on('close', () => {
+        resolve(true)
+      })
+      .on('error', (e) => {
+        reject(e)
+      })
+    Readable.from(repackedDlf)
+      .pipe(
+        through(
+          transformSplitBy(
+            splitAt(dlfHeaderSize),
+            transformIdentity(),
+            implode(Compression.Binary, DictionarySize.Large),
+          ),
         ),
-      ),
-    )
-    .pipe(fs.createWriteStream(path.join(dlfPath, `level${settings.levelIdx}.dlf`)))
+      )
+      .pipe(writeStream)
+  })
 }
 
 const hasDotnet6OrNewer = async () => {
