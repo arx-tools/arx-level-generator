@@ -239,6 +239,7 @@ export class Polygons extends Array<Polygon> {
             vertices: [...previousPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
             texture: currentTexture,
             flags: currentTexture instanceof Material ? currentTexture.flags | flags : flags,
+            room,
           })
           if (currentTexture instanceof Material && currentTexture.opacity !== 100) {
             polygon.setOpacity(currentTexture.opacity, currentTexture.opacityMode)
@@ -258,6 +259,7 @@ export class Polygons extends Array<Polygon> {
             vertices: [...previousPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
             texture: currentTexture,
             flags: currentTexture instanceof Material ? currentTexture.flags | flags : flags,
+            room,
           })
           if (currentTexture instanceof Material && currentTexture.opacity !== 100) {
             polygon.setOpacity(currentTexture.opacity, currentTexture.opacityMode)
@@ -277,6 +279,7 @@ export class Polygons extends Array<Polygon> {
             vertices: [...currentPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
             texture: currentTexture,
             flags: (currentTexture instanceof Material ? currentTexture.flags | flags : flags) & ~ArxPolygonFlags.Quad,
+            room,
           })
           if (currentTexture instanceof Material && currentTexture.opacity !== 100) {
             polygon.setOpacity(currentTexture.opacity, currentTexture.opacityMode)
