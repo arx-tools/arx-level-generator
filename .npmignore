@@ -4,5 +4,7 @@
 .eslintrc.json
 tsconfig.json
 
+dist/tsconfig.tsbuildinfo
+
 scripts
 src
