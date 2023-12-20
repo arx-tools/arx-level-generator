@@ -166,7 +166,7 @@ export const numberOfVertices = (geometry: BufferGeometry) => {
  * @returns the generated Box3 object
  */
 export const pointToBox = (point: Vector3, size: number | Vector3) => {
-  size = typeof size === 'number' ? new Vector3(size, size, size) : size
+  size = typeof size === 'number' ? new Vector3(size / 2, size / 2, size / 2) : size.divideScalar(2)
   const min = point.clone().sub(size)
   const max = point.clone().add(size)
   return new Box3(min, max)
