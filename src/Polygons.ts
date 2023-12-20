@@ -427,7 +427,7 @@ export class Polygons extends Array<Polygon> {
 
   invertSelection() {
     const oldSelection = this.selection
-    return this.selectBy((polygon, idx) => {
+    return this.selectAll().selectBy((polygon, idx) => {
       return !oldSelection.includes(idx)
     })
   }
