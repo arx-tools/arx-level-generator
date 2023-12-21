@@ -438,10 +438,35 @@ export class Polygons extends Array<Polygon> {
   }
 
   invertSelection() {
-    const oldSelection = this.selection
-    return this.selectAll().selectBy((polygon, idx) => {
-      return !oldSelection.includes(idx)
-    })
+    // none selected -> all selected
+    if (this.selection.length === 0) {
+      return this.selectAll()
+    }
+
+    // all selected -> none selected
+    if (this.selection.length === this.length) {
+      return this.clearSelection()
+    }
+
+    const selection = this.selection.toSorted((a, b) => a - b)
+
+    this.selection = []
+
+    let idx = 0
+    let current = selection[idx]
+
+    for (let candidate = 0; candidate < this.length; candidate++) {
+      if (candidate === current) {
+        if (idx < selection.length) {
+          idx += 1
+          current = selection[idx]
+        }
+      } else {
+        this.selection.push(candidate)
+      }
+    }
+
+    return this
   }
 
   /**
