@@ -396,6 +396,10 @@ export class Polygons extends Array<Polygon> {
     return this.selection.length > 0
   }
 
+  sizeOfSelection() {
+    return this.selection.length
+  }
+
   selectAll() {
     this.selection = Array.from(this.keys())
     return this
