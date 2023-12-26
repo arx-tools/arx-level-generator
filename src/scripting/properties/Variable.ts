@@ -21,6 +21,15 @@ export class Variable<T> extends ScriptProperty<T> {
   private propName: string
   private startUninitialized: boolean
 
+  constructor(type: 'bool' | 'global bool', name: string, value: T extends boolean ? T : never)
+  // prettier-ignore
+  constructor(type: 'bool' | 'global bool', name: string, value: T extends boolean ? T : never, startUninitialized: boolean)
+  constructor(type: 'int' | 'float' | 'global int' | 'global float', name: string, value: T extends number ? T : never)
+  // prettier-ignore
+  constructor(type: 'int' | 'float' | 'global int' | 'global float', name: string, value: T extends number ? T : never, startUninitialized: boolean)
+  constructor(type: 'string' | 'global string', name: string, value: T extends string ? T : never)
+  // prettier-ignore
+  constructor(type: 'string' | 'global string', name: string, value: T extends string ? T : never, startUninitialized: boolean)
   constructor(type: VariableType, name: string, value: T, startUninitialized: boolean = false) {
     super(value)
     this.propType = type
