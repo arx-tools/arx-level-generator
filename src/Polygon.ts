@@ -159,7 +159,7 @@ export class Polygon {
     return {
       vertices,
       norm: this.norm.toArxVector3(),
-      norm2: this.norm.toArxVector3(),
+      norm2: this.norm2.toArxVector3(),
       textureContainerId,
       flags: this.flags,
       normals,
