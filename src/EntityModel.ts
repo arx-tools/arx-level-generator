@@ -84,11 +84,17 @@ export class EntityModel {
    * targetName is the folder relative to EntityModel.targetPath without the filename,
    * for example `items/quest_item/mirror`
    */
-  async exportSourceAndTarget(settings: Settings, targetName: string) {
+  async exportSourceAndTarget(
+    settings: Settings,
+    targetName: string,
+    exportJsonFiles: boolean = false,
+    prettify: boolean = false,
+  ) {
     const files: Record<string, string> = {}
 
     const { name: entityName } = path.parse(targetName)
     const binaryTarget = path.resolve(settings.outputDir, EntityModel.targetPath, targetName, `${entityName}.ftl`)
+    const jsonTarget = `${binaryTarget}.json`
 
     if (typeof this.mesh === 'undefined') {
       const binarySource = path.resolve(settings.assetsDir, this.sourcePath, this.filename)
@@ -100,16 +106,29 @@ export class EntityModel {
       )
 
       const cachedBinaryTarget = path.join(cacheTargetFolder, `${entityName}.ftl`)
+      const cachedJsonTarget = `${cachedBinaryTarget}.json`
 
-      if (await fileExists(cachedBinaryTarget)) {
-        files[cachedBinaryTarget] = cachedBinaryTarget
-      } else {
+      let binaryChanged = false
+
+      if (!(await fileExists(cachedBinaryTarget))) {
         const ftlData = this.generateFtl(entityName)
-
         const ftl = FTL.save(ftlData)
         await fs.writeFile(cachedBinaryTarget, ftl)
+        binaryChanged = true
+      }
 
-        files[binaryTarget] = cachedBinaryTarget
+      files[binaryTarget] = cachedBinaryTarget
+
+      if (exportJsonFiles) {
+        if (binaryChanged || !(await fileExists(cachedJsonTarget))) {
+          const ftlData = this.generateFtl(entityName)
+          const ftl = FTL.save(ftlData)
+
+          const stringifiedFtl = prettify ? JSON.stringify(ftl, null, 2) : JSON.stringify(ftl)
+          await fs.writeFile(cachedJsonTarget, stringifiedFtl)
+        }
+
+        files[jsonTarget] = cachedJsonTarget
       }
     }
 

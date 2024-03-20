@@ -399,7 +399,7 @@ export class ArxMap {
       }
 
       if (entity.hasModel()) {
-        const modelToExport = await entity.model.exportSourceAndTarget(settings, entity.src)
+        const modelToExport = await entity.model.exportSourceAndTarget(settings, entity.src, exportJsonFiles, prettify)
         for (const target in modelToExport) {
           models[target] = modelToExport[target]
         }
