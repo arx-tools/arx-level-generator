@@ -98,12 +98,13 @@ export class EntityModel {
         path.join(EntityModel.targetPath, targetName),
         settings,
       )
+
       const cachedBinaryTarget = path.join(cacheTargetFolder, `${entityName}.ftl`)
 
       if (await fileExists(cachedBinaryTarget)) {
         files[cachedBinaryTarget] = cachedBinaryTarget
       } else {
-        const ftlData = await this.generateFtl(settings, entityName)
+        const ftlData = this.generateFtl(entityName)
 
         const ftl = FTL.save(ftlData)
         await fs.writeFile(cachedBinaryTarget, ftl)
@@ -118,7 +119,7 @@ export class EntityModel {
   /**
    * this method assumes that this.mesh is defined
    */
-  private async generateFtl(settings: Settings, entityName: string) {
+  private generateFtl(entityName: string) {
     const ftlData: ArxFTL = {
       header: {
         origin: this.originIdx,
