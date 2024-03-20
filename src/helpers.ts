@@ -3,7 +3,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { Box3, BufferGeometry, Euler, Mesh, Object3D, Vector3 as ThreeJsVector3 } from 'three'
 import { Vector3 } from '@src/Vector3.js'
-import { mean } from '@src/faux-ramda.js'
+import { mean, repeat } from '@src/faux-ramda.js'
 
 export type PackageJsonProps = {
   name: string
@@ -170,4 +170,15 @@ export const pointToBox = (point: Vector3, size: number | Vector3) => {
   const min = point.clone().sub(size)
   const max = point.clone().add(size)
   return new Box3(min, max)
+}
+
+/**
+ * This function also cuts the array to the given size!
+ *
+ * `arrayPadRight(4, undefined, [1, 2]) -> [1, 2, undefined, undefined]`
+ *
+ * `arrayPadRight(4, undefined, [1, 2, 3, 4, 5, 6]) -> [1, 2, 3, 4]`
+ */
+export const arrayPadRight = <T>(length: number, paddingValue: T, array: T[]) => {
+  return [...array, ...repeat(paddingValue, length)].slice(0, length)
 }

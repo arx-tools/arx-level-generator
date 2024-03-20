@@ -8,7 +8,7 @@ import { Polygons } from '@src/Polygons.js'
 import { Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
-import { fileExists, roundToNDecimals } from '@src/helpers.js'
+import { arrayPadRight, fileExists, roundToNDecimals } from '@src/helpers.js'
 import { createCacheFolderIfNotExists } from '@services/cache.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 import { repeat } from './faux-ramda.js'
@@ -275,15 +275,15 @@ export class EntityModel {
 
       const numberOfGroups = geometry.groups.length === 0 ? 1 : geometry.groups.length
 
-      let texture: (Texture | undefined)[] = []
+      let textures: (Texture | undefined)[] = []
       if (material instanceof MeshBasicMaterial) {
         if (material.map instanceof Texture) {
-          texture = repeat(material.map, numberOfGroups)
+          textures = repeat(material.map, numberOfGroups)
         } else {
           console.warn('[warning] EntityModel: Unsupported texture map in material when adding threejs mesh')
         }
       } else if (Array.isArray(material)) {
-        texture = material.map((material) => {
+        textures = material.map((material) => {
           if (material instanceof MeshBasicMaterial) {
             if (material.map instanceof Texture) {
               return material.map
@@ -300,10 +300,10 @@ export class EntityModel {
         console.warn('[warning] EntityModel: Unsupported material found when adding threejs mesh')
       }
 
-      ;[...texture, ...repeat(undefined, numberOfGroups)].slice(0, numberOfGroups).forEach((t) => {
-        ftlData.textureContainers.push({
+      ftlData.textureContainers = arrayPadRight(numberOfGroups, undefined, textures).map((t) => {
+        return {
           filename: t?.filename ?? '<missing material>',
-        })
+        }
       })
     }
 
