@@ -11,6 +11,7 @@ import { Vector3 } from '@src/Vector3.js'
 import { fileExists, roundToNDecimals } from '@src/helpers.js'
 import { createCacheFolderIfNotExists } from '@services/cache.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
+import { repeat } from './faux-ramda.js'
 
 type EntityModelConstructorProps = {
   filename: string
@@ -272,10 +273,12 @@ export class EntityModel {
         }
       })
 
-      let texture: Texture | undefined | (Texture | undefined)[] = undefined
+      const numberOfGroups = geometry.groups.length === 0 ? 1 : geometry.groups.length
+
+      let texture: (Texture | undefined)[] = []
       if (material instanceof MeshBasicMaterial) {
         if (material.map instanceof Texture) {
-          texture = material.map
+          texture = repeat(material.map, numberOfGroups)
         } else {
           console.warn('[warning] EntityModel: Unsupported texture map in material when adding threejs mesh')
         }
@@ -297,19 +300,11 @@ export class EntityModel {
         console.warn('[warning] EntityModel: Unsupported material found when adding threejs mesh')
       }
 
-      if (Array.isArray(texture)) {
-        texture.forEach((t) => {
-          if (typeof t !== 'undefined') {
-            ftlData.textureContainers.push({
-              filename: t.filename,
-            })
-          }
-        })
-      } else if (typeof texture !== 'undefined') {
+      ;[...texture, ...repeat(undefined, numberOfGroups)].slice(0, numberOfGroups).forEach((t) => {
         ftlData.textureContainers.push({
-          filename: texture.filename,
+          filename: t?.filename ?? '<missing material>',
         })
-      }
+      })
     }
 
     return ftlData
