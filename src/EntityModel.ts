@@ -85,19 +85,31 @@ export class EntityModel {
    * for example `items/quest_item/mirror`
    */
   async exportSourceAndTarget(settings: Settings, targetName: string) {
-    let source: string
-
-    if (typeof this.mesh === 'undefined') {
-      source = path.resolve(settings.assetsDir, this.sourcePath, this.filename)
-    } else {
-      source = await this.generateFtl(settings, targetName)
-    }
+    const files: Record<string, string> = {}
 
     const { name: entityName } = path.parse(targetName)
-    const target = path.resolve(settings.outputDir, EntityModel.targetPath, targetName, `${entityName}.ftl`)
+    const binaryTarget = path.resolve(settings.outputDir, EntityModel.targetPath, targetName, `${entityName}.ftl`)
 
-    const files: Record<string, string> = {
-      [target]: source,
+    if (typeof this.mesh === 'undefined') {
+      const binarySource = path.resolve(settings.assetsDir, this.sourcePath, this.filename)
+      files[binaryTarget] = binarySource
+    } else {
+      const cacheTargetFolder = await createCacheFolderIfNotExists(
+        path.join(EntityModel.targetPath, targetName),
+        settings,
+      )
+      const cachedBinaryTarget = path.join(cacheTargetFolder, `${entityName}.ftl`)
+
+      if (await fileExists(cachedBinaryTarget)) {
+        files[cachedBinaryTarget] = cachedBinaryTarget
+      } else {
+        const ftlData = await this.generateFtl(settings, entityName)
+
+        const ftl = FTL.save(ftlData)
+        await fs.writeFile(cachedBinaryTarget, ftl)
+
+        files[binaryTarget] = cachedBinaryTarget
+      }
     }
 
     return files
@@ -106,16 +118,7 @@ export class EntityModel {
   /**
    * this method assumes that this.mesh is defined
    */
-  private async generateFtl(settings: Settings, targetName: string) {
-    const { name: entityName } = path.parse(targetName)
-
-    const targetFolder = await createCacheFolderIfNotExists(path.join(EntityModel.targetPath, targetName), settings)
-    const target = path.join(targetFolder, `${entityName}.ftl`)
-
-    if (await fileExists(target)) {
-      return target
-    }
-
+  private async generateFtl(settings: Settings, entityName: string) {
     const ftlData: ArxFTL = {
       header: {
         origin: this.originIdx,
@@ -291,9 +294,6 @@ export class EntityModel {
       }
     }
 
-    const ftl = FTL.save(ftlData)
-    await fs.writeFile(target, ftl)
-
-    return target
+    return ftlData
   }
 }
