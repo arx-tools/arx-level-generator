@@ -122,9 +122,7 @@ export class EntityModel {
       if (exportJsonFiles) {
         if (binaryChanged || !(await fileExists(cachedJsonTarget))) {
           const ftlData = this.generateFtl(entityName)
-          const ftl = FTL.save(ftlData)
-
-          const stringifiedFtl = prettify ? JSON.stringify(ftl, null, 2) : JSON.stringify(ftl)
+          const stringifiedFtl = prettify ? JSON.stringify(ftlData, null, 2) : JSON.stringify(ftlData)
           await fs.writeFile(cachedJsonTarget, stringifiedFtl)
         }
 
