@@ -21,6 +21,19 @@ export class Path {
     this.points = props.points
   }
 
+  clone() {
+    return new Path({
+      name: this.name,
+      points: this.points.map((point) => {
+        return {
+          position: point.position.clone(),
+          type: point.type,
+          time: point.time,
+        }
+      }),
+    })
+  }
+
   static fromArxPath(path: ArxPath) {
     return new Path({
       name: path.name,
@@ -45,5 +58,11 @@ export class Path {
         }
       }),
     }
+  }
+
+  move(offset: Vector3) {
+    this.points.forEach((point) => {
+      point.position.add(offset)
+    })
   }
 }

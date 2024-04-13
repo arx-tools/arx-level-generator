@@ -266,6 +266,10 @@ export class Entity {
     return files
   }
 
+  move(offset: Vector3) {
+    this.position.add(offset)
+  }
+
   // ----------------
 
   static get marker() {

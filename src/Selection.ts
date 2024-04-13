@@ -1,19 +1,20 @@
 import { Box3 } from 'three'
-import { Polygon } from '@src/Polygon.js'
+import { Entities } from '@src/Entities.js'
+import { Fog } from '@src/Fog.js'
+import { Lights } from '@src/Lights.js'
+import { Path } from '@src/Path.js'
 import { Polygons } from '@src/Polygons.js'
 import { Texture } from '@src/Texture.js'
+import { Vector3 } from '@src/Vector3.js'
+import { Zone } from '@src/Zone.js'
 import { groupSequences } from '@src/faux-ramda.js'
-import { Vector3 } from './Vector3.js'
 
-export abstract class Selection {
+export abstract class Selection<T extends Array<any>> {
   protected selection: number[] = []
+  protected items: T
 
-  // TODO: make this non-dependant of the Polygon/Polygons classes
-  protected items: Polygons
-
-  // TODO: make this non-dependant of the Polygon/Polygons classes
-  constructor(polygons: Polygons) {
-    this.items = polygons
+  constructor(items: T) {
+    this.items = items
   }
 
   deselect() {
@@ -34,12 +35,11 @@ export abstract class Selection {
     return this
   }
 
-  // TODO: make this non-dependant of the Polygon/Polygons classes
   /**
    * selects items based on a given predicate
    * if there are already items selected then this filters those further
    */
-  selectBy(predicate: (polygon: Polygon, idx: number) => boolean) {
+  selectBy(predicate: (item: T[0], idx: number) => boolean) {
     if (this.isEmpty()) {
       this.selectAll()
     }
@@ -105,8 +105,7 @@ export abstract class Selection {
     return selectedAmount
   }
 
-  // TODO: make this non-dependant of the Polygon/Polygons classes
-  apply(fn: (polygon: Polygon, idx: number) => void) {
+  apply(fn: (item: T[0], idx: number) => void) {
     const applyToAll = this.isEmpty()
 
     if (applyToAll) {
@@ -114,8 +113,8 @@ export abstract class Selection {
     }
 
     this.selection.forEach((idx) => {
-      const polygon = this.items[idx]
-      fn(polygon, idx)
+      const item = this.items[idx]
+      fn(item, idx)
     })
 
     if (applyToAll) {
@@ -128,7 +127,9 @@ export abstract class Selection {
   abstract copy(): this
 }
 
-export class PolygonSelection extends Selection {
+// ----------------------------------------
+
+export class PolygonSelection extends Selection<Polygons> {
   copy() {
     const applyToAll = this.isEmpty()
 
@@ -201,16 +202,172 @@ export class PolygonSelection extends Selection {
   }
 }
 
-const instances = new WeakMap<Polygons, Selection>()
+export class LightsSelection extends Selection<Lights> {
+  copy() {
+    const applyToAll = this.isEmpty()
 
-export const $ = (items: Selection | Polygons) => {
+    if (applyToAll) {
+      this.selectAll()
+    }
+
+    const copiedItems = this.selection.map((idx) => this.items[idx].clone())
+
+    if (applyToAll) {
+      this.deselect()
+    }
+
+    return new LightsSelection(new Lights(...copiedItems)) as this
+  }
+
+  move(offset: Vector3) {
+    return this.apply((light) => {
+      light.position.add(offset)
+    })
+  }
+}
+
+export class EntitiesSelection extends Selection<Entities> {
+  copy() {
+    const applyToAll = this.isEmpty()
+
+    if (applyToAll) {
+      this.selectAll()
+    }
+
+    const copiedItems = this.selection.map((idx) => this.items[idx].clone())
+
+    if (applyToAll) {
+      this.deselect()
+    }
+
+    return new EntitiesSelection(new Entities(...copiedItems)) as this
+  }
+
+  move(offset: Vector3) {
+    return this.apply((entity) => {
+      entity.move(offset)
+    })
+  }
+}
+
+export class FogsSelection extends Selection<Fog[]> {
+  copy() {
+    const applyToAll = this.isEmpty()
+
+    if (applyToAll) {
+      this.selectAll()
+    }
+
+    const copiedItems = this.selection.map((idx) => this.items[idx].clone())
+
+    if (applyToAll) {
+      this.deselect()
+    }
+
+    return new FogsSelection(copiedItems) as this
+  }
+
+  move(offset: Vector3) {
+    return this.apply((fog) => {
+      fog.move(offset)
+    })
+  }
+}
+
+export class PathsSelection extends Selection<Path[]> {
+  copy() {
+    const applyToAll = this.isEmpty()
+
+    if (applyToAll) {
+      this.selectAll()
+    }
+
+    const copiedItems = this.selection.map((idx) => this.items[idx].clone())
+
+    if (applyToAll) {
+      this.deselect()
+    }
+
+    return new PathsSelection(copiedItems) as this
+  }
+
+  move(offset: Vector3) {
+    return this.apply((path) => {
+      path.move(offset)
+    })
+  }
+}
+
+export class ZonesSelection extends Selection<Zone[]> {
+  copy() {
+    const applyToAll = this.isEmpty()
+
+    if (applyToAll) {
+      this.selectAll()
+    }
+
+    const copiedItems = this.selection.map((idx) => this.items[idx].clone())
+
+    if (applyToAll) {
+      this.deselect()
+    }
+
+    return new ZonesSelection(copiedItems) as this
+  }
+
+  move(offset: Vector3) {
+    return this.apply((zone) => {
+      zone.move(offset)
+    })
+  }
+}
+
+// ----------------------------------------
+
+type ArrayLikeArxTypes = Polygons | Lights | Entities | Fog[] | Path[] | Zone[]
+
+const instances = new WeakMap<ArrayLikeArxTypes, Selection<ArrayLikeArxTypes>>()
+
+type OverloadsOf$ = {
+  <U extends Array<any>, T extends Selection<U>>(items: T): T
+  (items: Polygons): PolygonSelection
+  (items: Entities): EntitiesSelection
+  (items: Lights): LightsSelection
+  (items: Fog[]): FogsSelection
+  (items: Path[]): PathsSelection
+  (items: Zone[]): ZonesSelection
+}
+
+export const $: OverloadsOf$ = <U extends Array<any>, T extends Selection<U>>(items: T | ArrayLikeArxTypes) => {
   if (items instanceof Selection) {
     return items
   }
 
   let instance = instances.get(items)
   if (instance === undefined) {
-    instance = new PolygonSelection(items)
+    if (items instanceof Polygons) {
+      instance = new PolygonSelection(items)
+    } else if (items instanceof Entities) {
+      instance = new EntitiesSelection(items)
+    } else if (items instanceof Lights) {
+      instance = new LightsSelection(items)
+    } else {
+      if (items.length > 0) {
+        const item = items[0]
+        if (item instanceof Fog) {
+          instance = new FogsSelection(items as Fog[])
+        } else if (item instanceof Zone) {
+          instance = new PathsSelection(items as Path[])
+        } else {
+          instance = new ZonesSelection(items as Zone[])
+        }
+      } else {
+        throw new Error(
+          `Selection: can't determine type of array that was given to $(), try passing in a non-empty array`,
+        )
+      }
+    }
+
     instances.set(items, instance)
   }
 

@@ -13,7 +13,7 @@ type FogConstructorProps = {
   size: number
   special: number
   scale: number
-  move: Vector3
+  movement: Vector3
   speed: number
   rotateSpeed: number
   toLive: number
@@ -27,7 +27,7 @@ export class Fog {
   size: number
   special: number
   scale: number
-  move: Vector3
+  movement: Vector3
   speed: number
   rotateSpeed: number
   toLive: number
@@ -40,11 +40,27 @@ export class Fog {
     this.size = props.size
     this.special = props.special
     this.scale = props.scale
-    this.move = props.move
+    this.movement = props.movement
     this.speed = props.speed
     this.rotateSpeed = props.rotateSpeed
     this.toLive = props.toLive
     this.frequency = props.frequency
+  }
+
+  clone() {
+    return new Fog({
+      position: this.position.clone(),
+      orientation: this.orientation.clone(),
+      color: this.color.clone(),
+      size: this.size,
+      special: this.special,
+      scale: this.scale,
+      movement: this.movement.clone(),
+      speed: this.speed,
+      rotateSpeed: this.rotateSpeed,
+      toLive: this.toLive,
+      frequency: this.frequency,
+    })
   }
 
   static fromArxFog(fog: ArxFog) {
@@ -55,7 +71,7 @@ export class Fog {
       size: fog.size,
       special: fog.special,
       scale: fog.scale,
-      move: Vector3.fromArxVector3(fog.move),
+      movement: Vector3.fromArxVector3(fog.move),
       speed: fog.speed,
       rotateSpeed: fog.rotateSpeed,
       toLive: fog.toLive,
@@ -71,11 +87,15 @@ export class Fog {
       size: this.size,
       special: this.special,
       scale: this.scale,
-      move: this.move.toArxVector3(),
+      move: this.movement.toArxVector3(),
       speed: this.speed,
       rotateSpeed: this.rotateSpeed,
       toLive: this.toLive,
       frequency: this.frequency,
     }
+  }
+
+  move(offset: Vector3) {
+    this.position.add(offset)
   }
 }

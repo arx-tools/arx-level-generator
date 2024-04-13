@@ -1,6 +1,7 @@
 import { ArxLight, ArxLightFlags } from 'arx-convert/types'
 import { Color } from '@src/Color.js'
 import { Vector3 } from '@src/Vector3.js'
+import { clone } from '@src/faux-ramda.js'
 
 // TODO: Three JS comes with a bunch of Light classes, might worth investigating
 // https://threejs.org/docs/#api/en/lights/Light
@@ -32,6 +33,18 @@ export class Light {
     this.fallEnd = props.fallEnd ?? 100
     this.intensity = props.intensity ?? 1
     this.lightData = props.lightData
+  }
+
+  clone() {
+    return new Light({
+      position: this.position.clone(),
+      color: this.color.clone(),
+      flags: this.flags,
+      fallStart: this.fallStart,
+      fallEnd: this.fallEnd,
+      intensity: this.intensity,
+      lightData: clone(this.lightData),
+    })
   }
 
   static fromArxLight({ pos, color, flags, fallStart, fallEnd, intensity, ...lightData }: ArxLight) {

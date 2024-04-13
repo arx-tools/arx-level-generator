@@ -48,6 +48,23 @@ export class Zone {
     this.points = props.points
   }
 
+  clone() {
+    return new Zone({
+      name: this.name,
+      height: this.height,
+      backgroundColor: this.backgroundColor?.clone(),
+      drawDistance: this.drawDistance,
+      ambience: this.ambience?.clone(),
+      points: this.points.map((point) => {
+        return {
+          position: point.position.clone(),
+          type: point.type,
+          time: point.time,
+        }
+      }),
+    })
+  }
+
   static fromArxZone(zone: ArxZone) {
     return new Zone({
       name: zone.name,
@@ -98,5 +115,11 @@ export class Zone {
         }
       }),
     }
+  }
+
+  move(offset: Vector3) {
+    this.points.forEach((point) => {
+      point.position.add(offset)
+    })
   }
 }

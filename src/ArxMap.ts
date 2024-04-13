@@ -550,25 +550,11 @@ export class ArxMap {
     }
 
     $(this.polygons).move(offset)
-
-    this.entities.move(offset)
-    this.lights.move(offset)
-
-    this.fogs.forEach((fog) => {
-      fog.position.add(offset)
-    })
-
-    this.paths.forEach((path) => {
-      path.points.forEach((point) => {
-        point.position.add(offset)
-      })
-    })
-
-    this.zones.forEach((zone) => {
-      zone.points.forEach((point) => {
-        point.position.add(offset)
-      })
-    })
+    $(this.entities).move(offset)
+    $(this.lights).move(offset)
+    $(this.fogs).move(offset)
+    $(this.paths).move(offset)
+    $(this.zones).move(offset)
 
     // anchors
     this.todo.anchors.forEach((anchor) => {

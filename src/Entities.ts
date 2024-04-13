@@ -1,5 +1,4 @@
 import { Entity } from '@src/Entity.js'
-import { Vector3 } from '@src/Vector3.js'
 
 export class Entities extends Array<Entity> {
   toArxData() {
@@ -10,12 +9,6 @@ export class Entities extends Array<Entity> {
     return {
       interactiveObjects: arxInteractiveObjects,
     }
-  }
-
-  move(offset: Vector3) {
-    this.forEach((entity) => {
-      entity.position.add(offset)
-    })
   }
 
   empty() {
