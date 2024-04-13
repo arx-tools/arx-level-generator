@@ -5,10 +5,13 @@ import { Texture } from '@src/Texture.js'
 import { groupSequences } from '@src/faux-ramda.js'
 import { Vector3 } from './Vector3.js'
 
-export class Selection {
-  private selection: number[] = []
-  private items: Polygons
+export abstract class Selection {
+  protected selection: number[] = []
 
+  // TODO: make this non-dependant of the Polygon/Polygons classes
+  protected items: Polygons
+
+  // TODO: make this non-dependant of the Polygon/Polygons classes
   constructor(polygons: Polygons) {
     this.items = polygons
   }
@@ -31,9 +34,10 @@ export class Selection {
     return this
   }
 
+  // TODO: make this non-dependant of the Polygon/Polygons classes
   /**
-   * selects polygons based on a given predicate
-   * if there are already polygons selected then this filters those further
+   * selects items based on a given predicate
+   * if there are already items selected then this filters those further
    */
   selectBy(predicate: (polygon: Polygon, idx: number) => boolean) {
     if (this.isEmpty()) {
@@ -41,8 +45,8 @@ export class Selection {
     }
 
     this.selection = this.selection.filter((idx) => {
-      const polygon = this.items[idx]
-      return predicate(polygon, idx)
+      const item = this.items[idx]
+      return predicate(item, idx)
     })
 
     return this
@@ -81,9 +85,9 @@ export class Selection {
   }
 
   /**
-   * Removes polygons which have been selected
+   * Removes items which have been selected
    *
-   * @returns the number of polygons that have ben removed
+   * @returns the number of items that have ben removed
    */
   delete() {
     const selectedAmount = this.selection.length
@@ -101,6 +105,7 @@ export class Selection {
     return selectedAmount
   }
 
+  // TODO: make this non-dependant of the Polygon/Polygons classes
   apply(fn: (polygon: Polygon, idx: number) => void) {
     const applyToAll = this.isEmpty()
 
@@ -120,6 +125,10 @@ export class Selection {
     return this
   }
 
+  abstract copy(): this
+}
+
+export class PolygonSelection extends Selection {
   copy() {
     const applyToAll = this.isEmpty()
 
@@ -127,18 +136,14 @@ export class Selection {
       this.selectAll()
     }
 
-    const copiedPolygons = this.selection.map((idx) => this.items[idx].clone())
+    const copiedItems = this.selection.map((idx) => this.items[idx].clone())
 
     if (applyToAll) {
       this.deselect()
     }
 
-    return new Selection(new Polygons(...copiedPolygons))
+    return new PolygonSelection(new Polygons(...copiedItems)) as this
   }
-
-  // ------------------------------------
-  // TODO: the following functions are Polygons / Array<Polygon> specific
-  // but it could be extended to work with other Array<> classes of the level generator
 
   /**
    * selects polygons which go outside the 0-160 meters boundary on the horizontal axis
@@ -196,22 +201,18 @@ export class Selection {
   }
 }
 
-// ------------------
-
 const instances = new WeakMap<Polygons, Selection>()
 
-export const $ = (polygons: Selection | Polygons) => {
-  if (polygons instanceof Selection) {
-    return polygons
+export const $ = (items: Selection | Polygons) => {
+  if (items instanceof Selection) {
+    return items
   }
 
-  const instance = instances.get(polygons)
-  if (instance !== undefined) {
-    return instance
+  let instance = instances.get(items)
+  if (instance === undefined) {
+    instance = new PolygonSelection(items)
+    instances.set(items, instance)
   }
 
-  const query = new Selection(polygons)
-  instances.set(polygons, query)
-
-  return query
+  return instance
 }
