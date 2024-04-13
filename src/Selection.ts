@@ -17,17 +17,17 @@ export abstract class Selection<T extends Array<any>> {
     this.items = items
   }
 
-  deselect() {
+  clearSelection() {
     this.selection = []
     return this
   }
 
-  get length() {
-    return this.selection.length
+  hasSelection() {
+    return this.selection.length > 0
   }
 
-  isEmpty() {
-    return this.length === 0
+  sizeOfSelection() {
+    return this.selection.length
   }
 
   selectAll() {
@@ -40,7 +40,7 @@ export abstract class Selection<T extends Array<any>> {
    * if there are already items selected then this filters those further
    */
   selectBy(predicate: (item: T[0], idx: number) => boolean) {
-    if (this.isEmpty()) {
+    if (!this.hasSelection()) {
       this.selectAll()
     }
 
@@ -54,13 +54,13 @@ export abstract class Selection<T extends Array<any>> {
 
   invertSelection() {
     // none selected -> all selected
-    if (this.selection.length === 0) {
+    if (!this.hasSelection()) {
       return this.selectAll()
     }
 
     // all selected -> none selected
-    if (this.selection.length === this.items.length) {
-      return this.deselect()
+    if (this.sizeOfSelection() === this.items.length) {
+      return this.clearSelection()
     }
 
     const selection = this.selection.toSorted((a, b) => a - b)
@@ -90,7 +90,7 @@ export abstract class Selection<T extends Array<any>> {
    * @returns the number of items that have ben removed
    */
   delete() {
-    const selectedAmount = this.selection.length
+    const selectedAmount = this.sizeOfSelection()
 
     if (selectedAmount > 0) {
       groupSequences(this.selection)
@@ -106,7 +106,7 @@ export abstract class Selection<T extends Array<any>> {
   }
 
   apply(fn: (item: T[0], idx: number) => void) {
-    const applyToAll = this.isEmpty()
+    const applyToAll = !this.hasSelection()
 
     if (applyToAll) {
       this.selectAll()
@@ -118,7 +118,7 @@ export abstract class Selection<T extends Array<any>> {
     })
 
     if (applyToAll) {
-      this.deselect()
+      this.clearSelection()
     }
 
     return this
@@ -131,7 +131,7 @@ export abstract class Selection<T extends Array<any>> {
 
 export class PolygonSelection extends Selection<Polygons> {
   copy() {
-    const applyToAll = this.isEmpty()
+    const applyToAll = !this.hasSelection()
 
     if (applyToAll) {
       this.selectAll()
@@ -140,7 +140,7 @@ export class PolygonSelection extends Selection<Polygons> {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
 
     if (applyToAll) {
-      this.deselect()
+      this.clearSelection()
     }
 
     return new PolygonSelection(new Polygons(...copiedItems)) as this
@@ -204,7 +204,7 @@ export class PolygonSelection extends Selection<Polygons> {
 
 export class LightsSelection extends Selection<Lights> {
   copy() {
-    const applyToAll = this.isEmpty()
+    const applyToAll = !this.hasSelection()
 
     if (applyToAll) {
       this.selectAll()
@@ -213,7 +213,7 @@ export class LightsSelection extends Selection<Lights> {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
 
     if (applyToAll) {
-      this.deselect()
+      this.clearSelection()
     }
 
     return new LightsSelection(new Lights(...copiedItems)) as this
@@ -228,7 +228,7 @@ export class LightsSelection extends Selection<Lights> {
 
 export class EntitiesSelection extends Selection<Entities> {
   copy() {
-    const applyToAll = this.isEmpty()
+    const applyToAll = !this.hasSelection()
 
     if (applyToAll) {
       this.selectAll()
@@ -237,7 +237,7 @@ export class EntitiesSelection extends Selection<Entities> {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
 
     if (applyToAll) {
-      this.deselect()
+      this.clearSelection()
     }
 
     return new EntitiesSelection(new Entities(...copiedItems)) as this
@@ -252,7 +252,7 @@ export class EntitiesSelection extends Selection<Entities> {
 
 export class FogsSelection extends Selection<Fog[]> {
   copy() {
-    const applyToAll = this.isEmpty()
+    const applyToAll = !this.hasSelection()
 
     if (applyToAll) {
       this.selectAll()
@@ -261,7 +261,7 @@ export class FogsSelection extends Selection<Fog[]> {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
 
     if (applyToAll) {
-      this.deselect()
+      this.clearSelection()
     }
 
     return new FogsSelection(copiedItems) as this
@@ -276,7 +276,7 @@ export class FogsSelection extends Selection<Fog[]> {
 
 export class PathsSelection extends Selection<Path[]> {
   copy() {
-    const applyToAll = this.isEmpty()
+    const applyToAll = !this.hasSelection()
 
     if (applyToAll) {
       this.selectAll()
@@ -285,7 +285,7 @@ export class PathsSelection extends Selection<Path[]> {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
 
     if (applyToAll) {
-      this.deselect()
+      this.clearSelection()
     }
 
     return new PathsSelection(copiedItems) as this
@@ -300,7 +300,7 @@ export class PathsSelection extends Selection<Path[]> {
 
 export class ZonesSelection extends Selection<Zone[]> {
   copy() {
-    const applyToAll = this.isEmpty()
+    const applyToAll = !this.hasSelection()
 
     if (applyToAll) {
       this.selectAll()
@@ -309,7 +309,7 @@ export class ZonesSelection extends Selection<Zone[]> {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
 
     if (applyToAll) {
-      this.deselect()
+      this.clearSelection()
     }
 
     return new ZonesSelection(copiedItems) as this

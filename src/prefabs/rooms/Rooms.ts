@@ -23,7 +23,7 @@ function union(map1: ArxMap, map2: ArxMap) {
   // actually deleting anything!
 
   $(map1.polygons)
-    .deselect()
+    .clearSelection()
     .selectBy((p) => {
       // TODO: we don't touch partially overlapping polygons yet
       if (p.isPartiallyWithin(map2BB)) {
@@ -34,7 +34,7 @@ function union(map1: ArxMap, map2: ArxMap) {
     })
 
   $(map2.polygons)
-    .deselect()
+    .clearSelection()
     .selectBy((p) => {
       // TODO: we don't touch partially overlapping polygons yet
       if (p.isPartiallyWithin(map1BB)) {
