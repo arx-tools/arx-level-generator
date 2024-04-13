@@ -32,6 +32,7 @@ import { MeshImportProps, Polygons } from '@src/Polygons.js'
 import { Portal } from '@src/Portal.js'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
+import { $ } from '@src/Selection.js'
 import { Settings } from '@src/Settings.js'
 import { Translations } from '@src/Translations.js'
 import { UI } from '@src/UI.js'
@@ -226,7 +227,7 @@ export class ArxMap {
       throw new MapFinalizedError()
     }
 
-    const numberOfRemovedPolygons = this.polygons.clearSelection().selectOutOfBounds().removeSelected()
+    const numberOfRemovedPolygons = $(this.polygons).deselect().selectOutOfBounds().delete()
 
     if (numberOfRemovedPolygons > 0) {
       console.warn(
@@ -281,7 +282,7 @@ export class ArxMap {
   }
 
   private movePolygonsToSameRoom() {
-    this.polygons.moveToRoom1()
+    $(this.polygons).moveToRoom1()
 
     this.todo.rooms = this.todo.rooms.slice(0, 2)
     this.todo.roomDistances = [
@@ -540,7 +541,7 @@ export class ArxMap {
 
   adjustOffsetTo(map: ArxMap) {
     const offsetDifference = map.config.offset.clone().sub(this.config.offset)
-    this.polygons.move(offsetDifference)
+    $(this.polygons).move(offsetDifference)
   }
 
   move(offset: Vector3) {
@@ -548,7 +549,7 @@ export class ArxMap {
       throw new MapFinalizedError()
     }
 
-    this.polygons.move(offset)
+    $(this.polygons).move(offset)
 
     this.entities.move(offset)
     this.lights.move(offset)

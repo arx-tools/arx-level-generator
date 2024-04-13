@@ -1,4 +1,5 @@
 import { ArxMap } from '@src/ArxMap.js'
+import { $ } from '@src/Selection.js'
 import { Vector3 } from '@src/Vector3.js'
 import { any } from '@src/faux-ramda.js'
 import { Cursor, CursorDir } from '@prefabs/rooms/Cursor.js'
@@ -21,26 +22,30 @@ function union(map1: ArxMap, map2: ArxMap) {
   // we need to compare maps from both directions before
   // actually deleting anything!
 
-  map1.polygons.clearSelection().selectBy((p) => {
-    // TODO: we don't touch partially overlapping polygons yet
-    if (p.isPartiallyWithin(map2BB)) {
-      return false
-    }
+  $(map1.polygons)
+    .deselect()
+    .selectBy((p) => {
+      // TODO: we don't touch partially overlapping polygons yet
+      if (p.isPartiallyWithin(map2BB)) {
+        return false
+      }
 
-    return any((q) => p.equals(q, Number.EPSILON * 10 ** 3), map2.polygons)
-  })
+      return any((q) => p.equals(q, Number.EPSILON * 10 ** 3), map2.polygons)
+    })
 
-  map2.polygons.clearSelection().selectBy((p) => {
-    // TODO: we don't touch partially overlapping polygons yet
-    if (p.isPartiallyWithin(map1BB)) {
-      return false
-    }
+  $(map2.polygons)
+    .deselect()
+    .selectBy((p) => {
+      // TODO: we don't touch partially overlapping polygons yet
+      if (p.isPartiallyWithin(map1BB)) {
+        return false
+      }
 
-    return any((q) => p.equals(q, Number.EPSILON * 10 ** 3), map1.polygons)
-  })
+      return any((q) => p.equals(q, Number.EPSILON * 10 ** 3), map1.polygons)
+    })
 
-  map1.polygons.removeSelected()
-  map2.polygons.removeSelected()
+  $(map1.polygons).delete()
+  $(map2.polygons).delete()
 }
 
 export class Rooms {
