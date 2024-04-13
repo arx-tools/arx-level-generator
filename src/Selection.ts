@@ -17,6 +17,10 @@ export abstract class Selection<T extends Array<any>> {
     this.items = items
   }
 
+  get() {
+    return this.items
+  }
+
   clearSelection() {
     this.selection = []
     return this
