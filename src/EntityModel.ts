@@ -3,15 +3,16 @@ import path from 'node:path'
 import { FTL } from 'arx-convert'
 import { ArxAction, ArxFTL, ArxFaceType, ArxFace, ArxFtlVertex } from 'arx-convert/types'
 import { Expand, QuadrupleOf, TripleOf } from 'arx-convert/utils'
+import objectHash from 'object-hash'
 import { BufferAttribute, MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { Polygons } from '@src/Polygons.js'
 import { Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
+import { repeat } from '@src/faux-ramda.js'
 import { arrayPadRight, fileExists, roundToNDecimals } from '@src/helpers.js'
-import { createCacheFolderIfNotExists } from '@services/cache.js'
+import { getCacheStats, saveHashOf } from '@services/cache.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
-import { repeat } from './faux-ramda.js'
 
 type EntityModelConstructorProps = {
   filename: string
@@ -101,28 +102,29 @@ export class EntityModel {
       const binarySource = path.resolve(settings.assetsDir, this.sourcePath, this.filename)
       files[binaryTarget] = binarySource
     } else {
-      const cacheTargetFolder = await createCacheFolderIfNotExists(
-        path.join(EntityModel.targetPath, targetName),
+      const cachedBinary = await getCacheStats(
+        path.resolve(EntityModel.targetPath, targetName, `${entityName}.ftl`),
         settings,
       )
 
-      const cachedBinaryTarget = path.join(cacheTargetFolder, `${entityName}.ftl`)
-      const cachedJsonTarget = `${cachedBinaryTarget}.json`
+      const ftlData = this.generateFtl(entityName)
+      const hashOfFtlData = objectHash(ftlData)
 
       let binaryChanged = false
-
-      if (!(await fileExists(cachedBinaryTarget))) {
-        const ftlData = this.generateFtl(entityName)
+      if (hashOfFtlData !== cachedBinary.hash || !cachedBinary.exists) {
         const ftl = FTL.save(ftlData)
-        await fs.writeFile(cachedBinaryTarget, ftl)
+        await fs.writeFile(cachedBinary.filename, ftl)
+        await saveHashOf(cachedBinary.filename, hashOfFtlData, settings)
         binaryChanged = true
       }
 
-      files[binaryTarget] = cachedBinaryTarget
+      files[binaryTarget] = cachedBinary.filename
 
       if (exportJsonFiles) {
-        if (binaryChanged || !(await fileExists(cachedJsonTarget))) {
-          const ftlData = this.generateFtl(entityName)
+        const cachedJsonTarget = `${cachedBinary.filename}.json`
+        const cachedJsonExists = await fileExists(cachedJsonTarget)
+
+        if (binaryChanged || !cachedJsonExists) {
           const stringifiedFtl = prettify ? JSON.stringify(ftlData, null, 2) : JSON.stringify(ftlData)
           await fs.writeFile(cachedJsonTarget, stringifiedFtl)
         }
