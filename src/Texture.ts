@@ -173,47 +173,16 @@ export class Texture extends ThreeJsTextue {
 
     const image = await getSharpInstance(originalSource)
 
-    let quality = 100
-
-    const needsDownsampling = !(
-      settings.variant === 'premium' ||
-      this.isInternalAsset ||
-      this.filename.endsWith('[icon].bmp')
-    )
-
-    if (needsDownsampling) {
-      quality = 70
-
-      let maxWidth = 128
-      let maxHeight = 128
-
-      if (this._width > maxWidth || this._height > maxHeight) {
-        const isPortrait = this._width < this._height
-        const isLandscape = this._width > this._height
-
-        if (isPortrait) {
-          maxWidth = (maxWidth / this._width) * this._height
-        } else if (isLandscape) {
-          maxHeight = (maxHeight / this._height) * this._width
-        }
-
-        const newWidth = Math.max(maxWidth, this._width)
-        const newHeight = Math.max(maxHeight, this._height)
-
-        image.resize(newWidth, newHeight, { fit: 'cover' })
-      }
-    }
-
     switch (ext) {
       case '.bmp':
         await sharpToBmp(image, convertedSource)
         break
       case '.png':
-        await image.png({ quality }).toFile(convertedSource)
+        await image.png({ quality: 100 }).toFile(convertedSource)
         break
       default:
       case '.jpg':
-        await image.jpeg({ quality, progressive: false }).toFile(convertedSource)
+        await image.jpeg({ quality: 100, progressive: false }).toFile(convertedSource)
         break
     }
 
@@ -244,31 +213,18 @@ export class Texture extends ThreeJsTextue {
 
     const powerOfTwo = MathUtils.floorPowerOfTwo(this._width)
 
-    let newSize = powerOfTwo
-    let quality = 100
-
-    const needsDownsampling = !(
-      settings.variant === 'premium' ||
-      this.isInternalAsset ||
-      this.filename.endsWith('[icon].bmp')
-    )
-    if (needsDownsampling) {
-      newSize = Math.max(128, newSize)
-      quality = 70
-    }
-
-    image.resize(newSize, newSize, { fit: 'cover' })
+    image.resize(powerOfTwo, powerOfTwo, { fit: 'cover' })
 
     switch (ext) {
       case '.bmp':
         await sharpToBmp(image, convertedSource)
         break
       case '.png':
-        await image.png({ quality }).toFile(convertedSource)
+        await image.png({ quality: 100 }).toFile(convertedSource)
         break
       default:
       case '.jpg':
-        await image.jpeg({ quality, progressive: false }).toFile(convertedSource)
+        await image.jpeg({ quality: 100, progressive: false }).toFile(convertedSource)
         break
     }
 

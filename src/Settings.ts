@@ -21,8 +21,6 @@ const isValidLightingCalculatorMode = (input: any): input is LightingCalculatorM
   return typeof input === 'string' && (lightingCalculatorModes as ReadonlyArray<string>).includes(input)
 }
 
-export type Variant = 'normal' | 'premium'
-
 type Modes = 'development' | 'production'
 
 type SettingsConstructorProps = {
@@ -82,14 +80,6 @@ type SettingsConstructorProps = {
    * between 100.000.000 and 999.999.999
    */
   seed?: string
-  /**
-   * This field allows branching between "normal" and "premium" variants
-   *
-   * can also be set via `process.env.variant`
-   *
-   * default value is "normal"
-   */
-  variant?: Variant
   /**
    * This field allows branching the code based on what phase the project
    * is in. For example a cutscene in the beginning of a map can be turned
@@ -161,14 +151,6 @@ export class Settings {
    */
   readonly seed: string
   /**
-   * This field allows branching between "normal" and "premium" variants
-   *
-   * can also be set via `process.env.variant`
-   *
-   * default value is "normal"
-   */
-  readonly variant: Variant
-  /**
    * This field allows branching the code based on what phase the project
    * is in. For example a cutscene in the beginning of a map can be turned
    * off while developing the map in development mode, but re-enabled in
@@ -202,7 +184,6 @@ export class Settings {
         : 'DistanceAngleShadowNoTransparency')
 
     this.seed = props.seed ?? process.env.seed ?? randomIntBetween(100_000_000, 999_999_999).toString()
-    this.variant = props.variant ?? (process.env.variant === 'premium' ? process.env.variant : 'normal')
     this.mode = props.mode ?? (process.env.mode === 'development' ? process.env.mode : 'production')
 
     seedrandom(this.seed, { global: true })

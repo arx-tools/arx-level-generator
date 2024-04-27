@@ -27,18 +27,12 @@ export const loadRooms = async (filename: string, settings: Settings) => {
   const rawInput = await fs.readFile(path.resolve(settings.assetsDir, filename), 'utf-8')
   const lines = rawInput.split(/\r?\n/)
 
-  type CurrentBlock =
-    | {
-        type: 'define'
-        name: string
-      }
-    | {
-        type: 'premium'
-      }
+  type CurrentBlock = {
+    type: 'define'
+    name: string
+  }
 
   let currentBlock: CurrentBlock | undefined = undefined
-
-  let premiumLinesSkipped = 0
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].replace(/#.*$/, '').trim()
@@ -252,38 +246,6 @@ export const loadRooms = async (filename: string, settings: Settings) => {
             }
           }
           break
-        case 'premium':
-          {
-            if (tokens[0] === '}') {
-              currentBlock = undefined
-              if (premiumLinesSkipped > 0) {
-                console.info(`[info] loadRooms: Skipped parsing ${premiumLinesSkipped} premium only lines`)
-              }
-            } else {
-              if (settings.variant === 'premium') {
-                switch (tokens[0]) {
-                  case 'room':
-                    parseRoomKeyword()
-                    break
-                  case 'with':
-                    parseWithKeyword()
-                    break
-                  case 'cursor':
-                    parseCursorKeyword()
-                    break
-                  default:
-                    if (tokens[0].startsWith('$')) {
-                      parseVariable()
-                    } else {
-                      console.error(`[error] loadRooms: Unknown command "${tokens[0]}" at line ${i + 1}`)
-                    }
-                }
-              } else {
-                premiumLinesSkipped++
-              }
-            }
-          }
-          break
       }
     } else {
       switch (tokens[0]) {
@@ -309,20 +271,6 @@ export const loadRooms = async (filename: string, settings: Settings) => {
                     floor: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
                   },
                 }
-              }
-            }
-          }
-          break
-        case 'premium':
-          {
-            if (tokens[1] !== 'only') {
-              console.error(`[error] loadRooms: expected 'only' keyword after 'premium' at line ${i + 1}`)
-            } else {
-              if (tokens[2] !== '{') {
-                console.error(`[error] loadRooms: missing { at line ${i + 1}`)
-              } else {
-                currentBlock = { type: 'premium' }
-                premiumLinesSkipped = 0
               }
             }
           }

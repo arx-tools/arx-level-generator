@@ -1,9 +1,8 @@
-import { Settings, Variant } from '@src/Settings.js'
+import { Settings } from '@src/Settings.js'
 import { getGeneratorPackageJSON, getProjectPackageJSON } from '@src/helpers.js'
 
 export type MetaData = {
   seed: string
-  variant: Variant
 
   generator: string
   generatorVersion: string
@@ -22,7 +21,6 @@ export const generateMetadata = async (settings: Settings): Promise<MetaData> =>
 
   return {
     seed: settings.seed,
-    variant: settings.variant,
 
     generator: generator.name,
     generatorVersion: generator.version,

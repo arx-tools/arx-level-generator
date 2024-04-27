@@ -9,7 +9,6 @@ declare global {
       calculateLighting?: string
       lightingCalculatorMode?: string
       seed?: string
-      variant?: string
       mode?: string
     }
   }
