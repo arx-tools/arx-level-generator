@@ -103,7 +103,7 @@ export class EntityModel {
       files[binaryTarget] = binarySource
     } else {
       const cachedBinary = await getCacheStats(
-        path.resolve(EntityModel.targetPath, targetName, `${entityName}.ftl`),
+        path.join(EntityModel.targetPath, targetName, `${entityName}.ftl`),
         settings,
       )
 
