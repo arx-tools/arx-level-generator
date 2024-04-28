@@ -342,6 +342,12 @@ type OverloadsOf$ = {
   (items: Zone[]): ZonesSelection
 }
 
+/**
+ * Calling methods on the selected items will mutate the original values
+ * unless you create a copy of them with the `.copy()` method
+ * the copied (or original if no copy has been called) values can
+ * be read with the `.get()` method.
+ */
 export const $: OverloadsOf$ = <U extends Array<any>, T extends Selection<U>>(items: T | ArrayLikeArxTypes) => {
   if (items instanceof Selection) {
     return items
