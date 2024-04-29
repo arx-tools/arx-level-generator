@@ -45,10 +45,6 @@ export const getCacheStats = async (filename: string, settings: Settings) => {
 export const getHashOf = async (filename: string, settings: Settings) => {
   const hashesFilename = path.resolve(settings.cacheFolder, '__hashes.json')
 
-  if (!(await fileExists(hashesFilename))) {
-    return undefined
-  }
-
   try {
     const hashes = JSON.parse(await fs.readFile(hashesFilename, { encoding: 'utf-8' })) as Record<string, string>
     return hashes[filename]
@@ -64,11 +60,9 @@ export const saveHashOf = async (filename: string, hash: string, settings: Setti
 
   let hashes: Record<string, string> = {}
 
-  if (await fileExists(hashesFilename)) {
-    try {
-      hashes = JSON.parse(await fs.readFile(hashesFilename, { encoding: 'utf-8' })) as Record<string, string>
-    } catch (e: unknown) {}
-  }
+  try {
+    hashes = JSON.parse(await fs.readFile(hashesFilename, { encoding: 'utf-8' })) as Record<string, string>
+  } catch (e: unknown) {}
 
   hashes[filename] = hash
 
