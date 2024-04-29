@@ -6,7 +6,7 @@ import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } f
 import { Settings } from '@src/Settings.js'
 import { any } from '@src/faux-ramda.js'
 import { fileExists } from '@src/helpers.js'
-import { createCacheFolderIfNotExists } from '@services/cache.js'
+import { createCacheFolderIfNotExists, loadHashOf, getHashOfFile, saveHashOf } from '@services/cache.js'
 import { getMetadata, getSharpInstance } from '@services/image.js'
 
 export type TextureConstructorProps = {
@@ -167,9 +167,17 @@ export class Texture extends ThreeJsTextue {
     const convertedSourceFolder = await createCacheFolderIfNotExists(this.sourcePath ?? Texture.targetPath, settings)
     const convertedSource = path.join(convertedSourceFolder, newFilename)
 
+    const currentHash = await getHashOfFile(originalSource)
+
     if (await fileExists(convertedSource)) {
-      return [convertedSource, convertedTarget]
+      const storedHash = await loadHashOf(originalSource, settings)
+
+      if (storedHash === currentHash) {
+        return [convertedSource, convertedTarget]
+      }
     }
+
+    await saveHashOf(originalSource, currentHash, settings)
 
     const image = await getSharpInstance(originalSource)
 
@@ -204,10 +212,18 @@ export class Texture extends ThreeJsTextue {
       return [convertedSource, convertedTarget]
     }
 
+    const currentHash = await getHashOfFile(originalSource)
+
     if (await fileExists(convertedSource)) {
-      this.alreadyMadeTileable = true
-      return [convertedSource, convertedTarget]
+      const storedHash = await loadHashOf(originalSource, settings)
+
+      if (storedHash === currentHash) {
+        this.alreadyMadeTileable = true
+        return [convertedSource, convertedTarget]
+      }
     }
+
+    await saveHashOf(originalSource, currentHash, settings)
 
     const image = await getSharpInstance(originalSource)
 
