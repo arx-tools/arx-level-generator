@@ -105,7 +105,11 @@ export const loadRooms = async (filename: string, settings: Settings) => {
             }
             const adjustments = tokens.slice(6) as CursorDir[]
 
-            rooms.addRoom(new Vector3(posX, posY, posZ), roomDefinitions[definitionName], ...adjustments)
+            // TODO: read this from the definition file somehow
+            // for now it is being quadified as per the MeshImportProps.tryToQuadify's default value in Polygons.ts
+            const tryToQuadify = undefined
+
+            rooms.addRoom(new Vector3(posX, posY, posZ), roomDefinitions[definitionName], adjustments, tryToQuadify)
           }
           break
         default:

@@ -1,4 +1,4 @@
-import { Zone } from './Zone.js'
+import { Zone } from '@src/Zone.js'
 
 export class Zones extends Array<Zone> {
   toArxData() {

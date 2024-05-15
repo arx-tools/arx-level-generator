@@ -285,10 +285,14 @@ export const createRoomMesh = (
   return group
 }
 
-export const createArxMapFromMesh = (mesh: Object3D, tryToQuadify: typeof QUADIFY | typeof DONT_QUADIFY = QUADIFY) => {
+export const createArxMapFromMesh = (mesh: Object3D, tryToQuadify?: typeof QUADIFY | typeof DONT_QUADIFY) => {
   return ArxMap.fromThreeJsMesh(mesh, { tryToQuadify })
 }
 
-export const createRoom = (dimensions: Vector3, props: RoomProps) => {
-  return createArxMapFromMesh(createRoomMesh(dimensions, props))
+export const createRoom = (
+  dimensions: Vector3,
+  props: RoomProps,
+  tryToQuadify?: typeof QUADIFY | typeof DONT_QUADIFY,
+) => {
+  return createArxMapFromMesh(createRoomMesh(dimensions, props), tryToQuadify)
 }

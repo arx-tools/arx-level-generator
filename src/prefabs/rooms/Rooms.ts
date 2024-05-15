@@ -1,4 +1,5 @@
 import { ArxMap } from '@src/ArxMap.js'
+import { DONT_QUADIFY, QUADIFY } from '@src/Polygons.js'
 import { $ } from '@src/Selection.js'
 import { Vector3 } from '@src/Vector3.js'
 import { any } from '@src/faux-ramda.js'
@@ -58,11 +59,16 @@ export class Rooms {
     this.cursor = cursor
   }
 
-  addRoom(dimensions: Vector3, props: RoomProps, ...adjustments: CursorDir[]) {
+  addRoom(
+    dimensions: Vector3,
+    props: RoomProps,
+    adjustments: CursorDir[],
+    tryToQuadify?: typeof QUADIFY | typeof DONT_QUADIFY,
+  ) {
     this.cursor.newSize = dimensions
     this.cursor.move(...adjustments)
 
-    this.currentRoom = createRoom(dimensions, props)
+    this.currentRoom = createRoom(dimensions, props, tryToQuadify)
     this.currentRoom.move(this.cursor.cursor)
     this.entries.push(this.currentRoom)
 

@@ -1,4 +1,4 @@
-import { Fog } from './Fog.js'
+import { Fog } from '@src/Fog.js'
 
 export class Fogs extends Array<Fog> {
   toArxData() {

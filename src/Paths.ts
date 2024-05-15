@@ -1,4 +1,4 @@
-import { Path } from './Path.js'
+import { Path } from '@src/Path.js'
 
 export class Paths extends Array<Path> {
   toArxData() {
