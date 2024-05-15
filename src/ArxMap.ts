@@ -19,6 +19,7 @@ import { Audio } from '@src/Audio.js'
 import { Entities } from '@src/Entities.js'
 import { Entity } from '@src/Entity.js'
 import { Fog } from '@src/Fog.js'
+import { Fogs } from '@src/Fogs.js'
 import { HUD } from '@src/HUD.js'
 import { LevelLoader } from '@src/LevelLoader.js'
 import { Light } from '@src/Light.js'
@@ -26,6 +27,7 @@ import { Lights } from '@src/Lights.js'
 import { Manifest } from '@src/Manifest.js'
 import { generateMetadata } from '@src/MetaData.js'
 import { Path } from '@src/Path.js'
+import { Paths } from '@src/Paths.js'
 import { Player } from '@src/Player.js'
 import { Polygon } from '@src/Polygon.js'
 import { MeshImportProps, Polygons } from '@src/Polygons.js'
@@ -38,6 +40,7 @@ import { Translations } from '@src/Translations.js'
 import { UI } from '@src/UI.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Zone } from '@src/Zone.js'
+import { Zones } from '@src/Zones.js'
 import { compile } from '@src/compile.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { times } from '@src/faux-ramda.js'
@@ -60,12 +63,12 @@ type ToBeSortedLater = {
 export class ArxMap {
   polygons = new Polygons()
   lights = new Lights()
-  fogs: Fog[] = []
+  fogs = new Fogs()
   entities = new Entities()
-  zones: Zone[] = []
-  paths: Path[] = []
-  player: Player = new Player()
-  portals: Portal[] = []
+  zones = new Zones()
+  paths = new Paths()
+  player = new Player()
+  portals: Portal[] = [] // TODO: create Portals class
   config: ArxMapConfig = {
     isFinalized: false,
     offset: new Vector3(0, 0, 0),
@@ -117,9 +120,15 @@ export class ArxMap {
       this.entities.push(Entity.fromArxInteractiveObject(entity))
     })
 
-    this.fogs = dlf.fogs.map(Fog.fromArxFog)
-    this.zones = dlf.zones.map(Zone.fromArxZone)
-    this.paths = dlf.paths.map(Path.fromArxPath)
+    dlf.fogs.forEach((fog) => {
+      this.fogs.push(Fog.fromArxFog(fog))
+    })
+    dlf.zones.forEach((zone) => {
+      this.zones.push(Zone.fromArxZone(zone))
+    })
+    dlf.paths.forEach((path) => {
+      this.paths.push(Path.fromArxPath(path))
+    })
 
     fts.polygons.forEach((polygon) => {
       this.polygons.push(Polygon.fromArxPolygon(polygon, llf.colors, fts.textureContainers, areNormalsCalculated))
@@ -154,9 +163,9 @@ export class ArxMap {
       scene: {
         levelIdx: settings.levelIdx,
       },
-      fogs: this.fogs.map((fog) => fog.toArxFog()),
-      paths: this.paths.map((path) => path.toArxPath()),
-      zones: this.zones.map((zone) => zone.toArxZone()),
+      ...this.fogs.toArxData(),
+      ...this.paths.toArxData(),
+      ...this.zones.toArxData(),
       ...this.entities.toArxData(),
     }
 

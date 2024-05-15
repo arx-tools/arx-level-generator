@@ -1,12 +1,12 @@
 import { Box3 } from 'three'
 import { Entities } from '@src/Entities.js'
-import { Fog } from '@src/Fog.js'
+import { Fogs } from '@src/Fogs.js'
 import { Lights } from '@src/Lights.js'
-import { Path } from '@src/Path.js'
+import { Paths } from '@src/Paths.js'
 import { Polygons } from '@src/Polygons.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
-import { Zone } from '@src/Zone.js'
+import { Zones } from '@src/Zones.js'
 import { groupSequences } from '@src/faux-ramda.js'
 
 export abstract class Selection<T extends Array<any>> {
@@ -254,7 +254,7 @@ export class EntitiesSelection extends Selection<Entities> {
   }
 }
 
-export class FogsSelection extends Selection<Fog[]> {
+export class FogsSelection extends Selection<Fogs> {
   copy() {
     const applyToAll = !this.hasSelection()
 
@@ -268,7 +268,7 @@ export class FogsSelection extends Selection<Fog[]> {
       this.clearSelection()
     }
 
-    return new FogsSelection(copiedItems) as this
+    return new FogsSelection(new Fogs(...copiedItems)) as this
   }
 
   move(offset: Vector3) {
@@ -278,7 +278,7 @@ export class FogsSelection extends Selection<Fog[]> {
   }
 }
 
-export class PathsSelection extends Selection<Path[]> {
+export class PathsSelection extends Selection<Paths> {
   copy() {
     const applyToAll = !this.hasSelection()
 
@@ -292,7 +292,7 @@ export class PathsSelection extends Selection<Path[]> {
       this.clearSelection()
     }
 
-    return new PathsSelection(copiedItems) as this
+    return new PathsSelection(new Paths(...copiedItems)) as this
   }
 
   move(offset: Vector3) {
@@ -302,7 +302,7 @@ export class PathsSelection extends Selection<Path[]> {
   }
 }
 
-export class ZonesSelection extends Selection<Zone[]> {
+export class ZonesSelection extends Selection<Zones> {
   copy() {
     const applyToAll = !this.hasSelection()
 
@@ -316,7 +316,7 @@ export class ZonesSelection extends Selection<Zone[]> {
       this.clearSelection()
     }
 
-    return new ZonesSelection(copiedItems) as this
+    return new ZonesSelection(new Zones(...copiedItems)) as this
   }
 
   move(offset: Vector3) {
@@ -328,7 +328,7 @@ export class ZonesSelection extends Selection<Zone[]> {
 
 // ----------------------------------------
 
-type ArrayLikeArxTypes = Polygons | Lights | Entities | Fog[] | Path[] | Zone[]
+type ArrayLikeArxTypes = Polygons | Lights | Entities | Fogs | Paths | Zones
 
 const instances = new WeakMap<ArrayLikeArxTypes, Selection<ArrayLikeArxTypes>>()
 
@@ -337,9 +337,9 @@ type OverloadsOf$ = {
   (items: Polygons): PolygonSelection
   (items: Entities): EntitiesSelection
   (items: Lights): LightsSelection
-  (items: Fog[]): FogsSelection
-  (items: Path[]): PathsSelection
-  (items: Zone[]): ZonesSelection
+  (items: Fogs): FogsSelection
+  (items: Paths): PathsSelection
+  (items: Zones): ZonesSelection
 }
 
 /**
@@ -354,6 +354,7 @@ export const $: OverloadsOf$ = <U extends Array<any>, T extends Selection<U>>(it
   }
 
   let instance = instances.get(items)
+
   if (instance === undefined) {
     if (items instanceof Polygons) {
       instance = new PolygonSelection(items)
@@ -361,21 +362,12 @@ export const $: OverloadsOf$ = <U extends Array<any>, T extends Selection<U>>(it
       instance = new EntitiesSelection(items)
     } else if (items instanceof Lights) {
       instance = new LightsSelection(items)
+    } else if (items instanceof Fogs) {
+      instance = new FogsSelection(items)
+    } else if (items instanceof Paths) {
+      instance = new PathsSelection(items)
     } else {
-      if (items.length > 0) {
-        const item = items[0]
-        if (item instanceof Fog) {
-          instance = new FogsSelection(items as Fog[])
-        } else if (item instanceof Zone) {
-          instance = new PathsSelection(items as Path[])
-        } else {
-          instance = new ZonesSelection(items as Zone[])
-        }
-      } else {
-        throw new Error(
-          `Selection: can't determine type of array that was given to $(), try passing in a non-empty array`,
-        )
-      }
+      instance = new ZonesSelection(items)
     }
 
     instances.set(items, instance)
