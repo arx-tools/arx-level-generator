@@ -141,16 +141,20 @@ export const loadRooms = async (filename: string, settings: Settings) => {
               case 'ceiling':
                 {
                   if (tokens[1] === 'custom') {
-                    roomDefinitions[currentBlock.name].textures[tokens[0]].texture = Texture.fromCustomFile({
-                      filename: tokens[3],
-                      sourcePath: tokens[2],
-                    })
+                    const texture = Texture.fromCustomFile({ filename: tokens[3], sourcePath: tokens[2] })
+                    const fitX = tokens[4] === 'fit-x' || tokens[4] === 'stretch'
+                    const fitY = tokens[4] === 'fit-y' || tokens[4] === 'stretch'
+
+                    roomDefinitions[currentBlock.name].textures[tokens[0]] = { texture, fitX, fitY, isRemoved: false }
                   } else if (tokens[1] === 'arx') {
                     // TODO: an arx texture might not always be 128x128
-                    roomDefinitions[currentBlock.name].textures[tokens[0]].texture = new Texture({
-                      filename: tokens[2],
-                      size: 128,
-                    })
+                    const textureSize = 128
+
+                    const texture = new Texture({ filename: tokens[2], size: textureSize })
+                    const fitX = tokens[3] === 'fit-x' || tokens[3] === 'stretch'
+                    const fitY = tokens[3] === 'fit-y' || tokens[3] === 'stretch'
+
+                    roomDefinitions[currentBlock.name].textures[tokens[0]] = { texture, fitX, fitY, isRemoved: false }
                   } else if (tokens[1] === 'off') {
                     roomDefinitions[currentBlock.name].textures[tokens[0]].isRemoved = true
                   } else {
@@ -168,8 +172,8 @@ export const loadRooms = async (filename: string, settings: Settings) => {
 
                   if (tokens[1] === 'custom') {
                     const texture = Texture.fromCustomFile({ filename: tokens[3], sourcePath: tokens[2] })
-                    const fitX = tokens[4] === 'fit-x'
-                    const fitY = tokens[4] === 'fit-y'
+                    const fitX = tokens[4] === 'fit-x' || tokens[4] === 'stretch'
+                    const fitY = tokens[4] === 'fit-y' || tokens[4] === 'stretch'
 
                     wall[0] = { texture, fitX, fitY, isRemoved: false }
                     wall[1] = { texture, fitX, fitY, isRemoved: false }
@@ -180,8 +184,8 @@ export const loadRooms = async (filename: string, settings: Settings) => {
                     const textureSize = 128
 
                     const texture = new Texture({ filename: tokens[2], size: textureSize })
-                    const fitX = tokens[3] === 'fit-x'
-                    const fitY = tokens[3] === 'fit-y'
+                    const fitX = tokens[3] === 'fit-x' || tokens[3] === 'stretch'
+                    const fitY = tokens[3] === 'fit-y' || tokens[3] === 'stretch'
 
                     wall[0] = { texture, fitX, fitY, isRemoved: false }
                     wall[1] = { texture, fitX, fitY, isRemoved: false }
@@ -217,8 +221,8 @@ export const loadRooms = async (filename: string, settings: Settings) => {
                   const wall = roomDefinitions[currentBlock.name].textures.wall as QuadrupleOf<TextureDefinition>
                   if (tokens[1] === 'custom') {
                     const texture = Texture.fromCustomFile({ filename: tokens[3], sourcePath: tokens[2] })
-                    const fitX = tokens[4] === 'fit-x'
-                    const fitY = tokens[4] === 'fit-y'
+                    const fitX = tokens[4] === 'fit-x' || tokens[4] === 'stretch'
+                    const fitY = tokens[4] === 'fit-y' || tokens[4] === 'stretch'
 
                     wall[wallIdx] = { texture, fitX, fitY, isRemoved: false }
                   } else if (tokens[1] === 'arx') {
@@ -226,8 +230,8 @@ export const loadRooms = async (filename: string, settings: Settings) => {
                     const textureSize = 128
 
                     const texture = new Texture({ filename: tokens[2], size: textureSize })
-                    const fitX = tokens[3] === 'fit-x'
-                    const fitY = tokens[3] === 'fit-y'
+                    const fitX = tokens[3] === 'fit-x' || tokens[3] === 'stretch'
+                    const fitY = tokens[3] === 'fit-y' || tokens[3] === 'stretch'
 
                     wall[wallIdx] = { texture, fitX, fitY, isRemoved: false }
                   } else if (tokens[1] === 'off') {

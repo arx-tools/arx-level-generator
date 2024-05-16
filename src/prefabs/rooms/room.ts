@@ -69,13 +69,24 @@ const createNorthWall = (
   })
   wall.translateZ(depth / 2).translateY(-height / 2)
   wall.rotateX(MathUtils.degToRad(90))
-  if (fitX) {
+
+  if (fitX && fitY) {
+    // stretch
+    scaleUV(new Vector2(tileSize / width, tileSize / height), wall.geometry)
+  }
+  if (fitX && !fitY) {
+    // fit horizontally
     scaleUV(new Vector2(tileSize / width, tileSize / width), wall.geometry)
-  } else if (fitY) {
+  }
+  if (!fitX && fitY) {
+    // fit vertically
     scaleUV(new Vector2(tileSize / height, tileSize / height), wall.geometry)
-  } else {
+  }
+  if (!fitX && !fitY) {
+    // tile
     scaleUV(new Vector2(tileSize / 100, tileSize / 100), wall.geometry)
   }
+
   group.add(wall)
 
   if (decal) {

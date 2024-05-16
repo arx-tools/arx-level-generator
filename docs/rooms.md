@@ -24,9 +24,10 @@
 # setting "wall-south" after it
 define room-no-ceiling {
   ceiling arx alpha.bmp # transparent texture from arx' builtin textures
-  wall arx aliciaroom_mur02.jpg # optionally you can write either fit-x or fit-y after the texture name
+  wall arx aliciaroom_mur02.jpg
   wall-north off # don't render any walls on this side
   floor custom textures [fabric]-carpet.jpg # custom texture from assets/textures/
+  # optionally you can add fit-x, fit-y or stretch after the texture names to replace the original tiled texture fitting
 }
 
 $roomHeight = 300 # variable (or more like constant)
