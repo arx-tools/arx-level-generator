@@ -35,4 +35,5 @@ generator CAN handle this)
 
 ## Credits
 
-`uv-reference-map-[stone].jpg` - [https://www.artstation.com/blogs/zeeshannasir/peYz/reference-uv-map-grids](https://www.artstation.com/blogs/zeeshannasir/peYz/reference-uv-map-grids)
+- `assets/textures/uv-reference-map-[stone].jpg` (a.k.a. `Texture.uvDebugTexture`) - [https://www.artstation.com/blogs/zeeshannasir/peYz/reference-uv-map-grids](https://www.artstation.com/blogs/zeeshannasir/peYz/reference-uv-map-grids)
+- `assets/textures/jorge-[stone].jpg` (a.k.a. `Texture.missingTexture`) - Thief 2 DromEd
