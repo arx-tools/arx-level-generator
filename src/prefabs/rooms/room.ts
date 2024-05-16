@@ -30,19 +30,20 @@ export type RoomProps = {
   tileSize?: number
 }
 
-const fitUV = ({
-  fitX,
-  fitY,
-  tileSize,
-  geometry,
-  size,
-}: {
-  fitX: boolean
-  fitY: boolean
-  tileSize: number
-  geometry: BufferGeometry
-  size: Vector2
-}) => {
+const fitUV = (
+  {
+    fitX,
+    fitY,
+    tileSize,
+    size,
+  }: {
+    fitX: boolean
+    fitY: boolean
+    tileSize: number
+    size: Vector2
+  },
+  geometry: BufferGeometry,
+) => {
   if (fitX && fitY) {
     // stretch
     scaleUV(new Vector2(tileSize / size.x, tileSize / size.y), geometry)
@@ -64,22 +65,25 @@ const fitUV = ({
 const createFloor = (size: Vector3, textureDef: TextureDefinition, tileSize: number) => {
   const { x: width, z: depth } = size
   const { texture, fitX, fitY } = textureDef
+  const size2D = new Vector2(width, depth)
 
   const mesh = createPlaneMesh({
-    size: new Vector2(width, depth),
+    size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: ArxPolygonFlags.Tiled,
+      flags: fitX || fitY ? ArxPolygonFlags.Tiled : ArxPolygonFlags.None,
     }),
   })
 
-  fitUV({
-    fitX,
-    fitY,
-    geometry: mesh.geometry,
-    tileSize,
-    size: new Vector2(width, depth),
-  })
+  fitUV(
+    {
+      fitX,
+      fitY,
+      tileSize,
+      size: size2D,
+    },
+    mesh.geometry,
+  )
 
   return mesh
 }
@@ -87,24 +91,27 @@ const createFloor = (size: Vector3, textureDef: TextureDefinition, tileSize: num
 const createNorthWall = (size: Vector3, textureDef: TextureDefinition, tileSize: number) => {
   const { x: width, y: height, z: depth } = size
   const { texture, fitX, fitY } = textureDef
+  const size2D = new Vector2(width, height)
 
   const mesh = createPlaneMesh({
-    size: new Vector2(width, height),
+    size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: ArxPolygonFlags.Tiled,
+      flags: fitX || fitY ? ArxPolygonFlags.Tiled : ArxPolygonFlags.None,
     }),
   })
   mesh.translateZ(depth / 2).translateY(-height / 2)
   mesh.rotateX(MathUtils.degToRad(90))
 
-  fitUV({
-    fitX,
-    fitY,
-    geometry: mesh.geometry,
-    tileSize,
-    size: new Vector2(width, height),
-  })
+  fitUV(
+    {
+      fitX,
+      fitY,
+      tileSize,
+      size: size2D,
+    },
+    mesh.geometry,
+  )
 
   return mesh
 }
@@ -112,24 +119,27 @@ const createNorthWall = (size: Vector3, textureDef: TextureDefinition, tileSize:
 const createSouthWall = (size: Vector3, textureDef: TextureDefinition, tileSize: number) => {
   const { x: width, y: height, z: depth } = size
   const { texture, fitX, fitY } = textureDef
+  const size2D = new Vector2(width, height)
 
   const mesh = createPlaneMesh({
-    size: new Vector2(width, height),
+    size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: ArxPolygonFlags.Tiled,
+      flags: fitX || fitY ? ArxPolygonFlags.Tiled : ArxPolygonFlags.None,
     }),
   })
   mesh.translateZ(-depth / 2).translateY(-height / 2)
   mesh.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(180))
 
-  fitUV({
-    fitX,
-    fitY,
-    geometry: mesh.geometry,
-    tileSize,
-    size: new Vector2(width, height),
-  })
+  fitUV(
+    {
+      fitX,
+      fitY,
+      tileSize,
+      size: size2D,
+    },
+    mesh.geometry,
+  )
 
   return mesh
 }
@@ -137,24 +147,27 @@ const createSouthWall = (size: Vector3, textureDef: TextureDefinition, tileSize:
 const createWestWall = (size: Vector3, textureDef: TextureDefinition, tileSize: number) => {
   const { x: width, y: height, z: depth } = size
   const { texture, fitX, fitY } = textureDef
+  const size2D = new Vector2(depth, height)
 
   const mesh = createPlaneMesh({
-    size: new Vector2(depth, height),
+    size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: ArxPolygonFlags.Tiled,
+      flags: fitX || fitY ? ArxPolygonFlags.Tiled : ArxPolygonFlags.None,
     }),
   })
   mesh.translateX(-width / 2).translateY(-height / 2)
   mesh.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(90))
 
-  fitUV({
-    fitX,
-    fitY,
-    geometry: mesh.geometry,
-    tileSize,
-    size: new Vector2(width, height),
-  })
+  fitUV(
+    {
+      fitX,
+      fitY,
+      tileSize,
+      size: size2D,
+    },
+    mesh.geometry,
+  )
 
   return mesh
 }
@@ -162,24 +175,27 @@ const createWestWall = (size: Vector3, textureDef: TextureDefinition, tileSize: 
 const createEastWall = (size: Vector3, textureDef: TextureDefinition, tileSize: number) => {
   const { x: width, y: height, z: depth } = size
   const { texture, fitX, fitY } = textureDef
+  const size2D = new Vector2(depth, height)
 
   const mesh = createPlaneMesh({
-    size: new Vector2(depth, height),
+    size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: ArxPolygonFlags.Tiled,
+      flags: fitX || fitY ? ArxPolygonFlags.Tiled : ArxPolygonFlags.None,
     }),
   })
   mesh.translateX(width / 2).translateY(-height / 2)
   mesh.rotateX(MathUtils.degToRad(90)).rotateZ(MathUtils.degToRad(-90))
 
-  fitUV({
-    fitX,
-    fitY,
-    geometry: mesh.geometry,
-    tileSize,
-    size: new Vector2(width, height),
-  })
+  fitUV(
+    {
+      fitX,
+      fitY,
+      tileSize,
+      size: size2D,
+    },
+    mesh.geometry,
+  )
 
   return mesh
 }
@@ -187,24 +203,27 @@ const createEastWall = (size: Vector3, textureDef: TextureDefinition, tileSize: 
 const createCeiling = (size: Vector3, textureDef: TextureDefinition, tileSize: number) => {
   const { x: width, y: height, z: depth } = size
   const { texture, fitX, fitY } = textureDef
+  const size2D = new Vector2(width, depth)
 
   const mesh = createPlaneMesh({
-    size: new Vector2(width, depth),
+    size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: ArxPolygonFlags.Tiled,
+      flags: fitX || fitY ? ArxPolygonFlags.Tiled : ArxPolygonFlags.None,
     }),
   })
   mesh.translateY(-height)
   mesh.rotateX(MathUtils.degToRad(180))
 
-  fitUV({
-    fitX,
-    fitY,
-    geometry: mesh.geometry,
-    tileSize,
-    size: new Vector2(width, depth),
-  })
+  fitUV(
+    {
+      fitX,
+      fitY,
+      tileSize,
+      size: size2D,
+    },
+    mesh.geometry,
+  )
 
   return mesh
 }
