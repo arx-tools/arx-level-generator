@@ -189,7 +189,7 @@ export class Polygon {
     triangle.getNormal(this.norm)
 
     if (this.isQuad()) {
-      const triangle2 = new Triangle(d, b, c)
+      const triangle2 = new Triangle(d, c, b)
       triangle2.getNormal(this.norm2)
     }
   }
