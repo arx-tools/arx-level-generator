@@ -45,6 +45,11 @@ export const useDelay = () => {
   /**
    * creates a timer with a unique identifier (TIMERdelay16)
    * can be cancelled
+   *
+   * delay calls are stacked on top of previous values of delay() and uniqueDelay() calls:
+   *
+   * delay(100) ... -> executed 100 milliseconds after script start
+   * delay(200) ... -> executed (100 + 200) milliseconds after script start
    */
   const delay = (delayInMs: number = 0) => {
     delayOffset += Math.floor(delayInMs)
@@ -55,6 +60,11 @@ export const useDelay = () => {
    * creates a timer without any identifier (TIMER)
    * so the delay stays unique at runtime
    * and consequently being uncancellable with the off method
+   *
+   * uniqueDelay calls are stacked on top of previous values of delay() and uniqueDelay() calls:
+   *
+   * uniqueDelay(100) ... -> executed 100 milliseconds after script start
+   * uniqueDelay(200) ... -> executed (100 + 200) milliseconds after script start
    */
   const uniqueDelay = (delayInMs: number = 0) => {
     delayOffset += Math.floor(delayInMs)
