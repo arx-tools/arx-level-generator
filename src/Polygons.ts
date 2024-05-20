@@ -37,7 +37,13 @@ type VertexWithMaterialIndex = {
 
 export class Polygons extends Array<Polygon> {
   async exportTextures(settings: Settings) {
-    const files: Record<string, string> = {}
+    const texturesToExport: {
+      tileable: Record<string, Texture>
+      nonTileable: Record<string, Texture>
+    } = {
+      tileable: {},
+      nonTileable: {},
+    }
 
     for (const polygon of this) {
       if (typeof polygon.texture === 'undefined' || polygon.texture.isNative) {
@@ -45,9 +51,24 @@ export class Polygons extends Array<Polygon> {
       }
 
       const needsToBeTileable = (polygon.flags & ArxPolygonFlags.Tiled) !== 0
+      if (needsToBeTileable) {
+        texturesToExport.tileable[polygon.texture.filename] = polygon.texture
+      } else {
+        texturesToExport.nonTileable[polygon.texture.filename] = polygon.texture
+      }
+    }
 
-      const [source, target] = await polygon.texture.exportSourceAndTarget(settings, needsToBeTileable)
+    const files: Record<string, string> = {}
 
+    for (const filename in texturesToExport.tileable) {
+      const texture = texturesToExport.tileable[filename]
+      const [source, target] = await texture.exportSourceAndTarget(settings, true)
+      files[target] = source
+    }
+
+    for (const filename in texturesToExport.nonTileable) {
+      const texture = texturesToExport.nonTileable[filename]
+      const [source, target] = await texture.exportSourceAndTarget(settings, false)
       files[target] = source
     }
 
