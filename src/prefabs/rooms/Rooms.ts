@@ -50,7 +50,7 @@ function union(map1: ArxMap, map2: ArxMap) {
 }
 
 export class Rooms {
-  entries: ArxMap[] = []
+  maps: ArxMap[] = []
   previousRoom: ArxMap | undefined = undefined
   currentRoom: ArxMap | undefined = undefined
   cursor: Cursor
@@ -70,25 +70,25 @@ export class Rooms {
 
     this.currentRoom = createRoom(dimensions, props, tryToQuadify)
     this.currentRoom.move(this.cursor.cursor)
-    this.entries.push(this.currentRoom)
+    this.maps.push(this.currentRoom)
 
     this.previousRoom = this.currentRoom
     this.cursor.oldSize = this.cursor.newSize
   }
 
   unionAll() {
-    if (this.entries.length <= 1) {
+    if (this.maps.length <= 1) {
       return
     }
 
-    for (let i = 0; i < this.entries.length - 1; i++) {
-      for (let j = i + 1; j < this.entries.length; j++) {
-        union(this.entries[i], this.entries[j])
+    for (let i = 0; i < this.maps.length - 1; i++) {
+      for (let j = i + 1; j < this.maps.length; j++) {
+        union(this.maps[i], this.maps[j])
       }
     }
   }
 
-  forEach(fn: (entry: ArxMap) => void) {
-    this.entries.forEach(fn)
+  forEach(fn: (map: ArxMap) => void) {
+    this.maps.forEach(fn)
   }
 }

@@ -364,16 +364,14 @@ export class Polygon {
       return false
     }
 
-    const unmatchedVertices = polygon.vertices.slice(0, this.isQuad() ? 4 : 3)
-
-    this.vertices.slice(0, this.isQuad() ? 4 : 3).forEach((vertex) => {
-      const idx = unmatchedVertices.findIndex((v) => vertex.equals(v, epsilon))
-      if (idx !== -1) {
-        unmatchedVertices.splice(idx, 1)
+    for (let i = 0; i < (this.isQuad() ? 4 : 3); i++) {
+      const aVertex = this.vertices[i]
+      if (!polygon.vertices.some((bVertex) => aVertex.equals(bVertex, epsilon))) {
+        return false
       }
-    })
+    }
 
-    return unmatchedVertices.length === 0
+    return true
   }
 
   isOutOfBounds() {

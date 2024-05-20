@@ -36,6 +36,10 @@ export class Vertex extends Vector3 {
   }
 
   equals(v: Vector3, epsilon: number = 0) {
+    if (epsilon === 0) {
+      return this.x === v.x && this.y === v.y && this.z === v.z
+    }
+
     if (Math.abs(this.x - v.x) > epsilon) {
       return false
     }
