@@ -469,13 +469,8 @@ export class ArxMap {
       ...Object.values(files).map((filename) => filename.replace(/\.json$/, '')),
     ]
 
-    const tasks = pathsOfTheFiles.map((filename) => {
-      return fs.mkdir(path.dirname(filename), { recursive: true })
-    })
-
-    // TODO: Promise.allSettled() ?
-    for (const task of tasks) {
-      await task
+    for (const filename of pathsOfTheFiles) {
+      await fs.mkdir(path.dirname(filename), { recursive: true })
     }
 
     // ------------------------
@@ -635,17 +630,17 @@ export class ArxMap {
   }
 
   getHeight() {
-    const bb = this.getBoundingBox()
-    return bb.max.clone().sub(bb.min).y
+    const { max, min } = this.getBoundingBox()
+    return max.y - min.y
   }
 
   getWidth() {
-    const bb = this.getBoundingBox()
-    return bb.max.clone().sub(bb.min).x
+    const { max, min } = this.getBoundingBox()
+    return max.x - min.x
   }
 
   getDepth() {
-    const bb = this.getBoundingBox()
-    return bb.max.clone().sub(bb.min).z
+    const { max, min } = this.getBoundingBox()
+    return max.z - min.z
   }
 }
