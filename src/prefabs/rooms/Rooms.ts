@@ -2,7 +2,6 @@ import { ArxMap } from '@src/ArxMap.js'
 import { DONT_QUADIFY, QUADIFY } from '@src/Polygons.js'
 import { $ } from '@src/Selection.js'
 import { Vector3 } from '@src/Vector3.js'
-import { any } from '@src/faux-ramda.js'
 import { Cursor, CursorDir } from '@prefabs/rooms/Cursor.js'
 import { createRoom, RoomProps } from '@prefabs/rooms/room.js'
 
@@ -31,7 +30,7 @@ function union(map1: ArxMap, map2: ArxMap) {
         return false
       }
 
-      return any((q) => p.equals(q, Number.EPSILON * 10 ** 3), map2.polygons)
+      return map2.polygons.some((q) => p.equals(q, Number.EPSILON * 10 ** 3))
     })
 
   $(map2.polygons)
@@ -42,7 +41,7 @@ function union(map1: ArxMap, map2: ArxMap) {
         return false
       }
 
-      return any((q) => p.equals(q, Number.EPSILON * 10 ** 3), map1.polygons)
+      return map1.polygons.some((q) => p.equals(q, Number.EPSILON * 10 ** 3))
     })
 
   $(map1.polygons).delete()

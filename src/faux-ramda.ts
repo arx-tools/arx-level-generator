@@ -38,14 +38,6 @@ export const clone = <T>(data: T): T => {
   return JSON.parse(JSON.stringify(data))
 }
 
-export const any = <T>(fn: (value: T) => boolean, values: T[]) => {
-  return values.some(fn)
-}
-
-export const none = <T>(fn: (value: T) => boolean, values: T[]) => {
-  return !any(fn, values)
-}
-
 /**
  * @see https://stackoverflow.com/a/14438954/1806628
  */
