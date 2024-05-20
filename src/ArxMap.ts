@@ -108,6 +108,14 @@ export class ArxMap {
     ],
   }
 
+  cashedBBox: {
+    numberOfPolygons: number
+    value: Box3
+  } = {
+    numberOfPolygons: 0,
+    value: new Box3(),
+  }
+
   constructor(dlf?: ArxDLF, fts?: ArxFTS, llf?: ArxLLF, areNormalsCalculated = false) {
     if (typeof dlf === 'undefined' || typeof fts === 'undefined' || typeof llf === 'undefined') {
       return
@@ -609,15 +617,21 @@ export class ArxMap {
   }
 
   getBoundingBox() {
+    // TODO: this isn't ideal when only a vertex gets changed, but not the number of polygons
+    if (this.cashedBBox.numberOfPolygons === this.polygons.length) {
+      return this.cashedBBox.value
+    }
+
     const box = new Box3()
 
-    this.polygons
-      .flatMap((p) => {
-        return p.isQuad() ? p.vertices : p.vertices.slice(0, 3)
-      })
-      .forEach((vertex) => {
-        box.expandByPoint(vertex)
-      })
+    for (const polygon of this.polygons) {
+      for (let i = 0; i < (polygon.isQuad() ? 4 : 3); i++) {
+        box.expandByPoint(polygon.vertices[i])
+      }
+    }
+
+    this.cashedBBox.numberOfPolygons = this.polygons.length
+    this.cashedBBox.value = box
 
     return box
   }
