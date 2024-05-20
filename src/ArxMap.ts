@@ -43,7 +43,7 @@ import { Zone } from '@src/Zone.js'
 import { Zones } from '@src/Zones.js'
 import { compile } from '@src/compile.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
-import { times } from '@src/faux-ramda.js'
+import { times, uniq } from '@src/faux-ramda.js'
 import { getGeneratorPackageJSON, latin9ToLatin1 } from '@src/helpers.js'
 import { OriginalLevel } from '@src/types.js'
 
@@ -477,8 +477,9 @@ export class ArxMap {
       ...Object.values(files).map((filename) => filename.replace(/\.json$/, '')),
     ]
 
-    for (const filename of pathsOfTheFiles) {
-      await fs.mkdir(path.dirname(filename), { recursive: true })
+    const dirnames = uniq(pathsOfTheFiles.map(path.dirname.bind(path)))
+    for (const dirname of dirnames) {
+      await fs.mkdir(dirname, { recursive: true })
     }
 
     // ------------------------
