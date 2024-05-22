@@ -1,6 +1,6 @@
 import path from 'node:path'
-import { ArxInteractiveObject, ArxPolygonFlags } from 'arx-convert/types'
-import { Expand } from 'arx-convert/utils'
+import { ArxInteractiveObject } from 'arx-convert/types'
+import { Expand, isTiled } from 'arx-convert/utils'
 import { Audio } from '@src/Audio.js'
 import { EntityModel } from '@src/EntityModel.js'
 import { Material } from '@src/Material.js'
@@ -252,7 +252,7 @@ export class Entity {
         if (stuff instanceof Texture) {
           let hasTiledMaterialFlag = false
           if (stuff instanceof Material) {
-            hasTiledMaterialFlag = (stuff.flags & ArxPolygonFlags.Tiled) > 0
+            hasTiledMaterialFlag = isTiled(stuff)
           }
           const [source, target] = await stuff.exportSourceAndTarget(settings, hasTiledMaterialFlag)
           files[target] = source

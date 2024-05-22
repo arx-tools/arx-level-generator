@@ -1,5 +1,12 @@
 import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVertex } from 'arx-convert/types'
-import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf, TripleOf } from 'arx-convert/utils'
+import {
+  getCellCoords,
+  MAP_DEPTH_IN_CELLS,
+  MAP_WIDTH_IN_CELLS,
+  QuadrupleOf,
+  TripleOf,
+  isTiled,
+} from 'arx-convert/utils'
 import { Mesh, MeshBasicMaterial, Object3D, BufferAttribute } from 'three'
 import { Color } from '@src/Color.js'
 import { Material } from '@src/Material.js'
@@ -50,7 +57,7 @@ export class Polygons extends Array<Polygon> {
         continue
       }
 
-      const needsToBeTileable = (polygon.flags & ArxPolygonFlags.Tiled) !== 0
+      const needsToBeTileable = isTiled(polygon)
       if (needsToBeTileable) {
         texturesToExport.tileable[polygon.texture.filename] = polygon.texture
       } else {

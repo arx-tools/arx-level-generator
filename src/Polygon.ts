@@ -1,5 +1,5 @@
 import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVector3, ArxVertex } from 'arx-convert/types'
-import { MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf } from 'arx-convert/utils'
+import { MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf, isQuad } from 'arx-convert/utils'
 import { Box3, Triangle } from 'three'
 import { Color } from '@src/Color.js'
 import { NO_TEXTURE_CONTAINER, Texture } from '@src/Texture.js'
@@ -171,7 +171,7 @@ export class Polygon {
   }
 
   isQuad() {
-    return (this.flags & ArxPolygonFlags.Quad) !== 0
+    return isQuad(this)
   }
 
   isTransparent() {
