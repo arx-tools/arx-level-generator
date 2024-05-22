@@ -49,6 +49,8 @@ export class EntityModel {
 
   /**
    * props.originIdx is optional, its default value is 0
+   *
+   * use `@tools/mesh/getLowestPolygonIdx` to get the index of the lowest point of a mesh
    */
   static fromThreeJsObj(threeJsObj: Mesh, props: Expand<EntityModelConstructorProps & { originIdx?: number }>) {
     const model = new EntityModel(props)
@@ -61,6 +63,8 @@ export class EntityModel {
 
   /**
    * props.originIdx is optional, its default value is 0
+   *
+   * use `@tools/mesh/getLowestPolygonIdx` to get the index of the lowest point of a mesh
    */
   static fromPolygons(polygons: Polygons, props: Expand<EntityModelConstructorProps & { originIdx?: number }>) {
     const model = new EntityModel(props)
