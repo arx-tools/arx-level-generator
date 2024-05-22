@@ -71,7 +71,7 @@ const createFloor = (size: Vector3, textureDef: TextureDefinition, tileSize: num
     size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: fitX || fitY ? ArxPolygonFlags.Tiled : ArxPolygonFlags.None,
+      flags: fitX && fitY ? ArxPolygonFlags.None : ArxPolygonFlags.Tiled,
     }),
   })
 
@@ -97,7 +97,7 @@ const createNorthWall = (size: Vector3, textureDef: TextureDefinition, tileSize:
     size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: fitX || fitY ? ArxPolygonFlags.Tiled : ArxPolygonFlags.None,
+      flags: fitX && fitY ? ArxPolygonFlags.None : ArxPolygonFlags.Tiled,
     }),
   })
   mesh.translateZ(depth / 2).translateY(-height / 2)
@@ -125,7 +125,7 @@ const createSouthWall = (size: Vector3, textureDef: TextureDefinition, tileSize:
     size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: fitX || fitY ? ArxPolygonFlags.Tiled : ArxPolygonFlags.None,
+      flags: fitX && fitY ? ArxPolygonFlags.None : ArxPolygonFlags.Tiled,
     }),
   })
   mesh.translateZ(-depth / 2).translateY(-height / 2)
@@ -153,7 +153,7 @@ const createWestWall = (size: Vector3, textureDef: TextureDefinition, tileSize: 
     size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: fitX || fitY ? ArxPolygonFlags.Tiled : ArxPolygonFlags.None,
+      flags: fitX && fitY ? ArxPolygonFlags.None : ArxPolygonFlags.Tiled,
     }),
   })
   mesh.translateX(-width / 2).translateY(-height / 2)
@@ -181,7 +181,7 @@ const createEastWall = (size: Vector3, textureDef: TextureDefinition, tileSize: 
     size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: fitX || fitY ? ArxPolygonFlags.Tiled : ArxPolygonFlags.None,
+      flags: fitX && fitY ? ArxPolygonFlags.None : ArxPolygonFlags.Tiled,
     }),
   })
   mesh.translateX(width / 2).translateY(-height / 2)
@@ -209,7 +209,7 @@ const createCeiling = (size: Vector3, textureDef: TextureDefinition, tileSize: n
     size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: fitX || fitY ? ArxPolygonFlags.Tiled : ArxPolygonFlags.None,
+      flags: fitX && fitY ? ArxPolygonFlags.None : ArxPolygonFlags.Tiled,
     }),
   })
   mesh.translateY(-height)
