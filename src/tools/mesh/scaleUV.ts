@@ -25,6 +25,29 @@ export const scaleUV = (scale: Vector2, geometry: BufferGeometry) => {
   }
 }
 
+export const normalizeUV = (geometry: BufferGeometry) => {
+  const uv = geometry.getAttribute('uv') as BufferAttribute
+
+  for (let idx = 0; idx < uv.count; idx++) {
+    let u = uv.getX(idx)
+    let v = uv.getY(idx)
+
+    if (u < 0) {
+      u = 1 - (u % 1)
+    } else if (u > 1) {
+      u = u % 1
+    }
+
+    if (v < 0) {
+      v = 1 - (v % 1)
+    } else if (v > 1) {
+      v = v % 1
+    }
+
+    uv.setXY(idx, u, v)
+  }
+}
+
 export const flipUVHorizontally = (geometry: BufferGeometry) => {
   return scaleUV(new Vector2(-1, 1), geometry)
 }
