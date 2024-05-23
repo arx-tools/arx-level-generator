@@ -33,13 +33,13 @@ export const normalizeUV = (geometry: BufferGeometry) => {
     let v = uv.getY(idx)
 
     if (u < 0) {
-      u = 1 - (u % 1)
+      u = 1 + (u % 1)
     } else if (u > 1) {
       u = u % 1
     }
 
     if (v < 0) {
-      v = 1 - (v % 1)
+      v = 1 + (v % 1)
     } else if (v > 1) {
       v = v % 1
     }
