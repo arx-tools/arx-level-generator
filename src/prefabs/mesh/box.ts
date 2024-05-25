@@ -1,6 +1,6 @@
 import { BoxGeometry, MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
-import { Material } from '@src/Material.js'
 import { Vector3 } from '@src/Vector3.js'
+import { TextureOrMaterial } from '@src/types.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
 export const createBox = ({
@@ -26,7 +26,9 @@ export const createBox = ({
   /**
    * material face order: left, right, bottom, top, front, back
    */
-  materials: Material | [Material, Material, Material, Material, Material, Material]
+  materials:
+    | TextureOrMaterial
+    | [TextureOrMaterial, TextureOrMaterial, TextureOrMaterial, TextureOrMaterial, TextureOrMaterial, TextureOrMaterial]
 }) => {
   if (typeof size === 'number') {
     size = new Vector3(size, size, size)
