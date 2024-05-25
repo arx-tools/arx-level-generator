@@ -4,7 +4,7 @@ A tool for creating maps for the video game [Arx Fatalis](https://en.wikipedia.o
 
 ## Dependencies
 
-[Fred's lighting calculator - version 1.1](https://github.com/fredlllll/ArxLibertatisLightingCalculator)
+[Fred's lighting calculator - version 1.1.1](https://github.com/fredlllll/ArxLibertatisLightingCalculator)
 requires dotnet 6.0+ to be installed
 
 [pkware-test-files](https://github.com/arx-tools/pkware-test-files)
@@ -24,9 +24,9 @@ compatibility options (the level generator CANNOT handle this - https://github.c
 
 `png` - Arx Libertatis added support for png files, even supporting alpha channel
 
-`wav` - all audio files should be Microsoft ADCPM
+`wav` - all audio files should be `Microsoft ADCPM`
 
-`asl` - scripts should be exported with ISO 8859-15 encoding and `\r\n` line endings (the level
+`asl` - scripts should be exported with `ISO 8859-15` encoding and `\r\n` line endings (the level
 generator CAN handle this)
 
 ## Other docs

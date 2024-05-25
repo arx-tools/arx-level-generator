@@ -142,6 +142,10 @@ const calculateLighting = async (settings: Settings) => {
     `--lighting-profile "${settings.lightingCalculatorMode}"`,
   ]
 
+  if (settings.uncompressedFTS) {
+    args.push(`--dont-compress-fts`)
+  }
+
   const __filename = fileURLToPath(import.meta.url)
   const __dirname = path.dirname(__filename)
 

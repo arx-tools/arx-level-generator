@@ -1,45 +1,46 @@
 {
   "runtimeTarget": {
-    "name": ".NETCoreApp,Version=v6.0",
+    "name": ".NETCoreApp,Version=v6.0/win-x64",
     "signature": ""
   },
   "compilationOptions": {},
   "targets": {
-    ".NETCoreApp,Version=v6.0": {
-      "ArxLibertatisLightingCalculator/1.0.0": {
+    ".NETCoreApp,Version=v6.0": {},
+    ".NETCoreApp,Version=v6.0/win-x64": {
+      "ArxLibertatisLightingCalculator/1.1.1": {
         "dependencies": {
-          "ArxLibertatisEditorIO": "1.2.0",
-          "BepuPhysics": "2.3.3",
-          "Plexdata.ArgumentParser.NET": "1.0.7",
+          "ArxLibertatisEditorIO": "2.1.0",
+          "BepuPhysics": "2.3.4",
+          "CommandLineParser": "2.9.1",
           "System.Numerics.Vectors": "4.5.0"
         },
         "runtime": {
           "ArxLibertatisLightingCalculator.dll": {}
         }
       },
-      "ArxLibertatisEditorIO/1.2.0": {
+      "ArxLibertatisEditorIO/2.1.0": {
         "dependencies": {
           "System.Numerics.Vectors": "4.5.0"
         },
         "runtime": {
           "lib/netstandard2.1/ArxLibertatisEditorIO.dll": {
-            "assemblyVersion": "1.2.0.0",
-            "fileVersion": "1.2.0.0"
+            "assemblyVersion": "2.1.0.0",
+            "fileVersion": "2.1.0.0"
           }
         }
       },
-      "BepuPhysics/2.3.3": {
+      "BepuPhysics/2.3.4": {
         "dependencies": {
-          "BepuUtilities": "2.3.3"
+          "BepuUtilities": "2.3.4"
         },
         "runtime": {
           "lib/netstandard2.0/BepuPhysics.dll": {
-            "assemblyVersion": "2.3.3.0",
-            "fileVersion": "2.3.3.0"
+            "assemblyVersion": "2.3.4.0",
+            "fileVersion": "2.3.4.0"
           }
         }
       },
-      "BepuUtilities/2.3.3": {
+      "BepuUtilities/2.3.4": {
         "dependencies": {
           "System.Memory": "4.5.4",
           "System.Numerics.Vectors": "4.5.0",
@@ -47,16 +48,16 @@
         },
         "runtime": {
           "lib/netstandard2.0/BepuUtilities.dll": {
-            "assemblyVersion": "2.3.3.0",
-            "fileVersion": "2.3.3.0"
+            "assemblyVersion": "2.3.4.0",
+            "fileVersion": "2.3.4.0"
           }
         }
       },
-      "Plexdata.ArgumentParser.NET/1.0.7": {
+      "CommandLineParser/2.9.1": {
         "runtime": {
-          "lib/netstandard2.0/Plexdata.ArgumentParser.NET.dll": {
-            "assemblyVersion": "1.0.7.0",
-            "fileVersion": "1.0.7.0"
+          "lib/netstandard2.0/CommandLine.dll": {
+            "assemblyVersion": "2.9.1.0",
+            "fileVersion": "2.9.1.0"
           }
         }
       },
@@ -66,38 +67,38 @@
     }
   },
   "libraries": {
-    "ArxLibertatisLightingCalculator/1.0.0": {
+    "ArxLibertatisLightingCalculator/1.1.1": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "ArxLibertatisEditorIO/1.2.0": {
+    "ArxLibertatisEditorIO/2.1.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-gtrj7rLBaTxlPTJd1JdMAU/Al8CdOZ5+my2SeZOMrN9AH+ftynSxL3hsxBjrtHowJacpvycgvTuFXi+vE1nIyw==",
-      "path": "arxlibertatiseditorio/1.2.0",
-      "hashPath": "arxlibertatiseditorio.1.2.0.nupkg.sha512"
+      "sha512": "sha512-r2Rq+dCH/mEIL69Hxwm0cm24h1BJoNELmlHsmm3RJnv9kOkAbEAqyHdzOcRKRKjwV2npENVHpp64Q6PN+PzvpA==",
+      "path": "arxlibertatiseditorio/2.1.0",
+      "hashPath": "arxlibertatiseditorio.2.1.0.nupkg.sha512"
     },
-    "BepuPhysics/2.3.3": {
+    "BepuPhysics/2.3.4": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-1IvvgSuCHuhEHBhz/z4UO/wBWdppJ9lI13NEfWS4vrC6BBDkIWvlwB3vLncCLm5Ixyr97zNxXcQ2l4n4ABV+Ow==",
-      "path": "bepuphysics/2.3.3",
-      "hashPath": "bepuphysics.2.3.3.nupkg.sha512"
+      "sha512": "sha512-CvghMi5CtF82GghX596Y5q991cRt0ZtV4U8bqfRL20uEblBwpWCk3JxO1Nb5c2rXvcI6ac+7os+So2ASa6jhEA==",
+      "path": "bepuphysics/2.3.4",
+      "hashPath": "bepuphysics.2.3.4.nupkg.sha512"
     },
-    "BepuUtilities/2.3.3": {
+    "BepuUtilities/2.3.4": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-nJRHootMLPiEbuvrUx4RhcEuOAjhcEUBLBxn0gT7zyxRj9E394nUMf/hHcXAZEvTL3xwCkV+EOfwXSE/9sfmHQ==",
-      "path": "bepuutilities/2.3.3",
-      "hashPath": "bepuutilities.2.3.3.nupkg.sha512"
+      "sha512": "sha512-53SnyuR/1f2A9PRw9kfhvCX8UzpFcvVF/OaxmMbhVRYuJ835KZmsltl4Z0Tc3p39jwu+3KzHPBPkc7J1wiXjYA==",
+      "path": "bepuutilities/2.3.4",
+      "hashPath": "bepuutilities.2.3.4.nupkg.sha512"
     },
-    "Plexdata.ArgumentParser.NET/1.0.7": {
+    "CommandLineParser/2.9.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-gBNh+taXQE3iaDXaWXkSr27AVkPQ2cH5TWl3TaTTJj0BlEnNvRsMMmPKwHX1F2IdTRteg8CwmgT5Q4PMjJJPAw==",
-      "path": "plexdata.argumentparser.net/1.0.7",
-      "hashPath": "plexdata.argumentparser.net.1.0.7.nupkg.sha512"
+      "sha512": "sha512-OE0sl1/sQ37bjVsPKKtwQlWDgqaxWgtme3xZz7JssWUzg5JpMIyHgCTY9MVMxOg48fJ1AgGT3tgdH5m/kQ5xhA==",
+      "path": "commandlineparser/2.9.1",
+      "hashPath": "commandlineparser.2.9.1.nupkg.sha512"
     },
     "System.Memory/4.5.4": {
       "type": "package",
