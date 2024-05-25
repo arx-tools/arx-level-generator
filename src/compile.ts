@@ -16,11 +16,13 @@ const { through, transformSplitBy, splitAt, transformIdentity } = stream
 const compileFTS = async (settings: Settings, fts: ArxFTS) => {
   const ftsPath = path.join(settings.outputDir, `game/graph/levels/level${settings.levelIdx}`)
 
-  const repackedFts = FTS.save(fts)
-
   if (settings.uncompressedFTS) {
+    const repackedFts = FTS.save(fts, false)
+
     return fs.promises.writeFile(path.join(ftsPath, 'fast.fts'), repackedFts)
   } else {
+    const repackedFts = FTS.save(fts, true)
+
     const { total: ftsHeaderSize } = getHeaderSize(repackedFts, 'fts')
 
     return new Promise((resolve, reject) => {
