@@ -91,6 +91,11 @@ type SettingsConstructorProps = {
    * default value is "production"
    */
   mode?: Modes
+  /**
+   * When this is set to true FTS files will not get compressed with pkware
+   * after compiling. This is an Arx Libertatis 1.3+ feature!
+   */
+  uncompressedFTS?: boolean
 }
 
 export class Settings {
@@ -167,6 +172,12 @@ export class Settings {
    */
   readonly internalAssetsDir: string
 
+  /**
+   * When this is set to true FTS files will not get compressed with pkware
+   * after compiling. This is an Arx Libertatis 1.3+ feature!
+   */
+  readonly uncompressedFTS: boolean
+
   constructor(props: SettingsConstructorProps = {}) {
     this.originalLevelFiles =
       props.originalLevelFiles ?? process.env.originalLevelFiles ?? path.resolve('../pkware-test-files')
@@ -185,6 +196,8 @@ export class Settings {
 
     this.seed = props.seed ?? process.env.seed ?? randomIntBetween(100_000_000, 999_999_999).toString()
     this.mode = props.mode ?? (process.env.mode === 'development' ? process.env.mode : 'production')
+
+    this.uncompressedFTS = props.uncompressedFTS ?? process.env.uncompressedFTS === 'true'
 
     seedrandom(this.seed, { global: true })
 

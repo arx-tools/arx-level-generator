@@ -17,29 +17,36 @@ const compileFTS = async (settings: Settings, fts: ArxFTS) => {
   const ftsPath = path.join(settings.outputDir, `game/graph/levels/level${settings.levelIdx}`)
 
   const repackedFts = FTS.save(fts)
-  const { total: ftsHeaderSize } = getHeaderSize(repackedFts, 'fts')
 
-  return new Promise((resolve, reject) => {
-    const writeStream = fs.createWriteStream(path.join(ftsPath, 'fast.fts'))
-    writeStream
-      .on('close', () => {
-        resolve(true)
-      })
-      .on('error', (e) => {
-        reject(e)
-      })
-    Readable.from(repackedFts)
-      .pipe(
-        through(
-          transformSplitBy(
-            splitAt(ftsHeaderSize),
-            transformIdentity(),
-            implode(Compression.Binary, DictionarySize.Large),
+  if (settings.uncompressedFTS) {
+    return fs.promises.writeFile(path.join(ftsPath, 'fast.fts'), repackedFts)
+  } else {
+    const { total: ftsHeaderSize } = getHeaderSize(repackedFts, 'fts')
+
+    return new Promise((resolve, reject) => {
+      const writeStream = fs.createWriteStream(path.join(ftsPath, 'fast.fts'))
+
+      writeStream
+        .on('close', () => {
+          resolve(true)
+        })
+        .on('error', (e) => {
+          reject(e)
+        })
+
+      Readable.from(repackedFts)
+        .pipe(
+          through(
+            transformSplitBy(
+              splitAt(ftsHeaderSize),
+              transformIdentity(),
+              implode(Compression.Binary, DictionarySize.Large),
+            ),
           ),
-        ),
-      )
-      .pipe(writeStream)
-  })
+        )
+        .pipe(writeStream)
+    })
+  }
 }
 
 const compileLLF = async (settings: Settings, llf: ArxLLF) => {

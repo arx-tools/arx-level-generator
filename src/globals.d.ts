@@ -10,6 +10,7 @@ declare global {
       lightingCalculatorMode?: string
       seed?: string
       mode?: string
+      uncompressedFTS?: string
     }
   }
 }
