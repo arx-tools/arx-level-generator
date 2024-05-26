@@ -4,7 +4,7 @@ A tool for creating maps for the video game [Arx Fatalis](https://en.wikipedia.o
 
 ## Dependencies
 
-[Fred's lighting calculator - version 1.1.1](https://github.com/fredlllll/ArxLibertatisLightingCalculator)
+[Fred's lighting calculator - version 1.1.2](https://github.com/fredlllll/ArxLibertatisLightingCalculator)
 requires dotnet 6.0+ to be installed
 
 [pkware-test-files](https://github.com/arx-tools/pkware-test-files)
