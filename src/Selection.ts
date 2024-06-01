@@ -110,20 +110,10 @@ export abstract class Selection<T extends Array<any>> {
   }
 
   apply(fn: (item: T[0], idx: number) => void) {
-    const applyToAll = !this.hasSelection()
-
-    if (applyToAll) {
-      this.selectAll()
-    }
-
     this.selection.forEach((idx) => {
       const item = this.items[idx]
       fn(item, idx)
     })
-
-    if (applyToAll) {
-      this.clearSelection()
-    }
 
     return this
   }
@@ -135,18 +125,7 @@ export abstract class Selection<T extends Array<any>> {
 
 export class PolygonSelection extends Selection<Polygons> {
   copy() {
-    const applyToAll = !this.hasSelection()
-
-    if (applyToAll) {
-      this.selectAll()
-    }
-
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
-
-    if (applyToAll) {
-      this.clearSelection()
-    }
-
     return new PolygonSelection(new Polygons(...copiedItems)) as this
   }
 
@@ -208,18 +187,7 @@ export class PolygonSelection extends Selection<Polygons> {
 
 export class LightsSelection extends Selection<Lights> {
   copy() {
-    const applyToAll = !this.hasSelection()
-
-    if (applyToAll) {
-      this.selectAll()
-    }
-
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
-
-    if (applyToAll) {
-      this.clearSelection()
-    }
-
     return new LightsSelection(new Lights(...copiedItems)) as this
   }
 
@@ -232,18 +200,7 @@ export class LightsSelection extends Selection<Lights> {
 
 export class EntitiesSelection extends Selection<Entities> {
   copy() {
-    const applyToAll = !this.hasSelection()
-
-    if (applyToAll) {
-      this.selectAll()
-    }
-
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
-
-    if (applyToAll) {
-      this.clearSelection()
-    }
-
     return new EntitiesSelection(new Entities(...copiedItems)) as this
   }
 
@@ -256,18 +213,7 @@ export class EntitiesSelection extends Selection<Entities> {
 
 export class FogsSelection extends Selection<Fogs> {
   copy() {
-    const applyToAll = !this.hasSelection()
-
-    if (applyToAll) {
-      this.selectAll()
-    }
-
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
-
-    if (applyToAll) {
-      this.clearSelection()
-    }
-
     return new FogsSelection(new Fogs(...copiedItems)) as this
   }
 
@@ -280,18 +226,7 @@ export class FogsSelection extends Selection<Fogs> {
 
 export class PathsSelection extends Selection<Paths> {
   copy() {
-    const applyToAll = !this.hasSelection()
-
-    if (applyToAll) {
-      this.selectAll()
-    }
-
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
-
-    if (applyToAll) {
-      this.clearSelection()
-    }
-
     return new PathsSelection(new Paths(...copiedItems)) as this
   }
 
@@ -304,18 +239,7 @@ export class PathsSelection extends Selection<Paths> {
 
 export class ZonesSelection extends Selection<Zones> {
   copy() {
-    const applyToAll = !this.hasSelection()
-
-    if (applyToAll) {
-      this.selectAll()
-    }
-
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
-
-    if (applyToAll) {
-      this.clearSelection()
-    }
-
     return new ZonesSelection(new Zones(...copiedItems)) as this
   }
 
