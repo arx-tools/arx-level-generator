@@ -407,4 +407,14 @@ export class Polygon {
       this.vertices[3].uv.y *= -1
     }
   }
+
+  getBoundingBox() {
+    const box = new Box3()
+
+    for (let i = 0; i < (this.isQuad() ? 4 : 3); i++) {
+      box.expandByPoint(this.vertices[i])
+    }
+
+    return box
+  }
 }
