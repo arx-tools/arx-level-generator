@@ -91,12 +91,12 @@ export abstract class Selection<T extends Array<any>> {
   /**
    * Removes items which have been selected
    *
-   * @returns the number of items that have ben removed
+   * @returns a copy of the elements that have been deleted
    */
   delete() {
-    const selectedAmount = this.sizeOfSelection()
+    const copiedItems = this.copy().get()
 
-    if (selectedAmount > 0) {
+    if (copiedItems.length > 0) {
       groupSequences(this.selection)
         .reverse()
         .forEach(([start, size]) => {
@@ -106,7 +106,7 @@ export abstract class Selection<T extends Array<any>> {
       this.selection = []
     }
 
-    return selectedAmount
+    return copiedItems
   }
 
   apply(fn: (item: T[0], idx: number) => void) {
@@ -116,6 +116,12 @@ export abstract class Selection<T extends Array<any>> {
     })
 
     return this
+  }
+
+  move(offset: Vector3) {
+    return this.apply((item) => {
+      item.move(offset)
+    })
   }
 
   abstract copy(): this
@@ -160,12 +166,6 @@ export class PolygonSelection extends Selection<Polygons> {
     })
   }
 
-  move(offset: Vector3) {
-    return this.apply((polygon) => {
-      polygon.move(offset)
-    })
-  }
-
   scale(scale: number) {
     return this.apply((polygon) => {
       polygon.scale(scale)
@@ -190,24 +190,12 @@ export class LightsSelection extends Selection<Lights> {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
     return new LightsSelection(new Lights(...copiedItems)) as this
   }
-
-  move(offset: Vector3) {
-    return this.apply((light) => {
-      light.position.add(offset)
-    })
-  }
 }
 
 export class EntitiesSelection extends Selection<Entities> {
   copy() {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
     return new EntitiesSelection(new Entities(...copiedItems)) as this
-  }
-
-  move(offset: Vector3) {
-    return this.apply((entity) => {
-      entity.move(offset)
-    })
   }
 }
 
@@ -216,12 +204,6 @@ export class FogsSelection extends Selection<Fogs> {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
     return new FogsSelection(new Fogs(...copiedItems)) as this
   }
-
-  move(offset: Vector3) {
-    return this.apply((fog) => {
-      fog.move(offset)
-    })
-  }
 }
 
 export class PathsSelection extends Selection<Paths> {
@@ -229,24 +211,12 @@ export class PathsSelection extends Selection<Paths> {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
     return new PathsSelection(new Paths(...copiedItems)) as this
   }
-
-  move(offset: Vector3) {
-    return this.apply((path) => {
-      path.move(offset)
-    })
-  }
 }
 
 export class ZonesSelection extends Selection<Zones> {
   copy() {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
     return new ZonesSelection(new Zones(...copiedItems)) as this
-  }
-
-  move(offset: Vector3) {
-    return this.apply((zone) => {
-      zone.move(offset)
-    })
   }
 }
 
