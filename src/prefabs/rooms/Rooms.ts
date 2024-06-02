@@ -12,8 +12,8 @@ function union(map1: ArxMap, map2: ArxMap) {
   // TODO: this removes both polygons when they overlap, which is ideal for walls
   // but not for ceilings and floors
 
-  const map1BB = map1.getBoundingBox()
-  const map2BB = map2.getBoundingBox()
+  const map1BB = map1.polygons.getBoundingBox()
+  const map2BB = map2.polygons.getBoundingBox()
 
   if (!map1BB.intersectsBox(map2BB)) {
     return
