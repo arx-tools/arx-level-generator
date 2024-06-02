@@ -7,7 +7,7 @@ import {
   TripleOf,
   isTiled,
 } from 'arx-convert/utils'
-import { Mesh, MeshBasicMaterial, Object3D, BufferAttribute } from 'three'
+import { Mesh, MeshBasicMaterial, Object3D, BufferAttribute, Box3 } from 'three'
 import { Color } from '@src/Color.js'
 import { Material } from '@src/Material.js'
 import { Polygon, TransparencyType } from '@src/Polygon.js'
@@ -43,6 +43,14 @@ type VertexWithMaterialIndex = {
 }
 
 export class Polygons extends Array<Polygon> {
+  cashedBBox: {
+    numberOfPolygons: number
+    value: Box3
+  } = {
+    numberOfPolygons: 0,
+    value: new Box3(),
+  }
+
   async exportTextures(settings: Settings) {
     const texturesToExport: {
       tileable: Record<string, Texture>
@@ -408,5 +416,47 @@ export class Polygons extends Array<Polygon> {
     }
 
     return colors
+  }
+
+  getBoundingBox() {
+    // TODO: this isn't ideal when only a vertex gets changed, but not the number of polygons
+    if (this.cashedBBox.numberOfPolygons === this.length) {
+      return this.cashedBBox.value
+    }
+
+    const bbox = new Box3()
+
+    for (const polygon of this) {
+      const { min, max } = polygon.getBoundingBox()
+      bbox.expandByPoint(min)
+      bbox.expandByPoint(max)
+    }
+
+    this.cashedBBox.numberOfPolygons = this.length
+    this.cashedBBox.value = bbox
+
+    return bbox
+  }
+
+  getCenter() {
+    const bb = this.getBoundingBox()
+    const center = new Vector3()
+    bb.getCenter(center)
+    return center
+  }
+
+  getHeight() {
+    const { max, min } = this.getBoundingBox()
+    return max.y - min.y
+  }
+
+  getWidth() {
+    const { max, min } = this.getBoundingBox()
+    return max.x - min.x
+  }
+
+  getDepth() {
+    const { max, min } = this.getBoundingBox()
+    return max.z - min.z
   }
 }

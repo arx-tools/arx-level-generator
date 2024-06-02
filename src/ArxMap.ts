@@ -14,7 +14,7 @@ import {
   ArxVertex,
 } from 'arx-convert/types'
 import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf } from 'arx-convert/utils'
-import { Box3, Object3D } from 'three'
+import { Object3D } from 'three'
 import { Audio } from '@src/Audio.js'
 import { Entities } from '@src/Entities.js'
 import { Entity } from '@src/Entity.js'
@@ -106,14 +106,6 @@ export class ArxMap {
         endPosition: { x: 0, y: 0, z: 0 },
       },
     ],
-  }
-
-  cashedBBox: {
-    numberOfPolygons: number
-    value: Box3
-  } = {
-    numberOfPolygons: 0,
-    value: new Box3(),
   }
 
   constructor(dlf?: ArxDLF, fts?: ArxFTS, llf?: ArxLLF, areNormalsCalculated = false) {
@@ -244,11 +236,11 @@ export class ArxMap {
       throw new MapFinalizedError()
     }
 
-    const numberOfRemovedPolygons = $(this.polygons).clearSelection().selectOutOfBounds().delete()
+    const removedPolygons = $(this.polygons).clearSelection().selectOutOfBounds().delete()
 
-    if (numberOfRemovedPolygons > 0) {
+    if (removedPolygons.length > 0) {
       console.warn(
-        `[warning] ArxMap: Removed ${numberOfRemovedPolygons} polygons what are outside the 0..16000 boundary on the X or Z axis`,
+        `[warning] ArxMap: Removed ${removedPolygons.length} polygons what are outside the 0..16000 boundary on the X or Z axis`,
       )
     }
 
@@ -615,47 +607,5 @@ export class ArxMap {
     // })
     // TODO: adjust fts anchor linked anchor indices
     // TODO: adjust fts polygon texture container ids
-  }
-
-  getBoundingBox() {
-    // TODO: this isn't ideal when only a vertex gets changed, but not the number of polygons
-    if (this.cashedBBox.numberOfPolygons === this.polygons.length) {
-      return this.cashedBBox.value
-    }
-
-    const box = new Box3()
-
-    for (const polygon of this.polygons) {
-      for (let i = 0; i < (polygon.isQuad() ? 4 : 3); i++) {
-        box.expandByPoint(polygon.vertices[i])
-      }
-    }
-
-    this.cashedBBox.numberOfPolygons = this.polygons.length
-    this.cashedBBox.value = box
-
-    return box
-  }
-
-  getCenter() {
-    const bb = this.getBoundingBox()
-    const center = new Vector3()
-    bb.getCenter(center)
-    return center
-  }
-
-  getHeight() {
-    const { max, min } = this.getBoundingBox()
-    return max.y - min.y
-  }
-
-  getWidth() {
-    const { max, min } = this.getBoundingBox()
-    return max.x - min.x
-  }
-
-  getDepth() {
-    const { max, min } = this.getBoundingBox()
-    return max.z - min.z
   }
 }
