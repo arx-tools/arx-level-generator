@@ -91,18 +91,18 @@
   },
   "homepage": "https://github.com/arx-tools/arx-level-generator#readme",
   "dependencies": {
-    "arx-header-size": "^2.2.0",
+    "arx-header-size": "^2.3.1",
     "color-rgba": "^3.0.0",
     "dotenv": "^16.3.1",
     "minimist-lite": "^2.2.1",
-    "node-pkware": "^3.0.4",
+    "node-pkware": "^3.0.5",
     "object-hash": "^3.0.0",
     "seedrandom": "^3.0.5",
     "sharp": "^0.32.6",
     "sharp-bmp": "^0.1.5"
   },
   "peerDependencies": {
-    "arx-convert": "^9.0.0",
+    "arx-convert": "^9.0.1",
     "three": "0.158.0"
   },
   "devDependencies": {
