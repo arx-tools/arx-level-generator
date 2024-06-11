@@ -93,31 +93,31 @@
   "dependencies": {
     "arx-header-size": "^2.3.1",
     "color-rgba": "^3.0.0",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.4.5",
     "minimist-lite": "^2.2.1",
     "node-pkware": "^3.0.5",
     "object-hash": "^3.0.0",
     "seedrandom": "^3.0.5",
-    "sharp": "^0.32.6",
+    "sharp": "^0.33.4",
     "sharp-bmp": "^0.1.5"
   },
   "peerDependencies": {
     "arx-convert": "^9.0.1",
-    "three": "0.158.0"
+    "three": "0.165.0"
   },
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^4.2.1",
-    "@types/color-rgba": "^2.1.1",
-    "@types/node": "^20.8.10",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/color-rgba": "^2.1.2",
+    "@types/node": "^20.14.2",
     "@types/object-hash": "^3.0.6",
-    "@types/seedrandom": "^3.0.7",
+    "@types/seedrandom": "^3.0.8",
     "@types/sharp": "^0.31.1",
-    "@types/three": "^0.158.1",
+    "@types/three": "^0.165.0",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@typescript-eslint/parser": "^6.14.0",
     "eslint": "^8.56.0",
-    "tsc-alias": "^1.8.8",
-    "typescript": "^5.3.3"
+    "tsc-alias": "^1.8.10",
+    "typescript": "^5.4.5"
   },
   "keywords": [
     "arx-fatalis"
