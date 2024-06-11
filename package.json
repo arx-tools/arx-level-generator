@@ -85,7 +85,7 @@
     "url": "git+https://github.com/arx-tools/arx-level-generator.git"
   },
   "author": "Lajos Meszaros <m_lajos@hotmail.com>",
-  "license": "GPL-3.0-or-later",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/arx-tools/arx-level-generator/issues"
   },
