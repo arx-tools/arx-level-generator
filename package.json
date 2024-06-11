@@ -113,8 +113,8 @@
     "@types/seedrandom": "^3.0.8",
     "@types/sharp": "^0.31.1",
     "@types/three": "^0.165.0",
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
-    "@typescript-eslint/parser": "^6.14.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
     "eslint": "^8.56.0",
     "tsc-alias": "^1.8.10",
     "typescript": "^5.4.5"
