@@ -46,6 +46,8 @@ import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { times, uniq } from '@src/faux-ramda.js'
 import { getGeneratorPackageJSON, latin9ToLatin1 } from '@src/helpers.js'
 import { OriginalLevel } from '@src/types.js'
+import { createPlaneMesh } from '@prefabs/mesh/plane.js'
+import { Texture } from './Texture.js'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -231,6 +233,22 @@ export class ArxMap {
     return `${generator.name} - v.${generator.version}`
   }
 
+  private addTileUnderThePlayersFeet() {
+    const playerPos = this.config.offset
+      .clone()
+      .add(this.player.position)
+      .sub(new Vector3(0, 0, 0).adjustToPlayerHeight())
+
+    const plane = createPlaneMesh({
+      size: 100,
+      tileSize: 100,
+      texture: Texture.missingTexture,
+    })
+    plane.position.set(playerPos.x, playerPos.y, playerPos.z)
+
+    this.polygons.addThreeJsMesh(plane)
+  }
+
   finalize() {
     if (this.config.isFinalized) {
       throw new MapFinalizedError()
@@ -242,6 +260,10 @@ export class ArxMap {
       console.warn(
         `[warning] ArxMap: Removed ${removedPolygons.length} polygons what are outside the 0..16000 boundary on the X or Z axis`,
       )
+    }
+
+    if (this.polygons.length === 0) {
+      this.addTileUnderThePlayersFeet()
     }
 
     this.polygons.forEach((polygon) => {
