@@ -291,7 +291,7 @@ export class ArxMap {
   }
 
   private movePolygonsToSameRoom() {
-    $(this.polygons).moveToRoom1()
+    $(this.polygons).selectAll().moveToRoom1()
 
     this.todo.rooms = this.todo.rooms.slice(0, 2)
     this.todo.roomDistances = [
@@ -546,7 +546,7 @@ export class ArxMap {
 
   adjustOffsetTo(map: ArxMap) {
     const offsetDifference = map.config.offset.clone().sub(this.config.offset)
-    $(this.polygons).move(offsetDifference)
+    $(this.polygons).selectAll().move(offsetDifference)
   }
 
   move(offset: Vector3) {
@@ -554,12 +554,12 @@ export class ArxMap {
       throw new MapFinalizedError()
     }
 
-    $(this.polygons).move(offset)
-    $(this.entities).move(offset)
-    $(this.lights).move(offset)
-    $(this.fogs).move(offset)
-    $(this.paths).move(offset)
-    $(this.zones).move(offset)
+    $(this.polygons).selectAll().move(offset)
+    $(this.entities).selectAll().move(offset)
+    $(this.lights).selectAll().move(offset)
+    $(this.fogs).selectAll().move(offset)
+    $(this.paths).selectAll().move(offset)
+    $(this.zones).selectAll().move(offset)
 
     // anchors
     this.todo.anchors.forEach((anchor) => {
