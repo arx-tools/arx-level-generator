@@ -12,6 +12,11 @@ This package contains all the arx fatalis levels readily unpacked. The level gen
 files from the path specified in `Settings.originalLevelFiles` (default `../pkware-test-files`
 relative to where you have installed the `arx-level-generator`)
 
+**three.js version 0.165.0**
+
+The package uses a specific version of three.js and so it is marked as a peer dependency.
+Always check the currently used version to avoid warnings and errors in your project
+
 ## Notes on formats
 
 make sure that all assets are lowercase
