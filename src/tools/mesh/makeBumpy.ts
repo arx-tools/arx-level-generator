@@ -1,5 +1,5 @@
-import { BufferAttribute, BufferGeometry, MathUtils } from 'three'
-import { Vector3 } from '@src/Vector3.js'
+import { type BufferAttribute, type BufferGeometry, MathUtils } from 'three'
+import { type Vector3 } from '@src/Vector3.js'
 import { sum } from '@src/faux-ramda.js'
 import { randomBetween, randomIntBetween } from '@src/random.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
@@ -15,12 +15,12 @@ type VertexData = { y: number; position: Vector3; idx: number }
  * @param geometry - any threejs geometry
  * @returns the vectors of the peeks
  */
-export const makeBumpy = (
+export function makeBumpy(
   magnitude: number | [number, number],
   percentage: number,
   smoothenPeeks: boolean,
   geometry: BufferGeometry,
-) => {
+): Vector3[] {
   const vertices = getVertices(geometry)
   const coords = geometry.getAttribute('position') as BufferAttribute
 
@@ -35,9 +35,9 @@ export const makeBumpy = (
     let newY = v.vector.y
     if (isToBePeeked) {
       if (typeof magnitude === 'number') {
-        newY += randomBetween(-magnitude, magnitude)
+        newY = newY + randomBetween(-magnitude, magnitude)
       } else {
-        newY += randomBetween(magnitude[0], magnitude[1])
+        newY = newY + randomBetween(magnitude[0], magnitude[1])
       }
     }
 
@@ -103,6 +103,7 @@ export const makeBumpy = (
 
       peeks[i].y = peekY
     }
+
     coords.setY(idx, peekY)
   })
 

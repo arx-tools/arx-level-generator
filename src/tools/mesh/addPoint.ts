@@ -1,4 +1,4 @@
-import { BufferAttribute, BufferGeometry, Mesh, MeshBasicMaterial, Vector3 } from 'three'
+import { BufferAttribute, BufferGeometry, type Material, Mesh, MeshBasicMaterial, type Vector3 } from 'three'
 import { Texture } from '@src/Texture.js'
 import { circleOfVectors } from '@src/helpers.js'
 
@@ -11,14 +11,20 @@ import { circleOfVectors } from '@src/helpers.js'
  * @param radius - the size of the newly added polygon, default value is 1
  * @returns a new mesh with the updated geometry
  */
-export const addPoint = (point: Vector3, mesh: Mesh, texture: Texture = Texture.alpha, radius: number = 1) => {
-  const { material, geometry: _geometry } = mesh
-  const materials = Array.isArray(material) ? material : [material]
+export function addPoint(point: Vector3, mesh: Mesh, texture: Texture = Texture.alpha, radius: number = 1): Mesh {
+  const { material, geometry } = mesh
 
-  const positions = [..._geometry.getAttribute('position').array]
-  const normals = [..._geometry.getAttribute('normal').array]
-  const uvs = [..._geometry.getAttribute('uv').array]
-  const groups = [..._geometry.groups]
+  let materials: Material[]
+  if (Array.isArray(material)) {
+    materials = material
+  } else {
+    materials = [material]
+  }
+
+  const positions = [...geometry.getAttribute('position').array]
+  const normals = [...geometry.getAttribute('normal').array]
+  const uvs = [...geometry.getAttribute('uv').array]
+  const groups = [...geometry.groups]
 
   const numberOfPolygons = positions.length / 3
   const numberOfMaterials = materials.length
@@ -41,14 +47,14 @@ export const addPoint = (point: Vector3, mesh: Mesh, texture: Texture = Texture.
 
   // ---------
 
-  const geometry = new BufferGeometry()
-  geometry.setAttribute('position', new BufferAttribute(new Float32Array(positions), 3))
-  geometry.setAttribute('normal', new BufferAttribute(new Float32Array(normals), 3))
-  geometry.setAttribute('uv', new BufferAttribute(new Float32Array(uvs), 2))
+  const newGeometry = new BufferGeometry()
+  newGeometry.setAttribute('position', new BufferAttribute(new Float32Array(positions), 3))
+  newGeometry.setAttribute('normal', new BufferAttribute(new Float32Array(normals), 3))
+  newGeometry.setAttribute('uv', new BufferAttribute(new Float32Array(uvs), 2))
 
   groups.forEach(({ start, count, materialIndex }) => {
-    geometry.addGroup(start, count, materialIndex)
+    newGeometry.addGroup(start, count, materialIndex)
   })
 
-  return new Mesh(geometry, materials)
+  return new Mesh(newGeometry, materials)
 }

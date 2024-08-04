@@ -9,15 +9,19 @@ import { ScriptProperty } from '@scripting/ScriptProperty.js'
  * @see https://wiki.arx-libertatis.org/Script:setplatform
  */
 export class Platform extends ScriptProperty<boolean> {
-  toString() {
-    return `set_platform ${this.value === true ? 'on' : 'off'}`
-  }
-
-  static get on() {
+  static get on(): Platform {
     return new Platform(true)
   }
 
-  static get off() {
+  static get off(): Platform {
     return new Platform(false)
+  }
+
+  toString(): string {
+    if (this.value === true) {
+      return `set_platform on`
+    }
+
+    return `set_platform off`
   }
 }

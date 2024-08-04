@@ -11,11 +11,11 @@ import { ScriptProperty } from '@scripting/ScriptProperty.js'
  * default value is 1
  */
 export class Scale extends ScriptProperty<number> {
-  toString() {
-    return `set_scale ${roundToNDecimals(2, this.value) * 100}`
+  static get default(): Scale {
+    return new Scale(1)
   }
 
-  static get default() {
-    return new Scale(1)
+  toString(): string {
+    return `set_scale ${roundToNDecimals(2, this.value) * 100}`
   }
 }

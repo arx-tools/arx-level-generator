@@ -1,4 +1,4 @@
-import { Script, ScriptHandler } from '@src/Script.js'
+import { Script, type ScriptHandler } from '@src/Script.js'
 
 export class ScriptSubroutine {
   name: string
@@ -11,7 +11,7 @@ export class ScriptSubroutine {
     this.invokeType = invokeType
   }
 
-  toString() {
+  toString(): string {
     const renderedScript = Script.handlerToString(this.command)
     if (renderedScript.trim() === '') {
       return ''
@@ -20,7 +20,7 @@ export class ScriptSubroutine {
     return [`>>${this.name} {`, renderedScript, this.invokeType === 'gosub' ? '  return' : '  accept', '}'].join('\n')
   }
 
-  invoke() {
+  invoke(): string {
     if (this.invokeType === 'gosub') {
       return `gosub ${this.name}`
     } else {

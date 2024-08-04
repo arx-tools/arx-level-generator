@@ -7,15 +7,19 @@ import { ScriptProperty } from '@scripting/ScriptProperty.js'
  * @see https://wiki.arx-libertatis.org/Script:setshadow
  */
 export class Shadow extends ScriptProperty<boolean> {
-  toString() {
-    return `set_shadow ${this.value === true ? 'on' : 'off'}`
-  }
-
-  static get on() {
+  static get on(): Shadow {
     return new Shadow(true)
   }
 
-  static get off() {
+  static get off(): Shadow {
     return new Shadow(false)
+  }
+
+  toString(): string {
+    if (this.value === true) {
+      return `set_shadow on`
+    }
+
+    return `set_shadow off`
   }
 }

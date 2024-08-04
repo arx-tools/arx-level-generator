@@ -7,7 +7,7 @@ import { ScriptProperty } from '@scripting/ScriptProperty.js'
  * @see https://wiki.arx-libertatis.org/Script:setname
  */
 export class Label extends ScriptProperty<string> {
-  toString() {
+  toString(): string {
     if (this.isI18nKey()) {
       return `setname ${this.value}`
     } else {
@@ -15,7 +15,7 @@ export class Label extends ScriptProperty<string> {
     }
   }
 
-  isI18nKey() {
+  isI18nKey(): boolean {
     return this.value.startsWith('[') && this.value.endsWith(']')
   }
 }

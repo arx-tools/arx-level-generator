@@ -1,4 +1,4 @@
-import { Color } from '@src/Color.js'
+import { type Color } from '@src/Color.js'
 
 enum GlowFlags {
   Inactive = 0,
@@ -41,17 +41,17 @@ export class Glow {
     this.isNegative = isNegative
   }
 
-  on() {
+  on(): string {
     const params = { color: '', radius: '' }
 
     let flags = GlowFlags.Active
 
-    if (typeof this.color !== 'undefined') {
+    if (this.color !== undefined) {
       flags |= GlowFlags.Color
       params.color = this.color.toScriptColor()
     }
 
-    if (typeof this.size !== 'undefined') {
+    if (this.size !== undefined) {
       flags |= GlowFlags.Size
       params.radius = this.size.toString()
     }
@@ -63,7 +63,7 @@ export class Glow {
     return `halo ${this.stringifyFlags(flags)} ${params.color} ${params.radius}`.trim()
   }
 
-  off() {
+  off(): string {
     const flags = GlowFlags.Inactive
     return `halo ${this.stringifyFlags(flags)}`
   }
@@ -75,7 +75,7 @@ export class Glow {
    * [s] = specify size (default size is 45)
    * [n] = negative
    */
-  private stringifyFlags(flags: GlowFlags) {
+  private stringifyFlags(flags: GlowFlags): string {
     let letters = ''
 
     if (flags & GlowFlags.Active) {
@@ -87,9 +87,11 @@ export class Glow {
     if (flags & GlowFlags.Color) {
       letters += 'c'
     }
+
     if (flags & GlowFlags.Size) {
       letters += 's'
     }
+
     if (flags & GlowFlags.Negative) {
       letters += 'n'
     }

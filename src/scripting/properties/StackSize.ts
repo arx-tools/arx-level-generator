@@ -10,15 +10,15 @@ import { ScriptProperty } from '@scripting/ScriptProperty.js'
  * default value is 1
  */
 export class StackSize extends ScriptProperty<number> {
-  toString() {
-    return `playerstacksize ${this.value}`
-  }
-
-  static get default() {
+  static get default(): StackSize {
     return new StackSize(10)
   }
 
-  static get unstackable() {
+  static get unstackable(): StackSize {
     return new StackSize(1)
+  }
+
+  toString(): string {
+    return `playerstacksize ${this.value}`
   }
 }

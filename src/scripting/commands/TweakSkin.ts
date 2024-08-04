@@ -1,8 +1,8 @@
 import path from 'node:path'
-import { Settings } from '@src/Settings.js'
-import { Texture } from '@src/Texture.js'
+import { type Settings } from '@src/Settings.js'
+import { type Texture } from '@src/Texture.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
-import { UsesTextures } from '@scripting/interfaces/UsesTextures.js'
+import { type UsesTextures } from '@scripting/interfaces/UsesTextures.js'
 
 export class TweakSkin extends ScriptCommand implements UsesTextures {
   oldTexture: Texture | string
@@ -14,7 +14,7 @@ export class TweakSkin extends ScriptCommand implements UsesTextures {
     this.newTexture = newTexture
   }
 
-  toString() {
+  toString(): string {
     const oldFilename =
       typeof this.oldTexture === 'string' ? this.oldTexture : path.parse(this.oldTexture.filename).name
     const newFilename =
@@ -23,16 +23,15 @@ export class TweakSkin extends ScriptCommand implements UsesTextures {
     return `tweak skin "${oldFilename}" "${newFilename}"`
   }
 
-  async exportTextures(settings: Settings) {
+  async exportTextures(settings: Settings): Promise<Record<string, string>> {
     const files: Record<string, string> = {}
+    const { oldTexture, newTexture } = this
 
-    const oldTexture = this.oldTexture
     if (typeof oldTexture !== 'string' && !oldTexture.isNative) {
       const [source, target] = await oldTexture.exportSourceAndTarget(settings, false)
       files[target] = source
     }
 
-    const newTexture = this.newTexture
     if (typeof newTexture !== 'string' && !newTexture.isNative) {
       const [source, target] = await newTexture.exportSourceAndTarget(settings, false)
       files[target] = source

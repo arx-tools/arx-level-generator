@@ -17,9 +17,9 @@ export type VariableType =
  * @see https://wiki.arx-libertatis.org/Script:Variables
  */
 export class Variable<T> extends ScriptProperty<T> {
-  private propType: VariableType
-  private propName: string
-  private startUninitialized: boolean
+  private readonly propType: VariableType
+  private readonly propName: string
+  private readonly startUninitialized: boolean
 
   constructor(type: 'bool' | 'global bool', name: string, value: boolean extends T ? T : never)
   // prettier-ignore
@@ -40,7 +40,7 @@ export class Variable<T> extends ScriptProperty<T> {
     this.startUninitialized = startUninitialized
   }
 
-  toString() {
+  toString(): string {
     if (this.startUninitialized) {
       return ''
     }
@@ -48,39 +48,71 @@ export class Variable<T> extends ScriptProperty<T> {
     return `set ${this.name} ${this.scriptValue}`
   }
 
-  get name() {
+  get name(): string {
+    let value: string
+
     switch (this.propType) {
       case 'bool':
-      case 'int':
-        return `§${this.propName}`
-      case 'float':
-        return `@${this.propName}`
-      case 'string':
-        return `£${this.propName}`
+      case 'int': {
+        value = `§${this.propName}`
+        break
+      }
+
+      case 'float': {
+        value = `@${this.propName}`
+        break
+      }
+
+      case 'string': {
+        value = `£${this.propName}`
+        break
+      }
 
       case 'global bool':
-      case 'global int':
-        return `#${this.propName}`
-      case 'global float':
-        return `&${this.propName}`
-      case 'global string':
-        return `$${this.propName}`
+      case 'global int': {
+        value = `#${this.propName}`
+        break
+      }
+
+      case 'global float': {
+        value = `&${this.propName}`
+        break
+      }
+
+      case 'global string': {
+        value = `$${this.propName}`
+        break
+      }
     }
+
+    return value
   }
 
-  get scriptValue() {
+  get scriptValue(): string {
+    let value: string
+
     switch (this.propType) {
       case 'bool':
-      case 'global bool':
-        return `${this.value ? 1 : 0}`
+      case 'global bool': {
+        value = `${this.value ? 1 : 0}`
+        break
+      }
+
       case 'int':
       case 'float':
       case 'global int':
-      case 'global float':
-        return `${this.value}`
+      case 'global float': {
+        value = `${this.value}`
+        break
+      }
+
       case 'string':
-      case 'global string':
-        return `"${this.value}"`
+      case 'global string': {
+        value = `"${this.value}"`
+        break
+      }
     }
+
+    return value
   }
 }

@@ -1,13 +1,13 @@
-import { BufferGeometry } from 'three'
+import { type BufferGeometry } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { countBy, partition } from '@src/faux-ramda.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 
 type HashAndAmount = [string, number]
 
-const unpackCoords = (coords: HashAndAmount[]) => {
+function unpackCoords(coords: HashAndAmount[]): Vector3[] {
   return coords.map(([hash]) => {
-    const [x, y, z] = hash.split('|').map((x) => parseFloat(x))
+    const [x, y, z] = hash.split('|').map((x) => Number.parseFloat(x))
     return new Vector3(x, y, z)
   })
 }
@@ -15,7 +15,11 @@ const unpackCoords = (coords: HashAndAmount[]) => {
 /**
  * This function expects geometry to be triangulated, no quads or anything
  */
-export const categorizeVertices = (geometry: BufferGeometry) => {
+export function categorizeVertices(geometry: BufferGeometry): {
+  corners: Vector3[]
+  edges: Vector3[]
+  middles: Vector3[]
+} {
   const polygons = getNonIndexedVertices(geometry)
 
   const summary = Object.entries(

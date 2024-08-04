@@ -1,4 +1,4 @@
-import { BufferAttribute, BufferGeometry, Vector2 } from 'three'
+import { type BufferAttribute, type BufferGeometry, Vector2 } from 'three'
 
 /**
  * only works with tileable textures
@@ -11,7 +11,7 @@ import { BufferAttribute, BufferGeometry, Vector2 } from 'three'
  * `scaleUV(new Vector(-1, 1), geometry)` will flip the texture horizontally
  * `scaleUV(new Vector(1, -1), geometry)` will flip the texture vertically
  */
-export const scaleUV = (scale: Vector2, geometry: BufferGeometry) => {
+export function scaleUV(scale: Vector2, geometry: BufferGeometry): void {
   if (scale.x === 1 && scale.y === 1) {
     return
   }
@@ -25,7 +25,7 @@ export const scaleUV = (scale: Vector2, geometry: BufferGeometry) => {
   }
 }
 
-export const normalizeUV = (geometry: BufferGeometry) => {
+export function normalizeUV(geometry: BufferGeometry): void {
   const uv = geometry.getAttribute('uv') as BufferAttribute
 
   for (let idx = 0; idx < uv.count; idx++) {
@@ -48,10 +48,10 @@ export const normalizeUV = (geometry: BufferGeometry) => {
   }
 }
 
-export const flipUVHorizontally = (geometry: BufferGeometry) => {
-  return scaleUV(new Vector2(-1, 1), geometry)
+export function flipUVHorizontally(geometry: BufferGeometry): void {
+  scaleUV(new Vector2(-1, 1), geometry)
 }
 
-export const flipUVVertically = (geometry: BufferGeometry) => {
-  return scaleUV(new Vector2(1, -1), geometry)
+export function flipUVVertically(geometry: BufferGeometry): void {
+  scaleUV(new Vector2(1, -1), geometry)
 }

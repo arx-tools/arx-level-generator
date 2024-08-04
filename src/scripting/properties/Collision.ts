@@ -7,15 +7,15 @@ import { ScriptProperty } from '@scripting/ScriptProperty.js'
  * @see https://wiki.arx-libertatis.org/Script:collision
  */
 export class Collision extends ScriptProperty<boolean> {
-  toString() {
-    return `collision ${this.value === true ? 'on' : 'off'}`
-  }
-
-  static get on() {
+  static get on(): Collision {
     return new Collision(true)
   }
 
-  static get off() {
+  static get off(): Collision {
     return new Collision(false)
+  }
+
+  toString(): string {
+    return `collision ${this.value === true ? 'on' : 'off'}`
   }
 }

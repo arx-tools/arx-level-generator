@@ -1,4 +1,4 @@
-import { BufferAttribute, BufferGeometry } from 'three'
+import { type BufferAttribute, type BufferGeometry } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { isBetween } from '@src/helpers.js'
 
@@ -8,7 +8,7 @@ export type GeometryVertex = {
   materialIndex?: number
 }
 
-const getMaterialIndex = (idx: number, geometry: BufferGeometry) => {
+function getMaterialIndex(idx: number, geometry: BufferGeometry): number | undefined {
   if (geometry.groups.length === 0) {
     return undefined
   }
@@ -25,7 +25,7 @@ const getMaterialIndex = (idx: number, geometry: BufferGeometry) => {
  * Should be used for stuff, like terrain manipulation as indexed geometries will not be unpacked
  * into individual vertices.
  */
-export const getVertices = (geometry: BufferGeometry) => {
+export function getVertices(geometry: BufferGeometry): GeometryVertex[] {
   const vertices: GeometryVertex[] = []
 
   const coords = geometry.getAttribute('position') as BufferAttribute
@@ -45,7 +45,7 @@ export const getVertices = (geometry: BufferGeometry) => {
  * Gets the non-indexed version of vertices of a geometry.
  * Should be used when converting it to Arx polygon data as Arx uses non-indexed geometry.
  */
-export const getNonIndexedVertices = (geometry: BufferGeometry) => {
+export function getNonIndexedVertices(geometry: BufferGeometry): GeometryVertex[] {
   const vertices: GeometryVertex[] = []
 
   const index = geometry.getIndex()

@@ -8,7 +8,7 @@ export class UseMesh extends ScriptCommand {
     this.filename = filename
   }
 
-  toString() {
+  toString(): string {
     return `usemesh "${this.filename}"`
   }
 }

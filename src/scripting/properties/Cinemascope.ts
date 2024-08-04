@@ -7,6 +7,22 @@ import { ScriptProperty } from '@scripting/ScriptProperty.js'
  * @see https://wiki.arx-libertatis.org/Script:cinemascope
  */
 export class Cinemascope extends ScriptProperty<boolean> {
+  static get on(): Cinemascope {
+    return new Cinemascope(true)
+  }
+
+  static get off(): Cinemascope {
+    return new Cinemascope(false)
+  }
+
+  static get slideIn(): Cinemascope {
+    return new Cinemascope(true, true)
+  }
+
+  static get slideOut(): Cinemascope {
+    return new Cinemascope(false, true)
+  }
+
   isSliding: boolean
 
   constructor(value: boolean, isSliding: boolean = false) {
@@ -14,23 +30,7 @@ export class Cinemascope extends ScriptProperty<boolean> {
     this.isSliding = isSliding
   }
 
-  toString() {
+  toString(): string {
     return `cinemascope ${this.isSliding === true ? '-s' : ''} ${this.value === true ? 'on' : 'off'}`
-  }
-
-  static get on() {
-    return new Cinemascope(true)
-  }
-
-  static get off() {
-    return new Cinemascope(false)
-  }
-
-  static get slideIn() {
-    return new Cinemascope(true, true)
-  }
-
-  static get slideOut() {
-    return new Cinemascope(false, true)
   }
 }

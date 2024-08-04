@@ -1,4 +1,4 @@
-import { Variable } from '@scripting/properties/Variable.js'
+import { type Variable } from '@scripting/properties/Variable.js'
 
 export enum SoundFlags {
   None = 0,
@@ -21,7 +21,7 @@ export class Sound {
     this.flags = flags
   }
 
-  play() {
+  play(): string {
     const flags = this.stringifyFlags()
     const filename = this.getFilename()
     return `play ${flags} ${filename}`
@@ -31,13 +31,17 @@ export class Sound {
    * only works if the sound has the unique flag
    * @see SoundFlags.Unique
    */
-  stop() {
+  stop(): string {
     const flags = '-s'
     const filename = this.getFilename()
     return `play ${flags} ${filename}`
   }
 
-  private getFilename() {
+  isStoppable(): boolean {
+    return (this.flags & SoundFlags.Unique) !== 0
+  }
+
+  private getFilename(): string {
     if (typeof this.filename === 'string') {
       return '"' + this.filename + '"'
     } else {
@@ -52,26 +56,25 @@ export class Sound {
    * [p] = variable pitch
    * [s] = stop (only if unique)
    */
-  private stringifyFlags() {
+  private stringifyFlags(): string {
     let letters = ''
 
     if (this.flags & SoundFlags.EmitFromPlayer) {
       letters += 'o'
     }
+
     if (this.flags & SoundFlags.Loop) {
       letters += 'l'
     }
+
     if (this.flags & SoundFlags.Unique) {
       letters += 'i'
     }
+
     if (this.flags & SoundFlags.VaryPitch) {
       letters += 'p'
     }
 
     return (letters === '' ? '' : '-') + letters
-  }
-
-  isStoppable() {
-    return (this.flags & SoundFlags.Unique) !== 0
   }
 }

@@ -13,7 +13,7 @@ export class LoadAnim extends ScriptCommand {
     this.filename = filename
   }
 
-  toString() {
+  toString(): string {
     return `loadanim ${this.animation} "${this.filename}"`
   }
 }

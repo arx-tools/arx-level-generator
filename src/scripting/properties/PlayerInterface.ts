@@ -9,6 +9,22 @@ import { ScriptProperty } from '@scripting/ScriptProperty.js'
  * @see https://wiki.arx-libertatis.org/Script:playerinterface
  */
 export class PlayerInterface extends ScriptProperty<boolean> {
+  static get on(): PlayerInterface {
+    return new PlayerInterface(true)
+  }
+
+  static get off(): PlayerInterface {
+    return new PlayerInterface(false)
+  }
+
+  static get slideIn(): PlayerInterface {
+    return new PlayerInterface(true, true)
+  }
+
+  static get slideOut(): PlayerInterface {
+    return new PlayerInterface(false, true)
+  }
+
   isSliding: boolean
 
   constructor(value: boolean, isSliding: boolean = false) {
@@ -16,23 +32,7 @@ export class PlayerInterface extends ScriptProperty<boolean> {
     this.isSliding = isSliding
   }
 
-  toString() {
+  toString(): string {
     return `playerinterface ${this.isSliding === true ? '-s' : ''} ${this.value === true ? 'show' : 'hide'}`
-  }
-
-  static get on() {
-    return new PlayerInterface(true)
-  }
-
-  static get off() {
-    return new PlayerInterface(false)
-  }
-
-  static get slideIn() {
-    return new PlayerInterface(true, true)
-  }
-
-  static get slideOut() {
-    return new PlayerInterface(false, true)
   }
 }

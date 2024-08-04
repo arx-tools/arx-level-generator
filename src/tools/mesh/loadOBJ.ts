@@ -1,11 +1,19 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { ArxPolygonFlags } from 'arx-convert/types'
-import { Box3, BufferAttribute, BufferGeometry, Mesh, MeshBasicMaterial, MeshPhongMaterial, Vector2 } from 'three'
+import {
+  type Box3,
+  type BufferAttribute,
+  type BufferGeometry,
+  Mesh,
+  MeshBasicMaterial,
+  type MeshPhongMaterial,
+  Vector2,
+} from 'three'
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import { Material } from '@src/Material.js'
-import { Rotation } from '@src/Rotation.js'
+import { type Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations, fileExists } from '@src/helpers.js'
@@ -63,8 +71,16 @@ type loadOBJProperties = {
   verticalAlign?: 'bottom' | 'center' | 'top'
 }
 
-const isTriangulatedMesh = (rawObj: string) => {
-  const rows = rawObj.replace(/\\\n/g, '').split(/\r?\n/)
+function toRows(rawObj: string): string[] {
+  // long lines can be broken up, using a backslash (\) character at the end of lines to be continued
+  // (source: https://www.loc.gov/preservation/digital/formats/fdd/fdd000507.shtml)
+  rawObj = rawObj.replaceAll('\\\n', '')
+
+  return rawObj.split(/\r?\n/)
+}
+
+function isTriangulatedMesh(rawObj: string): boolean {
+  const rows = toRows(rawObj)
 
   const isNotTriangulated = rows.some((row) => {
     if (!row.startsWith('f ')) {
@@ -77,8 +93,8 @@ const isTriangulatedMesh = (rawObj: string) => {
   return !isNotTriangulated
 }
 
-const reversePolygonWinding = (rawObj: string) => {
-  let rows = rawObj.replace(/\\\n/g, '').split(/\r?\n/)
+function reversePolygonWinding(rawObj: string): string {
+  let rows = toRows(rawObj)
 
   rows = rows.map((row) => {
     if (!row.startsWith('f')) {
@@ -92,8 +108,11 @@ const reversePolygonWinding = (rawObj: string) => {
   return rows.join('\n')
 }
 
-const removeLineElements = (rawObj: string) => {
-  let rows = rawObj.replace(/\\\n/g, '').split(/\r?\n/)
+/**
+ * comments out lines that start with `"l "` by placing a `"# "` before it
+ */
+function removeLineElements(rawObj: string): string {
+  let rows = toRows(rawObj)
 
   rows = rows.map((row) => {
     if (!row.startsWith('l')) {
@@ -106,15 +125,18 @@ const removeLineElements = (rawObj: string) => {
   return rows.join('\n')
 }
 
-const getMaterialFlags = (texture: Texture, materialFlags: loadOBJProperties['materialFlags']) => {
+function getMaterialFlags(texture: Texture, materialFlags: loadOBJProperties['materialFlags']): ArxPolygonFlags {
   const defaultFlags = ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled
-  return typeof materialFlags === 'function' ? materialFlags(texture, defaultFlags) : materialFlags ?? defaultFlags
+  return typeof materialFlags === 'function' ? materialFlags(texture, defaultFlags) : (materialFlags ?? defaultFlags)
 }
 
-const loadMTL = async (
+async function loadMTL(
   filenameWithoutExtension: string,
   { materialFlags, fallbackTexture }: Pick<loadOBJProperties, 'materialFlags' | 'fallbackTexture'> = {},
-) => {
+): Promise<{
+  materials: MeshBasicMaterial | Record<string, MeshBasicMaterial>
+  fallbackMaterial: Material
+}> {
   const mtlLoader = new MTLLoader()
 
   const { dir, name: filename } = path.parse(filenameWithoutExtension)
@@ -122,7 +144,7 @@ const loadMTL = async (
   const mtlSrc = path.resolve('assets/' + dir + '/' + filename + '.mtl')
 
   const fallbackMaterial =
-    typeof fallbackTexture === 'undefined'
+    fallbackTexture === undefined
       ? Material.fromTexture(Texture.missingTexture, {
           flags: getMaterialFlags(Texture.missingTexture, materialFlags),
         })
@@ -134,7 +156,7 @@ const loadMTL = async (
 
   if (await fileExists(mtlSrc)) {
     try {
-      const rawMtl = await fs.readFile(mtlSrc, 'utf-8')
+      const rawMtl = await fs.readFile(mtlSrc, 'utf8')
       const mtl = mtlLoader.parse(rawMtl, '')
 
       const entriesOfMaterials = Object.entries(mtl.materialsInfo)
@@ -143,7 +165,12 @@ const loadMTL = async (
       for (const [name, materialInfo] of entriesOfMaterials) {
         let material: Material
 
-        if (typeof materialInfo.map_kd !== 'undefined') {
+        if (materialInfo.map_kd === undefined) {
+          console.info(
+            `[info] loadOBJ: Material "${name}" in "${filename}.mtl" doesn't have a texture, using fallback/default texture`,
+          )
+          material = fallbackMaterial
+        } else {
           const textureFromFile = Texture.fromCustomFile({
             filename: path.parse(materialInfo.map_kd).base,
             sourcePath: [dir, path.parse(materialInfo.map_kd).dir].filter((row) => row !== '').join('/'),
@@ -151,11 +178,6 @@ const loadMTL = async (
 
           const flags = getMaterialFlags(textureFromFile, materialFlags)
           material = Material.fromTexture(textureFromFile, { flags })
-        } else {
-          console.info(
-            `[info] loadOBJ: Material "${name}" in "${filename}.mtl" doesn't have a texture, using fallback/default texture`,
-          )
-          material = fallbackMaterial
         }
 
         if (material.flags & ArxPolygonFlags.Transparent) {
@@ -171,8 +193,8 @@ const loadMTL = async (
       }
 
       materials = Object.fromEntries(nameMaterialPairs)
-    } catch (e: unknown) {
-      console.error(`[error] loadOBJ: error while parsing ${filename}.mtl file:`, e)
+    } catch (error: unknown) {
+      console.error(`[error] loadOBJ: error while parsing ${filename}.mtl file:`, error)
       materials = new MeshBasicMaterial({
         name: filename,
         map: fallbackMaterial,
@@ -196,7 +218,7 @@ const loadMTL = async (
  *
  * @see https://en.wikipedia.org/wiki/Wavefront_.obj_file
  */
-export const loadOBJ = async (
+export async function loadOBJ(
   filenameWithoutExtension: string,
   {
     position,
@@ -209,7 +231,10 @@ export const loadOBJ = async (
     centralize = false,
     verticalAlign,
   }: loadOBJProperties = {},
-) => {
+): Promise<{
+  meshes: Mesh[]
+  materials: Texture[]
+}> {
   const { materials, fallbackMaterial } = await loadMTL(filenameWithoutExtension, {
     materialFlags,
     fallbackTexture,
@@ -224,7 +249,7 @@ export const loadOBJ = async (
   const { dir, name: filename } = path.parse(filenameWithoutExtension)
 
   const objSrc = path.resolve('assets/' + dir + '/' + filename + '.obj')
-  let rawObj = await fs.readFile(objSrc, 'utf-8')
+  let rawObj = await fs.readFile(objSrc, 'utf8')
 
   if (!isTriangulatedMesh(rawObj)) {
     console.warn(`[warning] loadOBJ: ${filename}.obj is not triangulated`)
@@ -257,11 +282,11 @@ export const loadOBJ = async (
 
     if (Array.isArray(child.material)) {
       material = child.material.map(({ name }) => {
-        return materials instanceof MeshBasicMaterial ? materials : materials[name] ?? fallbackMeshMaterial
+        return materials instanceof MeshBasicMaterial ? materials : (materials[name] ?? fallbackMeshMaterial)
       })
     } else {
       const name = (child.material as MeshPhongMaterial).name
-      material = materials instanceof MeshBasicMaterial ? materials : materials[name] ?? fallbackMeshMaterial
+      material = materials instanceof MeshBasicMaterial ? materials : (materials[name] ?? fallbackMeshMaterial)
     }
 
     const geometry = child.geometry
@@ -292,15 +317,20 @@ export const loadOBJ = async (
     }
 
     switch (verticalAlign) {
-      case 'bottom':
+      case 'bottom': {
         y = -boundingBox.max.y
         break
-      case 'center':
+      }
+
+      case 'center': {
         y = -boundingBox.min.y - halfDimensions.y
         break
-      case 'top':
+      }
+
+      case 'top': {
         y = -boundingBox.min.y
         break
+      }
     }
 
     if (x !== 0 || y !== 0 || z !== 0) {

@@ -13,11 +13,11 @@ import { ScriptProperty } from '@scripting/ScriptProperty.js'
  * default value is 1
  */
 export class Transparency extends ScriptProperty<number> {
-  toString() {
-    return `set_transparency ${100 - roundToNDecimals(2, this.value) * 100}`
+  static get default(): Transparency {
+    return new Transparency(1)
   }
 
-  static get default() {
-    return new Transparency(1)
+  toString(): string {
+    return `set_transparency ${100 - roundToNDecimals(2, this.value) * 100}`
   }
 }

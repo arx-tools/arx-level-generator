@@ -7,15 +7,15 @@ import { ScriptProperty } from '@scripting/ScriptProperty.js'
  * @see https://wiki.arx-libertatis.org/Script:setinteractivity
  */
 export class Interactivity extends ScriptProperty<boolean> {
-  toString() {
-    return `set_interactivity ${this.value === true ? 'on' : 'none'}`
-  }
-
-  static get on() {
+  static get on(): Interactivity {
     return new Interactivity(true)
   }
 
-  static get off() {
+  static get off(): Interactivity {
     return new Interactivity(false)
+  }
+
+  toString(): string {
+    return `set_interactivity ${this.value === true ? 'on' : 'none'}`
   }
 }

@@ -22,7 +22,7 @@ class Timer {
     this.isCancelled = false
   }
 
-  toString() {
+  toString(): string {
     if (this.isCancelled) {
       return `TIMER${this.name} off`
     } else {
@@ -30,15 +30,15 @@ class Timer {
     }
   }
 
-  off() {
+  off(): void {
     this.isCancelled = true
   }
 }
 
-export const useDelay = () => {
+export function useDelay() {
   let delayOffset = 0
 
-  const loop = (periodInMs: number, repetitions: number = Infinity) => {
+  function loop(periodInMs: number, repetitions: number = Infinity): Timer {
     return new Timer(periodInMs, repetitions)
   }
 
@@ -51,7 +51,7 @@ export const useDelay = () => {
    * delay(100) ... -> executed 100 milliseconds after script start
    * delay(200) ... -> executed (100 + 200) milliseconds after script start
    */
-  const delay = (delayInMs: number = 0) => {
+  function delay(delayInMs: number = 0): Timer {
     delayOffset += Math.floor(delayInMs)
     return new Timer(delayOffset, 1)
   }
@@ -66,7 +66,7 @@ export const useDelay = () => {
    * uniqueDelay(100) ... -> executed 100 milliseconds after script start
    * uniqueDelay(200) ... -> executed (100 + 200) milliseconds after script start
    */
-  const uniqueDelay = (delayInMs: number = 0) => {
+  function uniqueDelay(delayInMs: number = 0): Timer {
     delayOffset += Math.floor(delayInMs)
     return new Timer(delayOffset, 1, true)
   }

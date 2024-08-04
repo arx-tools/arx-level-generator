@@ -1,11 +1,11 @@
-import { BufferAttribute, BufferGeometry } from 'three'
+import { type BufferAttribute, type BufferGeometry } from 'three'
 import { categorizeVertices } from '@tools/mesh/categorizeVertices.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
 
 /**
  * Connect the edge vertices of "source" to the edge vertices of "target"
  */
-export const connectEdgeTo = (source: BufferGeometry, target: BufferGeometry) => {
+export function connectEdgeTo(source: BufferGeometry, target: BufferGeometry): void {
   const categorizedSourceVertices = categorizeVertices(source)
   const sourceEdgeVertices = [...categorizedSourceVertices.edges, ...categorizedSourceVertices.corners]
 
