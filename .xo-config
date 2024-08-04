@@ -63,6 +63,12 @@
       {
         "default": "array"
       }
+    ],
+    "@typescript-eslint/parameter-properties": [
+      "error",
+      {
+        "prefer": "class-property"
+      }
     ]
   }
 }
