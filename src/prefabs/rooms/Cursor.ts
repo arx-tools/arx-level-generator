@@ -18,7 +18,7 @@ export class Cursor {
 
   saves: Record<string, CursorSave> = {}
 
-  move(...dirs: CursorDir[]) {
+  move(...dirs: CursorDir[]): void {
     dirs.forEach((dir) => {
       const axis = dir[0] as Axis
       const alignment = dir.slice(1) as Alignments
@@ -65,7 +65,7 @@ export class Cursor {
     })
   }
 
-  saveAs(key: string) {
+  saveAs(key: string): void {
     this.saves[key] = {
       cursor: this.cursor.clone(),
       oldSize: this.oldSize.clone(),
@@ -73,7 +73,7 @@ export class Cursor {
     }
   }
 
-  restore(key: string) {
+  restore(key: string): void {
     if (key in this.saves) {
       const { cursor, oldSize, newSize } = this.saves[key]
       this.cursor = cursor.clone()

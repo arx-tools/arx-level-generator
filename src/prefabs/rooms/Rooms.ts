@@ -1,14 +1,14 @@
-import { ArxMap } from '@src/ArxMap.js'
-import { DONT_QUADIFY, QUADIFY } from '@src/Polygons.js'
+import { type ArxMap } from '@src/ArxMap.js'
+import { type DONT_QUADIFY, type QUADIFY } from '@src/Polygons.js'
 import { $ } from '@src/Selection.js'
-import { Vector3 } from '@src/Vector3.js'
-import { Cursor, CursorDir } from '@prefabs/rooms/Cursor.js'
-import { createRoom, RoomProps } from '@prefabs/rooms/room.js'
+import { type Vector3 } from '@src/Vector3.js'
+import { type Cursor, type CursorDir } from '@prefabs/rooms/Cursor.js'
+import { createRoom, type RoomProps } from '@prefabs/rooms/room.js'
 
 // ---------------------------
 
 // only works when everything is aligned to the same grid with the same tileSize
-function union(map1: ArxMap, map2: ArxMap) {
+function union(map1: ArxMap, map2: ArxMap): void {
   // TODO: this removes both polygons when they overlap, which is ideal for walls
   // but not for ceilings and floors
 
@@ -63,7 +63,7 @@ export class Rooms {
     props: RoomProps,
     adjustments: CursorDir[],
     tryToQuadify?: typeof QUADIFY | typeof DONT_QUADIFY,
-  ) {
+  ): void {
     this.cursor.newSize = dimensions
     this.cursor.move(...adjustments)
 
@@ -75,7 +75,7 @@ export class Rooms {
     this.cursor.oldSize = this.cursor.newSize
   }
 
-  unionAll() {
+  unionAll(): void {
     if (this.maps.length <= 1) {
       return
     }
@@ -87,7 +87,7 @@ export class Rooms {
     }
   }
 
-  forEach(fn: (map: ArxMap) => void) {
+  forEach(fn: (map: ArxMap) => void): void {
     this.maps.forEach(fn)
   }
 }

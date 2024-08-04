@@ -1,11 +1,11 @@
 import { ArxPolygonFlags } from 'arx-convert/types'
-import { QuadrupleOf } from 'arx-convert/utils'
-import { BufferGeometry, Group, MathUtils, Object3D, Vector2 } from 'three'
+import { type QuadrupleOf } from 'arx-convert/utils'
+import { type BufferGeometry, Group, MathUtils, type Mesh, type Object3D, Vector2 } from 'three'
 import { ArxMap } from '@src/ArxMap.js'
 import { Material } from '@src/Material.js'
-import { DONT_QUADIFY, QUADIFY } from '@src/Polygons.js'
-import { Vector3 } from '@src/Vector3.js'
-import { TextureOrMaterial } from '@src/types.js'
+import { type DONT_QUADIFY, type QUADIFY } from '@src/Polygons.js'
+import { type Vector3 } from '@src/Vector3.js'
+import { type TextureOrMaterial } from '@src/types.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 
@@ -30,7 +30,7 @@ export type RoomProps = {
   tileSize?: number
 }
 
-const fitUV = (
+function fitUV(
   {
     fitX,
     fitY,
@@ -43,26 +43,29 @@ const fitUV = (
     size: Vector2
   },
   geometry: BufferGeometry,
-) => {
+): void {
   if (fitX && fitY) {
     // stretch
     scaleUV(new Vector2(tileSize / size.x, tileSize / size.y), geometry)
   }
+
   if (fitX && !fitY) {
     // fit horizontally
     scaleUV(new Vector2(tileSize / size.x, tileSize / size.x), geometry)
   }
+
   if (!fitX && fitY) {
     // fit vertically
     scaleUV(new Vector2(tileSize / size.y, tileSize / size.y), geometry)
   }
+
   if (!fitX && !fitY) {
     // tile
     scaleUV(new Vector2(tileSize / 100, tileSize / 100), geometry)
   }
 }
 
-const createFloor = (size: Vector3, textureDef: TextureDefinition, tileSize: number) => {
+function createFloor(size: Vector3, textureDef: TextureDefinition, tileSize: number): Mesh {
   const { x: width, z: depth } = size
   const { texture, fitX, fitY } = textureDef
   const size2D = new Vector2(width, depth)
@@ -88,7 +91,7 @@ const createFloor = (size: Vector3, textureDef: TextureDefinition, tileSize: num
   return mesh
 }
 
-const createNorthWall = (size: Vector3, textureDef: TextureDefinition, tileSize: number) => {
+function createNorthWall(size: Vector3, textureDef: TextureDefinition, tileSize: number): Mesh {
   const { x: width, y: height, z: depth } = size
   const { texture, fitX, fitY } = textureDef
   const size2D = new Vector2(width, height)
@@ -116,7 +119,7 @@ const createNorthWall = (size: Vector3, textureDef: TextureDefinition, tileSize:
   return mesh
 }
 
-const createSouthWall = (size: Vector3, textureDef: TextureDefinition, tileSize: number) => {
+function createSouthWall(size: Vector3, textureDef: TextureDefinition, tileSize: number): Mesh {
   const { x: width, y: height, z: depth } = size
   const { texture, fitX, fitY } = textureDef
   const size2D = new Vector2(width, height)
@@ -144,7 +147,7 @@ const createSouthWall = (size: Vector3, textureDef: TextureDefinition, tileSize:
   return mesh
 }
 
-const createWestWall = (size: Vector3, textureDef: TextureDefinition, tileSize: number) => {
+function createWestWall(size: Vector3, textureDef: TextureDefinition, tileSize: number): Mesh {
   const { x: width, y: height, z: depth } = size
   const { texture, fitX, fitY } = textureDef
   const size2D = new Vector2(depth, height)
@@ -172,7 +175,7 @@ const createWestWall = (size: Vector3, textureDef: TextureDefinition, tileSize: 
   return mesh
 }
 
-const createEastWall = (size: Vector3, textureDef: TextureDefinition, tileSize: number) => {
+function createEastWall(size: Vector3, textureDef: TextureDefinition, tileSize: number): Mesh {
   const { x: width, y: height, z: depth } = size
   const { texture, fitX, fitY } = textureDef
   const size2D = new Vector2(depth, height)
@@ -200,7 +203,7 @@ const createEastWall = (size: Vector3, textureDef: TextureDefinition, tileSize: 
   return mesh
 }
 
-const createCeiling = (size: Vector3, textureDef: TextureDefinition, tileSize: number) => {
+function createCeiling(size: Vector3, textureDef: TextureDefinition, tileSize: number): Mesh {
   const { x: width, y: height, z: depth } = size
   const { texture, fitX, fitY } = textureDef
   const size2D = new Vector2(width, depth)
@@ -228,7 +231,7 @@ const createCeiling = (size: Vector3, textureDef: TextureDefinition, tileSize: n
   return mesh
 }
 
-export const createRoomMesh = (size: Vector3, { textures: { wall, floor, ceiling }, tileSize = 50 }: RoomProps) => {
+export function createRoomMesh(size: Vector3, { textures: { wall, floor, ceiling }, tileSize = 50 }: RoomProps): Group {
   const walls = Array.isArray(wall) ? wall : [wall, wall, wall, wall]
 
   const group = new Group()
@@ -236,18 +239,23 @@ export const createRoomMesh = (size: Vector3, { textures: { wall, floor, ceiling
   if (!floor.isRemoved) {
     group.add(createFloor(size, floor, tileSize))
   }
+
   if (!walls[0].isRemoved) {
     group.add(createNorthWall(size, walls[0], tileSize))
   }
+
   if (!walls[1].isRemoved) {
     group.add(createEastWall(size, walls[1], tileSize))
   }
+
   if (!walls[2].isRemoved) {
     group.add(createSouthWall(size, walls[2], tileSize))
   }
+
   if (!walls[3].isRemoved) {
     group.add(createWestWall(size, walls[3], tileSize))
   }
+
   if (!ceiling.isRemoved) {
     group.add(createCeiling(size, ceiling, tileSize))
   }
@@ -255,14 +263,14 @@ export const createRoomMesh = (size: Vector3, { textures: { wall, floor, ceiling
   return group
 }
 
-export const createArxMapFromMesh = (mesh: Object3D, tryToQuadify?: typeof QUADIFY | typeof DONT_QUADIFY) => {
+export function createArxMapFromMesh(mesh: Object3D, tryToQuadify?: typeof QUADIFY | typeof DONT_QUADIFY): ArxMap {
   return ArxMap.fromThreeJsMesh(mesh, { tryToQuadify })
 }
 
-export const createRoom = (
+export function createRoom(
   dimensions: Vector3,
   props: RoomProps,
   tryToQuadify?: typeof QUADIFY | typeof DONT_QUADIFY,
-) => {
+): ArxMap {
   return createArxMapFromMesh(createRoomMesh(dimensions, props), tryToQuadify)
 }

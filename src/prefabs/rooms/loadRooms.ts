@@ -1,15 +1,15 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { QuadrupleOf } from 'arx-convert/utils'
-import { Settings } from '@src/Settings.js'
+import { type QuadrupleOf } from 'arx-convert/utils'
+import { type Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
-import { Cursor, CursorDir } from '@prefabs/rooms/Cursor.js'
+import { Cursor, type CursorDir } from '@prefabs/rooms/Cursor.js'
 import { Rooms } from '@prefabs/rooms/Rooms.js'
-import { RoomProps, TextureDefinition } from '@prefabs/rooms/room.js'
+import { type RoomProps, type TextureDefinition } from '@prefabs/rooms/room.js'
 import { createLight } from '@tools/createLight.js'
 
-export const loadRooms = async (filename: string, settings: Settings) => {
+export async function loadRooms(filename: string, settings: Settings): Promise<Rooms> {
   const cursor = new Cursor()
   const rooms = new Rooms(cursor)
 
@@ -213,10 +213,10 @@ export const loadRooms = async (filename: string, settings: Settings) => {
                   const wallIdx = tokens[0].endsWith('north')
                     ? 0
                     : tokens[0].endsWith('east')
-                    ? 1
-                    : tokens[0].endsWith('south')
-                    ? 2
-                    : 3
+                      ? 1
+                      : tokens[0].endsWith('south')
+                        ? 2
+                        : 3
 
                   const wall = roomDefinitions[currentBlock.name].textures.wall as QuadrupleOf<TextureDefinition>
                   if (tokens[1] === 'custom') {
