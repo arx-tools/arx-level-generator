@@ -1,6 +1,6 @@
-import { Expand } from 'arx-convert/utils'
-import { Audio } from '@src/Audio.js'
-import { EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
+import { type Expand } from 'arx-convert/utils'
+import { type Audio } from '@src/Audio.js'
+import { type EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 import { Marker } from '@prefabs/entity/Marker.js'
 import { Sound, SoundFlags } from '@scripting/classes/Sound.js'
 
@@ -20,7 +20,7 @@ type SoundPlayerConstructorProps = Expand<
 
 export class SoundPlayer extends Marker {
   readonly autoplay: boolean
-  private sound: Sound
+  private readonly sound: Sound
 
   constructor({ audio, flags = SoundFlags.EmitFromPlayer, autoplay = false, ...props }: SoundPlayerConstructorProps) {
     super(props)
@@ -44,7 +44,7 @@ export class SoundPlayer extends Marker {
     }
   }
 
-  on() {
+  on(): string {
     if (this.autoplay && !this.sound.isStoppable()) {
       console.warn(
         `[warning] SoundPlayer: Attempting to trigger play event on "${this.sound.filename}" in SoundPlayer that is on autoplay, but not unique (can't be stopped)`,
@@ -55,7 +55,7 @@ export class SoundPlayer extends Marker {
     return `sendevent play ${this.ref} nop`
   }
 
-  off() {
+  off(): string {
     if (!this.sound.isStoppable()) {
       console.warn(
         `[warning] SoundPlayer: Attempting to trigger stop event on "${this.sound.filename}" in SoundPlayer which is not stoppable`,

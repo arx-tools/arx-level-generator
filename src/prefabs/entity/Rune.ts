@@ -45,7 +45,7 @@ type RuneConstructorProps = Expand<
 >
 
 export class Rune extends Entity {
-  private propRuneName: Variable<string>
+  private readonly propRuneName: Variable<string>
   private propArxTutorialEnabled: Variable<boolean> | undefined
 
   constructor(variant: RuneVariant, { arxTutorialEnabled, ...props }: RuneConstructorProps = {}) {
@@ -80,7 +80,7 @@ export class Rune extends Entity {
         return [this.propArxTutorialEnabled, tutorialMagic]
       }
 
-      if (typeof arxTutorialEnabled !== 'undefined') {
+      if (arxTutorialEnabled !== undefined) {
         this.propArxTutorialEnabled = new Variable('bool', 'arx_tutorial_enabled', arxTutorialEnabled)
         return [this.propArxTutorialEnabled]
       }
@@ -173,9 +173,10 @@ export class Rune extends Entity {
     )
   }
 
-  get variant() {
+  get variant(): RuneVariant {
     return this.propRuneName.value as RuneVariant
   }
+
   set variant(value: RuneVariant) {
     this.propRuneName.value = value
   }

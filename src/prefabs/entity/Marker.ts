@@ -1,4 +1,4 @@
-import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
+import { Entity, type EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 
 export class Marker extends Entity {
   constructor(props: EntityConstructorPropsWithoutSrc = {}) {

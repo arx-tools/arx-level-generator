@@ -1,5 +1,5 @@
-import { Expand } from 'arx-convert/utils'
-import { Entity, EntityConstructorProps } from '@src/Entity.js'
+import { type Expand } from 'arx-convert/utils'
+import { Entity, type EntityConstructorProps } from '@src/Entity.js'
 import { UseMesh } from '@scripting/commands/UseMesh.js'
 import { Variable } from '@scripting/properties/Variable.js'
 
@@ -35,23 +35,26 @@ export abstract class Door extends Entity {
     this.script?.properties.push(this.propIsOpen, this.propIsUnlocked, this.propLockpickability)
   }
 
-  get isOpen() {
+  get isOpen(): boolean {
     return this.propIsOpen.value
   }
+
   set isOpen(value: boolean) {
     this.propIsOpen.value = value
   }
 
-  get isLocked() {
+  get isLocked(): boolean {
     return !this.propIsUnlocked.value
   }
+
   set isLocked(value: boolean) {
     this.propIsUnlocked.value = !value
   }
 
-  get lockpickDifficulty() {
+  get lockpickDifficulty(): number {
     return this.propLockpickability.value
   }
+
   set lockpickDifficulty(value: number) {
     this.propLockpickability.value = value
   }
@@ -85,11 +88,11 @@ export class LightDoor extends Door {
     this.script?.properties.push(this.propType, this.propKey)
   }
 
-  setKey(key: Entity) {
+  setKey(key: Entity): void {
     this.propKey.value = key.ref
   }
 
-  removeKey() {
+  removeKey(): void {
     this.propKey.value = 'none'
   }
 }

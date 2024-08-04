@@ -2,10 +2,10 @@ import { exec } from 'node:child_process'
 import os from 'node:os'
 import path from 'node:path'
 import { promisify } from 'node:util'
-import { Settings } from '@src/Settings.js'
+import { type Settings } from '@src/Settings.js'
 import { fileExists } from '@src/helpers.js'
 
-export const rungame = async (settings: Settings, otherArgs: string[]) => {
+export async function rungame(settings: Settings, otherArgs: string[]): Promise<void> {
   const operatingSystem = os.platform()
 
   if (operatingSystem !== 'win32' && operatingSystem !== 'linux') {
@@ -17,12 +17,15 @@ export const rungame = async (settings: Settings, otherArgs: string[]) => {
 
   let exeFile: string
   switch (operatingSystem) {
-    case 'win32':
+    case 'win32': {
       exeFile = path.resolve(settings.outputDir, 'arx.exe')
       break
-    case 'linux':
+    }
+
+    case 'linux': {
       exeFile = path.resolve(settings.outputDir, 'arx')
       break
+    }
   }
 
   if (!(await fileExists(exeFile))) {
@@ -36,7 +39,7 @@ export const rungame = async (settings: Settings, otherArgs: string[]) => {
     if (stderr !== '') {
       console.error(stderr)
     }
-  } catch (e: unknown) {
-    console.error(e)
+  } catch (error: unknown) {
+    console.error(error)
   }
 }

@@ -1,6 +1,6 @@
 import { MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry, Vector2 } from 'three'
 import { applyTransformations } from '@src/helpers.js'
-import { TextureOrMaterial } from '@src/types.js'
+import { type TextureOrMaterial } from '@src/types.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
@@ -37,13 +37,13 @@ type createPlaneMeshProps = {
   isIndexed?: typeof INDEXED | typeof NONINDEXED
 }
 
-export const createPlaneMesh = ({
+export function createPlaneMesh({
   size,
   tileSize = 100,
   texture,
   isIndexed = INDEXED,
   tileUV = true,
-}: createPlaneMeshProps) => {
+}: createPlaneMeshProps): Mesh {
   const { x: width, y: depth } = typeof size === 'number' ? new Vector2(size, size) : size
   const divisionX = Math.ceil(width / tileSize)
   const divisionY = Math.ceil(depth / tileSize)

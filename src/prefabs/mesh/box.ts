@@ -1,15 +1,9 @@
 import { BoxGeometry, MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { Vector3 } from '@src/Vector3.js'
-import { TextureOrMaterial } from '@src/types.js'
+import { type TextureOrMaterial } from '@src/types.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
-export const createBox = ({
-  position,
-  origin = new Vector2(0, 0),
-  size,
-  angleY = 0,
-  materials,
-}: {
+type createBoxProps = {
   position: Vector3
   /**
    * align the point of rotation on the X/Z axis when angleY is not 0
@@ -29,7 +23,9 @@ export const createBox = ({
   materials:
     | TextureOrMaterial
     | [TextureOrMaterial, TextureOrMaterial, TextureOrMaterial, TextureOrMaterial, TextureOrMaterial, TextureOrMaterial]
-}) => {
+}
+
+export function createBox({ position, origin = new Vector2(0, 0), size, angleY = 0, materials }: createBoxProps): Mesh {
   if (typeof size === 'number') {
     size = new Vector3(size, size, size)
   }
@@ -58,7 +54,7 @@ export const createBox = ({
       new MeshBasicMaterial({ map: materials[4] }),
       new MeshBasicMaterial({ map: materials[5] }),
     ])
-  } else {
-    return new Mesh(geometry, new MeshBasicMaterial({ map: materials }))
   }
+
+  return new Mesh(geometry, new MeshBasicMaterial({ map: materials }))
 }
