@@ -76,9 +76,8 @@
   },
   "scripts": {
     "build": "tsc && tsc-alias",
-    "prepublishOnly": "npm run lint:fix && rm -rf dist && npm run build",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix"
+    "lint": "xo",
+    "prepublishOnly": "npm run lint && rm -rf dist && npm run build"
   },
   "repository": {
     "type": "git",
@@ -113,11 +112,9 @@
     "@types/seedrandom": "^3.0.8",
     "@types/sharp": "^0.31.1",
     "@types/three": "^0.165.0",
-    "@typescript-eslint/eslint-plugin": "^7.13.0",
-    "@typescript-eslint/parser": "^7.13.0",
-    "eslint": "^8.56.0",
     "tsc-alias": "^1.8.10",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "xo": "^0.59.3"
   },
   "keywords": [
     "arx-fatalis"

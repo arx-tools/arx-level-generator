@@ -8,3 +8,4 @@ dist/tsconfig.tsbuildinfo
 
 scripts
 src
+.xo-config

@@ -6,5 +6,12 @@
   "endOfLine": "auto",
   "useTabs": false,
   "tabWidth": 2,
-  "importOrder": ["^node:", "<THIRD_PARTY_MODULES>", "^@src/", "^@", "^[./]"]
+  "bracketSpacing": true,
+  "importOrder": [
+    "^node:",
+    "<THIRD_PARTY_MODULES>",
+    "^@src/",
+    "^@",
+    "^[./]"
+  ]
 }
