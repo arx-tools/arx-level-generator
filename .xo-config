@@ -69,6 +69,20 @@
       {
         "prefer": "class-property"
       }
-    ]
+    ],
+    "operator-assignment": [
+      "error",
+      "never"
+    ],
+    "@typescript-eslint/no-inferrable-types": [
+      "error",
+      {
+        "ignoreParameters": true,
+        "ignoreProperties": true
+      }
+    ],
+    "@typescript-eslint/no-unnecessary-boolean-literal-compare": "off",
+    "unicorn/prefer-ternary": "off",
+    "no-ternary": "error"
   }
 }
