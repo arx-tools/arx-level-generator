@@ -263,6 +263,7 @@ export class ArxMap {
     }
 
     if (this.polygons.length === 0) {
+      console.warn(`[warning] ArxMap: The map has no polygons, adding a quad below the player's feet`)
       this.addTileUnderThePlayersFeet()
     }
 
@@ -387,28 +388,34 @@ export class ArxMap {
     const hudElements = this.hud.exportSourcesAndTargets(settings)
     const uiElements = this.ui.exportSourcesAndTargets(settings)
 
-    const ambienceTracks = this.zones.reduce((acc, zone) => {
-      if (!zone.hasAmbience() || zone.ambience.isNative) {
+    const ambienceTracks = this.zones.reduce(
+      (acc, zone) => {
+        if (!zone.hasAmbience() || zone.ambience.isNative) {
+          return acc
+        }
+
+        zone.ambience.exportSourcesAndTargets(settings).forEach(([source, target]) => {
+          acc[target] = source
+        })
+
         return acc
-      }
+      },
+      {} as Record<string, string>,
+    )
 
-      zone.ambience.exportSourcesAndTargets(settings).forEach(([source, target]) => {
-        acc[target] = source
-      })
+    const customAmbiences = this.zones.reduce(
+      (acc, zone) => {
+        if (!zone.hasAmbience() || zone.ambience.isNative) {
+          return acc
+        }
 
-      return acc
-    }, {} as Record<string, string>)
-
-    const customAmbiences = this.zones.reduce((acc, zone) => {
-      if (!zone.hasAmbience() || zone.ambience.isNative) {
-        return acc
-      }
-
-      return {
-        ...acc,
-        ...zone.ambience.toArxData(settings),
-      }
-    }, {} as Record<string, ArxAMB>)
+        return {
+          ...acc,
+          ...zone.ambience.toArxData(settings),
+        }
+      },
+      {} as Record<string, ArxAMB>,
+    )
 
     const scripts: Record<string, string> = {}
     const models: Record<string, string> = {}
