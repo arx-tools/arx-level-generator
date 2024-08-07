@@ -70,4 +70,8 @@ export class Light {
       intensity: this.intensity,
     }
   }
+
+  move(offset: Vector3): void {
+    this.position.add(offset)
+  }
 }
