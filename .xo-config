@@ -83,6 +83,7 @@
     ],
     "@typescript-eslint/no-unnecessary-boolean-literal-compare": "off",
     "unicorn/prefer-ternary": "off",
-    "no-ternary": "error"
+    "no-ternary": "error",
+    "no-await-in-loop": "off"
   }
 }
