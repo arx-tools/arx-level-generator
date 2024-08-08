@@ -30,12 +30,12 @@ import { Path } from '@src/Path.js'
 import { Paths } from '@src/Paths.js'
 import { Player } from '@src/Player.js'
 import { Polygon } from '@src/Polygon.js'
-import { MeshImportProps, Polygons } from '@src/Polygons.js'
+import { type MeshImportProps, Polygons } from '@src/Polygons.js'
 import { Portal } from '@src/Portal.js'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
 import { $ } from '@src/Selection.js'
-import { Settings } from '@src/Settings.js'
+import { type Settings } from '@src/Settings.js'
 import { Translations } from '@src/Translations.js'
 import { UI } from '@src/UI.js'
 import { Vector3 } from '@src/Vector3.js'
@@ -45,7 +45,7 @@ import { compile } from '@src/compile.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { times, uniq } from '@src/faux-ramda.js'
 import { getGeneratorPackageJSON, latin9ToLatin1 } from '@src/helpers.js'
-import { OriginalLevel } from '@src/types.js'
+import { type OriginalLevel } from '@src/types.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { Texture } from './Texture.js'
 
@@ -63,6 +63,35 @@ type ToBeSortedLater = {
 }
 
 export class ArxMap {
+  /**
+   * Loads one of the levels found in the original game
+   *
+   * Requires the pkware-test-files repo
+   * @see https://github.com/meszaros-lajos-gyorgy/pkware-test-files
+   */
+  static async fromOriginalLevel(levelIdx: OriginalLevel, settings: Settings): Promise<ArxMap> {
+    const loader = new LevelLoader(levelIdx, settings)
+
+    const dlf = await loader.readDlf()
+    const fts = await loader.readFts()
+    const llf = await loader.readLlf()
+
+    return new ArxMap(dlf, fts, llf, true)
+  }
+
+  static fromThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps): ArxMap {
+    const map = new ArxMap()
+
+    map.polygons.addThreeJsMesh(threeJsObj, meshImportProps)
+
+    return map
+  }
+
+  private static async getGeneratorId(): Promise<string> {
+    const generator = await getGeneratorPackageJSON()
+    return `${generator.name} - v.${generator.version}`
+  }
+
   polygons = new Polygons()
   lights = new Lights()
   fogs = new Fogs()
@@ -99,7 +128,7 @@ export class ArxMap {
       },
       {
         distance: -1,
-        startPosition: { x: 0.984375, y: 0.984375, z: 0 },
+        startPosition: { x: 0.984_375, y: 0.984_375, z: 0 },
         endPosition: { x: 0, y: 0, z: 0 },
       },
       {
@@ -111,7 +140,7 @@ export class ArxMap {
   }
 
   constructor(dlf?: ArxDLF, fts?: ArxFTS, llf?: ArxLLF, areNormalsCalculated = false) {
-    if (typeof dlf === 'undefined' || typeof fts === 'undefined' || typeof llf === 'undefined') {
+    if (dlf === undefined || fts === undefined || llf === undefined) {
       return
     }
 
@@ -150,106 +179,7 @@ export class ArxMap {
     this.todo.roomDistances = fts.roomDistances
   }
 
-  private async toArxData(settings: Settings) {
-    const now = Math.floor(Date.now() / 1000)
-    const generatorId = await ArxMap.getGeneratorId()
-
-    const dlf: ArxDLF = {
-      header: {
-        lastUser: generatorId,
-        time: now,
-        posEdit: this.player.position.toArxVector3(),
-        angleEdit: this.player.orientation.toArxRotation(),
-        numberOfBackgroundPolygons: this.polygons.length,
-      },
-      scene: {
-        levelIdx: settings.levelIdx,
-      },
-      ...this.fogs.toArxData(),
-      ...this.paths.toArxData(),
-      ...this.zones.toArxData(),
-      ...this.entities.toArxData(),
-    }
-
-    const fts: ArxFTS = {
-      header: {
-        levelIdx: settings.levelIdx,
-      },
-      uniqueHeaders: this.todo.uniqueHeaders,
-      sceneHeader: {
-        mScenePosition: this.config.offset.toArxVector3(),
-      },
-      cells: this.todo.cells,
-      anchors: this.todo.anchors,
-      portals: this.portals.map((portal) => portal.toArxPortal()),
-      rooms: this.todo.rooms,
-      roomDistances: this.todo.roomDistances,
-      ...(await this.polygons.toArxData()),
-    }
-
-    const llf: ArxLLF = {
-      header: {
-        lastUser: generatorId,
-        time: now,
-        numberOfBackgroundPolygons: this.polygons.length,
-      },
-      colors: this.polygons.getVertexColors(),
-      ...this.lights.toArxData(),
-    }
-
-    return {
-      dlf,
-      fts,
-      llf,
-    }
-  }
-
-  /**
-   * Loads one of the levels found in the original game
-   *
-   * Requires the pkware-test-files repo
-   * @see https://github.com/meszaros-lajos-gyorgy/pkware-test-files
-   */
-  static async fromOriginalLevel(levelIdx: OriginalLevel, settings: Settings) {
-    const loader = new LevelLoader(levelIdx, settings)
-
-    const dlf = await loader.readDlf()
-    const fts = await loader.readFts()
-    const llf = await loader.readLlf()
-
-    return new ArxMap(dlf, fts, llf, true)
-  }
-
-  static fromThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps) {
-    const map = new ArxMap()
-
-    map.polygons.addThreeJsMesh(threeJsObj, meshImportProps)
-
-    return map
-  }
-
-  private static async getGeneratorId() {
-    const generator = await getGeneratorPackageJSON()
-    return `${generator.name} - v.${generator.version}`
-  }
-
-  private addTileUnderThePlayersFeet() {
-    const playerPos = this.config.offset
-      .clone()
-      .add(this.player.position)
-      .sub(new Vector3(0, 0, 0).adjustToPlayerHeight())
-
-    const plane = createPlaneMesh({
-      size: 100,
-      tileSize: 100,
-      texture: Texture.missingTexture,
-    })
-    plane.position.set(playerPos.x, playerPos.y, playerPos.z)
-
-    this.polygons.addThreeJsMesh(plane)
-  }
-
-  finalize() {
+  finalize(): void {
     if (this.config.isFinalized) {
       throw new MapFinalizedError()
     }
@@ -265,6 +195,12 @@ export class ArxMap {
     if (this.polygons.length === 0) {
       console.warn(`[warning] ArxMap: The map has no polygons, adding a quad below the player's feet`)
       this.addTileUnderThePlayersFeet()
+      $(this.polygons).clearSelection().selectOutOfBounds().delete()
+      if (this.polygons.length === 0) {
+        console.warn(
+          `[warning] ArxMap: Failed to add polygon below the player's feet as it was partially or fully out of the 0..16000 boundary on the X or Z axis`,
+        )
+      }
     }
 
     this.polygons.forEach((polygon) => {
@@ -277,7 +213,7 @@ export class ArxMap {
     this.config.isFinalized = true
   }
 
-  removePortals() {
+  removePortals(): void {
     if (this.config.isFinalized) {
       throw new MapFinalizedError()
     }
@@ -300,7 +236,7 @@ export class ArxMap {
       },
       {
         distance: -1,
-        startPosition: { x: 0.984375, y: 0.984375, z: 0 },
+        startPosition: { x: 0.984_375, y: 0.984_375, z: 0 },
         endPosition: { x: 0, y: 0, z: 0 },
       },
       {
@@ -313,63 +249,7 @@ export class ArxMap {
     this.movePolygonsToSameRoom()
   }
 
-  private movePolygonsToSameRoom() {
-    $(this.polygons).selectAll().moveToRoom1()
-
-    this.todo.rooms = this.todo.rooms.slice(0, 2)
-    this.todo.roomDistances = [
-      {
-        distance: -1,
-        startPosition: { x: 0, y: 0, z: 0 },
-        endPosition: { x: 1, y: 0, z: 0 },
-      },
-      {
-        distance: -1,
-        startPosition: { x: 0, y: 0, z: 0 },
-        endPosition: { x: 0, y: 1, z: 0 },
-      },
-      {
-        distance: -1,
-        startPosition: { x: 0.984375, y: 0.984375, z: 0 },
-        endPosition: { x: 0, y: 0, z: 0 },
-      },
-      {
-        distance: -1,
-        startPosition: { x: 0, y: 0, z: 0 },
-        endPosition: { x: 0, y: 0, z: 0 },
-      },
-    ]
-  }
-
-  private calculateRoomData = () => {
-    this.todo.rooms.forEach((room) => {
-      room.polygons = []
-    })
-
-    const polygonsPerCellCounter: Record<string, number> = {}
-
-    this.polygons.forEach((polygon) => {
-      if (polygon.room < 1) {
-        return
-      }
-
-      const vertices = polygon.vertices.map((vertex) => vertex.toArxVertex())
-
-      const [cellX, cellY] = getCellCoords(vertices as QuadrupleOf<ArxVertex>)
-
-      const key = `${cellX}|${cellY}`
-
-      if (key in polygonsPerCellCounter) {
-        polygonsPerCellCounter[key] += 1
-      } else {
-        polygonsPerCellCounter[key] = 0
-      }
-
-      this.todo.rooms[polygon.room].polygons.push({ cellX, cellY, polygonIdx: polygonsPerCellCounter[key] })
-    })
-  }
-
-  async saveToDisk(settings: Settings, exportJsonFiles: boolean = false, prettify: boolean = false) {
+  async saveToDisk(settings: Settings, exportJsonFiles: boolean = false, prettify: boolean = false): Promise<void> {
     if (!this.config.isFinalized) {
       throw new MapNotFinalizedError()
     }
@@ -573,12 +453,12 @@ export class ArxMap {
     await Manifest.write(settings, pathsOfTheFiles)
   }
 
-  adjustOffsetTo(map: ArxMap) {
+  adjustOffsetTo(map: ArxMap): void {
     const offsetDifference = map.config.offset.clone().sub(this.config.offset)
     $(this.polygons).selectAll().move(offsetDifference)
   }
 
-  move(offset: Vector3) {
+  move(offset: Vector3): void {
     if (this.config.isFinalized) {
       throw new MapFinalizedError()
     }
@@ -592,13 +472,13 @@ export class ArxMap {
 
     // anchors
     this.todo.anchors.forEach((anchor) => {
-      anchor.data.pos.x += offset.x
-      anchor.data.pos.y += offset.y
-      anchor.data.pos.z += offset.z
+      anchor.data.pos.x = anchor.data.pos.x + offset.x
+      anchor.data.pos.y = anchor.data.pos.y + offset.y
+      anchor.data.pos.z = anchor.data.pos.z + offset.z
     })
   }
 
-  add(map: ArxMap, alignPolygons: boolean = false) {
+  add(map: ArxMap, alignPolygons: boolean = false): void {
     if (this.config.isFinalized) {
       throw new MapFinalizedError()
     }
@@ -636,5 +516,131 @@ export class ArxMap {
     // })
     // TODO: adjust fts anchor linked anchor indices
     // TODO: adjust fts polygon texture container ids
+  }
+
+  private async toArxData(settings: Settings): Promise<{ dlf: ArxDLF; llf: ArxLLF; fts: ArxFTS }> {
+    const now = Math.floor(Date.now() / 1000)
+    const generatorId = await ArxMap.getGeneratorId()
+
+    const dlf: ArxDLF = {
+      header: {
+        lastUser: generatorId,
+        time: now,
+        posEdit: this.player.position.toArxVector3(),
+        angleEdit: this.player.orientation.toArxRotation(),
+        numberOfBackgroundPolygons: this.polygons.length,
+      },
+      scene: {
+        levelIdx: settings.levelIdx,
+      },
+      ...this.fogs.toArxData(),
+      ...this.paths.toArxData(),
+      ...this.zones.toArxData(),
+      ...this.entities.toArxData(),
+    }
+
+    const fts: ArxFTS = {
+      header: {
+        levelIdx: settings.levelIdx,
+      },
+      uniqueHeaders: this.todo.uniqueHeaders,
+      sceneHeader: {
+        mScenePosition: this.config.offset.toArxVector3(),
+      },
+      cells: this.todo.cells,
+      anchors: this.todo.anchors,
+      portals: this.portals.map((portal) => portal.toArxPortal()),
+      rooms: this.todo.rooms,
+      roomDistances: this.todo.roomDistances,
+      ...(await this.polygons.toArxData()),
+    }
+
+    const llf: ArxLLF = {
+      header: {
+        lastUser: generatorId,
+        time: now,
+        numberOfBackgroundPolygons: this.polygons.length,
+      },
+      colors: this.polygons.getVertexColors(),
+      ...this.lights.toArxData(),
+    }
+
+    return {
+      dlf,
+      fts,
+      llf,
+    }
+  }
+
+  private addTileUnderThePlayersFeet(): void {
+    const playerPos = this.config.offset
+      .clone()
+      .add(this.player.position)
+      .sub(new Vector3(0, 0, 0).adjustToPlayerHeight())
+
+    const plane = createPlaneMesh({
+      size: 100,
+      tileSize: 100,
+      texture: Texture.missingTexture,
+    })
+    plane.position.set(playerPos.x, playerPos.y, playerPos.z)
+
+    this.polygons.addThreeJsMesh(plane)
+  }
+
+  private movePolygonsToSameRoom(): void {
+    $(this.polygons).selectAll().moveToRoom1()
+
+    this.todo.rooms = this.todo.rooms.slice(0, 2)
+    this.todo.roomDistances = [
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 1, y: 0, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 0, y: 1, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0.984_375, y: 0.984_375, z: 0 },
+        endPosition: { x: 0, y: 0, z: 0 },
+      },
+      {
+        distance: -1,
+        startPosition: { x: 0, y: 0, z: 0 },
+        endPosition: { x: 0, y: 0, z: 0 },
+      },
+    ]
+  }
+
+  private calculateRoomData(): void {
+    this.todo.rooms.forEach((room) => {
+      room.polygons = []
+    })
+
+    const polygonsPerCellCounter: Record<string, number> = {}
+
+    this.polygons.forEach((polygon) => {
+      if (polygon.room < 1) {
+        return
+      }
+
+      const vertices = polygon.vertices.map((vertex) => vertex.toArxVertex())
+
+      const [cellX, cellY] = getCellCoords(vertices as QuadrupleOf<ArxVertex>)
+
+      const key = `${cellX}|${cellY}`
+
+      if (key in polygonsPerCellCounter) {
+        polygonsPerCellCounter[key] = polygonsPerCellCounter[key] + 1
+      } else {
+        polygonsPerCellCounter[key] = 0
+      }
+
+      this.todo.rooms[polygon.room].polygons.push({ cellX, cellY, polygonIdx: polygonsPerCellCounter[key] })
+    })
   }
 }
