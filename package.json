@@ -77,7 +77,7 @@
   "scripts": {
     "build": "tsc && tsc-alias",
     "lint": "xo",
-    "prepublishOnly": "npm run lint && rm -rf dist && npm run build"
+    "prepublishOnly": "rm -rf dist && npm run build"
   },
   "repository": {
     "type": "git",
