@@ -1,7 +1,7 @@
-import { ArxColor, ArxVertex } from 'arx-convert/types'
-import { Expand } from 'arx-convert/utils'
-import { Material } from '@src/Material.js'
-import { Texture } from '@src/Texture.js'
+import { type ArxColor, type ArxVertex } from 'arx-convert/types'
+import { type Expand } from 'arx-convert/utils'
+import { type Material } from '@src/Material.js'
+import { type Texture } from '@src/Texture.js'
 
 export type ArxVertexWithColor = Expand<
   ArxVertex & {
@@ -35,3 +35,5 @@ export type OriginalLevel =
   | 23
 
 export type TextureOrMaterial = Texture | Material
+
+export type VerticalAlign = 'top' | 'middle' | 'bottom'
