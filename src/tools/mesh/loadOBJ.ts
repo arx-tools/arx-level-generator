@@ -24,19 +24,19 @@ import { type VerticalAlign } from '@src/types.js'
 
 type loadOBJProperties = {
   /**
-   * default value is undefined
+   * default value is `undefined`
    */
   position?: Vector3
   /**
-   * default value is undefined
+   * default value is `undefined`
    */
   scale?: number | Vector3
   /**
-   * default value is undefined
+   * default value is `undefined`
    */
   scaleUV?: number | Vector2 | ((texture: Texture) => number | Vector2)
   /**
-   * default value is undefined
+   * default value is `undefined`
    */
   orientation?: Rotation
   /**
@@ -46,41 +46,46 @@ type loadOBJProperties = {
    */
   materialFlags?: ArxPolygonFlags | ((texture: Texture, defaultFlags: ArxPolygonFlags) => ArxPolygonFlags)
   /**
-   * default value is Texture.missingTexture with the same flags as materialFlags
+   * default value is `Texture.missingTexture` with the same flags as `materialFlags`
    */
   fallbackTexture?: Texture
   /**
-   * default value is false
+   * default value is `false`
    */
   reversedPolygonWinding?: boolean
   /**
-   * aligns the center of the model to 0/0/0
+   * aligns the center of the model to `0/0/0`
    *
-   * default value is false
+   * default value is `false`
    */
   centralize?: boolean
   /**
-   * Aligns an object's y axis to 0/0/0
+   * Aligns an object's y axis to `0/0/0` if `centralize` prop is `true`
    *
-   * - `"bottom"` will make all the points of the model above 0/0/0
-   * - `"top"` will make all the points of the model below 0/0/0
-   * - `"center"` keeps the model in the middle
+   * - `"bottom"` will make all the points of the model above `0/0/0`
+   * - `"top"` will make all the points of the model below `0/0/0`
+   * - `"middle"` keeps the model in the middle
    *
-   * if centralize is true then the default value is 'center'
-   * otherwise undefined
+   * the default value is `"middle"`
    */
   verticalAlign?: VerticalAlign
 }
 
-function toRows(rawObj: string): string[] {
-  // long lines can be broken up, using a backslash (\) character at the end of lines to be continued
-  // (source: https://www.loc.gov/preservation/digital/formats/fdd/fdd000507.shtml)
-  rawObj = rawObj.replaceAll('\\\n', '')
-
-  return rawObj.split(/\r?\n/)
+/**
+ * long lines can be broken up [in obj files] using a backslash (`\`) character at the end of lines
+ * to be continued on new lines
+ *
+ * @source https://www.loc.gov/preservation/digital/formats/fdd/fdd000507.shtml
+ */
+function joinSplitObjLines(rawObj: string): string {
+  return rawObj.replaceAll('\\\n', '')
 }
 
-function isTriangulatedMesh(rawObj: string): boolean {
+function toRows(rawObj: string): string[] {
+  return joinSplitObjLines(rawObj).split(/\r?\n/)
+}
+
+function isMeshTriangulated(rawObj: string): boolean {
   const rows = toRows(rawObj)
 
   const isNotTriangulated = rows.some((row) => {
@@ -252,7 +257,7 @@ export async function loadOBJ(
   const objSrc = path.resolve('assets/' + dir + '/' + filename + '.obj')
   let rawObj = await fs.readFile(objSrc, 'utf8')
 
-  if (!isTriangulatedMesh(rawObj)) {
+  if (!isMeshTriangulated(rawObj)) {
     console.warn(`[warning] loadOBJ: ${filename}.obj is not triangulated`)
   }
 
@@ -302,44 +307,24 @@ export async function loadOBJ(
 
     geometry.computeBoundingBox()
 
-    const boundingBox = geometry.boundingBox as Box3
-    const halfDimensions = boundingBox.max.clone().sub(boundingBox.min).divideScalar(2)
-
-    const offset = new Vector3(0, 0, 0)
-
     if (centralize === true) {
-      offset.x = -boundingBox.min.x - halfDimensions.x
-      offset.z = -boundingBox.min.z - halfDimensions.z
-      if (verticalAlign === undefined) {
-        verticalAlign = 'middle'
-      }
-    }
+      const boundingBox = geometry.boundingBox as Box3
 
-    switch (verticalAlign) {
-      case 'bottom': {
-        offset.y = -boundingBox.max.y
-        break
+      const offset = new Vector3()
+      boundingBox.getCenter(offset)
+
+      if (verticalAlign === 'top') {
+        offset.y = boundingBox.min.y
+      } else if (verticalAlign === 'bottom') {
+        offset.y = boundingBox.max.y
       }
 
-      case 'middle': {
-        offset.y = -boundingBox.min.y - halfDimensions.y
-        break
-      }
+      offset.multiplyScalar(-1)
 
-      case 'top': {
-        offset.y = -boundingBox.min.y
-        break
+      if (offset.length() !== 0) {
+        geometry.translate(offset.x, offset.y, offset.z)
+        geometry.computeBoundingBox()
       }
-
-      case undefined: {
-        // nothing to do here
-        break
-      }
-    }
-
-    if (offset.length() !== 0) {
-      geometry.translate(offset.x, offset.y, offset.z)
-      geometry.computeBoundingBox()
     }
 
     if (orientation) {
