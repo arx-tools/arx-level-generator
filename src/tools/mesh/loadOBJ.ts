@@ -305,13 +305,11 @@ export async function loadOBJ(
     const boundingBox = geometry.boundingBox as Box3
     const halfDimensions = boundingBox.max.clone().sub(boundingBox.min).divideScalar(2)
 
-    let x = 0
-    let y = 0
-    let z = 0
+    const offset = new Vector3(0, 0, 0)
 
     if (centralize === true) {
-      x = -boundingBox.min.x - halfDimensions.x
-      z = -boundingBox.min.z - halfDimensions.z
+      offset.x = -boundingBox.min.x - halfDimensions.x
+      offset.z = -boundingBox.min.z - halfDimensions.z
       if (verticalAlign === undefined) {
         verticalAlign = 'middle'
       }
@@ -319,23 +317,28 @@ export async function loadOBJ(
 
     switch (verticalAlign) {
       case 'bottom': {
-        y = -boundingBox.max.y
+        offset.y = -boundingBox.max.y
         break
       }
 
       case 'middle': {
-        y = -boundingBox.min.y - halfDimensions.y
+        offset.y = -boundingBox.min.y - halfDimensions.y
         break
       }
 
       case 'top': {
-        y = -boundingBox.min.y
+        offset.y = -boundingBox.min.y
+        break
+      }
+
+      case undefined: {
+        // nothing to do here
         break
       }
     }
 
-    if (x !== 0 || y !== 0 || z !== 0) {
-      geometry.translate(x, y, z)
+    if (offset.length() !== 0) {
+      geometry.translate(offset.x, offset.y, offset.z)
       geometry.computeBoundingBox()
     }
 
