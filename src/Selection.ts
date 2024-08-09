@@ -1,11 +1,11 @@
-import { Box3 } from 'three'
+import { type Box3 } from 'three'
 import { Entities } from '@src/Entities.js'
 import { Fogs } from '@src/Fogs.js'
 import { Lights } from '@src/Lights.js'
 import { Paths } from '@src/Paths.js'
 import { Polygons } from '@src/Polygons.js'
-import { Texture } from '@src/Texture.js'
-import { Vector3 } from '@src/Vector3.js'
+import { type Texture } from '@src/Texture.js'
+import { type Vector3 } from '@src/Vector3.js'
 import { Zones } from '@src/Zones.js'
 import { groupSequences } from '@src/faux-ramda.js'
 
@@ -17,25 +17,25 @@ export abstract class Selection<T extends Array<any>> {
     this.items = items
   }
 
-  get() {
+  get(): T {
     return this.items
   }
 
-  clearSelection() {
+  clearSelection(): this {
     this.selection = []
     return this
   }
 
-  hasSelection() {
+  hasSelection(): boolean {
     return this.selection.length > 0
   }
 
-  sizeOfSelection() {
+  sizeOfSelection(): number {
     return this.selection.length
   }
 
-  selectAll() {
-    this.selection = Array.from(this.items.keys())
+  selectAll(): this {
+    this.selection = [...this.items.keys()]
     return this
   }
 
@@ -43,7 +43,7 @@ export abstract class Selection<T extends Array<any>> {
    * selects items based on a given predicate
    * if there are already items selected then this filters those further
    */
-  selectBy(predicate: (item: T[0], idx: number) => boolean) {
+  selectBy(predicate: (item: T[0], idx: number) => boolean): this {
     if (!this.hasSelection()) {
       this.selectAll()
     }
@@ -56,7 +56,7 @@ export abstract class Selection<T extends Array<any>> {
     return this
   }
 
-  invertSelection() {
+  invertSelection(): this {
     // none selected -> all selected
     if (!this.hasSelection()) {
       return this.selectAll()
@@ -77,7 +77,7 @@ export abstract class Selection<T extends Array<any>> {
     for (let candidate = 0; candidate < this.items.length; candidate++) {
       if (candidate === current) {
         if (idx < selection.length) {
-          idx += 1
+          idx = idx + 1
           current = selection[idx]
         }
       } else {
@@ -89,11 +89,13 @@ export abstract class Selection<T extends Array<any>> {
   }
 
   /**
-   * Removes items which have been selected
+   * Removes selected items.
+   *
+   * A call to a `select*` method is required beforehand.
    *
    * @returns a copy of the elements that have been deleted
    */
-  delete() {
+  delete(): T {
     const copiedItems = this.copy().get()
 
     if (copiedItems.length > 0) {
@@ -109,7 +111,10 @@ export abstract class Selection<T extends Array<any>> {
     return copiedItems
   }
 
-  apply(fn: (item: T[0], idx: number) => void) {
+  /**
+   * calls a predicate function on every selected item
+   */
+  apply(fn: (item: T[0], idx: number) => void): this {
     this.selection.forEach((idx) => {
       const item = this.items[idx]
       fn(item, idx)
@@ -118,7 +123,10 @@ export abstract class Selection<T extends Array<any>> {
     return this
   }
 
-  move(offset: Vector3) {
+  /**
+   * moves selected items by a given offset
+   */
+  move(offset: Vector3): this {
     return this.apply((item) => {
       item.move(offset)
     })
@@ -130,23 +138,45 @@ export abstract class Selection<T extends Array<any>> {
 // ----------------------------------------
 
 export class PolygonSelection extends Selection<Polygons> {
-  copy() {
+  /**
+   * Copies the selected polygons.
+   *
+   * A call to a `select*` method is required beforehand.
+   */
+  copy(): this {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
     return new PolygonSelection(new Polygons(...copiedItems)) as this
   }
 
   /**
-   * selects polygons which go outside the 0-160 meters boundary on the horizontal axis
+   * Selects polygons which go outside the 0-16000 boundary on the horizontal axis (x and z).
+   *
+   * This method pre-selects all polygons if none have been selected before.
    */
-  selectOutOfBounds() {
+  selectOutOfBounds(): this {
     return this.selectBy((polygon) => polygon.isOutOfBounds())
   }
 
-  selectWithinBox(box: Box3) {
+  /**
+   * Selects polygons within a given box.
+   *
+   * Keep in mind that Y axis are inverted in arx, -200 is higher than 500!
+   *
+   * This method pre-selects all polygons if none have been selected before.
+   */
+  selectWithinBox(box: Box3): this {
     return this.selectBy((polygon) => polygon.isWithin(box))
   }
 
-  selectByTextures(textures: (Texture | string)[]) {
+  /**
+   * Selects polygons that have a specific texture or matches any of the specified textures.
+   *
+   * Texture comparision is done by comparing filenames without extension case insensitively
+   * (see `Texture.equals()` and `Texture.equalsAny()`)
+   *
+   * This method pre-selects all polygons if none have been selected before.
+   */
+  selectByTextures(textures: (Texture | string)[]): this {
     return this.selectBy((polygon) => polygon.texture?.equalsAny(textures) ?? false)
   }
 
@@ -166,7 +196,15 @@ export class PolygonSelection extends Selection<Polygons> {
     })
   }
 
-  scale(scale: number) {
+  /**
+   * Scales selected polygons.
+   *
+   * Scaling is done from `0/0/0` world coordinates, so selected polygons need to be
+   * centralized beforehand, otherwise the distance from `0/0/0` will also scale.
+   *
+   * A call to a `select*` method is required beforehand.
+   */
+  scale(scale: number): this {
     return this.apply((polygon) => {
       polygon.scale(scale)
     })
