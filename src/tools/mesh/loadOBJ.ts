@@ -20,6 +20,7 @@ import { applyTransformations, fileExists } from '@src/helpers.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
 import { scaleUV as scaleUVTool } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
+import { type VerticalAlign } from '@src/types.js'
 
 type loadOBJProperties = {
   /**
@@ -68,7 +69,7 @@ type loadOBJProperties = {
    * if centralize is true then the default value is 'center'
    * otherwise undefined
    */
-  verticalAlign?: 'bottom' | 'center' | 'top'
+  verticalAlign?: VerticalAlign
 }
 
 function toRows(rawObj: string): string[] {
@@ -311,8 +312,8 @@ export async function loadOBJ(
     if (centralize === true) {
       x = -boundingBox.min.x - halfDimensions.x
       z = -boundingBox.min.z - halfDimensions.z
-      if (typeof verticalAlign === 'undefined') {
-        verticalAlign = 'center'
+      if (verticalAlign === undefined) {
+        verticalAlign = 'middle'
       }
     }
 
@@ -322,7 +323,7 @@ export async function loadOBJ(
         break
       }
 
-      case 'center': {
+      case 'middle': {
         y = -boundingBox.min.y - halfDimensions.y
         break
       }
