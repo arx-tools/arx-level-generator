@@ -34,34 +34,88 @@ export class LevelLoader {
     const jsonFolder = await createCacheFolderIfNotExists(this.getCachedJsonFolder(), this.settings)
     const jsonFilename = path.resolve(jsonFolder, './' + this.getFilename(format) + '.json')
 
-    const parser = this.getParser(format)
-
     let data: ArxDLF | ArxFTS | ArxLLF
 
-    try {
-      const jsonData = await fs.readFile(jsonFilename, 'utf8')
-      data = JSON.parse(jsonData)
-    } catch {
-      const binaryFolder = this.getBinaryFolder()
-      const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename(format) + '.unpacked')
+    switch (format) {
+      case 'dlf': {
+        const parser = this.getParser(format)
 
-      try {
-        await fs.access(binaryFolder, fs.constants.R_OK | fs.constants.W_OK)
-      } catch {
-        throw new Error(`attempted to read folder containing binary level data at "${binaryFolder}"`)
+        try {
+          const jsonData = await fs.readFile(jsonFilename, 'utf8')
+          data = JSON.parse(jsonData) as ArxDLF
+        } catch {
+          const binaryFolder = this.getBinaryFolder()
+          const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename(format) + '.unpacked')
+
+          try {
+            await fs.access(binaryFolder, fs.constants.R_OK | fs.constants.W_OK)
+          } catch {
+            throw new Error(`attempted to read folder containing binary level data at "${binaryFolder}"`)
+          }
+
+          const binaryData = await fs.readFile(binaryFilename)
+          data = parser.load(binaryData)
+          await fs.writeFile(jsonFilename, JSON.stringify(data), 'utf8')
+        }
+
+        break
       }
 
-      const binaryData = await fs.readFile(binaryFilename)
-      data = parser.load(binaryData)
-      await fs.writeFile(jsonFilename, JSON.stringify(data), 'utf8')
+      case 'fts': {
+        const parser = this.getParser(format)
+
+        try {
+          const jsonData = await fs.readFile(jsonFilename, 'utf8')
+          data = JSON.parse(jsonData) as ArxFTS
+        } catch {
+          const binaryFolder = this.getBinaryFolder()
+          const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename(format) + '.unpacked')
+
+          try {
+            await fs.access(binaryFolder, fs.constants.R_OK | fs.constants.W_OK)
+          } catch {
+            throw new Error(`attempted to read folder containing binary level data at "${binaryFolder}"`)
+          }
+
+          const binaryData = await fs.readFile(binaryFilename)
+          data = parser.load(binaryData)
+          await fs.writeFile(jsonFilename, JSON.stringify(data), 'utf8')
+        }
+
+        break
+      }
+
+      case 'llf': {
+        const parser = this.getParser(format)
+
+        try {
+          const jsonData = await fs.readFile(jsonFilename, 'utf8')
+          data = JSON.parse(jsonData) as ArxLLF
+        } catch {
+          const binaryFolder = this.getBinaryFolder()
+          const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename(format) + '.unpacked')
+
+          try {
+            await fs.access(binaryFolder, fs.constants.R_OK | fs.constants.W_OK)
+          } catch {
+            throw new Error(`attempted to read folder containing binary level data at "${binaryFolder}"`)
+          }
+
+          const binaryData = await fs.readFile(binaryFilename)
+          data = parser.load(binaryData)
+          await fs.writeFile(jsonFilename, JSON.stringify(data), 'utf8')
+        }
+
+        break
+      }
     }
 
     return data
   }
 
-  // private getParser(format: 'dlf'): typeof DLF
-  // private getParser(format: 'fts'): typeof FTS
-  // private getParser(format: 'llf'): typeof LLF
+  private getParser(format: 'dlf'): typeof DLF
+  private getParser(format: 'fts'): typeof FTS
+  private getParser(format: 'llf'): typeof LLF
   private getParser(format: 'dlf' | 'fts' | 'llf'): typeof DLF | typeof FTS | typeof LLF {
     if (format === 'dlf') {
       return DLF
