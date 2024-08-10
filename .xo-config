@@ -85,6 +85,7 @@
     "unicorn/prefer-ternary": "off",
     "no-ternary": "error",
     "no-await-in-loop": "off",
-    "@typescript-eslint/consistent-type-definitions": "off"
+    "@typescript-eslint/consistent-type-definitions": "off",
+    "@typescript-eslint/non-nullable-type-assertion-style": "off"
   }
 }
