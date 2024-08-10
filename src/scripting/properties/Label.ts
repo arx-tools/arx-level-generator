@@ -10,9 +10,9 @@ export class Label extends ScriptProperty<string> {
   toString(): string {
     if (this.isI18nKey()) {
       return `setname ${this.value}`
-    } else {
-      return `setname "${this.value}"`
     }
+
+    return `setname "${this.value}"`
   }
 
   isI18nKey(): boolean {

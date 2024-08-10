@@ -16,6 +16,10 @@ export class Interactivity extends ScriptProperty<boolean> {
   }
 
   toString(): string {
-    return `set_interactivity ${this.value === true ? 'on' : 'none'}`
+    if (this.value === true) {
+      return `set_interactivity on`
+    }
+
+    return `set_interactivity none`
   }
 }

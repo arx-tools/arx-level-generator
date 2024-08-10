@@ -17,6 +17,10 @@ export class PlayerControls extends ScriptProperty<boolean> {
   }
 
   toString(): string {
-    return `setplayercontrols ${this.value === true ? 'on' : 'off'}`
+    if (this.value === true) {
+      return `setplayercontrols on`
+    }
+
+    return `setplayercontrols off`
   }
 }

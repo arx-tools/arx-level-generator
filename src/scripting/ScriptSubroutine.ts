@@ -13,18 +13,29 @@ export class ScriptSubroutine {
 
   toString(): string {
     const renderedScript = Script.handlerToString(this.command)
+
     if (renderedScript.trim() === '') {
       return ''
     }
 
-    return [`>>${this.name} {`, renderedScript, this.invokeType === 'gosub' ? '  return' : '  accept', '}'].join('\n')
+    if (this.invokeType === 'gosub') {
+      return `>>${this.name} {
+${renderedScript}
+  return
+}`
+    }
+
+    return `>>${this.name} {
+${renderedScript}
+  accept
+}`
   }
 
   invoke(): string {
     if (this.invokeType === 'gosub') {
       return `gosub ${this.name}`
-    } else {
-      return `goto ${this.name}`
     }
+
+    return `goto ${this.name}`
   }
 }
