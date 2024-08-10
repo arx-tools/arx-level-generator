@@ -1,9 +1,9 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { DLF, FTS, LLF } from 'arx-convert'
-import { ArxDLF, ArxFTS, ArxLLF } from 'arx-convert/types'
-import { Settings } from '@src/Settings.js'
-import { OriginalLevel } from '@src/types.js'
+import { type ArxDLF, type ArxFTS, type ArxLLF } from 'arx-convert/types'
+import { type Settings } from '@src/Settings.js'
+import { type OriginalLevel } from '@src/types.js'
 import { createCacheFolderIfNotExists } from '@services/cache.js'
 
 export class LevelLoader {
@@ -15,15 +15,15 @@ export class LevelLoader {
     this.settings = settings
   }
 
-  async readDlf() {
+  async readDlf(): Promise<ArxDLF> {
     return this.readData('dlf')
   }
 
-  async readFts() {
+  async readFts(): Promise<ArxFTS> {
     return this.readData('fts')
   }
 
-  async readLlf() {
+  async readLlf(): Promise<ArxLLF> {
     return this.readData('llf')
   }
 
@@ -39,27 +39,30 @@ export class LevelLoader {
     let data: ArxDLF | ArxFTS | ArxLLF
 
     try {
-      const jsonData = await fs.readFile(jsonFilename, 'utf-8')
+      const jsonData = await fs.readFile(jsonFilename, 'utf8')
       data = JSON.parse(jsonData)
-    } catch (e) {
+    } catch {
       const binaryFolder = this.getBinaryFolder()
       const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename(format) + '.unpacked')
 
       try {
         await fs.access(binaryFolder, fs.constants.R_OK | fs.constants.W_OK)
-      } catch (e) {
+      } catch {
         throw new Error(`attempted to read folder containing binary level data at "${binaryFolder}"`)
       }
 
       const binaryData = await fs.readFile(binaryFilename)
       data = parser.load(binaryData)
-      await fs.writeFile(jsonFilename, JSON.stringify(data), 'utf-8')
+      await fs.writeFile(jsonFilename, JSON.stringify(data), 'utf8')
     }
 
     return data
   }
 
-  private getParser(format: 'dlf' | 'fts' | 'llf') {
+  // private getParser(format: 'dlf'): typeof DLF
+  // private getParser(format: 'fts'): typeof FTS
+  // private getParser(format: 'llf'): typeof LLF
+  private getParser(format: 'dlf' | 'fts' | 'llf'): typeof DLF | typeof FTS | typeof LLF {
     if (format === 'dlf') {
       return DLF
     }
@@ -71,7 +74,7 @@ export class LevelLoader {
     return LLF
   }
 
-  private getFilename(format: 'dlf' | 'fts' | 'llf') {
+  private getFilename(format: 'dlf' | 'fts' | 'llf'): string {
     if (format === 'fts') {
       return 'fast.fts'
     }
@@ -79,11 +82,11 @@ export class LevelLoader {
     return `level${this.levelIdx}.${format}`
   }
 
-  private getCachedJsonFolder() {
+  private getCachedJsonFolder(): string {
     return `./levels/level${this.levelIdx}`
   }
 
-  private getBinaryFolder() {
+  private getBinaryFolder(): string {
     return path.resolve(this.settings.originalLevelFiles, `./arx-fatalis/level${this.levelIdx}`)
   }
 }

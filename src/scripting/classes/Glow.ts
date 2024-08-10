@@ -47,17 +47,17 @@ export class Glow {
     let flags = GlowFlags.Active
 
     if (this.color !== undefined) {
-      flags |= GlowFlags.Color
+      flags = flags | GlowFlags.Color
       params.color = this.color.toScriptColor()
     }
 
     if (this.size !== undefined) {
-      flags |= GlowFlags.Size
+      flags = flags | GlowFlags.Size
       params.radius = this.size.toString()
     }
 
     if (this.isNegative) {
-      flags |= GlowFlags.Negative
+      flags = flags | GlowFlags.Negative
     }
 
     return `halo ${this.stringifyFlags(flags)} ${params.color} ${params.radius}`.trim()
@@ -79,23 +79,27 @@ export class Glow {
     let letters = ''
 
     if (flags & GlowFlags.Active) {
-      letters += 'o'
+      letters = letters + 'o'
     } else {
-      letters += 'f'
+      letters = letters + 'f'
     }
 
     if (flags & GlowFlags.Color) {
-      letters += 'c'
+      letters = letters + 'c'
     }
 
     if (flags & GlowFlags.Size) {
-      letters += 's'
+      letters = letters + 's'
     }
 
     if (flags & GlowFlags.Negative) {
-      letters += 'n'
+      letters = letters + 'n'
     }
 
-    return (letters === '' ? '' : '-') + letters
+    if (letters === '') {
+      return ''
+    }
+
+    return `-${letters}`
   }
 }

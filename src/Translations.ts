@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { Settings } from '@src/Settings.js'
+import { type Settings } from '@src/Settings.js'
 
 export type Locales =
   | 'chinese'
@@ -13,7 +13,7 @@ export type Locales =
   | 'russian'
   | 'spanish'
 
-export const toArxLocale = (locale: Locales) => {
+export function toArxLocale(locale: Locales): string {
   if (locale === 'german') {
     return 'deutsch'
   }
@@ -32,14 +32,14 @@ export const toArxLocale = (locale: Locales) => {
 export class Translations {
   translations: Record<string, Partial<Record<Locales, string>>> = {}
 
-  exportSourcesAndTargets(settings: Settings) {
+  exportSourcesAndTargets(settings: Settings): Record<string, string> {
     const translations: Partial<Record<Locales, Record<string, string>>> = {}
 
     Object.entries(this.translations).forEach(([key, valuesByLocale]) => {
       const localeValuePairs = Object.entries(valuesByLocale) as [Locales, string][]
       localeValuePairs.forEach(([locale, value]) => {
         const translation = translations[locale]
-        if (typeof translation === 'undefined') {
+        if (translation === undefined) {
           translations[locale] = {
             [key]: value,
           }
@@ -54,7 +54,7 @@ export class Translations {
     const languageDictionaryPairs = Object.entries(translations) as [Locales, Record<string, string>][]
     languageDictionaryPairs.forEach(([locale, dictionary]) => {
       const content = this.stringifyDictionary(dictionary)
-      if (content.length) {
+      if (content.length > 0) {
         const filename = path.resolve(
           settings.outputDir,
           `localisation/xtext_${toArxLocale(locale)}_002_arx-level-generator.ini`,
@@ -66,7 +66,7 @@ export class Translations {
     return results
   }
 
-  stringifyDictionary(dictionary: Record<string, string>) {
+  stringifyDictionary(dictionary: Record<string, string>): string {
     return Object.entries(dictionary)
       .map(([key, value]) => {
         return `[${key}]
@@ -77,16 +77,16 @@ export class Translations {
       .join('')
   }
 
-  add(translations: Record<string, Partial<Record<Locales, string>>>) {
+  add(translations: Record<string, Partial<Record<Locales, string>>>): void {
     this.translations = {
       ...this.translations,
       ...translations,
     }
   }
 
-  async addFromFile(filename: string, settings: Settings) {
+  async addFromFile(filename: string, settings: Settings): Promise<void> {
     try {
-      const rawIn = await fs.readFile(path.resolve(settings.assetsDir, filename), 'utf-8')
+      const rawIn = await fs.readFile(path.resolve(settings.assetsDir, filename), 'utf8')
       const translations = JSON.parse(rawIn) as Record<string, Partial<Record<Locales, string>>>
       this.add(translations)
     } catch (error) {

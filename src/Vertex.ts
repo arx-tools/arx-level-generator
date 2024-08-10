@@ -1,10 +1,18 @@
-import { ArxVertex } from 'arx-convert/types'
+import { type ArxVertex } from 'arx-convert/types'
 import { Vector2 } from 'three'
 import { Color } from '@src/Color.js'
 import { Vector3 } from '@src/Vector3.js'
-import { ArxVertexWithColor } from '@src/types.js'
+import { type ArxVertexWithColor } from '@src/types.js'
 
 export class Vertex extends Vector3 {
+  static fromArxVertex({ x, y, z, u, v, color }: ArxVertexWithColor): Vertex {
+    if (color === undefined) {
+      return new Vertex(x, y, z, u, v)
+    }
+
+    return new Vertex(x, y, z, u, v, Color.fromArxColor(color))
+  }
+
   uv: Vector2
   color: Color
 
@@ -14,17 +22,9 @@ export class Vertex extends Vector3 {
     this.color = color
   }
 
-  clone() {
+  clone(): this {
     const copy = new Vertex(this.x, this.y, this.z, this.uv.x, this.uv.y, this.color)
     return copy as this
-  }
-
-  static fromArxVertex({ x, y, z, u, v, color }: ArxVertexWithColor) {
-    if (typeof color === 'undefined') {
-      return new Vertex(x, y, z, u, v)
-    }
-
-    return new Vertex(x, y, z, u, v, Color.fromArxColor(color))
   }
 
   toArxVertex(): ArxVertex {
@@ -35,7 +35,7 @@ export class Vertex extends Vector3 {
     }
   }
 
-  equals(v: Vector3, epsilon: number = 0) {
+  equals(v: Vector3, epsilon: number = 0): boolean {
     if (epsilon === 0) {
       return this.x === v.x && this.y === v.y && this.z === v.z
     }
@@ -43,9 +43,11 @@ export class Vertex extends Vector3 {
     if (Math.abs(this.x - v.x) > epsilon) {
       return false
     }
+
     if (Math.abs(this.y - v.y) > epsilon) {
       return false
     }
+
     if (Math.abs(this.z - v.z) > epsilon) {
       return false
     }
