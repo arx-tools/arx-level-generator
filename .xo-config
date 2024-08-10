@@ -40,10 +40,14 @@
       {
         "selector": "variable",
         "format": [
-          "strictCamelCase",
+          "camelCase",
           "UPPER_CASE"
         ]
       }
+    ],
+    "@typescript-eslint/class-literal-property-style": [
+      "error",
+      "fields"
     ],
     "@typescript-eslint/prefer-literal-enum-member": [
       "error",
@@ -71,6 +75,10 @@
       }
     ],
     "operator-assignment": [
+      "error",
+      "never"
+    ],
+    "logical-assignment-operators": [
       "error",
       "never"
     ],

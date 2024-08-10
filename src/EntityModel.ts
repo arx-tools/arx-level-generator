@@ -1,12 +1,12 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { FTL } from 'arx-convert'
-import { ArxAction, ArxFTL, ArxFaceType, ArxFace, ArxFtlVertex } from 'arx-convert/types'
-import { Expand, QuadrupleOf, TripleOf } from 'arx-convert/utils'
+import { type ArxAction, type ArxFTL, ArxFaceType, type ArxFace, type ArxFtlVertex } from 'arx-convert/types'
+import { type Expand, type QuadrupleOf, type TripleOf } from 'arx-convert/utils'
 import objectHash from 'object-hash'
-import { BufferAttribute, MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
+import { type BufferAttribute, MathUtils, type Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { Polygons } from '@src/Polygons.js'
-import { Settings } from '@src/Settings.js'
+import { type Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { repeat } from '@src/faux-ramda.js'
@@ -27,12 +27,46 @@ type EntityModelConstructorProps = {
  * a, b and c are normal vectors
  * @see https://stackoverflow.com/a/35205710/1806628
  */
-const getFaceNormal = (a: Vector3, b: Vector3, c: Vector3) => {
+function getFaceNormal(a: Vector3, b: Vector3, c: Vector3): Vector3 {
   return new Vector3().crossVectors(b.clone().sub(a), c.clone().sub(a)).normalize()
 }
 
 export class EntityModel {
   static targetPath = 'game/graph/obj3d/interactive'
+
+  /**
+   * props.originIdx is optional, its default value is 0
+   *
+   * use `@tools/mesh/getLowestPolygonIdx` to get the index of the lowest point of a mesh
+   */
+  static fromThreeJsObj(
+    threeJsObj: Mesh,
+    props: Expand<EntityModelConstructorProps & { originIdx?: number }>,
+  ): EntityModel {
+    const model = new EntityModel(props)
+
+    model.mesh = threeJsObj
+    model.originIdx = props.originIdx ?? 0
+
+    return model
+  }
+
+  /**
+   * props.originIdx is optional, its default value is 0
+   *
+   * use `@tools/mesh/getLowestPolygonIdx` to get the index of the lowest point of a mesh
+   */
+  static fromPolygons(
+    polygons: Polygons,
+    props: Expand<EntityModelConstructorProps & { originIdx?: number }>,
+  ): EntityModel {
+    const model = new EntityModel(props)
+
+    model.mesh = polygons
+    model.originIdx = props.originIdx ?? 0
+
+    return model
+  }
 
   filename: string
   sourcePath: string
@@ -47,35 +81,7 @@ export class EntityModel {
     this.originIdx = 0
   }
 
-  /**
-   * props.originIdx is optional, its default value is 0
-   *
-   * use `@tools/mesh/getLowestPolygonIdx` to get the index of the lowest point of a mesh
-   */
-  static fromThreeJsObj(threeJsObj: Mesh, props: Expand<EntityModelConstructorProps & { originIdx?: number }>) {
-    const model = new EntityModel(props)
-
-    model.mesh = threeJsObj
-    model.originIdx = props.originIdx ?? 0
-
-    return model
-  }
-
-  /**
-   * props.originIdx is optional, its default value is 0
-   *
-   * use `@tools/mesh/getLowestPolygonIdx` to get the index of the lowest point of a mesh
-   */
-  static fromPolygons(polygons: Polygons, props: Expand<EntityModelConstructorProps & { originIdx?: number }>) {
-    const model = new EntityModel(props)
-
-    model.mesh = polygons
-    model.originIdx = props.originIdx ?? 0
-
-    return model
-  }
-
-  clone() {
+  clone(): EntityModel {
     const copy = new EntityModel({
       filename: this.filename,
       sourcePath: this.sourcePath,
@@ -95,14 +101,14 @@ export class EntityModel {
     targetName: string,
     exportJsonFiles: boolean = false,
     prettify: boolean = false,
-  ) {
+  ): Promise<Record<string, string>> {
     const files: Record<string, string> = {}
 
     const { name: entityName } = path.parse(targetName)
     const binaryTarget = path.resolve(settings.outputDir, EntityModel.targetPath, targetName, `${entityName}.ftl`)
     const jsonTarget = `${binaryTarget}.json`
 
-    if (typeof this.mesh === 'undefined') {
+    if (this.mesh === undefined) {
       const binarySource = path.resolve(settings.assetsDir, this.sourcePath, this.filename)
       files[binaryTarget] = binarySource
     } else {
@@ -143,7 +149,7 @@ export class EntityModel {
   /**
    * this method assumes that this.mesh is defined
    */
-  private generateFtl(entityName: string) {
+  private generateFtl(entityName: string): ArxFTL {
     const ftlData: ArxFTL = {
       header: {
         origin: this.originIdx,
@@ -159,7 +165,7 @@ export class EntityModel {
 
     const vertexPrecision = 5
 
-    const mesh = this.mesh
+    const { mesh } = this
     if (mesh instanceof Polygons) {
       mesh.calculateNormals()
 
@@ -208,7 +214,7 @@ export class EntityModel {
           norm: faceNormal.toArxVector3(),
         })
 
-        vertexIdxCntr += 3
+        vertexIdxCntr = vertexIdxCntr + 3
 
         if (polygon.isQuad()) {
           const faceNormal = getFaceNormal(normals[2], normals[1], normals[3])
@@ -221,7 +227,7 @@ export class EntityModel {
             norm: faceNormal.toArxVector3(),
           })
 
-          vertexIdxCntr += 3
+          vertexIdxCntr = vertexIdxCntr + 3
         }
 
         return faces
@@ -279,7 +285,12 @@ export class EntityModel {
         }
       })
 
-      const numberOfGroups = geometry.groups.length === 0 ? 1 : geometry.groups.length
+      let numberOfGroups: number
+      if (geometry.groups.length === 0) {
+        numberOfGroups = 1
+      } else {
+        numberOfGroups = geometry.groups.length
+      }
 
       let textures: (Texture | undefined)[] = []
       if (material instanceof MeshBasicMaterial) {
@@ -302,7 +313,7 @@ export class EntityModel {
             return undefined
           }
         })
-      } else if (typeof material !== 'undefined') {
+      } else if (material !== undefined) {
         console.warn('[warning] EntityModel: Unsupported material found when adding threejs mesh')
       }
 

@@ -6,52 +6,51 @@ import { Readable } from 'node:stream'
 import { fileURLToPath } from 'node:url'
 import { promisify } from 'node:util'
 import { DLF, FTS, LLF } from 'arx-convert'
-import { ArxDLF, ArxFTS, ArxLLF } from 'arx-convert/types'
+import { type ArxDLF, type ArxFTS, type ArxLLF } from 'arx-convert/types'
 import { getHeaderSize } from 'arx-header-size'
 import { Compression, DictionarySize, implode, stream } from 'node-pkware'
-import { Settings } from '@src/Settings.js'
+import { type Settings } from '@src/Settings.js'
 
 const { through, transformSplitBy, splitAt, transformIdentity } = stream
 
-const compileFTS = async (settings: Settings, fts: ArxFTS) => {
+async function compileFTS(settings: Settings, fts: ArxFTS): Promise<void> {
   const ftsPath = path.join(settings.outputDir, `game/graph/levels/level${settings.levelIdx}`)
 
   if (settings.uncompressedFTS) {
     const repackedFts = FTS.save(fts, false)
-
-    return fs.promises.writeFile(path.join(ftsPath, 'fast.fts'), repackedFts)
-  } else {
-    const repackedFts = FTS.save(fts, true)
-
-    const { total: ftsHeaderSize } = getHeaderSize(repackedFts, 'fts')
-
-    return new Promise((resolve, reject) => {
-      const writeStream = fs.createWriteStream(path.join(ftsPath, 'fast.fts'))
-
-      writeStream
-        .on('close', () => {
-          resolve(true)
-        })
-        .on('error', (e) => {
-          reject(e)
-        })
-
-      Readable.from(repackedFts)
-        .pipe(
-          through(
-            transformSplitBy(
-              splitAt(ftsHeaderSize),
-              transformIdentity(),
-              implode(Compression.Binary, DictionarySize.Large),
-            ),
-          ),
-        )
-        .pipe(writeStream)
-    })
+    await fs.promises.writeFile(path.join(ftsPath, 'fast.fts'), repackedFts)
+    return
   }
+
+  const repackedFts = FTS.save(fts, true)
+  const { total: ftsHeaderSize } = getHeaderSize(repackedFts, 'fts')
+
+  return new Promise((resolve, reject) => {
+    const writeStream = fs.createWriteStream(path.join(ftsPath, 'fast.fts'))
+
+    writeStream
+      .on('close', () => {
+        resolve()
+      })
+      .on('error', (e) => {
+        reject(e)
+      })
+
+    Readable.from(repackedFts)
+      .pipe(
+        through(
+          transformSplitBy(
+            splitAt(ftsHeaderSize),
+            transformIdentity(),
+            implode(Compression.Binary, DictionarySize.Large),
+          ),
+        ),
+      )
+      .pipe(writeStream)
+  })
 }
 
-const compileLLF = async (settings: Settings, llf: ArxLLF) => {
+async function compileLLF(settings: Settings, llf: ArxLLF): Promise<void> {
   const llfPath = path.join(settings.outputDir, `graph/levels/level${settings.levelIdx}`)
 
   const repackedLlf = LLF.save(llf)
@@ -59,13 +58,15 @@ const compileLLF = async (settings: Settings, llf: ArxLLF) => {
 
   return new Promise((resolve, reject) => {
     const writeStream = fs.createWriteStream(path.join(llfPath, `level${settings.levelIdx}.llf`))
+
     writeStream
       .on('close', () => {
-        resolve(true)
+        resolve()
       })
       .on('error', (e) => {
         reject(e)
       })
+
     Readable.from(repackedLlf)
       .pipe(
         through(
@@ -80,7 +81,7 @@ const compileLLF = async (settings: Settings, llf: ArxLLF) => {
   })
 }
 
-const compileDLF = async (settings: Settings, dlf: ArxDLF) => {
+async function compileDLF(settings: Settings, dlf: ArxDLF): Promise<void> {
   const dlfPath = path.join(settings.outputDir, `graph/levels/level${settings.levelIdx}`)
 
   const repackedDlf = DLF.save(dlf)
@@ -88,13 +89,15 @@ const compileDLF = async (settings: Settings, dlf: ArxDLF) => {
 
   return new Promise((resolve, reject) => {
     const writeStream = fs.createWriteStream(path.join(dlfPath, `level${settings.levelIdx}.dlf`))
+
     writeStream
       .on('close', () => {
-        resolve(true)
+        resolve()
       })
       .on('error', (e) => {
         reject(e)
       })
+
     Readable.from(repackedDlf)
       .pipe(
         through(
@@ -109,17 +112,17 @@ const compileDLF = async (settings: Settings, dlf: ArxDLF) => {
   })
 }
 
-const hasDotnet6OrNewer = async () => {
+async function hasDotnet6OrNewer(): Promise<boolean> {
   try {
     const { stdout } = await promisify(exec)(`dotnet --version`)
-    const majorOfVersion = parseInt(stdout.trim().split('.')[0])
+    const majorOfVersion = Number.parseInt(stdout.trim().split('.')[0], 10)
     return majorOfVersion >= 6
-  } catch (e: unknown) {
+  } catch {
     return false
   }
 }
 
-const calculateLighting = async (settings: Settings) => {
+async function calculateLighting(settings: Settings): Promise<void> {
   const operatingSystem = os.platform()
 
   if (operatingSystem !== 'win32' && operatingSystem !== 'linux') {
@@ -153,12 +156,15 @@ const calculateLighting = async (settings: Settings) => {
 
   let exeFile: string
   switch (operatingSystem) {
-    case 'win32':
+    case 'win32': {
       exeFile = path.resolve(libPath, `fredlllll-lighting-calculator/win/ArxLibertatisLightingCalculator.exe`)
       break
-    case 'linux':
+    }
+
+    case 'linux': {
       exeFile = path.resolve(libPath, `fredlllll-lighting-calculator/linux/ArxLibertatisLightingCalculator`)
       break
+    }
   }
 
   try {
@@ -167,12 +173,15 @@ const calculateLighting = async (settings: Settings) => {
     if (stderr !== '') {
       console.error(stderr)
     }
-  } catch (e: unknown) {
-    console.error(e)
+  } catch (error: unknown) {
+    console.error(error)
   }
 }
 
-export const compile = async (settings: Settings, { dlf, llf, fts }: { dlf: ArxDLF; llf: ArxLLF; fts: ArxFTS }) => {
+export async function compile(
+  settings: Settings,
+  { dlf, llf, fts }: { dlf: ArxDLF; llf: ArxLLF; fts: ArxFTS },
+): Promise<void> {
   await Promise.allSettled([compileFTS(settings, fts), compileLLF(settings, llf), compileDLF(settings, dlf)])
 
   if (settings.calculateLighting && llf.lights.length > 0) {

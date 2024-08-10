@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Box3, BufferGeometry, Euler, Mesh, Object3D, Vector3 as ThreeJsVector3 } from 'three'
+import { Box3, type BufferGeometry, Euler, Mesh, type Object3D, type Vector3 as ThreeJsVector3 } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { mean, repeat } from '@src/faux-ramda.js'
 
@@ -16,15 +16,15 @@ export type PackageJsonProps = {
 let cacheOfGeneratorPackageJSON: PackageJsonProps
 let cacheOfProjectPackageJSON: PackageJsonProps
 
-export const getGeneratorPackageJSON = async (): Promise<PackageJsonProps> => {
-  if (typeof cacheOfGeneratorPackageJSON === 'undefined') {
+export async function getGeneratorPackageJSON(): Promise<PackageJsonProps> {
+  if (cacheOfGeneratorPackageJSON === undefined) {
     try {
       const __filename = fileURLToPath(import.meta.url)
       const __dirname = path.dirname(__filename)
 
-      const rawIn = await fs.readFile(path.resolve(__dirname, '../../package.json'), 'utf-8')
-      cacheOfGeneratorPackageJSON = JSON.parse(rawIn)
-    } catch (error) {
+      const rawIn = await fs.readFile(path.resolve(__dirname, '../../package.json'), 'utf8')
+      cacheOfGeneratorPackageJSON = JSON.parse(rawIn) as PackageJsonProps
+    } catch {
       cacheOfGeneratorPackageJSON = {
         name: '',
         version: '',
@@ -38,12 +38,12 @@ export const getGeneratorPackageJSON = async (): Promise<PackageJsonProps> => {
   return cacheOfGeneratorPackageJSON
 }
 
-export const getProjectPackageJSON = async (): Promise<PackageJsonProps> => {
-  if (typeof cacheOfProjectPackageJSON === 'undefined') {
+export async function getProjectPackageJSON(): Promise<PackageJsonProps> {
+  if (cacheOfProjectPackageJSON === undefined) {
     try {
-      const rawIn = await fs.readFile(path.resolve('./package.json'), 'utf-8')
-      cacheOfProjectPackageJSON = JSON.parse(rawIn)
-    } catch (error) {
+      const rawIn = await fs.readFile(path.resolve('./package.json'), 'utf8')
+      cacheOfProjectPackageJSON = JSON.parse(rawIn) as PackageJsonProps
+    } catch {
       cacheOfProjectPackageJSON = {
         name: '',
         version: '',
@@ -57,11 +57,11 @@ export const getProjectPackageJSON = async (): Promise<PackageJsonProps> => {
   return cacheOfProjectPackageJSON
 }
 
-export const evenAndRemainder = (divisor: number, n: number): [number, number] => {
+export function evenAndRemainder(divisor: number, n: number): [number, number] {
   return [Math.floor(n / divisor), n % divisor]
 }
 
-export const applyTransformations = (threeJsObj: Object3D) => {
+export function applyTransformations(threeJsObj: Object3D): void {
   threeJsObj.updateMatrix()
 
   if (threeJsObj instanceof Mesh) {
@@ -79,14 +79,14 @@ export const applyTransformations = (threeJsObj: Object3D) => {
   threeJsObj.updateMatrix()
 }
 
-export const percentOf = (percentage: number, maxValue: number) => {
+export function percentOf(percentage: number, maxValue: number): number {
   return (maxValue / 100) * percentage
 }
 
 /**
  * @see https://en.wikipedia.org/wiki/ISO/IEC_8859-15
  */
-export const latin9ToLatin1 = (str: string) => {
+export function latin9ToLatin1(str: string): string {
   return str
     .replaceAll('€', '¤')
     .replaceAll('Š', '¦')
@@ -98,15 +98,19 @@ export const latin9ToLatin1 = (str: string) => {
     .replaceAll('Ÿ', '¾')
 }
 
-export const roundToNDecimals = (decimals: number, x: number) => {
+export function roundToNDecimals(decimals: number, x: number): number {
   return Math.round(x * 10 ** decimals) / 10 ** decimals
 }
 
-export const isEven = (n: number) => n % 2 === 0
+export function isEven(n: number): boolean {
+  return n % 2 === 0
+}
 
-export const isOdd = (n: number) => n % 2 === 1
+export function isOdd(n: number): boolean {
+  return n % 2 === 1
+}
 
-export const averageVectors = (vectors: ThreeJsVector3[]) => {
+export function averageVectors(vectors: ThreeJsVector3[]): Vector3 {
   const xs = vectors.map(({ x }) => x)
   const ys = vectors.map(({ y }) => y)
   const zs = vectors.map(({ z }) => z)
@@ -115,29 +119,35 @@ export const averageVectors = (vectors: ThreeJsVector3[]) => {
 }
 
 /** inclusive */
-export const isBetween = (min: number, max: number, n: number) => {
+export function isBetween(min: number, max: number, n: number): boolean {
   if (min > max) {
     ;[max, min] = [min, max]
   }
+
   return n >= min && n <= max
 }
 
-export const fileExists = async (filename: string) => {
+export async function fileExists(filename: string): Promise<boolean> {
   try {
     await fs.access(filename, fs.constants.R_OK)
     return true
-  } catch (e: unknown) {
+  } catch {
     return false
   }
 }
 
-export const circleOfVectors = (center: ThreeJsVector3, radius: number, divisions: number, theta: number = 0) => {
+export function circleOfVectors(
+  center: ThreeJsVector3,
+  radius: number,
+  divisions: number,
+  theta: number = 0,
+): Vector3[] {
   const angle = (2 * Math.PI) / divisions
 
   const vectors: Vector3[] = []
 
   for (let i = 0; i < divisions; i++) {
-    const point = new Vector3(0, 0, 1 * radius)
+    const point = new Vector3(0, 0, radius)
     const rotation = new Euler(0, theta + angle * i, 0, 'XYZ')
     point.applyEuler(rotation)
     vectors.push(point.add(center))
@@ -146,15 +156,19 @@ export const circleOfVectors = (center: ThreeJsVector3, radius: number, division
   return vectors
 }
 
-export const normalizeDegree = (degree: number) => {
+/**
+ * finds an angle between 0 and 360 degrees that is the same as the given degree
+ */
+export function normalizeDegree(degree: number): number {
   let normalizedDegree = degree % 360
   if (normalizedDegree < 0) {
-    normalizedDegree += 360
+    normalizedDegree = normalizedDegree + 360
   }
+
   return Math.abs(normalizedDegree)
 }
 
-export const numberOfVertices = (geometry: BufferGeometry) => {
+export function numberOfVertices(geometry: BufferGeometry): number {
   return geometry.getAttribute('position').array.length / 3
 }
 
@@ -165,10 +179,16 @@ export const numberOfVertices = (geometry: BufferGeometry) => {
  * @param size - sidelength/diameter of the box
  * @returns the generated Box3 object
  */
-export const pointToBox = (point: Vector3, size: number | Vector3) => {
-  size = typeof size === 'number' ? new Vector3(size / 2, size / 2, size / 2) : size.divideScalar(2)
+export function pointToBox(point: Vector3, size: number | Vector3): Box3 {
+  if (typeof size === 'number') {
+    size = new Vector3(size, size, size)
+  }
+
+  size.divideScalar(2)
+
   const min = point.clone().sub(size)
   const max = point.clone().add(size)
+
   return new Box3(min, max)
 }
 
@@ -179,6 +199,6 @@ export const pointToBox = (point: Vector3, size: number | Vector3) => {
  *
  * `arrayPadRight(4, undefined, [1, 2, 3, 4, 5, 6]) -> [1, 2, 3, 4]`
  */
-export const arrayPadRight = <T>(length: number, paddingValue: T, array: T[]) => {
+export function arrayPadRight<T>(length: number, paddingValue: T, array: T[]): T[] {
   return [...array, ...repeat(paddingValue, length)].slice(0, length)
 }

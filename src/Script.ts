@@ -1,7 +1,7 @@
-import { Settings } from '@src/Settings.js'
+import { type Settings } from '@src/Settings.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
-import { ScriptProperty } from '@scripting/ScriptProperty.js'
-import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
+import { type ScriptProperty } from '@scripting/ScriptProperty.js'
+import { type ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
 import { isUsesTextures } from '@scripting/interfaces/UsesTextures.js'
 
 type ScriptHandlerBase = string | string[] | ScriptCommand | ScriptCommand[]
@@ -17,6 +17,24 @@ export class Script {
 
   static targetPath = 'graph/obj3d/interactive'
 
+  static handlerToString(handler: ScriptHandler): string {
+    const isHandlerNotAFunction =
+      typeof handler === 'string' || handler instanceof ScriptCommand || Array.isArray(handler)
+
+    const tmp = isHandlerNotAFunction ? handler : handler()
+    const tmp2 = (Array.isArray(tmp) ? tmp : [tmp]) as string[] | ScriptCommand[]
+
+    let result = ''
+
+    for (const h of tmp2) {
+      const handlerResult = h instanceof ScriptCommand ? h.toString() : h
+      const handlerResults = (Array.isArray(handlerResult) ? handlerResult : [handlerResult]) as string[]
+      result = result + handlerResults.filter((r) => r.trim() !== '').join('\n') + '\n'
+    }
+
+    return result
+  }
+
   isRoot = false
   filename: string
   properties: ScriptProperty<any>[] = []
@@ -31,7 +49,7 @@ export class Script {
     this.filename = props.filename
   }
 
-  toArxData() {
+  toArxData(): string {
     const eventStrings: string[] = []
 
     const eventHandlerPairs = Object.entries(this.eventHandlers)
@@ -43,11 +61,11 @@ export class Script {
       let eventString = ''
 
       if (eventName === 'init') {
-        eventString += this.properties.map((property) => `  ${property.toString()}\n`).join('')
+        eventString = eventString + this.properties.map((property) => `  ${property.toString()}\n`).join('')
       }
 
       for (const handler of handlers) {
-        eventString += Script.handlerToString(handler)
+        eventString = eventString + Script.handlerToString(handler)
       }
 
       if (eventString.trim() !== '') {
@@ -73,14 +91,14 @@ export class Script {
     return scriptSections.filter((section) => section !== '').join('\n\n')
   }
 
-  on(eventName: string, handler: ScriptHandler) {
+  on(eventName: string, handler: ScriptHandler): this {
     this.eventHandlers[eventName] = this.eventHandlers[eventName] ?? []
     this.eventHandlers[eventName].push(handler)
 
     return this
   }
 
-  async exportTextures(settings: Settings) {
+  async exportTextures(settings: Settings): Promise<Record<string, string>> {
     let files: Record<string, string> = {}
 
     const handlers = Object.values(this.eventHandlers).flat(1).filter(isUsesTextures)
@@ -95,36 +113,22 @@ export class Script {
     return files
   }
 
-  makeIntoRoot() {
+  makeIntoRoot(): this {
     this.isRoot = true
 
     return this
   }
 
-  prependRaw(handler: ScriptHandler) {
+  prependRaw(handler: ScriptHandler): this {
     this.on('::before', handler)
+
+    return this
   }
 
-  appendRaw(handler: ScriptHandler) {
+  appendRaw(handler: ScriptHandler): this {
     this.on('::after', handler)
-  }
 
-  static handlerToString(handler: ScriptHandler) {
-    const isHandlerNotAFunction =
-      typeof handler === 'string' || handler instanceof ScriptCommand || Array.isArray(handler)
-
-    const tmp = isHandlerNotAFunction ? handler : handler()
-    const tmp2 = (Array.isArray(tmp) ? tmp : [tmp]) as string[] | ScriptCommand[]
-
-    let result = ''
-
-    for (const h of tmp2) {
-      const handlerResult = h instanceof ScriptCommand ? h.toString() : h
-      const handlerResults = (Array.isArray(handlerResult) ? handlerResult : [handlerResult]) as string[]
-      result += handlerResults.filter((r) => r.trim() !== '').join('\n') + '\n'
-    }
-
-    return result
+    return this
   }
 
   whenRoot() {

@@ -1,4 +1,5 @@
 import path from 'node:path'
+import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { config as dotenvConfig } from 'dotenv'
 import seedrandom from 'seedrandom'
@@ -17,8 +18,8 @@ const lightingCalculatorModes = [
 
 type LightingCalculatorMode = (typeof lightingCalculatorModes)[number]
 
-const isValidLightingCalculatorMode = (input: any): input is LightingCalculatorMode => {
-  return typeof input === 'string' && (lightingCalculatorModes as ReadonlyArray<string>).includes(input)
+function isValidLightingCalculatorMode(input: any): input is LightingCalculatorMode {
+  return typeof input === 'string' && (lightingCalculatorModes as readonly string[]).includes(input)
 }
 
 type Modes = 'development' | 'production'
@@ -184,7 +185,7 @@ export class Settings {
 
     this.cacheFolder = props.cacheFolder ?? process.env.cacheFolder ?? path.resolve('./cache')
     this.outputDir = props.outputDir ?? process.env.outputDir ?? path.resolve('./output')
-    this.levelIdx = props.levelIdx ?? parseInt(process.env.levelIdx ?? '1')
+    this.levelIdx = props.levelIdx ?? Number.parseInt(process.env.levelIdx ?? '1', 10)
     this.assetsDir = props.assetsDir ?? process.env.assetsDir ?? path.resolve('./assets')
     this.calculateLighting = props.calculateLighting ?? (process.env.calculateLighting === 'false' ? false : true)
 

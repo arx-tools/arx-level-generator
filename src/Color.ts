@@ -1,6 +1,6 @@
-import { ArxColor } from 'arx-convert/types'
+import { type ArxColor } from 'arx-convert/types'
 import rgba from 'color-rgba'
-import { Color as ThreeJsColor, MathUtils } from 'three'
+import { type Color as ThreeJsColor, MathUtils } from 'three'
 import { percentOf } from '@src/helpers.js'
 
 export enum Alpha {
@@ -9,9 +9,63 @@ export enum Alpha {
 }
 
 /**
- * Three JS's color is not being used as it doesn't come with an alpha channel
+ * three.js's color is not being used as it doesn't come with an alpha channel
  */
 export class Color {
+  static fromCSS(color: string): Color {
+    const channels = rgba(color)
+    if (channels === undefined) {
+      throw new Error(`failed to parse color "${color}"`)
+    }
+
+    const [r, g, b, a] = channels
+    if (r === undefined || g === undefined || b === undefined) {
+      throw new Error(`failed to parse color "${color}"`)
+    }
+
+    return new Color(r, g, b, a)
+  }
+
+  static fromArxColor({ r, g, b, a }: ArxColor): Color {
+    return new Color(r, g, b, a)
+  }
+
+  static fromThreeJsColor({ r, g, b }: ThreeJsColor): Color {
+    return new Color(r * 255, g * 255, b * 255)
+  }
+
+  // ----------------
+
+  static get red(): Color {
+    return Color.fromCSS('red')
+  }
+
+  static get green(): Color {
+    return Color.fromCSS('green')
+  }
+
+  static get blue(): Color {
+    return Color.fromCSS('blue')
+  }
+
+  static get white(): Color {
+    return Color.fromCSS('white')
+  }
+
+  static get black(): Color {
+    return Color.fromCSS('black')
+  }
+
+  static get yellow(): Color {
+    return Color.fromCSS('yellow')
+  }
+
+  static get transparent(): Color {
+    return Color.fromCSS('transparent')
+  }
+
+  // ----------------
+
   r: number
   g: number
   b: number
@@ -24,44 +78,23 @@ export class Color {
     this.a = a
   }
 
-  static fromCSS(color: string) {
-    const channels = rgba(color)
-    if (typeof channels === 'undefined') {
-      throw new Error(`failed to parse color "${color}"`)
-    }
-    const [r, g, b, a] = channels
-    if (typeof r === 'undefined' || typeof g === 'undefined' || typeof b === 'undefined') {
-      throw new Error(`failed to parse color "${color}"`)
-    }
-
-    return new Color(r, g, b, a)
-  }
-
-  static fromArxColor({ r, g, b, a }: ArxColor) {
-    return new Color(r, g, b, a)
-  }
-
-  static fromThreeJsColor({ r, g, b }: ThreeJsColor) {
-    return new Color(r * 255, g * 255, b * 255)
-  }
-
   toArxColor(): ArxColor {
     return { r: this.r, g: this.g, b: this.b, a: this.a }
   }
 
-  toScriptColor() {
+  toScriptColor(): string {
     return `${this.r / 256} ${this.g / 256} ${this.b / 256}`
   }
 
-  clone() {
+  clone(): Color {
     return new Color(this.r, this.g, this.b, this.a)
   }
 
-  getHex() {
+  getHex(): number {
     return (this.r << 16) + (this.g << 8) + this.b
   }
 
-  lighten(percent: number) {
+  lighten(percent: number): this {
     const extra = percentOf(percent, 255)
 
     this.r = MathUtils.clamp(this.r + extra, 0, 255)
@@ -71,7 +104,7 @@ export class Color {
     return this
   }
 
-  darken(percent: number) {
+  darken(percent: number): this {
     const extra = percentOf(percent, 255)
 
     this.r = MathUtils.clamp(this.r - extra, 0, 255)
@@ -79,29 +112,5 @@ export class Color {
     this.b = MathUtils.clamp(this.b - extra, 0, 255)
 
     return this
-  }
-
-  // ----------------
-
-  static get red() {
-    return Color.fromCSS('red')
-  }
-  static get green() {
-    return Color.fromCSS('green')
-  }
-  static get blue() {
-    return Color.fromCSS('blue')
-  }
-  static get white() {
-    return Color.fromCSS('white')
-  }
-  static get black() {
-    return Color.fromCSS('black')
-  }
-  static get yellow() {
-    return Color.fromCSS('yellow')
-  }
-  static get transparent() {
-    return Color.fromCSS('transparent')
   }
 }
