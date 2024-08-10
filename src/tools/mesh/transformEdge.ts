@@ -1,9 +1,9 @@
-import { BufferAttribute, Mesh } from 'three'
-import { Vector3 } from '@src/Vector3.js'
+import { type BufferAttribute, type Mesh } from 'three'
+import { type Vector3 } from '@src/Vector3.js'
 import { categorizeVertices } from '@tools/mesh/categorizeVertices.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
 
-export const transformEdge = (offset: Vector3, mesh: Mesh) => {
+export function transformEdge(offset: Vector3, mesh: Mesh): void {
   const { edges, corners } = categorizeVertices(mesh.geometry)
   const edgeVertices = [...edges, ...corners]
 

@@ -26,9 +26,9 @@ export function connectEdgeTo(source: BufferGeometry, target: BufferGeometry): v
       const closestTargetVertex = targetEdgeVertices.slice(1).reduce((closestSoFar, candidate) => {
         if (candidate.distanceTo(edgePoint) < closestSoFar.distanceTo(edgePoint)) {
           return candidate
-        } else {
-          return closestSoFar
         }
+
+        return closestSoFar
       }, targetEdgeVertices[0])
 
       sourceCoords.setX(vertex.idx, closestTargetVertex.x)

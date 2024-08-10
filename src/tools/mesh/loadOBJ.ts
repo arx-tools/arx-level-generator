@@ -363,7 +363,14 @@ export async function loadOBJ(
           // we have multiple materials
           material.forEach((singleMaterial, indexOfMaterial) => {
             const rawScale = scaleUV(singleMaterial.map as Texture)
-            const scale = typeof rawScale === 'number' ? new Vector2(rawScale, rawScale) : rawScale
+
+            let scale: Vector2
+            if (typeof rawScale === 'number') {
+              scale = new Vector2(rawScale, rawScale)
+            } else {
+              scale = rawScale
+            }
+
             if (geometry.groups.length === 0) {
               // the geometry only has 1 material
               scaleUVTool(scale, geometry)
@@ -382,12 +389,14 @@ export async function loadOBJ(
           })
         } else {
           const rawScale = scaleUV(material.map as Texture)
+
           let scale: Vector2
           if (typeof rawScale === 'number') {
             scale = new Vector2(rawScale, rawScale)
           } else {
             scale = rawScale
           }
+
           scaleUVTool(scale, geometry)
         }
       }

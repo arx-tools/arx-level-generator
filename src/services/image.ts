@@ -9,7 +9,13 @@ type ImageData = {
 const cache: Record<string, ImageData> = {}
 
 async function load(filename: string): Promise<void> {
-  const image = filename.endsWith('bmp') ? (sharpFromBmp(filename) as Sharp) : sharp(filename)
+  let image: Sharp
+  if (filename.endsWith('bmp')) {
+    image = sharpFromBmp(filename) as Sharp
+  } else {
+    image = sharp(filename)
+  }
+
   const metadata = await image.metadata()
 
   cache[filename] = {

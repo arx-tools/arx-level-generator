@@ -48,7 +48,10 @@ export async function loadHashOf(filename: string, settings: Settings): Promise<
  *
  * @param filename - a pathname of a file relative to the project's root directory
  */
-export async function getCacheStats(filename: string, settings: Settings) {
+export async function getCacheStats(
+  filename: string,
+  settings: Settings,
+): Promise<{ filename: string; exists: boolean; hash: string | undefined }> {
   const { dir, base } = path.parse(filename)
   const cachedFolder = await createCacheFolderIfNotExists(dir, settings)
   const cachedFilename = path.join(cachedFolder, base)

@@ -1,7 +1,8 @@
-import { Fog } from '@src/Fog.js'
+import { type Fog } from '@src/Fog.js'
+import { type ArxFog } from 'arx-convert/types'
 
 export class Fogs extends Array<Fog> {
-  toArxData() {
+  toArxData(): { fogs: ArxFog[] } {
     const arxFogs = this.map((fog) => {
       return fog.toArxFog()
     })
@@ -11,7 +12,7 @@ export class Fogs extends Array<Fog> {
     }
   }
 
-  empty() {
+  empty(): void {
     this.length = 0
   }
 }

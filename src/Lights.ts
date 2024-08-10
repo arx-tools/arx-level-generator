@@ -1,7 +1,8 @@
-import { Light } from '@src/Light.js'
+import { type Light } from '@src/Light.js'
+import { type ArxLight } from 'arx-convert/types'
 
 export class Lights extends Array<Light> {
-  toArxData() {
+  toArxData(): { lights: ArxLight[] } {
     const arxLights = this.map((light) => {
       return light.toArxLight()
     })
@@ -11,7 +12,7 @@ export class Lights extends Array<Light> {
     }
   }
 
-  empty() {
+  empty(): void {
     this.length = 0
   }
 }

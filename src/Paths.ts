@@ -1,7 +1,8 @@
-import { Path } from '@src/Path.js'
+import { type Path } from '@src/Path.js'
+import { type ArxPath } from 'arx-convert/types'
 
 export class Paths extends Array<Path> {
-  toArxData() {
+  toArxData(): { paths: ArxPath[] } {
     const arxPaths = this.map((path) => {
       return path.toArxPath()
     })
@@ -11,7 +12,7 @@ export class Paths extends Array<Path> {
     }
   }
 
-  empty() {
+  empty(): void {
     this.length = 0
   }
 }
