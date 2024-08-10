@@ -84,6 +84,7 @@
     "@typescript-eslint/no-unnecessary-boolean-literal-compare": "off",
     "unicorn/prefer-ternary": "off",
     "no-ternary": "error",
-    "no-await-in-loop": "off"
+    "no-await-in-loop": "off",
+    "@typescript-eslint/consistent-type-definitions": "off"
   }
 }
