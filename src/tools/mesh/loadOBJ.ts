@@ -66,7 +66,7 @@ type loadOBJProperties = {
    * - `"top"` will make all the points of the model below `0/0/0`
    * - `"middle"` keeps the model in the middle
    *
-   * the default value is `"middle"`
+   * default value is `"middle"`
    */
   verticalAlign?: VerticalAlign
 }
@@ -125,7 +125,7 @@ function removeLineElements(rawObj: string): string {
       return row
     }
 
-    return '# ' + row
+    return `# ${row}`
   })
 
   return rows.join('\n')
@@ -133,7 +133,12 @@ function removeLineElements(rawObj: string): string {
 
 function getMaterialFlags(texture: Texture, materialFlags: loadOBJProperties['materialFlags']): ArxPolygonFlags {
   const defaultFlags = ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled
-  return typeof materialFlags === 'function' ? materialFlags(texture, defaultFlags) : (materialFlags ?? defaultFlags)
+
+  if (typeof materialFlags === 'function') {
+    return materialFlags(texture, defaultFlags)
+  }
+
+  return materialFlags ?? defaultFlags
 }
 
 async function loadMTL(
@@ -149,14 +154,16 @@ async function loadMTL(
 
   const mtlSrc = path.resolve('assets/' + dir + '/' + filename + '.mtl')
 
-  const fallbackMaterial =
-    fallbackTexture === undefined
-      ? Material.fromTexture(Texture.missingTexture, {
-          flags: getMaterialFlags(Texture.missingTexture, materialFlags),
-        })
-      : Material.fromTexture(fallbackTexture, {
-          flags: getMaterialFlags(fallbackTexture, materialFlags),
-        })
+  let fallbackMaterial: Material
+  if (fallbackTexture === undefined) {
+    fallbackMaterial = Material.fromTexture(Texture.missingTexture, {
+      flags: getMaterialFlags(Texture.missingTexture, materialFlags),
+    })
+  } else {
+    fallbackMaterial = Material.fromTexture(fallbackTexture, {
+      flags: getMaterialFlags(fallbackTexture, materialFlags),
+    })
+  }
 
   let materials: MeshBasicMaterial | Record<string, MeshBasicMaterial>
 
@@ -288,14 +295,23 @@ export async function loadOBJ(
 
     if (Array.isArray(child.material)) {
       material = child.material.map(({ name }) => {
-        return materials instanceof MeshBasicMaterial ? materials : (materials[name] ?? fallbackMeshMaterial)
+        if (materials instanceof MeshBasicMaterial) {
+          return materials
+        }
+
+        return materials[name] ?? fallbackMeshMaterial
       })
     } else {
-      const name = (child.material as MeshPhongMaterial).name
-      material = materials instanceof MeshBasicMaterial ? materials : (materials[name] ?? fallbackMeshMaterial)
+      const { name } = child.material as MeshPhongMaterial
+
+      if (materials instanceof MeshBasicMaterial) {
+        material = materials
+      } else {
+        material = materials[name] ?? fallbackMeshMaterial
+      }
     }
 
-    const geometry = child.geometry
+    const { geometry } = child
 
     if (scale) {
       if (typeof scale === 'number') {
@@ -366,7 +382,12 @@ export async function loadOBJ(
           })
         } else {
           const rawScale = scaleUV(material.map as Texture)
-          const scale = typeof rawScale === 'number' ? new Vector2(rawScale, rawScale) : rawScale
+          let scale: Vector2
+          if (typeof rawScale === 'number') {
+            scale = new Vector2(rawScale, rawScale)
+          } else {
+            scale = rawScale
+          }
           scaleUVTool(scale, geometry)
         }
       }
@@ -375,12 +396,14 @@ export async function loadOBJ(
     meshes.push(new Mesh(geometry, material))
   })
 
-  const materialList = [
-    fallbackMeshMaterial,
-    ...(materials instanceof MeshBasicMaterial ? [materials] : Object.values(materials)),
-  ]
-    .map(({ map }) => map)
-    .filter((texture) => texture !== null) as Texture[]
+  const tmp: MeshBasicMaterial[] = [fallbackMeshMaterial]
+  if (materials instanceof MeshBasicMaterial) {
+    tmp.push(materials)
+  } else {
+    tmp.push(...Object.values(materials))
+  }
+
+  const materialList = tmp.map(({ map }) => map).filter((texture) => texture !== null) as Texture[]
 
   return { meshes, materials: materialList }
 }
