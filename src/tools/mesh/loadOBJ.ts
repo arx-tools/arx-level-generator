@@ -358,37 +358,10 @@ export async function loadOBJ(
         scaleUVTool(new Vector2(scaleUV, scaleUV), geometry)
       } else if (scaleUV instanceof Vector2) {
         scaleUVTool(scaleUV, geometry)
-      } else {
-        if (Array.isArray(material)) {
-          // we have multiple materials
-          material.forEach((singleMaterial, indexOfMaterial) => {
-            const rawScale = scaleUV(singleMaterial.map as Texture)
-
-            let scale: Vector2
-            if (typeof rawScale === 'number') {
-              scale = new Vector2(rawScale, rawScale)
-            } else {
-              scale = rawScale
-            }
-
-            if (geometry.groups.length === 0) {
-              // the geometry only has 1 material
-              scaleUVTool(scale, geometry)
-            } else {
-              // the geometry has groups, we only rescale UVs for vertices which have the same
-              // materialIndex as our currently selected material
-              const uv = geometry.getAttribute('uv') as BufferAttribute
-              getVertices(geometry).forEach(({ idx, materialIndex }) => {
-                if (indexOfMaterial === materialIndex) {
-                  const u = uv.getX(idx) * scale.x
-                  const v = uv.getY(idx) * scale.y
-                  uv.setXY(idx, u, v)
-                }
-              })
-            }
-          })
-        } else {
-          const rawScale = scaleUV(material.map as Texture)
+      } else if (Array.isArray(material)) {
+        // we have multiple materials
+        material.forEach((singleMaterial, indexOfMaterial) => {
+          const rawScale = scaleUV(singleMaterial.map as Texture)
 
           let scale: Vector2
           if (typeof rawScale === 'number') {
@@ -397,8 +370,33 @@ export async function loadOBJ(
             scale = rawScale
           }
 
-          scaleUVTool(scale, geometry)
+          if (geometry.groups.length === 0) {
+            // the geometry only has 1 material
+            scaleUVTool(scale, geometry)
+          } else {
+            // the geometry has groups, we only rescale UVs for vertices which have the same
+            // materialIndex as our currently selected material
+            const uv = geometry.getAttribute('uv') as BufferAttribute
+            getVertices(geometry).forEach(({ idx, materialIndex }) => {
+              if (indexOfMaterial === materialIndex) {
+                const u = uv.getX(idx) * scale.x
+                const v = uv.getY(idx) * scale.y
+                uv.setXY(idx, u, v)
+              }
+            })
+          }
+        })
+      } else {
+        const rawScale = scaleUV(material.map as Texture)
+
+        let scale: Vector2
+        if (typeof rawScale === 'number') {
+          scale = new Vector2(rawScale, rawScale)
+        } else {
+          scale = rawScale
         }
+
+        scaleUVTool(scale, geometry)
       }
     }
 
