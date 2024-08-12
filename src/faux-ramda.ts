@@ -52,17 +52,6 @@ export function uniq<T>(values: T[]): T[] {
 }
 
 /**
- * @deprecated Use `Array.prototype.at(-1)`
- */
-export function last<T>(values: T[]): T | undefined {
-  if (values.length === 0) {
-    return undefined
-  }
-
-  return values[values.length - 1]
-}
-
-/**
  * The average of all given values by summing values then divide by the amount of values
  *
  * mean([2, 2, 3, 5, 5, 7, 8]) === 4.57
