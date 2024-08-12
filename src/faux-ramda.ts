@@ -1,53 +1,60 @@
 import { isOdd } from '@src/helpers.js'
 
-export const times = <T>(fn: (index: number) => T, repetitions: number): T[] => {
+export function times<T>(fn: (index: number) => T, repetitions: number): T[] {
   return [...Array(repetitions)].map((value, index) => fn(index))
 }
 
-export const repeat = <T>(value: T, repetitions: number): T[] => {
+export function repeat<T>(value: T, repetitions: number): T[] {
   return Array(repetitions).fill(value)
 }
 
-export const min = (arr: number[]) => {
+export function min(arr: number[]): number {
   let len = arr.length
   let min = Infinity
 
   while (len--) {
-    min = arr[len] < min ? arr[len] : min
+    if (arr[len] < min) {
+      min = arr[len]
+    }
   }
 
   return min
 }
 
-export const max = (arr: number[]) => {
+export function max(arr: number[]): number {
   let len = arr.length
   let max = -Infinity
 
   while (len--) {
-    max = arr[len] > max ? arr[len] : max
+    if (arr[len] > max) {
+      max = arr[len]
+    }
   }
 
   return max
 }
 
-export const sum = (numbers: number[]) => {
+export function sum(numbers: number[]): number {
   return numbers.reduce((total, n) => total + n, 0)
 }
 
-export const clone = <T>(data: T): T => {
+export function clone<T>(data: T): T {
   return JSON.parse(JSON.stringify(data))
 }
 
 /**
  * @see https://stackoverflow.com/a/14438954/1806628
  */
-export const uniq = <T>(values: T[]) => {
+export function uniq<T>(values: T[]): T[] {
   return values.filter((value, index, self) => {
     return self.indexOf(value) === index
   })
 }
 
-export const last = <T>(values: T[]) => {
+/**
+ * @deprecated Use `Array.prototype.at(-1)`
+ */
+export function last<T>(values: T[]): T | undefined {
   if (values.length === 0) {
     return undefined
   }
@@ -61,7 +68,7 @@ export const last = <T>(values: T[]) => {
  * mean([2, 2, 3, 5, 5, 7, 8]) === 4.57
  * because (2 + 2 + 3 + 5 + 5 + 7 + 8) / 7 === 4.57
  */
-export const mean = (values: number[]) => {
+export function mean(values: number[]): number {
   if (values.length === 0) {
     return 0
   }
@@ -79,7 +86,7 @@ export const mean = (values: number[]) => {
  *
  * median([2, 2, 3, 5, 5, 7, 8]) === 5
  */
-export const median = (values: number[]) => {
+export function median(values: number[]): number {
   if (values.length === 0) {
     return 0
   }
@@ -100,20 +107,23 @@ export const median = (values: number[]) => {
   return mean([a, b])
 }
 
-export const complement = (fn: (...args: any[]) => boolean) => {
+export function complement(fn: (...args: any[]) => boolean): (...args: any[]) => boolean {
   return (...args: any[]) => !fn(...args)
 }
 
-export const partition = <T>(fn: (arg: T) => boolean, values: T[]): [T[], T[]] => {
+export function partition<T>(fn: (arg: T) => boolean, values: T[]): [T[], T[]] {
   return [values.filter(fn), values.filter(complement(fn))]
 }
 
-export const countBy = <T>(fn: (value: T) => string, values: T[]) => {
-  return values.reduce((acc, value) => {
+export function countBy<T>(fn: (value: T) => string, values: T[]): Record<string, number> {
+  const acc: Record<string, number> = {}
+
+  values.forEach((value) => {
     const key = fn(value)
     acc[key] = (acc[key] ?? 0) + 1
-    return acc
-  }, {} as Record<string, number>)
+  })
+
+  return acc
 }
 
 /**
@@ -132,22 +142,24 @@ export const countBy = <T>(fn: (value: T) => string, values: T[]) => {
  * The first number in each pair holds the smallest number of the sequence
  * The second number is the size of the sequence
  */
-export const groupSequences = (numbers: number[]) => {
-  return numbers.reduce((acc, n) => {
+export function groupSequences(numbers: number[]): [number, number][] {
+  const acc: [number, number][] = []
+
+  numbers.forEach((n) => {
     if (acc.length === 0) {
       acc.push([n, 1])
-      return acc
+      return
     }
 
     const lastGroup = acc[acc.length - 1]
     const [start, size] = lastGroup
     if (start - 1 === n || start + size === n) {
       lastGroup[0] = Math.min(n, start)
-      lastGroup[1] += 1
+      lastGroup[1] = lastGroup[1] + 1
     } else {
       acc.push([n, 1])
     }
+  })
 
-    return acc
-  }, [] as [number, number][])
+  return acc
 }

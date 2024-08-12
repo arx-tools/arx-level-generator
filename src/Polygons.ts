@@ -389,10 +389,10 @@ export class Polygons extends Array<Polygon> {
           return
         }
 
-        const normals = polygons.reduce((normals, [vertexIndex, polygon]) => {
+        const normals: Vector3[] = []
+        polygons.forEach(([vertexIndex, polygon]) => {
           normals.push((polygon.normals as QuadrupleOf<Vector3>)[vertexIndex])
-          return normals
-        }, [] as Vector3[])
+        })
 
         const normal = averageVectors(normals)
 
