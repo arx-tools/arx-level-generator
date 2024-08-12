@@ -1,5 +1,5 @@
-import { ArxPortal, ArxTextureVertex } from 'arx-convert/types'
-import { QuadrupleOf } from 'arx-convert/utils'
+import { type ArxPortal, type ArxTextureVertex } from 'arx-convert/types'
+import { type QuadrupleOf } from 'arx-convert/utils'
 import { Vector3 } from '@src/Vector3.js'
 
 type TextureVertex = {
@@ -21,6 +21,26 @@ type PortalConstructorProps = {
 }
 
 export class Portal {
+  static fromArxPortal(portal: ArxPortal): Portal {
+    return new Portal({
+      min: Vector3.fromArxVector3(portal.polygon.min),
+      max: Vector3.fromArxVector3(portal.polygon.max),
+      norm: Vector3.fromArxVector3(portal.polygon.norm),
+      norm2: Vector3.fromArxVector3(portal.polygon.norm2),
+      vertices: portal.polygon.vertices.map((vertex): TextureVertex => {
+        return {
+          position: Vector3.fromArxVector3(vertex.pos),
+          rhw: vertex.rhw,
+        }
+      }) as QuadrupleOf<TextureVertex>,
+      center: Vector3.fromArxVector3(portal.polygon.center),
+      room1: portal.room1,
+      room2: portal.room2,
+      useportal: portal.useportal,
+      paddy: portal.paddy,
+    })
+  }
+
   min: Vector3
   max: Vector3
   norm: Vector3
@@ -43,26 +63,6 @@ export class Portal {
     this.room2 = props.room2
     this.useportal = props.useportal
     this.paddy = props.paddy
-  }
-
-  static fromArxPortal(portal: ArxPortal) {
-    return new Portal({
-      min: Vector3.fromArxVector3(portal.polygon.min),
-      max: Vector3.fromArxVector3(portal.polygon.max),
-      norm: Vector3.fromArxVector3(portal.polygon.norm),
-      norm2: Vector3.fromArxVector3(portal.polygon.norm2),
-      vertices: portal.polygon.vertices.map((vertex): TextureVertex => {
-        return {
-          position: Vector3.fromArxVector3(vertex.pos),
-          rhw: vertex.rhw,
-        }
-      }) as QuadrupleOf<TextureVertex>,
-      center: Vector3.fromArxVector3(portal.polygon.center),
-      room1: portal.room1,
-      room2: portal.room2,
-      useportal: portal.useportal,
-      paddy: portal.paddy,
-    })
   }
 
   toArxPortal(): ArxPortal {

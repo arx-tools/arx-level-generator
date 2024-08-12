@@ -180,13 +180,13 @@ export class PolygonSelection extends Selection<Polygons> {
     return this.selectBy((polygon) => polygon.texture?.equalsAny(textures) ?? false)
   }
 
-  makeDoubleSided() {
+  makeDoubleSided(): this {
     return this.apply((polygon) => {
       polygon.makeDoubleSided()
     })
   }
 
-  moveToRoom1() {
+  moveToRoom1(): this {
     return this.apply((polygon) => {
       if (polygon.room < 1) {
         return
@@ -210,13 +210,13 @@ export class PolygonSelection extends Selection<Polygons> {
     })
   }
 
-  flipUVHorizontally() {
+  flipUVHorizontally(): this {
     return this.apply((polygon) => {
       polygon.flipUVHorizontally()
     })
   }
 
-  flipUVVertically() {
+  flipUVVertically(): this {
     return this.apply((polygon) => {
       polygon.flipUVVertically()
     })
@@ -224,35 +224,35 @@ export class PolygonSelection extends Selection<Polygons> {
 }
 
 export class LightsSelection extends Selection<Lights> {
-  copy() {
+  copy(): this {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
     return new LightsSelection(new Lights(...copiedItems)) as this
   }
 }
 
 export class EntitiesSelection extends Selection<Entities> {
-  copy() {
+  copy(): this {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
     return new EntitiesSelection(new Entities(...copiedItems)) as this
   }
 }
 
 export class FogsSelection extends Selection<Fogs> {
-  copy() {
+  copy(): this {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
     return new FogsSelection(new Fogs(...copiedItems)) as this
   }
 }
 
 export class PathsSelection extends Selection<Paths> {
-  copy() {
+  copy(): this {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
     return new PathsSelection(new Paths(...copiedItems)) as this
   }
 }
 
 export class ZonesSelection extends Selection<Zones> {
-  copy() {
+  copy(): this {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
     return new ZonesSelection(new Zones(...copiedItems)) as this
   }

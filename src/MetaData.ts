@@ -1,4 +1,4 @@
-import { Settings } from '@src/Settings.js'
+import { type Settings } from '@src/Settings.js'
 import { getGeneratorPackageJSON, getProjectPackageJSON } from '@src/helpers.js'
 
 export type MetaData = {
@@ -15,7 +15,7 @@ export type MetaData = {
   url: string
 }
 
-export const generateMetadata = async (settings: Settings): Promise<MetaData> => {
+export async function generateMetadata(settings: Settings): Promise<MetaData> {
   const generator = await getGeneratorPackageJSON()
   const project = await getProjectPackageJSON()
 

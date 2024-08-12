@@ -25,9 +25,9 @@ class Timer {
   toString(): string {
     if (this.isCancelled) {
       return `TIMER${this.name} off`
-    } else {
-      return `TIMER${this.name} -m ${this.repetitions === Infinity ? 0 : this.repetitions} ${this.delayOffsetInMs}`
     }
+
+    return `TIMER${this.name} -m ${this.repetitions === Infinity ? 0 : this.repetitions} ${this.delayOffsetInMs}`
   }
 
   off(): void {

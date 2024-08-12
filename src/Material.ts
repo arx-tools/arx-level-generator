@@ -1,6 +1,6 @@
 import { ArxPolygonFlags } from 'arx-convert/types'
-import { TransparencyType } from '@src/Polygon.js'
-import { Texture, TextureConstructorProps } from '@src/Texture.js'
+import { type TransparencyType } from '@src/Polygon.js'
+import { Texture, type TextureConstructorProps } from '@src/Texture.js'
 
 type MaterialExtraProps = {
   flags?: ArxPolygonFlags
@@ -19,6 +19,18 @@ type MaterialExtraProps = {
 type MaterialConstructorProps = TextureConstructorProps & MaterialExtraProps
 
 export class Material extends Texture {
+  static fromTexture(texture: Texture, props: MaterialExtraProps = {}): Material {
+    return new Material({
+      filename: texture.filename,
+      isNative: texture.isNative,
+      width: texture._width,
+      height: texture._height,
+      sourcePath: texture.sourcePath,
+      isInternalAsset: texture.isInternalAsset,
+      ...props,
+    })
+  }
+
   flags: ArxPolygonFlags
   opacity: number
   opacityMode: TransparencyType
@@ -35,7 +47,7 @@ export class Material extends Texture {
     this.opacityMode = opacityMode
   }
 
-  clone() {
+  clone(): this {
     const copy = super.clone()
 
     copy.flags = this.flags
@@ -43,17 +55,5 @@ export class Material extends Texture {
     copy.opacityMode = this.opacityMode
 
     return copy
-  }
-
-  static fromTexture(texture: Texture, props: MaterialExtraProps = {}) {
-    return new Material({
-      filename: texture.filename,
-      isNative: texture.isNative,
-      width: texture._width,
-      height: texture._height,
-      sourcePath: texture.sourcePath,
-      isInternalAsset: texture.isInternalAsset,
-      ...props,
-    })
   }
 }

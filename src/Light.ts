@@ -1,4 +1,4 @@
-import { ArxLight, ArxLightFlags } from 'arx-convert/types'
+import { type ArxLight, ArxLightFlags } from 'arx-convert/types'
 import { Color } from '@src/Color.js'
 import { Vector3 } from '@src/Vector3.js'
 import { clone } from '@src/faux-ramda.js'
@@ -17,6 +17,18 @@ type LightConstructorProps = {
 }
 
 export class Light {
+  static fromArxLight({ pos, color, flags, fallStart, fallEnd, intensity, ...lightData }: ArxLight): Light {
+    return new Light({
+      position: Vector3.fromArxVector3(pos),
+      color: Color.fromArxColor(color),
+      flags,
+      fallStart,
+      fallEnd,
+      intensity,
+      lightData,
+    })
+  }
+
   position: Vector3
   color: Color
   flags: ArxLightFlags
@@ -35,7 +47,7 @@ export class Light {
     this.lightData = props.lightData
   }
 
-  clone() {
+  clone(): Light {
     return new Light({
       position: this.position.clone(),
       color: this.color.clone(),
@@ -44,18 +56,6 @@ export class Light {
       fallEnd: this.fallEnd,
       intensity: this.intensity,
       lightData: clone(this.lightData),
-    })
-  }
-
-  static fromArxLight({ pos, color, flags, fallStart, fallEnd, intensity, ...lightData }: ArxLight) {
-    return new Light({
-      position: Vector3.fromArxVector3(pos),
-      color: Color.fromArxColor(color),
-      flags,
-      fallStart,
-      fallEnd,
-      intensity,
-      lightData,
     })
   }
 

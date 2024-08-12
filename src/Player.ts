@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
-import { Settings } from '@src/Settings.js'
+import { type Settings } from '@src/Settings.js'
 import { Vector3 } from '@src/Vector3.js'
 import { LoadAnim } from '@scripting/commands/LoadAnim.js'
 
@@ -16,10 +16,10 @@ export class Player {
   }
 
   hasScript(): this is { script: Script } {
-    return typeof this.script !== 'undefined'
+    return this.script !== undefined
   }
 
-  withScript() {
+  withScript(): this {
     if (this.hasScript()) {
       return this
     }
@@ -157,7 +157,7 @@ export class Player {
     return this
   }
 
-  exportTarget(settings: Settings) {
+  exportTarget(settings: Settings): string {
     if (!this.hasScript()) {
       throw new Error("trying to export a Player which doesn't have a script")
     }

@@ -44,9 +44,9 @@ export class Sound {
   private getFilename(): string {
     if (typeof this.filename === 'string') {
       return '"' + this.filename + '"'
-    } else {
-      return this.filename.name
     }
+
+    return this.filename.name
   }
 
   /**
@@ -60,21 +60,25 @@ export class Sound {
     let letters = ''
 
     if (this.flags & SoundFlags.EmitFromPlayer) {
-      letters += 'o'
+      letters = letters + 'o'
     }
 
     if (this.flags & SoundFlags.Loop) {
-      letters += 'l'
+      letters = letters + 'l'
     }
 
     if (this.flags & SoundFlags.Unique) {
-      letters += 'i'
+      letters = letters + 'i'
     }
 
     if (this.flags & SoundFlags.VaryPitch) {
-      letters += 'p'
+      letters = letters + 'p'
     }
 
-    return (letters === '' ? '' : '-') + letters
+    if (letters === '') {
+      return ''
+    }
+
+    return '-' + letters
   }
 }

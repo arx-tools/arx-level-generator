@@ -389,7 +389,7 @@ export class Entity {
     return files
   }
 
-  async exportOtherDependencies(settings: Settings) {
+  async exportOtherDependencies(settings: Settings): Promise<Record<string, string>> {
     const files: Record<string, string> = {}
 
     for (const stuff of this.otherDependencies) {

@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { Settings } from '@src/Settings.js'
+import { type Settings } from '@src/Settings.js'
 
 export enum HudElements {
   Minimap = 'minimap',
@@ -26,7 +26,7 @@ export class HUD {
     [HudElements.PurseIcon]: true,
   }
 
-  hide(hudElement: HudElements | 'all') {
+  hide(hudElement: HudElements | 'all'): void {
     if (hudElement === 'all') {
       for (const key in this.elementVisibility) {
         this.elementVisibility[key as HudElements] = false
@@ -36,7 +36,7 @@ export class HUD {
     }
   }
 
-  show(hudElement: HudElements | 'all') {
+  show(hudElement: HudElements | 'all'): void {
     if (hudElement === 'all') {
       for (const key in this.elementVisibility) {
         this.elementVisibility[key as HudElements] = true
@@ -46,7 +46,7 @@ export class HUD {
     }
   }
 
-  exportSourcesAndTargets(settings: Settings) {
+  exportSourcesAndTargets(settings: Settings): Record<string, string> {
     const files: Record<string, string> = {}
 
     if (this.elementVisibility[HudElements.Minimap] === false) {

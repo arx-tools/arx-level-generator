@@ -1,4 +1,4 @@
-import { ArxPath, ArxZoneAndPathPointType, ArxZoneAndPathPoint } from 'arx-convert/types'
+import { type ArxPath, type ArxZoneAndPathPointType, type ArxZoneAndPathPoint } from 'arx-convert/types'
 import { Vector3 } from '@src/Vector3.js'
 
 export type PathPoint = {
@@ -13,6 +13,19 @@ type PathConstructorProps = {
 }
 
 export class Path {
+  static fromArxPath(path: ArxPath): Path {
+    return new Path({
+      name: path.name,
+      points: path.points.map((point): PathPoint => {
+        return {
+          position: Vector3.fromArxVector3(point.pos),
+          type: point.type,
+          time: point.time,
+        }
+      }),
+    })
+  }
+
   name: string
   points: PathPoint[]
 
@@ -21,25 +34,12 @@ export class Path {
     this.points = props.points
   }
 
-  clone() {
+  clone(): Path {
     return new Path({
       name: this.name,
       points: this.points.map((point) => {
         return {
           position: point.position.clone(),
-          type: point.type,
-          time: point.time,
-        }
-      }),
-    })
-  }
-
-  static fromArxPath(path: ArxPath) {
-    return new Path({
-      name: path.name,
-      points: path.points.map((point): PathPoint => {
-        return {
-          position: Vector3.fromArxVector3(point.pos),
           type: point.type,
           time: point.time,
         }
@@ -60,7 +60,7 @@ export class Path {
     }
   }
 
-  move(offset: Vector3) {
+  move(offset: Vector3): void {
     this.points.forEach((point) => {
       point.position.add(offset)
     })

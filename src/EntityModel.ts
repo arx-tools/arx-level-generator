@@ -135,7 +135,13 @@ export class EntityModel {
         const cachedJsonExists = await fileExists(cachedJsonTarget)
 
         if (binaryChanged || !cachedJsonExists) {
-          const stringifiedFtl = prettify ? JSON.stringify(ftlData, null, 2) : JSON.stringify(ftlData)
+          let stringifiedFtl: string
+          if (prettify) {
+            stringifiedFtl = JSON.stringify(ftlData, null, 2)
+          } else {
+            stringifiedFtl = JSON.stringify(ftlData)
+          }
+
           await fs.writeFile(cachedJsonTarget, stringifiedFtl)
         }
 
@@ -304,14 +310,14 @@ export class EntityModel {
           if (material instanceof MeshBasicMaterial) {
             if (material.map instanceof Texture) {
               return material.map
-            } else {
-              console.warn('[warning] EntityModel: Unsupported texture map in material when adding threejs mesh')
-              return undefined
             }
-          } else {
-            console.warn('[warning] EntityModel: Unsupported material found when adding threejs mesh')
+
+            console.warn('[warning] EntityModel: Unsupported texture map in material when adding threejs mesh')
             return undefined
           }
+
+          console.warn('[warning] EntityModel: Unsupported material found when adding threejs mesh')
+          return undefined
         })
       } else if (material !== undefined) {
         console.warn('[warning] EntityModel: Unsupported material found when adding threejs mesh')

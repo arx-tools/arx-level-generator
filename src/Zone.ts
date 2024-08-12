@@ -24,20 +24,45 @@ export type ZoneConstructorProps = {
 }
 
 export class Zone {
+  static fromArxZone(zone: ArxZone): Zone {
+    return new Zone({
+      name: zone.name,
+      height: zone.height === -1 ? Infinity : zone.height,
+      backgroundColor: zone.backgroundColor !== undefined ? Color.fromArxColor(zone.backgroundColor) : undefined,
+      drawDistance: zone.drawDistance,
+      ambience:
+        zone.ambience !== undefined && zone.ambienceMaxVolume !== undefined
+          ? new Ambience({ name: zone.ambience, volume: zone.ambienceMaxVolume })
+          : undefined,
+      points: zone.points.map((point): ZonePoint => {
+        return {
+          position: Vector3.fromArxVector3(point.pos),
+          type: point.type,
+          time: point.time,
+        }
+      }),
+    })
+  }
+
+  static fromThreejsGeometry(obj: BufferGeometry, props: Omit<ZoneConstructorProps, 'points'>): Zone {
+    return new Zone({
+      ...props,
+      points: Vectors.fromThreejsGeometry(obj)
+        .uniq()
+        .map((position) => ({
+          position,
+          type: ArxZoneAndPathPointType.Standard,
+          time: 0,
+        })),
+    })
+  }
+
   name: string
   height: number
   points: ZonePoint[]
   backgroundColor?: Color
   drawDistance?: number
   ambience?: Ambience
-
-  hasBackgroundColor(): this is { backgroundColor: Color } {
-    return typeof this.backgroundColor !== 'undefined'
-  }
-
-  hasAmbience(): this is { ambience: Ambience } {
-    return typeof this.ambience !== 'undefined'
-  }
 
   constructor(props: ZoneConstructorProps) {
     this.name = props.name
@@ -48,7 +73,15 @@ export class Zone {
     this.points = props.points
   }
 
-  clone() {
+  hasBackgroundColor(): this is { backgroundColor: Color } {
+    return this.backgroundColor !== undefined
+  }
+
+  hasAmbience(): this is { ambience: Ambience } {
+    return this.ambience !== undefined
+  }
+
+  clone(): Zone {
     return new Zone({
       name: this.name,
       height: this.height,
@@ -62,40 +95,6 @@ export class Zone {
           time: point.time,
         }
       }),
-    })
-  }
-
-  static fromArxZone(zone: ArxZone) {
-    return new Zone({
-      name: zone.name,
-      height: zone.height === -1 ? Infinity : zone.height,
-      backgroundColor:
-        typeof zone.backgroundColor !== 'undefined' ? Color.fromArxColor(zone.backgroundColor) : undefined,
-      drawDistance: zone.drawDistance,
-      ambience:
-        typeof zone.ambience !== 'undefined' && typeof zone.ambienceMaxVolume !== 'undefined'
-          ? new Ambience({ name: zone.ambience, volume: zone.ambienceMaxVolume })
-          : undefined,
-      points: zone.points.map((point): ZonePoint => {
-        return {
-          position: Vector3.fromArxVector3(point.pos),
-          type: point.type,
-          time: point.time,
-        }
-      }),
-    })
-  }
-
-  static fromThreejsGeometry(obj: BufferGeometry, props: Omit<ZoneConstructorProps, 'points'>) {
-    return new Zone({
-      ...props,
-      points: Vectors.fromThreejsGeometry(obj)
-        .uniq()
-        .map((position) => ({
-          position,
-          type: ArxZoneAndPathPointType.Standard,
-          time: 0,
-        })),
     })
   }
 
@@ -117,7 +116,7 @@ export class Zone {
     }
   }
 
-  move(offset: Vector3) {
+  move(offset: Vector3): void {
     this.points.forEach((point) => {
       point.position.add(offset)
     })

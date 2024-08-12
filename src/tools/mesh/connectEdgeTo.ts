@@ -23,13 +23,12 @@ export function connectEdgeTo(source: BufferGeometry, target: BufferGeometry): v
     if (edgeIdx !== -1) {
       const [edgePoint] = sourceEdgeVertices.splice(edgeIdx, 1)
 
-      const closestTargetVertex = targetEdgeVertices.slice(1).reduce((closestSoFar, candidate) => {
-        if (candidate.distanceTo(edgePoint) < closestSoFar.distanceTo(edgePoint)) {
-          return candidate
+      let [closestTargetVertex, ...candidates] = targetEdgeVertices
+      candidates.forEach((candidate) => {
+        if (candidate.distanceTo(edgePoint) < closestTargetVertex.distanceTo(edgePoint)) {
+          closestTargetVertex = candidate
         }
-
-        return closestSoFar
-      }, targetEdgeVertices[0])
+      })
 
       sourceCoords.setX(vertex.idx, closestTargetVertex.x)
       sourceCoords.setY(vertex.idx, closestTargetVertex.y)

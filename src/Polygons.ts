@@ -187,7 +187,7 @@ export class Polygons extends Array<Polygon> {
   addThreeJsMesh(threeJsObj: Object3D): void
   addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps): void
   addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps, isRoot: false): Polygons
-  addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps = {}, isRoot: boolean = true) {
+  addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps = {}, isRoot: boolean = true): Polygons | void {
     if (isRoot) {
       applyTransformations(threeJsObj)
     }
@@ -243,7 +243,7 @@ export class Polygons extends Array<Polygon> {
         let previousPolygon: TripleOf<VertexWithMaterialIndex> | undefined = undefined
         let currentPolygon: TripleOf<VertexWithMaterialIndex>
 
-        for (let i = 0; i < vertices.length; i += 3) {
+        for (let i = 0; i < vertices.length; i = i + 3) {
           if (previousPolygon === undefined) {
             previousPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<VertexWithMaterialIndex>
             continue
@@ -319,10 +319,11 @@ export class Polygons extends Array<Polygon> {
           if (currentTexture instanceof Material && currentTexture.opacity !== 100) {
             polygon.setOpacity(currentTexture.opacity, currentTexture.opacityMode)
           }
+
           polygons.push(polygon)
         }
       } else {
-        for (let i = 0; i < vertices.length; i += 3) {
+        for (let i = 0; i < vertices.length; i = i + 3) {
           const currentPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<VertexWithMaterialIndex>
           const materialIndex = currentPolygon[0].materialIndex
           const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
@@ -342,6 +343,7 @@ export class Polygons extends Array<Polygon> {
           if (currentTexture instanceof Material && currentTexture.opacity !== 100) {
             polygon.setOpacity(currentTexture.opacity, currentTexture.opacityMode)
           }
+
           polygons.push(polygon)
         }
       }

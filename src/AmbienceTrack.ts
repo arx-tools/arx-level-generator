@@ -1,7 +1,7 @@
 import path from 'node:path'
-import { ArxKey, ArxSettingFlag, ArxTrack, ArxTrackFlags } from 'arx-convert/types'
-import { Audio } from '@src/Audio.js'
-import { Settings } from '@src/Settings.js'
+import { type ArxKey, ArxSettingFlag, type ArxTrack, ArxTrackFlags } from 'arx-convert/types'
+import { type Audio } from '@src/Audio.js'
+import { type Settings } from '@src/Settings.js'
 
 type AmbienceTrackConstructorProps = {
   filename: string
@@ -11,6 +11,19 @@ type AmbienceTrackConstructorProps = {
 
 export class AmbienceTrack {
   static targetPath = 'sfx/ambiance'
+
+  static fromAudio(audio: Audio): AmbienceTrack {
+    if (audio.isNative) {
+      throw new Error(`AmbienceTrack: using a native Audio "${audio.filename}" is not supported (yet?)`)
+    }
+
+    return new AmbienceTrack({
+      filename: audio.filename,
+      sourcePath: audio.sourcePath,
+      flags: ArxTrackFlags.Master,
+    })
+  }
+
   filename: string
   sourcePath?: string
   flags: ArxTrackFlags
@@ -36,18 +49,6 @@ export class AmbienceTrack {
         z: { min: 0, max: 0, interval: 0, flags: ArxSettingFlag.None },
       },
     ]
-  }
-
-  static fromAudio(audio: Audio) {
-    if (audio.isNative) {
-      throw new Error(`AmbienceTrack: using a native Audio "${audio.filename}" is not supported (yet?)`)
-    }
-
-    return new AmbienceTrack({
-      filename: audio.filename,
-      sourcePath: audio.sourcePath,
-      flags: ArxTrackFlags.Master,
-    })
   }
 
   exportSourceAndTarget(settings: Settings): [string, string] {

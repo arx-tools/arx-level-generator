@@ -231,7 +231,7 @@ export class Ambience {
     })
   }
 
-  exportSourcesAndTargets(settings: Settings) {
+  exportSourcesAndTargets(settings: Settings): [string, string][] {
     if (this.isNative) {
       throw new Error('trying to export a native Ambience')
     }

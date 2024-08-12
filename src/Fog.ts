@@ -1,4 +1,4 @@
-import { ArxFog } from 'arx-convert/types'
+import { type ArxFog } from 'arx-convert/types'
 import { Color } from '@src/Color.js'
 import { Rotation } from '@src/Rotation.js'
 import { Vector3 } from '@src/Vector3.js'
@@ -21,6 +21,22 @@ type FogConstructorProps = {
 }
 
 export class Fog {
+  static fromArxFog(fog: ArxFog): Fog {
+    return new Fog({
+      position: Vector3.fromArxVector3(fog.pos),
+      orientation: Rotation.fromArxRotation(fog.angle),
+      color: Color.fromArxColor(fog.color),
+      size: fog.size,
+      special: fog.special,
+      scale: fog.scale,
+      movement: Vector3.fromArxVector3(fog.move),
+      speed: fog.speed,
+      rotateSpeed: fog.rotateSpeed,
+      toLive: fog.toLive,
+      frequency: fog.frequency,
+    })
+  }
+
   position: Vector3
   orientation: Rotation
   color: Color
@@ -47,7 +63,7 @@ export class Fog {
     this.frequency = props.frequency
   }
 
-  clone() {
+  clone(): Fog {
     return new Fog({
       position: this.position.clone(),
       orientation: this.orientation.clone(),
@@ -60,22 +76,6 @@ export class Fog {
       rotateSpeed: this.rotateSpeed,
       toLive: this.toLive,
       frequency: this.frequency,
-    })
-  }
-
-  static fromArxFog(fog: ArxFog) {
-    return new Fog({
-      position: Vector3.fromArxVector3(fog.pos),
-      orientation: Rotation.fromArxRotation(fog.angle),
-      color: Color.fromArxColor(fog.color),
-      size: fog.size,
-      special: fog.special,
-      scale: fog.scale,
-      movement: Vector3.fromArxVector3(fog.move),
-      speed: fog.speed,
-      rotateSpeed: fog.rotateSpeed,
-      toLive: fog.toLive,
-      frequency: fog.frequency,
     })
   }
 
@@ -95,7 +95,7 @@ export class Fog {
     }
   }
 
-  move(offset: Vector3) {
+  move(offset: Vector3): void {
     this.position.add(offset)
   }
 }
