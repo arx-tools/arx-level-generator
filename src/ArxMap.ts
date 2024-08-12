@@ -2,19 +2,19 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { AMB } from 'arx-convert'
 import {
-  ArxAMB,
-  ArxAnchor,
-  ArxCell,
-  ArxDLF,
-  ArxFTS,
-  ArxLLF,
-  ArxRoom,
-  ArxRoomDistance,
-  ArxUniqueHeader,
-  ArxVertex,
+  type ArxAMB,
+  type ArxAnchor,
+  type ArxCell,
+  type ArxDLF,
+  type ArxFTS,
+  type ArxLLF,
+  type ArxRoom,
+  type ArxRoomDistance,
+  type ArxUniqueHeader,
+  type ArxVertex,
 } from 'arx-convert/types'
-import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf } from 'arx-convert/utils'
-import { Object3D } from 'three'
+import { getCellCoords, MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, type QuadrupleOf } from 'arx-convert/utils'
+import { type Object3D } from 'three'
 import { Audio } from '@src/Audio.js'
 import { Entities } from '@src/Entities.js'
 import { Entity } from '@src/Entity.js'

@@ -1,12 +1,19 @@
-import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVector3, ArxVertex } from 'arx-convert/types'
-import { MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, QuadrupleOf, isQuad } from 'arx-convert/utils'
+import {
+  type ArxColor,
+  type ArxPolygon,
+  ArxPolygonFlags,
+  type ArxTextureContainer,
+  type ArxVector3,
+  type ArxVertex,
+} from 'arx-convert/types'
+import { MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, type QuadrupleOf, isQuad } from 'arx-convert/utils'
 import { Box3, Triangle } from 'three'
-import { Color } from '@src/Color.js'
+import { type Color } from '@src/Color.js'
 import { NO_TEXTURE_CONTAINER, Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
 import { isBetween, percentOf } from '@src/helpers.js'
-import { ArxVertexWithColor } from '@src/types.js'
+import { type ArxVertexWithColor } from '@src/types.js'
 
 export type TransparencyType = 'multiplicative' | 'additive' | 'blended' | 'subtractive'
 
@@ -36,6 +43,49 @@ type PolygonContructorProps = {
 }
 
 export class Polygon {
+  static fromArxPolygon(
+    polygon: ArxPolygon,
+    colors: ArxColor[],
+    textures: ArxTextureContainer[],
+    areNormalsCalculated: boolean,
+  ): Polygon {
+    const extendedVertices = polygon.vertices.map(({ llfColorIdx, ...vertex }) => {
+      const extendedVertex: ArxVertexWithColor = vertex
+      if (typeof llfColorIdx === 'number') {
+        extendedVertex.color = colors[llfColorIdx]
+      }
+
+      return Vertex.fromArxVertex(extendedVertex)
+    })
+
+    let texture: Texture | undefined
+    const textureContainer = textures.find(({ id }) => id === polygon.textureContainerId)
+    if (textureContainer) {
+      texture = Texture.fromArxTextureContainer(textureContainer)
+    }
+
+    let normals: QuadrupleOf<Vector3> | undefined
+    if (polygon.normals) {
+      normals = polygon.normals.map(Vector3.fromArxVector3) as QuadrupleOf<Vector3>
+    }
+
+    return new Polygon({
+      vertices: extendedVertices as QuadrupleOf<Vertex>,
+      norm: Vector3.fromArxVector3(polygon.norm),
+      norm2: Vector3.fromArxVector3(polygon.norm2),
+      texture,
+      flags: polygon.flags,
+      normals,
+      transval: polygon.transval,
+      area: polygon.area,
+      room: polygon.room,
+      paddy: polygon.paddy,
+      config: {
+        areNormalsCalculated,
+      },
+    })
+  }
+
   vertices: QuadrupleOf<Vertex>
   /** face normal for the 1st half of the polygon enclosed by vertices a, b and c */
   norm: Vector3
@@ -63,6 +113,7 @@ export class Polygon {
     if (props.isQuad === true) {
       this.flags = this.flags | ArxPolygonFlags.Quad
     }
+
     this.normals = props.normals
     this.transval = props.transval ?? 0
     this.area = props.area ?? 0
@@ -71,7 +122,7 @@ export class Polygon {
     this.config = { ...this.config, ...(props.config ?? {}) }
   }
 
-  clone() {
+  clone(): Polygon {
     return new Polygon({
       vertices: this.vertices.map((v) => v.clone()) as QuadrupleOf<Vertex>,
       norm: this.norm.clone(),
@@ -89,50 +140,8 @@ export class Polygon {
     })
   }
 
-  static fromArxPolygon(
-    polygon: ArxPolygon,
-    colors: ArxColor[],
-    textures: ArxTextureContainer[],
-    areNormalsCalculated: boolean,
-  ) {
-    const extendedVertices = polygon.vertices.map(({ llfColorIdx, ...vertex }) => {
-      const extendedVertex: ArxVertexWithColor = vertex
-      if (typeof llfColorIdx === 'number') {
-        extendedVertex.color = colors[llfColorIdx]
-      }
-      return Vertex.fromArxVertex(extendedVertex)
-    })
-
-    let texture: Texture | undefined = undefined
-    const textureContainer = textures.find(({ id }) => id === polygon.textureContainerId)
-    if (textureContainer) {
-      texture = Texture.fromArxTextureContainer(textureContainer)
-    }
-
-    let normals: QuadrupleOf<Vector3> | undefined = undefined
-    if (polygon.normals) {
-      normals = polygon.normals.map(Vector3.fromArxVector3) as QuadrupleOf<Vector3>
-    }
-
-    return new Polygon({
-      vertices: extendedVertices as QuadrupleOf<Vertex>,
-      norm: Vector3.fromArxVector3(polygon.norm),
-      norm2: Vector3.fromArxVector3(polygon.norm2),
-      texture,
-      flags: polygon.flags,
-      normals,
-      transval: polygon.transval,
-      area: polygon.area,
-      room: polygon.room,
-      paddy: polygon.paddy,
-      config: {
-        areNormalsCalculated,
-      },
-    })
-  }
-
   hasTexture(): this is { texture: Texture } {
-    return typeof this.texture !== 'undefined'
+    return this.texture !== undefined
   }
 
   async toArxPolygon(textureContainers: (ArxTextureContainer & { remaining: number })[]): Promise<ArxPolygon> {
@@ -145,13 +154,13 @@ export class Polygon {
       const textureContainer = textureContainers.find(({ filename, remaining }) => {
         return remaining - nindices >= 0 && filename === textureFilename
       })
-      if (typeof textureContainer !== 'undefined') {
-        textureContainer.remaining -= nindices
+      if (textureContainer !== undefined) {
+        textureContainer.remaining = textureContainer.remaining - nindices
         textureContainerId = textureContainer.id
       }
     }
 
-    let normals: QuadrupleOf<ArxVector3> | undefined = undefined
+    let normals: QuadrupleOf<ArxVector3> | undefined
     if (this.normals) {
       normals = this.normals.map((normal) => normal.toArxVector3()) as QuadrupleOf<Vector3>
     }
@@ -170,15 +179,15 @@ export class Polygon {
     }
   }
 
-  isQuad() {
+  isQuad(): boolean {
     return isQuad(this)
   }
 
-  isTransparent() {
+  isTransparent(): boolean {
     return (this.flags & ArxPolygonFlags.Transparent) !== 0
   }
 
-  calculateNormals() {
+  calculateNormals(): void {
     if (this.config.areNormalsCalculated === true) {
       return
     }
@@ -197,8 +206,12 @@ export class Polygon {
   /**
    * @see https://github.com/arx/ArxLibertatis/blob/1.2.1/src/graphics/data/Mesh.cpp#L1100
    */
-  getNindices() {
-    return this.isQuad() ? 6 : 3
+  getNindices(): number {
+    if (this.isQuad()) {
+      return 6
+    }
+
+    return 3
   }
 
   /**
@@ -224,29 +237,36 @@ export class Polygon {
     return 'subtractive'
   }
 
-  setOpacity(percent: number, transparencyType: TransparencyType = 'additive') {
+  setOpacity(percent: number, transparencyType: TransparencyType = 'additive'): void {
     if (percent === 100) {
-      this.flags &= ~ArxPolygonFlags.Transparent
+      this.flags = this.flags & ~ArxPolygonFlags.Transparent
       return
     }
 
-    this.flags |= ArxPolygonFlags.Transparent
+    this.flags = this.flags | ArxPolygonFlags.Transparent
 
     const value = percentOf(percent, 1)
 
     switch (transparencyType) {
-      case 'additive':
+      case 'additive': {
         this.transval = 1 + value
         break
-      case 'blended':
+      }
+
+      case 'blended': {
         this.transval = value
         break
-      case 'multiplicative':
+      }
+
+      case 'multiplicative': {
         this.transval = 2 + value
         break
-      case 'subtractive':
+      }
+
+      case 'subtractive': {
         this.transval = -value
         break
+      }
     }
   }
 
@@ -266,27 +286,12 @@ export class Polygon {
    * AFAICT the area value is only used for collisions to to do additional checks for larger polygons.
    * I don't think the exact value matters in practice.
    */
-  calculateArea() {
-    this.area = this.getHalfPolygonArea(false) + (this.isQuad() ? this.getHalfPolygonArea(true) : 0)
-  }
+  calculateArea(): void {
+    this.area = this.getHalfPolygonArea(false)
 
-  /**
-   * assuming the order of vertices taking up a russian i (И) shape:
-   * ```
-   * 0 2
-   * 1 3
-   * ```
-   * `isQuadPart` === false -> calculate the area of 0-1-2
-   * `isQuadPart` === true  -> calculate the area of 1-2-3
-   */
-  private getHalfPolygonArea(isQuadPart: boolean) {
-    const triangle = new Triangle(...this.vertices.slice(isQuadPart ? 1 : 0, 3))
-    return triangle.getArea()
-
-    // const [i, j, k] = isQuadPart ? [1, 2, 3] : [0, 1, 2]
-    // const a = this.vertices[i].clone().add(this.vertices[j]).divideScalar(2).distanceTo(this.vertices[k])
-    // const b = this.vertices[isQuadPart ? i : k].distanceTo(this.vertices[j])
-    // return (a * b) / 2
+    if (this.isQuad()) {
+      this.area = this.area + this.getHalfPolygonArea(true)
+    }
   }
 
   /**
@@ -294,7 +299,7 @@ export class Polygon {
    * If exludeOnSurface (default true) is true, then we ignore checking the surface by shrinking
    * the box by 1 on each side
    */
-  isWithin(box: Box3, excludeOnSurface: boolean = true) {
+  isWithin(box: Box3, excludeOnSurface: boolean = true): boolean {
     const copyOfBox = box.clone()
     if (excludeOnSurface) {
       copyOfBox.min.add(new Vector3(1, 1, 1))
@@ -319,7 +324,7 @@ export class Polygon {
    * If `exludeOnSurface` (default true) is true, then we ignore checking the surface by shrinking
    * the box by a specific value on each side
    */
-  isPartiallyWithin(box: Box3, excludeOnSurface: boolean = true) {
+  isPartiallyWithin(box: Box3, excludeOnSurface: boolean = true): boolean {
     const padding = 0.1
 
     const copyOfBox = box.clone()
@@ -341,31 +346,38 @@ export class Polygon {
     return false
   }
 
-  setColor(color: Color) {
+  setColor(color: Color): void {
     this.vertices.forEach((vertex) => {
       vertex.color = color
     })
   }
 
-  move(offset: Vector3) {
+  move(offset: Vector3): void {
     this.vertices.forEach((vertex) => {
       vertex.add(offset)
     })
   }
 
-  scale(scale: number) {
+  scale(scale: number): void {
     this.vertices.forEach((vertex) => {
       vertex.multiplyScalar(scale)
     })
   }
 
-  equals(polygon: Polygon, epsilon: number = 0) {
+  equals(polygon: Polygon, epsilon: number = 0): boolean {
     if (this.isQuad() !== polygon.isQuad()) {
       return false
     }
 
-    for (let i = 0; i < (this.isQuad() ? 4 : 3); i++) {
+    for (let i = 0; i < 3; i++) {
       const aVertex = this.vertices[i]
+      if (!polygon.vertices.some((bVertex) => aVertex.equals(bVertex, epsilon))) {
+        return false
+      }
+    }
+
+    if (this.isQuad()) {
+      const aVertex = this.vertices[3]
       if (!polygon.vertices.some((bVertex) => aVertex.equals(bVertex, epsilon))) {
         return false
       }
@@ -374,7 +386,7 @@ export class Polygon {
     return true
   }
 
-  isOutOfBounds() {
+  isOutOfBounds(): boolean {
     const outOfBoundVertex = this.vertices
       .slice(0, this.isQuad() ? 4 : 3)
       .find(
@@ -386,35 +398,59 @@ export class Polygon {
     return outOfBoundVertex !== undefined
   }
 
-  makeDoubleSided() {
+  makeDoubleSided(): void {
     this.flags = this.flags | ArxPolygonFlags.DoubleSided
   }
 
-  flipUVHorizontally() {
-    this.vertices[0].uv.x *= -1
-    this.vertices[1].uv.x *= -1
-    this.vertices[2].uv.x *= -1
+  flipUVHorizontally(): void {
+    this.vertices[0].uv.x = this.vertices[0].uv.x * -1
+    this.vertices[1].uv.x = this.vertices[1].uv.x * -1
+    this.vertices[2].uv.x = this.vertices[2].uv.x * -1
     if (this.isQuad()) {
-      this.vertices[3].uv.x *= -1
+      this.vertices[3].uv.x = this.vertices[3].uv.x * -1
     }
   }
 
-  flipUVVertically() {
-    this.vertices[0].uv.y *= -1
-    this.vertices[1].uv.y *= -1
-    this.vertices[2].uv.y *= -1
+  flipUVVertically(): void {
+    this.vertices[0].uv.y = this.vertices[0].uv.y * -1
+    this.vertices[1].uv.y = this.vertices[1].uv.y * -1
+    this.vertices[2].uv.y = this.vertices[2].uv.y * -1
     if (this.isQuad()) {
-      this.vertices[3].uv.y *= -1
+      this.vertices[3].uv.y = this.vertices[3].uv.y * -1
     }
   }
 
-  getBoundingBox() {
+  getBoundingBox(): Box3 {
     const box = new Box3()
 
-    for (let i = 0; i < (this.isQuad() ? 4 : 3); i++) {
+    for (let i = 0; i < 3; i++) {
       box.expandByPoint(this.vertices[i])
     }
 
+    if (this.isQuad()) {
+      box.expandByPoint(this.vertices[3])
+    }
+
     return box
+  }
+
+  /**
+   * assuming the order of vertices taking up a russian i (И) shape:
+   * ```
+   * 0 2
+   * 1 3
+   * ```
+   *
+   * `isQuadPart` === false -> calculate the area of 0-1-2
+   * `isQuadPart` === true  -> calculate the area of 1-2-3
+   */
+  private getHalfPolygonArea(isQuadPart: boolean): number {
+    const triangle = new Triangle(...this.vertices.slice(isQuadPart ? 1 : 0, 3))
+    return triangle.getArea()
+
+    // const [i, j, k] = isQuadPart ? [1, 2, 3] : [0, 1, 2]
+    // const a = this.vertices[i].clone().add(this.vertices[j]).divideScalar(2).distanceTo(this.vertices[k])
+    // const b = this.vertices[isQuadPart ? i : k].distanceTo(this.vertices[j])
+    // return (a * b) / 2
   }
 }

@@ -1,15 +1,15 @@
 import path from 'node:path'
-import { ArxInteractiveObject } from 'arx-convert/types'
-import { Expand, isTiled } from 'arx-convert/utils'
-import { Audio } from '@src/Audio.js'
-import { EntityModel } from '@src/EntityModel.js'
+import { type ArxInteractiveObject } from 'arx-convert/types'
+import { type Expand, isTiled } from 'arx-convert/utils'
+import { type Audio } from '@src/Audio.js'
+import { type EntityModel } from '@src/EntityModel.js'
 import { Material } from '@src/Material.js'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
-import { Settings } from '@src/Settings.js'
+import { type Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
-import { TextureOrMaterial } from '@src/types.js'
+import { type TextureOrMaterial } from '@src/types.js'
 
 const instanceCatalog: Record<string, Entity[]> = {}
 
@@ -47,6 +47,160 @@ export type EntityConstructorProps = {
 export type EntityConstructorPropsWithoutSrc = Expand<Omit<EntityConstructorProps, 'src'>>
 
 export class Entity {
+  static fromArxInteractiveObject(entity: ArxInteractiveObject): Entity {
+    return new Entity({
+      id: entity.identifier,
+      src: entity.name,
+      position: Vector3.fromArxVector3(entity.pos),
+      orientation: Rotation.fromArxRotation(entity.angle),
+    })
+  }
+
+  // ----------------
+
+  static get marker(): Entity {
+    return new Entity({ src: 'system/marker' })
+  }
+
+  static get torch(): Entity {
+    return new Entity({ src: 'items/provisions/torch' })
+  }
+
+  static get fern(): Entity {
+    return new Entity({ src: 'items/magic/fern' })
+  }
+
+  static get mushroom(): Entity {
+    return new Entity({ src: 'items/provisions/mushroom/food_mushroom.asl' })
+  }
+
+  static get key(): Entity {
+    return new Entity({ src: 'items/quest_item/key_base' })
+  }
+
+  static get powerStonePlace(): Entity {
+    return new Entity({ src: 'fix_inter/power_stone_place' })
+  }
+
+  static get powerStone(): Entity {
+    return new Entity({ src: 'items/magic/power_stone' })
+  }
+
+  static get lock(): Entity {
+    return new Entity({ src: 'fix_inter/lock' })
+  }
+
+  static get rope(): Entity {
+    return new Entity({ src: 'items/provisions/rope' })
+  }
+
+  static get cube() {
+    // TODO: I'm not sure about this, but this is the only way to import a class
+    // which extends the base Entity class
+    return (async () => {
+      const { Cube } = await import('@prefabs/entity/Cube.js')
+      return new Cube()
+    })()
+  }
+
+  static get bone(): Entity {
+    return new Entity({ src: 'items/provisions/bone' })
+  }
+
+  static get boneWeap(): Entity {
+    return new Entity({ src: 'items/weapons/bone_weap' })
+  }
+
+  static get skull(): Entity {
+    return new Entity({ src: 'items/movable/skull' })
+  }
+
+  static get boneBassin(): Entity {
+    return new Entity({ src: 'items/movable/bones/bone_bassin.asl' })
+  }
+
+  static get barrel(): Entity {
+    return new Entity({ src: 'fix_inter/barrel/barrel.asl' })
+  }
+
+  static get brokenBottle(): Entity {
+    return new Entity({ src: 'items/movable/broken_bottle' })
+  }
+
+  static get brokenShield(): Entity {
+    return new Entity({ src: 'items/movable/broken_shield' })
+  }
+
+  static get brokenStool(): Entity {
+    return new Entity({ src: 'items/movable/broken_stool' })
+  }
+
+  static get seatStool1(): Entity {
+    return new Entity({ src: 'items/movable/seat_stool1' })
+  }
+
+  static get akbaaBloodChickenHead(): Entity {
+    return new Entity({ src: 'items/movable/akbaa_blood_chicken_head' })
+  }
+
+  static get hangedGob(): Entity {
+    return new Entity({ src: 'npc/hanged_gob' })
+  }
+
+  static get lampGoblin1(): Entity {
+    return new Entity({ src: 'fix_inter/lamp_goblin1' })
+  }
+
+  static get lampGoblin2(): Entity {
+    return new Entity({ src: 'fix_inter/lamp_goblin2' })
+  }
+
+  static get lampGoblin3(): Entity {
+    return new Entity({ src: 'fix_inter/lamp_goblin3' })
+  }
+
+  static get lampHuman1(): Entity {
+    return new Entity({ src: 'fix_inter/lamp_human1' })
+  }
+
+  static get lampHuman2(): Entity {
+    return new Entity({ src: 'fix_inter/lamp_human2' })
+  }
+
+  static get lampHuman3(): Entity {
+    return new Entity({ src: 'fix_inter/lamp_human3' })
+  }
+
+  static get lampHumanPalace(): Entity {
+    return new Entity({ src: 'fix_inter/lamp_human_palace' })
+  }
+
+  static get lampHumanPalaceRoom(): Entity {
+    return new Entity({ src: 'fix_inter/lamp_human_palace_room' })
+  }
+
+  static get lampHumanSnake1(): Entity {
+    return new Entity({ src: 'fix_inter/lamp_human_snake1' })
+  }
+
+  static get lampHumanSnake2(): Entity {
+    return new Entity({ src: 'fix_inter/lamp_human_snake2' })
+  }
+
+  static get lampHumanTorch1(): Entity {
+    return new Entity({ src: 'fix_inter/lamp_human_torch1' })
+  }
+
+  static get lampSnake1(): Entity {
+    return new Entity({ src: 'fix_inter/lamp_snake1' })
+  }
+
+  static get lampSnake2(): Entity {
+    return new Entity({ src: 'fix_inter/lamp_snake2' })
+  }
+
+  // ----------------
+
   id: number
   /**
    * specify the script file for the entity with `.asl` extension
@@ -70,7 +224,7 @@ export class Entity {
     this.position = props.position ?? new Vector3(0, 0, 0)
     this.orientation = props.orientation ?? new Rotation(0, 0, 0)
 
-    if (typeof props.id === 'undefined') {
+    if (props.id === undefined) {
       instanceCatalog[this.src] = instanceCatalog[this.src] ?? []
       instanceCatalog[this.src].push(this)
       this.id = instanceCatalog[this.src].length
@@ -88,23 +242,23 @@ export class Entity {
   /**
    * returns the name of the entity without any id, for example "marker"
    */
-  get entityName() {
+  get entityName(): string {
     return path.parse(this.src).name
   }
 
   hasScript(): this is { script: Script } {
-    return typeof this.script !== 'undefined'
+    return this.script !== undefined
   }
 
   hasModel(): this is { model: EntityModel } {
-    return typeof this.model !== 'undefined'
+    return this.model !== undefined
   }
 
   hasInventoryIcon(): this is { inventoryIcon: Texture } {
-    return typeof this.inventoryIcon !== 'undefined'
+    return this.inventoryIcon !== undefined
   }
 
-  needsInventoryIcon() {
+  needsInventoryIcon(): boolean {
     if (!this.src.startsWith('items')) {
       return false
     }
@@ -116,7 +270,7 @@ export class Entity {
     return true
   }
 
-  withScript() {
+  withScript(): this {
     if (this.hasScript()) {
       return this
     }
@@ -128,19 +282,19 @@ export class Entity {
     return this
   }
 
-  at({ position, orientation }: { position?: Vector3; orientation?: Rotation }) {
-    if (typeof position !== 'undefined') {
+  at({ position, orientation }: { position?: Vector3; orientation?: Rotation }): this {
+    if (position !== undefined) {
       this.position = position
     }
 
-    if (typeof orientation !== 'undefined') {
+    if (orientation !== undefined) {
       this.orientation = orientation
     }
 
     return this
   }
 
-  public clone() {
+  clone(): Entity {
     return new Entity({
       id: this.id,
       src: this.src,
@@ -150,15 +304,6 @@ export class Entity {
       // script: TODO,
       model: this.model?.clone(),
       otherDependencies: this.otherDependencies.map((dependency) => dependency.clone()),
-    })
-  }
-
-  static fromArxInteractiveObject(entity: ArxInteractiveObject) {
-    return new Entity({
-      id: entity.identifier,
-      src: entity.name,
-      position: Vector3.fromArxVector3(entity.pos),
-      orientation: Rotation.fromArxRotation(entity.angle),
     })
   }
 
@@ -173,15 +318,15 @@ export class Entity {
 
   /**
    * returns the reference to the entity that can be used in scripts,
-   * for example "marker_0001"
+   * for example `"marker_0001"`
    */
-  get ref() {
+  get ref(): string {
     const numericId = this.id.toString().padStart(4, '0')
 
     return `${this.entityName}_${numericId}`
   }
 
-  exportScriptTarget(settings: Settings) {
+  exportScriptTarget(settings: Settings): string {
     if (!this.hasScript()) {
       throw new Error("trying to export an Entity which doesn't have a script")
     }
@@ -204,7 +349,7 @@ export class Entity {
     )
   }
 
-  async exportInventoryIcon(settings: Settings) {
+  async exportInventoryIcon(settings: Settings): Promise<Record<string, string>> {
     const files: Record<string, string> = {}
 
     if (!this.needsInventoryIcon()) {
@@ -218,19 +363,19 @@ export class Entity {
     let source: string
     let target: string
 
-    if (!this.hasInventoryIcon()) {
-      this.inventoryIcon = Texture.missingInventoryIcon
-      source = (await this.inventoryIcon.exportSourceAndTarget(settings, false))[0]
-    } else {
+    if (this.hasInventoryIcon()) {
       try {
         source = (await this.inventoryIcon.exportSourceAndTarget(settings, false, true))[0]
-      } catch (e: unknown) {
+      } catch {
         console.error(
           `[error] Entity: inventory icon not found: "${this.inventoryIcon.filename}", using default fallback icon`,
         )
         this.inventoryIcon = Texture.missingInventoryIcon
         source = (await this.inventoryIcon.exportSourceAndTarget(settings, false))[0]
       }
+    } else {
+      this.inventoryIcon = Texture.missingInventoryIcon
+      source = (await this.inventoryIcon.exportSourceAndTarget(settings, false))[0]
     }
 
     if (this.src.endsWith('.asl')) {
@@ -254,6 +399,7 @@ export class Entity {
           if (stuff instanceof Material) {
             hasTiledMaterialFlag = isTiled(stuff)
           }
+
           const [source, target] = await stuff.exportSourceAndTarget(settings, hasTiledMaterialFlag)
           files[target] = source
         } else {
@@ -266,125 +412,7 @@ export class Entity {
     return files
   }
 
-  move(offset: Vector3) {
+  move(offset: Vector3): void {
     this.position.add(offset)
-  }
-
-  // ----------------
-
-  static get marker() {
-    return new Entity({ src: 'system/marker' })
-  }
-  static get torch() {
-    return new Entity({ src: 'items/provisions/torch' })
-  }
-  static get fern() {
-    return new Entity({ src: 'items/magic/fern' })
-  }
-  static get mushroom() {
-    return new Entity({ src: 'items/provisions/mushroom/food_mushroom.asl' })
-  }
-  static get key() {
-    return new Entity({ src: 'items/quest_item/key_base' })
-  }
-  static get powerStonePlace() {
-    return new Entity({ src: 'fix_inter/power_stone_place' })
-  }
-  static get powerStone() {
-    return new Entity({ src: 'items/magic/power_stone' })
-  }
-  static get lock() {
-    return new Entity({ src: 'fix_inter/lock' })
-  }
-  static get rope() {
-    return new Entity({ src: 'items/provisions/rope' })
-  }
-  static get cube() {
-    // TODO: I'm not sure about this, but this is the only way to import a class
-    // which extends the base Entity class
-    return (async () => {
-      const { Cube } = await import('@prefabs/entity/Cube.js')
-      return new Cube()
-    })()
-  }
-
-  static get bone() {
-    return new Entity({ src: 'items/provisions/bone' })
-  }
-  static get boneWeap() {
-    return new Entity({ src: 'items/weapons/bone_weap' })
-  }
-  static get skull() {
-    return new Entity({ src: 'items/movable/skull' })
-  }
-  static get boneBassin() {
-    return new Entity({ src: 'items/movable/bones/bone_bassin.asl' })
-  }
-
-  static get barrel() {
-    return new Entity({ src: 'fix_inter/barrel/barrel.asl' })
-  }
-
-  static get brokenBottle() {
-    return new Entity({ src: 'items/movable/broken_bottle' })
-  }
-
-  static get brokenShield() {
-    return new Entity({ src: 'items/movable/broken_shield' })
-  }
-
-  static get brokenStool() {
-    return new Entity({ src: 'items/movable/broken_stool' })
-  }
-  static get seatStool1() {
-    return new Entity({ src: 'items/movable/seat_stool1' })
-  }
-
-  static get akbaaBloodChickenHead() {
-    return new Entity({ src: 'items/movable/akbaa_blood_chicken_head' })
-  }
-
-  static get hangedGob() {
-    return new Entity({ src: 'npc/hanged_gob' })
-  }
-
-  static get lampGoblin1() {
-    return new Entity({ src: 'fix_inter/lamp_goblin1' })
-  }
-  static get lampGoblin2() {
-    return new Entity({ src: 'fix_inter/lamp_goblin2' })
-  }
-  static get lampGoblin3() {
-    return new Entity({ src: 'fix_inter/lamp_goblin3' })
-  }
-  static get lampHuman1() {
-    return new Entity({ src: 'fix_inter/lamp_human1' })
-  }
-  static get lampHuman2() {
-    return new Entity({ src: 'fix_inter/lamp_human2' })
-  }
-  static get lampHuman3() {
-    return new Entity({ src: 'fix_inter/lamp_human3' })
-  }
-  static get lampHumanPalace() {
-    return new Entity({ src: 'fix_inter/lamp_human_palace' })
-  }
-  static get lampHumanPalaceRoom() {
-    return new Entity({ src: 'fix_inter/lamp_human_palace_room' })
-  }
-  static get lampHumanSnake1() {
-    return new Entity({ src: 'fix_inter/lamp_human_snake1' })
-  }
-  static get lampHumanSnake2() {
-    return new Entity({ src: 'fix_inter/lamp_human_snake2' })
-  }
-  static get lampHumanTorch1() {
-    return new Entity({ src: 'fix_inter/lamp_human_torch1' })
-  }
-  static get lampSnake1() {
-    return new Entity({ src: 'fix_inter/lamp_snake1' })
-  }
-  static get lampSnake2() {
-    return new Entity({ src: 'fix_inter/lamp_snake2' })
   }
 }

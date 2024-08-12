@@ -52,7 +52,7 @@ export function useDelay() {
    * delay(200) ... -> executed (100 + 200) milliseconds after script start
    */
   function delay(delayInMs: number = 0): Timer {
-    delayOffset += Math.floor(delayInMs)
+    delayOffset = delayOffset + Math.floor(delayInMs)
     return new Timer(delayOffset, 1)
   }
 
@@ -67,7 +67,7 @@ export function useDelay() {
    * uniqueDelay(200) ... -> executed (100 + 200) milliseconds after script start
    */
   function uniqueDelay(delayInMs: number = 0): Timer {
-    delayOffset += Math.floor(delayInMs)
+    delayOffset = delayOffset + Math.floor(delayInMs)
     return new Timer(delayOffset, 1, true)
   }
 

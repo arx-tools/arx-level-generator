@@ -232,7 +232,12 @@ function createCeiling(size: Vector3, textureDef: TextureDefinition, tileSize: n
 }
 
 export function createRoomMesh(size: Vector3, { textures: { wall, floor, ceiling }, tileSize = 50 }: RoomProps): Group {
-  const walls = Array.isArray(wall) ? wall : [wall, wall, wall, wall]
+  let walls: QuadrupleOf<TextureDefinition>
+  if (Array.isArray(wall)) {
+    walls = wall
+  } else {
+    walls = [wall, wall, wall, wall]
+  }
 
   const group = new Group()
 

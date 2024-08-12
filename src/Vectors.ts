@@ -1,14 +1,14 @@
-import { BufferGeometry } from 'three'
+import { type BufferGeometry } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { uniq } from '@src/faux-ramda.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 
 export class Vectors extends Array<Vector3> {
-  static fromThreejsGeometry(geometry: BufferGeometry) {
+  static fromThreejsGeometry(geometry: BufferGeometry): Vectors {
     const vectors = new Vectors()
 
     getNonIndexedVertices(geometry).forEach(({ vector }) => {
-      vector.y *= -1
+      vector.y = vector.y * -1
       vectors.push(vector)
     })
 

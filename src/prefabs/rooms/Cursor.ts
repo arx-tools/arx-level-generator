@@ -25,41 +25,57 @@ export class Cursor {
 
       if (axis === 'y') {
         switch (alignment) {
-          case '++':
+          case '++': {
             // next floor = prev ceiling
-            this.cursor.y -= this.oldSize.y
+            this.cursor.y = this.cursor.y - this.oldSize.y
             break
-          case '+':
+          }
+
+          case '+': {
             // next ceiling = prev ceiling
-            this.cursor.y -= this.oldSize.y - this.newSize.y
+            this.cursor.y = this.cursor.y - (this.oldSize.y - this.newSize.y)
             break
-          case '':
+          }
+
+          case '': {
             // next middle = prev middle
-            this.cursor.y -= this.oldSize.y / 2 - this.newSize.y / 2
+            this.cursor.y = this.cursor.y - (this.oldSize.y / 2 - this.newSize.y / 2)
             break
-          case '-':
+          }
+
+          case '-': {
             // next floor = prev floor
-            this.cursor.y += 0
+            this.cursor.y = this.cursor.y + 0
             break
-          case '--':
+          }
+
+          case '--': {
             // next ceiling = prev floor
-            this.cursor.y += this.newSize.y
+            this.cursor.y = this.cursor.y + this.newSize.y
             break
+          }
         }
       } else {
         switch (alignment) {
-          case '++':
-            this.cursor[axis] += this.oldSize[axis] / 2 + this.newSize[axis] / 2
+          case '++': {
+            this.cursor[axis] = this.cursor[axis] + (this.oldSize[axis] / 2 + this.newSize[axis] / 2)
             break
-          case '+':
-            this.cursor[axis] += this.oldSize[axis] / 2 - this.newSize[axis] / 2
+          }
+
+          case '+': {
+            this.cursor[axis] = this.cursor[axis] + (this.oldSize[axis] / 2 - this.newSize[axis] / 2)
             break
-          case '-':
-            this.cursor[axis] -= this.oldSize[axis] / 2 - this.newSize[axis] / 2
+          }
+
+          case '-': {
+            this.cursor[axis] = this.cursor[axis] - (this.oldSize[axis] / 2 - this.newSize[axis] / 2)
             break
-          case '--':
-            this.cursor[axis] -= this.oldSize[axis] / 2 + this.newSize[axis] / 2
+          }
+
+          case '--': {
+            this.cursor[axis] = this.cursor[axis] - (this.oldSize[axis] / 2 + this.newSize[axis] / 2)
             break
+          }
         }
       }
     })

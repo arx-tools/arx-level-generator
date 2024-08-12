@@ -1,17 +1,23 @@
-import { ArxColor, ArxPolygon, ArxPolygonFlags, ArxTextureContainer, ArxVertex } from 'arx-convert/types'
+import {
+  type ArxColor,
+  type ArxPolygon,
+  ArxPolygonFlags,
+  type ArxTextureContainer,
+  type ArxVertex,
+} from 'arx-convert/types'
 import {
   getCellCoords,
   MAP_DEPTH_IN_CELLS,
   MAP_WIDTH_IN_CELLS,
-  QuadrupleOf,
-  TripleOf,
+  type QuadrupleOf,
+  type TripleOf,
   isTiled,
 } from 'arx-convert/utils'
-import { Mesh, MeshBasicMaterial, Object3D, BufferAttribute, Box3 } from 'three'
+import { Mesh, MeshBasicMaterial, type Object3D, type BufferAttribute, Box3 } from 'three'
 import { Color } from '@src/Color.js'
 import { Material } from '@src/Material.js'
-import { Polygon, TransparencyType } from '@src/Polygon.js'
-import { Settings } from '@src/Settings.js'
+import { Polygon, type TransparencyType } from '@src/Polygon.js'
+import { type Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
@@ -51,7 +57,7 @@ export class Polygons extends Array<Polygon> {
     value: new Box3(),
   }
 
-  async exportTextures(settings: Settings) {
+  async exportTextures(settings: Settings): Promise<Record<string, string>> {
     const texturesToExport: {
       tileable: Record<string, Texture>
       nonTileable: Record<string, Texture>
@@ -61,7 +67,7 @@ export class Polygons extends Array<Polygon> {
     }
 
     for (const polygon of this) {
-      if (typeof polygon.texture === 'undefined' || polygon.texture.isNative) {
+      if (polygon.texture === undefined || polygon.texture.isNative) {
         continue
       }
 
@@ -90,7 +96,10 @@ export class Polygons extends Array<Polygon> {
     return files
   }
 
-  async toArxData() {
+  async toArxData(): Promise<{
+    polygons: ArxPolygon[]
+    textureContainers: ArxTextureContainer[]
+  }> {
     const textureContainers = this.getTextureContainers()
 
     // watch out, we're mutating textureContainers!
@@ -111,11 +120,11 @@ export class Polygons extends Array<Polygon> {
     }
   }
 
-  countNindices() {
+  countNindices(): Record<string, Record<TransparencyType | 'opaque', number>> {
     const nindices: Record<string, Record<TransparencyType | 'opaque', number>> = {}
 
     this.forEach((polygon) => {
-      if (typeof polygon.texture === 'undefined') {
+      if (polygon.texture === undefined) {
         return
       }
 
@@ -129,13 +138,14 @@ export class Polygons extends Array<Polygon> {
         }
       }
 
-      nindices[polygon.texture.filename][polygon.getTransparencyType()] += polygon.getNindices()
+      nindices[polygon.texture.filename][polygon.getTransparencyType()] =
+        nindices[polygon.texture.filename][polygon.getTransparencyType()] + polygon.getNindices()
     })
 
     return nindices
   }
 
-  getTextureContainers() {
+  getTextureContainers(): TextureContainer[] {
     const textureContainers: TextureContainer[] = []
 
     let cntr = 0
@@ -145,25 +155,29 @@ export class Polygons extends Array<Polygon> {
     Object.entries(nindices).forEach(([filename, nindices]) => {
       const maxNindices = sum(Object.values(nindices))
 
-      const [wholeBlocks, remaining] = evenAndRemainder(65535, maxNindices)
+      const [wholeBlocks, remaining] = evenAndRemainder(65_535, maxNindices)
 
       times(() => {
-        textureContainers.push({ id: ++cntr, filename, remaining: 65535, maxRemaining: 65535 })
-        textureContainers.push({ id: ++cntr, filename, remaining: 65535, maxRemaining: 65535 })
+        textureContainers.push(
+          { id: ++cntr, filename, remaining: 65_535, maxRemaining: 65_535 },
+          { id: ++cntr, filename, remaining: 65_535, maxRemaining: 65_535 },
+        )
       }, wholeBlocks)
 
-      textureContainers.push({ id: ++cntr, filename, remaining, maxRemaining: remaining })
-      textureContainers.push({ id: ++cntr, filename, remaining, maxRemaining: remaining })
+      textureContainers.push(
+        { id: ++cntr, filename, remaining, maxRemaining: remaining },
+        { id: ++cntr, filename, remaining, maxRemaining: remaining },
+      )
     })
 
     return textureContainers
   }
 
-  empty() {
+  empty(): void {
     this.length = 0
   }
 
-  calculateNormals() {
+  calculateNormals(): void {
     this.forEach((polygon) => {
       polygon.calculateNormals()
       polygon.normals = [polygon.norm.clone(), polygon.norm.clone(), polygon.norm.clone(), polygon.norm2.clone()]
@@ -206,7 +220,7 @@ export class Polygons extends Array<Polygon> {
             return undefined
           }
         })
-      } else if (typeof threeJsObj.material !== 'undefined') {
+      } else if (threeJsObj.material !== undefined) {
         console.warn('[warning] Polygons: Unsupported material found when adding threejs mesh')
       }
 
@@ -230,7 +244,7 @@ export class Polygons extends Array<Polygon> {
         let currentPolygon: TripleOf<VertexWithMaterialIndex>
 
         for (let i = 0; i < vertices.length; i += 3) {
-          if (typeof previousPolygon === 'undefined') {
+          if (previousPolygon === undefined) {
             previousPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<VertexWithMaterialIndex>
             continue
           }
@@ -248,7 +262,7 @@ export class Polygons extends Array<Polygon> {
           const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
           if (currentTexture instanceof Material && currentTexture.opacity === 100) {
             // remove opacity
-            currentTexture.flags & ~ArxPolygonFlags.Transparent
+            currentTexture.flags = currentTexture.flags & ~ArxPolygonFlags.Transparent
           }
 
           if (isQuadable) {
@@ -261,9 +275,11 @@ export class Polygons extends Array<Polygon> {
               isQuad: true,
               room,
             })
+
             if (currentTexture instanceof Material && currentTexture.opacity !== 100) {
               polygon.setOpacity(currentTexture.opacity, currentTexture.opacityMode)
             }
+
             polygons.push(polygon)
             previousPolygon = undefined
             continue
@@ -275,26 +291,31 @@ export class Polygons extends Array<Polygon> {
             flags: currentTexture instanceof Material ? currentTexture.flags | flags : flags,
             room,
           })
+
           if (currentTexture instanceof Material && currentTexture.opacity !== 100) {
             polygon.setOpacity(currentTexture.opacity, currentTexture.opacityMode)
           }
+
           polygons.push(polygon)
           previousPolygon = currentPolygon
         }
 
-        if (typeof previousPolygon !== 'undefined') {
+        if (previousPolygon !== undefined) {
           const materialIndex = previousPolygon[0].materialIndex
           const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
+
           if (currentTexture instanceof Material && currentTexture.opacity === 100) {
             // remove opacity
             currentTexture.flags & ~ArxPolygonFlags.Transparent
           }
+
           const polygon = new Polygon({
             vertices: [...previousPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
             texture: currentTexture,
             flags: currentTexture instanceof Material ? currentTexture.flags | flags : flags,
             room,
           })
+
           if (currentTexture instanceof Material && currentTexture.opacity !== 100) {
             polygon.setOpacity(currentTexture.opacity, currentTexture.opacityMode)
           }
@@ -305,16 +326,19 @@ export class Polygons extends Array<Polygon> {
           const currentPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<VertexWithMaterialIndex>
           const materialIndex = currentPolygon[0].materialIndex
           const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
+
           if (currentTexture instanceof Material && currentTexture.opacity === 100) {
             // remove opacity
             currentTexture.flags & ~ArxPolygonFlags.Transparent
           }
+
           const polygon = new Polygon({
             vertices: [...currentPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
             texture: currentTexture,
             flags: (currentTexture instanceof Material ? currentTexture.flags | flags : flags) & ~ArxPolygonFlags.Quad,
             room,
           })
+
           if (currentTexture instanceof Material && currentTexture.opacity !== 100) {
             polygon.setOpacity(currentTexture.opacity, currentTexture.opacityMode)
           }
@@ -340,16 +364,19 @@ export class Polygons extends Array<Polygon> {
 
       polygons.forEach((polygon) => {
         const [a, b, c] = polygon.vertices
+
         if (Array.isArray(polygonsOfVertices[a.toString()])) {
           polygonsOfVertices[a.toString()].push([0, polygon])
         } else {
           polygonsOfVertices[a.toString()] = [[0, polygon]]
         }
+
         if (Array.isArray(polygonsOfVertices[b.toString()])) {
           polygonsOfVertices[b.toString()].push([1, polygon])
         } else {
           polygonsOfVertices[b.toString()] = [[1, polygon]]
         }
+
         if (Array.isArray(polygonsOfVertices[c.toString()])) {
           polygonsOfVertices[c.toString()].push([2, polygon])
         } else {
@@ -380,7 +407,7 @@ export class Polygons extends Array<Polygon> {
     })
   }
 
-  getVertexColors() {
+  getVertexColors(): ArxColor[] {
     const cells: Record<string, number[]> = {}
 
     this.forEach((polygon, idx) => {
@@ -400,15 +427,20 @@ export class Polygons extends Array<Polygon> {
     for (let z = 0; z < MAP_DEPTH_IN_CELLS; z++) {
       for (let x = 0; x < MAP_WIDTH_IN_CELLS; x++) {
         const cell = cells[`${z}|${x}`] as number[] | undefined
-        if (typeof cell === 'undefined') {
+        if (cell === undefined) {
           continue
         }
 
         cell.forEach((idx) => {
           const polygon = this[idx]
 
-          for (let i = 0; i < (polygon.isQuad() ? 4 : 3); i++) {
+          for (let i = 0; i < 3; i++) {
             const color = polygon.vertices[i]?.color ?? Color.transparent
+            colors.push(color.toArxColor())
+          }
+
+          if (polygon.isQuad()) {
+            const color = polygon.vertices[3]?.color ?? Color.transparent
             colors.push(color.toArxColor())
           }
         })
@@ -418,7 +450,7 @@ export class Polygons extends Array<Polygon> {
     return colors
   }
 
-  getBoundingBox() {
+  getBoundingBox(): Box3 {
     // TODO: this isn't ideal when only a vertex gets changed, but not the number of polygons
     if (this.cashedBBox.numberOfPolygons === this.length) {
       return this.cashedBBox.value
@@ -438,24 +470,24 @@ export class Polygons extends Array<Polygon> {
     return bbox
   }
 
-  getCenter() {
+  getCenter(): Vector3 {
     const bb = this.getBoundingBox()
     const center = new Vector3()
     bb.getCenter(center)
     return center
   }
 
-  getHeight() {
+  getHeight(): number {
     const { max, min } = this.getBoundingBox()
     return max.y - min.y
   }
 
-  getWidth() {
+  getWidth(): number {
     const { max, min } = this.getBoundingBox()
     return max.x - min.x
   }
 
-  getDepth() {
+  getDepth(): number {
     const { max, min } = this.getBoundingBox()
     return max.z - min.z
   }
