@@ -38,10 +38,6 @@ export function sum(numbers: number[]): number {
   return numbers.reduce((total, n) => total + n, 0)
 }
 
-export function clone<T>(data: T): T {
-  return JSON.parse(JSON.stringify(data))
-}
-
 /**
  * @see https://stackoverflow.com/a/14438954/1806628
  */
@@ -54,8 +50,10 @@ export function uniq<T>(values: T[]): T[] {
 /**
  * The average of all given values by summing values then divide by the amount of values
  *
+ * ```
  * mean([2, 2, 3, 5, 5, 7, 8]) === 4.57
  * because (2 + 2 + 3 + 5 + 5 + 7 + 8) / 7 === 4.57
+ * ```
  */
 export function mean(values: number[]): number {
   if (values.length === 0) {
@@ -73,7 +71,9 @@ export function mean(values: number[]): number {
  * Finds the middle number of a list. If the list has an even number of elements,
  * then it takes the middle 2 and averages them.
  *
+ * ```
  * median([2, 2, 3, 5, 5, 7, 8]) === 5
+ * ```
  */
 export function median(values: number[]): number {
   if (values.length === 0) {
@@ -135,12 +135,13 @@ export function groupSequences(numbers: number[]): [number, number][] {
   const acc: [number, number][] = []
 
   numbers.forEach((n) => {
-    if (acc.length === 0) {
+    const lastGroup = acc.at(-1)
+
+    if (lastGroup === undefined) {
       acc.push([n, 1])
       return
     }
 
-    const lastGroup = acc[acc.length - 1]
     const [start, size] = lastGroup
     if (start - 1 === n || start + size === n) {
       lastGroup[0] = Math.min(n, start)
