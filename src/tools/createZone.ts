@@ -6,7 +6,7 @@ import { Zone, type ZoneConstructorProps } from '@src/Zone.js'
 export function createZone(
   props: Expand<Omit<ZoneConstructorProps, 'points' | 'height'> & { position?: Vector3; size?: Vector3 }>,
 ): Zone {
-  const size = props.size ?? new Vector3(100, Infinity, 100)
+  const size = props.size ?? new Vector3(100, Number.POSITIVE_INFINITY, 100)
   const position = props.position ?? new Vector3(0, 0, 0)
 
   const shape = new Shape()

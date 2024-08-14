@@ -1,5 +1,5 @@
-import { ArxZone, ArxZoneAndPathPointType, ArxZoneAndPathPoint } from 'arx-convert/types'
-import { BufferGeometry } from 'three'
+import { type ArxZone, type ArxZoneAndPathPointType, type ArxZoneAndPathPoint } from 'arx-convert/types'
+import { type BufferGeometry } from 'three'
 import { Ambience } from '@src/Ambience.js'
 import { Color } from '@src/Color.js'
 import { Vector3 } from '@src/Vector3.js'
@@ -13,7 +13,7 @@ export type ZonePoint = {
 
 export type ZoneConstructorProps = {
   name: string
-  /** default value: Infinity */
+  /** default value: `Number.POSITIVE_INFINITY` */
   height?: number
   points: ZonePoint[]
   backgroundColor?: Color
@@ -27,7 +27,7 @@ export class Zone {
   static fromArxZone(zone: ArxZone): Zone {
     return new Zone({
       name: zone.name,
-      height: zone.height === -1 ? Infinity : zone.height,
+      height: zone.height === -1 ? Number.POSITIVE_INFINITY : zone.height,
       backgroundColor: zone.backgroundColor !== undefined ? Color.fromArxColor(zone.backgroundColor) : undefined,
       drawDistance: zone.drawDistance,
       ambience:
@@ -66,7 +66,7 @@ export class Zone {
 
   constructor(props: ZoneConstructorProps) {
     this.name = props.name
-    this.height = props.height ?? Infinity
+    this.height = props.height ?? Number.POSITIVE_INFINITY
     this.backgroundColor = props.backgroundColor
     this.drawDistance = props.drawDistance
     this.ambience = props.ambience
@@ -103,7 +103,7 @@ export class Zone {
       name: this.name,
       backgroundColor: this.backgroundColor?.toArxColor(),
       drawDistance: this.drawDistance,
-      height: this.height === Infinity ? -1 : this.height,
+      height: this.height === Number.POSITIVE_INFINITY ? -1 : this.height,
       ambience: this.ambience?.name,
       ambienceMaxVolume: this.ambience?.volume,
       points: this.points.map((point): ArxZoneAndPathPoint => {

@@ -95,6 +95,13 @@
     "no-ternary": "error",
     "no-await-in-loop": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
-    "@typescript-eslint/non-nullable-type-assertion-style": "off"
+    "@typescript-eslint/non-nullable-type-assertion-style": "off",
+    "unicorn/prefer-number-properties": [
+      "error",
+      {
+        "checkInfinity": true,
+        "checkNaN": true
+      }
+    ]
   }
 }

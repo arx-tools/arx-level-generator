@@ -10,7 +10,7 @@ export function repeat<T>(value: T, repetitions: number): T[] {
 
 export function min(arr: number[]): number {
   let len = arr.length
-  let min = Infinity
+  let min = Number.POSITIVE_INFINITY
 
   while (len--) {
     if (arr[len] < min) {
@@ -23,7 +23,7 @@ export function min(arr: number[]): number {
 
 export function max(arr: number[]): number {
   let len = arr.length
-  let max = -Infinity
+  let max = Number.NEGATIVE_INFINITY
 
   while (len--) {
     if (arr[len] > max) {
