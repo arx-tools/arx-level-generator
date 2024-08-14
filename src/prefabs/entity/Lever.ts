@@ -40,8 +40,8 @@ export class Lever extends Entity {
     })
     this.script?.on('action', () => {
       return `
-        ${Interactivity.off}
-        TIMERenable -m 1 500 ${Interactivity.on}
+        ${Interactivity.off.toString()}
+        TIMERenable -m 1 500 ${Interactivity.on.toString()}
         if (${this.propIsPulled.name} == 1) {
           set ${this.propIsPulled.name} 0
           sendevent custom self off

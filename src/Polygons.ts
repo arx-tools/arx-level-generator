@@ -301,7 +301,7 @@ export class Polygons extends Array<Polygon> {
         }
 
         if (previousPolygon !== undefined) {
-          const materialIndex = previousPolygon[0].materialIndex
+          const { materialIndex } = previousPolygon[0]
           const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
 
           if (currentTexture instanceof Material && currentTexture.opacity === 100) {
@@ -325,7 +325,7 @@ export class Polygons extends Array<Polygon> {
       } else {
         for (let i = 0; i < vertices.length; i = i + 3) {
           const currentPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<VertexWithMaterialIndex>
-          const materialIndex = currentPolygon[0].materialIndex
+          const { materialIndex } = currentPolygon[0]
           const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
 
           if (currentTexture instanceof Material && currentTexture.opacity === 100) {

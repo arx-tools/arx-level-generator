@@ -70,11 +70,18 @@ function createFloor(size: Vector3, textureDef: TextureDefinition, tileSize: num
   const { texture, fitX, fitY } = textureDef
   const size2D = new Vector2(width, depth)
 
+  let flags: ArxPolygonFlags
+  if (fitX && fitY) {
+    flags = ArxPolygonFlags.None
+  } else {
+    flags = ArxPolygonFlags.Tiled
+  }
+
   const mesh = createPlaneMesh({
     size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: fitX && fitY ? ArxPolygonFlags.None : ArxPolygonFlags.Tiled,
+      flags,
     }),
   })
 
@@ -96,11 +103,18 @@ function createNorthWall(size: Vector3, textureDef: TextureDefinition, tileSize:
   const { texture, fitX, fitY } = textureDef
   const size2D = new Vector2(width, height)
 
+  let flags: ArxPolygonFlags
+  if (fitX && fitY) {
+    flags = ArxPolygonFlags.None
+  } else {
+    flags = ArxPolygonFlags.Tiled
+  }
+
   const mesh = createPlaneMesh({
     size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: fitX && fitY ? ArxPolygonFlags.None : ArxPolygonFlags.Tiled,
+      flags,
     }),
   })
   mesh.translateZ(depth / 2).translateY(-height / 2)
@@ -124,11 +138,18 @@ function createSouthWall(size: Vector3, textureDef: TextureDefinition, tileSize:
   const { texture, fitX, fitY } = textureDef
   const size2D = new Vector2(width, height)
 
+  let flags: ArxPolygonFlags
+  if (fitX && fitY) {
+    flags = ArxPolygonFlags.None
+  } else {
+    flags = ArxPolygonFlags.Tiled
+  }
+
   const mesh = createPlaneMesh({
     size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: fitX && fitY ? ArxPolygonFlags.None : ArxPolygonFlags.Tiled,
+      flags,
     }),
   })
   mesh.translateZ(-depth / 2).translateY(-height / 2)
@@ -152,11 +173,18 @@ function createWestWall(size: Vector3, textureDef: TextureDefinition, tileSize: 
   const { texture, fitX, fitY } = textureDef
   const size2D = new Vector2(depth, height)
 
+  let flags: ArxPolygonFlags
+  if (fitX && fitY) {
+    flags = ArxPolygonFlags.None
+  } else {
+    flags = ArxPolygonFlags.Tiled
+  }
+
   const mesh = createPlaneMesh({
     size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: fitX && fitY ? ArxPolygonFlags.None : ArxPolygonFlags.Tiled,
+      flags,
     }),
   })
   mesh.translateX(-width / 2).translateY(-height / 2)
@@ -180,11 +208,18 @@ function createEastWall(size: Vector3, textureDef: TextureDefinition, tileSize: 
   const { texture, fitX, fitY } = textureDef
   const size2D = new Vector2(depth, height)
 
+  let flags: ArxPolygonFlags
+  if (fitX && fitY) {
+    flags = ArxPolygonFlags.None
+  } else {
+    flags = ArxPolygonFlags.Tiled
+  }
+
   const mesh = createPlaneMesh({
     size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: fitX && fitY ? ArxPolygonFlags.None : ArxPolygonFlags.Tiled,
+      flags,
     }),
   })
   mesh.translateX(width / 2).translateY(-height / 2)
@@ -208,11 +243,18 @@ function createCeiling(size: Vector3, textureDef: TextureDefinition, tileSize: n
   const { texture, fitX, fitY } = textureDef
   const size2D = new Vector2(width, depth)
 
+  let flags: ArxPolygonFlags
+  if (fitX && fitY) {
+    flags = ArxPolygonFlags.None
+  } else {
+    flags = ArxPolygonFlags.Tiled
+  }
+
   const mesh = createPlaneMesh({
     size: size2D,
     tileSize,
     texture: Material.fromTexture(texture, {
-      flags: fitX && fitY ? ArxPolygonFlags.None : ArxPolygonFlags.Tiled,
+      flags,
     }),
   })
   mesh.translateY(-height)
