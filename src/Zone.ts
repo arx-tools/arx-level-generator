@@ -25,15 +25,19 @@ export type ZoneConstructorProps = {
 
 export class Zone {
   static fromArxZone(zone: ArxZone): Zone {
+    const height = zone.height === -1 ? Number.POSITIVE_INFINITY : zone.height
+    const backgroundColor = zone.backgroundColor === undefined ? undefined : Color.fromArxColor(zone.backgroundColor)
+    const ambience =
+      zone.ambience === undefined || zone.ambienceMaxVolume === undefined
+        ? undefined
+        : new Ambience({ name: zone.ambience, volume: zone.ambienceMaxVolume })
+
     return new Zone({
       name: zone.name,
-      height: zone.height === -1 ? Number.POSITIVE_INFINITY : zone.height,
-      backgroundColor: zone.backgroundColor !== undefined ? Color.fromArxColor(zone.backgroundColor) : undefined,
+      height,
+      backgroundColor,
       drawDistance: zone.drawDistance,
-      ambience:
-        zone.ambience !== undefined && zone.ambienceMaxVolume !== undefined
-          ? new Ambience({ name: zone.ambience, volume: zone.ambienceMaxVolume })
-          : undefined,
+      ambience,
       points: zone.points.map((point): ZonePoint => {
         return {
           position: Vector3.fromArxVector3(point.pos),

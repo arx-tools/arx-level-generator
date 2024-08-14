@@ -9,7 +9,7 @@ import { type Vector3 } from '@src/Vector3.js'
 import { Zones } from '@src/Zones.js'
 import { groupSequences } from '@src/faux-ramda.js'
 
-export abstract class Selection<T extends Array<any>> {
+export abstract class Selection<T extends any[]> {
   protected selection: number[] = []
   protected items: T
 
@@ -265,7 +265,7 @@ type ArrayLikeArxTypes = Polygons | Lights | Entities | Fogs | Paths | Zones
 const instances = new WeakMap<ArrayLikeArxTypes, Selection<ArrayLikeArxTypes>>()
 
 type OverloadsOf$ = {
-  <U extends Array<any>, T extends Selection<U>>(items: T): T
+  <U extends any[], T extends Selection<U>>(items: T): T
   (items: Polygons): PolygonSelection
   (items: Entities): EntitiesSelection
   (items: Lights): LightsSelection
@@ -280,7 +280,7 @@ type OverloadsOf$ = {
  * the copied (or original if no copy has been called) values can
  * be read with the `.get()` method.
  */
-export const $: OverloadsOf$ = <U extends Array<any>, T extends Selection<U>>(items: T | ArrayLikeArxTypes) => {
+export const $: OverloadsOf$ = <U extends any[], T extends Selection<U>>(items: T | ArrayLikeArxTypes) => {
   if (items instanceof Selection) {
     return items
   }

@@ -177,7 +177,14 @@ export class EntityModel {
 
       // TODO: rotate +90 degrees on Y axis
 
-      const vertices = mesh.flatMap((polygon) => polygon.vertices.slice(0, polygon.isQuad() ? 3 : 4))
+      const vertices = mesh.flatMap((polygon) => {
+        let numberOfVertices = 3
+        if (polygon.isQuad()) {
+          numberOfVertices = 4
+        }
+
+        return polygon.vertices.slice(0, numberOfVertices)
+      })
 
       const origin = vertices[ftlData.header.origin].clone()
 
@@ -261,10 +268,11 @@ export class EntityModel {
           textureIdx: materialIndex ?? 0,
         })
 
-        if (i % 3 === 0) {
+        const lastFaceIndex = faceIndexes.at(-1)
+        if (lastFaceIndex === undefined) {
           faceIndexes.push([-1, -1, i])
         } else {
-          faceIndexes[faceIndexes.length - 1][2 - (i % 3)] = i
+          lastFaceIndex[2 - (i % 3)] = i
         }
       })
 

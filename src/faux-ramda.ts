@@ -1,11 +1,11 @@
 import { isOdd } from '@src/helpers.js'
 
 export function times<T>(fn: (index: number) => T, repetitions: number): T[] {
-  return [...Array(repetitions)].map((value, index) => fn(index))
+  return Array.from({ length: repetitions }).map((value, index) => fn(index))
 }
 
 export function repeat<T>(value: T, repetitions: number): T[] {
-  return Array(repetitions).fill(value)
+  return Array.from({ length: repetitions }).map(() => value)
 }
 
 export function min(arr: number[]): number {

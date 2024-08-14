@@ -104,6 +104,7 @@ export class ArxMap {
     isFinalized: false,
     offset: new Vector3(0, 0, 0),
   }
+
   hud: HUD = new HUD()
   ui: UI = new UI()
   i18n: Translations = new Translations()
@@ -402,7 +403,7 @@ export class ArxMap {
     // ------------------------
 
     for (const [target, script] of Object.entries(scripts)) {
-      const latin1Script = latin9ToLatin1(script.replace(/\n/g, Script.EOL))
+      const latin1Script = latin9ToLatin1(script.replaceAll('\n', Script.EOL))
       await fs.writeFile(target, latin1Script, 'latin1')
     }
 
@@ -423,22 +424,36 @@ export class ArxMap {
     const { dlf, fts, llf } = await this.toArxData(settings)
 
     if (exportJsonFiles) {
-      const stringifiedDlf = prettify ? JSON.stringify(dlf, null, 2) : JSON.stringify(dlf)
+      let stringifiedDlf: string
+      let stringifiedFts: string
+      let stringifiedLlf: string
+
+      if (prettify) {
+        stringifiedDlf = JSON.stringify(dlf, null, 2)
+        stringifiedFts = JSON.stringify(fts, null, 2)
+        stringifiedLlf = JSON.stringify(llf, null, 2)
+      } else {
+        stringifiedDlf = JSON.stringify(dlf)
+        stringifiedFts = JSON.stringify(fts)
+        stringifiedLlf = JSON.stringify(llf)
+      }
+
       await fs.writeFile(files.dlf, stringifiedDlf)
-
-      const stringifiedFts = prettify ? JSON.stringify(fts, null, 2) : JSON.stringify(fts)
       await fs.writeFile(files.fts, stringifiedFts)
-
-      const stringifiedLlf = prettify ? JSON.stringify(llf, null, 2) : JSON.stringify(llf)
       await fs.writeFile(files.llf, stringifiedLlf)
 
       for (const [target, amb] of Object.entries(customAmbiences)) {
-        const stringifiedAmb = prettify ? JSON.stringify(amb, null, 2) : JSON.stringify(amb)
+        let stringifiedAmb: string
+        if (prettify) {
+          stringifiedAmb = JSON.stringify(amb, null, 2)
+        } else {
+          stringifiedAmb = JSON.stringify(amb)
+        }
+
         await fs.writeFile(target, stringifiedAmb)
       }
 
-      pathsOfTheFiles.push(...Object.keys(customAmbiences))
-      pathsOfTheFiles.push(...Object.values(files))
+      pathsOfTheFiles.push(...Object.keys(customAmbiences), ...Object.values(files))
     }
 
     for (const [target, amb] of Object.entries(customAmbiences)) {
