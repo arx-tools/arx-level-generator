@@ -44,7 +44,12 @@ export function createPlaneMesh({
   isIndexed = INDEXED,
   tileUV = true,
 }: createPlaneMeshProps): Mesh {
-  const { x: width, y: depth } = typeof size === 'number' ? new Vector2(size, size) : size
+  if (typeof size === 'number') {
+    size = new Vector2(size, size)
+  }
+
+  const { x: width, y: depth } = size
+
   const divisionX = Math.ceil(width / tileSize)
   const divisionY = Math.ceil(depth / tileSize)
 
@@ -57,7 +62,13 @@ export function createPlaneMesh({
 
   const material = new MeshBasicMaterial({ map: texture })
 
-  const mesh = new Mesh(isIndexed === INDEXED ? geometry : geometry.toNonIndexed(), material)
+  let mesh: Mesh
+  if (isIndexed === INDEXED) {
+    mesh = new Mesh(geometry, material)
+  } else {
+    mesh = new Mesh(geometry.toNonIndexed(), material)
+  }
+
   mesh.rotateX(MathUtils.degToRad(90))
   applyTransformations(mesh)
   return mesh

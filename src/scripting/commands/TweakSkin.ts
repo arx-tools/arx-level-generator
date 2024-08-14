@@ -15,10 +15,19 @@ export class TweakSkin extends ScriptCommand implements UsesTextures {
   }
 
   toString(): string {
-    const oldFilename =
-      typeof this.oldTexture === 'string' ? this.oldTexture : path.parse(this.oldTexture.filename).name
-    const newFilename =
-      typeof this.newTexture === 'string' ? this.newTexture : path.parse(this.newTexture.filename).name
+    let oldFilename: string
+    if (typeof this.oldTexture === 'string') {
+      oldFilename = this.oldTexture
+    } else {
+      oldFilename = path.parse(this.oldTexture.filename).name
+    }
+
+    let newFilename: string
+    if (typeof this.newTexture === 'string') {
+      newFilename = this.newTexture
+    } else {
+      newFilename = path.parse(this.newTexture.filename).name
+    }
 
     return `tweak skin "${oldFilename}" "${newFilename}"`
   }

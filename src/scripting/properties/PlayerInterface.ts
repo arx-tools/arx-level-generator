@@ -33,6 +33,18 @@ export class PlayerInterface extends ScriptProperty<boolean> {
   }
 
   toString(): string {
-    return `playerinterface ${this.isSliding === true ? '-s' : ''} ${this.value === true ? 'show' : 'hide'}`
+    let flags = ''
+    if (this.isSliding) {
+      flags = '-s'
+    }
+
+    let value: string
+    if (this.value) {
+      value = 'show'
+    } else {
+      value = 'hide'
+    }
+
+    return `playerinterface ${flags} ${value}`
   }
 }

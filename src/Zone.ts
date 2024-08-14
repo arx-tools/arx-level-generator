@@ -1,4 +1,4 @@
-import { type ArxZone, type ArxZoneAndPathPointType, type ArxZoneAndPathPoint } from 'arx-convert/types'
+import { type ArxZone, ArxZoneAndPathPointType, type ArxZoneAndPathPoint } from 'arx-convert/types'
 import { type BufferGeometry } from 'three'
 import { Ambience } from '@src/Ambience.js'
 import { Color } from '@src/Color.js'

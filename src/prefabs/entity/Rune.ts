@@ -1,7 +1,7 @@
-import { Expand } from 'arx-convert/utils'
+import { type Expand } from 'arx-convert/utils'
 import { Audio } from '@src/Audio.js'
-import { Entity, EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
-import { Script, ScriptHandler } from '@src/Script.js'
+import { Entity, type EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
+import { Script, type ScriptHandler } from '@src/Script.js'
 import { Texture } from '@src/Texture.js'
 import { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
 import { Sound, SoundFlags } from '@scripting/classes/Sound.js'
@@ -63,7 +63,7 @@ export class Rune extends Entity {
     const system2 = new Sound(Audio.system2.filename, SoundFlags.EmitFromPlayer)
 
     const whenRoot = (handler: () => ScriptHandler) => {
-      return () => {
+      return (): string => {
         if (!this.script?.isRoot) {
           return ''
         }

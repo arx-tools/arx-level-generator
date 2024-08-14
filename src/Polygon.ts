@@ -387,13 +387,16 @@ export class Polygon {
   }
 
   isOutOfBounds(): boolean {
-    const outOfBoundVertex = this.vertices
-      .slice(0, this.isQuad() ? 4 : 3)
-      .find(
-        (vertex) =>
-          !isBetween(0, MAP_WIDTH_IN_CELLS * 100 - 1, vertex.x) ||
-          !isBetween(0, MAP_DEPTH_IN_CELLS * 100 - 1, vertex.z),
-      )
+    let numberOfPolygons = 3
+    if (this.isQuad()) {
+      numberOfPolygons = 4
+    }
+
+    const outOfBoundVertex = this.vertices.slice(0, numberOfPolygons).find(({ x, z }) => {
+      const fitsX = isBetween(0, MAP_WIDTH_IN_CELLS * 100 - 1, x)
+      const fitsZ = isBetween(0, MAP_DEPTH_IN_CELLS * 100 - 1, z)
+      return !fitsX || !fitsZ
+    })
 
     return outOfBoundVertex !== undefined
   }
@@ -403,20 +406,24 @@ export class Polygon {
   }
 
   flipUVHorizontally(): void {
-    this.vertices[0].uv.x = this.vertices[0].uv.x * -1
-    this.vertices[1].uv.x = this.vertices[1].uv.x * -1
-    this.vertices[2].uv.x = this.vertices[2].uv.x * -1
+    const [a, b, c, d] = this.vertices
+
+    a.uv.x = -a.uv.x
+    b.uv.x = -b.uv.x
+    c.uv.x = -c.uv.x
     if (this.isQuad()) {
-      this.vertices[3].uv.x = this.vertices[3].uv.x * -1
+      d.uv.x = -d.uv.x
     }
   }
 
   flipUVVertically(): void {
-    this.vertices[0].uv.y = this.vertices[0].uv.y * -1
-    this.vertices[1].uv.y = this.vertices[1].uv.y * -1
-    this.vertices[2].uv.y = this.vertices[2].uv.y * -1
+    const [a, b, c, d] = this.vertices
+
+    a.uv.y = -a.uv.y
+    b.uv.y = -b.uv.y
+    c.uv.y = -c.uv.y
     if (this.isQuad()) {
-      this.vertices[3].uv.y = this.vertices[3].uv.y * -1
+      d.uv.y = -d.uv.y
     }
   }
 
@@ -441,16 +448,19 @@ export class Polygon {
    * 1 3
    * ```
    *
-   * `isQuadPart` === false -> calculate the area of 0-1-2
    * `isQuadPart` === true  -> calculate the area of 1-2-3
+   * `isQuadPart` === false -> calculate the area of 0-1-2
    */
   private getHalfPolygonArea(isQuadPart: boolean): number {
-    const triangle = new Triangle(...this.vertices.slice(isQuadPart ? 1 : 0, 3))
-    return triangle.getArea()
+    const [a, b, c, d] = this.vertices
 
-    // const [i, j, k] = isQuadPart ? [1, 2, 3] : [0, 1, 2]
-    // const a = this.vertices[i].clone().add(this.vertices[j]).divideScalar(2).distanceTo(this.vertices[k])
-    // const b = this.vertices[isQuadPart ? i : k].distanceTo(this.vertices[j])
-    // return (a * b) / 2
+    let triangle: Triangle
+    if (isQuadPart) {
+      triangle = new Triangle(b, c, d)
+    } else {
+      triangle = new Triangle(a, b, c)
+    }
+
+    return triangle.getArea()
   }
 }

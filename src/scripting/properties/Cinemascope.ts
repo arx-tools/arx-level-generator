@@ -31,6 +31,18 @@ export class Cinemascope extends ScriptProperty<boolean> {
   }
 
   toString(): string {
-    return `cinemascope ${this.isSliding === true ? '-s' : ''} ${this.value === true ? 'on' : 'off'}`
+    let flags = ''
+    if (this.isSliding) {
+      flags = '-s'
+    }
+
+    let value: string
+    if (this.value) {
+      value = 'on'
+    } else {
+      value = 'off'
+    }
+
+    return `cinemascope ${flags} ${value}`
   }
 }
