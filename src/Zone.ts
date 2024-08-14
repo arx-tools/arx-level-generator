@@ -25,12 +25,22 @@ export type ZoneConstructorProps = {
 
 export class Zone {
   static fromArxZone(zone: ArxZone): Zone {
-    const height = zone.height === -1 ? Number.POSITIVE_INFINITY : zone.height
-    const backgroundColor = zone.backgroundColor === undefined ? undefined : Color.fromArxColor(zone.backgroundColor)
-    const ambience =
-      zone.ambience === undefined || zone.ambienceMaxVolume === undefined
-        ? undefined
-        : new Ambience({ name: zone.ambience, volume: zone.ambienceMaxVolume })
+    let height: number
+    if (zone.height === -1) {
+      height = Number.POSITIVE_INFINITY
+    } else {
+      height = zone.height
+    }
+
+    let backgroundColor: Color | undefined
+    if (zone.backgroundColor !== undefined) {
+      backgroundColor = Color.fromArxColor(zone.backgroundColor)
+    }
+
+    let ambience: Ambience | undefined
+    if (zone.ambience !== undefined && zone.ambienceMaxVolume !== undefined) {
+      ambience = new Ambience({ name: zone.ambience, volume: zone.ambienceMaxVolume })
+    }
 
     return new Zone({
       name: zone.name,
@@ -103,11 +113,18 @@ export class Zone {
   }
 
   toArxZone(): ArxZone {
+    let height: number
+    if (this.height === Number.POSITIVE_INFINITY) {
+      height = -1
+    } else {
+      height = this.height
+    }
+
     return {
       name: this.name,
       backgroundColor: this.backgroundColor?.toArxColor(),
       drawDistance: this.drawDistance,
-      height: this.height === Number.POSITIVE_INFINITY ? -1 : this.height,
+      height,
       ambience: this.ambience?.name,
       ambienceMaxVolume: this.ambience?.volume,
       points: this.points.map((point): ArxZoneAndPathPoint => {
