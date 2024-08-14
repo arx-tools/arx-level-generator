@@ -70,6 +70,14 @@ function parseWithKeyword(tokens: string[], cursor: Cursor, rooms: Rooms, lineNu
   }
 }
 
+function tryParsingTokenAsVariable(token: string, variables: Record<string, string>): string {
+  if (!token.startsWith('$')) {
+    return token
+  }
+
+  return variables[token]
+}
+
 function parseRoomKeyword(
   tokens: string[],
   rooms: Rooms,
@@ -81,9 +89,9 @@ function parseRoomKeyword(
     case 'add': {
       {
         // TODO: validate arguments
-        const posX = Number.parseInt(tokens[2].startsWith('$') ? variables[tokens[2]] : tokens[2], 10)
-        const posY = Number.parseInt(tokens[3].startsWith('$') ? variables[tokens[3]] : tokens[3], 10)
-        const posZ = Number.parseInt(tokens[4].startsWith('$') ? variables[tokens[4]] : tokens[4], 10)
+        const posX = Number.parseInt(tryParsingTokenAsVariable(tokens[2], variables), 10)
+        const posY = Number.parseInt(tryParsingTokenAsVariable(tokens[3], variables), 10)
+        const posZ = Number.parseInt(tryParsingTokenAsVariable(tokens[4], variables), 10)
         let definitionName = tokens[5]
         if (roomDefinitions[definitionName] === undefined) {
           console.error(`[error] loadRooms: Unknown texture definition "${tokens[5]}" at line ${lineNumber}`)
@@ -109,15 +117,17 @@ function parseRoomKeyword(
 }
 
 function parseVariable(tokens: string[], variables: Record<string, string>, lineNumber: number): void {
-  if (tokens[1] === '=') {
-    if (tokens[2] === undefined) {
-      console.error(`[error] loadRooms: Missing value for variable at line ${lineNumber}`)
-    } else {
-      variables[tokens[0]] = tokens[2]
-    }
-  } else {
+  if (tokens[1] !== '=') {
     console.error(`[error] loadRooms: Unexpected token "${tokens[1]}" after variable at line ${lineNumber}`)
+    return
   }
+
+  if (tokens[2] === undefined) {
+    console.error(`[error] loadRooms: Missing value for variable at line ${lineNumber}`)
+    return
+  }
+
+  variables[tokens[0]] = tokens[2]
 }
 
 export async function loadRooms(filename: string, settings: Settings): Promise<Rooms> {
@@ -139,7 +149,7 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
   const rawInput = await fs.readFile(path.resolve(settings.assetsDir, filename), 'utf8')
   const lines = rawInput.split(/\r?\n/)
 
-  let currentBlock: CurrentBlock | undefined = undefined
+  let currentBlock: CurrentBlock | undefined
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].replace(/#.*$/, '').trim()
@@ -150,57 +160,57 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
 
     const tokens = line.split(' ')
 
+    const lineNumber = i + 1
+
     if (currentBlock === undefined) {
       switch (tokens[0]) {
         case 'define': {
           if (tokens[1] === undefined) {
-            console.error(`[error] loadRooms: missing define block's name at line ${i + 1}`)
-          } else {
-            if (tokens[2] === '{') {
-              currentBlock = { type: 'define', name: tokens[1] }
+            console.error(`[error] loadRooms: missing define block's name at line ${lineNumber}`)
+          } else if (tokens[2] === '{') {
+            currentBlock = { type: 'define', name: tokens[1] }
 
-              if (roomDefinitions[tokens[1]] === undefined) {
-                roomDefinitions[tokens[1]] = {
-                  textures: {
-                    ceiling: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-                    wall: [
-                      { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-                      { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-                      { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-                      { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-                    ],
-                    floor: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-                  },
-                }
+            if (roomDefinitions[tokens[1]] === undefined) {
+              roomDefinitions[tokens[1]] = {
+                textures: {
+                  ceiling: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+                  wall: [
+                    { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+                    { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+                    { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+                    { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+                  ],
+                  floor: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+                },
               }
-            } else {
-              console.error(`[error] loadRooms: missing { at line ${i + 1}`)
             }
+          } else {
+            console.error(`[error] loadRooms: missing { at line ${lineNumber}`)
           }
 
           break
         }
 
         case 'room': {
-          parseRoomKeyword(tokens, rooms, variables, roomDefinitions, i + 1)
+          parseRoomKeyword(tokens, rooms, variables, roomDefinitions, lineNumber)
           break
         }
 
         case 'with': {
-          parseWithKeyword(tokens, cursor, rooms, i + 1)
+          parseWithKeyword(tokens, cursor, rooms, lineNumber)
           break
         }
 
         case 'cursor': {
-          parseCursorKeyword(tokens, cursor, i + 1)
+          parseCursorKeyword(tokens, cursor, lineNumber)
           break
         }
 
         default: {
           if (tokens[0].startsWith('$')) {
-            parseVariable(tokens, variables, i + 1)
+            parseVariable(tokens, variables, lineNumber)
           } else {
-            console.error(`[error] loadRooms: Unknown command "${tokens[0]}" at line ${i + 1}`)
+            console.error(`[error] loadRooms: Unknown command "${tokens[0]}" at line ${lineNumber}`)
           }
         }
       }
@@ -245,7 +255,7 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
                 default: {
                   console.error(
                     `[error] loadRooms: Unknown texture type "${tokens[1]}" at line ${
-                      i + 1
+                      lineNumber
                     }, expected either "custom", "arx" or "off"`,
                   )
                 }
@@ -296,7 +306,7 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
                 default: {
                   console.error(
                     `[error] loadRooms: Unknown texture type "${tokens[1]}" at line ${
-                      i + 1
+                      lineNumber
                     }, expected either "custom", "arx", or "off"`,
                   )
                 }
@@ -309,13 +319,16 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
             case 'wall-east':
             case 'wall-south':
             case 'wall-west': {
-              const wallIdx = tokens[0].endsWith('north')
-                ? 0
-                : tokens[0].endsWith('east')
-                  ? 1
-                  : tokens[0].endsWith('south')
-                    ? 2
-                    : 3
+              let wallIdx: 0 | 1 | 2 | 3
+              if (tokens[0].endsWith('north')) {
+                wallIdx = 0
+              } else if (tokens[0].endsWith('east')) {
+                wallIdx = 1
+              } else if (tokens[0].endsWith('south')) {
+                wallIdx = 2
+              } else {
+                wallIdx = 3
+              }
 
               const wall = roomDefinitions[currentBlock.name].textures.wall as QuadrupleOf<TextureDefinition>
 
@@ -349,7 +362,7 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
                 default: {
                   console.error(
                     `[error] loadRooms: Unknown texture type "${tokens[1]}" at line ${
-                      i + 1
+                      lineNumber
                     }, expected either "custom", "arx" or "off"`,
                   )
                 }
@@ -361,7 +374,7 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
             default: {
               console.error(
                 `[error] loadRooms: Unknown side "${tokens[0]}" at line ${
-                  i + 1
+                  lineNumber
                 }, expected "floor", "ceiling", "wall", "wall-east", "wall-west", "wall-north" or "wall-south"`,
               )
             }
