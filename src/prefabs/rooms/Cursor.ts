@@ -67,6 +67,11 @@ export class Cursor {
             break
           }
 
+          case '': {
+            // nothing to do in this case
+            break
+          }
+
           case '-': {
             this.cursor[axis] = this.cursor[axis] - (this.oldSize[axis] / 2 - this.newSize[axis] / 2)
             break

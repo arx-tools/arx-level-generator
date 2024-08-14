@@ -3,6 +3,7 @@ import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import { type ScriptProperty } from '@scripting/ScriptProperty.js'
 import { type ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
 import { isUsesTextures } from '@scripting/interfaces/UsesTextures.js'
+import { Expand } from 'arx-convert/utils'
 
 type ScriptHandlerBase = string | string[] | ScriptCommand | ScriptCommand[]
 
@@ -10,6 +11,12 @@ export type ScriptHandler = ScriptHandlerBase | (() => ScriptHandlerBase)
 
 type ScriptConstructorProps = {
   filename: string
+}
+
+type ReturnOfWhenRoot = {
+  on: (eventName: string, handler: ScriptHandler) => ReturnOfWhenRoot
+  prependRaw: (handler: ScriptHandler) => ReturnOfWhenRoot
+  appendRaw: (handler: ScriptHandler) => ReturnOfWhenRoot
 }
 
 export class Script {
@@ -131,9 +138,9 @@ export class Script {
     return this
   }
 
-  whenRoot() {
+  whenRoot(): ReturnOfWhenRoot {
     const preparedObject = {
-      on: (eventName: string, handler: ScriptHandler) => {
+      on: (eventName: string, handler: ScriptHandler): ReturnOfWhenRoot => {
         this.on(eventName, () => {
           if (!this.isRoot) {
             return ''
@@ -144,7 +151,7 @@ export class Script {
 
         return preparedObject
       },
-      prependRaw: (handler: ScriptHandler) => {
+      prependRaw: (handler: ScriptHandler): ReturnOfWhenRoot => {
         this.prependRaw(() => {
           if (!this.isRoot) {
             return ''
@@ -155,7 +162,7 @@ export class Script {
 
         return preparedObject
       },
-      appendRaw: (handler: ScriptHandler) => {
+      appendRaw: (handler: ScriptHandler): ReturnOfWhenRoot => {
         this.appendRaw(() => {
           if (!this.isRoot) {
             return ''

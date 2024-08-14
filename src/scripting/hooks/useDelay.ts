@@ -35,7 +35,11 @@ class Timer {
   }
 }
 
-export function useDelay() {
+export function useDelay(): {
+  loop: (periodInMs: number, repetitions?: number) => Timer
+  delay: (delayInMs?: number) => Timer
+  uniqueDelay: (delayInMs?: number) => Timer
+} {
   let delayOffset = 0
 
   function loop(periodInMs: number, repetitions: number = Infinity): Timer {

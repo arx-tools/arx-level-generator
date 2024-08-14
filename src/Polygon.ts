@@ -119,7 +119,7 @@ export class Polygon {
     this.area = props.area ?? 0
     this.room = props.room ?? DEFAULT_ROOM_ID
     this.paddy = props.paddy
-    this.config = { ...this.config, ...(props.config ?? {}) }
+    this.config = { ...this.config, ...props.config }
   }
 
   clone(): Polygon {
