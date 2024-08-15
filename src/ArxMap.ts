@@ -634,8 +634,22 @@ export class ArxMap {
 
     const polygonsPerCellCounter: Record<string, number> = {}
 
-    this.polygons.forEach((polygon) => {
+    let warningGivenAboutInvalidRoom = false
+
+    this.polygons.forEach((polygon, index) => {
       if (polygon.room < 1) {
+        return
+      }
+
+      const room = this.todo.rooms[polygon.room]
+      if (room === undefined) {
+        if (!warningGivenAboutInvalidRoom) {
+          warningGivenAboutInvalidRoom = true
+          console.warn(
+            `[warning] ArxMap: Reference to a non-existent room found in the polygon data (polygons[${index}].room is ${polygon.room})`,
+          )
+        }
+
         return
       }
 
@@ -651,7 +665,7 @@ export class ArxMap {
         polygonsPerCellCounter[key] = 0
       }
 
-      this.todo.rooms[polygon.room].polygons.push({ cellX, cellY, polygonIdx: polygonsPerCellCounter[key] })
+      room.polygons.push({ cellX, cellY, polygonIdx: polygonsPerCellCounter[key] })
     })
   }
 }
