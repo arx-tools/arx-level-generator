@@ -183,7 +183,7 @@ export class EntityModel {
           numberOfVertices = 4
         }
 
-        return polygon.vertices.slice(0, numberOfVertices)
+        return polygon.vertices.slice(0, numberOfVertices - 1)
       })
 
       const origin = vertices[ftlData.header.origin].clone()
