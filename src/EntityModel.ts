@@ -268,11 +268,10 @@ export class EntityModel {
           textureIdx: materialIndex ?? 0,
         })
 
-        const lastFaceIndex = faceIndexes.at(-1)
-        if (lastFaceIndex === undefined) {
+        if (i % 3 === 0) {
           faceIndexes.push([-1, -1, i])
         } else {
-          lastFaceIndex[2 - (i % 3)] = i
+          faceIndexes[faceIndexes.length - 1][2 - (i % 3)] = i
         }
       })
 
