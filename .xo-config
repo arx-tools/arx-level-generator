@@ -106,6 +106,7 @@
         "checkNaN": true
       }
     ],
-    "unused-imports/no-unused-imports": "error"
+    "unused-imports/no-unused-imports": "error",
+    "guard-for-in": "off"
   }
 }

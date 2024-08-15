@@ -9,7 +9,7 @@ import { type Vector3 } from '@src/Vector3.js'
 import { Zones } from '@src/Zones.js'
 import { groupSequences } from '@src/faux-ramda.js'
 
-export abstract class Selection<T extends any[]> {
+export abstract class Selection<T extends { move: (offset: Vector3) => void }[]> {
   protected selection: number[] = []
   protected items: T
 
@@ -49,7 +49,7 @@ export abstract class Selection<T extends any[]> {
     }
 
     this.selection = this.selection.filter((idx) => {
-      const item = this.items[idx]
+      const item = this.items[idx] as T[0]
       return predicate(item, idx)
     })
 
@@ -116,7 +116,7 @@ export abstract class Selection<T extends any[]> {
    */
   apply(fn: (item: T[0], idx: number) => void): this {
     this.selection.forEach((idx) => {
-      const item = this.items[idx]
+      const item = this.items[idx] as T[0]
       fn(item, idx)
     })
 
@@ -265,7 +265,7 @@ type ArrayLikeArxTypes = Polygons | Lights | Entities | Fogs | Paths | Zones
 const instances = new WeakMap<ArrayLikeArxTypes, Selection<ArrayLikeArxTypes>>()
 
 type OverloadsOf$ = {
-  <U extends any[], T extends Selection<U>>(items: T): T
+  <U extends { move: (offset: Vector3) => void }[], T extends Selection<U>>(items: T): T
   (items: Polygons): PolygonSelection
   (items: Entities): EntitiesSelection
   (items: Lights): LightsSelection
@@ -280,7 +280,9 @@ type OverloadsOf$ = {
  * the copied (or original if no copy has been called) values can
  * be read with the `.get()` method.
  */
-export const $: OverloadsOf$ = <U extends any[], T extends Selection<U>>(items: T | ArrayLikeArxTypes) => {
+export const $: OverloadsOf$ = <U extends { move: (offset: Vector3) => void }[], T extends Selection<U>>(
+  items: T | ArrayLikeArxTypes,
+) => {
   if (items instanceof Selection) {
     return items
   }

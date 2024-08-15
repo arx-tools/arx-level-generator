@@ -34,7 +34,7 @@ export type TextureConstructorProps = {
 export const SIZE_UNKNOWN = -1
 export const NO_TEXTURE_CONTAINER = 0
 
-const supportedExtensions = ['.jpg', '.png', '.bmp']
+const supportedExtensions = new Set(['.jpg', '.png', '.bmp'])
 
 export class Texture extends ThreeJsTextue {
   static targetPath = 'graph/obj3d/textures'
@@ -367,10 +367,17 @@ export class Texture extends ThreeJsTextue {
    *  - texture.bmp == texture.jpg
    */
   equals(texture: Texture | string): boolean {
-    const { name: aFilename } = path.parse(this.filename.toLowerCase())
-    const { name: bFilename } = path.parse(
-      typeof texture === 'string' ? texture.toLowerCase() : texture.filename.toLowerCase(),
-    )
+    const aPath = this.filename.toLowerCase()
+    let bPath: string
+    if (typeof texture === 'string') {
+      bPath = texture.toLowerCase()
+    } else {
+      bPath = texture.filename.toLowerCase()
+    }
+
+    const { name: aFilename } = path.parse(aPath)
+    const { name: bFilename } = path.parse(bPath)
+
     return aFilename === bFilename
   }
 
@@ -395,7 +402,7 @@ export class Texture extends ThreeJsTextue {
 
   private async makeCopy(settings: Settings): Promise<[string, string]> {
     const { ext, name } = path.parse(this.filename)
-    const hasSupportedFormat = supportedExtensions.includes(ext)
+    const hasSupportedFormat = supportedExtensions.has(ext)
 
     let newFilename: string
     if (hasSupportedFormat) {
@@ -446,7 +453,7 @@ export class Texture extends ThreeJsTextue {
 
   private async makeTileable(settings: Settings): Promise<[string, string]> {
     const { ext, name } = path.parse(this.filename)
-    const hasSupportedFormat = supportedExtensions.includes(ext)
+    const hasSupportedFormat = supportedExtensions.has(ext)
 
     let newFilename: string
     if (hasSupportedFormat) {

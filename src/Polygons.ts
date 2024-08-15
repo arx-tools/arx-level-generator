@@ -198,7 +198,7 @@ export class Polygons extends Array<Polygon> {
     if (threeJsObj instanceof Mesh) {
       const uvs = threeJsObj.geometry.getAttribute('uv') as BufferAttribute
 
-      let texture: Texture | undefined | (Texture | undefined)[] = undefined
+      let texture: Texture | undefined | (Texture | undefined)[]
 
       if (threeJsObj.material instanceof MeshBasicMaterial) {
         if (threeJsObj.material.map instanceof Texture) {
@@ -211,36 +211,38 @@ export class Polygons extends Array<Polygon> {
           if (material instanceof MeshBasicMaterial) {
             if (material.map instanceof Texture) {
               return material.map
-            } else {
-              console.warn('[warning] Polygons: Unsupported texture map in material when adding threejs mesh')
-              return undefined
             }
-          } else {
-            console.warn('[warning] Polygons: Unsupported material found when adding threejs mesh')
+
+            console.warn('[warning] Polygons: Unsupported texture map in material when adding threejs mesh')
             return undefined
           }
+
+          console.warn('[warning] Polygons: Unsupported material found when adding threejs mesh')
+          return undefined
         })
       } else if (threeJsObj.material !== undefined) {
         console.warn('[warning] Polygons: Unsupported material found when adding threejs mesh')
       }
 
       const vertexPrecision = 10
-      const vertices = getNonIndexedVertices(threeJsObj.geometry).map(({ idx, vector, materialIndex }) => {
-        return {
-          vertex: new Vertex(
-            roundToNDecimals(vertexPrecision, vector.x),
-            roundToNDecimals(vertexPrecision, vector.y),
-            roundToNDecimals(vertexPrecision, vector.z),
-            uvs.getX(idx),
-            uvs.getY(idx),
-            Color.white,
-          ),
-          materialIndex,
-        } as VertexWithMaterialIndex
-      })
+      const vertices = getNonIndexedVertices(threeJsObj.geometry).map(
+        ({ idx, vector, materialIndex }): VertexWithMaterialIndex => {
+          return {
+            vertex: new Vertex(
+              roundToNDecimals(vertexPrecision, vector.x),
+              roundToNDecimals(vertexPrecision, vector.y),
+              roundToNDecimals(vertexPrecision, vector.z),
+              uvs.getX(idx),
+              uvs.getY(idx),
+              Color.white,
+            ),
+            materialIndex,
+          }
+        },
+      )
 
       if (tryToQuadify === QUADIFY) {
-        let previousPolygon: TripleOf<VertexWithMaterialIndex> | undefined = undefined
+        let previousPolygon: TripleOf<VertexWithMaterialIndex> | undefined
         let currentPolygon: TripleOf<VertexWithMaterialIndex>
 
         for (let i = 0; i < vertices.length; i = i + 3) {
@@ -251,7 +253,7 @@ export class Polygons extends Array<Polygon> {
 
           currentPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<VertexWithMaterialIndex>
 
-          const materialIndex = currentPolygon[0].materialIndex
+          const { materialIndex } = currentPolygon[0]
 
           let isQuadable = false
           if (tryToQuadify === QUADIFY) {
@@ -259,7 +261,13 @@ export class Polygons extends Array<Polygon> {
             isQuadable = true
           }
 
-          const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
+          let currentTexture
+          if (Array.isArray(texture)) {
+            currentTexture = texture[materialIndex ?? 0]
+          } else {
+            currentTexture = texture
+          }
+
           if (currentTexture instanceof Material && currentTexture.opacity === 100) {
             // remove opacity
             currentTexture.flags = currentTexture.flags & ~ArxPolygonFlags.Transparent
@@ -268,10 +276,19 @@ export class Polygons extends Array<Polygon> {
           if (isQuadable) {
             const [a, b, c] = previousPolygon
             const d = currentPolygon[1]
+
+            // TODO: add a proper name for this variable
+            let ccc: ArxPolygonFlags
+            if (currentTexture instanceof Material) {
+              ccc = currentTexture.flags | flags
+            } else {
+              ccc = flags
+            }
+
             const polygon = new Polygon({
               vertices: [a, d, c, b].map(({ vertex }) => vertex) as QuadrupleOf<Vertex>,
               texture: currentTexture,
-              flags: currentTexture instanceof Material ? currentTexture.flags | flags : flags,
+              flags: ccc,
               isQuad: true,
               room,
             })
@@ -285,10 +302,18 @@ export class Polygons extends Array<Polygon> {
             continue
           }
 
+          // TODO: add a proper name for this variable
+          let ccc: ArxPolygonFlags
+          if (currentTexture instanceof Material) {
+            ccc = currentTexture.flags | flags
+          } else {
+            ccc = flags
+          }
+
           const polygon = new Polygon({
             vertices: [...previousPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
             texture: currentTexture,
-            flags: currentTexture instanceof Material ? currentTexture.flags | flags : flags,
+            flags: ccc,
             room,
           })
 
@@ -302,17 +327,31 @@ export class Polygons extends Array<Polygon> {
 
         if (previousPolygon !== undefined) {
           const { materialIndex } = previousPolygon[0]
-          const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
+
+          let currentTexture
+          if (Array.isArray(texture)) {
+            currentTexture = texture[materialIndex ?? 0]
+          } else {
+            currentTexture = texture
+          }
 
           if (currentTexture instanceof Material && currentTexture.opacity === 100) {
             // remove opacity
-            currentTexture.flags & ~ArxPolygonFlags.Transparent
+            currentTexture.flags = currentTexture.flags & ~ArxPolygonFlags.Transparent
+          }
+
+          // TODO: add a proper name for this variable
+          let ccc: ArxPolygonFlags
+          if (currentTexture instanceof Material) {
+            ccc = currentTexture.flags | flags
+          } else {
+            ccc = flags
           }
 
           const polygon = new Polygon({
             vertices: [...previousPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
             texture: currentTexture,
-            flags: currentTexture instanceof Material ? currentTexture.flags | flags : flags,
+            flags: ccc,
             room,
           })
 
@@ -326,17 +365,32 @@ export class Polygons extends Array<Polygon> {
         for (let i = 0; i < vertices.length; i = i + 3) {
           const currentPolygon = vertices.slice(i, i + 3).reverse() as TripleOf<VertexWithMaterialIndex>
           const { materialIndex } = currentPolygon[0]
-          const currentTexture = Array.isArray(texture) ? texture[materialIndex ?? 0] : texture
+
+          let currentTexture
+          if (Array.isArray(texture)) {
+            currentTexture = texture[materialIndex ?? 0]
+          } else {
+            currentTexture = texture
+          }
 
           if (currentTexture instanceof Material && currentTexture.opacity === 100) {
             // remove opacity
-            currentTexture.flags & ~ArxPolygonFlags.Transparent
+            currentTexture.flags = currentTexture.flags & ~ArxPolygonFlags.Transparent
           }
+
+          let ccc2
+          if (currentTexture instanceof Material) {
+            ccc2 = currentTexture.flags | flags
+          } else {
+            ccc2 = flags
+          }
+
+          ccc2 = ccc2 & ~ArxPolygonFlags.Quad
 
           const polygon = new Polygon({
             vertices: [...currentPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
             texture: currentTexture,
-            flags: (currentTexture instanceof Material ? currentTexture.flags | flags : flags) & ~ArxPolygonFlags.Quad,
+            flags: ccc2,
             room,
           })
 

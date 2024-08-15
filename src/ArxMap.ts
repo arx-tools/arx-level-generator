@@ -269,34 +269,28 @@ export class ArxMap {
     const hudElements = this.hud.exportSourcesAndTargets(settings)
     const uiElements = this.ui.exportSourcesAndTargets(settings)
 
-    const ambienceTracks = this.zones.reduce(
-      (acc, zone) => {
-        if (!zone.hasAmbience() || zone.ambience.isNative) {
-          return acc
-        }
+    const ambienceTracks: Record<string, string> = {}
+    this.zones.forEach((zone) => {
+      if (!zone.hasAmbience() || zone.ambience.isNative) {
+        return
+      }
 
-        zone.ambience.exportSourcesAndTargets(settings).forEach(([source, target]) => {
-          acc[target] = source
-        })
+      zone.ambience.exportSourcesAndTargets(settings).forEach(([source, target]) => {
+        ambienceTracks[target] = source
+      })
+    })
 
-        return acc
-      },
-      {} as Record<string, string>,
-    )
+    let customAmbiences: Record<string, ArxAMB> = {}
+    this.zones.forEach((zone) => {
+      if (!zone.hasAmbience() || zone.ambience.isNative) {
+        return
+      }
 
-    const customAmbiences = this.zones.reduce(
-      (acc, zone) => {
-        if (!zone.hasAmbience() || zone.ambience.isNative) {
-          return acc
-        }
-
-        return {
-          ...acc,
-          ...zone.ambience.toArxData(settings),
-        }
-      },
-      {} as Record<string, ArxAMB>,
-    )
+      customAmbiences = {
+        ...customAmbiences,
+        ...zone.ambience.toArxData(settings),
+      }
+    })
 
     const scripts: Record<string, string> = {}
     const models: Record<string, string> = {}
@@ -334,14 +328,16 @@ export class ArxMap {
     const sounds = Audio.exportReplacements(settings)
 
     // removing root entities while also making sure the entities land in an Entities object and not in an array
-    this.entities = this.entities
-      .filter((entity) => {
-        return !entity.hasScript() || !entity.script.isRoot
-      })
-      .reduce((acc, entity) => {
-        acc.push(entity)
-        return acc
-      }, new Entities())
+    const nonRootEntities = new Entities()
+    this.entities.forEach((entity) => {
+      if (entity.hasScript() && entity.script.isRoot) {
+        return
+      }
+
+      nonRootEntities.push(entity)
+    })
+
+    this.entities = nonRootEntities
 
     if (this.player.hasScript()) {
       scripts[this.player.exportTarget(settings)] = this.player.script.toArxData()

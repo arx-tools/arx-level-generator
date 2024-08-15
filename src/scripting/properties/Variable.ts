@@ -94,7 +94,12 @@ export class Variable<T> extends ScriptProperty<T> {
     switch (this.propType) {
       case 'bool':
       case 'global bool': {
-        value = `${this.value ? 1 : 0}`
+        if (this.value) {
+          value = '1'
+        } else {
+          value = '0'
+        }
+
         break
       }
 

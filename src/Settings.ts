@@ -187,16 +187,27 @@ export class Settings {
     this.outputDir = props.outputDir ?? process.env.outputDir ?? path.resolve('./output')
     this.levelIdx = props.levelIdx ?? Number.parseInt(process.env.levelIdx ?? '1', 10)
     this.assetsDir = props.assetsDir ?? process.env.assetsDir ?? path.resolve('./assets')
-    this.calculateLighting = props.calculateLighting ?? (process.env.calculateLighting === 'false' ? false : true)
+    this.calculateLighting = props.calculateLighting ?? process.env.calculateLighting !== 'false'
 
-    this.lightingCalculatorMode =
-      props.lightingCalculatorMode ??
-      (isValidLightingCalculatorMode(process.env.lightingCalculatorMode)
-        ? process.env.lightingCalculatorMode
-        : 'DistanceAngleShadowNoTransparency')
+    let fallbackLCM: LightingCalculatorMode
+    if (isValidLightingCalculatorMode(process.env.lightingCalculatorMode)) {
+      fallbackLCM = process.env.lightingCalculatorMode
+    } else {
+      fallbackLCM = 'DistanceAngleShadowNoTransparency'
+    }
+
+    this.lightingCalculatorMode = props.lightingCalculatorMode ?? fallbackLCM
 
     this.seed = props.seed ?? process.env.seed ?? randomIntBetween(100_000_000, 999_999_999).toString()
-    this.mode = props.mode ?? (process.env.mode === 'development' ? process.env.mode : 'production')
+
+    let fallbackMode: Modes
+    if (process.env.mode === 'development') {
+      fallbackMode = process.env.mode
+    } else {
+      fallbackMode = 'production'
+    }
+
+    this.mode = props.mode ?? fallbackMode
 
     this.uncompressedFTS = props.uncompressedFTS ?? process.env.uncompressedFTS === 'true'
 

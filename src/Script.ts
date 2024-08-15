@@ -3,7 +3,6 @@ import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import { type ScriptProperty } from '@scripting/ScriptProperty.js'
 import { type ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
 import { isUsesTextures } from '@scripting/interfaces/UsesTextures.js'
-import { Expand } from 'arx-convert/utils'
 
 type ScriptHandlerBase = string | string[] | ScriptCommand | ScriptCommand[]
 
@@ -28,14 +27,37 @@ export class Script {
     const isHandlerNotAFunction =
       typeof handler === 'string' || handler instanceof ScriptCommand || Array.isArray(handler)
 
-    const tmp = isHandlerNotAFunction ? handler : handler()
-    const tmp2 = (Array.isArray(tmp) ? tmp : [tmp]) as string[] | ScriptCommand[]
+    let tmp: ScriptHandlerBase
+    if (isHandlerNotAFunction) {
+      tmp = handler
+    } else {
+      tmp = handler()
+    }
+
+    let tmp2: string[] | ScriptCommand[]
+    if (Array.isArray(tmp)) {
+      tmp2 = tmp
+    } else {
+      tmp2 = [tmp]
+    }
 
     let result = ''
 
     for (const h of tmp2) {
-      const handlerResult = h instanceof ScriptCommand ? h.toString() : h
-      const handlerResults = (Array.isArray(handlerResult) ? handlerResult : [handlerResult]) as string[]
+      let handlerResult
+      if (h instanceof ScriptCommand) {
+        handlerResult = h.toString()
+      } else {
+        handlerResult = h
+      }
+
+      let handlerResults: string[]
+      if (Array.isArray(handlerResult)) {
+        handlerResults = handlerResult
+      } else {
+        handlerResults = [handlerResult]
+      }
+
       result = result + handlerResults.filter((r) => r.trim() !== '').join('\n') + '\n'
     }
 

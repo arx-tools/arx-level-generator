@@ -10,6 +10,7 @@ import { type Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { type TextureOrMaterial } from '@src/types.js'
+import { Cube } from '@prefabs/entity/Cube.js'
 
 const instanceCatalog: Record<string, Entity[]> = {}
 
@@ -94,13 +95,8 @@ export class Entity {
     return new Entity({ src: 'items/provisions/rope' })
   }
 
-  static get cube() {
-    // TODO: I'm not sure about this, but this is the only way to import a class
-    // which extends the base Entity class
-    return (async () => {
-      const { Cube } = await import('@prefabs/entity/Cube.js')
-      return new Cube()
-    })()
+  static get cube(): Cube {
+    return new Cube()
   }
 
   static get bone(): Entity {
@@ -365,17 +361,17 @@ export class Entity {
 
     if (this.hasInventoryIcon()) {
       try {
-        source = (await this.inventoryIcon.exportSourceAndTarget(settings, false, true))[0]
+        ;[source] = await this.inventoryIcon.exportSourceAndTarget(settings, false, true)
       } catch {
         console.error(
           `[error] Entity: inventory icon not found: "${this.inventoryIcon.filename}", using default fallback icon`,
         )
         this.inventoryIcon = Texture.missingInventoryIcon
-        source = (await this.inventoryIcon.exportSourceAndTarget(settings, false))[0]
+        ;[source] = await this.inventoryIcon.exportSourceAndTarget(settings, false)
       }
     } else {
       this.inventoryIcon = Texture.missingInventoryIcon
-      source = (await this.inventoryIcon.exportSourceAndTarget(settings, false))[0]
+      ;[source] = await this.inventoryIcon.exportSourceAndTarget(settings, false)
     }
 
     if (this.src.endsWith('.asl')) {
