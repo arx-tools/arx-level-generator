@@ -10,7 +10,7 @@ import { type Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { type TextureOrMaterial } from '@src/types.js'
-import { Cube } from '@prefabs/entity/Cube.js'
+import { type Cube as TypeOfCube } from '@prefabs/entity/Cube.js'
 
 const instanceCatalog: Record<string, Entity[]> = {}
 
@@ -95,8 +95,13 @@ export class Entity {
     return new Entity({ src: 'items/provisions/rope' })
   }
 
-  static get cube(): Cube {
-    return new Cube()
+  static get cube(): Promise<TypeOfCube> {
+    // TODO: I'm not sure about this, but this is the only way to import a class
+    // which extends the base Entity class
+    return (async (): Promise<TypeOfCube> => {
+      const { Cube } = await import('@prefabs/entity/Cube.js')
+      return new Cube()
+    })()
   }
 
   static get bone(): Entity {
