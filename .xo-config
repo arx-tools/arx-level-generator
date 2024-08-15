@@ -5,6 +5,9 @@
   "space": true,
   "semicolon": false,
   "prettier": true,
+  "plugins": [
+    "eslint-plugin-unused-imports"
+  ],
   "rules": {
     "capitalized-comments": "off",
     "no-bitwise": "off",
@@ -102,6 +105,7 @@
         "checkInfinity": true,
         "checkNaN": true
       }
-    ]
+    ],
+    "unused-imports/no-unused-imports": "error"
   }
 }
