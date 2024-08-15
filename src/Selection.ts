@@ -40,8 +40,9 @@ export abstract class Selection<T extends { move: (offset: Vector3) => void }[]>
   }
 
   /**
-   * selects items based on a given predicate
-   * if there are already items selected then this filters those further
+   * Selects items based on a given predicate.
+   *
+   * If there are already items selected then this filters those further
    */
   selectBy(predicate: (item: T[0], idx: number) => boolean): this {
     if (!this.hasSelection()) {
@@ -142,6 +143,8 @@ export class PolygonSelection extends Selection<Polygons> {
    * Copies the selected polygons.
    *
    * A call to a `select*` method is required beforehand.
+   *
+   * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
   copy(): this {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
@@ -180,12 +183,22 @@ export class PolygonSelection extends Selection<Polygons> {
     return this.selectBy((polygon) => polygon.texture?.equalsAny(textures) ?? false)
   }
 
+  /**
+   * Makes the selected polygons double sided.
+   *
+   * A call to a `select*` method is required beforehand.
+   */
   makeDoubleSided(): this {
     return this.apply((polygon) => {
       polygon.makeDoubleSided()
     })
   }
 
+  /**
+   * Moves selected polygons to room 1 by setting the room property to 1
+   *
+   * A call to a `select*` method is required beforehand.
+   */
   moveToRoom1(): this {
     return this.apply((polygon) => {
       if (polygon.room < 1) {
@@ -210,12 +223,22 @@ export class PolygonSelection extends Selection<Polygons> {
     })
   }
 
+  /**
+   * Flips the UV horizontally to the selected polygons.
+   *
+   * A call to a `select*` method is required beforehand.
+   */
   flipUVHorizontally(): this {
     return this.apply((polygon) => {
       polygon.flipUVHorizontally()
     })
   }
 
+  /**
+   * Flips the UV vertically to the selected polygons.
+   *
+   * A call to a `select*` method is required beforehand.
+   */
   flipUVVertically(): this {
     return this.apply((polygon) => {
       polygon.flipUVVertically()
@@ -224,6 +247,13 @@ export class PolygonSelection extends Selection<Polygons> {
 }
 
 export class LightsSelection extends Selection<Lights> {
+  /**
+   * Copies the selected lights.
+   *
+   * A call to a `select*` method is required beforehand.
+   *
+   * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
+   */
   copy(): this {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
     return new LightsSelection(new Lights(...copiedItems)) as this
@@ -231,6 +261,13 @@ export class LightsSelection extends Selection<Lights> {
 }
 
 export class EntitiesSelection extends Selection<Entities> {
+  /**
+   * Copies the selected entities.
+   *
+   * A call to a `select*` method is required beforehand.
+   *
+   * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
+   */
   copy(): this {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
     return new EntitiesSelection(new Entities(...copiedItems)) as this
@@ -238,6 +275,13 @@ export class EntitiesSelection extends Selection<Entities> {
 }
 
 export class FogsSelection extends Selection<Fogs> {
+  /**
+   * Copies the selected fogs.
+   *
+   * A call to a `select*` method is required beforehand.
+   *
+   * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
+   */
   copy(): this {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
     return new FogsSelection(new Fogs(...copiedItems)) as this
@@ -245,6 +289,13 @@ export class FogsSelection extends Selection<Fogs> {
 }
 
 export class PathsSelection extends Selection<Paths> {
+  /**
+   * Copies the selected paths.
+   *
+   * A call to a `select*` method is required beforehand.
+   *
+   * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
+   */
   copy(): this {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
     return new PathsSelection(new Paths(...copiedItems)) as this
@@ -252,6 +303,13 @@ export class PathsSelection extends Selection<Paths> {
 }
 
 export class ZonesSelection extends Selection<Zones> {
+  /**
+   * Copies the selected zones.
+   *
+   * A call to a `select*` method is required beforehand.
+   *
+   * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
+   */
   copy(): this {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
     return new ZonesSelection(new Zones(...copiedItems)) as this
