@@ -43,7 +43,7 @@ import { Zone } from '@src/Zone.js'
 import { Zones } from '@src/Zones.js'
 import { compile } from '@src/compile.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
-import { times, uniq } from '@src/faux-ramda.js'
+import { groupSequences, times, uniq } from '@src/faux-ramda.js'
 import { getGeneratorPackageJSON, latin9ToLatin1 } from '@src/helpers.js'
 import { type OriginalLevel } from '@src/types.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
@@ -636,6 +636,8 @@ export class ArxMap {
 
     let warningGivenAboutInvalidRoom = false
 
+    const indicesOfPolygonsToBeRemoved: number[] = []
+
     this.polygons.forEach((polygon, index) => {
       if (polygon.room < 1) {
         return
@@ -646,9 +648,11 @@ export class ArxMap {
         if (!warningGivenAboutInvalidRoom) {
           warningGivenAboutInvalidRoom = true
           console.warn(
-            `[warning] ArxMap: Reference to a non-existent room found in the polygon data (polygons[${index}].room is ${polygon.room})`,
+            `[warning] ArxMap: Reference to a non-existent room found in the polygon data (polygons[${index}].room is ${polygon.room}). Subsequent warnings are not shown.`,
           )
         }
+
+        indicesOfPolygonsToBeRemoved.unshift(index)
 
         return
       }
@@ -667,5 +671,14 @@ export class ArxMap {
 
       room.polygons.push({ cellX, cellY, polygonIdx: polygonsPerCellCounter[key] })
     })
+
+    if (indicesOfPolygonsToBeRemoved.length > 0) {
+      groupSequences(indicesOfPolygonsToBeRemoved).forEach(([start, length]) => {
+        this.polygons.splice(start, length)
+      })
+      console.warn(
+        `[warning] ArxMap: Removed ${indicesOfPolygonsToBeRemoved.length} polygons belonging to non-existent rooms`,
+      )
+    }
   }
 }
