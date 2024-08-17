@@ -32,4 +32,4 @@ This will create a blank map with a single 100x100 tile below the player's feet.
 As of version `21.0.0-alpha.8` of `arx-level-generator` this is the smallest
 amount of code that can produce a working Arx Fatalis map.
 
-![how the base project looks](base-project.jpg?raw=true 'how the base project looks')
+![how the base project looks](img/base-project.jpg?raw=true 'how the base project looks')
