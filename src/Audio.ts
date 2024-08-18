@@ -19,8 +19,12 @@ type AudioConstructorProps = {
   isInternalAsset?: boolean
 }
 
-export class Audio {
-  static replacements: Record<string, Audio> = {}
+abstract class _Audio {
+  abstract exportSourceAndTarget(settings: Settings): [string, string]
+}
+
+export class Audio extends _Audio {
+  static replacements: Record<string, _Audio> = {}
 
   static fromCustomFile(props: Expand<Omit<AudioConstructorProps, 'isNative'>>): Audio {
     return new Audio({
@@ -115,6 +119,8 @@ export class Audio {
   isInternalAsset: boolean
 
   constructor(props: AudioConstructorProps) {
+    super()
+
     this.filename = props.filename
     if (!this.filename.toLowerCase().endsWith('.wav')) {
       this.filename = this.filename + '.wav'

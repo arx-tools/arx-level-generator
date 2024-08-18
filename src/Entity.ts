@@ -45,7 +45,7 @@ export type EntityConstructorProps = {
 
 export type EntityConstructorPropsWithoutSrc = Expand<Omit<EntityConstructorProps, 'src'>>
 
-class _Entity {}
+abstract class _Entity {}
 
 export class Entity extends _Entity {
   static fromArxInteractiveObject(entity: ArxInteractiveObject): Entity {
