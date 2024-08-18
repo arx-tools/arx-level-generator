@@ -12,8 +12,6 @@ import { Vector3 } from '@src/Vector3.js'
 import { type TextureOrMaterial } from '@src/types.js'
 import { type Cube as TypeOfCube } from '@prefabs/entity/Cube.js'
 
-const instanceCatalog: Record<string, Entity[]> = {}
-
 export type EntityConstructorProps = {
   id?: number
   /**
@@ -47,7 +45,9 @@ export type EntityConstructorProps = {
 
 export type EntityConstructorPropsWithoutSrc = Expand<Omit<EntityConstructorProps, 'src'>>
 
-export class Entity {
+class _Entity {}
+
+export class Entity extends _Entity {
   static fromArxInteractiveObject(entity: ArxInteractiveObject): Entity {
     return new Entity({
       id: entity.identifier,
@@ -56,6 +56,8 @@ export class Entity {
       orientation: Rotation.fromArxRotation(entity.angle),
     })
   }
+
+  private static readonly instanceCatalog: Record<string, _Entity[]> = {}
 
   // ----------------
 
@@ -221,14 +223,16 @@ export class Entity {
   otherDependencies: (Audio | TextureOrMaterial)[] = []
 
   constructor(props: EntityConstructorProps) {
+    super()
+
     this.src = props.src
     this.position = props.position ?? new Vector3(0, 0, 0)
     this.orientation = props.orientation ?? new Rotation(0, 0, 0)
 
     if (props.id === undefined) {
-      instanceCatalog[this.src] = instanceCatalog[this.src] ?? []
-      instanceCatalog[this.src].push(this)
-      this.id = instanceCatalog[this.src].length
+      Entity.instanceCatalog[this.src] = Entity.instanceCatalog[this.src] ?? []
+      Entity.instanceCatalog[this.src].push(this)
+      this.id = Entity.instanceCatalog[this.src].length
     } else {
       this.id = props.id
     }
