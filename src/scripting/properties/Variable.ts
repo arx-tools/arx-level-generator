@@ -107,13 +107,13 @@ export class Variable<T> extends ScriptProperty<T> {
       case 'float':
       case 'global int':
       case 'global float': {
-        value = `${this.value}`
+        value = (this.value as number).toString()
         break
       }
 
       case 'string':
       case 'global string': {
-        value = `"${this.value}"`
+        value = `"${this.value as string}"`
         break
       }
     }
