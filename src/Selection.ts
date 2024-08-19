@@ -323,23 +323,28 @@ type ArrayLikeArxTypes = Polygons | Lights | Entities | Fogs | Paths | Zones
 
 const instances = new WeakMap<ArrayLikeArxTypes, Selection<ArrayLikeArxTypes>>()
 
-type OverloadsOf$ = {
-  <U extends ArxComponent[], T extends Selection<U>>(items: T): T
-  (items: Polygons): PolygonSelection
-  (items: Entities): EntitiesSelection
-  (items: Lights): LightsSelection
-  (items: Fogs): FogsSelection
-  (items: Paths): PathsSelection
-  (items: Zones): ZonesSelection
-}
-
 /**
  * Calling methods on the selected items will mutate the original values
  * unless you create a copy of them with the `.copy()` method
  * the copied (or original if no copy has been called) values can
  * be read with the `.get()` method.
+ *
+ * Passing in a selection will return itself:
+ * ```ts
+ * const polygons = new Polygons()
+ * const selA = $(polygons) // typeof selA === PolygonSelection
+ * const selB = $(selA) // selA === selB
+ * ```
  */
-export const $: OverloadsOf$ = <U extends ArxComponent[], T extends Selection<U>>(items: T | ArrayLikeArxTypes) => {
+export function $(items: Polygons | PolygonSelection): PolygonSelection
+export function $(items: Entities | EntitiesSelection): EntitiesSelection
+export function $(items: Lights | LightsSelection): LightsSelection
+export function $(items: Fogs | FogsSelection): FogsSelection
+export function $(items: Paths | PathsSelection): PathsSelection
+export function $(items: Zones | ZonesSelection): ZonesSelection
+export function $<U extends ArxComponent[], T extends Selection<U>>(
+  items: T | ArrayLikeArxTypes,
+): T | Selection<ArrayLikeArxTypes> {
   if (items instanceof Selection) {
     return items
   }
