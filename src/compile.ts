@@ -149,10 +149,9 @@ async function calculateLighting(settings: Settings): Promise<void> {
     args.push(`--dont-compress-fts`)
   }
 
-  const __filename = fileURLToPath(import.meta.url)
-  const __dirname = path.dirname(__filename)
-
-  const libPath = path.resolve(__dirname, '../../lib')
+  const filename = fileURLToPath(import.meta.url)
+  const dirname = path.dirname(filename)
+  const libPath = path.resolve(dirname, '../../lib')
 
   let exeFile: string
   switch (operatingSystem) {

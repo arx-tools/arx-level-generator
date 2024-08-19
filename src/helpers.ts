@@ -19,10 +19,9 @@ let cacheOfProjectPackageJSON: PackageJsonProps
 export async function getGeneratorPackageJSON(): Promise<PackageJsonProps> {
   if (cacheOfGeneratorPackageJSON === undefined) {
     try {
-      const __filename = fileURLToPath(import.meta.url)
-      const __dirname = path.dirname(__filename)
-
-      const rawIn = await fs.readFile(path.resolve(__dirname, '../../package.json'), 'utf8')
+      const filename = fileURLToPath(import.meta.url)
+      const dirname = path.dirname(filename)
+      const rawIn = await fs.readFile(path.resolve(dirname, '../../package.json'), 'utf8')
       cacheOfGeneratorPackageJSON = JSON.parse(rawIn) as PackageJsonProps
     } catch {
       cacheOfGeneratorPackageJSON = {
