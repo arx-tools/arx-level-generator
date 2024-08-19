@@ -18,32 +18,73 @@ export abstract class Selection<T extends ArxComponent[]> {
     this.items = items
   }
 
+  /**
+   * Returns all the items regardless of any selection.
+   *
+   * To get the items of the selection call `.copy()` before calling `.get()`
+   *
+   * ```ts
+   * const polygons = new Polygons()
+   * const selectedPolygons = $(polygons).selectBy(<some predicate>).copy().get()
+   * ```
+   */
   get(): T {
     return this.items
   }
 
+  /**
+   * Empties the selection, so that afterwards nothing is selected.
+   */
   clearSelection(): this {
     this.selection = []
     return this
   }
 
+  /**
+   * returns whether there are items selected or is the selection empty
+   */
   hasSelection(): boolean {
     return this.selection.length > 0
   }
 
+  /**
+   * returns the number of selected items
+   */
   sizeOfSelection(): number {
     return this.selection.length
   }
 
+  /**
+   * selects all items
+   */
   selectAll(): this {
     this.selection = [...this.items.keys()]
     return this
   }
 
   /**
-   * Selects items based on a given predicate.
+   * Selects items based on a given predicate (original position of items are not preserved, only their relative order
+   * to each other).
+   *
+   * Example: select every 5th item:
+   *
+   * ```ts
+   * $(items).selectBy((item, idx) => idx % 5 === 0)
+   * // new selection = [0th item, 5th item, 10th item, ...]
+   * ```
+   *
+   * ---
    *
    * If there are already items selected then this filters those further
+   *
+   * Example: selecting every 3rd item, then every 5th of those items
+   *
+   * ```ts
+   * $(items)
+   *  .selectBy((item, idx) => idx % 3 === 0)
+   *  .selectBy((item, idx) => idx % 5 === 0)
+   * ```
+   *
    */
   selectBy(predicate: (item: T[0], idx: number) => boolean): this {
     if (!this.hasSelection()) {
@@ -58,6 +99,9 @@ export abstract class Selection<T extends ArxComponent[]> {
     return this
   }
 
+  /**
+   * Unselects current items and selects every other one.
+   */
   invertSelection(): this {
     // none selected -> all selected
     if (!this.hasSelection()) {
@@ -69,6 +113,7 @@ export abstract class Selection<T extends ArxComponent[]> {
       return this.clearSelection()
     }
 
+    // flip selection
     const selection = this.selection.toSorted((a, b) => a - b)
 
     this.selection = []
@@ -134,6 +179,13 @@ export abstract class Selection<T extends ArxComponent[]> {
     })
   }
 
+  /**
+   * Copies the selected items.
+   *
+   * A call to a `select*` method is required beforehand.
+   *
+   * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
+   */
   abstract copy(): Selection<T>
 }
 
@@ -329,7 +381,21 @@ const instances = new WeakMap<ArrayLikeArxTypes, Selection<ArrayLikeArxTypes>>()
  * the copied (or original if no copy has been called) values can
  * be read with the `.get()` method.
  *
+ * ```ts
+ * const polygons = new Polygons()
+ * // move every polygon down 100 units:
+ * $(polygons).selectAll().move(new Vector(0, 100, 0))
+ *
+ * // create a copy of the polygons and move them: (note the .copy() before .move())
+ * const tmp = $(polygons).selectAll().copy().move(new Vector(0, 100, 0))
+ * // access the copied polygons from the Selection object
+ * const copyOfPolygons = tmp.get()
+ * ```
+ *
+ * ---
+ *
  * Passing in a selection will return itself:
+ *
  * ```ts
  * const polygons = new Polygons()
  * const selA = $(polygons) // typeof selA === PolygonSelection
