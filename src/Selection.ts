@@ -8,8 +8,9 @@ import { type Texture } from '@src/Texture.js'
 import { type Vector3 } from '@src/Vector3.js'
 import { Zones } from '@src/Zones.js'
 import { groupSequences } from '@src/faux-ramda.js'
+import { type ArxComponent } from './ArxComponent.js'
 
-export abstract class Selection<T extends { move: (offset: Vector3) => void }[]> {
+export abstract class Selection<T extends ArxComponent[]> {
   protected selection: number[] = []
   protected items: T
 
@@ -133,7 +134,7 @@ export abstract class Selection<T extends { move: (offset: Vector3) => void }[]>
     })
   }
 
-  abstract copy(): this
+  abstract copy(): Selection<T>
 }
 
 // ----------------------------------------
@@ -146,9 +147,9 @@ export class PolygonSelection extends Selection<Polygons> {
    *
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
-  copy(): this {
+  copy(): PolygonSelection {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
-    return new PolygonSelection(new Polygons(...copiedItems)) as this
+    return new PolygonSelection(new Polygons(...copiedItems))
   }
 
   /**
@@ -254,9 +255,9 @@ export class LightsSelection extends Selection<Lights> {
    *
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
-  copy(): this {
+  copy(): LightsSelection {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
-    return new LightsSelection(new Lights(...copiedItems)) as this
+    return new LightsSelection(new Lights(...copiedItems))
   }
 }
 
@@ -268,9 +269,9 @@ export class EntitiesSelection extends Selection<Entities> {
    *
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
-  copy(): this {
+  copy(): EntitiesSelection {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
-    return new EntitiesSelection(new Entities(...copiedItems)) as this
+    return new EntitiesSelection(new Entities(...copiedItems))
   }
 }
 
@@ -282,9 +283,9 @@ export class FogsSelection extends Selection<Fogs> {
    *
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
-  copy(): this {
+  copy(): FogsSelection {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
-    return new FogsSelection(new Fogs(...copiedItems)) as this
+    return new FogsSelection(new Fogs(...copiedItems))
   }
 }
 
@@ -296,9 +297,9 @@ export class PathsSelection extends Selection<Paths> {
    *
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
-  copy(): this {
+  copy(): PathsSelection {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
-    return new PathsSelection(new Paths(...copiedItems)) as this
+    return new PathsSelection(new Paths(...copiedItems))
   }
 }
 
@@ -310,9 +311,9 @@ export class ZonesSelection extends Selection<Zones> {
    *
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
-  copy(): this {
+  copy(): ZonesSelection {
     const copiedItems = this.selection.map((idx) => this.items[idx].clone())
-    return new ZonesSelection(new Zones(...copiedItems)) as this
+    return new ZonesSelection(new Zones(...copiedItems))
   }
 }
 
@@ -323,7 +324,7 @@ type ArrayLikeArxTypes = Polygons | Lights | Entities | Fogs | Paths | Zones
 const instances = new WeakMap<ArrayLikeArxTypes, Selection<ArrayLikeArxTypes>>()
 
 type OverloadsOf$ = {
-  <U extends { move: (offset: Vector3) => void }[], T extends Selection<U>>(items: T): T
+  <U extends ArxComponent[], T extends Selection<U>>(items: T): T
   (items: Polygons): PolygonSelection
   (items: Entities): EntitiesSelection
   (items: Lights): LightsSelection
@@ -338,9 +339,7 @@ type OverloadsOf$ = {
  * the copied (or original if no copy has been called) values can
  * be read with the `.get()` method.
  */
-export const $: OverloadsOf$ = <U extends { move: (offset: Vector3) => void }[], T extends Selection<U>>(
-  items: T | ArrayLikeArxTypes,
-) => {
+export const $: OverloadsOf$ = <U extends ArxComponent[], T extends Selection<U>>(items: T | ArrayLikeArxTypes) => {
   if (items instanceof Selection) {
     return items
   }

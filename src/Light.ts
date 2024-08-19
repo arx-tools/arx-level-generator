@@ -1,6 +1,7 @@
 import { type ArxLight, ArxLightFlags } from 'arx-convert/types'
 import { Color } from '@src/Color.js'
 import { Vector3 } from '@src/Vector3.js'
+import { type ArxComponent } from '@src/ArxComponent.js'
 
 // TODO: Three JS comes with a bunch of Light classes, might worth investigating
 // https://threejs.org/docs/#api/en/lights/Light
@@ -15,7 +16,7 @@ type LightConstructorProps = {
   lightData: Omit<ArxLight, 'pos' | 'color' | 'flags' | 'fallStart' | 'fallEnd' | 'intensity'>
 }
 
-export class Light {
+export class Light implements ArxComponent {
   static fromArxLight({ pos, color, flags, fallStart, fallEnd, intensity, ...lightData }: ArxLight): Light {
     return new Light({
       position: Vector3.fromArxVector3(pos),
