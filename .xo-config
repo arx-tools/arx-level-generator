@@ -110,7 +110,7 @@
     "guard-for-in": "off",
     "arrow-body-style": [
       "error",
-      "never"
+      "always"
     ]
   }
 }
