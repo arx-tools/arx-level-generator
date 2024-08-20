@@ -6,7 +6,7 @@ import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Cursor, type CursorDir } from '@prefabs/rooms/Cursor.js'
 import { Rooms } from '@prefabs/rooms/Rooms.js'
-import { type RoomProps, type TextureDefinition } from '@prefabs/rooms/room.js'
+import { type RoomTextures, type RoomProps, type TextureDefinition } from '@prefabs/rooms/room.js'
 import { createLight } from '@tools/createLight.js'
 
 type CurrentBlock = {
@@ -130,17 +130,48 @@ function parseVariable(tokens: string[], variables: Record<string, string>, line
   variables[tokens[0]] = tokens[2]
 }
 
+function generateBaseRoomTextures(separateWalls: boolean = false): RoomTextures {
+  const roomTextures: RoomTextures = {
+    ceiling: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+    wall: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+    floor: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+  }
+
+  if (separateWalls) {
+    roomTextures.wall = [
+      { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+      { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+      { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+      { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+    ]
+  }
+
+  return roomTextures
+}
+
+function getWallIdxFromToken(token: string): 0 | 1 | 2 | 3 {
+  if (token.endsWith('north')) {
+    return 0
+  }
+
+  if (token.endsWith('east')) {
+    return 1
+  }
+
+  if (token.endsWith('south')) {
+    return 2
+  }
+
+  return 3
+}
+
 export async function loadRooms(filename: string, settings: Settings): Promise<Rooms> {
   const cursor = new Cursor()
   const rooms = new Rooms(cursor)
 
   const roomDefinitions: Record<string, RoomProps> = {
     default: {
-      textures: {
-        ceiling: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-        wall: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-        floor: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-      },
+      textures: generateBaseRoomTextures(),
     },
   }
 
@@ -172,16 +203,7 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
 
             if (roomDefinitions[tokens[1]] === undefined) {
               roomDefinitions[tokens[1]] = {
-                textures: {
-                  ceiling: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-                  wall: [
-                    { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-                    { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-                    { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-                    { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-                  ],
-                  floor: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-                },
+                textures: generateBaseRoomTextures(true),
               }
             }
           } else {
@@ -319,17 +341,7 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
             case 'wall-east':
             case 'wall-south':
             case 'wall-west': {
-              let wallIdx: 0 | 1 | 2 | 3
-              if (tokens[0].endsWith('north')) {
-                wallIdx = 0
-              } else if (tokens[0].endsWith('east')) {
-                wallIdx = 1
-              } else if (tokens[0].endsWith('south')) {
-                wallIdx = 2
-              } else {
-                wallIdx = 3
-              }
-
+              const wallIdx = getWallIdxFromToken(tokens[0])
               const wall = roomDefinitions[currentBlock.name].textures.wall as QuadrupleOf<TextureDefinition>
 
               switch (tokens[1]) {
