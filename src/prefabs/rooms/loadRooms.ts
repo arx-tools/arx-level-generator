@@ -149,7 +149,7 @@ function generateBaseRoomTextures(separateWalls: boolean = false): RoomTextures 
   return roomTextures
 }
 
-function getWallIdxFromToken(token: string): 0 | 1 | 2 | 3 {
+function getWallIdxFromToken(token: 'wall-north' | 'wall-east' | 'wall-south' | 'wall-west'): 0 | 1 | 2 | 3 {
   if (token.endsWith('north')) {
     return 0
   }
