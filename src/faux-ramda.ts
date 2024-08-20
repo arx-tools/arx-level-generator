@@ -1,11 +1,15 @@
 import { isOdd } from '@src/helpers.js'
 
 export function times<T>(fn: (index: number) => T, repetitions: number): T[] {
-  return Array.from({ length: repetitions }).map((value, index) => fn(index))
+  return Array.from({ length: repetitions }).map((value, index) => {
+    return fn(index)
+  })
 }
 
 export function repeat<T>(value: T, repetitions: number): T[] {
-  return Array.from({ length: repetitions }).map(() => value)
+  return Array.from({ length: repetitions }).map(() => {
+    return value
+  })
 }
 
 export function min(arr: number[]): number {
@@ -35,7 +39,9 @@ export function max(arr: number[]): number {
 }
 
 export function sum(numbers: number[]): number {
-  return numbers.reduce((total, n) => total + n, 0)
+  return numbers.reduce((total, n) => {
+    return total + n
+  }, 0)
 }
 
 /**
@@ -84,7 +90,9 @@ export function median(values: number[]): number {
     return values[0]
   }
 
-  const sortedValues = values.sort((a, b) => b - a)
+  const sortedValues = values.sort((a, b) => {
+    return b - a
+  })
 
   if (isOdd(values.length)) {
     return sortedValues[Math.floor(values.length / 2)]
@@ -97,7 +105,9 @@ export function median(values: number[]): number {
 }
 
 export function complement(fn: (...args: any[]) => boolean): (...args: any[]) => boolean {
-  return (...args: any[]) => !fn(...args)
+  return (...args: any[]) => {
+    return !fn(...args)
+  }
 }
 
 export function partition<T>(fn: (arg: T) => boolean, values: T[]): [T[], T[]] {

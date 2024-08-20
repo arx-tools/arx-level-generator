@@ -186,7 +186,11 @@ async function loadMTL(
         } else {
           const textureFromFile = Texture.fromCustomFile({
             filename: path.parse(materialInfo.map_kd).base,
-            sourcePath: [dir, path.parse(materialInfo.map_kd).dir].filter((row) => row !== '').join('/'),
+            sourcePath: [dir, path.parse(materialInfo.map_kd).dir]
+              .filter((row) => {
+                return row !== ''
+              })
+              .join('/'),
           })
 
           const flags = getMaterialFlags(textureFromFile, materialFlags)
@@ -410,7 +414,13 @@ export async function loadOBJ(
     tmp.push(...Object.values(materials))
   }
 
-  const materialList = tmp.map(({ map }) => map).filter((texture) => texture !== null) as Texture[]
+  const materialList = tmp
+    .map(({ map }) => {
+      return map as Texture
+    })
+    .filter((texture) => {
+      return texture !== null
+    })
 
   return { meshes, materials: materialList }
 }

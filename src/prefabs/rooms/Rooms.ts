@@ -30,7 +30,9 @@ function union(map1: ArxMap, map2: ArxMap): void {
         return false
       }
 
-      return map2.polygons.some((q) => p.equals(q, Number.EPSILON * 10 ** 3))
+      return map2.polygons.some((q) => {
+        return p.equals(q, Number.EPSILON * 10 ** 3)
+      })
     })
 
   $(map2.polygons)
@@ -41,7 +43,9 @@ function union(map1: ArxMap, map2: ArxMap): void {
         return false
       }
 
-      return map1.polygons.some((q) => p.equals(q, Number.EPSILON * 10 ** 3))
+      return map1.polygons.some((q) => {
+        return p.equals(q, Number.EPSILON * 10 ** 3)
+      })
     })
 
   $(map1.polygons).delete()

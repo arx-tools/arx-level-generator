@@ -109,7 +109,9 @@ export class Polygons extends Array<Polygon> {
     }
 
     const arxTextureContainers = textureContainers
-      .filter(({ remaining, maxRemaining }) => remaining !== maxRemaining)
+      .filter(({ remaining, maxRemaining }) => {
+        return remaining !== maxRemaining
+      })
       .map(({ id, filename }): ArxTextureContainer => {
         return { id, filename }
       })
@@ -286,7 +288,9 @@ export class Polygons extends Array<Polygon> {
             }
 
             const polygon = new Polygon({
-              vertices: [a, d, c, b].map(({ vertex }) => vertex) as QuadrupleOf<Vertex>,
+              vertices: [a, d, c, b].map(({ vertex }) => {
+                return vertex
+              }) as QuadrupleOf<Vertex>,
               texture: currentTexture,
               flags: ccc,
               isQuad: true,
@@ -311,7 +315,12 @@ export class Polygons extends Array<Polygon> {
           }
 
           const polygon = new Polygon({
-            vertices: [...previousPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
+            vertices: [
+              ...previousPolygon.map(({ vertex }) => {
+                return vertex
+              }),
+              new Vertex(0, 0, 0),
+            ] as QuadrupleOf<Vertex>,
             texture: currentTexture,
             flags: ccc,
             room,
@@ -349,7 +358,12 @@ export class Polygons extends Array<Polygon> {
           }
 
           const polygon = new Polygon({
-            vertices: [...previousPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
+            vertices: [
+              ...previousPolygon.map(({ vertex }) => {
+                return vertex
+              }),
+              new Vertex(0, 0, 0),
+            ] as QuadrupleOf<Vertex>,
             texture: currentTexture,
             flags: ccc,
             room,
@@ -388,7 +402,12 @@ export class Polygons extends Array<Polygon> {
           ccc2 = ccc2 & ~ArxPolygonFlags.Quad
 
           const polygon = new Polygon({
-            vertices: [...currentPolygon.map(({ vertex }) => vertex), new Vertex(0, 0, 0)] as QuadrupleOf<Vertex>,
+            vertices: [
+              ...currentPolygon.map(({ vertex }) => {
+                return vertex
+              }),
+              new Vertex(0, 0, 0),
+            ] as QuadrupleOf<Vertex>,
             texture: currentTexture,
             flags: ccc2,
             room,
@@ -467,7 +486,9 @@ export class Polygons extends Array<Polygon> {
     const cells: Record<string, number[]> = {}
 
     this.forEach((polygon, idx) => {
-      const vertices = polygon.vertices.map((vertex) => vertex.toArxVertex())
+      const vertices = polygon.vertices.map((vertex) => {
+        return vertex.toArxVertex()
+      })
       const [cellX, cellZ] = getCellCoords(vertices as QuadrupleOf<ArxVertex>)
       const key = `${cellZ}|${cellX}`
 

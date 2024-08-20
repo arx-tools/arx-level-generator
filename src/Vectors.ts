@@ -18,7 +18,11 @@ export class Vectors extends Array<Vector3> {
   uniq(): Vectors {
     const vectors = new Vectors()
 
-    uniq(this.map((vector) => vector.toString())).forEach((coords) => {
+    uniq(
+      this.map((vector) => {
+        return vector.toString()
+      }),
+    ).forEach((coords) => {
       vectors.push(Vector3.fromString(coords))
     })
 

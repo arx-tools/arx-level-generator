@@ -32,22 +32,28 @@ export class SoundPlayer extends Marker {
     this.otherDependencies.push(audio)
 
     if (this.autoplay) {
-      this.script?.on('init', () => this.sound.play())
+      this.script?.on('init', () => {
+        return this.sound.play()
+      })
     }
 
     if (!autoplay || this.sound.isStoppable()) {
-      this.script?.on('play', () => this.sound.play())
+      this.script?.on('play', () => {
+        return this.sound.play()
+      })
     }
 
     if (this.sound.isStoppable()) {
-      this.script?.on('stop', () => this.sound.stop())
+      this.script?.on('stop', () => {
+        return this.sound.stop()
+      })
     }
   }
 
   on(): string {
     if (this.autoplay && !this.sound.isStoppable()) {
       console.warn(
-        `[warning] SoundPlayer: Attempting to trigger play event on "${this.sound.filename}" in SoundPlayer that is on autoplay, but not unique (can't be stopped)`,
+        `[warning] SoundPlayer: Attempting to trigger play event on "${this.sound.filename.toString()}" in SoundPlayer that is on autoplay, but not unique (can't be stopped)`,
       )
       return ''
     }
@@ -58,7 +64,7 @@ export class SoundPlayer extends Marker {
   off(): string {
     if (!this.sound.isStoppable()) {
       console.warn(
-        `[warning] SoundPlayer: Attempting to trigger stop event on "${this.sound.filename}" in SoundPlayer which is not stoppable`,
+        `[warning] SoundPlayer: Attempting to trigger stop event on "${this.sound.filename.toString()}" in SoundPlayer which is not stoppable`,
       )
       return ''
     }

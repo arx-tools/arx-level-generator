@@ -82,16 +82,22 @@ export function pickWeightedRandoms<T extends Record<string, any>>(
   set: (T & { weight: number })[],
   guaranteePresenceOfAll = false,
 ): (T & { weight: number })[] {
-  const weights = set.map(({ weight }) => weight)
+  const weights = set.map(({ weight }) => {
+    return weight
+  })
   const totalWeight = sum(weights)
-  const percentages = weights.map((weight) => weight / totalWeight)
+  const percentages = weights.map((weight) => {
+    return weight / totalWeight
+  })
 
   const weightedSet = percentages
-    .map((weight, idx) => ({
-      idx,
-      originalWeight: set[idx].weight,
-      weight: Math.ceil(weight * amount),
-    }))
+    .map((weight, idx) => {
+      return {
+        idx,
+        originalWeight: set[idx].weight,
+        weight: Math.ceil(weight * amount),
+      }
+    })
     .sort((a, b) => {
       if (guaranteePresenceOfAll) {
         return a.originalWeight - b.originalWeight
@@ -99,7 +105,9 @@ export function pickWeightedRandoms<T extends Record<string, any>>(
 
       return b.originalWeight - a.originalWeight
     })
-    .flatMap(({ weight, idx }) => repeat(set[idx], weight))
+    .flatMap(({ weight, idx }) => {
+      return repeat(set[idx], weight)
+    })
     .slice(0, amount)
 
   return randomSort(weightedSet)

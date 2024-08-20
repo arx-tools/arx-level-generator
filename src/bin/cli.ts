@@ -15,7 +15,9 @@ const args: AppArgs = minimist(process.argv.slice(2), {
 const settings = new Settings()
 
 if (args.rungame) {
-  const otherArgs = process.argv.slice(2).filter((param) => !param.trim().startsWith('--rungame'))
+  const otherArgs = process.argv.slice(2).filter((param) => {
+    return !param.trim().startsWith('--rungame')
+  })
   await rungame(settings, otherArgs)
 } else {
   console.info('[info] cli: available commands: "--rungame"')

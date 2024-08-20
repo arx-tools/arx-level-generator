@@ -60,7 +60,9 @@ export class Polygon implements ArxComponent {
     })
 
     let texture: Texture | undefined
-    const textureContainer = textures.find(({ id }) => id === polygon.textureContainerId)
+    const textureContainer = textures.find(({ id }) => {
+      return id === polygon.textureContainerId
+    })
     if (textureContainer) {
       texture = Texture.fromArxTextureContainer(textureContainer)
     }
@@ -125,12 +127,16 @@ export class Polygon implements ArxComponent {
 
   clone(): Polygon {
     return new Polygon({
-      vertices: this.vertices.map((v) => v.clone()) as QuadrupleOf<Vertex>,
+      vertices: this.vertices.map((v) => {
+        return v.clone()
+      }) as QuadrupleOf<Vertex>,
       norm: this.norm.clone(),
       norm2: this.norm2.clone(),
       texture: this.texture,
       flags: this.flags,
-      normals: this.normals?.map((n) => n.clone()) as QuadrupleOf<Vector3>,
+      normals: this.normals?.map((n) => {
+        return n.clone()
+      }) as QuadrupleOf<Vector3>,
       transval: this.transval,
       area: this.area,
       room: this.room,
@@ -146,7 +152,9 @@ export class Polygon implements ArxComponent {
   }
 
   async toArxPolygon(textureContainers: (ArxTextureContainer & { remaining: number })[]): Promise<ArxPolygon> {
-    const vertices = this.vertices.map((vertex) => vertex.toArxVertex()) as QuadrupleOf<ArxVertex>
+    const vertices = this.vertices.map((vertex) => {
+      return vertex.toArxVertex()
+    }) as QuadrupleOf<ArxVertex>
 
     let textureContainerId = NO_TEXTURE_CONTAINER
     if (this.hasTexture()) {
@@ -163,7 +171,9 @@ export class Polygon implements ArxComponent {
 
     let normals: QuadrupleOf<ArxVector3> | undefined
     if (this.normals) {
-      normals = this.normals.map((normal) => normal.toArxVector3()) as QuadrupleOf<Vector3>
+      normals = this.normals.map((normal) => {
+        return normal.toArxVector3()
+      }) as QuadrupleOf<Vector3>
     }
 
     return {
@@ -372,14 +382,22 @@ export class Polygon implements ArxComponent {
 
     for (let i = 0; i < 3; i++) {
       const aVertex = this.vertices[i]
-      if (!polygon.vertices.some((bVertex) => aVertex.equals(bVertex, epsilon))) {
+      if (
+        !polygon.vertices.some((bVertex) => {
+          return aVertex.equals(bVertex, epsilon)
+        })
+      ) {
         return false
       }
     }
 
     if (this.isQuad()) {
       const aVertex = this.vertices[3]
-      if (!polygon.vertices.some((bVertex) => aVertex.equals(bVertex, epsilon))) {
+      if (
+        !polygon.vertices.some((bVertex) => {
+          return aVertex.equals(bVertex, epsilon)
+        })
+      ) {
         return false
       }
     }

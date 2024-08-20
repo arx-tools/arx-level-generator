@@ -309,7 +309,9 @@ export class Entity extends _Entity implements ArxComponent {
       inventoryIcon: this.inventoryIcon?.clone(),
       // script: TODO,
       model: this.model?.clone(),
-      otherDependencies: this.otherDependencies.map((dependency) => dependency.clone()),
+      otherDependencies: this.otherDependencies.map((dependency) => {
+        return dependency.clone()
+      }),
     })
   }
 

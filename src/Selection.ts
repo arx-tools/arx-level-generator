@@ -114,7 +114,9 @@ export abstract class Selection<T extends ArxComponent[]> {
     }
 
     // flip selection
-    const selection = this.selection.toSorted((a, b) => a - b)
+    const selection = this.selection.toSorted((a, b) => {
+      return a - b
+    })
 
     this.selection = []
 
@@ -200,7 +202,9 @@ export class PolygonSelection extends Selection<Polygons> {
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
   copy(): PolygonSelection {
-    const copiedItems = this.selection.map((idx) => this.items[idx].clone())
+    const copiedItems = this.selection.map((idx) => {
+      return this.items[idx].clone()
+    })
     return new PolygonSelection(new Polygons(...copiedItems))
   }
 
@@ -210,7 +214,9 @@ export class PolygonSelection extends Selection<Polygons> {
    * This method pre-selects all polygons if none have been selected before.
    */
   selectOutOfBounds(): this {
-    return this.selectBy((polygon) => polygon.isOutOfBounds())
+    return this.selectBy((polygon) => {
+      return polygon.isOutOfBounds()
+    })
   }
 
   /**
@@ -221,7 +227,9 @@ export class PolygonSelection extends Selection<Polygons> {
    * This method pre-selects all polygons if none have been selected before.
    */
   selectWithinBox(box: Box3): this {
-    return this.selectBy((polygon) => polygon.isWithin(box))
+    return this.selectBy((polygon) => {
+      return polygon.isWithin(box)
+    })
   }
 
   /**
@@ -233,7 +241,9 @@ export class PolygonSelection extends Selection<Polygons> {
    * This method pre-selects all polygons if none have been selected before.
    */
   selectByTextures(textures: (Texture | string)[]): this {
-    return this.selectBy((polygon) => polygon.texture?.equalsAny(textures) ?? false)
+    return this.selectBy((polygon) => {
+      return polygon.texture?.equalsAny(textures) ?? false
+    })
   }
 
   /**
@@ -308,7 +318,9 @@ export class LightsSelection extends Selection<Lights> {
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
   copy(): LightsSelection {
-    const copiedItems = this.selection.map((idx) => this.items[idx].clone())
+    const copiedItems = this.selection.map((idx) => {
+      return this.items[idx].clone()
+    })
     return new LightsSelection(new Lights(...copiedItems))
   }
 }
@@ -322,7 +334,9 @@ export class EntitiesSelection extends Selection<Entities> {
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
   copy(): EntitiesSelection {
-    const copiedItems = this.selection.map((idx) => this.items[idx].clone())
+    const copiedItems = this.selection.map((idx) => {
+      return this.items[idx].clone()
+    })
     return new EntitiesSelection(new Entities(...copiedItems))
   }
 }
@@ -336,7 +350,9 @@ export class FogsSelection extends Selection<Fogs> {
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
   copy(): FogsSelection {
-    const copiedItems = this.selection.map((idx) => this.items[idx].clone())
+    const copiedItems = this.selection.map((idx) => {
+      return this.items[idx].clone()
+    })
     return new FogsSelection(new Fogs(...copiedItems))
   }
 }
@@ -350,7 +366,9 @@ export class PathsSelection extends Selection<Paths> {
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
   copy(): PathsSelection {
-    const copiedItems = this.selection.map((idx) => this.items[idx].clone())
+    const copiedItems = this.selection.map((idx) => {
+      return this.items[idx].clone()
+    })
     return new PathsSelection(new Paths(...copiedItems))
   }
 }
@@ -364,7 +382,9 @@ export class ZonesSelection extends Selection<Zones> {
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
   copy(): ZonesSelection {
-    const copiedItems = this.selection.map((idx) => this.items[idx].clone())
+    const copiedItems = this.selection.map((idx) => {
+      return this.items[idx].clone()
+    })
     return new ZonesSelection(new Zones(...copiedItems))
   }
 }

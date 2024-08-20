@@ -7,7 +7,10 @@ type HashAndAmount = [string, number]
 
 function unpackCoords(coords: HashAndAmount[]): Vector3[] {
   return coords.map(([hash]) => {
-    const [x, y, z] = hash.split('|').map((x) => Number.parseFloat(x))
+    const [x, y, z] = hash.split('|').map((x) => {
+      return Number.parseFloat(x)
+    })
+
     return new Vector3(x, y, z)
   })
 }
@@ -23,11 +26,18 @@ export function categorizeVertices(geometry: BufferGeometry): {
   const polygons = getNonIndexedVertices(geometry)
 
   const summary = Object.entries(
-    countBy(({ vector }) => `${vector.x}|${vector.y}|${vector.z}`, polygons),
+    countBy(({ vector }) => {
+      return `${vector.x}|${vector.y}|${vector.z}`
+    }, polygons),
   ) as HashAndAmount[]
 
-  const [corner, edgeOrMiddle] = partition(([, amount]) => amount === 1 || amount === 2 || amount === 5, summary)
-  const [edge, middle] = partition(([, amount]) => amount === 3, edgeOrMiddle)
+  const [corner, edgeOrMiddle] = partition(([, amount]) => {
+    return amount === 1 || amount === 2 || amount === 5
+  }, summary)
+
+  const [edge, middle] = partition(([, amount]) => {
+    return amount === 3
+  }, edgeOrMiddle)
 
   /*
   // TODO: for quadified meshes

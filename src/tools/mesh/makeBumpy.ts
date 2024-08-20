@@ -107,5 +107,7 @@ export function makeBumpy(
     coords.setY(idx, peekY)
   })
 
-  return peeks.map(({ position }) => position)
+  return peeks.map(({ position }) => {
+    return position
+  })
 }

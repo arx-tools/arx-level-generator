@@ -110,7 +110,9 @@ export class ArxMap {
   i18n: Translations = new Translations()
   todo: ToBeSortedLater = {
     uniqueHeaders: [],
-    cells: times(() => ({}), MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS),
+    cells: times(() => {
+      return {}
+    }, MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS),
     anchors: [],
     rooms: [
       { portals: [], polygons: [] },
@@ -369,10 +371,14 @@ export class ArxMap {
       ...Object.keys(hudElements),
       ...Object.keys(uiElements),
       ...Object.keys(ambienceTracks),
-      ...Object.keys(customAmbiences).map((filename) => filename.replace(/\.json$/, '')),
+      ...Object.keys(customAmbiences).map((filename) => {
+        return filename.replace(/\.json$/, '')
+      }),
       ...Object.keys(scripts),
       ...Object.keys(translations),
-      ...Object.values(files).map((filename) => filename.replace(/\.json$/, '')),
+      ...Object.values(files).map((filename) => {
+        return filename.replace(/\.json$/, '')
+      }),
     ]
 
     const dirnames = uniq(pathsOfTheFiles.map(path.dirname.bind(path)))
@@ -560,7 +566,9 @@ export class ArxMap {
       },
       cells: this.todo.cells,
       anchors: this.todo.anchors,
-      portals: this.portals.map((portal) => portal.toArxPortal()),
+      portals: this.portals.map((portal) => {
+        return portal.toArxPortal()
+      }),
       rooms: this.todo.rooms,
       roomDistances: this.todo.roomDistances,
       ...(await this.polygons.toArxData()),
@@ -657,7 +665,9 @@ export class ArxMap {
         return
       }
 
-      const vertices = polygon.vertices.map((vertex) => vertex.toArxVertex())
+      const vertices = polygon.vertices.map((vertex) => {
+        return vertex.toArxVertex()
+      })
 
       const [cellX, cellY] = getCellCoords(vertices as QuadrupleOf<ArxVertex>)
 

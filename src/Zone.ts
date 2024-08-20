@@ -64,11 +64,13 @@ export class Zone implements ArxComponent {
       ...props,
       points: Vectors.fromThreejsGeometry(obj)
         .uniq()
-        .map((position) => ({
-          position,
-          type: ArxZoneAndPathPointType.Standard,
-          time: 0,
-        })),
+        .map((position) => {
+          return {
+            position,
+            type: ArxZoneAndPathPointType.Standard,
+            time: 0,
+          }
+        }),
     })
   }
 

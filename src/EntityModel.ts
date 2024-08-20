@@ -217,7 +217,9 @@ export class EntityModel {
         const normals = polygon.normals as QuadrupleOf<Vector3>
 
         const faceNormal = getFaceNormal(normals[0], normals[1], normals[2])
-        const textureIdx = ftlData.textureContainers.findIndex(({ filename }) => polygon.texture?.equals(filename))
+        const textureIdx = ftlData.textureContainers.findIndex(({ filename }) => {
+          return polygon.texture?.equals(filename)
+        })
         faces.push({
           faceType: ArxFaceType.Flat,
           vertexIdx: [vertexIdxCntr, vertexIdxCntr + 1, vertexIdxCntr + 2],
@@ -277,10 +279,12 @@ export class EntityModel {
 
       const origin = vertices[ftlData.header.origin].vector.clone()
 
-      ftlData.vertices = vertices.map(({ vector, norm }) => ({
-        vector: vector.clone().sub(origin).toArxVector3(),
-        norm: norm.toArxVector3(),
-      }))
+      ftlData.vertices = vertices.map(({ vector, norm }) => {
+        return {
+          vector: vector.clone().sub(origin).toArxVector3(),
+          norm: norm.toArxVector3(),
+        }
+      })
 
       ftlData.faces = faceIndexes.map(([aIdx, bIdx, cIdx]) => {
         const a = vertices[aIdx]

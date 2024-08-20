@@ -58,7 +58,14 @@ export class Script {
         handlerResults = [handlerResult]
       }
 
-      result = result + handlerResults.filter((r) => r.trim() !== '').join('\n') + '\n'
+      result =
+        result +
+        handlerResults
+          .filter((r) => {
+            return r.trim() !== ''
+          })
+          .join('\n') +
+        '\n'
     }
 
     return result
@@ -90,7 +97,13 @@ export class Script {
       let eventString = ''
 
       if (eventName === 'init') {
-        eventString = eventString + this.properties.map((property) => `  ${property.toString()}\n`).join('')
+        eventString =
+          eventString +
+          this.properties
+            .map((property) => {
+              return `  ${property.toString()}\n`
+            })
+            .join('')
       }
 
       for (const handler of handlers) {
@@ -107,8 +120,12 @@ export class Script {
       subroutines.push(subroutine.toString())
     }
 
-    const beforeScripts = this.eventHandlers['::before'].map((script) => Script.handlerToString(script))
-    const afterScripts = this.eventHandlers['::after'].map((script) => Script.handlerToString(script))
+    const beforeScripts = this.eventHandlers['::before'].map((script) => {
+      return Script.handlerToString(script)
+    })
+    const afterScripts = this.eventHandlers['::after'].map((script) => {
+      return Script.handlerToString(script)
+    })
 
     const scriptSections = [
       beforeScripts.join('\n'),
@@ -117,7 +134,11 @@ export class Script {
       afterScripts.join('\n'),
     ]
 
-    return scriptSections.filter((section) => section !== '').join('\n\n')
+    return scriptSections
+      .filter((section) => {
+        return section !== ''
+      })
+      .join('\n\n')
   }
 
   on(eventName: string, handler: ScriptHandler): this {

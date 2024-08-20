@@ -110,9 +110,15 @@ export function isOdd(n: number): boolean {
 }
 
 export function averageVectors(vectors: ThreeJsVector3[]): Vector3 {
-  const xs = vectors.map(({ x }) => x)
-  const ys = vectors.map(({ y }) => y)
-  const zs = vectors.map(({ z }) => z)
+  const xs = vectors.map(({ x }) => {
+    return x
+  })
+  const ys = vectors.map(({ y }) => {
+    return y
+  })
+  const zs = vectors.map(({ z }) => {
+    return z
+  })
 
   return new Vector3(mean(xs), mean(ys), mean(zs))
 }

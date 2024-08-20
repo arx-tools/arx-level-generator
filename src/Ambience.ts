@@ -250,7 +250,9 @@ export class Ambience {
 
     return {
       [target]: {
-        tracks: this.tracks.map((track) => track.toArxTrack()),
+        tracks: this.tracks.map((track) => {
+          return track.toArxTrack()
+        }),
       },
     }
   }
