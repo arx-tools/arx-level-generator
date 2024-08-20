@@ -107,6 +107,10 @@
       }
     ],
     "unused-imports/no-unused-imports": "error",
-    "guard-for-in": "off"
+    "guard-for-in": "off",
+    "arrow-body-style": [
+      "error",
+      "never"
+    ]
   }
 }
