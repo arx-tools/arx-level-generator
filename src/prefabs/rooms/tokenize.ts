@@ -143,7 +143,7 @@ export function tokenize(input: string, debug: boolean = false): Token[] {
   let prevLineNumber = lineNumber
   let prevCharNumber = charNumber
 
-  function tmp(): void {
+  function moveBackToBeginningOfToken(): void {
     charNumber = charNumber - buffer.length - 1
     if (buffer.includes('\n')) {
       lineNumber = lineNumber - numberOfNewlinesIn(buffer)
@@ -229,12 +229,12 @@ export function tokenize(input: string, debug: boolean = false): Token[] {
         continue
       }
 
-      tmp()
+      moveBackToBeginningOfToken()
       throw new Error(`[1] syntax error at ${lineNumber}:${charNumber}`)
     }
 
     if (isWhitespace(char)) {
-      tmp()
+      moveBackToBeginningOfToken()
       throw new Error(`[2] syntax error at ${lineNumber}:${charNumber}`)
     }
   }
@@ -258,7 +258,7 @@ export function tokenize(input: string, debug: boolean = false): Token[] {
     prevLineNumber = lineNumber
     prevCharNumber = charNumber
   } else if (buffer !== '') {
-    tmp()
+    moveBackToBeginningOfToken()
     throw new Error(`[3] syntax error at ${lineNumber}:${charNumber}`)
   }
 
