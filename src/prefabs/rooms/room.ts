@@ -273,7 +273,7 @@ function createCeiling(size: Vector3, textureDef: TextureDefinition, tileSize: n
   return mesh
 }
 
-export function createRoomMesh(size: Vector3, { textures: { wall, floor, ceiling }, tileSize = 50 }: RoomProps): Group {
+function createRoomMesh(size: Vector3, { textures: { wall, floor, ceiling }, tileSize = 50 }: RoomProps): Group {
   let walls: QuadrupleOf<TextureDefinition>
   if (Array.isArray(wall)) {
     walls = wall
@@ -310,7 +310,7 @@ export function createRoomMesh(size: Vector3, { textures: { wall, floor, ceiling
   return group
 }
 
-export function createArxMapFromMesh(mesh: Object3D, tryToQuadify?: typeof QUADIFY | typeof DONT_QUADIFY): ArxMap {
+function createArxMapFromMesh(mesh: Object3D, tryToQuadify?: typeof QUADIFY | typeof DONT_QUADIFY): ArxMap {
   return ArxMap.fromThreeJsMesh(mesh, { tryToQuadify })
 }
 
