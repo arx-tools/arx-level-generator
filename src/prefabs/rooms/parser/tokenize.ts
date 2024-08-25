@@ -1,9 +1,82 @@
+/**
+ * TOKENS:
+ *
+ * keywordRoom      - "room"
+ * keywordAdd       - "add"
+ * keywordDefine    - "define"
+ * keywordCeiling   - "ceiling"
+ * keywordWall      - "wall"
+ * keywordWallNorth - "wall-north"
+ * keywordWallSouth - "wall-south"
+ * keywordWallEast  - "wall-east"
+ * keywordWallWest  - "wall-west"
+ * keywordFloor     - "floor"
+ * keywordCustom    - "custom"
+ * keywordArx       - "arx"
+ * keywordWith      - "with"
+ * keywordLight     - "light"
+ * keywordCursor    - "cursor"
+ * keywordSave      - "save"
+ * keywordRestore   - "restore"
+ * keywordOff       - "off"
+ * keywordFitX      - "fit-x"
+ * keywordFitY      - "fit-y"
+ * keywordStretch   - "stretch"
+ * keywordDim       - "dim"
+ * keywordDefault   - "default"
+ * comment          - "# any character"
+ * symbolCurlyOpen  - "{"
+ * symbolCurlyClose - "}"
+ * symbolEquals     - "="
+ * alignment        - "x++", "y--", "z+", etc
+ * variable         - "$asdf"
+ * newLine          - "\n"
+ * integer          - "100"
+ * percentage       - "300%"
+ * string           - string without whitespace
+ */
+
 type TokenMatcher = {
   expression: RegExp
   storeValue?: boolean
 }
 
-const tokenMatchers: Record<string, TokenMatcher> = {
+type TokenType =
+  | 'keywordRoom'
+  | 'keywordAdd'
+  | 'keywordDefine'
+  | 'keywordCeiling'
+  | 'keywordWall'
+  | 'keywordWallNorth'
+  | 'keywordWallSouth'
+  | 'keywordWallEast'
+  | 'keywordWallWest'
+  | 'keywordFloor'
+  | 'keywordCustom'
+  | 'keywordArx'
+  | 'keywordWith'
+  | 'keywordLight'
+  | 'keywordCursor'
+  | 'keywordSave'
+  | 'keywordRestore'
+  | 'keywordOff'
+  | 'keywordFitX'
+  | 'keywordFitY'
+  | 'keywordStretch'
+  | 'keywordDim'
+  | 'keywordDefault'
+  | 'comment'
+  | 'symbolCurlyOpen'
+  | 'symbolCurlyClose'
+  | 'symbolEquals'
+  | 'alignment'
+  | 'variable'
+  | 'newLine'
+  | 'integer'
+  | 'percentage'
+  | 'string'
+
+const tokenMatchers: Record<TokenType, TokenMatcher> = {
   keywordRoom: {
     expression: /^room$/,
   },
@@ -117,7 +190,7 @@ const tokenMatchers: Record<string, TokenMatcher> = {
 }
 
 type Token = {
-  type: keyof typeof tokenMatchers
+  type: TokenType
   value?: string
   at: [number, number]
 }
@@ -131,7 +204,7 @@ function numberOfNewlinesIn(input: string): number {
 }
 
 export function tokenize(input: string, debug: boolean = false): Token[] {
-  const tokenMatcherList = Object.entries(tokenMatchers)
+  const tokenMatcherList = Object.entries(tokenMatchers) as [TokenType, TokenMatcher][]
 
   const tokens: Token[] = []
 
@@ -262,5 +335,7 @@ export function tokenize(input: string, debug: boolean = false): Token[] {
     throw new Error(`[3] syntax error at ${lineNumber}:${charNumber}`)
   }
 
-  return tokens
+  return tokens.filter(({ type }) => {
+    return type !== 'comment'
+  })
 }
