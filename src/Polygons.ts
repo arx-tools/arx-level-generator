@@ -13,7 +13,7 @@ import {
   type TripleOf,
   isTiled,
 } from 'arx-convert/utils'
-import { Mesh, MeshBasicMaterial, type Object3D, type BufferAttribute, Box3 } from 'three'
+import { Mesh, MeshBasicMaterial, type Object3D, type BufferAttribute, Box3, type BufferGeometry } from 'three'
 import { Color } from '@src/Color.js'
 import { Material } from '@src/Material.js'
 import { Polygon, type TransparencyType } from '@src/Polygon.js'
@@ -189,6 +189,7 @@ export class Polygons extends Array<Polygon> {
   addThreeJsMesh(threeJsObj: Object3D): void
   addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps): void
   addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps, isRoot: false): Polygons
+  // eslint-disable-next-line complexity
   addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps = {}, isRoot: boolean = true): Polygons | void {
     if (isRoot) {
       applyTransformations(threeJsObj)
@@ -198,7 +199,7 @@ export class Polygons extends Array<Polygon> {
     const polygons = new Polygons()
 
     if (threeJsObj instanceof Mesh) {
-      const uvs = threeJsObj.geometry.getAttribute('uv') as BufferAttribute
+      const uvs = (threeJsObj.geometry as BufferGeometry).getAttribute('uv') as BufferAttribute
 
       let texture: Texture | undefined | (Texture | undefined)[]
 

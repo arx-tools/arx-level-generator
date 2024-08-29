@@ -64,7 +64,7 @@ export function applyTransformations(threeJsObj: Object3D): void {
   threeJsObj.updateMatrix()
 
   if (threeJsObj instanceof Mesh) {
-    threeJsObj.geometry.applyMatrix4(threeJsObj.matrix)
+    ;(threeJsObj.geometry as BufferGeometry).applyMatrix4(threeJsObj.matrix)
   }
 
   threeJsObj.children.forEach((child) => {

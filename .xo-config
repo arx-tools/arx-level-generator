@@ -111,6 +111,9 @@
     "arrow-body-style": [
       "error",
       "always"
-    ]
+    ],
+    "@typescript-eslint/unified-signatures": "off",
+    "unicorn/no-for-loop": "off",
+    "@typescript-eslint/no-unsafe-argument": "off"
   }
 }

@@ -16,6 +16,7 @@ export class Vertex extends Vector3 {
   uv: Vector2
   color: Color
 
+  // eslint-disable-next-line max-params
   constructor(x: number, y: number, z: number, u: number = 0, v: number = 0, color: Color = Color.transparent) {
     super(x, y, z)
     this.uv = new Vector2(u, v)

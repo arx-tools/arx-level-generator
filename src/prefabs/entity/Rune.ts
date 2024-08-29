@@ -62,9 +62,10 @@ export class Rune extends Entity {
     const system = new Sound(Audio.system.filename, SoundFlags.EmitFromPlayer)
     const system2 = new Sound(Audio.system2.filename, SoundFlags.EmitFromPlayer)
 
-    const whenRoot = (handler: () => ScriptHandler) => {
+    const { script } = this
+    function whenRoot(handler: () => ScriptHandler) {
       return (): string => {
-        if (!this.script?.isRoot) {
+        if (!script?.isRoot) {
           return ''
         }
 

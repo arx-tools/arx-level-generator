@@ -273,7 +273,8 @@ export class EntityModel {
         if (i % 3 === 0) {
           faceIndexes.push([-1, -1, i])
         } else {
-          faceIndexes[faceIndexes.length - 1][2 - (i % 3)] = i
+          const lastPolygon = faceIndexes.at(-1) as TripleOf<number>
+          lastPolygon[2 - (i % 3)] = i
         }
       })
 
