@@ -7,14 +7,7 @@ import { randomIntBetween } from '@src/random.js'
 
 dotenvConfig()
 
-const lightingCalculatorModes = [
-  'Distance',
-  'Danae',
-  'DistanceAngle',
-  'DistanceAngleShadow',
-  'DistanceAngleShadowNoTransparency',
-  'GI',
-] as const
+const lightingCalculatorModes = ['Danae'] as const
 
 type LightingCalculatorMode = (typeof lightingCalculatorModes)[number]
 
@@ -61,17 +54,17 @@ type SettingsConstructorProps = {
   /**
    * can also be set via `process.env.calculateLighting`
    *
-   * This flag tells whether to run Fredlllll's lighting calculator
-   * after building the llf files
-   *
    * default value is true
    * if there are no lights, then this gets set to false
+   *
+   * if set to false, but the map already has lighting information precalculated (like when loading
+   * an existing arx level) then the lighting information is kept as is
    */
   calculateLighting?: boolean
   /**
    * can also be set via `process.env.lightingCalculatorMode`
    *
-   * default value is "DistanceAngleShadowNoTransparency"
+   * default value is "Danae"
    */
   lightingCalculatorMode?: LightingCalculatorMode
   /**
@@ -138,17 +131,17 @@ export class Settings {
   /**
    * can also be set via `process.env.calculateLighting`
    *
-   * This flag tells whether to run Fredlllll's lighting calculator
-   * after building the llf files
-   *
    * default value is true
    * if there are no lights, then this gets set to false
+   *
+   * if set to false, but the map already has lighting information precalculated (like when loading
+   * an existing arx level) then the lighting information is kept as is
    */
   readonly calculateLighting: boolean
   /**
    * can also be set via `process.env.lightingCalculatorMode`
    *
-   * default value is "DistanceAngleShadowNoTransparency"
+   * default value is "Danae"
    */
   readonly lightingCalculatorMode: LightingCalculatorMode
   /**
@@ -197,7 +190,7 @@ export class Settings {
     if (isValidLightingCalculatorMode(process.env.lightingCalculatorMode)) {
       fallbackLCM = process.env.lightingCalculatorMode
     } else {
-      fallbackLCM = 'DistanceAngleShadowNoTransparency'
+      fallbackLCM = 'Danae'
     }
 
     this.lightingCalculatorMode = props.lightingCalculatorMode ?? fallbackLCM
