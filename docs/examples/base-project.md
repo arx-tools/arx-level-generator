@@ -22,7 +22,7 @@ map.player.position.adjustToPlayerHeight()
 // the format used by arx-level-generator is a bit different
 // to what arx is using, so a couple of conversions and checks
 // are needed to be made before exporting the files
-map.finalize()
+map.finalize(settings)
 
 // export everything to a format which Arx can understand
 await map.saveToDisk(settings)
