@@ -2,6 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { AMB } from 'arx-convert'
 import {
+  ArxLightFlags,
   type ArxAMB,
   type ArxAnchor,
   type ArxCell,
@@ -44,10 +45,12 @@ import { Zones } from '@src/Zones.js'
 import { compile } from '@src/compile.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { groupSequences, times, uniq } from '@src/faux-ramda.js'
-import { getGeneratorPackageJSON, latin9ToLatin1 } from '@src/helpers.js'
+import { getGeneratorPackageJSON, latin9ToLatin1, percentOf } from '@src/helpers.js'
 import { type OriginalLevel } from '@src/types.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { Texture } from './Texture.js'
+import { type Vertex } from './Vertex.js'
+import { Color } from './Color.js'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -61,6 +64,11 @@ type ToBeSortedLater = {
   rooms: ArxRoom[]
   roomDistances: ArxRoomDistance[]
 }
+
+/**
+ * @see https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/DANAE/Danae.cpp#L402
+ */
+const GLOBAL_LIGHT_FACTOR = 0.85
 
 export class ArxMap {
   /**
@@ -213,9 +221,7 @@ export class ArxMap {
 
     this.calculateRoomData()
 
-    if (settings.calculateLighting && this.lights.length > 0) {
-      this.calculateLighting()
-    }
+    this.calculateLighting(settings)
 
     this.config.isFinalized = true
   }
@@ -696,7 +702,96 @@ export class ArxMap {
     }
   }
 
-  private calculateLighting(): void {
-    // TODO
+  // -----------------------------------
+
+  /**
+   * @see https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/DANAE/Danae.cpp#L1035
+   */
+  private getDanaeAmbientColor(): Color {
+    return new Color(percentOf(9, 255), percentOf(9, 255), percentOf(9, 255))
+  }
+
+  /**
+   * @see https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/DANAE/ARX_Cedric.cpp#L1072
+   */
+  private calculateDanaeVertexColor(vertex: Vertex, normal: Vector3, lights: Light[]): void {
+    vertex.color = this.getDanaeAmbientColor()
+
+    lights.forEach((light) => {
+      const tl = light.position.clone().sub(vertex)
+      const dista = tl.length()
+
+      if (dista >= light.fallEnd) {
+        return
+      }
+
+      const lightVector = tl.normalize()
+
+      let cosangle = normal.x * lightVector.x + normal.y * lightVector.y + normal.z * lightVector.z
+
+      // If light visible
+      if (cosangle <= 0) {
+        return
+      }
+
+      const precalc = light.intensity * GLOBAL_LIGHT_FACTOR
+      const fallDiffMul = 1 / (light.fallEnd - light.fallStart)
+
+      // Evaluate its intensity depending on the distance Light<->Object
+      if (dista <= light.fallStart) {
+        cosangle = cosangle * precalc
+      } else {
+        const p = (light.fallEnd - dista) * fallDiffMul
+
+        if (p <= 0) {
+          cosangle = 0
+        } else {
+          cosangle = cosangle * p * precalc
+        }
+      }
+
+      vertex.color.add(light.color.clone().multiplyScalar(cosangle))
+    })
+  }
+
+  private calculateDanaeLighting(): void {
+    const lights = this.lights
+      .filter((light) => {
+        // https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/EERIE/EERIELight.cpp#L826
+        // and
+        // https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/EERIE/EERIELight.cpp#L158
+        return (light.flags & ArxLightFlags.SemiDynamic) === 0
+      })
+      .map((light) => {
+        const clonedLight = light.clone()
+        clonedLight.position = clonedLight.position.clone().add(this.config.offset)
+        return clonedLight
+      })
+
+    this.polygons.forEach((polygon) => {
+      const isQuad = polygon.isQuad()
+      const { norm, norm2, normals, vertices } = polygon
+
+      this.calculateDanaeVertexColor(vertices[0], normals?.[0] ?? norm, lights)
+      this.calculateDanaeVertexColor(vertices[1], normals?.[1] ?? norm, lights)
+      this.calculateDanaeVertexColor(vertices[2], normals?.[2] ?? norm, lights)
+
+      if (isQuad) {
+        this.calculateDanaeVertexColor(vertices[3], normals?.[3] ?? norm2, lights)
+      }
+    })
+  }
+
+  private calculateLighting(settings: Settings): void {
+    if (!settings.calculateLighting || this.lights.length === 0) {
+      return
+    }
+
+    switch (settings.lightingCalculatorMode) {
+      case 'Danae': {
+        this.calculateDanaeLighting()
+        break
+      }
+    }
   }
 }
