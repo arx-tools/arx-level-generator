@@ -4,18 +4,20 @@ A tool for creating maps for the video game [Arx Fatalis](https://en.wikipedia.o
 
 ## Dependencies
 
-[Fred's lighting calculator - version 1.1.2](https://github.com/fredlllll/ArxLibertatisLightingCalculator)
-requires dotnet 6.0+ to be installed
-
 [pkware-test-files](https://github.com/arx-tools/pkware-test-files)
-This package contains all the arx fatalis levels readily unpacked. The level generator tries to load the
+This package contains all the Arx Fatalis levels readily unpacked. The level generator tries to load the
 files from the path specified in `Settings.originalLevelFiles` (default `../pkware-test-files`
-relative to where you have installed the `arx-level-generator`)
+relative to where you have installed the `arx-level-generator`) If you are not loading any levels via
+`ArxMap.fromOriginalLevel()` then you don't need to install this dependency.
 
 **three.js version 0.167.0**
 
 The package uses a specific version of three.js and so it is marked as a peer dependency.
 Always check the currently used version to avoid warnings and errors in your project
+
+**arx-convert version 10.0.1**
+
+Another peer dependency with data types and conversion tools for arx related formats.
 
 ## Notes on formats
 

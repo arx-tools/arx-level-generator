@@ -182,7 +182,7 @@ export class ArxMap {
     this.todo.roomDistances = fts.roomDistances
   }
 
-  finalize(): void {
+  finalize(settings: Settings): void {
     if (this.config.isFinalized) {
       throw new MapFinalizedError()
     }
@@ -212,6 +212,10 @@ export class ArxMap {
     })
 
     this.calculateRoomData()
+
+    if (settings.calculateLighting && this.lights.length > 0) {
+      this.calculateLighting()
+    }
 
     this.config.isFinalized = true
   }
@@ -690,5 +694,9 @@ export class ArxMap {
         `[warning] ArxMap: Removed ${indicesOfPolygonsToBeRemoved.length} polygons belonging to non-existent rooms`,
       )
     }
+  }
+
+  private calculateLighting(): void {
+    // TODO
   }
 }

@@ -1,10 +1,6 @@
-import { exec } from 'node:child_process'
 import fs from 'node:fs'
-import os from 'node:os'
 import path from 'node:path'
 import { Readable } from 'node:stream'
-import { fileURLToPath } from 'node:url'
-import { promisify } from 'node:util'
 import { DLF, FTS, LLF } from 'arx-convert'
 import { type ArxDLF, type ArxFTS, type ArxLLF } from 'arx-convert/types'
 import { getHeaderSize } from 'arx-header-size'
@@ -112,78 +108,9 @@ async function compileDLF(settings: Settings, dlf: ArxDLF): Promise<void> {
   })
 }
 
-async function hasDotnet6OrNewer(): Promise<boolean> {
-  try {
-    const { stdout } = await promisify(exec)(`dotnet --version`)
-    const majorOfVersion = Number.parseInt(stdout.trim().split('.')[0], 10)
-    return majorOfVersion >= 6
-  } catch {
-    return false
-  }
-}
-
-async function calculateLighting(settings: Settings): Promise<void> {
-  const operatingSystem = os.platform()
-
-  if (operatingSystem !== 'win32' && operatingSystem !== 'linux') {
-    console.error(
-      `[error] compile: lighting generator: unsupported platform (expected "win32" or "linux", but got "${operatingSystem}")`,
-    )
-    return
-  }
-
-  if (!(await hasDotnet6OrNewer())) {
-    console.error(
-      `[error] compile: lighting generator: no compatible version found (expected "dotnet --version" to return 6.x.x, 7.x.x or newer)`,
-    )
-    return
-  }
-
-  const args = [
-    `--level "level${settings.levelIdx}"`,
-    `--arx-data-dir "${settings.outputDir}"`,
-    `--lighting-profile "${settings.lightingCalculatorMode}"`,
-  ]
-
-  if (settings.uncompressedFTS) {
-    args.push(`--dont-compress-fts`)
-  }
-
-  const filename = fileURLToPath(import.meta.url)
-  const dirname = path.dirname(filename)
-  const libPath = path.resolve(dirname, '../../lib')
-
-  let exeFile: string
-  switch (operatingSystem) {
-    case 'win32': {
-      exeFile = path.resolve(libPath, `fredlllll-lighting-calculator/win/ArxLibertatisLightingCalculator.exe`)
-      break
-    }
-
-    case 'linux': {
-      exeFile = path.resolve(libPath, `fredlllll-lighting-calculator/linux/ArxLibertatisLightingCalculator`)
-      break
-    }
-  }
-
-  try {
-    const { stdout, stderr } = await promisify(exec)(`${exeFile} ${args.join(' ')}`)
-    console.log(stdout)
-    if (stderr !== '') {
-      console.error(stderr)
-    }
-  } catch (error: unknown) {
-    console.error(error)
-  }
-}
-
 export async function compile(
   settings: Settings,
   { dlf, llf, fts }: { dlf: ArxDLF; llf: ArxLLF; fts: ArxFTS },
 ): Promise<void> {
   await Promise.allSettled([compileFTS(settings, fts), compileLLF(settings, llf), compileDLF(settings, dlf)])
-
-  if (settings.calculateLighting && llf.lights.length > 0) {
-    await calculateLighting(settings)
-  }
 }
