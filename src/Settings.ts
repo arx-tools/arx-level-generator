@@ -95,6 +95,8 @@ type SettingsConstructorProps = {
   /**
    * When this is set to true FTS files will not get compressed with pkware
    * after compiling. This is an Arx Libertatis 1.3+ feature!
+   *
+   * default value is false
    */
   uncompressedFTS?: boolean
 }
@@ -176,6 +178,8 @@ export class Settings {
   /**
    * When this is set to true FTS files will not get compressed with pkware
    * after compiling. This is an Arx Libertatis 1.3+ feature!
+   *
+   * default value is false
    */
   readonly uncompressedFTS: boolean
 
