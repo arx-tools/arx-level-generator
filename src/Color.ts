@@ -154,23 +154,51 @@ export class Color {
     return (this.r << 16) + (this.g << 8) + this.b
   }
 
-  lighten(percent: number): this {
-    const extra = percentOf(percent, 255)
-
-    this.r = MathUtils.clamp(this.r + extra, 0, 255)
-    this.g = MathUtils.clamp(this.g + extra, 0, 255)
-    this.b = MathUtils.clamp(this.b + extra, 0, 255)
+  add(color: Color): this {
+    this.r = MathUtils.clamp(this.r + color.r, 0, 255)
+    this.g = MathUtils.clamp(this.g + color.g, 0, 255)
+    this.b = MathUtils.clamp(this.b + color.b, 0, 255)
 
     return this
   }
 
-  darken(percent: number): this {
-    const extra = percentOf(percent, 255)
-
-    this.r = MathUtils.clamp(this.r - extra, 0, 255)
-    this.g = MathUtils.clamp(this.g - extra, 0, 255)
-    this.b = MathUtils.clamp(this.b - extra, 0, 255)
+  addScalar(value: number): this {
+    this.r = MathUtils.clamp(this.r + value, 0, 255)
+    this.g = MathUtils.clamp(this.g + value, 0, 255)
+    this.b = MathUtils.clamp(this.b + value, 0, 255)
 
     return this
+  }
+
+  sub(color: Color): this {
+    this.r = MathUtils.clamp(this.r - color.r, 0, 255)
+    this.g = MathUtils.clamp(this.g - color.g, 0, 255)
+    this.b = MathUtils.clamp(this.b - color.b, 0, 255)
+
+    return this
+  }
+
+  subScalar(value: number): this {
+    this.r = MathUtils.clamp(this.r - value, 0, 255)
+    this.g = MathUtils.clamp(this.g - value, 0, 255)
+    this.b = MathUtils.clamp(this.b - value, 0, 255)
+
+    return this
+  }
+
+  multiplyScalar(value: number): this {
+    this.r = MathUtils.clamp(this.r * value, 0, 255)
+    this.g = MathUtils.clamp(this.g * value, 0, 255)
+    this.b = MathUtils.clamp(this.b * value, 0, 255)
+
+    return this
+  }
+
+  lighten(percent: number): this {
+    return this.addScalar(percentOf(percent, 255))
+  }
+
+  darken(percent: number): this {
+    return this.subScalar(percentOf(percent, 255))
   }
 }
