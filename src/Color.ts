@@ -8,10 +8,16 @@ export enum Alpha {
   Opaque = 1,
 }
 
-/**
- * three.js's color is not being used as it doesn't come with an alpha channel
- */
 export class Color {
+  /**
+   * Parses a color string into numeric values for each channel.
+   *
+   * Parsing is handled internally using the `color-parse` package (via `color-rgba`),
+   * so visit the homepage to see what color notations are supported.
+   * For starters, everything that is available in CSS is supported.
+   *
+   * @see https://github.com/colorjs/color-parse
+   */
   static fromCSS(color: string): Color {
     const channels = rgba(color)
     if (channels === undefined) {
@@ -66,11 +72,46 @@ export class Color {
 
   // ----------------
 
+  /**
+   * red channel, a positive integer between `0` and `255` (inclusive)
+   *
+   * `0` = minimum value, no amount of red in the color
+   *
+   * `255` = maximum value, as much red as possible
+   */
   r: number
+  /**
+   * green channel, a positive integer between `0` and `255` (inclusive)
+   *
+   * `0` = minimum value, no amount of green in the color
+   *
+   * `255` = maximum value, as much green as possible
+   */
   g: number
+  /**
+   * blue channel, a positive integer between `0` and `255` (inclusive)
+   *
+   * `0` = minimum value, no amount of blue in the color
+   *
+   * `255` = maximum value, as much blue as possible
+   */
   b: number
+  /**
+   * alpha channel, a floating point number between `0` and `1`
+   *
+   * `0` = fully transparent (`Alpha.Transparent`)
+   *
+   * `1` = fully opaque (`Alpha.Opaque`)
+   */
   a: number
 
+  /**
+   *
+   * @param r red channel, a positive integer between `0` and `255` (inclusive)
+   * @param g green channel, a positive integer between `0` and `255` (inclusive)
+   * @param b blue channel, a positive integer between `0` and `255` (inclusive)
+   * @param a alpha channel, a floating point number between `0` (fully transparent) and `1` (fully opaque)
+   */
   constructor(r: number, g: number, b: number, a: number = Alpha.Opaque) {
     this.r = r
     this.g = g
@@ -78,10 +119,17 @@ export class Color {
     this.a = a
   }
 
+  /**
+   * Creates an object with rgba channels that `arx-convert` can work with.
+   */
   toArxColor(): ArxColor {
     return { r: this.r, g: this.g, b: this.b, a: this.a }
   }
 
+  /**
+   * Creates a stringified version of the color that can be used in ASL scripts.
+   * ASL scripts expect the channels to be floats and the alpha channel removed.
+   */
   toScriptColor(): string {
     return `${this.r / 256} ${this.g / 256} ${this.b / 256}`
   }
@@ -90,6 +138,18 @@ export class Color {
     return new Color(this.r, this.g, this.b, this.a)
   }
 
+  /**
+   * Converts the color into a format that can be used by three.js.
+   * Alpha channels are ignored as they are handled separately in three.js
+   *
+   * `{ r: 255, g: 127, b: 0 }` becomes `0xff7f00`
+   *
+   * @example
+   *
+   * ```ts
+   * const material = new MeshBasicMaterial({ color: this.getHex() })
+   * ```
+   */
   getHex(): number {
     return (this.r << 16) + (this.g << 8) + this.b
   }
