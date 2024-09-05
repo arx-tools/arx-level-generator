@@ -44,3 +44,14 @@ generator CAN handle this)
 
 - `assets/textures/uv-reference-map-[stone].jpg` (a.k.a. `Texture.uvDebugTexture`) - [https://www.artstation.com/blogs/zeeshannasir/peYz/reference-uv-map-grids](https://www.artstation.com/blogs/zeeshannasir/peYz/reference-uv-map-grids)
 - `assets/textures/jorge-[stone].jpg` (a.k.a. `Texture.missingTexture`) - Thief 2 DromEd
+
+## Extra caveats to keep in mind and try to find a workaround later
+
+Quote from Pedro Ordaz:
+
+> When testing 3D, I encountered a strange issue: after some investigation I discovered something quite interesting,
+> entities won't react to angular lighting/flat shading if they use an uncompressed FTL mesh. This is for both
+> fix_inter and typical movable entities, as a result, eli2's arx_addon only works with smooth shading.
+>
+> Another interesting discovery is when an entity with flat shading triggers an animation, its shader automatically
+> switches from flat to smooth in-game
