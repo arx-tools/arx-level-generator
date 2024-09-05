@@ -55,3 +55,10 @@ Quote from Pedro Ordaz:
 >
 > Another interesting discovery is when an entity with flat shading triggers an animation, its shader automatically
 > switches from flat to smooth in-game
+>
+> I supose is that some property is broken when exporting uncompressed models, vanilla models work with both flat
+> and smooth shadings, but models from blender only support smooth shading, if you enable angular via scripts,
+> the entity will be totally dark and not reacting with any light source. What only the game does internally is
+> to change the shading when an entity is playing an animation
+
+_probably related to the arx libertatis blender plugin_
