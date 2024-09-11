@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Box3, type BufferGeometry, Euler, Mesh, type Object3D, type Vector3 as ThreeJsVector3 } from 'three'
+import { Box3, type BufferGeometry, Euler, Mesh, type Object3D, type Vector3 as ThreeJsVector3, Triangle } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { mean, repeat } from '@src/faux-ramda.js'
 
@@ -206,4 +206,29 @@ export function pointToBox(point: Vector3, size: number | Vector3): Box3 {
  */
 export function arrayPadRight<T>(length: number, paddingValue: T, array: T[]): T[] {
   return [...array, ...repeat(paddingValue, length)].slice(0, length)
+}
+
+/**
+ * Check if a triangle fits into a 100×100 square
+ *
+ * @see https://math.stackexchange.com/a/4794939/355978
+ */
+export function triangleFitsInto100Square({ a, b, c }: Triangle): boolean {
+  const diagonalOf100Square = 100 * Math.SQRT2
+
+  if (a.distanceTo(b) > diagonalOf100Square) {
+    return false
+  }
+
+  if (b.distanceTo(c) > diagonalOf100Square) {
+    return false
+  }
+
+  if (c.distanceTo(a) > diagonalOf100Square) {
+    return false
+  }
+
+  // TODO: more checks
+
+  return true
 }

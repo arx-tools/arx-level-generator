@@ -12,7 +12,7 @@ import { type Color } from '@src/Color.js'
 import { NO_TEXTURE_CONTAINER, Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
-import { isBetween, percentOf } from '@src/helpers.js'
+import { isBetween, percentOf, triangleFitsInto100Square } from '@src/helpers.js'
 import { type ArxVertexWithColor } from '@src/types.js'
 import { type ArxComponent } from '@src/ArxComponent.js'
 
@@ -461,22 +461,25 @@ export class Polygon implements ArxComponent {
   }
 
   /**
-   * Is any of the edges of this polygon longer than 100
+   * Check if the polygon fits into a 100×100 square
    */
   isTooLarge(): boolean {
-    const { a, b, c } = this.getHalfPolygon(false)
+    const triangle = this.getHalfPolygon(false)
 
-    if (a.distanceTo(b) > 100 || b.distanceTo(c) > 100 || c.distanceTo(a) > 100) {
+    if (!triangleFitsInto100Square(triangle)) {
       return true
     }
 
     if (this.isQuad()) {
-      const { a, b, c } = this.getHalfPolygon(true)
+      const triangle = this.getHalfPolygon(true)
 
-      if (a.distanceTo(b) > 100 || b.distanceTo(c) > 100 || c.distanceTo(a) > 100) {
+      if (!triangleFitsInto100Square(triangle)) {
         return true
       }
     }
+
+    // TODO: any cases when both triangles fit, but together they don't,
+    // for example if they are not planar?
 
     return false
   }
