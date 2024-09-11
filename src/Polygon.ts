@@ -481,6 +481,15 @@ export class Polygon implements ArxComponent {
     return false
   }
 
+  subdivide(): Polygon[] {
+    const polygons: Polygon[] = []
+
+    // TODO: implement
+    polygons.push(this)
+
+    return polygons
+  }
+
   /**
    * assuming the order of vertices taking up a russian i (И) shape:
    * ```

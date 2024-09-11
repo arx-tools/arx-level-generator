@@ -569,4 +569,19 @@ export class Polygons extends Array<Polygon> {
     const { max, min } = this.getBoundingBox()
     return max.z - min.z
   }
+
+  subdivideLargePolygons(): void {
+    let i = this.length
+
+    while (i > 0) {
+      i = i - 1
+
+      const polygon = this[i]
+
+      if (polygon.isTooLarge()) {
+        const smallerPolygons = polygon.subdivide()
+        this.splice(i, 1, ...smallerPolygons)
+      }
+    }
+  }
 }

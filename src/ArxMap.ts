@@ -214,6 +214,8 @@ export class ArxMap {
       }
     }
 
+    this.polygons.subdivideLargePolygons()
+
     this.polygons.forEach((polygon) => {
       polygon.calculateNormals()
       polygon.calculateArea()
