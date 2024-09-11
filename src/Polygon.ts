@@ -461,6 +461,50 @@ export class Polygon implements ArxComponent {
   }
 
   /**
+   * Is any of the edges of this polygon longer than 100
+   */
+  isTooLarge(): boolean {
+    const { a, b, c } = this.getHalfPolygon(false)
+
+    if (a.distanceTo(b) > 100 || b.distanceTo(c) > 100 || c.distanceTo(a) > 100) {
+      return true
+    }
+
+    if (this.isQuad()) {
+      const { a, b, c } = this.getHalfPolygon(true)
+
+      if (a.distanceTo(b) > 100 || b.distanceTo(c) > 100 || c.distanceTo(a) > 100) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  /**
+   * assuming the order of vertices taking up a russian i (И) shape:
+   * ```
+   * 0 2
+   * 1 3
+   * ```
+   *
+   * `isQuadPart` === true  -> get the triangle of 1-2-3
+   * `isQuadPart` === false -> get the triangle of 0-1-2
+   */
+  private getHalfPolygon(isQuadPart: boolean): Triangle {
+    const [a, b, c, d] = this.vertices
+
+    let triangle: Triangle
+    if (isQuadPart) {
+      triangle = new Triangle(b, c, d)
+    } else {
+      triangle = new Triangle(a, b, c)
+    }
+
+    return triangle
+  }
+
+  /**
    * assuming the order of vertices taking up a russian i (И) shape:
    * ```
    * 0 2
@@ -471,15 +515,7 @@ export class Polygon implements ArxComponent {
    * `isQuadPart` === false -> calculate the area of 0-1-2
    */
   private getHalfPolygonArea(isQuadPart: boolean): number {
-    const [a, b, c, d] = this.vertices
-
-    let triangle: Triangle
-    if (isQuadPart) {
-      triangle = new Triangle(b, c, d)
-    } else {
-      triangle = new Triangle(a, b, c)
-    }
-
+    const triangle = this.getHalfPolygon(isQuadPart)
     return triangle.getArea()
   }
 }
