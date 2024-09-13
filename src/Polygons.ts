@@ -579,6 +579,8 @@ export class Polygons extends Array<Polygon> {
       const polygon = this[i]
 
       if (polygon.isTooLarge()) {
+        console.log(`polygon #${i} too large`)
+
         const smallerPolygons = polygon.subdivide()
         this.splice(i, 1, ...smallerPolygons)
       }

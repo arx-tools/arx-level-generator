@@ -1,7 +1,16 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Box3, type BufferGeometry, Euler, Mesh, type Object3D, type Vector3 as ThreeJsVector3, Triangle } from 'three'
+import {
+  Box3,
+  type BufferGeometry,
+  Euler,
+  MathUtils,
+  Mesh,
+  type Object3D,
+  type Vector3 as ThreeJsVector3,
+  type Triangle,
+} from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { mean, repeat } from '@src/faux-ramda.js'
 
@@ -216,15 +225,38 @@ export function arrayPadRight<T>(length: number, paddingValue: T, array: T[]): T
 export function triangleFitsInto100Square({ a, b, c }: Triangle): boolean {
   const diagonalOf100Square = 100 * Math.SQRT2
 
-  if (a.distanceTo(b) > diagonalOf100Square) {
+  const abDistance = a.distanceTo(b)
+  if (abDistance > diagonalOf100Square) {
     return false
   }
 
-  if (b.distanceTo(c) > diagonalOf100Square) {
+  const bcDistance = b.distanceTo(c)
+  if (bcDistance > diagonalOf100Square) {
     return false
   }
 
-  if (c.distanceTo(a) > diagonalOf100Square) {
+  const caDistance = c.distanceTo(a)
+  if (caDistance > diagonalOf100Square) {
+    return false
+  }
+
+  // -------------
+
+  const deg45 = MathUtils.degToRad(45)
+
+  const abAngle = a.angleTo(b)
+  const bcAngle = b.angleTo(c)
+  const caAngle = c.angleTo(a)
+
+  if (abDistance === diagonalOf100Square && (bcAngle !== deg45 || caAngle !== deg45)) {
+    return false
+  }
+
+  if (bcDistance === diagonalOf100Square && (caAngle !== deg45 || abAngle !== deg45)) {
+    return false
+  }
+
+  if (caDistance === diagonalOf100Square && (abAngle !== deg45 || bcAngle !== deg45)) {
     return false
   }
 
