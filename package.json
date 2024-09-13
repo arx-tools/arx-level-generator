@@ -2,76 +2,76 @@
   "name": "arx-level-generator",
   "version": "21.0.0-alpha.11",
   "description": "A tool for creating Arx Fatalis maps",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
   "engines": {
     "npm": ">=8.0.0",
     "node": ">=20.0.0"
   },
   "bin": {
-    "arx-level-generator": "dist/src/bin/cli.js"
+    "arx-level-generator": "dist/bin/cli.js"
   },
   "exports": {
     ".": {
-      "default": "./dist/src/index.js",
-      "types": "./dist/src/index.d.ts"
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     },
     "./prefabs/entity": {
-      "default": "./dist/src/prefabs/entity/index.js",
-      "types": "./dist/src/prefabs/entity/index.d.ts"
+      "default": "./dist/prefabs/entity/index.js",
+      "types": "./dist/prefabs/entity/index.d.ts"
     },
     "./prefabs/mesh": {
-      "default": "./dist/src/prefabs/mesh/index.js",
-      "types": "./dist/src/prefabs/mesh/index.d.ts"
+      "default": "./dist/prefabs/mesh/index.js",
+      "types": "./dist/prefabs/mesh/index.d.ts"
     },
     "./prefabs/rooms": {
-      "default": "./dist/src/prefabs/rooms/index.js",
-      "types": "./dist/src/prefabs/rooms/index.d.ts"
+      "default": "./dist/prefabs/rooms/index.js",
+      "types": "./dist/prefabs/rooms/index.d.ts"
     },
     "./scripting": {
-      "default": "./dist/src/scripting/index.js",
-      "types": "./dist/src/scripting/index.d.ts"
+      "default": "./dist/scripting/index.js",
+      "types": "./dist/scripting/index.d.ts"
     },
     "./scripting/classes": {
-      "default": "./dist/src/scripting/classes/index.js",
-      "types": "./dist/src/scripting/classes/index.d.ts"
+      "default": "./dist/scripting/classes/index.js",
+      "types": "./dist/scripting/classes/index.d.ts"
     },
     "./scripting/commands": {
-      "default": "./dist/src/scripting/commands/index.js",
-      "types": "./dist/src/scripting/commands/index.d.ts"
+      "default": "./dist/scripting/commands/index.js",
+      "types": "./dist/scripting/commands/index.d.ts"
     },
     "./scripting/hooks": {
-      "default": "./dist/src/scripting/hooks/index.js",
-      "types": "./dist/src/scripting/hooks/index.d.ts"
+      "default": "./dist/scripting/hooks/index.js",
+      "types": "./dist/scripting/hooks/index.d.ts"
     },
     "./scripting/interfaces": {
-      "default": "./dist/src/scripting/interfaces/index.js",
-      "types": "./dist/src/scripting/interfaces/index.d.ts"
+      "default": "./dist/scripting/interfaces/index.js",
+      "types": "./dist/scripting/interfaces/index.d.ts"
     },
     "./scripting/properties": {
-      "default": "./dist/src/scripting/properties/index.js",
-      "types": "./dist/src/scripting/properties/index.d.ts"
+      "default": "./dist/scripting/properties/index.js",
+      "types": "./dist/scripting/properties/index.d.ts"
     },
     "./tools": {
-      "default": "./dist/src/tools/index.js",
-      "types": "./dist/src/tools/index.d.ts"
+      "default": "./dist/tools/index.js",
+      "types": "./dist/tools/index.d.ts"
     },
     "./tools/mesh": {
-      "default": "./dist/src/tools/mesh/index.js",
-      "types": "./dist/src/tools/mesh/index.d.ts"
+      "default": "./dist/tools/mesh/index.js",
+      "types": "./dist/tools/mesh/index.d.ts"
     },
     "./utils": {
-      "default": "./dist/src/utils.js",
-      "types": "./dist/src/utils.d.ts"
+      "default": "./dist/utils.js",
+      "types": "./dist/utils.d.ts"
     },
     "./utils/random": {
-      "default": "./dist/src/random.js",
-      "types": "./dist/src/random.d.ts"
+      "default": "./dist/random.js",
+      "types": "./dist/random.d.ts"
     },
     "./utils/faux-ramda": {
-      "default": "./dist/src/faux-ramda.js",
-      "types": "./dist/src/faux-ramda.d.ts"
+      "default": "./dist/faux-ramda.js",
+      "types": "./dist/faux-ramda.d.ts"
     }
   },
   "scripts": {
@@ -79,7 +79,7 @@
     "build:watch": "nodemon --watch src --exec \"npm run build\" --ext ts",
     "lint": "xo",
     "lint:watch": "nodemon --watch src --exec \"npm run lint\" --ext ts",
-    "prepublishOnly": "rm -rf dist && npm run build"
+    "prepublishOnly": "npm run lint && rm -rf dist && rm -f tsconfig.tsbuildinfo && npm run build"
   },
   "repository": {
     "type": "git",
@@ -103,7 +103,7 @@
     "sharp-bmp": "^0.1.5"
   },
   "peerDependencies": {
-    "arx-convert": "^10.0.1",
+    "arx-convert": "^10.1.1",
     "three": "0.167.0"
   },
   "devDependencies": {
