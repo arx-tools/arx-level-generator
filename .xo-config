@@ -114,6 +114,13 @@
     ],
     "@typescript-eslint/unified-signatures": "off",
     "unicorn/no-for-loop": "off",
-    "@typescript-eslint/no-unsafe-argument": "off"
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "object-shorthand": [
+      "error",
+      "always",
+      {
+        "avoidQuotes": true
+      }
+    ]
   }
 }
