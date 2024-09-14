@@ -15,7 +15,7 @@ relative to where you have installed the `arx-level-generator`) If you are not l
 The package uses a specific version of three.js and so it is marked as a peer dependency.
 Always check the currently used version to avoid warnings and errors in your project
 
-**arx-convert version 10.0.1**
+**arx-convert version 10.1.1**
 
 Another peer dependency with data types and conversion tools for arx related formats.
 
