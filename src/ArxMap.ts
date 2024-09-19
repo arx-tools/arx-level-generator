@@ -153,12 +153,15 @@ export class ArxMap {
   }
 
   constructor(dlf?: ArxDLF, fts?: ArxFTS, llf?: ArxLLF, areNormalsCalculated = false) {
+    this.player.position = this.config.offset.clone()
+
     if (dlf === undefined || fts === undefined || llf === undefined) {
       return
     }
 
     this.player.orientation = Rotation.fromArxRotation(dlf.header.angleEdit)
     this.player.position = Vector3.fromArxVector3(dlf.header.posEdit)
+    this.player.positionAlreadyAdjusted = true
 
     dlf.interactiveObjects.forEach((entity) => {
       this.entities.push(Entity.fromArxInteractiveObject(entity))
@@ -197,6 +200,10 @@ export class ArxMap {
       throw new MapFinalizedError()
     }
 
+    if (!this.player.positionAlreadyAdjusted) {
+      this.player.position.adjustToPlayerHeight()
+    }
+
     const removedPolygons = $(this.polygons).clearSelection().selectOutOfBounds().delete()
 
     if (removedPolygons.length > 0) {
@@ -211,7 +218,7 @@ export class ArxMap {
       $(this.polygons).clearSelection().selectOutOfBounds().delete()
       if (this.polygons.length === 0) {
         console.warn(
-          `[warning] ArxMap: Failed to add polygon below the player's feet as it was partially or fully out of the 0..16000 boundary on the X or Z axis`,
+          `[warning] ArxMap: Failed to add polygon below the player's feet as it was partially or fully out of the 0..16000 boundary on the X or Z axis, try moving the player by adjusting map.player.position!`,
         )
       }
     }
@@ -606,10 +613,7 @@ export class ArxMap {
   }
 
   private addTileUnderThePlayersFeet(): void {
-    const playerPos = this.config.offset
-      .clone()
-      .add(this.player.position)
-      .sub(new Vector3(0, 0, 0).adjustToPlayerHeight())
+    const playerPos = this.config.offset.clone().add(this.player.position)
 
     const plane = createPlaneMesh({
       size: 100,

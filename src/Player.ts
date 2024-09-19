@@ -9,10 +9,12 @@ export class Player {
   orientation: Rotation
   position: Vector3
   script?: Script
+  positionAlreadyAdjusted: boolean
 
   constructor() {
     this.orientation = new Rotation(0, 0, 0)
     this.position = new Vector3(0, 0, 0)
+    this.positionAlreadyAdjusted = false
   }
 
   hasScript(): this is { script: Script } {

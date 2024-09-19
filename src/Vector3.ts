@@ -1,6 +1,8 @@
 import { type ArxVector3 } from 'arx-convert/types'
 import { Vector3 as ThreeJsVector3 } from 'three'
 
+const heightOfThePlayer = 180
+
 export class Vector3 extends ThreeJsVector3 {
   static fromArxVector3({ x, y, z }: ArxVector3): Vector3 {
     return new Vector3(x, y, z)
@@ -23,8 +25,14 @@ export class Vector3 extends ThreeJsVector3 {
     return `${this.x}|${this.y}|${this.z}`
   }
 
+  /**
+   * move the player higher by the amount of the player's height
+   * so that he doesn't sink into the floor
+   *
+   * @see https://youtu.be/JDsSUrjikW4?si=ku7wVtHOMfd-cLC-&t=171
+   */
   adjustToPlayerHeight(): this {
-    this.y = this.y - 180
+    this.y = this.y - heightOfThePlayer
     return this
   }
 }

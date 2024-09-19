@@ -9,16 +9,6 @@ const settings = new Settings()
 // create a blank map
 const map = new ArxMap()
 
-// set the origin of the map (default 0/0/0),
-// polygons are placed relative to this point
-// X and Z coordinates need to be within 0 and 16000
-map.config.offset = new Vector3(6000, 0, 6000)
-
-// move the player a bit higher so that he doesn't sink into the floor
-// the sinking behavior can be seen here:
-// https://youtu.be/JDsSUrjikW4?si=ku7wVtHOMfd-cLC-&t=171
-map.player.position.adjustToPlayerHeight()
-
 // the format used by arx-level-generator is a bit different
 // to what arx is using, so a couple of conversions and checks
 // are needed to be made before exporting the files
