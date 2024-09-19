@@ -121,6 +121,12 @@
       {
         "avoidQuotes": true
       }
+    ],
+    "no-plusplus": [
+      "error",
+      {
+        "allowForLoopAfterthoughts": true
+      }
     ]
   }
 }
