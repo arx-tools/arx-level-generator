@@ -166,8 +166,6 @@ export class ArxMap {
       ],
     }
 
-    this.player.position = this.config.offset.clone()
-
     if (dlf === undefined || fts === undefined || llf === undefined) {
       return
     }
@@ -626,14 +624,14 @@ export class ArxMap {
   }
 
   private addTileUnderThePlayersFeet(): void {
-    const playerPos = this.config.offset.clone().add(this.player.position)
+    const playerRealPos = this.config.offset.clone().add(this.player.position)
 
     const plane = createPlaneMesh({
       size: 100,
       tileSize: 100,
       texture: Texture.missingTexture,
     })
-    plane.position.set(playerPos.x, playerPos.y, playerPos.z)
+    plane.position.set(playerRealPos.x, playerRealPos.y, playerRealPos.z)
 
     this.polygons.addThreeJsMesh(plane)
   }
