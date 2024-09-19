@@ -211,10 +211,6 @@ export class ArxMap {
       throw new MapFinalizedError()
     }
 
-    if (!this.player.positionAlreadyAdjusted) {
-      this.player.position.adjustToPlayerHeight()
-    }
-
     const removedPolygons = $(this.polygons).clearSelection().selectOutOfBounds().delete()
 
     if (removedPolygons.length > 0) {
@@ -244,6 +240,10 @@ export class ArxMap {
     this.calculateRoomData()
 
     this.calculateLighting(settings)
+
+    if (!this.player.positionAlreadyAdjusted) {
+      this.player.position.adjustToPlayerHeight()
+    }
 
     this.config.isFinalized = true
   }
@@ -625,6 +625,10 @@ export class ArxMap {
 
   private addTileUnderThePlayersFeet(): void {
     const playerRealPos = this.config.offset.clone().add(this.player.position)
+
+    if (this.player.positionAlreadyAdjusted) {
+      playerRealPos.sub(new Vector3(0, 0, 0).adjustToPlayerHeight())
+    }
 
     const plane = createPlaneMesh({
       size: 100,
