@@ -70,6 +70,8 @@ type ToBeSortedLater = {
  */
 const GLOBAL_LIGHT_FACTOR = 0.85
 
+const defaultOffset = new Vector3(6000, 0, 6000)
+
 export class ArxMap {
   /**
    * Loads one of the levels found in the original game
@@ -110,7 +112,7 @@ export class ArxMap {
   portals: Portal[] = [] // TODO: create Portals class
   config: ArxMapConfig = {
     isFinalized: false,
-    offset: new Vector3(0, 0, 0),
+    offset: defaultOffset.clone(),
   }
 
   hud: HUD = new HUD()
