@@ -244,19 +244,27 @@ export function triangleFitsInto100Square({ a, b, c }: Triangle): boolean {
 
   const deg45 = MathUtils.degToRad(45)
 
-  const abAngle = a.angleTo(b)
-  const bcAngle = b.angleTo(c)
-  const caAngle = c.angleTo(a)
+  const ab = b.clone().sub(a)
+  const ac = c.clone().sub(a)
+  const aAngle = ab.angleTo(ac)
 
-  if (abDistance === diagonalOf100Square && (bcAngle !== deg45 || caAngle !== deg45)) {
+  const ba = a.clone().sub(b)
+  const bc = c.clone().sub(b)
+  const bAngle = ba.angleTo(bc)
+
+  const ca = a.clone().sub(c)
+  const cb = b.clone().sub(c)
+  const cAngle = ca.angleTo(cb)
+
+  if (abDistance === diagonalOf100Square && (aAngle !== deg45 || bAngle !== deg45)) {
     return false
   }
 
-  if (bcDistance === diagonalOf100Square && (caAngle !== deg45 || abAngle !== deg45)) {
+  if (bcDistance === diagonalOf100Square && (bAngle !== deg45 || cAngle !== deg45)) {
     return false
   }
 
-  if (caDistance === diagonalOf100Square && (abAngle !== deg45 || bcAngle !== deg45)) {
+  if (caDistance === diagonalOf100Square && (cAngle !== deg45 || aAngle !== deg45)) {
     return false
   }
 
