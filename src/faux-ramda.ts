@@ -16,7 +16,8 @@ export function min(arr: number[]): number {
   let len = arr.length
   let min = Number.POSITIVE_INFINITY
 
-  while (len--) {
+  while (len > 0) {
+    len = len - 1
     if (arr[len] < min) {
       min = arr[len]
     }
@@ -29,7 +30,8 @@ export function max(arr: number[]): number {
   let len = arr.length
   let max = Number.NEGATIVE_INFINITY
 
-  while (len--) {
+  while (len > 0) {
+    len = len - 1
     if (arr[len] > max) {
       max = arr[len]
     }

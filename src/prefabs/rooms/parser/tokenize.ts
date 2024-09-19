@@ -291,7 +291,7 @@ export function tokenize(input: string, debug: boolean = false): Token[] {
         prevCharNumber = charNumber
 
         lastMatch = undefined
-        i--
+        i = i - 1
         if (char === '\n') {
           lineNumber = lineNumber - 1
           charNumber = lastCharNumber

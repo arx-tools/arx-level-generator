@@ -16,7 +16,8 @@ class Timer {
     this.name = ''
 
     if (!isUnique) {
-      this.name = `delay${++delayIdx}`
+      delayIdx = delayIdx + 1
+      this.name = `delay${delayIdx}`
     }
 
     this.delayOffsetInMs = delayOffsetInMs

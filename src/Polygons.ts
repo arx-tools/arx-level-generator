@@ -166,15 +166,17 @@ export class Polygons extends Array<Polygon> {
 
       times(() => {
         textureContainers.push(
-          { id: ++cntr, filename, remaining: 65_535, maxRemaining: 65_535 },
-          { id: ++cntr, filename, remaining: 65_535, maxRemaining: 65_535 },
+          { id: cntr + 1, filename, remaining: 65_535, maxRemaining: 65_535 },
+          { id: cntr + 2, filename, remaining: 65_535, maxRemaining: 65_535 },
         )
+        cntr = cntr + 2
       }, wholeBlocks)
 
       textureContainers.push(
-        { id: ++cntr, filename, remaining, maxRemaining: remaining },
-        { id: ++cntr, filename, remaining, maxRemaining: remaining },
+        { id: cntr + 1, filename, remaining, maxRemaining: remaining },
+        { id: cntr + 2, filename, remaining, maxRemaining: remaining },
       )
+      cntr = cntr + 2
     })
 
     return textureContainers
