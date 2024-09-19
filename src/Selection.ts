@@ -11,10 +11,11 @@ import { groupSequences } from '@src/faux-ramda.js'
 import { type ArxComponent } from './ArxComponent.js'
 
 export abstract class Selection<T extends ArxComponent[]> {
-  protected selection: number[] = []
+  protected selection: number[]
   protected items: T
 
   constructor(items: T) {
+    this.selection = []
     this.items = items
   }
 

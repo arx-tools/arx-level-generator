@@ -102,57 +102,70 @@ export class ArxMap {
     return `${generator.name} - v.${generator.version}`
   }
 
-  polygons = new Polygons()
-  lights = new Lights()
-  fogs = new Fogs()
-  entities = new Entities()
-  zones = new Zones()
-  paths = new Paths()
-  player = new Player()
-  portals: Portal[] = [] // TODO: create Portals class
-  config: ArxMapConfig = {
-    isFinalized: false,
-    offset: defaultOffset.clone(),
-  }
-
-  hud: HUD = new HUD()
-  ui: UI = new UI()
-  i18n: Translations = new Translations()
-  todo: ToBeSortedLater = {
-    uniqueHeaders: [],
-    cells: times(() => {
-      return {}
-    }, MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS),
-    anchors: [],
-    rooms: [
-      { portals: [], polygons: [] },
-      { portals: [], polygons: [] },
-    ],
-    roomDistances: [
-      {
-        distance: -1,
-        startPosition: { x: 0, y: 0, z: 0 },
-        endPosition: { x: 1, y: 0, z: 0 },
-      },
-      {
-        distance: -1,
-        startPosition: { x: 0, y: 0, z: 0 },
-        endPosition: { x: 0, y: 1, z: 0 },
-      },
-      {
-        distance: -1,
-        startPosition: { x: 0.984_375, y: 0.984_375, z: 0 },
-        endPosition: { x: 0, y: 0, z: 0 },
-      },
-      {
-        distance: -1,
-        startPosition: { x: 0, y: 0, z: 0 },
-        endPosition: { x: 0, y: 0, z: 0 },
-      },
-    ],
-  }
+  polygons: Polygons
+  lights: Lights
+  fogs: Fogs
+  entities: Entities
+  zones: Zones
+  paths: Paths
+  player: Player
+  portals: Portal[] // TODO: create Portals class
+  config: ArxMapConfig
+  hud: HUD
+  ui: UI
+  i18n: Translations
+  todo: ToBeSortedLater
 
   constructor(dlf?: ArxDLF, fts?: ArxFTS, llf?: ArxLLF, areNormalsCalculated = false) {
+    this.polygons = new Polygons()
+    this.lights = new Lights()
+    this.fogs = new Fogs()
+    this.entities = new Entities()
+    this.zones = new Zones()
+    this.paths = new Paths()
+    this.player = new Player()
+    this.portals = [] // TODO: create Portals class
+    this.config = {
+      isFinalized: false,
+      offset: defaultOffset.clone(),
+    }
+    this.hud = new HUD()
+    this.ui = new UI()
+    this.i18n = new Translations()
+    this.todo = {
+      uniqueHeaders: [],
+      cells: times(() => {
+        return {}
+      }, MAP_DEPTH_IN_CELLS * MAP_WIDTH_IN_CELLS),
+      anchors: [],
+      rooms: [
+        { portals: [], polygons: [] },
+        { portals: [], polygons: [] },
+      ],
+      roomDistances: [
+        {
+          distance: -1,
+          startPosition: { x: 0, y: 0, z: 0 },
+          endPosition: { x: 1, y: 0, z: 0 },
+        },
+        {
+          distance: -1,
+          startPosition: { x: 0, y: 0, z: 0 },
+          endPosition: { x: 0, y: 1, z: 0 },
+        },
+        {
+          distance: -1,
+          startPosition: { x: 0.984_375, y: 0.984_375, z: 0 },
+          endPosition: { x: 0, y: 0, z: 0 },
+        },
+        {
+          distance: -1,
+          startPosition: { x: 0, y: 0, z: 0 },
+          endPosition: { x: 0, y: 0, z: 0 },
+        },
+      ],
+    }
+
     this.player.position = this.config.offset.clone()
 
     if (dlf === undefined || fts === undefined || llf === undefined) {

@@ -12,11 +12,17 @@ type Alignments = '--' | '-' | '' | '+' | '++'
 export type CursorDir = `${Axis}${Alignments}`
 
 export class Cursor {
-  oldSize = new Vector3(0, 0, 0)
-  newSize = new Vector3(0, 0, 0)
-  cursor = new Vector3(0, 0, 0)
+  oldSize: Vector3
+  newSize: Vector3
+  cursor: Vector3
+  saves: Record<string, CursorSave>
 
-  saves: Record<string, CursorSave> = {}
+  constructor() {
+    this.oldSize = new Vector3(0, 0, 0)
+    this.newSize = new Vector3(0, 0, 0)
+    this.cursor = new Vector3(0, 0, 0)
+    this.saves = {}
+  }
 
   move(...dirs: CursorDir[]): void {
     dirs.forEach((dir) => {

@@ -221,7 +221,7 @@ export class Entity extends _Entity implements ArxComponent {
   /**
    * stuff that I can't put elsewhere, but needs to get exported
    */
-  otherDependencies: (Audio | TextureOrMaterial)[] = []
+  otherDependencies: (Audio | TextureOrMaterial)[]
 
   constructor(props: EntityConstructorProps) {
     super()

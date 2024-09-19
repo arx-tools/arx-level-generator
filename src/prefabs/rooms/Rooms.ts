@@ -5,8 +5,6 @@ import { type Vector3 } from '@src/Vector3.js'
 import { type Cursor, type CursorDir } from '@prefabs/rooms/Cursor.js'
 import { createRoom, type RoomProps } from '@prefabs/rooms/room.js'
 
-// ---------------------------
-
 // only works when everything is aligned to the same grid with the same tileSize
 function union(map1: ArxMap, map2: ArxMap): void {
   // TODO: this removes both polygons when they overlap, which is ideal for walls
@@ -53,13 +51,14 @@ function union(map1: ArxMap, map2: ArxMap): void {
 }
 
 export class Rooms {
-  maps: ArxMap[] = []
-  previousRoom: ArxMap | undefined = undefined
-  currentRoom: ArxMap | undefined = undefined
+  maps: ArxMap[]
+  previousRoom?: ArxMap
+  currentRoom?: ArxMap
   cursor: Cursor
 
   constructor(cursor: Cursor) {
     this.cursor = cursor
+    this.maps = []
   }
 
   addRoom(

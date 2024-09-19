@@ -14,16 +14,20 @@ export enum HudElements {
 }
 
 export class HUD {
-  elementVisibility: Record<HudElements, boolean> = {
-    [HudElements.Minimap]: true,
-    [HudElements.Healthbar]: true,
-    [HudElements.Manabar]: true,
-    [HudElements.StealthIndicator]: true,
-    [HudElements.StealingIcon]: true,
-    [HudElements.LevelUpIcon]: true,
-    [HudElements.BookIcon]: true,
-    [HudElements.BackpackIcon]: true,
-    [HudElements.PurseIcon]: true,
+  elementVisibility: Record<HudElements, boolean>
+
+  constructor() {
+    this.elementVisibility = {
+      [HudElements.Minimap]: true,
+      [HudElements.Healthbar]: true,
+      [HudElements.Manabar]: true,
+      [HudElements.StealthIndicator]: true,
+      [HudElements.StealingIcon]: true,
+      [HudElements.LevelUpIcon]: true,
+      [HudElements.BookIcon]: true,
+      [HudElements.BackpackIcon]: true,
+      [HudElements.PurseIcon]: true,
+    }
   }
 
   hide(hudElement: HudElements | 'all'): void {

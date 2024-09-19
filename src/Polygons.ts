@@ -52,9 +52,14 @@ export class Polygons extends Array<Polygon> {
   cashedBBox: {
     numberOfPolygons: number
     value: Box3
-  } = {
-    numberOfPolygons: 0,
-    value: new Box3(),
+  }
+
+  constructor(...items: Polygon[]) {
+    super(...items)
+    this.cashedBBox = {
+      numberOfPolygons: 0,
+      value: new Box3(),
+    }
   }
 
   async exportTextures(settings: Settings): Promise<Record<string, string>> {

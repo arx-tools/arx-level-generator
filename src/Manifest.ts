@@ -3,10 +3,13 @@ import path from 'node:path'
 import { type MetaData, generateMetadata } from '@src/MetaData.js'
 import { type Settings } from '@src/Settings.js'
 import { fileExists } from '@src/helpers.js'
+import { type Expand } from 'arx-convert/utils'
 
-export type ManifestData = MetaData & {
-  files: string[]
-}
+export type ManifestData = Expand<
+  MetaData & {
+    files: string[]
+  }
+>
 
 export class Manifest {
   static filename: string = 'manifest.json'

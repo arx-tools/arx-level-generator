@@ -46,7 +46,7 @@ type RuneConstructorProps = Expand<
 
 export class Rune extends Entity {
   private readonly propRuneName: Variable<string>
-  private propArxTutorialEnabled: Variable<boolean> | undefined
+  private propArxTutorialEnabled?: Variable<boolean>
 
   constructor(variant: RuneVariant, { arxTutorialEnabled, ...props }: RuneConstructorProps = {}) {
     super({

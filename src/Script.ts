@@ -73,16 +73,20 @@ export class Script {
 
   isRoot = false
   filename: string
-  properties: ScriptProperty<any>[] = []
-  subroutines: ScriptSubroutine[] = []
-  eventHandlers: Record<string, ScriptHandler[]> = {
-    '::before': [],
-    '::after': [],
-    init: [],
-  }
+  properties: ScriptProperty<any>[]
+  subroutines: ScriptSubroutine[]
+  eventHandlers: Record<string, ScriptHandler[]>
 
   constructor(props: ScriptConstructorProps) {
     this.filename = props.filename
+
+    this.properties = []
+    this.subroutines = []
+    this.eventHandlers = {
+      '::before': [],
+      '::after': [],
+      init: [],
+    }
   }
 
   toArxData(): string {

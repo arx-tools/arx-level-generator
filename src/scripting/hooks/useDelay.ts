@@ -4,7 +4,7 @@ let delayIdx = 0
  * @see https://wiki.arx-libertatis.org/Script:timer
  */
 class Timer {
-  name: string = ''
+  name: string
   delayOffsetInMs: number
   /**
    * `Number.POSITIVE_INFINITY` or positive integer
@@ -13,6 +13,8 @@ class Timer {
   isCancelled: boolean
 
   constructor(delayOffsetInMs: number, repetitions: number, isUnique: boolean = false) {
+    this.name = ''
+
     if (!isUnique) {
       this.name = `delay${++delayIdx}`
     }

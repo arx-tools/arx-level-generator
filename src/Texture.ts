@@ -259,7 +259,7 @@ export class Texture extends ThreeJsTextue {
 
   // ----------------
 
-  alreadyMadeTileable: boolean = false
+  alreadyMadeTileable: boolean
   filename: string
   isNative: boolean
   _width: number
@@ -270,6 +270,7 @@ export class Texture extends ThreeJsTextue {
   constructor(props: TextureConstructorProps) {
     super(undefined, UVMapping, ClampToEdgeWrapping, ClampToEdgeWrapping)
 
+    this.alreadyMadeTileable = false
     this.filename = props.filename
     this.isNative = props.isNative ?? true
     this.sourcePath = props.sourcePath

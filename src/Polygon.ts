@@ -84,6 +84,9 @@ export class Polygon implements ArxComponent {
       room: polygon.room,
       paddy: polygon.paddy,
       config: {
+        /**
+         * setting this to true will prevent calculation of norm, norm2 and normals properties
+         */
         areNormalsCalculated,
       },
     })
@@ -102,10 +105,7 @@ export class Polygon implements ArxComponent {
   area: number
   room: number
   paddy?: number
-  config: PolygonConfig = {
-    /** setting this to true will prevent calculation of norm, norm2 and normals properties */
-    areNormalsCalculated: false,
-  }
+  config: PolygonConfig
 
   constructor(props: PolygonContructorProps) {
     this.vertices = props.vertices
@@ -122,7 +122,13 @@ export class Polygon implements ArxComponent {
     this.area = props.area ?? 0
     this.room = props.room ?? DEFAULT_ROOM_ID
     this.paddy = props.paddy
-    this.config = { ...this.config, ...props.config }
+    this.config = {
+      /**
+       * setting this to true will prevent calculation of norm, norm2 and normals properties
+       */
+      areNormalsCalculated: false,
+      ...props.config,
+    }
   }
 
   clone(): Polygon {
