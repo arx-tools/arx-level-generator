@@ -64,7 +64,7 @@ function fitUV(
 
   if (!fitX && !fitY) {
     // tile
-    scaleUV(new Vector2((tileSize / 100) * scale, (tileSize / 100) * scale), geometry)
+    scaleUV(new Vector2(tileSize / (100 * scale), tileSize / (100 * scale)), geometry)
   }
 }
 
