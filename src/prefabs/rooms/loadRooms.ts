@@ -256,7 +256,7 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
                   const fitX = tokens[4] === 'fit-x' || tokens[4] === 'stretch'
                   const fitY = tokens[4] === 'fit-y' || tokens[4] === 'stretch'
                   let scale = 1
-                  if (fitX === false && fitY === false && /^scale\:\d+(\.\d+)?$/.test(tokens[4])) {
+                  if (fitX === false && fitY === false && /^scale:\d+(\.\d+)?$/.test(tokens[4])) {
                     scale = Number.parseFloat(tokens[4].split(':')[1])
                   }
 
@@ -278,7 +278,7 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
                   const fitX = tokens[3] === 'fit-x' || tokens[3] === 'stretch'
                   const fitY = tokens[3] === 'fit-y' || tokens[3] === 'stretch'
                   let scale = 1
-                  if (fitX === false && fitY === false && /^scale\:\d+(\.\d+)?$/.test(tokens[3])) {
+                  if (fitX === false && fitY === false && /^scale:\d+(\.\d+)?$/.test(tokens[3])) {
                     scale = Number.parseFloat(tokens[3].split(':')[1])
                   }
 
@@ -318,7 +318,7 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
                   const fitX = tokens[4] === 'fit-x' || tokens[4] === 'stretch'
                   const fitY = tokens[4] === 'fit-y' || tokens[4] === 'stretch'
                   let scale = 1
-                  if (fitX === false && fitY === false && /^scale\:\d+(\.\d+)?$/.test(tokens[4])) {
+                  if (fitX === false && fitY === false && /^scale:\d+(\.\d+)?$/.test(tokens[4])) {
                     scale = Number.parseFloat(tokens[4].split(':')[1])
                   }
 
@@ -337,7 +337,7 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
                   const fitX = tokens[3] === 'fit-x' || tokens[3] === 'stretch'
                   const fitY = tokens[3] === 'fit-y' || tokens[3] === 'stretch'
                   let scale = 1
-                  if (fitX === false && fitY === false && /^scale\:\d+(\.\d+)?$/.test(tokens[3])) {
+                  if (fitX === false && fitY === false && /^scale:\d+(\.\d+)?$/.test(tokens[3])) {
                     scale = Number.parseFloat(tokens[3].split(':')[1])
                   }
 
@@ -381,7 +381,7 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
                   const fitX = tokens[4] === 'fit-x' || tokens[4] === 'stretch'
                   const fitY = tokens[4] === 'fit-y' || tokens[4] === 'stretch'
                   let scale = 1
-                  if (fitX === false && fitY === false && /^scale\:\d+(\.\d+)?$/.test(tokens[4])) {
+                  if (fitX === false && fitY === false && /^scale:\d+(\.\d+)?$/.test(tokens[4])) {
                     scale = Number.parseFloat(tokens[4].split(':')[1])
                   }
 
@@ -397,7 +397,7 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
                   const fitX = tokens[3] === 'fit-x' || tokens[3] === 'stretch'
                   const fitY = tokens[3] === 'fit-y' || tokens[3] === 'stretch'
                   let scale = 1
-                  if (fitX === false && fitY === false && /^scale\:\d+(\.\d+)?$/.test(tokens[3])) {
+                  if (fitX === false && fitY === false && /^scale:\d+(\.\d+)?$/.test(tokens[3])) {
                     scale = Number.parseFloat(tokens[3].split(':')[1])
                   }
 
