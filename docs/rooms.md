@@ -28,6 +28,7 @@ define room-no-ceiling {
   wall-north off # don't render any walls on this side
   floor custom textures [fabric]-carpet.jpg # custom texture from assets/textures/
   # optionally you can add fit-x, fit-y or stretch after the texture names to replace the original tiled texture fitting
+  # or you can set a custom scale with scale:n where n can be any positive number, like scale:2, scale:1.37, etc
 }
 
 $roomHeight = 300 # variable (or more like constant)
