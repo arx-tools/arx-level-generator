@@ -14,6 +14,7 @@ export type TextureDefinition = {
   fitX: boolean
   fitY: boolean
   isRemoved: boolean
+  scale: number
 }
 
 export type RoomTextures = {
@@ -34,11 +35,13 @@ function fitUV(
   {
     fitX,
     fitY,
+    scale,
     tileSize,
     size,
   }: {
     fitX: boolean
     fitY: boolean
+    scale: number
     tileSize: number
     size: Vector2
   },
@@ -61,13 +64,13 @@ function fitUV(
 
   if (!fitX && !fitY) {
     // tile
-    scaleUV(new Vector2(tileSize / 100, tileSize / 100), geometry)
+    scaleUV(new Vector2((tileSize / 100) * scale, (tileSize / 100) * scale), geometry)
   }
 }
 
 function createFloor(size: Vector3, textureDef: TextureDefinition, tileSize: number): Mesh {
   const { x: width, z: depth } = size
-  const { texture, fitX, fitY } = textureDef
+  const { texture, fitX, fitY, scale } = textureDef
   const size2D = new Vector2(width, depth)
 
   let flags: ArxPolygonFlags
@@ -89,6 +92,7 @@ function createFloor(size: Vector3, textureDef: TextureDefinition, tileSize: num
     {
       fitX,
       fitY,
+      scale,
       tileSize,
       size: size2D,
     },
@@ -100,7 +104,7 @@ function createFloor(size: Vector3, textureDef: TextureDefinition, tileSize: num
 
 function createNorthWall(size: Vector3, textureDef: TextureDefinition, tileSize: number): Mesh {
   const { x: width, y: height, z: depth } = size
-  const { texture, fitX, fitY } = textureDef
+  const { texture, fitX, fitY, scale } = textureDef
   const size2D = new Vector2(width, height)
 
   let flags: ArxPolygonFlags
@@ -124,6 +128,7 @@ function createNorthWall(size: Vector3, textureDef: TextureDefinition, tileSize:
     {
       fitX,
       fitY,
+      scale,
       tileSize,
       size: size2D,
     },
@@ -135,7 +140,7 @@ function createNorthWall(size: Vector3, textureDef: TextureDefinition, tileSize:
 
 function createSouthWall(size: Vector3, textureDef: TextureDefinition, tileSize: number): Mesh {
   const { x: width, y: height, z: depth } = size
-  const { texture, fitX, fitY } = textureDef
+  const { texture, fitX, fitY, scale } = textureDef
   const size2D = new Vector2(width, height)
 
   let flags: ArxPolygonFlags
@@ -159,6 +164,7 @@ function createSouthWall(size: Vector3, textureDef: TextureDefinition, tileSize:
     {
       fitX,
       fitY,
+      scale,
       tileSize,
       size: size2D,
     },
@@ -170,7 +176,7 @@ function createSouthWall(size: Vector3, textureDef: TextureDefinition, tileSize:
 
 function createWestWall(size: Vector3, textureDef: TextureDefinition, tileSize: number): Mesh {
   const { x: width, y: height, z: depth } = size
-  const { texture, fitX, fitY } = textureDef
+  const { texture, fitX, fitY, scale } = textureDef
   const size2D = new Vector2(depth, height)
 
   let flags: ArxPolygonFlags
@@ -194,6 +200,7 @@ function createWestWall(size: Vector3, textureDef: TextureDefinition, tileSize: 
     {
       fitX,
       fitY,
+      scale,
       tileSize,
       size: size2D,
     },
@@ -205,7 +212,7 @@ function createWestWall(size: Vector3, textureDef: TextureDefinition, tileSize: 
 
 function createEastWall(size: Vector3, textureDef: TextureDefinition, tileSize: number): Mesh {
   const { x: width, y: height, z: depth } = size
-  const { texture, fitX, fitY } = textureDef
+  const { texture, fitX, fitY, scale } = textureDef
   const size2D = new Vector2(depth, height)
 
   let flags: ArxPolygonFlags
@@ -229,6 +236,7 @@ function createEastWall(size: Vector3, textureDef: TextureDefinition, tileSize: 
     {
       fitX,
       fitY,
+      scale,
       tileSize,
       size: size2D,
     },
@@ -240,7 +248,7 @@ function createEastWall(size: Vector3, textureDef: TextureDefinition, tileSize: 
 
 function createCeiling(size: Vector3, textureDef: TextureDefinition, tileSize: number): Mesh {
   const { x: width, y: height, z: depth } = size
-  const { texture, fitX, fitY } = textureDef
+  const { texture, fitX, fitY, scale } = textureDef
   const size2D = new Vector2(width, depth)
 
   let flags: ArxPolygonFlags
@@ -264,6 +272,7 @@ function createCeiling(size: Vector3, textureDef: TextureDefinition, tileSize: n
     {
       fitX,
       fitY,
+      scale,
       tileSize,
       size: size2D,
     },

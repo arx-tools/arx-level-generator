@@ -133,17 +133,17 @@ function parseVariable(tokens: string[], variables: Record<string, string>, line
 
 function generateBaseRoomTextures(separateWalls: boolean = false): RoomTextures {
   const roomTextures: RoomTextures = {
-    ceiling: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-    wall: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-    floor: { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+    ceiling: { texture: Texture.missingTexture, fitX: false, fitY: false, scale: 1, isRemoved: false },
+    wall: { texture: Texture.missingTexture, fitX: false, fitY: false, scale: 1, isRemoved: false },
+    floor: { texture: Texture.missingTexture, fitX: false, fitY: false, scale: 1, isRemoved: false },
   }
 
   if (separateWalls) {
     roomTextures.wall = [
-      { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-      { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-      { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
-      { texture: Texture.missingTexture, fitX: false, fitY: false, isRemoved: false },
+      { texture: Texture.missingTexture, fitX: false, fitY: false, scale: 1, isRemoved: false },
+      { texture: Texture.missingTexture, fitX: false, fitY: false, scale: 1, isRemoved: false },
+      { texture: Texture.missingTexture, fitX: false, fitY: false, scale: 1, isRemoved: false },
+      { texture: Texture.missingTexture, fitX: false, fitY: false, scale: 1, isRemoved: false },
     ]
   }
 
@@ -255,8 +255,18 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
                   const texture = Texture.fromCustomFile({ filename: tokens[3], sourcePath: tokens[2] })
                   const fitX = tokens[4] === 'fit-x' || tokens[4] === 'stretch'
                   const fitY = tokens[4] === 'fit-y' || tokens[4] === 'stretch'
+                  let scale = 1
+                  if (fitX === false && fitY === false && /^scale\:\d+(\.\d+)?$/.test(tokens[4])) {
+                    scale = Number.parseFloat(tokens[4].split(':')[1])
+                  }
 
-                  roomDefinitions[currentBlock.name].textures[tokens[0]] = { texture, fitX, fitY, isRemoved: false }
+                  roomDefinitions[currentBlock.name].textures[tokens[0]] = {
+                    texture,
+                    fitX,
+                    fitY,
+                    scale,
+                    isRemoved: false,
+                  }
                   break
                 }
 
@@ -267,8 +277,18 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
                   const texture = new Texture({ filename: tokens[2], size: textureSize })
                   const fitX = tokens[3] === 'fit-x' || tokens[3] === 'stretch'
                   const fitY = tokens[3] === 'fit-y' || tokens[3] === 'stretch'
+                  let scale = 1
+                  if (fitX === false && fitY === false && /^scale\:\d+(\.\d+)?$/.test(tokens[3])) {
+                    scale = Number.parseFloat(tokens[3].split(':')[1])
+                  }
 
-                  roomDefinitions[currentBlock.name].textures[tokens[0]] = { texture, fitX, fitY, isRemoved: false }
+                  roomDefinitions[currentBlock.name].textures[tokens[0]] = {
+                    texture,
+                    fitX,
+                    fitY,
+                    scale,
+                    isRemoved: false,
+                  }
                   break
                 }
 
@@ -297,11 +317,15 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
                   const texture = Texture.fromCustomFile({ filename: tokens[3], sourcePath: tokens[2] })
                   const fitX = tokens[4] === 'fit-x' || tokens[4] === 'stretch'
                   const fitY = tokens[4] === 'fit-y' || tokens[4] === 'stretch'
+                  let scale = 1
+                  if (fitX === false && fitY === false && /^scale\:\d+(\.\d+)?$/.test(tokens[4])) {
+                    scale = Number.parseFloat(tokens[4].split(':')[1])
+                  }
 
-                  wall[0] = { texture, fitX, fitY, isRemoved: false }
-                  wall[1] = { texture, fitX, fitY, isRemoved: false }
-                  wall[2] = { texture, fitX, fitY, isRemoved: false }
-                  wall[3] = { texture, fitX, fitY, isRemoved: false }
+                  wall[0] = { texture, fitX, fitY, scale, isRemoved: false }
+                  wall[1] = { texture, fitX, fitY, scale, isRemoved: false }
+                  wall[2] = { texture, fitX, fitY, scale, isRemoved: false }
+                  wall[3] = { texture, fitX, fitY, scale, isRemoved: false }
                   break
                 }
 
@@ -312,11 +336,15 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
                   const texture = new Texture({ filename: tokens[2], size: textureSize })
                   const fitX = tokens[3] === 'fit-x' || tokens[3] === 'stretch'
                   const fitY = tokens[3] === 'fit-y' || tokens[3] === 'stretch'
+                  let scale = 1
+                  if (fitX === false && fitY === false && /^scale\:\d+(\.\d+)?$/.test(tokens[3])) {
+                    scale = Number.parseFloat(tokens[3].split(':')[1])
+                  }
 
-                  wall[0] = { texture, fitX, fitY, isRemoved: false }
-                  wall[1] = { texture, fitX, fitY, isRemoved: false }
-                  wall[2] = { texture, fitX, fitY, isRemoved: false }
-                  wall[3] = { texture, fitX, fitY, isRemoved: false }
+                  wall[0] = { texture, fitX, fitY, scale, isRemoved: false }
+                  wall[1] = { texture, fitX, fitY, scale, isRemoved: false }
+                  wall[2] = { texture, fitX, fitY, scale, isRemoved: false }
+                  wall[3] = { texture, fitX, fitY, scale, isRemoved: false }
                   break
                 }
 
@@ -352,8 +380,12 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
                   const texture = Texture.fromCustomFile({ filename: tokens[3], sourcePath: tokens[2] })
                   const fitX = tokens[4] === 'fit-x' || tokens[4] === 'stretch'
                   const fitY = tokens[4] === 'fit-y' || tokens[4] === 'stretch'
+                  let scale = 1
+                  if (fitX === false && fitY === false && /^scale\:\d+(\.\d+)?$/.test(tokens[4])) {
+                    scale = Number.parseFloat(tokens[4].split(':')[1])
+                  }
 
-                  wall[wallIdx] = { texture, fitX, fitY, isRemoved: false }
+                  wall[wallIdx] = { texture, fitX, fitY, scale, isRemoved: false }
                   break
                 }
 
@@ -364,8 +396,12 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
                   const texture = new Texture({ filename: tokens[2], size: textureSize })
                   const fitX = tokens[3] === 'fit-x' || tokens[3] === 'stretch'
                   const fitY = tokens[3] === 'fit-y' || tokens[3] === 'stretch'
+                  let scale = 1
+                  if (fitX === false && fitY === false && /^scale\:\d+(\.\d+)?$/.test(tokens[3])) {
+                    scale = Number.parseFloat(tokens[3].split(':')[1])
+                  }
 
-                  wall[wallIdx] = { texture, fitX, fitY, isRemoved: false }
+                  wall[wallIdx] = { texture, fitX, fitY, scale, isRemoved: false }
                   break
                 }
 
