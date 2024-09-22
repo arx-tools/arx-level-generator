@@ -212,9 +212,15 @@ export class ArxMap {
     const removedPolygons = $(this.polygons).clearSelection().selectOutOfBounds().delete()
 
     if (removedPolygons.length > 0) {
-      console.warn(
-        `[warning] ArxMap: Removed ${removedPolygons.length} polygons what are outside the 0..16000 boundary on the X or Z axis`,
-      )
+      if (removedPolygons.length === 1) {
+        console.warn(
+          `[warning] ArxMap: Removed ${removedPolygons.length} polygon outside the 0..16000 boundary on the X or Z axis`,
+        )
+      } else {
+        console.warn(
+          `[warning] ArxMap: Removed ${removedPolygons.length} polygons outside the 0..16000 boundary on the X or Z axis`,
+        )
+      }
     }
 
     if (this.polygons.length === 0) {
@@ -223,7 +229,7 @@ export class ArxMap {
       $(this.polygons).clearSelection().selectOutOfBounds().delete()
       if (this.polygons.length === 0) {
         console.warn(
-          `[warning] ArxMap: Failed to add polygon below the player's feet as it was partially or fully out of the 0..16000 boundary on the X or Z axis, try moving the player by adjusting map.player.position!`,
+          `[warning] ArxMap: Failed to add polygon below the player's feet as it was partially or fully outside the 0..16000 boundary on the X or Z axis. Try moving the player by adjusting map.player.position!`,
         )
       }
     }

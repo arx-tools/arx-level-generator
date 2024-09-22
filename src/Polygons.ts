@@ -580,16 +580,26 @@ export class Polygons extends Array<Polygon> {
   subdivideLargePolygons(): void {
     let i = this.length
 
+    let numberOfTooLargePolygons = 0
+
     while (i > 0) {
       i = i - 1
 
       const polygon = this[i]
 
       if (polygon.isTooLarge()) {
-        console.log(`polygon #${i} too large`)
+        numberOfTooLargePolygons = numberOfTooLargePolygons + 1
 
         const smallerPolygons = polygon.subdivide()
         this.splice(i, 1, ...smallerPolygons)
+      }
+    }
+
+    if (numberOfTooLargePolygons > 0) {
+      if (numberOfTooLargePolygons === 1) {
+        console.info(`[info] Polygons: ${numberOfTooLargePolygons} polygon have been subdivided`)
+      } else {
+        console.info(`[info] Polygons: ${numberOfTooLargePolygons} polygons have been subdivided`)
       }
     }
   }
