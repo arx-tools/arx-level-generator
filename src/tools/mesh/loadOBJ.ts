@@ -24,15 +24,26 @@ import { type VerticalAlign } from '@src/types.js'
 
 type loadOBJProperties = {
   /**
-   * default value is `undefined`
+   * Move the mesh to a given position
+   *
+   * default value is `undefined`, which is equivalent to `new Vector3(0, 0, 0)`
    */
   position?: Vector3
   /**
-   * default value is `undefined`
+   * Resize the mesh. You can scale the mesh evenly on all 3 axis by specifying a single number,
+   * but resizing on all 3 axis independently is also possible with a `Vector3`
+   *
+   * default value is `undefined`, which is equivalent to `1` or `new Vector3(1, 1, 1)`
    */
   scale?: number | Vector3
   /**
-   * default value is `undefined`
+   * Resize the texture uv mapping. You can scale the uv coordinates evenly on both axis with a single number,
+   * or independently on both axis with a `Vector2`. It is also possible to pass in a function that will
+   * get called for every texture that the model has and you can specify scaling to them separately.
+   *
+   * see {@link scaleUVTool @tools/mesh/scaleUV} on negative numbers can be used for flipping a texture
+   *
+   * default value is `undefined`, which is equivalent to `1` or `new Vector2(1, 1)`
    */
   scaleUV?: number | Vector2 | ((texture: Texture) => number | Vector2)
   /**
@@ -40,7 +51,7 @@ type loadOBJProperties = {
    */
   orientation?: Rotation
   /**
-   * default value is (ArxPolygonFlags.DoubleSided | ArxPolygonFlags.Tiled)
+   * default value is ({@link ArxPolygonFlags.DoubleSided} | {@link ArxPolygonFlags.Tiled})
    * which is also the same as what you will get as the value for defaultFlags when
    * you pass a function as the value
    */
@@ -50,6 +61,10 @@ type loadOBJProperties = {
    */
   fallbackTexture?: Texture
   /**
+   * Polygon winding determines where each face of a model is facing.
+   *
+   * Reverse the polygon winding to turn a model inside out (or fix it if it looks already turned inside out).
+   *
    * default value is `false`
    */
   reversedPolygonWinding?: boolean
@@ -99,6 +114,14 @@ function isMeshTriangulated(rawObj: string): boolean {
   return !isNotTriangulated
 }
 
+/**
+ * Polygon winding determines where the faces of each polygon face.
+ *
+ * Reversing the winding of polygons can make a model turn inside out
+ * (or fix that if it already looks inside out).
+ *
+ * @param rawObj contents of an OBJ file
+ */
 function reversePolygonWinding(rawObj: string): string {
   let rows = toRows(rawObj)
 
@@ -231,7 +254,7 @@ async function loadMTL(
 }
 
 /**
- * Loads an obj file and an optional mtl file
+ * Loads an OBJ file and an optional MTL file
  *
  * @see https://en.wikipedia.org/wiki/Wavefront_.obj_file
  */

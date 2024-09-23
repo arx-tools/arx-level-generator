@@ -1,4 +1,6 @@
 import { type BufferAttribute, type BufferGeometry, Vector2 } from 'three'
+// eslint-disable-next-line unused-imports/no-unused-imports -- because it is used in jsdoc block
+import { EntityModel } from '@src/EntityModel.js'
 
 /**
  * only works with tileable textures
@@ -10,6 +12,10 @@ import { type BufferAttribute, type BufferGeometry, Vector2 } from 'three'
  *
  * `scaleUV(new Vector(-1, 1), geometry)` will flip the texture horizontally
  * `scaleUV(new Vector(1, -1), geometry)` will flip the texture vertically
+ *
+ * It is recommended to call {@link normalizeUV} after flipping a texture to move
+ * the coordinates back to the positive realm and remove the need for tiling,
+ * especially for {@link EntityModel} instances
  */
 export function scaleUV(scale: Vector2, geometry: BufferGeometry): void {
   if (scale.x === 1 && scale.y === 1) {
@@ -25,6 +31,17 @@ export function scaleUV(scale: Vector2, geometry: BufferGeometry): void {
   }
 }
 
+/**
+ * Makes sure the uv coordinates are between 0.0 and 1.0 eliminating the need to tile textures.
+ *
+ * In Arx texture tiling only works if we use a square texture and also if it's the mesh/terrain (FTS)
+ * that the texture gets applied to.
+ *
+ * Currently tiling for entities (FTL) doesn't work, so normalizing uv for {@link EntityModel} instances are a must,
+ * especially after flipping a texture on one of its axis.
+ *
+ * @see https://github.com/arx/ArxLibertatis/pull/294
+ */
 export function normalizeUV(geometry: BufferGeometry): void {
   const uv = geometry.getAttribute('uv') as BufferAttribute
 
@@ -48,10 +65,24 @@ export function normalizeUV(geometry: BufferGeometry): void {
   }
 }
 
+/**
+ * Flips a texture horizontally
+ *
+ * It is recommended to call {@link normalizeUV} after flipping a texture to move
+ * the coordinates back to the positive realm and remove the need for tiling,
+ * especially for {@link EntityModel} instances
+ */
 export function flipUVHorizontally(geometry: BufferGeometry): void {
   scaleUV(new Vector2(-1, 1), geometry)
 }
 
+/**
+ * Flips a texture upside down
+ *
+ * It is recommended to call {@link normalizeUV} after flipping a texture to move
+ * the coordinates back to the positive realm and remove the need for tiling,
+ * especially for {@link EntityModel} instances
+ */
 export function flipUVVertically(geometry: BufferGeometry): void {
   scaleUV(new Vector2(1, -1), geometry)
 }
