@@ -796,17 +796,20 @@ export class ArxMap {
       })
 
     this.polygons.forEach((polygon) => {
-      const isQuad = polygon.isQuad()
       const { norm, norm2, normals, vertices } = polygon
 
       this.calculateDanaeVertexColor(vertices[0], normals?.[0] ?? norm, lights)
       this.calculateDanaeVertexColor(vertices[1], normals?.[1] ?? norm, lights)
       this.calculateDanaeVertexColor(vertices[2], normals?.[2] ?? norm, lights)
 
-      if (isQuad) {
+      if (polygon.isQuad()) {
         this.calculateDanaeVertexColor(vertices[3], normals?.[3] ?? norm2, lights)
       }
     })
+  }
+
+  private calculateFredlllllLighting(): void {
+    // TODO
   }
 
   private calculateLighting(settings: Settings): void {
@@ -817,6 +820,11 @@ export class ArxMap {
     switch (settings.lightingCalculatorMode) {
       case 'Danae': {
         this.calculateDanaeLighting()
+        break
+      }
+
+      case 'Fredlllll': {
+        this.calculateFredlllllLighting()
         break
       }
     }

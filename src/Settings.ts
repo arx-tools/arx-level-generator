@@ -7,7 +7,7 @@ import { randomIntBetween } from '@src/random.js'
 
 dotenvConfig()
 
-const lightingCalculatorModes = ['Danae'] as const
+const lightingCalculatorModes = ['Danae', 'Fredlllll'] as const
 
 type LightingCalculatorMode = (typeof lightingCalculatorModes)[number]
 
@@ -63,6 +63,11 @@ type SettingsConstructorProps = {
   calculateLighting?: boolean
   /**
    * can also be set via `process.env.lightingCalculatorMode`
+   *
+   * potential values:
+   *
+   * - `"Danae"` - no shadows, same as what DANAE creates, OG Arx look and feel
+   * - `"Fredlllll"` - shadow calculation, same as "DistanceAngleShadowNoTransparency" in Fred's lighting generator
    *
    * default value is "Danae"
    */
