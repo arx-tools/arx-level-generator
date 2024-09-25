@@ -744,6 +744,7 @@ export class ArxMap {
   private calculateDanaeVertexColor(vertex: Vertex, normal: Vector3, lights: Light[]): void {
     vertex.color = this.getDanaeAmbientColor()
 
+    // TODO: refactor this to make the variable names make more sense
     lights.forEach((light) => {
       const tl = light.position.clone().sub(vertex)
       const dista = tl.length()
