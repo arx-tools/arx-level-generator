@@ -65,8 +65,14 @@ export async function getProjectPackageJSON(): Promise<PackageJsonProps> {
   return cacheOfProjectPackageJSON
 }
 
-export function evenAndRemainder(divisor: number, n: number): [number, number] {
-  return [Math.floor(n / divisor), n % divisor]
+/**
+ * @example
+ * ```js
+ * quotientAndRemainder(20, 3) -> [6, 2]
+ * ```
+ */
+export function quotientAndRemainder(dividend: number, divisor: number): [number, number] {
+  return [Math.floor(dividend / divisor), dividend % divisor]
 }
 
 export function applyTransformations(threeJsObj: Object3D): void {

@@ -22,7 +22,7 @@ import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
 import { sum, times } from '@src/faux-ramda.js'
-import { applyTransformations, averageVectors, evenAndRemainder, roundToNDecimals } from '@src/helpers.js'
+import { applyTransformations, averageVectors, quotientAndRemainder, roundToNDecimals } from '@src/helpers.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 
 export const QUADIFY = 'quadify'
@@ -162,7 +162,7 @@ export class Polygons extends Array<Polygon> {
     Object.entries(nindices).forEach(([filename, nindices]) => {
       const maxNindices = sum(Object.values(nindices))
 
-      const [wholeBlocks, remaining] = evenAndRemainder(65_535, maxNindices)
+      const [wholeBlocks, remaining] = quotientAndRemainder(maxNindices, 65_535)
 
       times(() => {
         textureContainers.push(

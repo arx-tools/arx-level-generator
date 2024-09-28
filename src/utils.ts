@@ -1,6 +1,6 @@
 export {
   applyTransformations,
-  evenAndRemainder,
+  quotientAndRemainder,
   percentOf,
   roundToNDecimals,
   isEven,
