@@ -571,7 +571,7 @@ export class ArxMap {
     // TODO: adjust fts polygon texture container ids
   }
 
-  private async toArxData(settings: Settings): Promise<{ dlf: ArxDLF; llf: ArxLLF; fts: ArxFTS }> {
+  async toArxData(settings: Settings): Promise<{ dlf: ArxDLF; llf: ArxLLF; fts: ArxFTS }> {
     const now = Math.floor(Date.now() / 1000)
     const generatorId = await ArxMap.getGeneratorId()
 

@@ -17,7 +17,7 @@ function isValidLightingCalculatorMode(input: any): input is LightingCalculatorM
 
 type Modes = 'development' | 'production'
 
-type SettingsConstructorProps = {
+export type SettingsConstructorProps = {
   /**
    * A folder to load the unpacked DLF, LLF and FTS files of the
    * original game
@@ -40,7 +40,7 @@ type SettingsConstructorProps = {
    */
   outputDir?: string
   /**
-   * can also be set via `process.env.levelIdx`
+   * can also be set via `process.env{calculateLighting: Settings[calculateLighting]}.levelIdx`
    *
    * default value is 1
    */
