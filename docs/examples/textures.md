@@ -150,3 +150,7 @@ const texture = new Texture({
   sourcePath: './textures/',
 })
 ```
+
+## Resources
+
+Source of the hamster texture: https://www.alamy.com/stock-photo-european-hamster-black-bellied-hamster-common-hamster-cricetus-cricetus-20491567.html
