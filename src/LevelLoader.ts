@@ -41,7 +41,7 @@ export class LevelLoader {
         const parser = this.getParser(format)
 
         try {
-          const jsonData = await fs.readFile(jsonFilename, 'utf8')
+          const jsonData = await fs.readFile(jsonFilename, { encoding: 'utf8' })
           data = JSON.parse(jsonData) as ArxDLF
         } catch {
           const binaryFolder = this.getBinaryFolder()
@@ -55,7 +55,7 @@ export class LevelLoader {
 
           const binaryData = await fs.readFile(binaryFilename)
           data = parser.load(binaryData)
-          await fs.writeFile(jsonFilename, JSON.stringify(data), 'utf8')
+          await fs.writeFile(jsonFilename, JSON.stringify(data), { encoding: 'utf8' })
         }
 
         break
@@ -65,7 +65,7 @@ export class LevelLoader {
         const parser = this.getParser(format)
 
         try {
-          const jsonData = await fs.readFile(jsonFilename, 'utf8')
+          const jsonData = await fs.readFile(jsonFilename, { encoding: 'utf8' })
           data = JSON.parse(jsonData) as ArxFTS
         } catch {
           const binaryFolder = this.getBinaryFolder()
@@ -79,7 +79,7 @@ export class LevelLoader {
 
           const binaryData = await fs.readFile(binaryFilename)
           data = parser.load(binaryData)
-          await fs.writeFile(jsonFilename, JSON.stringify(data), 'utf8')
+          await fs.writeFile(jsonFilename, JSON.stringify(data), { encoding: 'utf8' })
         }
 
         break
@@ -89,7 +89,7 @@ export class LevelLoader {
         const parser = this.getParser(format)
 
         try {
-          const jsonData = await fs.readFile(jsonFilename, 'utf8')
+          const jsonData = await fs.readFile(jsonFilename, { encoding: 'utf8' })
           data = JSON.parse(jsonData) as ArxLLF
         } catch {
           const binaryFolder = this.getBinaryFolder()
@@ -103,7 +103,7 @@ export class LevelLoader {
 
           const binaryData = await fs.readFile(binaryFilename)
           data = parser.load(binaryData)
-          await fs.writeFile(jsonFilename, JSON.stringify(data), 'utf8')
+          await fs.writeFile(jsonFilename, JSON.stringify(data), { encoding: 'utf8' })
         }
 
         break

@@ -11,7 +11,7 @@ function pathToPackageJson(): string {
 
 export async function getPackageVersion(): Promise<string> {
   try {
-    const rawIn = await fs.promises.readFile(pathToPackageJson(), 'utf8')
+    const rawIn = await fs.promises.readFile(pathToPackageJson(), { encoding: 'utf8' })
     const { version } = JSON.parse(rawIn) as { version: string }
     return version
   } catch {

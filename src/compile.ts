@@ -14,7 +14,7 @@ async function compileFTS(settings: Settings, fts: ArxFTS): Promise<void> {
 
   if (settings.uncompressedFTS) {
     const repackedFts = FTS.save(fts, false)
-    await fs.promises.writeFile(path.join(ftsPath, 'fast.fts'), repackedFts)
+    await fs.promises.writeFile(path.join(ftsPath, 'fast.fts'), new Uint8Array(repackedFts))
     return
   }
 

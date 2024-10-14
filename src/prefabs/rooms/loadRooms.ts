@@ -179,7 +179,7 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
 
   const variables: Record<string, string> = {}
 
-  const rawInput = await fs.readFile(path.resolve(settings.assetsDir, filename), 'utf8')
+  const rawInput = await fs.readFile(path.resolve(settings.assetsDir, filename), { encoding: 'utf8' })
   const lines = rawInput.split(/\r?\n/)
 
   let currentBlock: CurrentBlock | undefined

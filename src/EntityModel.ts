@@ -123,7 +123,7 @@ export class EntityModel {
       let binaryChanged = false
       if (hashOfFtlData !== cachedBinary.hash || !cachedBinary.exists) {
         const ftl = FTL.save(ftlData)
-        await fs.writeFile(cachedBinary.filename, ftl)
+        await fs.writeFile(cachedBinary.filename, new Uint8Array(ftl))
         await saveHashOf(cachedBinary.filename, hashOfFtlData, settings)
         binaryChanged = true
       }
@@ -142,7 +142,7 @@ export class EntityModel {
             stringifiedFtl = JSON.stringify(ftlData)
           }
 
-          await fs.writeFile(cachedJsonTarget, stringifiedFtl)
+          await fs.writeFile(cachedJsonTarget, stringifiedFtl, { encoding: 'utf8' })
         }
 
         files[jsonTarget] = cachedJsonTarget

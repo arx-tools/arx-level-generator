@@ -442,19 +442,17 @@ export class ArxMap {
 
     for (const [target, script] of Object.entries(scripts)) {
       const latin1Script = latin9ToLatin1(script.replaceAll('\n', Script.EOL))
-      await fs.writeFile(target, latin1Script, 'latin1')
+      await fs.writeFile(target, latin1Script, { encoding: 'latin1' })
     }
 
     const generatorId = await ArxMap.getGeneratorId()
 
     for (const [filename, translation] of Object.entries(translations)) {
-      await fs.writeFile(
-        filename,
-        `// ${meta.name} v.${meta.version} - ${generatorId}
-  
-  ${translation}`,
-        'utf8',
-      )
+      const content = `// ${meta.name} v.${meta.version} - ${generatorId}
+
+${translation}`
+
+      await fs.writeFile(filename, content, { encoding: 'utf8' })
     }
 
     // ------------------------
@@ -476,9 +474,9 @@ export class ArxMap {
         stringifiedLlf = JSON.stringify(llf)
       }
 
-      await fs.writeFile(files.dlf, stringifiedDlf)
-      await fs.writeFile(files.fts, stringifiedFts)
-      await fs.writeFile(files.llf, stringifiedLlf)
+      await fs.writeFile(files.dlf, stringifiedDlf, { encoding: 'utf8' })
+      await fs.writeFile(files.fts, stringifiedFts, { encoding: 'utf8' })
+      await fs.writeFile(files.llf, stringifiedLlf, { encoding: 'utf8' })
 
       for (const [target, amb] of Object.entries(customAmbiences)) {
         let stringifiedAmb: string
@@ -488,7 +486,7 @@ export class ArxMap {
           stringifiedAmb = JSON.stringify(amb)
         }
 
-        await fs.writeFile(target, stringifiedAmb)
+        await fs.writeFile(target, stringifiedAmb, { encoding: 'utf8' })
       }
 
       pathsOfTheFiles.push(...Object.keys(customAmbiences), ...Object.values(files))
@@ -496,7 +494,7 @@ export class ArxMap {
 
     for (const [target, amb] of Object.entries(customAmbiences)) {
       const compiledAmb = AMB.save(amb)
-      await fs.writeFile(target.replace(/\.json$/, ''), compiledAmb)
+      await fs.writeFile(target.replace(/\.json$/, ''), new Uint8Array(compiledAmb))
     }
 
     await compile(settings, { dlf, fts, llf })

@@ -192,7 +192,7 @@ async function loadMTL(
 
   if (await fileExists(mtlSrc)) {
     try {
-      const rawMtl = await fs.readFile(mtlSrc, 'utf8')
+      const rawMtl = await fs.readFile(mtlSrc, { encoding: 'utf8' })
       const mtl = mtlLoader.parse(rawMtl, '')
 
       const entriesOfMaterials = Object.entries(mtl.materialsInfo)
@@ -289,7 +289,7 @@ export async function loadOBJ(
   const { dir, name: filename } = path.parse(filenameWithoutExtension)
 
   const objSrc = path.resolve('assets/' + dir + '/' + filename + '.obj')
-  let rawObj = await fs.readFile(objSrc, 'utf8')
+  let rawObj = await fs.readFile(objSrc, { encoding: 'utf8' })
 
   if (!isMeshTriangulated(rawObj)) {
     console.warn(`[warning] loadOBJ: ${filename}.obj is not triangulated`)

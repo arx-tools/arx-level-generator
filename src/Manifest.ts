@@ -31,7 +31,7 @@ export class Manifest {
     }
 
     try {
-      const rawIn = await fs.readFile(filename, 'utf8')
+      const rawIn = await fs.readFile(filename, { encoding: 'utf8' })
       return JSON.parse(rawIn) as ManifestData
     } catch {
       console.error(`[error] Manifest: failed to read or parse "${Manifest.filename}" in "${settings.outputDir}"`)
@@ -56,7 +56,7 @@ export class Manifest {
       stringifiedData = JSON.stringify(manifest)
     }
 
-    await fs.writeFile(Manifest.getPathToFilename(settings), stringifiedData)
+    await fs.writeFile(Manifest.getPathToFilename(settings), stringifiedData, { encoding: 'utf8' })
   }
 
   static async uninstall(settings: Settings): Promise<void> {

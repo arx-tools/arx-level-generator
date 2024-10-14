@@ -86,7 +86,7 @@ export class Translations {
 
   async addFromFile(filename: string, settings: Settings): Promise<void> {
     try {
-      const rawIn = await fs.readFile(path.resolve(settings.assetsDir, filename), 'utf8')
+      const rawIn = await fs.readFile(path.resolve(settings.assetsDir, filename), { encoding: 'utf8' })
       const translations = JSON.parse(rawIn) as Record<string, Partial<Record<Locales, string>>>
       this.add(translations)
     } catch (error) {
