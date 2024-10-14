@@ -3,7 +3,7 @@
 ```ts
 import { ArxPolygonFlags } from 'arx-convert/types'
 import { ArxMap, Material, QUADIFY, Settings, SHADING_SMOOTH, Texture, Vector3 } from 'arx-level-generator'
-import { scaleUV } from 'arx-level-generator/tools/mesh'
+import { scaleUV, toArxCoordinateSystem } from 'arx-level-generator/tools/mesh'
 import { applyTransformations } from 'arx-level-generator/utils'
 import { MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three'
 
@@ -12,9 +12,12 @@ map.config.offset = new Vector3(3000, 0, 3000)
 
 // create a 200x200cm plane that is to be divided into 4x4 quads each with 50x50 size
 // at this moment quads are just 2 triangles
-const geometry = new PlaneGeometry(200, 200, 4, 4)
+let geometry = new PlaneGeometry(200, 200, 4, 4)
 
-// pick a pre-defined texture or load one either from arx or from a custom file (see docs/examples/textures.md)
+// Arx uses an inverted Y axis, this corrects the geometry
+geometry = toArxCoordinateSystem(geometry)
+
+// pick a pre-defined texture or load one either from Arx or from a custom file (see docs/examples/textures.md)
 let texture = Texture.l2TrollStoneGround04
 
 // [optional step]: you can add extra properties to a texture using the "flags" property, like making it double sided or glowing;
