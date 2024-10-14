@@ -1,7 +1,7 @@
 {
   "name": "arx-level-generator",
   "version": "21.0.0-alpha.26",
-  "description": "A tool for creating Arx Fatalis maps",
+  "description": "A node.js library for creating maps for the video game Arx Fatalis",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",

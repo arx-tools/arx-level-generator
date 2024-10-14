@@ -1,14 +1,8 @@
 # Arx Fatalis level generator
 
-A tool for creating maps for the video game [Arx Fatalis](https://en.wikipedia.org/wiki/Arx_Fatalis)
+A node.js library for creating maps for the video game [Arx Fatalis](https://en.wikipedia.org/wiki/Arx_Fatalis)
 
 ## Dependencies
-
-[pkware-test-files](https://github.com/arx-tools/pkware-test-files)
-This package contains all the Arx Fatalis levels readily unpacked. The level generator tries to load the
-files from the path specified in `Settings.originalLevelFiles` (default `../pkware-test-files`
-relative to where you have installed the `arx-level-generator`) If you are not loading any levels via
-`ArxMap.fromOriginalLevel()` then you don't need to install this dependency.
 
 **three.js version 0.167.0**
 
@@ -18,6 +12,17 @@ Always check the currently used version to avoid warnings and errors in your pro
 **arx-convert version 10.1.1**
 
 Another peer dependency with data types and conversion tools for arx related formats.
+
+### Optional dependencies
+
+**pkware-test-files**
+
+https://github.com/arx-tools/pkware-test-files
+
+This package contains all the Arx Fatalis levels readily unpacked. The level generator tries to load the
+files from the path specified in `Settings.originalLevelFiles` (default `../pkware-test-files`
+relative to where you have installed the `arx-level-generator`) If you are not loading any levels via
+`ArxMap.fromOriginalLevel()` then you don't need to install this dependency.
 
 ## Notes on formats
 
