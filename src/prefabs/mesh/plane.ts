@@ -3,6 +3,7 @@ import { applyTransformations } from '@src/helpers.js'
 import { type TextureOrMaterial } from '@src/types.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
+import { Texture } from '@src/Texture.js'
 
 export const INDEXED = 'indexed'
 export const NONINDEXED = 'non-indexed'
@@ -19,7 +20,10 @@ type createPlaneMeshProps = {
    * default value is 100
    */
   tileSize?: number
-  texture: TextureOrMaterial
+  /**
+   * default value is Texture.defaultTexture
+   */
+  texture?: TextureOrMaterial
   /**
    * If set to true, then the texture will be placed on every tile, otherwise the
    * texture will be stretched throughout the whole mesh
@@ -40,7 +44,7 @@ type createPlaneMeshProps = {
 export function createPlaneMesh({
   size,
   tileSize = 100,
-  texture,
+  texture = Texture.missingTexture,
   isIndexed = INDEXED,
   tileUV = true,
 }: createPlaneMeshProps): Mesh {

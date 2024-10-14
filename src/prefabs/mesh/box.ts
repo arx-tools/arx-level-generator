@@ -2,6 +2,7 @@ import { BoxGeometry, MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { type TextureOrMaterial } from '@src/types.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
+import { Texture } from '@src/Texture.js'
 
 type createBoxProps = {
   position: Vector3
@@ -18,14 +19,22 @@ type createBoxProps = {
    */
   angleY?: number
   /**
-   * material face order: left, right, bottom, top, front, back
+   * texture face order: left, right, bottom, top, front, back
+   *
+   * default value is Texture.missingTexture
    */
-  materials:
+  texture?:
     | TextureOrMaterial
     | [TextureOrMaterial, TextureOrMaterial, TextureOrMaterial, TextureOrMaterial, TextureOrMaterial, TextureOrMaterial]
 }
 
-export function createBox({ position, origin = new Vector2(0, 0), size, angleY = 0, materials }: createBoxProps): Mesh {
+export function createBox({
+  position,
+  origin = new Vector2(0, 0),
+  size,
+  angleY = 0,
+  texture = Texture.missingTexture,
+}: createBoxProps): Mesh {
   if (typeof size === 'number') {
     size = new Vector3(size, size, size)
   }
@@ -45,16 +54,16 @@ export function createBox({ position, origin = new Vector2(0, 0), size, angleY =
   geometry.rotateY(MathUtils.degToRad(angleY))
   geometry.translate(position.x, position.y, position.z)
 
-  if (Array.isArray(materials)) {
+  if (Array.isArray(texture)) {
     return new Mesh(geometry, [
-      new MeshBasicMaterial({ map: materials[0] }),
-      new MeshBasicMaterial({ map: materials[1] }),
-      new MeshBasicMaterial({ map: materials[2] }),
-      new MeshBasicMaterial({ map: materials[3] }),
-      new MeshBasicMaterial({ map: materials[4] }),
-      new MeshBasicMaterial({ map: materials[5] }),
+      new MeshBasicMaterial({ map: texture[0] }),
+      new MeshBasicMaterial({ map: texture[1] }),
+      new MeshBasicMaterial({ map: texture[2] }),
+      new MeshBasicMaterial({ map: texture[3] }),
+      new MeshBasicMaterial({ map: texture[4] }),
+      new MeshBasicMaterial({ map: texture[5] }),
     ])
   }
 
-  return new Mesh(geometry, new MeshBasicMaterial({ map: materials }))
+  return new Mesh(geometry, new MeshBasicMaterial({ map: texture }))
 }
