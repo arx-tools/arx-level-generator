@@ -3,7 +3,6 @@ import path from 'node:path'
 import { FTL } from 'arx-convert'
 import { type ArxAction, type ArxFTL, ArxFaceType, type ArxFace, type ArxFtlVertex } from 'arx-convert/types'
 import { type Expand, type QuadrupleOf, type TripleOf } from 'arx-convert/utils'
-import objectHash from 'object-hash'
 import { type BufferAttribute, MathUtils, type Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { Polygons } from '@src/Polygons.js'
 import { type Settings } from '@src/Settings.js'
@@ -11,7 +10,7 @@ import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { repeat } from '@src/faux-ramda.js'
 import { arrayPadRight, fileExists, roundToNDecimals } from '@src/helpers.js'
-import { getCacheStats, hashingAlgorithm, saveHashOf } from '@services/cache.js'
+import { createHashOfObject, getCacheInfo, saveHashOf } from '@services/cache.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 
 type EntityModelConstructorProps = {
@@ -112,13 +111,13 @@ export class EntityModel {
       const binarySource = path.resolve(settings.assetsDir, this.sourcePath, this.filename)
       files[binaryTarget] = binarySource
     } else {
-      const cachedBinary = await getCacheStats(
+      const cachedBinary = await getCacheInfo(
         path.join(EntityModel.targetPath, targetName, `${entityName}.ftl`),
         settings,
       )
 
       const ftlData = this.generateFtl(entityName)
-      const hashOfFtlData = objectHash(ftlData, { algorithm: hashingAlgorithm })
+      const hashOfFtlData = createHashOfObject(ftlData)
 
       let binaryChanged = false
       if (hashOfFtlData !== cachedBinary.hash || !cachedBinary.exists) {

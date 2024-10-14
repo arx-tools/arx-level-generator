@@ -4,8 +4,9 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { type Settings } from '@src/Settings.js'
 import { fileExists } from '@src/helpers.js'
+import objectHash from 'object-hash'
 
-export const hashingAlgorithm = 'sha1'
+const hashingAlgorithm = 'sha1'
 
 /**
  * Creates the folder structure inside the project's cache folder for a given path
@@ -48,7 +49,7 @@ export async function loadHashOf(filename: string, settings: Settings): Promise<
  *
  * @param filename - a pathname of a file relative to the project's root directory
  */
-export async function getCacheStats(
+export async function getCacheInfo(
   filename: string,
   settings: Settings,
 ): Promise<{ filename: string; exists: boolean; hash: string | undefined }> {
@@ -87,10 +88,15 @@ export async function saveHashOf(filename: string, hash: string, settings: Setti
   await fs.writeFile(hashesFilename, JSON.stringify(hashes), { encoding: 'utf8' })
 }
 
+export function createHashOfObject(data: any, metadata?: Record<string, any>): string {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- here I don't care about the contents of the data
+  return objectHash({ data, metadata }, { algorithm: hashingAlgorithm })
+}
+
 /**
  * @param filename - full path to a file
  */
-export async function getHashOfFile(filename: string): Promise<string> {
+export async function createHashOfFile(filename: string, metadata?: Record<string, any>): Promise<string> {
   const hash = crypto.createHash(hashingAlgorithm)
   const stream = createReadStream(filename, 'binary')
 
@@ -104,6 +110,11 @@ export async function getHashOfFile(filename: string): Promise<string> {
       reject(err)
     })
     stream.on('end', () => {
+      if (metadata !== undefined) {
+        const hashOfMetadata = createHashOfObject(metadata)
+        hash.update(hashOfMetadata, 'ascii')
+      }
+
       resolve(hash.digest('hex'))
     })
   })

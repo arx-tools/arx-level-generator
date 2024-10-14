@@ -196,7 +196,7 @@ export class Polygons extends Array<Polygon> {
   addThreeJsMesh(threeJsObj: Object3D): void
   addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps): void
   addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps, isRoot: false): Polygons
-  // eslint-disable-next-line complexity
+  // eslint-disable-next-line complexity -- the code should be split into smaller private methods in the future
   addThreeJsMesh(threeJsObj: Object3D, meshImportProps: MeshImportProps = {}, isRoot: boolean = true): Polygons | void {
     if (isRoot) {
       applyTransformations(threeJsObj)

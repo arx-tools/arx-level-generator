@@ -5,7 +5,7 @@ import { sharpToBmp } from 'sharp-bmp'
 import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
 import { type Settings } from '@src/Settings.js'
 import { fileExists } from '@src/helpers.js'
-import { createCacheFolderIfNotExists, loadHashOf, getHashOfFile, saveHashOf } from '@services/cache.js'
+import { createCacheFolderIfNotExists, loadHashOf, createHashOfFile, saveHashOf } from '@services/cache.js'
 import { getMetadata, getSharpInstance } from '@services/image.js'
 
 export type TextureConstructorProps = {
@@ -418,7 +418,7 @@ export class Texture extends ThreeJsTextue {
     const convertedSourceFolder = await createCacheFolderIfNotExists(this.sourcePath ?? Texture.targetPath, settings)
     const convertedSource = path.join(convertedSourceFolder, newFilename)
 
-    const currentHash = await getHashOfFile(originalSource)
+    const currentHash = await createHashOfFile(originalSource, { isTileable: false })
 
     if (await fileExists(convertedSource)) {
       const storedHash = await loadHashOf(originalSource, settings)
@@ -473,7 +473,7 @@ export class Texture extends ThreeJsTextue {
       return [convertedSource, convertedTarget]
     }
 
-    const currentHash = await getHashOfFile(originalSource)
+    const currentHash = await createHashOfFile(originalSource, { isTileable: true })
 
     if (await fileExists(convertedSource)) {
       const storedHash = await loadHashOf(originalSource, settings)

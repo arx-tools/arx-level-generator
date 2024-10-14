@@ -78,7 +78,7 @@ function tryParsingTokenAsVariable(token: string, variables: Record<string, stri
   return variables[token]
 }
 
-// eslint-disable-next-line max-params
+// eslint-disable-next-line max-params -- this will get resolved by the new tokenizer/parser
 function parseRoomKeyword(
   tokens: string[],
   rooms: Rooms,
@@ -166,7 +166,7 @@ function getWallIdxFromToken(token: 'wall-north' | 'wall-east' | 'wall-south' | 
   return 3
 }
 
-// eslint-disable-next-line complexity
+// eslint-disable-next-line complexity -- this will get resolved by the new tokenizer/parser
 export async function loadRooms(filename: string, settings: Settings): Promise<Rooms> {
   const cursor = new Cursor()
   const rooms = new Rooms(cursor)
@@ -203,7 +203,7 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
           } else if (tokens[2] === '{') {
             currentBlock = { type: 'define', name: tokens[1] }
 
-            // eslint-disable-next-line max-depth
+            // eslint-disable-next-line max-depth -- this will get resolved by the new tokenizer/parser
             if (roomDefinitions[tokens[1]] === undefined) {
               roomDefinitions[tokens[1]] = {
                 textures: generateBaseRoomTextures(true),
