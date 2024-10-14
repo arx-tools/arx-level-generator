@@ -36,9 +36,12 @@ compatibility options (the level generator CANNOT handle this - https://github.c
 `asl` - scripts should be exported with `ISO 8859-15` encoding and `\r\n` line endings (the level
 generator CAN handle this)
 
-## Other docs
+## Other documentation
 
-[documentation of the custom 'rooms' format](docs/rooms.md)
+- [the custom 'rooms' format](docs/rooms.md)
+- [code for the base project](docs/examples/base-project.md)
+- [adding a three.js mesh to the level](docs/examples/adding-a-threejs-mesh.md)
+- [working with textures](docs/examples/textures.md)
 
 ## Credits
 
