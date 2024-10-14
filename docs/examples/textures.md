@@ -130,7 +130,7 @@ const mesh = createPlaneMesh({
 ```
 
 **Please note that when changing a texture's rendering from tileable to non-tileable or vice-versa then make sure
-to delete the cache folder that is automatically created by the arx-level-generator!**
+to delete the cache folder that is automatically created by the arx-level-generator!** (see [related bug](https://github.com/arx-tools/arx-level-generator/issues/33))
 
 If the `ArxPolygonFlags.Tiled` part is missing, then a non-square texture will not get resized and will result in
 an incorrect tiling:
@@ -150,6 +150,10 @@ const texture = new Texture({
   sourcePath: './textures/',
 })
 ```
+
+## Supported formats
+
+See ["notes on formats" section in readme](https://github.com/arx-tools/arx-level-generator?tab=readme-ov-file#notes-on-formats)
 
 ## Resources
 
