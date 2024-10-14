@@ -92,10 +92,11 @@ export async function saveHashOf(filename: string, hash: string, settings: Setti
  */
 export async function getHashOfFile(filename: string): Promise<string> {
   const hash = crypto.createHash(hashingAlgorithm)
-  const stream = createReadStream(filename)
+  const stream = createReadStream(filename, 'binary')
 
   stream.on('data', (chunk) => {
-    hash.update(chunk)
+    const base64String = chunk.toString('base64')
+    hash.update(base64String, 'base64')
   })
 
   return new Promise((resolve, reject) => {
