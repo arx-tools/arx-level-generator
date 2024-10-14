@@ -148,6 +148,8 @@ const texture = new Texture({
 })
 ```
 
+**You cannot have the same image file loaded as tileable and non-tileable in 2 texture instances!**
+
 ## Supported formats
 
 See ["notes on formats" section in readme](https://github.com/arx-tools/arx-level-generator?tab=readme-ov-file#notes-on-formats)
