@@ -11,6 +11,7 @@ export enum HudElements {
   BookIcon = 'book-icon',
   BackpackIcon = 'backpack-icon',
   PurseIcon = 'purse-icon',
+  HerosayIcon = 'herosay-icon',
 }
 
 export class HUD {
@@ -27,6 +28,7 @@ export class HUD {
       [HudElements.BookIcon]: true,
       [HudElements.BackpackIcon]: true,
       [HudElements.PurseIcon]: true,
+      [HudElements.HerosayIcon]: true,
     }
   }
 
@@ -112,6 +114,12 @@ export class HUD {
     if (this.elementVisibility[HudElements.PurseIcon] === false) {
       const source = path.resolve(settings.internalAssetsDir, 'reset/blank-32x32.bmp')
       const target = path.resolve(settings.outputDir, 'graph/interface/inventory/gold.bmp')
+      files[target] = source
+    }
+
+    if (this.elementVisibility[HudElements.HerosayIcon] === false) {
+      const source = path.resolve(settings.internalAssetsDir, 'reset/blank-32x32.bmp')
+      const target = path.resolve(settings.outputDir, 'graph/interface/icons/arx_logo_32.bmp')
       files[target] = source
     }
 
