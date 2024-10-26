@@ -20,7 +20,7 @@ When their scale is set to default 100
 
 ### goblin_lord
 
-- model height: 151cm
-- collision shape height: 212cm
+- model height: 213cm
+- collision shape height: 163cm
 
 ![goblin_lord](img/goblin_lord.jpg?raw=true 'goblin_lord')
