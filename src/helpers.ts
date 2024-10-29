@@ -30,7 +30,7 @@ export async function getGeneratorPackageJSON(): Promise<PackageJsonProps> {
     try {
       const filename = fileURLToPath(import.meta.url)
       const dirname = path.dirname(filename)
-      const rawIn = await fs.readFile(path.resolve(dirname, '../../package.json'), { encoding: 'utf8' })
+      const rawIn = await fs.readFile(path.resolve(dirname, '../package.json'), { encoding: 'utf8' })
       cacheOfGeneratorPackageJSON = JSON.parse(rawIn) as PackageJsonProps
     } catch {
       cacheOfGeneratorPackageJSON = {
