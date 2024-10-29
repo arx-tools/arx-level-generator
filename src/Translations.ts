@@ -70,9 +70,9 @@ export class Translations {
     return Object.entries(dictionary)
       .map(([key, value]) => {
         return `[${key}]
-  string="${value}"
-  
-  `
+string="${value}"
+
+`
       })
       .join('')
   }
