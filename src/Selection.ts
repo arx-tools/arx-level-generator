@@ -203,10 +203,13 @@ export class PolygonSelection extends Selection<Polygons> {
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
   copy(): PolygonSelection {
-    const copiedItems = this.selection.map((idx) => {
-      return this.items[idx].clone()
+    const polygons = new Polygons()
+
+    this.selection.forEach((idx) => {
+      polygons.push(this.items[idx].clone())
     })
-    return new PolygonSelection(new Polygons(...copiedItems))
+
+    return new PolygonSelection(polygons)
   }
 
   /**
@@ -319,10 +322,13 @@ export class LightsSelection extends Selection<Lights> {
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
   copy(): LightsSelection {
-    const copiedItems = this.selection.map((idx) => {
-      return this.items[idx].clone()
+    const lights = new Lights()
+
+    this.selection.forEach((idx) => {
+      lights.push(this.items[idx].clone())
     })
-    return new LightsSelection(new Lights(...copiedItems))
+
+    return new LightsSelection(lights)
   }
 }
 
@@ -335,10 +341,13 @@ export class EntitiesSelection extends Selection<Entities> {
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
   copy(): EntitiesSelection {
-    const copiedItems = this.selection.map((idx) => {
-      return this.items[idx].clone()
+    const entities = new Entities()
+
+    this.selection.forEach((idx) => {
+      entities.push(this.items[idx].clone())
     })
-    return new EntitiesSelection(new Entities(...copiedItems))
+
+    return new EntitiesSelection(entities)
   }
 }
 
@@ -351,10 +360,13 @@ export class FogsSelection extends Selection<Fogs> {
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
   copy(): FogsSelection {
-    const copiedItems = this.selection.map((idx) => {
-      return this.items[idx].clone()
+    const fogs = new Fogs()
+
+    this.selection.forEach((idx) => {
+      fogs.push(this.items[idx].clone())
     })
-    return new FogsSelection(new Fogs(...copiedItems))
+
+    return new FogsSelection(fogs)
   }
 }
 
@@ -367,10 +379,13 @@ export class PathsSelection extends Selection<Paths> {
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
   copy(): PathsSelection {
-    const copiedItems = this.selection.map((idx) => {
-      return this.items[idx].clone()
+    const paths = new Paths()
+
+    this.selection.forEach((idx) => {
+      paths.push(this.items[idx].clone())
     })
-    return new PathsSelection(new Paths(...copiedItems))
+
+    return new PathsSelection(paths)
   }
 }
 
@@ -383,10 +398,13 @@ export class ZonesSelection extends Selection<Zones> {
    * The returned copy has nothing selected inside, subsequent calls need a call to a `select*` method.
    */
   copy(): ZonesSelection {
-    const copiedItems = this.selection.map((idx) => {
-      return this.items[idx].clone()
+    const zones = new Zones()
+
+    this.selection.forEach((idx) => {
+      zones.push(this.items[idx].clone())
     })
-    return new ZonesSelection(new Zones(...copiedItems))
+
+    return new ZonesSelection(zones)
   }
 }
 
