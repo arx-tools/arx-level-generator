@@ -75,6 +75,11 @@ export function quotientAndRemainder(dividend: number, divisor: number): [number
   return [Math.floor(dividend / divisor), dividend % divisor]
 }
 
+/**
+ * Recursively applies the rotation and other transformations to geometries,
+ * meaning if the mesh has its position set to 0/0/4, then add that vector to
+ * every polygon's vertex in the geometry and reset the position to 0/0/0
+ */
 export function applyTransformations(threeJsObj: Object3D): void {
   threeJsObj.updateMatrix()
 
