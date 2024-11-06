@@ -61,8 +61,10 @@ export function useDelay(): {
    *
    * delay calls are stacked on top of previous values of delay() and uniqueDelay() calls:
    *
-   * delay(100) ... -> executed 100 milliseconds after script start
-   * delay(200) ... -> executed (100 + 200) milliseconds after script start
+   * ```js
+   * delay(100) ... // execute 100 milliseconds after script start
+   * delay(200) ... // execute (100 + 200) milliseconds after script start
+   * ```
    *
    * this stacking behavior can be cancelled by giving false to the 2nd parameter;
    * giving false to the 2nd parameter will not reset previous stacking of delays
@@ -76,8 +78,10 @@ export function useDelay(): {
    *
    * uniqueDelay calls are stacked on top of previous values of delay() and uniqueDelay() calls:
    *
-   * uniqueDelay(100) ... -> executed 100 milliseconds after script start
-   * uniqueDelay(200) ... -> executed (100 + 200) milliseconds after script start
+   * ```js
+   * uniqueDelay(100) ... // execute 100 milliseconds after script start
+   * uniqueDelay(200) ... // execute (100 + 200) milliseconds after script start
+   * ```
    *
    * this stacking behavior can be cancelled by giving false to the 2nd parameter;
    * giving false to the 2nd parameter will not reset previous stacking of delays
