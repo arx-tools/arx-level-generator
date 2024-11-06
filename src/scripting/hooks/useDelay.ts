@@ -36,7 +36,7 @@ class Timer {
       repetitions = 0
     }
 
-    // omit creating a timer for delay(0)
+    // omit creating a timer for delay(0, false)
     if (repetitions === 1 && this.delayOffsetInMs === 0) {
       return ``
     }
