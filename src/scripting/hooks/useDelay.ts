@@ -10,9 +10,6 @@ let delayIdx = 0
 class Timer {
   name: string
   delayOffsetInMs: number
-  /**
-   * `Number.POSITIVE_INFINITY` or positive integer
-   */
   repetitions: number
   isCancelled: boolean
 
@@ -40,7 +37,7 @@ class Timer {
     }
 
     // omit creating a timer for delay(0)
-    if (repetitions === 1 && this.delayOffsetInMs <= 0) {
+    if (repetitions === 1 && this.delayOffsetInMs === 0) {
       return ``
     }
 
@@ -57,14 +54,6 @@ export function useDelay(): {
    * default value for repetitions is Number.POSITIVE_INFINITY
    */
   loop: (periodInMs: number, repetitions?: number) => Timer
-  delay: (delayInMs?: number) => Timer
-  uniqueDelay: (delayInMs?: number) => Timer
-} {
-  let delayOffset = 0
-
-  function loop(periodInMs: number, repetitions: number = Number.POSITIVE_INFINITY): Timer {
-    return new Timer(periodInMs, repetitions)
-  }
 
   /**
    * creates a timer with a unique identifier (TIMERdelay16)
@@ -74,11 +63,11 @@ export function useDelay(): {
    *
    * delay(100) ... -> executed 100 milliseconds after script start
    * delay(200) ... -> executed (100 + 200) milliseconds after script start
+   *
+   * this stacking behavior can be cancelled by giving false to the 2nd parameter;
+   * giving false to the 2nd parameter will not reset previous stacking of delays
    */
-  function delay(delayInMs: number = 0): Timer {
-    delayOffset = delayOffset + Math.floor(delayInMs)
-    return new Timer(delayOffset, 1)
-  }
+  delay: (delayInMs?: number, stackOnPreviousDelay?: boolean) => Timer
 
   /**
    * creates a timer without any identifier (TIMER)
@@ -89,10 +78,34 @@ export function useDelay(): {
    *
    * uniqueDelay(100) ... -> executed 100 milliseconds after script start
    * uniqueDelay(200) ... -> executed (100 + 200) milliseconds after script start
+   *
+   * this stacking behavior can be cancelled by giving false to the 2nd parameter;
+   * giving false to the 2nd parameter will not reset previous stacking of delays
    */
-  function uniqueDelay(delayInMs: number = 0): Timer {
-    delayOffset = delayOffset + Math.floor(delayInMs)
-    return new Timer(delayOffset, 1, true)
+  uniqueDelay: (delayInMs?: number, stackOnPreviousDelay?: boolean) => Timer
+} {
+  let delayOffset = 0
+
+  function loop(periodInMs: number, repetitions: number = Number.POSITIVE_INFINITY): Timer {
+    return new Timer(periodInMs, repetitions)
+  }
+
+  function delay(delayInMs: number = 0, stackOnPreviousDelay: boolean = true): Timer {
+    if (stackOnPreviousDelay) {
+      delayOffset = delayOffset + Math.floor(delayInMs)
+      return new Timer(delayOffset, 1)
+    }
+
+    return new Timer(Math.floor(delayInMs), 1)
+  }
+
+  function uniqueDelay(delayInMs: number = 0, stackOnPreviousDelay: boolean = true): Timer {
+    if (stackOnPreviousDelay) {
+      delayOffset = delayOffset + Math.floor(delayInMs)
+      return new Timer(delayOffset, 1, true)
+    }
+
+    return new Timer(Math.floor(delayInMs), 1, true)
   }
 
   return { loop, delay, uniqueDelay }
