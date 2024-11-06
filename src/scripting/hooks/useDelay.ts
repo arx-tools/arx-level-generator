@@ -1,6 +1,10 @@
 let delayIdx = 0
 
 /**
+ * Wrapper around the TIMERxxx concept.
+ *
+ * Note that 0ms delays are omitted, there will not be a script created for those.
+ *
  * @see https://wiki.arx-libertatis.org/Script:timer
  */
 class Timer {
@@ -35,6 +39,11 @@ class Timer {
       repetitions = 0
     }
 
+    // omit creating a timer for delay(0)
+    if (repetitions === 1 && this.delayOffsetInMs <= 0) {
+      return ``
+    }
+
     return `TIMER${this.name} -m ${repetitions} ${this.delayOffsetInMs}`
   }
 
@@ -44,6 +53,9 @@ class Timer {
 }
 
 export function useDelay(): {
+  /**
+   * default value for repetitions is Number.POSITIVE_INFINITY
+   */
   loop: (periodInMs: number, repetitions?: number) => Timer
   delay: (delayInMs?: number) => Timer
   uniqueDelay: (delayInMs?: number) => Timer
