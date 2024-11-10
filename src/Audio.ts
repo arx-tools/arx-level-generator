@@ -11,6 +11,9 @@ type AudioConstructorProps = {
    * default value is true, except when class is initialized via fromCustomFile -> in that case it's false
    */
   isNative?: boolean
+  /**
+   * default values is based on the value of the type property: if type not defined, then sourcePath defaults to "sfx"
+   */
   sourcePath?: string
   /**
    * default value is "sfx"
