@@ -312,7 +312,8 @@ export class Polygon implements ArxComponent {
   }
 
   /**
-   * All the vertices are inside or on the surface of the box
+   * All the vertices are inside or on the surface of the box.
+   *
    * If exludeOnSurface (default true) is true, then we ignore checking the surface by shrinking
    * the box by 1 on each side
    */

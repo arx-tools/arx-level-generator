@@ -2,6 +2,7 @@ import { type ArxLight, ArxLightFlags } from 'arx-convert/types'
 import { Color } from '@src/Color.js'
 import { Vector3 } from '@src/Vector3.js'
 import { type ArxComponent } from '@src/ArxComponent.js'
+import { type Box3 } from 'three'
 
 // TODO: Three JS comes with a bunch of Light classes, might worth investigating
 // https://threejs.org/docs/#api/en/lights/Light
@@ -73,5 +74,21 @@ export class Light implements ArxComponent {
 
   move(offset: Vector3): void {
     this.position.add(offset)
+  }
+
+  /**
+   * The center of the light is inside or on the surface of the box.
+   *
+   * If exludeOnSurface (default true) is true, then we ignore checking the surface by shrinking
+   * the box by 1 on each side
+   */
+  isWithin(box: Box3, excludeOnSurface: boolean = true): boolean {
+    const copyOfBox = box.clone()
+    if (excludeOnSurface) {
+      copyOfBox.min.add(new Vector3(1, 1, 1))
+      copyOfBox.max.sub(new Vector3(1, 1, 1))
+    }
+
+    return copyOfBox.containsPoint(this.position)
   }
 }

@@ -330,6 +330,19 @@ export class LightsSelection extends Selection<Lights> {
 
     return new LightsSelection(lights)
   }
+
+  /**
+   * Selects lights within a given box.
+   *
+   * Keep in mind that Y axis are inverted in arx, -200 is higher than 500!
+   *
+   * This method pre-selects all lights if none have been selected before.
+   */
+  selectWithinBox(box: Box3): this {
+    return this.selectBy((light) => {
+      return light.isWithin(box)
+    })
+  }
 }
 
 export class EntitiesSelection extends Selection<Entities> {
