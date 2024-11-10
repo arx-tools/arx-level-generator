@@ -7,6 +7,9 @@ export type AudioType = `speech/${Locales}` | 'sfx'
 
 type AudioConstructorProps = {
   filename: string
+  /**
+   * default value is true, except when class is initialized via fromCustomFile -> in that case it's false
+   */
   isNative?: boolean
   sourcePath?: string
   /**
