@@ -780,6 +780,17 @@ ${translation}`
     })
   }
 
+  private calculateNoLightingLighting(): void {
+    this.polygons.forEach((polygon) => {
+      polygon.vertices[0].color = Color.white
+      polygon.vertices[1].color = Color.white
+      polygon.vertices[2].color = Color.white
+      if (polygon.isQuad()) {
+        polygon.vertices[3].color = Color.white
+      }
+    })
+  }
+
   private calculateDanaeLighting(): void {
     const lights = this.lights
       .filter((light) => {
@@ -807,7 +818,7 @@ ${translation}`
     })
   }
 
-  private calculateFredlllllLighting(): void {
+  private calculateRealisticLighting(): void {
     // TODO
   }
 
@@ -817,13 +828,18 @@ ${translation}`
     }
 
     switch (settings.lightingCalculatorMode) {
+      case 'NoLighting': {
+        this.calculateNoLightingLighting()
+        break
+      }
+
       case 'Danae': {
         this.calculateDanaeLighting()
         break
       }
 
-      case 'Fredlllll': {
-        this.calculateFredlllllLighting()
+      case 'Realistic': {
+        this.calculateRealisticLighting()
         break
       }
     }

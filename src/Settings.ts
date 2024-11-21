@@ -7,7 +7,7 @@ import { randomIntBetween } from '@src/random.js'
 
 dotenvConfig()
 
-const lightingCalculatorModes = ['Danae', 'Fredlllll'] as const
+const lightingCalculatorModes = ['NoLighting', 'Danae', 'Realistic'] as const
 
 type LightingCalculatorMode = (typeof lightingCalculatorModes)[number]
 
