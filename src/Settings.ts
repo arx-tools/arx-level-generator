@@ -55,6 +55,7 @@ export type SettingsConstructorProps = {
    * can also be set via `process.env.calculateLighting`
    *
    * default value is true
+   *
    * if there are no lights, then this gets set to false
    *
    * if set to false, but the map already has lighting information precalculated (like when loading
@@ -66,8 +67,9 @@ export type SettingsConstructorProps = {
    *
    * potential values:
    *
-   * - `"Danae"` - no shadows, same as what DANAE creates, OG Arx look and feel
-   * - `"Fredlllll"` - shadow calculation, same as "DistanceAngleShadowNoTransparency" in Fred's lighting generator
+   * - "NoLighting" - sets everyting to the maximum brightness, useful for checking edits to a mesh
+   * - "Danae" - the default look of Arx: shadows are not cast by polygons, everything is lit evenly
+   * - "Realistic" - polygons cast shadows if obstructing the lights
    *
    * default value is "Danae"
    */
