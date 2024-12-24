@@ -32,7 +32,7 @@ async function compileFTS(settings: Settings, fts: ArxFTS): Promise<void> {
         reject(e)
       })
 
-    Readable.from(repackedFts)
+    Readable.from(new Uint8Array(repackedFts))
       .pipe(
         through(
           transformSplitBy(
@@ -63,7 +63,7 @@ async function compileLLF(settings: Settings, llf: ArxLLF): Promise<void> {
         reject(e)
       })
 
-    Readable.from(repackedLlf)
+    Readable.from(new Uint8Array(repackedLlf))
       .pipe(
         through(
           transformSplitBy(
@@ -94,7 +94,7 @@ async function compileDLF(settings: Settings, dlf: ArxDLF): Promise<void> {
         reject(e)
       })
 
-    Readable.from(repackedDlf)
+    Readable.from(new Uint8Array(repackedDlf))
       .pipe(
         through(
           transformSplitBy(

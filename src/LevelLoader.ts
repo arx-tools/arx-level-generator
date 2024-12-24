@@ -54,7 +54,7 @@ export class LevelLoader {
           }
 
           const binaryData = await fs.readFile(binaryFilename)
-          data = parser.load(binaryData)
+          data = parser.load(binaryData.buffer)
           await fs.writeFile(jsonFilename, JSON.stringify(data), { encoding: 'utf8' })
         }
 
@@ -78,7 +78,7 @@ export class LevelLoader {
           }
 
           const binaryData = await fs.readFile(binaryFilename)
-          data = parser.load(binaryData)
+          data = parser.load(binaryData.buffer)
           await fs.writeFile(jsonFilename, JSON.stringify(data), { encoding: 'utf8' })
         }
 
@@ -102,7 +102,7 @@ export class LevelLoader {
           }
 
           const binaryData = await fs.readFile(binaryFilename)
-          data = parser.load(binaryData)
+          data = parser.load(binaryData.buffer)
           await fs.writeFile(jsonFilename, JSON.stringify(data), { encoding: 'utf8' })
         }
 
