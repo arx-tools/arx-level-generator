@@ -192,7 +192,7 @@ const tokenMatchers: Record<TokenType, TokenMatcher> = {
 type Token = {
   type: TokenType
   value?: string
-  at: [number, number]
+  at: [lineNumber: number, charNumber: number]
 }
 
 function isWhitespace(str: string): boolean {
@@ -224,7 +224,7 @@ export function tokenize(input: string, debug: boolean = false): Token[] {
     }
   }
 
-  let lastMatch: [keyof typeof tokenMatchers, TokenMatcher] | undefined
+  let lastMatch: [TokenType, TokenMatcher] | undefined
   let newlineToken: Token | undefined
 
   for (let i = 0; i < input.length; i++) {

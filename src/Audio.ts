@@ -26,7 +26,7 @@ type AudioConstructorProps = {
 }
 
 abstract class _Audio {
-  abstract exportSourceAndTarget(settings: Settings): [string, string]
+  abstract exportSourceAndTarget(settings: Settings): [source: string, target: string]
 }
 
 export class Audio extends _Audio {
@@ -148,7 +148,7 @@ export class Audio extends _Audio {
     })
   }
 
-  exportSourceAndTarget(settings: Settings): [string, string] {
+  exportSourceAndTarget(settings: Settings): [source: string, target: string] {
     if (this.isNative) {
       throw new Error('trying to export a native Audio')
     }

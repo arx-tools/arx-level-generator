@@ -143,8 +143,8 @@ export function countBy<T>(fn: (value: T) => string, values: T[]): Record<string
  * The first number in each pair holds the smallest number of the sequence
  * The second number is the size of the sequence
  */
-export function groupSequences(numbers: number[]): [number, number][] {
-  const acc: [number, number][] = []
+export function groupSequences(numbers: number[]): [smallestNumber: number, length: number][] {
+  const acc: [smallestNumber: number, length: number][] = []
 
   numbers.forEach((n) => {
     const lastGroup = acc.at(-1)

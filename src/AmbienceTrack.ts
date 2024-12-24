@@ -51,7 +51,7 @@ export class AmbienceTrack {
     ]
   }
 
-  exportSourceAndTarget(settings: Settings): [string, string] {
+  exportSourceAndTarget(settings: Settings): [source: string, target: string] {
     const source = path.resolve(settings.assetsDir, this.sourcePath ?? AmbienceTrack.targetPath, this.filename)
     const target = path.resolve(settings.outputDir, AmbienceTrack.targetPath, this.filename)
 

@@ -196,7 +196,7 @@ async function loadMTL(
       const mtl = mtlLoader.parse(rawMtl, '')
 
       const entriesOfMaterials = Object.entries(mtl.materialsInfo)
-      const nameMaterialPairs: [string, MeshBasicMaterial][] = []
+      const nameMaterialPairs: [name: string, material: MeshBasicMaterial][] = []
 
       for (const [name, materialInfo] of entriesOfMaterials) {
         let material: Material

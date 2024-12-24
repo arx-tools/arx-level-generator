@@ -231,12 +231,12 @@ export class Ambience {
     })
   }
 
-  exportSourcesAndTargets(settings: Settings): [string, string][] {
+  exportSourcesAndTargets(settings: Settings): [source: string, target: string][] {
     if (this.isNative) {
       throw new Error('trying to export a native Ambience')
     }
 
-    const results: [string, string][] = []
+    const results: [source: string, target: string][] = []
 
     for (const track of this.tracks) {
       results.push(track.exportSourceAndTarget(settings))

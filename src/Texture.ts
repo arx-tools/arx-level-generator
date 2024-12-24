@@ -328,7 +328,7 @@ export class Texture extends ThreeJsTextue {
     settings: Settings,
     needsToBeTileable: boolean = false,
     _dontCatchTheError = false,
-  ): Promise<[string, string]> {
+  ): Promise<[source: string, target: string]> {
     if (this.isNative) {
       throw new Error('trying to export a native Texture')
     }
@@ -401,7 +401,7 @@ export class Texture extends ThreeJsTextue {
     return path.resolve(assetsDir, this.sourcePath ?? Texture.targetPath, this.filename)
   }
 
-  private async makeCopy(settings: Settings): Promise<[string, string]> {
+  private async makeCopy(settings: Settings): Promise<[source: string, target: string]> {
     const { ext, name } = path.parse(this.filename)
     const hasSupportedFormat = supportedExtensions.has(ext)
 
@@ -452,7 +452,7 @@ export class Texture extends ThreeJsTextue {
     return [convertedSource, convertedTarget]
   }
 
-  private async makeTileable(settings: Settings): Promise<[string, string]> {
+  private async makeTileable(settings: Settings): Promise<[source: string, target: string]> {
     const { ext, name } = path.parse(this.filename)
     const hasSupportedFormat = supportedExtensions.has(ext)
 

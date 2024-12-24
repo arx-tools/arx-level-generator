@@ -71,7 +71,7 @@ export async function getProjectPackageJSON(): Promise<PackageJsonProps> {
  * quotientAndRemainder(20, 3) -> [6, 2]
  * ```
  */
-export function quotientAndRemainder(dividend: number, divisor: number): [number, number] {
+export function quotientAndRemainder(dividend: number, divisor: number): [quotient: number, remainder: number] {
   return [Math.floor(dividend / divisor), dividend % divisor]
 }
 
