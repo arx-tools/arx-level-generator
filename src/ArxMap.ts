@@ -97,7 +97,7 @@ export class ArxMap {
 
   private static async getGeneratorId(): Promise<string> {
     const generator = await getGeneratorPackageJSON()
-    return `${generator.name} - v.${generator.version}`
+    return `${generator.name} - v${generator.version}`
   }
 
   polygons: Polygons
