@@ -43,6 +43,9 @@ export function scaleUV(scale: Vector2, geometry: BufferGeometry): void {
  * @see https://github.com/arx/ArxLibertatis/pull/294
  */
 export function normalizeUV(geometry: BufferGeometry): void {
+  let correctedU = false
+  let correctedV = false
+
   const uv = geometry.getAttribute('uv') as BufferAttribute
 
   for (let idx = 0; idx < uv.count; idx++) {
@@ -50,15 +53,29 @@ export function normalizeUV(geometry: BufferGeometry): void {
     let v = uv.getY(idx)
 
     if (u < 0) {
-      u = 1 + (u % 1)
+      if (u % 1 === 0) {
+        u = 0
+        correctedU = true
+      } else {
+        u = 1 + (u % 1)
+      }
     } else if (u > 1) {
       u = u % 1
+    } else if (correctedU) {
+      u = 1
     }
 
     if (v < 0) {
-      v = 1 + (v % 1)
+      if (v % 1 === 0) {
+        v = 0
+        correctedV = true
+      } else {
+        v = 1 + (v % 1)
+      }
     } else if (v > 1) {
       v = v % 1
+    } else if (correctedV) {
+      v = 1
     }
 
     uv.setXY(idx, u, v)
