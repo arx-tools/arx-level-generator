@@ -265,11 +265,8 @@ export class Polygons extends Array<Polygon> {
 
           const { materialIndex } = currentPolygon[0]
 
-          let isQuadable = false
-          if (tryToQuadify === QUADIFY) {
-            // TODO: calculate this instead of having it hardcoded
-            isQuadable = true
-          }
+          // TODO: calculate this instead of having it hardcoded
+          const isQuadable = true
 
           let currentTexture
           if (Array.isArray(texture)) {
