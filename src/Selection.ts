@@ -8,7 +8,7 @@ import { type Texture } from '@src/Texture.js'
 import { type Vector3 } from '@src/Vector3.js'
 import { Zones } from '@src/Zones.js'
 import { groupSequences } from '@src/faux-ramda.js'
-import { type ArxComponent } from './ArxComponent.js'
+import { type ArxComponent } from '@src/ArxComponent.js'
 
 export abstract class Selection<T extends ArxComponent[]> {
   protected selection: number[]

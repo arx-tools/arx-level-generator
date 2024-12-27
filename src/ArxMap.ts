@@ -48,9 +48,9 @@ import { groupSequences, times, uniq } from '@src/faux-ramda.js'
 import { getGeneratorPackageJSON, latin9ToLatin1, percentOf } from '@src/helpers.js'
 import { type OriginalLevel } from '@src/types.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
-import { Texture } from './Texture.js'
-import { type Vertex } from './Vertex.js'
-import { Color } from './Color.js'
+import { Texture } from '@src/Texture.js'
+import { type Vertex } from '@src/Vertex.js'
+import { Color } from '@src/Color.js'
 
 type ArxMapConfig = {
   isFinalized: boolean
