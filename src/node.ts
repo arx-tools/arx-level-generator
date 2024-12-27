@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 export async function fileExists(filename: string): Promise<boolean> {
   try {
-    await fs.access(filename, fs.constants.R_OK)
+    await fs.access(filename, fs.constants.R_OK | fs.constants.W_OK)
     return true
   } catch {
     return false
