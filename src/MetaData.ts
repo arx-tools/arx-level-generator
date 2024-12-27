@@ -1,5 +1,5 @@
 import { type Settings } from '@src/Settings.js'
-import { getGeneratorPackageJSON, getProjectPackageJSON } from '@src/helpers.js'
+import { getGeneratorPackageJSON, getProjectPackageJSON } from '@src/node.js'
 
 export type MetaData = {
   seed: string

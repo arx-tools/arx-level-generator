@@ -4,7 +4,7 @@ import { type Expand } from 'arx-convert/utils'
 import { sharpToBmp } from 'sharp-bmp'
 import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
 import { type Settings } from '@src/Settings.js'
-import { fileExists } from '@src/helpers.js'
+import { fileExists } from '@src/node.js'
 import { createCacheFolderIfNotExists, loadHashOf, createHashOfFile, saveHashOf } from '@services/cache.js'
 import { getMetadata, getSharpInstance } from '@services/image.js'
 

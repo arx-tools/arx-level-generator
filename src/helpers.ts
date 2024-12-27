@@ -1,6 +1,3 @@
-import fs from 'node:fs/promises'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import {
   Box3,
   type BufferGeometry,
@@ -13,57 +10,6 @@ import {
 } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { mean, repeat } from '@src/faux-ramda.js'
-
-export type PackageJsonProps = {
-  name: string
-  version: string
-  description: string
-  author: string
-  homepage: string
-}
-
-let cacheOfGeneratorPackageJSON: PackageJsonProps
-let cacheOfProjectPackageJSON: PackageJsonProps
-
-export async function getGeneratorPackageJSON(): Promise<PackageJsonProps> {
-  if (cacheOfGeneratorPackageJSON === undefined) {
-    try {
-      const filename = fileURLToPath(import.meta.url)
-      const dirname = path.dirname(filename)
-      const rawIn = await fs.readFile(path.resolve(dirname, '../package.json'), { encoding: 'utf8' })
-      cacheOfGeneratorPackageJSON = JSON.parse(rawIn) as PackageJsonProps
-    } catch {
-      cacheOfGeneratorPackageJSON = {
-        name: '',
-        version: '',
-        description: '',
-        author: '',
-        homepage: '',
-      }
-    }
-  }
-
-  return cacheOfGeneratorPackageJSON
-}
-
-export async function getProjectPackageJSON(): Promise<PackageJsonProps> {
-  if (cacheOfProjectPackageJSON === undefined) {
-    try {
-      const rawIn = await fs.readFile(path.resolve('./package.json'), { encoding: 'utf8' })
-      cacheOfProjectPackageJSON = JSON.parse(rawIn) as PackageJsonProps
-    } catch {
-      cacheOfProjectPackageJSON = {
-        name: '',
-        version: '',
-        description: '',
-        author: '',
-        homepage: '',
-      }
-    }
-  }
-
-  return cacheOfProjectPackageJSON
-}
 
 /**
  * @example
@@ -150,15 +96,6 @@ export function isBetween(min: number, max: number, n: number): boolean {
   }
 
   return n >= min && n <= max
-}
-
-export async function fileExists(filename: string): Promise<boolean> {
-  try {
-    await fs.access(filename, fs.constants.R_OK)
-    return true
-  } catch {
-    return false
-  }
 }
 
 export function circleOfVectors(

@@ -45,12 +45,13 @@ import { Zones } from '@src/Zones.js'
 import { compile } from '@src/compile.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { groupSequences, times, uniq } from '@src/faux-ramda.js'
-import { getGeneratorPackageJSON, latin9ToLatin1, percentOf } from '@src/helpers.js'
+import { latin9ToLatin1, percentOf } from '@src/helpers.js'
 import { type OriginalLevel } from '@src/types.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { Texture } from '@src/Texture.js'
 import { type Vertex } from '@src/Vertex.js'
 import { Color } from '@src/Color.js'
+import { getGeneratorPackageJSON } from '@src/node.js'
 
 type ArxMapConfig = {
   isFinalized: boolean
