@@ -72,6 +72,14 @@
     "./utils/faux-ramda": {
       "default": "./dist/faux-ramda.js",
       "types": "./dist/faux-ramda.d.ts"
+    },
+    "./node": {
+      "default": "./dist/platform/node/index.js",
+      "types": "./dist/platform/node/index.d.ts"
+    },
+    "./browser": {
+      "default": "./dist/platform/browser/index.js",
+      "types": "./dist/platform/browser/index.d.ts"
     }
   },
   "scripts": {
