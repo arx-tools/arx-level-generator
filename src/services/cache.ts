@@ -16,8 +16,8 @@ const hashingAlgorithm = 'sha1'
  * @param settings - an instance of the Settings object
  * @returns the absolute path for the given folder
  */
-export async function createCacheFolderIfNotExists(folder: string, settings: Settings): Promise<string> {
-  const fullFolder = path.resolve(settings.cacheFolder, folder)
+export async function createCacheDirIfNotExists(folder: string, settings: Settings): Promise<string> {
+  const fullFolder = path.resolve(settings.cacheDir, folder)
 
   try {
     await fs.access(fullFolder, fs.constants.R_OK | fs.constants.W_OK)
@@ -35,7 +35,7 @@ export async function createCacheFolderIfNotExists(folder: string, settings: Set
  * @param filename - full path to a file
  */
 export async function loadHashOf(filename: string, settings: Settings): Promise<string | undefined> {
-  const hashesFilename = path.resolve(settings.cacheFolder, '__hashes.json')
+  const hashesFilename = path.resolve(settings.cacheDir, '__hashes.json')
 
   try {
     const hashes = JSON.parse(await fs.readFile(hashesFilename, { encoding: 'utf8' })) as Record<string, string>
@@ -54,7 +54,7 @@ export async function getCacheInfo(
   settings: Settings,
 ): Promise<{ filename: string; exists: boolean; hash: string | undefined }> {
   const { dir, base } = path.parse(filename)
-  const cachedFolder = await createCacheFolderIfNotExists(dir, settings)
+  const cachedFolder = await createCacheDirIfNotExists(dir, settings)
   const cachedFilename = path.join(cachedFolder, base)
   const cacheExists = await fileExists(cachedFilename)
 
@@ -73,9 +73,9 @@ export async function getCacheInfo(
  * @param filename - full path to a file
  */
 export async function saveHashOf(filename: string, hash: string, settings: Settings): Promise<void> {
-  const hashesFilename = path.resolve(settings.cacheFolder, '__hashes.json')
+  const hashesFilename = path.resolve(settings.cacheDir, '__hashes.json')
 
-  await createCacheFolderIfNotExists('.', settings)
+  await createCacheDirIfNotExists('.', settings)
 
   let hashes: Record<string, string> = {}
 

@@ -89,7 +89,7 @@ export interface Settings {
    *
    * the level generator writes to this folder (and creates it if non-existant)
    */
-  readonly cacheFolder: string
+  readonly cacheDir: string
 
   /**
    * The folder in which the generated files will be placed

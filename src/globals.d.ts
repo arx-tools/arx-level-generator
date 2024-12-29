@@ -2,7 +2,7 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       originalLevelFiles?: string
-      cacheFolder?: string
+      cacheDir?: string
       outputDir?: string
       levelIdx?: string
       assetsDir?: string

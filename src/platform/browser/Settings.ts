@@ -18,12 +18,12 @@ export class Settings implements ISettings {
   readonly internalAssetsDir: string
   readonly assetsDir: string
   readonly originalLevelFiles: string
-  readonly cacheFolder: string
+  readonly cacheDir: string
   readonly outputDir: string
 
   constructor(
     props: Expand<
-      Exclude<SettingsConstructorProps, 'assetsDir' | 'originalLevelFiles' | 'cacheFolder' | 'outputDir'>
+      Exclude<SettingsConstructorProps, 'assetsDir' | 'originalLevelFiles' | 'cacheDir' | 'outputDir'>
     > = {},
   ) {
     this.levelIdx = props.levelIdx ?? 1
@@ -42,7 +42,7 @@ export class Settings implements ISettings {
     this.internalAssetsDir = '/assets'
     this.assetsDir = '/assets'
     this.originalLevelFiles = '/assets'
-    this.cacheFolder = '/'
+    this.cacheDir = '/'
     this.outputDir = '/'
   }
 }

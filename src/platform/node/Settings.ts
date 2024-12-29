@@ -50,7 +50,7 @@ export class Settings implements ISettings {
    *
    * default value is "./cache" relative to the project root
    */
-  readonly cacheFolder: string
+  readonly cacheDir: string
   /**
    * The folder in which the generated files will be placed
    *
@@ -101,7 +101,7 @@ export class Settings implements ISettings {
     this.originalLevelFiles =
       props.originalLevelFiles ?? process.env.originalLevelFiles ?? path.resolve('../pkware-test-files')
 
-    this.cacheFolder = props.cacheFolder ?? process.env.cacheFolder ?? path.resolve('./cache')
+    this.cacheDir = props.cacheDir ?? process.env.cacheDir ?? path.resolve('./cache')
     this.outputDir = props.outputDir ?? process.env.outputDir ?? path.resolve('./output')
   }
 }

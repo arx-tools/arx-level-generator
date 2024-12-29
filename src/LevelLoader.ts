@@ -4,7 +4,7 @@ import { DLF, FTS, LLF } from 'arx-convert'
 import { type ArxDLF, type ArxFTS, type ArxLLF } from 'arx-convert/types'
 import { type Settings } from '@src/Settings.js'
 import { type OriginalLevel } from '@src/types.js'
-import { createCacheFolderIfNotExists } from '@services/cache.js'
+import { createCacheDirIfNotExists } from '@services/cache.js'
 
 export class LevelLoader {
   levelIdx: OriginalLevel
@@ -31,7 +31,7 @@ export class LevelLoader {
   async readData(format: 'fts'): Promise<ArxFTS>
   async readData(format: 'llf'): Promise<ArxLLF>
   async readData(format: 'dlf' | 'fts' | 'llf'): Promise<ArxDLF | ArxFTS | ArxLLF> {
-    const jsonFolder = await createCacheFolderIfNotExists(this.getCachedJsonFolder(), this.settings)
+    const jsonFolder = await createCacheDirIfNotExists(this.getCachedJsonFolder(), this.settings)
     const jsonFilename = path.resolve(jsonFolder, './' + this.getFilename(format) + '.json')
 
     let data: ArxDLF | ArxFTS | ArxLLF

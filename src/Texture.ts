@@ -5,7 +5,7 @@ import { sharpToBmp } from 'sharp-bmp'
 import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
 import { type Settings } from '@src/Settings.js'
 import { fileExists } from '@src/node.js'
-import { createCacheFolderIfNotExists, loadHashOf, createHashOfFile, saveHashOf } from '@services/cache.js'
+import { createCacheDirIfNotExists, loadHashOf, createHashOfFile, saveHashOf } from '@services/cache.js'
 import { getMetadata, getSharpInstance } from '@services/image.js'
 
 export type TextureConstructorProps = {
@@ -415,7 +415,7 @@ export class Texture extends ThreeJsTextue {
     const originalSource = this.getFilename(settings)
     const convertedTarget = path.resolve(settings.outputDir, Texture.targetPath, newFilename)
 
-    const convertedSourceFolder = await createCacheFolderIfNotExists(this.sourcePath ?? Texture.targetPath, settings)
+    const convertedSourceFolder = await createCacheDirIfNotExists(this.sourcePath ?? Texture.targetPath, settings)
     const convertedSource = path.join(convertedSourceFolder, newFilename)
 
     const currentHash = await createHashOfFile(originalSource, { isTileable: false })
@@ -466,7 +466,7 @@ export class Texture extends ThreeJsTextue {
     const originalSource = this.getFilename(settings)
     const convertedTarget = path.resolve(settings.outputDir, Texture.targetPath, newFilename)
 
-    const convertedSourceFolder = await createCacheFolderIfNotExists(this.sourcePath ?? Texture.targetPath, settings)
+    const convertedSourceFolder = await createCacheDirIfNotExists(this.sourcePath ?? Texture.targetPath, settings)
     const convertedSource = path.join(convertedSourceFolder, newFilename)
 
     if (this.alreadyMadeTileable) {
