@@ -73,7 +73,7 @@ export class Settings implements ISettings {
     if (isValidLightingCalculatorMode(process.env.lightingCalculatorMode)) {
       fallbackLCM = process.env.lightingCalculatorMode
     } else {
-      fallbackLCM = 'Danae'
+      fallbackLCM = 'Arx'
     }
 
     this.lightingCalculatorMode = props.lightingCalculatorMode ?? fallbackLCM

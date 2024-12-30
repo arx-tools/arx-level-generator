@@ -55,7 +55,7 @@ if (args.finalize) {
   }
   const config: Pick<SettingsConstructorProps, 'calculateLighting' | 'lightingCalculatorMode'> = {
     calculateLighting: true,
-    lightingCalculatorMode: 'Danae',
+    lightingCalculatorMode: 'Arx',
   }
 
   const prettify = true

@@ -30,7 +30,7 @@ export class Settings implements ISettings {
 
     this.calculateLighting = props.calculateLighting ?? true
 
-    this.lightingCalculatorMode = props.lightingCalculatorMode ?? 'Danae'
+    this.lightingCalculatorMode = props.lightingCalculatorMode ?? 'Arx'
 
     this.mode = props.mode ?? 'production'
 
