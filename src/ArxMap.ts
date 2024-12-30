@@ -169,6 +169,8 @@ export class ArxMap {
       return
     }
 
+    // ------- mapdata was given, load data from those variables -------
+
     this.player.orientation = Rotation.fromArxRotation(dlf.header.angleEdit)
     this.player.position = Vector3.fromArxVector3(dlf.header.posEdit)
     this.player.positionAlreadyAdjusted = true
