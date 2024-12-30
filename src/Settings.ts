@@ -2,7 +2,7 @@ import { type Expand } from 'arx-convert/utils'
 
 export type Modes = 'development' | 'production'
 
-const lightingCalculatorModes = ['MaxBrightness', 'Arx', 'Realistic'] as const
+const lightingCalculatorModes = ['MaxBrightness', 'CompleteDarkness', 'Arx', 'Realistic'] as const
 
 export type LightingCalculatorMode = (typeof lightingCalculatorModes)[number]
 
@@ -23,8 +23,9 @@ export interface Settings {
   /**
    * possible values:
    *
-   * - "MaxBrightness" - sets everyting to the maximum brightness, useful for checking edits to a mesh
-   * - "Arx" - the default look of Arx: shadows are not cast by polygons, everything is lit evenly
+   * - "MaxBrightness" - sets everyting to the maximum brightness, ignores lights, useful for checking edits to a mesh
+   * - "CompleteDarkness" - every polygon of the mesh is as dark as it can be, ignores lights
+   * - "Arx" - the default look of Arx using Danae's lighting calculation: shadows are not cast by polygons, everything is lit evenly
    * - "Realistic" - polygons cast shadows if obstructing the lights
    *
    * default value is "Arx"
