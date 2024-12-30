@@ -32,10 +32,18 @@ export class Color {
     return new Color(r, g, b, a)
   }
 
+  /**
+   * Creates a Color instance from the ArxColor data
+   */
   static fromArxColor({ r, g, b, a }: ArxColor): Color {
     return new Color(r, g, b, a)
   }
 
+  /**
+   * Creates a Color instance from three.js' Color class
+   *
+   * Extra info: three.js' Color doesn't support transparency/alpha channel
+   */
   static fromThreeJsColor({ r, g, b }: ThreeJsColor): Color {
     return new Color(r * 255, g * 255, b * 255)
   }
@@ -106,7 +114,6 @@ export class Color {
   a: number
 
   /**
-   *
    * @param r red channel, a positive integer between `0` and `255` (inclusive)
    * @param g green channel, a positive integer between `0` and `255` (inclusive)
    * @param b blue channel, a positive integer between `0` and `255` (inclusive)
@@ -154,6 +161,9 @@ export class Color {
     return (this.r << 16) + (this.g << 8) + this.b
   }
 
+  /**
+   * Adds each channel of a color to the channels in this instance
+   */
   add(color: Color): this {
     this.r = MathUtils.clamp(this.r + color.r, 0, 255)
     this.g = MathUtils.clamp(this.g + color.g, 0, 255)
@@ -162,6 +172,9 @@ export class Color {
     return this
   }
 
+  /**
+   * Adds a fixed amount to every channel
+   */
   addScalar(value: number): this {
     this.r = MathUtils.clamp(this.r + value, 0, 255)
     this.g = MathUtils.clamp(this.g + value, 0, 255)
@@ -170,6 +183,9 @@ export class Color {
     return this
   }
 
+  /**
+   * Subtracts each channel of a color from the channels in this instance
+   */
   sub(color: Color): this {
     this.r = MathUtils.clamp(this.r - color.r, 0, 255)
     this.g = MathUtils.clamp(this.g - color.g, 0, 255)
@@ -178,6 +194,9 @@ export class Color {
     return this
   }
 
+  /**
+   * Subtracts a fixed amount from every channel
+   */
   subScalar(value: number): this {
     this.r = MathUtils.clamp(this.r - value, 0, 255)
     this.g = MathUtils.clamp(this.g - value, 0, 255)
@@ -186,6 +205,9 @@ export class Color {
     return this
   }
 
+  /**
+   * Multiplies each channel with a fixed amount
+   */
   multiplyScalar(value: number): this {
     this.r = MathUtils.clamp(this.r * value, 0, 255)
     this.g = MathUtils.clamp(this.g * value, 0, 255)
@@ -194,10 +216,16 @@ export class Color {
     return this
   }
 
+  /**
+   * Brightens the color by adding <percent>% of 256 to every channel
+   */
   lighten(percent: number): this {
     return this.addScalar(percentOf(percent, 255))
   }
 
+  /**
+   * Darkens the color by subtracting <percent>% of 256 from every channel
+   */
   darken(percent: number): this {
     return this.subScalar(percentOf(percent, 255))
   }
