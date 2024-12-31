@@ -17,7 +17,7 @@ import { Mesh, MeshBasicMaterial, type Object3D, type BufferAttribute, Box3, typ
 import { Color } from '@src/Color.js'
 import { Material } from '@src/Material.js'
 import { Polygon, type TransparencyType } from '@src/Polygon.js'
-import { type Settings } from '@src/Settings.js'
+import { type ISettings } from '@platform/common/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
@@ -62,7 +62,7 @@ export class Polygons extends Array<Polygon> {
     }
   }
 
-  async exportTextures(settings: Settings): Promise<Record<string, string>> {
+  async exportTextures(settings: ISettings): Promise<Record<string, string>> {
     const texturesToExport: {
       tileable: Record<string, Texture>
       nonTileable: Record<string, Texture>

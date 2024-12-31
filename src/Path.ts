@@ -1,6 +1,6 @@
 import { type ArxPath, type ArxZoneAndPathPointType, type ArxZoneAndPathPoint } from 'arx-convert/types'
 import { Vector3 } from '@src/Vector3.js'
-import { type ArxComponent } from '@src/ArxComponent.js'
+import { type IArxComponent } from '@src/ArxComponent.js'
 
 export type PathPoint = {
   position: Vector3
@@ -13,7 +13,7 @@ type PathConstructorProps = {
   points: PathPoint[]
 }
 
-export class Path implements ArxComponent {
+export class Path implements IArxComponent {
   static fromArxPath(path: ArxPath): Path {
     return new Path({
       name: path.name,

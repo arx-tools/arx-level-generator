@@ -6,12 +6,12 @@ import { type EntityModel } from '@src/EntityModel.js'
 import { Material } from '@src/Material.js'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
-import { type Settings } from '@src/Settings.js'
+import { type ISettings } from '@platform/common/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { type TextureOrMaterial } from '@src/types.js'
 import { type Cube as TypeOfCube } from '@prefabs/entity/Cube.js'
-import { type ArxComponent } from '@src/ArxComponent.js'
+import { type IArxComponent } from '@src/ArxComponent.js'
 
 export type EntityConstructorProps = {
   id?: number
@@ -48,7 +48,7 @@ export type EntityConstructorPropsWithoutSrc = Expand<Omit<EntityConstructorProp
 
 abstract class _Entity {}
 
-export class Entity extends _Entity implements ArxComponent {
+export class Entity extends _Entity implements IArxComponent {
   static fromArxInteractiveObject(entity: ArxInteractiveObject): Entity {
     return new Entity({
       id: entity.identifier,
@@ -334,7 +334,7 @@ export class Entity extends _Entity implements ArxComponent {
     return `${this.entityName}_${numericId}`
   }
 
-  exportScriptTarget(settings: Settings): string {
+  exportScriptTarget(settings: ISettings): string {
     if (!this.hasScript()) {
       throw new Error("trying to export an Entity which doesn't have a script")
     }
@@ -357,7 +357,7 @@ export class Entity extends _Entity implements ArxComponent {
     )
   }
 
-  async exportInventoryIcon(settings: Settings): Promise<Record<string, string>> {
+  async exportInventoryIcon(settings: ISettings): Promise<Record<string, string>> {
     const files: Record<string, string> = {}
 
     if (!this.needsInventoryIcon()) {
@@ -397,7 +397,7 @@ export class Entity extends _Entity implements ArxComponent {
     return files
   }
 
-  async exportOtherDependencies(settings: Settings): Promise<Record<string, string>> {
+  async exportOtherDependencies(settings: ISettings): Promise<Record<string, string>> {
     const files: Record<string, string> = {}
 
     for (const stuff of this.otherDependencies) {

@@ -1,5 +1,4 @@
-import { type Settings } from '@src/Settings.js'
-import { getGeneratorPackageJSON, getProjectPackageJSON } from '@src/node.js'
+import { type ISettings } from '@platform/common/Settings.js'
 
 export type MetaData = {
   seed: string
@@ -15,9 +14,9 @@ export type MetaData = {
   url: string
 }
 
-export async function generateMetadata(settings: Settings): Promise<MetaData> {
-  const generator = await getGeneratorPackageJSON()
-  const project = await getProjectPackageJSON()
+export async function generateMetadata(settings: ISettings): Promise<MetaData> {
+  const generator = await settings.getGeneratorPackageJSON()
+  const project = await settings.getProjectPackageJSON()
 
   return {
     seed: settings.seed,

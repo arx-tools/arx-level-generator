@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { type Settings } from '@src/Settings.js'
+import { type ISettings } from '@platform/common/Settings.js'
 
 export enum HudElements {
   Minimap = 'minimap',
@@ -52,7 +52,7 @@ export class HUD {
     }
   }
 
-  exportSourcesAndTargets(settings: Settings): Record<string, string> {
+  exportSourcesAndTargets(settings: ISettings): Record<string, string> {
     const files: Record<string, string> = {}
 
     if (this.elementVisibility[HudElements.Minimap] === false) {

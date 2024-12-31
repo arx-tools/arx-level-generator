@@ -2,11 +2,11 @@ import { type Expand } from 'arx-convert/utils'
 import seedrandom from 'seedrandom'
 import { randomIntBetween } from '@src/random.js'
 import {
-  type Modes,
-  type Settings as ISettings,
+  type ISettings,
   type LightingCalculatorMode,
   type SettingsConstructorProps,
-} from '@src/Settings.js'
+} from '@platform/common/Settings.js'
+import { type Modes, type PackageJsonProps } from '@platform/common/types.js'
 
 export class Settings implements ISettings {
   readonly calculateLighting: boolean
@@ -44,5 +44,25 @@ export class Settings implements ISettings {
     this.originalLevelFiles = '/assets'
     this.cacheDir = '/'
     this.outputDir = '/'
+  }
+
+  async getGeneratorPackageJSON(): Promise<PackageJsonProps> {
+    return {
+      name: 'arx-level-generator',
+      version: '',
+      description: '',
+      author: '',
+      homepage: '',
+    }
+  }
+
+  async getProjectPackageJSON(): Promise<PackageJsonProps> {
+    return {
+      name: '',
+      version: '',
+      description: '',
+      author: '',
+      homepage: '',
+    }
   }
 }

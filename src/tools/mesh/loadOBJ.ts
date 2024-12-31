@@ -21,7 +21,7 @@ import { getVertices } from '@tools/mesh/getVertices.js'
 import { scaleUV as scaleUVTool } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 import { type VerticalAlign } from '@src/types.js'
-import { fileExists } from '@src/node.js'
+import { fileExists } from '@platform/node/helpers.js'
 
 type loadOBJProperties = {
   /**

@@ -5,11 +5,11 @@ import { DLF, FTS, LLF } from 'arx-convert'
 import { type ArxDLF, type ArxFTS, type ArxLLF } from 'arx-convert/types'
 import { getHeaderSize } from 'arx-header-size'
 import { Compression, DictionarySize, implode, stream } from 'node-pkware'
-import { type Settings } from '@src/Settings.js'
+import { type ISettings } from '@platform/common/Settings.js'
 
 const { through, transformSplitBy, splitAt, transformIdentity } = stream
 
-async function compileFTS(settings: Settings, fts: ArxFTS): Promise<void> {
+async function compileFTS(settings: ISettings, fts: ArxFTS): Promise<void> {
   const ftsPath = path.join(settings.outputDir, `game/graph/levels/level${settings.levelIdx}`)
 
   if (settings.uncompressedFTS) {
@@ -46,7 +46,7 @@ async function compileFTS(settings: Settings, fts: ArxFTS): Promise<void> {
   })
 }
 
-async function compileLLF(settings: Settings, llf: ArxLLF): Promise<void> {
+async function compileLLF(settings: ISettings, llf: ArxLLF): Promise<void> {
   const llfPath = path.join(settings.outputDir, `graph/levels/level${settings.levelIdx}`)
 
   const repackedLlf = LLF.save(llf)
@@ -77,7 +77,7 @@ async function compileLLF(settings: Settings, llf: ArxLLF): Promise<void> {
   })
 }
 
-async function compileDLF(settings: Settings, dlf: ArxDLF): Promise<void> {
+async function compileDLF(settings: ISettings, dlf: ArxDLF): Promise<void> {
   const dlfPath = path.join(settings.outputDir, `graph/levels/level${settings.levelIdx}`)
 
   const repackedDlf = DLF.save(dlf)
@@ -109,7 +109,7 @@ async function compileDLF(settings: Settings, dlf: ArxDLF): Promise<void> {
 }
 
 export async function compile(
-  settings: Settings,
+  settings: ISettings,
   { dlf, llf, fts }: { dlf: ArxDLF; llf: ArxLLF; fts: ArxFTS },
 ): Promise<void> {
   await Promise.allSettled([compileFTS(settings, fts), compileLLF(settings, llf), compileDLF(settings, dlf)])

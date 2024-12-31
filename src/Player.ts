@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
-import { type Settings } from '@src/Settings.js'
+import { type ISettings } from '@platform/common/Settings.js'
 import { Vector3 } from '@src/Vector3.js'
 import { LoadAnim } from '@scripting/commands/LoadAnim.js'
 
@@ -165,7 +165,7 @@ export class Player {
     return this
   }
 
-  exportTarget(settings: Settings): string {
+  exportTarget(settings: ISettings): string {
     if (!this.hasScript()) {
       throw new Error("trying to export a Player which doesn't have a script")
     }

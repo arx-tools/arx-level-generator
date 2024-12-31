@@ -36,13 +36,13 @@ import { Portal } from '@src/Portal.js'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
 import { $ } from '@src/Selection.js'
-import { type Settings } from '@src/Settings.js'
+import { type ISettings } from '@platform/common/Settings.js'
 import { Translations } from '@src/Translations.js'
 import { UI } from '@src/UI.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Zone } from '@src/Zone.js'
 import { Zones } from '@src/Zones.js'
-import { compile } from '@src/compile.js'
+import { compile } from '@platform/node/compile.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { groupSequences, times, uniq } from '@src/faux-ramda.js'
 import { latin9ToLatin1, percentOf } from '@src/helpers.js'
@@ -51,7 +51,6 @@ import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { Texture } from '@src/Texture.js'
 import { type Vertex } from '@src/Vertex.js'
 import { Color } from '@src/Color.js'
-import { getGeneratorPackageJSON } from '@src/node.js'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -78,7 +77,7 @@ export class ArxMap {
    * Requires the pkware-test-files repo
    * @see https://github.com/meszaros-lajos-gyorgy/pkware-test-files
    */
-  static async fromOriginalLevel(levelIdx: OriginalLevel, settings: Settings): Promise<ArxMap> {
+  static async fromOriginalLevel(levelIdx: OriginalLevel, settings: ISettings): Promise<ArxMap> {
     const loader = new LevelLoader(levelIdx, settings)
 
     const dlf = await loader.readDlf()
@@ -96,8 +95,8 @@ export class ArxMap {
     return map
   }
 
-  private static async getGeneratorId(): Promise<string> {
-    const generator = await getGeneratorPackageJSON()
+  private static async getGeneratorId(settings: ISettings): Promise<string> {
+    const generator = await settings.getGeneratorPackageJSON()
     return `${generator.name} - v${generator.version}`
   }
 
@@ -207,7 +206,7 @@ export class ArxMap {
     this.todo.roomDistances = fts.roomDistances
   }
 
-  finalize(settings: Settings): void {
+  finalize(settings: ISettings): void {
     if (this.config.isFinalized) {
       throw new MapFinalizedError()
     }
@@ -291,7 +290,7 @@ export class ArxMap {
     this.movePolygonsToSameRoom()
   }
 
-  async saveToDisk(settings: Settings, exportJsonFiles: boolean = false, prettify: boolean = false): Promise<void> {
+  async saveToDisk(settings: ISettings, exportJsonFiles: boolean = false, prettify: boolean = false): Promise<void> {
     if (!this.config.isFinalized) {
       throw new MapNotFinalizedError()
     }
@@ -448,7 +447,7 @@ export class ArxMap {
       await fs.writeFile(target, latin1Script, { encoding: 'latin1' })
     }
 
-    const generatorId = await ArxMap.getGeneratorId()
+    const generatorId = await ArxMap.getGeneratorId(settings)
 
     for (const [filename, translation] of Object.entries(translations)) {
       const content = `// ${meta.name} v.${meta.version} - ${generatorId}
@@ -572,9 +571,9 @@ ${translation}`
     // TODO: adjust fts polygon texture container ids
   }
 
-  async toArxData(settings: Settings): Promise<{ dlf: ArxDLF; llf: ArxLLF; fts: ArxFTS }> {
+  async toArxData(settings: ISettings): Promise<{ dlf: ArxDLF; llf: ArxLLF; fts: ArxFTS }> {
     const now = Math.floor(Date.now() / 1000)
-    const generatorId = await ArxMap.getGeneratorId()
+    const generatorId = await ArxMap.getGeneratorId(settings)
 
     const dlf: ArxDLF = {
       header: {
@@ -732,6 +731,8 @@ ${translation}`
 
   // -----------------------------------
 
+  // TODO: move lighting calculation stuff to its own place
+
   /**
    * @see https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/DANAE/Danae.cpp#L1035
    */
@@ -837,7 +838,7 @@ ${translation}`
     console.error(`[error] ArxMap: realistic lighting mode is not yet implemented`)
   }
 
-  private calculateLighting(settings: Settings): void {
+  private calculateLighting(settings: ISettings): void {
     if (!settings.calculateLighting || this.lights.length === 0) {
       return
     }

@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { type Expand } from 'arx-convert/utils'
-import { type Settings } from '@src/Settings.js'
+import { type ISettings } from '@platform/common/Settings.js'
 import { type Locales, toArxLocale } from '@src/Translations.js'
 
 export type AudioType = `speech/${Locales}` | 'sfx'
@@ -26,7 +26,7 @@ type AudioConstructorProps = {
 }
 
 abstract class _Audio {
-  abstract exportSourceAndTarget(settings: Settings): [source: string, target: string]
+  abstract exportSourceAndTarget(settings: ISettings): [source: string, target: string]
 }
 
 export class Audio extends _Audio {
@@ -62,7 +62,7 @@ export class Audio extends _Audio {
     )
   }
 
-  static exportReplacements(settings: Settings, type: AudioType = 'sfx'): Record<string, string> {
+  static exportReplacements(settings: ISettings, type: AudioType = 'sfx'): Record<string, string> {
     const pairs: Record<string, string> = {}
 
     for (const key in this.replacements) {
@@ -148,7 +148,7 @@ export class Audio extends _Audio {
     })
   }
 
-  exportSourceAndTarget(settings: Settings): [source: string, target: string] {
+  exportSourceAndTarget(settings: ISettings): [source: string, target: string] {
     if (this.isNative) {
       throw new Error('trying to export a native Audio')
     }

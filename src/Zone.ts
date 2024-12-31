@@ -4,7 +4,7 @@ import { Ambience } from '@src/Ambience.js'
 import { Color } from '@src/Color.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Vectors } from '@src/Vectors.js'
-import { type ArxComponent } from '@src/ArxComponent.js'
+import { type IArxComponent } from '@src/ArxComponent.js'
 
 export type ZonePoint = {
   position: Vector3
@@ -24,7 +24,7 @@ export type ZoneConstructorProps = {
   ambience?: Ambience
 }
 
-export class Zone implements ArxComponent {
+export class Zone implements IArxComponent {
   static fromArxZone(zone: ArxZone): Zone {
     let height: number
     if (zone.height === -1) {

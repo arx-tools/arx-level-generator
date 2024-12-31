@@ -5,14 +5,14 @@ import { type ArxAction, type ArxFTL, ArxFaceType, type ArxFace, type ArxFtlVert
 import { type Expand, type QuadrupleOf, type TripleOf } from 'arx-convert/utils'
 import { type BufferAttribute, MathUtils, type Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { Polygons } from '@src/Polygons.js'
-import { type Settings } from '@src/Settings.js'
+import { type ISettings } from '@platform/common/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { repeat } from '@src/faux-ramda.js'
 import { arrayPadRight, roundToNDecimals } from '@src/helpers.js'
 import { createHashOfObject, getCacheInfo, saveHashOf } from '@services/cache.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
-import { fileExists } from '@src/node.js'
+import { fileExists } from '@platform/node/helpers.js'
 
 type EntityModelConstructorProps = {
   filename: string
@@ -97,7 +97,7 @@ export class EntityModel {
    * for example `items/quest_item/mirror`
    */
   async exportSourceAndTarget(
-    settings: Settings,
+    settings: ISettings,
     targetName: string,
     exportJsonFiles: boolean = false,
     prettify: boolean = false,

@@ -5,12 +5,13 @@ import { config as dotenvConfig } from 'dotenv'
 import seedrandom from 'seedrandom'
 import { randomIntBetween } from '@src/random.js'
 import {
-  type Modes,
-  type Settings as ISettings,
+  type ISettings,
   type LightingCalculatorMode,
   isValidLightingCalculatorMode,
   type SettingsConstructorProps,
-} from '@src/Settings.js'
+} from '@platform/common/Settings.js'
+import { type Modes, type PackageJsonProps } from '@platform/common/types.js'
+import { getGeneratorPackageJSON, getProjectPackageJSON } from '@platform/node/helpers.js'
 
 dotenvConfig()
 
@@ -103,5 +104,13 @@ export class Settings implements ISettings {
 
     this.cacheDir = props.cacheDir ?? process.env.cacheDir ?? path.resolve('./cache')
     this.outputDir = props.outputDir ?? process.env.outputDir ?? path.resolve('./output')
+  }
+
+  async getGeneratorPackageJSON(): Promise<PackageJsonProps> {
+    return getGeneratorPackageJSON()
+  }
+
+  async getProjectPackageJSON(): Promise<PackageJsonProps> {
+    return getProjectPackageJSON()
   }
 }

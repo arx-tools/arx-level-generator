@@ -1,4 +1,4 @@
-import { type Settings } from '@src/Settings.js'
+import { type ISettings } from '@platform/common/Settings.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import { type ScriptProperty } from '@scripting/ScriptProperty.js'
 import { type ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
@@ -152,7 +152,7 @@ export class Script {
     return this
   }
 
-  async exportTextures(settings: Settings): Promise<Record<string, string>> {
+  async exportTextures(settings: ISettings): Promise<Record<string, string>> {
     let files: Record<string, string> = {}
 
     const handlers = Object.values(this.eventHandlers).flat(1).filter(isUsesTextures)

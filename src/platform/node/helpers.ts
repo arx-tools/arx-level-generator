@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { type PackageJsonProps } from '@platform/common/types.js'
 
 export async function fileExists(filename: string): Promise<boolean> {
   try {
@@ -11,16 +12,8 @@ export async function fileExists(filename: string): Promise<boolean> {
   }
 }
 
-type PackageJsonProps = {
-  name: string
-  version: string
-  description: string
-  author: string
-  homepage: string
-}
-
-let cacheOfGeneratorPackageJSON: PackageJsonProps
-let cacheOfProjectPackageJSON: PackageJsonProps
+let cacheOfGeneratorPackageJSON: PackageJsonProps | undefined
+let cacheOfProjectPackageJSON: PackageJsonProps | undefined
 
 export async function getGeneratorPackageJSON(): Promise<PackageJsonProps> {
   if (cacheOfGeneratorPackageJSON === undefined) {

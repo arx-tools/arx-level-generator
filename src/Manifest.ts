@@ -2,8 +2,8 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { type Expand } from 'arx-convert/utils'
 import { type MetaData, generateMetadata } from '@src/MetaData.js'
-import { type Settings } from '@src/Settings.js'
-import { fileExists } from '@src/node.js'
+import { type ISettings } from '@platform/common/Settings.js'
+import { fileExists } from '@platform/node/helpers.js'
 
 export type ManifestData = Expand<
   MetaData & {
@@ -14,16 +14,16 @@ export type ManifestData = Expand<
 export class Manifest {
   static filename: string = 'manifest.json'
 
-  static getPathToFilename(settings: Settings): string {
+  static getPathToFilename(settings: ISettings): string {
     return path.resolve(settings.outputDir, Manifest.filename)
   }
 
-  static async exists(settings: Settings): Promise<boolean> {
+  static async exists(settings: ISettings): Promise<boolean> {
     const filename = Manifest.getPathToFilename(settings)
     return fileExists(filename)
   }
 
-  static async read(settings: Settings): Promise<ManifestData | undefined> {
+  static async read(settings: ISettings): Promise<ManifestData | undefined> {
     const filename = Manifest.getPathToFilename(settings)
 
     if ((await Manifest.exists(settings)) === false) {
@@ -39,7 +39,7 @@ export class Manifest {
     }
   }
 
-  static async write(settings: Settings, files: string[], prettify: boolean = false): Promise<void> {
+  static async write(settings: ISettings, files: string[], prettify: boolean = false): Promise<void> {
     const metaData = await generateMetadata(settings)
 
     const manifest: ManifestData = {
@@ -59,7 +59,7 @@ export class Manifest {
     await fs.writeFile(Manifest.getPathToFilename(settings), stringifiedData, { encoding: 'utf8' })
   }
 
-  static async uninstall(settings: Settings): Promise<void> {
+  static async uninstall(settings: ISettings): Promise<void> {
     if ((await Manifest.exists(settings)) === false) {
       return
     }

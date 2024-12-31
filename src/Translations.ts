@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { type Settings } from '@src/Settings.js'
+import { type ISettings } from '@platform/common/Settings.js'
 
 export type Locales =
   | 'chinese'
@@ -32,7 +32,7 @@ export function toArxLocale(locale: Locales): string {
 export class Translations {
   translations: Record<string, Partial<Record<Locales, string>>> = {}
 
-  exportSourcesAndTargets(settings: Settings): Record<string, string> {
+  exportSourcesAndTargets(settings: ISettings): Record<string, string> {
     const translations: Partial<Record<Locales, Record<string, string>>> = {}
 
     Object.entries(this.translations).forEach(([key, valuesByLocale]) => {
@@ -84,7 +84,7 @@ string="${value}"
     }
   }
 
-  async addFromFile(filename: string, settings: Settings): Promise<void> {
+  async addFromFile(filename: string, settings: ISettings): Promise<void> {
     try {
       const rawIn = await fs.readFile(path.resolve(settings.assetsDir, filename), { encoding: 'utf8' })
       const translations = JSON.parse(rawIn) as Record<string, Partial<Record<Locales, string>>>

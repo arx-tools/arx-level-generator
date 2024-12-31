@@ -1,6 +1,5 @@
 import { type Expand } from 'arx-convert/utils'
-
-export type Modes = 'development' | 'production'
+import { type Modes, type PackageJsonProps } from '@platform/common/types.js'
 
 const lightingCalculatorModes = ['MaxBrightness', 'CompleteDarkness', 'Arx', 'Realistic'] as const
 
@@ -10,7 +9,7 @@ export function isValidLightingCalculatorMode(input: any): input is LightingCalc
   return typeof input === 'string' && (lightingCalculatorModes as readonly string[]).includes(input)
 }
 
-export interface Settings {
+export interface ISettings {
   /**
    * default value is true
    * if there are no lights, then this gets set to false
@@ -98,6 +97,26 @@ export interface Settings {
    * the level generator writes to this folder (and creates it if non-existant)
    */
   readonly outputDir: string
+
+  getGeneratorPackageJSON(): Promise<PackageJsonProps>
+  getProjectPackageJSON(): Promise<PackageJsonProps>
 }
 
-export type SettingsConstructorProps = Expand<Exclude<Partial<Settings>, 'internalAssetsDir'>>
+export type SettingsConstructorProps = Expand<
+  Partial<
+    Pick<
+      ISettings,
+      | 'calculateLighting'
+      | 'lightingCalculatorMode'
+      | 'levelIdx'
+      | 'seed'
+      | 'mode'
+      | 'uncompressedFTS'
+      | 'internalAssetsDir'
+      | 'assetsDir'
+      | 'originalLevelFiles'
+      | 'cacheDir'
+      | 'outputDir'
+    >
+  >
+>
