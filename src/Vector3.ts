@@ -19,7 +19,7 @@ export class Vector3 extends ThreeJsVector3 {
     return new Vector3(vector.x, vector.y, vector.z)
   }
 
-  toArxVector3(): ArxVector3 {
+  toArxData(): ArxVector3 {
     return { x: this.x, y: this.y, z: this.z }
   }
 

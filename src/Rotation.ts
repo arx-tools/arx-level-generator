@@ -20,7 +20,7 @@ export class Rotation extends Euler {
     return this
   }
 
-  toArxRotation(): ArxRotation {
+  toArxData(): ArxRotation {
     return {
       a: MathUtils.radToDeg(this.x),
       b: MathUtils.radToDeg(this.y),

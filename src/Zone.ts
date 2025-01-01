@@ -115,7 +115,7 @@ export class Zone implements IArxComponent {
     })
   }
 
-  toArxZone(): ArxZone {
+  toArxData(): ArxZone {
     let height: number
     if (this.height === Number.POSITIVE_INFINITY) {
       height = -1
@@ -125,14 +125,14 @@ export class Zone implements IArxComponent {
 
     return {
       name: this.name,
-      backgroundColor: this.backgroundColor?.toArxColor(),
+      backgroundColor: this.backgroundColor?.toArxData(),
       drawDistance: this.drawDistance,
       height,
       ambience: this.ambience?.name,
       ambienceMaxVolume: this.ambience?.volume,
       points: this.points.map((point): ArxZoneAndPathPoint => {
         return {
-          pos: point.position.toArxVector3(),
+          pos: point.position.toArxData(),
           type: point.type,
           time: point.time,
         }

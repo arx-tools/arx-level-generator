@@ -4,7 +4,7 @@ import { type ArxFog } from 'arx-convert/types'
 export class Fogs extends Array<Fog> {
   toArxData(): { fogs: ArxFog[] } {
     const arxFogs = this.map((fog) => {
-      return fog.toArxFog()
+      return fog.toArxData()
     })
 
     return {

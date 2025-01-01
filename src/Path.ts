@@ -48,12 +48,12 @@ export class Path implements IArxComponent {
     })
   }
 
-  toArxPath(): ArxPath {
+  toArxData(): ArxPath {
     return {
       name: this.name,
       points: this.points.map((point): ArxZoneAndPathPoint => {
         return {
-          pos: point.position.toArxVector3(),
+          pos: point.position.toArxData(),
           type: point.type,
           time: point.time,
         }

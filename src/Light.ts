@@ -60,11 +60,11 @@ export class Light implements IArxComponent {
     })
   }
 
-  toArxLight(): ArxLight {
+  toArxData(): ArxLight {
     return {
       ...this.lightData,
-      pos: this.position.toArxVector3(),
-      color: this.color.toArxColor(),
+      pos: this.position.toArxData(),
+      color: this.color.toArxData(),
       flags: this.flags,
       fallStart: this.fallStart,
       fallEnd: this.fallEnd,

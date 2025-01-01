@@ -4,7 +4,7 @@ import { type ArxZone } from 'arx-convert/types'
 export class Zones extends Array<Zone> {
   toArxData(): { zones: ArxZone[] } {
     const arxZones = this.map((zone) => {
-      return zone.toArxZone()
+      return zone.toArxData()
     })
 
     return {

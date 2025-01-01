@@ -28,9 +28,9 @@ export class Vertex extends Vector3 {
     return copy as this
   }
 
-  toArxVertex(): ArxVertex {
+  toArxData(): ArxVertex {
     return {
-      ...this.toArxVector3(),
+      ...this.toArxData(),
       u: this.uv.x,
       v: this.uv.y,
     }

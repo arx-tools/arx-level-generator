@@ -58,7 +58,7 @@ export class AmbienceTrack {
     return [source, target]
   }
 
-  toArxTrack(): ArxTrack {
+  toArxData(): ArxTrack {
     return {
       filename: AmbienceTrack.targetPath + '/' + this.filename,
       flags: this.flags,

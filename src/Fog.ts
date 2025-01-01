@@ -80,15 +80,15 @@ export class Fog implements IArxComponent {
     })
   }
 
-  toArxFog(): ArxFog {
+  toArxData(): ArxFog {
     return {
-      pos: this.position.toArxVector3(),
-      angle: this.orientation.toArxRotation(),
-      color: this.color.toArxColor(),
+      pos: this.position.toArxData(),
+      angle: this.orientation.toArxData(),
+      color: this.color.toArxData(),
       size: this.size,
       special: this.special,
       scale: this.scale,
-      move: this.movement.toArxVector3(),
+      move: this.movement.toArxData(),
       speed: this.speed,
       rotateSpeed: this.rotateSpeed,
       toLive: this.toLive,

@@ -110,7 +110,7 @@ export class Polygons extends Array<Polygon> {
     // watch out, we're mutating textureContainers!
     const arxPolygons: ArxPolygon[] = []
     for (const polygon of this) {
-      arxPolygons.push(await polygon.toArxPolygon(textureContainers))
+      arxPolygons.push(await polygon.toArxData(textureContainers))
     }
 
     const arxTextureContainers = textureContainers
@@ -492,7 +492,7 @@ export class Polygons extends Array<Polygon> {
 
     this.forEach((polygon, idx) => {
       const vertices = polygon.vertices.map((vertex) => {
-        return vertex.toArxVertex()
+        return vertex.toArxData()
       })
       const [cellX, cellZ] = getCellCoords(vertices as QuadrupleOf<ArxVertex>)
       const key = `${cellZ}|${cellX}`
@@ -518,12 +518,12 @@ export class Polygons extends Array<Polygon> {
 
           for (let i = 0; i < 3; i++) {
             const color = polygon.vertices[i]?.color ?? Color.transparent
-            colors.push(color.toArxColor())
+            colors.push(color.toArxData())
           }
 
           if (polygon.isQuad()) {
             const color = polygon.vertices[3]?.color ?? Color.transparent
-            colors.push(color.toArxColor())
+            colors.push(color.toArxData())
           }
         })
       }

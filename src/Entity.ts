@@ -315,12 +315,12 @@ export class Entity extends _Entity implements IArxComponent {
     })
   }
 
-  toArxInteractiveObject(): ArxInteractiveObject {
+  toArxData(): ArxInteractiveObject {
     return {
       identifier: this.id,
       name: this.src,
-      pos: this.position.toArxVector3(),
-      angle: this.orientation.toArxRotation(),
+      pos: this.position.toArxData(),
+      angle: this.orientation.toArxData(),
     }
   }
 

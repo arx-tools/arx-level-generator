@@ -4,7 +4,7 @@ import { type ArxInteractiveObject } from 'arx-convert/types'
 export class Entities extends Array<Entity> {
   toArxData(): { interactiveObjects: ArxInteractiveObject[] } {
     const arxInteractiveObjects = this.map((entity) => {
-      return entity.toArxInteractiveObject()
+      return entity.toArxData()
     })
 
     return {

@@ -579,8 +579,8 @@ ${translation}`
       header: {
         lastUser: generatorId,
         time: now,
-        posEdit: this.player.position.toArxVector3(),
-        angleEdit: this.player.orientation.toArxRotation(),
+        posEdit: this.player.position.toArxData(),
+        angleEdit: this.player.orientation.toArxData(),
         numberOfBackgroundPolygons: this.polygons.length,
       },
       scene: {
@@ -598,12 +598,12 @@ ${translation}`
       },
       uniqueHeaders: this.todo.uniqueHeaders,
       sceneHeader: {
-        mScenePosition: this.config.offset.toArxVector3(),
+        mScenePosition: this.config.offset.toArxData(),
       },
       cells: this.todo.cells,
       anchors: this.todo.anchors,
       portals: this.portals.map((portal) => {
-        return portal.toArxPortal()
+        return portal.toArxData()
       }),
       rooms: this.todo.rooms,
       roomDistances: this.todo.roomDistances,
@@ -703,7 +703,7 @@ ${translation}`
       }
 
       const vertices = polygon.vertices.map((vertex) => {
-        return vertex.toArxVertex()
+        return vertex.toArxData()
       })
 
       const [cellX, cellY] = getCellCoords(vertices as QuadrupleOf<ArxVertex>)

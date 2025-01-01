@@ -193,16 +193,16 @@ export class EntityModel {
         const normals = polygon.normals as QuadrupleOf<Vector3>
 
         vertices.push(
-          { vector: polygon.vertices[0].clone().sub(origin).toArxVector3(), norm: normals[0] },
-          { vector: polygon.vertices[1].clone().sub(origin).toArxVector3(), norm: normals[1] },
-          { vector: polygon.vertices[2].clone().sub(origin).toArxVector3(), norm: normals[2] },
+          { vector: polygon.vertices[0].clone().sub(origin).toArxData(), norm: normals[0] },
+          { vector: polygon.vertices[1].clone().sub(origin).toArxData(), norm: normals[1] },
+          { vector: polygon.vertices[2].clone().sub(origin).toArxData(), norm: normals[2] },
         )
 
         if (polygon.isQuad()) {
           vertices.push(
-            { vector: polygon.vertices[2].clone().sub(origin).toArxVector3(), norm: normals[2] },
-            { vector: polygon.vertices[1].clone().sub(origin).toArxVector3(), norm: normals[1] },
-            { vector: polygon.vertices[3].clone().sub(origin).toArxVector3(), norm: normals[3] },
+            { vector: polygon.vertices[2].clone().sub(origin).toArxData(), norm: normals[2] },
+            { vector: polygon.vertices[1].clone().sub(origin).toArxData(), norm: normals[1] },
+            { vector: polygon.vertices[3].clone().sub(origin).toArxData(), norm: normals[3] },
           )
         }
 
@@ -226,7 +226,7 @@ export class EntityModel {
           textureIdx,
           u: [polygon.vertices[0].uv.x, polygon.vertices[1].uv.x, polygon.vertices[2].uv.x],
           v: [polygon.vertices[0].uv.y, polygon.vertices[1].uv.y, polygon.vertices[2].uv.y],
-          norm: faceNormal.toArxVector3(),
+          norm: faceNormal.toArxData(),
         })
 
         vertexIdxCntr = vertexIdxCntr + 3
@@ -239,7 +239,7 @@ export class EntityModel {
             textureIdx,
             u: [polygon.vertices[2].uv.x, polygon.vertices[1].uv.x, polygon.vertices[3].uv.x],
             v: [polygon.vertices[2].uv.y, polygon.vertices[1].uv.y, polygon.vertices[3].uv.y],
-            norm: faceNormal.toArxVector3(),
+            norm: faceNormal.toArxData(),
           })
 
           vertexIdxCntr = vertexIdxCntr + 3
@@ -282,8 +282,8 @@ export class EntityModel {
 
       ftlData.vertices = vertices.map(({ vector, norm }) => {
         return {
-          vector: vector.clone().sub(origin).toArxVector3(),
-          norm: norm.toArxVector3(),
+          vector: vector.clone().sub(origin).toArxData(),
+          norm: norm.toArxData(),
         }
       })
 
@@ -299,7 +299,7 @@ export class EntityModel {
           textureIdx: a.textureIdx,
           u: [a.uv.x, b.uv.x, c.uv.x],
           v: [a.uv.y, b.uv.y, c.uv.y],
-          norm: faceNormal.toArxVector3(),
+          norm: faceNormal.toArxData(),
         }
       })
 

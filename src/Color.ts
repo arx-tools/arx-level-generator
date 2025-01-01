@@ -129,7 +129,7 @@ export class Color {
   /**
    * Creates an object with rgba channels that `arx-convert` can work with.
    */
-  toArxColor(): ArxColor {
+  toArxData(): ArxColor {
     return { r: this.r, g: this.g, b: this.b, a: this.a }
   }
 

@@ -65,20 +65,20 @@ export class Portal {
     this.paddy = props.paddy
   }
 
-  toArxPortal(): ArxPortal {
+  toArxData(): ArxPortal {
     return {
       polygon: {
-        min: this.min.toArxVector3(),
-        max: this.max.toArxVector3(),
-        norm: this.norm.toArxVector3(),
-        norm2: this.norm2.toArxVector3(),
-        vertices: this.vertices.map((vertex): ArxTextureVertex => {
+        min: this.min.toArxData(),
+        max: this.max.toArxData(),
+        norm: this.norm.toArxData(),
+        norm2: this.norm2.toArxData(),
+        vertices: this.vertices.map((vertex) => {
           return {
-            pos: vertex.position.toArxVector3(),
+            pos: vertex.position.toArxData(),
             rhw: vertex.rhw,
           }
         }) as QuadrupleOf<ArxTextureVertex>,
-        center: this.center.toArxVector3(),
+        center: this.center.toArxData(),
       },
       room1: this.room1,
       room2: this.room2,
