@@ -25,8 +25,7 @@ import { HUD } from '@src/HUD.js'
 import { LevelLoader } from '@src/LevelLoader.js'
 import { Light } from '@src/Light.js'
 import { Lights } from '@src/Lights.js'
-import { Manifest } from '@src/Manifest.js'
-import { generateMetadata } from '@src/MetaData.js'
+import { generateMetadata } from '@platform/node/MetaData.js'
 import { Path } from '@src/Path.js'
 import { Paths } from '@src/Paths.js'
 import { Player } from '@src/Player.js'
@@ -51,6 +50,7 @@ import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { Texture } from '@src/Texture.js'
 import { type Vertex } from '@src/Vertex.js'
 import { Color } from '@src/Color.js'
+import { Manifest } from '@platform/node/Manifest.js'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -307,7 +307,9 @@ export class ArxMap {
     console.log(`[info] ArxMap: seed = "${settings.seed}"`)
     console.log(`[info] ArxMap: output directory = "${settings.outputDir}"`)
 
-    await Manifest.uninstall(settings)
+    if (settings.manifest.uninstall !== undefined) {
+      await settings.manifest.uninstall()
+    }
 
     const meta = await generateMetadata(settings)
 
@@ -419,7 +421,7 @@ export class ArxMap {
       ),
     }
 
-    const pathsOfTheFiles = [
+    const assetList = [
       ...Object.keys(textures),
       ...Object.keys(models),
       ...Object.keys(otherDependencies),
@@ -438,7 +440,7 @@ export class ArxMap {
     ]
 
     const dirnames = uniq(
-      pathsOfTheFiles.map((filePath) => {
+      assetList.map((filePath) => {
         return path.dirname(filePath)
       }),
     )
@@ -489,9 +491,9 @@ ${translation}`
       let stringifiedLlf: string
 
       if (prettify) {
-        stringifiedDlf = JSON.stringify(dlf, null, 2)
-        stringifiedFts = JSON.stringify(fts, null, 2)
-        stringifiedLlf = JSON.stringify(llf, null, 2)
+        stringifiedDlf = JSON.stringify(dlf, null, '\t')
+        stringifiedFts = JSON.stringify(fts, null, '\t')
+        stringifiedLlf = JSON.stringify(llf, null, '\t')
       } else {
         stringifiedDlf = JSON.stringify(dlf)
         stringifiedFts = JSON.stringify(fts)
@@ -505,7 +507,7 @@ ${translation}`
       for (const [target, amb] of Object.entries(customAmbiences)) {
         let stringifiedAmb: string
         if (prettify) {
-          stringifiedAmb = JSON.stringify(amb, null, 2)
+          stringifiedAmb = JSON.stringify(amb, null, '\t')
         } else {
           stringifiedAmb = JSON.stringify(amb)
         }
@@ -513,7 +515,7 @@ ${translation}`
         await fs.writeFile(target, stringifiedAmb, { encoding: 'utf8' })
       }
 
-      pathsOfTheFiles.push(...Object.keys(customAmbiences), ...Object.values(files))
+      assetList.push(...Object.keys(customAmbiences), ...Object.values(files))
     }
 
     for (const [target, amb] of Object.entries(customAmbiences)) {
@@ -525,7 +527,10 @@ ${translation}`
 
     // ------------------------
 
-    await Manifest.write(settings, pathsOfTheFiles)
+    const manifestData = await settings.manifest.generate(assetList)
+
+    const manifestFilename = path.resolve(settings.outputDir, Manifest.filename)
+    await fs.writeFile(manifestFilename, new Uint8Array(manifestData))
   }
 
   adjustOffsetTo(map: ArxMap): void {

@@ -12,6 +12,7 @@ import {
 } from '@platform/common/ISettings.js'
 import { type Modes, type PackageJsonProps } from '@platform/common/types.js'
 import { getGeneratorPackageJSON, getProjectPackageJSON } from '@platform/node/helpers.js'
+import { Manifest } from '@platform/node/Manifest.js'
 
 dotenvConfig()
 
@@ -61,6 +62,12 @@ export class Settings implements ISettings {
    */
   readonly outputDir: string
 
+  // ----------
+
+  readonly manifest: Manifest
+
+  // ----------
+
   /**
    * Individual properties can be omitted from `props` and be replaced by reading it from the `.env` file
    * or by setting it as a property of process.env, like `process.env.lightingCalculatorMode`
@@ -104,6 +111,10 @@ export class Settings implements ISettings {
 
     this.cacheDir = props.cacheDir ?? process.env.cacheDir ?? path.resolve('./cache')
     this.outputDir = props.outputDir ?? process.env.outputDir ?? path.resolve('./output')
+
+    // ----------
+
+    this.manifest = new Manifest(this)
   }
 
   async getGeneratorPackageJSON(): Promise<PackageJsonProps> {

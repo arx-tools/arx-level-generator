@@ -140,7 +140,7 @@ export class EntityModel {
         if (binaryChanged || !cachedJsonExists) {
           let stringifiedFtl: string
           if (prettify) {
-            stringifiedFtl = JSON.stringify(ftlData, null, 2)
+            stringifiedFtl = JSON.stringify(ftlData, null, '\t')
           } else {
             stringifiedFtl = JSON.stringify(ftlData)
           }

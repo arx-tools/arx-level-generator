@@ -7,6 +7,7 @@ import {
   type SettingsConstructorProps,
 } from '@platform/common/ISettings.js'
 import { type Modes, type PackageJsonProps } from '@platform/common/types.js'
+import { Manifest } from '@platform/browser/Manifest.js'
 
 export class Settings implements ISettings {
   readonly calculateLighting: boolean
@@ -20,6 +21,12 @@ export class Settings implements ISettings {
   readonly originalLevelFiles: string
   readonly cacheDir: string
   readonly outputDir: string
+
+  // ----------
+
+  readonly manifest: Manifest
+
+  // ----------
 
   constructor(
     props: Expand<
@@ -44,6 +51,10 @@ export class Settings implements ISettings {
     this.originalLevelFiles = '/assets'
     this.cacheDir = '/'
     this.outputDir = '/'
+
+    // ----------
+
+    this.manifest = new Manifest(this)
   }
 
   async getGeneratorPackageJSON(): Promise<PackageJsonProps> {

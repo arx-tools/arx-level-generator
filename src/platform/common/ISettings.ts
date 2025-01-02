@@ -1,5 +1,6 @@
 import { type Expand } from 'arx-convert/utils'
 import { type Modes, type PackageJsonProps } from '@platform/common/types.js'
+import { type IManifest } from '@platform/common/IManifest.js'
 
 const lightingCalculatorModes = ['MaxBrightness', 'CompleteDarkness', 'Arx', 'Realistic'] as const
 
@@ -97,6 +98,10 @@ export interface ISettings {
    * the level generator writes to this folder (and creates it if non-existant)
    */
   readonly outputDir: string
+
+  // ------------
+
+  readonly manifest: IManifest
 
   getGeneratorPackageJSON(): Promise<PackageJsonProps>
   getProjectPackageJSON(): Promise<PackageJsonProps>
