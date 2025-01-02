@@ -437,7 +437,11 @@ export class ArxMap {
       }),
     ]
 
-    const dirnames = uniq(pathsOfTheFiles.map(path.dirname.bind(path)))
+    const dirnames = uniq(
+      pathsOfTheFiles.map((filePath) => {
+        return path.dirname(filePath)
+      }),
+    )
     for (const dirname of dirnames) {
       await fs.mkdir(dirname, { recursive: true })
     }
