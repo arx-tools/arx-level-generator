@@ -334,6 +334,9 @@ export class Entity extends _Entity implements IArxComponent {
     return `${this.entityName}_${numericId}`
   }
 
+  /**
+   * @throws Error when the entity doesn't have a script
+   */
   exportScriptTarget(settings: ISettings): string {
     if (!this.hasScript()) {
       throw new Error("trying to export an Entity which doesn't have a script")

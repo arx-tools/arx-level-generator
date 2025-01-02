@@ -2,6 +2,7 @@ import path from 'node:path'
 import { type Expand } from 'arx-convert/utils'
 import { type ISettings } from '@platform/common/ISettings.js'
 import { type Locales, toArxLocale } from '@src/Translations.js'
+import { ExportBuiltinAssetError } from './errors.js'
 
 export type AudioType = `speech/${Locales}` | 'sfx'
 
@@ -39,6 +40,14 @@ export class Audio extends _Audio {
     })
   }
 
+  /**
+   * Overrides an builtin game audio with a custom audio file
+   *
+   * @param {Audio} from a builtin audio
+   * @param {Audio} to a custom audio file
+   *
+   * @throws Error when either `from` is not a builtin audio or `to` is not a custom audio file
+   */
   static replace(from: Audio, to: Audio): void {
     if (!from.isNative) {
       throw new Error('you can only replace native audio files')
@@ -148,9 +157,12 @@ export class Audio extends _Audio {
     })
   }
 
+  /**
+   * @throws ExportBuiltinAssetError when trying to export an Audio that's built into the base game
+   */
   exportSourceAndTarget(settings: ISettings): [source: string, target: string] {
     if (this.isNative) {
-      throw new Error('trying to export a native Audio')
+      throw new ExportBuiltinAssetError()
     }
 
     let targetPath: string

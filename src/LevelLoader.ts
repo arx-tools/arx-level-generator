@@ -15,18 +15,30 @@ export class LevelLoader {
     this.settings = settings
   }
 
+  /**
+   * @throws Error when binary dlf file doesn't exist
+   */
   async readDlf(): Promise<ArxDLF> {
     return this.readData('dlf')
   }
 
+  /**
+   * @throws Error when binary fts file doesn't exist
+   */
   async readFts(): Promise<ArxFTS> {
     return this.readData('fts')
   }
 
+  /**
+   * @throws Error when binary llf file doesn't exist
+   */
   async readLlf(): Promise<ArxLLF> {
     return this.readData('llf')
   }
 
+  /**
+   * @throws Error when binary dlf, llf or fts files don't exist
+   */
   async readData(format: 'dlf'): Promise<ArxDLF>
   async readData(format: 'fts'): Promise<ArxFTS>
   async readData(format: 'llf'): Promise<ArxLLF>
@@ -50,7 +62,7 @@ export class LevelLoader {
           try {
             await fs.access(binaryFolder, fs.constants.R_OK | fs.constants.W_OK)
           } catch {
-            throw new Error(`attempted to read folder containing binary level data at "${binaryFolder}"`)
+            throw new Error(`Attempted to read folder containing binary level data at "${binaryFolder}"`)
           }
 
           const binaryData = await fs.readFile(binaryFilename)
@@ -74,7 +86,7 @@ export class LevelLoader {
           try {
             await fs.access(binaryFolder, fs.constants.R_OK | fs.constants.W_OK)
           } catch {
-            throw new Error(`attempted to read folder containing binary level data at "${binaryFolder}"`)
+            throw new Error(`Attempted to read folder containing binary level data at "${binaryFolder}"`)
           }
 
           const binaryData = await fs.readFile(binaryFilename)
@@ -98,7 +110,7 @@ export class LevelLoader {
           try {
             await fs.access(binaryFolder, fs.constants.R_OK | fs.constants.W_OK)
           } catch {
-            throw new Error(`attempted to read folder containing binary level data at "${binaryFolder}"`)
+            throw new Error(`Attempted to read folder containing binary level data at "${binaryFolder}"`)
           }
 
           const binaryData = await fs.readFile(binaryFilename)

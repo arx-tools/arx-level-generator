@@ -12,9 +12,12 @@ type AmbienceTrackConstructorProps = {
 export class AmbienceTrack {
   static targetPath = 'sfx/ambiance'
 
+  /**
+   * @throws Error when `audio` is not a custom sound file
+   */
   static fromAudio(audio: Audio): AmbienceTrack {
     if (audio.isNative) {
-      throw new Error(`AmbienceTrack: using a native Audio "${audio.filename}" is not supported (yet?)`)
+      throw new Error(`AmbienceTrack: using a builtin Audio "${audio.filename}" is not supported`)
     }
 
     return new AmbienceTrack({
@@ -35,20 +38,20 @@ export class AmbienceTrack {
     this.flags = props.flags ?? ArxTrackFlags.None
 
     // TODO: turn this into a class maybe?
-    this.keys = [
-      {
-        start: 0,
-        loop: 1,
-        delayMin: 0,
-        delayMax: 0,
-        volume: { min: 1, max: 1, interval: 0, flags: ArxSettingFlag.None },
-        pitch: { min: 1, max: 1, interval: 0, flags: ArxSettingFlag.None },
-        pan: { min: 0, max: 0, interval: 0, flags: ArxSettingFlag.None },
-        x: { min: 0, max: 0, interval: 0, flags: ArxSettingFlag.None },
-        y: { min: 0, max: 0, interval: 0, flags: ArxSettingFlag.None },
-        z: { min: 0, max: 0, interval: 0, flags: ArxSettingFlag.None },
-      },
-    ]
+    const key: ArxKey = {
+      start: 0,
+      loop: 1,
+      delayMin: 0,
+      delayMax: 0,
+      volume: { min: 1, max: 1, interval: 0, flags: ArxSettingFlag.None },
+      pitch: { min: 1, max: 1, interval: 0, flags: ArxSettingFlag.None },
+      pan: { min: 0, max: 0, interval: 0, flags: ArxSettingFlag.None },
+      x: { min: 0, max: 0, interval: 0, flags: ArxSettingFlag.None },
+      y: { min: 0, max: 0, interval: 0, flags: ArxSettingFlag.None },
+      z: { min: 0, max: 0, interval: 0, flags: ArxSettingFlag.None },
+    }
+
+    this.keys = [key]
   }
 
   exportSourceAndTarget(settings: ISettings): [source: string, target: string] {

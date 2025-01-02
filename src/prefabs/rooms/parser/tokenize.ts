@@ -36,6 +36,8 @@
  * string           - string without whitespace
  */
 
+import { SyntaxError } from '@src/errors.js'
+
 type TokenMatcher = {
   expression: RegExp
   storeValue?: boolean
@@ -203,6 +205,9 @@ function numberOfNewlinesIn(input: string): number {
   return input.split('\n').length - 1
 }
 
+/**
+ * @throws SyntaxError
+ */
 export function tokenize(input: string, debug: boolean = false): Token[] {
   const tokenMatcherList = Object.entries(tokenMatchers) as [TokenType, TokenMatcher][]
 
@@ -303,12 +308,12 @@ export function tokenize(input: string, debug: boolean = false): Token[] {
       }
 
       moveBackToBeginningOfToken()
-      throw new Error(`[1] syntax error at ${lineNumber}:${charNumber}`)
+      throw new SyntaxError(lineNumber, charNumber)
     }
 
     if (isWhitespace(char)) {
       moveBackToBeginningOfToken()
-      throw new Error(`[2] syntax error at ${lineNumber}:${charNumber}`)
+      throw new SyntaxError(lineNumber, charNumber)
     }
   }
 
@@ -332,7 +337,7 @@ export function tokenize(input: string, debug: boolean = false): Token[] {
     prevCharNumber = charNumber
   } else if (buffer !== '') {
     moveBackToBeginningOfToken()
-    throw new Error(`[3] syntax error at ${lineNumber}:${charNumber}`)
+    throw new SyntaxError(lineNumber, charNumber)
   }
 
   return tokens.filter(({ type }) => {

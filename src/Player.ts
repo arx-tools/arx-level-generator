@@ -165,6 +165,9 @@ export class Player {
     return this
   }
 
+  /**
+   * @throws Error when player doesn't have a script
+   */
   exportTarget(settings: ISettings): string {
     if (!this.hasScript()) {
       throw new Error("trying to export a Player which doesn't have a script")
