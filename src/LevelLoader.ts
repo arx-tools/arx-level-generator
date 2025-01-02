@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { DLF, FTS, LLF } from 'arx-convert'
 import { type ArxDLF, type ArxFTS, type ArxLLF } from 'arx-convert/types'
-import { type ISettings } from '@platform/common/Settings.js'
+import { type ISettings } from '@platform/common/ISettings.js'
 import { type OriginalLevel } from '@src/types.js'
 import { createCacheDirIfNotExists } from '@services/cache.js'
 

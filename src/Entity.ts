@@ -6,12 +6,12 @@ import { type EntityModel } from '@src/EntityModel.js'
 import { Material } from '@src/Material.js'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
-import { type ISettings } from '@platform/common/Settings.js'
+import { type ISettings } from '@platform/common/ISettings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { type TextureOrMaterial } from '@src/types.js'
 import { type Cube as TypeOfCube } from '@prefabs/entity/Cube.js'
-import { type IArxComponent } from '@src/ArxComponent.js'
+import { type IArxComponent } from '@src/IArxComponent.js'
 
 export type EntityConstructorProps = {
   id?: number

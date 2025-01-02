@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { type QuadrupleOf } from 'arx-convert/utils'
-import { type ISettings } from '@platform/common/Settings.js'
+import { type ISettings } from '@platform/common/ISettings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Cursor, type CursorDir } from '@prefabs/rooms/Cursor.js'

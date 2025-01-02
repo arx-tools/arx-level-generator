@@ -2,7 +2,7 @@ import path from 'node:path'
 import { type ArxAMB } from 'arx-convert/types'
 import { AmbienceTrack } from '@src/AmbienceTrack.js'
 import { type Audio } from '@src/Audio.js'
-import { type ISettings } from '@platform/common/Settings.js'
+import { type ISettings } from '@platform/common/ISettings.js'
 
 type AmbienceConstructorProps = {
   name: string

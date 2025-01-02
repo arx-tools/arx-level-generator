@@ -31,7 +31,7 @@ export {
   PathsSelection,
   ZonesSelection,
 } from '@src/Selection.js'
-export { isValidLightingCalculatorMode } from '@platform/common/Settings.js'
+export { isValidLightingCalculatorMode } from '@platform/common/ISettings.js'
 export { Texture, SIZE_UNKNOWN, NO_TEXTURE_CONTAINER } from '@src/Texture.js'
 export { Translations } from '@src/Translations.js'
 export { UI, UiElements } from '@src/UI.js'
@@ -48,7 +48,7 @@ export type { EntityConstructorProps, EntityConstructorPropsWithoutSrc } from '@
 export type { PathPoint } from '@src/Path.js'
 export type { TransparencyType } from '@src/Polygon.js'
 export type { MeshImportProps } from '@src/Polygons.js'
-export type { ISettings, LightingCalculatorMode } from '@platform/common/Settings.js'
+export type { ISettings, LightingCalculatorMode } from '@platform/common/ISettings.js'
 export type { ScriptHandler } from '@src/Script.js'
 export type { Locales } from '@src/Translations.js'
 export type { ZonePoint } from '@src/Zone.js'

@@ -14,7 +14,7 @@ import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
 import { isBetween, percentOf, triangleFitsInto100Square } from '@src/helpers.js'
 import { type ArxVertexWithColor } from '@src/types.js'
-import { type IArxComponent } from '@src/ArxComponent.js'
+import { type IArxComponent } from '@src/IArxComponent.js'
 
 export type TransparencyType = 'multiplicative' | 'additive' | 'blended' | 'subtractive'
 

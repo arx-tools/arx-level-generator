@@ -5,7 +5,7 @@ import {
   type ISettings,
   type LightingCalculatorMode,
   type SettingsConstructorProps,
-} from '@platform/common/Settings.js'
+} from '@platform/common/ISettings.js'
 import { type Modes, type PackageJsonProps } from '@platform/common/types.js'
 
 export class Settings implements ISettings {

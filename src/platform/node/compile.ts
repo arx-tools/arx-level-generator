@@ -5,7 +5,7 @@ import { DLF, FTS, LLF } from 'arx-convert'
 import { type ArxDLF, type ArxFTS, type ArxLLF } from 'arx-convert/types'
 import { getHeaderSize } from 'arx-header-size'
 import { Compression, DictionarySize, implode, stream } from 'node-pkware'
-import { type ISettings } from '@platform/common/Settings.js'
+import { type ISettings } from '@platform/common/ISettings.js'
 
 const { through, transformSplitBy, splitAt, transformIdentity } = stream
 

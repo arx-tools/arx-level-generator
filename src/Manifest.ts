@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { type Expand } from 'arx-convert/utils'
 import { type MetaData, generateMetadata } from '@src/MetaData.js'
-import { type ISettings } from '@platform/common/Settings.js'
+import { type ISettings } from '@platform/common/ISettings.js'
 import { fileExists } from '@platform/node/helpers.js'
 
 export type ManifestData = Expand<

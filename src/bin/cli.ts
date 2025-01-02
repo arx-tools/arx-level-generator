@@ -2,7 +2,7 @@
 
 import process from 'node:process'
 import minimist from 'minimist-lite'
-import { type SettingsConstructorProps } from '@platform/common/Settings.js'
+import { type SettingsConstructorProps } from '@platform/common/ISettings.js'
 import { Settings } from '@platform/node/Settings.js'
 import { finalize } from '@bin/finalize.js'
 import { getPackageVersion } from '@bin/helpers.js'

@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { type Expand } from 'arx-convert/utils'
-import { type ISettings } from '@platform/common/Settings.js'
+import { type ISettings } from '@platform/common/ISettings.js'
 import { type Locales, toArxLocale } from '@src/Translations.js'
 
 export type AudioType = `speech/${Locales}` | 'sfx'

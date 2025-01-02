@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { type ISettings } from '@platform/common/Settings.js'
+import { type ISettings } from '@platform/common/ISettings.js'
 
 export enum UiElements {
   MainMenuBackground = 'main-menu-background',

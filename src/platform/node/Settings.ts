@@ -9,7 +9,7 @@ import {
   type LightingCalculatorMode,
   isValidLightingCalculatorMode,
   type SettingsConstructorProps,
-} from '@platform/common/Settings.js'
+} from '@platform/common/ISettings.js'
 import { type Modes, type PackageJsonProps } from '@platform/common/types.js'
 import { getGeneratorPackageJSON, getProjectPackageJSON } from '@platform/node/helpers.js'
 
