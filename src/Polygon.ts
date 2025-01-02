@@ -157,7 +157,7 @@ export class Polygon implements IArxComponent {
     return this.texture !== undefined
   }
 
-  async toArxData(textureContainers: (ArxTextureContainer & { remaining: number })[]): Promise<ArxPolygon> {
+  toArxData(textureContainers: (ArxTextureContainer & { remaining: number })[]): ArxPolygon {
     const vertices = this.vertices.map((vertex) => {
       return vertex.toArxData()
     }) as QuadrupleOf<ArxVertex>

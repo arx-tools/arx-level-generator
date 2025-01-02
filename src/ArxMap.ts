@@ -607,7 +607,7 @@ ${translation}`
       }),
       rooms: this.todo.rooms,
       roomDistances: this.todo.roomDistances,
-      ...(await this.polygons.toArxData()),
+      ...this.polygons.toArxData(),
     }
 
     const llf: ArxLLF = {
