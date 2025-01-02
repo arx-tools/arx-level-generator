@@ -395,7 +395,10 @@ export class ArxMap {
     this.entities = nonRootEntities
 
     if (this.player.hasScript()) {
-      scripts[this.player.exportTarget(settings)] = this.player.script.toArxData()
+      const filename = this.player.exportTarget(settings)
+      const content = this.player.script.toArxData()
+      scripts[filename] = content
+
       textures = {
         ...textures,
         ...(await this.player.script.exportTextures(settings)),
