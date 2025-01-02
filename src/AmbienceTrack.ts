@@ -2,6 +2,7 @@ import path from 'node:path'
 import { type ArxKey, ArxSettingFlag, type ArxTrack, ArxTrackFlags } from 'arx-convert/types'
 import { type Audio } from '@src/Audio.js'
 import { type ISettings } from '@platform/common/ISettings.js'
+import { type SingleFileExport } from '@src/types.js'
 
 type AmbienceTrackConstructorProps = {
   filename: string
@@ -54,7 +55,7 @@ export class AmbienceTrack {
     this.keys = [key]
   }
 
-  exportSourceAndTarget(settings: ISettings): [source: string, target: string] {
+  exportSourceAndTarget(settings: ISettings): SingleFileExport {
     const source = path.resolve(settings.assetsDir, this.sourcePath ?? AmbienceTrack.targetPath, this.filename)
     const target = path.resolve(settings.outputDir, AmbienceTrack.targetPath, this.filename)
 

@@ -9,7 +9,7 @@ import { Script } from '@src/Script.js'
 import { type ISettings } from '@platform/common/ISettings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
-import { type TextureOrMaterial } from '@src/types.js'
+import { type FileExports, type TextureOrMaterial } from '@src/types.js'
 import { type Cube as TypeOfCube } from '@prefabs/entity/Cube.js'
 import { type IArxComponent } from '@src/IArxComponent.js'
 
@@ -360,8 +360,8 @@ export class Entity extends _Entity implements IArxComponent {
     )
   }
 
-  async exportInventoryIcon(settings: ISettings): Promise<Record<string, string>> {
-    const files: Record<string, string> = {}
+  async exportInventoryIcon(settings: ISettings): Promise<FileExports> {
+    const files: FileExports = {}
 
     if (!this.needsInventoryIcon()) {
       return files
@@ -400,8 +400,8 @@ export class Entity extends _Entity implements IArxComponent {
     return files
   }
 
-  async exportOtherDependencies(settings: ISettings): Promise<Record<string, string>> {
-    const files: Record<string, string> = {}
+  async exportOtherDependencies(settings: ISettings): Promise<FileExports> {
+    const files: FileExports = {}
 
     for (const stuff of this.otherDependencies) {
       if (!stuff.isNative) {

@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { type ISettings } from '@platform/common/ISettings.js'
+import { type TextExports } from '@src/types.js'
 
 export type Locales =
   | 'chinese'
@@ -32,7 +33,7 @@ export function toArxLocale(locale: Locales): string {
 export class Translations {
   translations: Record<string, Partial<Record<Locales, string>>> = {}
 
-  exportSourcesAndTargets(settings: ISettings): Record<string, string> {
+  exportSourcesAndTargets(settings: ISettings): TextExports {
     const translations: Partial<Record<Locales, Record<string, string>>> = {}
 
     Object.entries(this.translations).forEach(([key, valuesByLocale]) => {
@@ -49,7 +50,7 @@ export class Translations {
       })
     })
 
-    const results: Record<string, string> = {}
+    const results: TextExports = {}
 
     const languageDictionaryPairs = Object.entries(translations) as [Locales, Record<string, string>][]
     languageDictionaryPairs.forEach(([locale, dictionary]) => {

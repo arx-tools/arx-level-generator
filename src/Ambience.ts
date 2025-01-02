@@ -3,7 +3,8 @@ import { type ArxAMB } from 'arx-convert/types'
 import { AmbienceTrack } from '@src/AmbienceTrack.js'
 import { type Audio } from '@src/Audio.js'
 import { type ISettings } from '@platform/common/ISettings.js'
-import { ExportBuiltinAssetError } from './errors.js'
+import { ExportBuiltinAssetError } from '@src/errors.js'
+import { type SingleFileExport } from '@src/types.js'
 
 type AmbienceConstructorProps = {
   name: string
@@ -235,12 +236,12 @@ export class Ambience {
   /**
    * @throws ExportBuiltinAssetError when trying to export an Audio that's built into the base game
    */
-  exportSourcesAndTargets(settings: ISettings): [source: string, target: string][] {
+  exportSourcesAndTargets(settings: ISettings): SingleFileExport[] {
     if (this.isNative) {
       throw new ExportBuiltinAssetError()
     }
 
-    const results: [source: string, target: string][] = []
+    const results: SingleFileExport[] = []
 
     for (const track of this.tracks) {
       results.push(track.exportSourceAndTarget(settings))

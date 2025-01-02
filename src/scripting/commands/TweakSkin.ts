@@ -3,6 +3,7 @@ import { type ISettings } from '@platform/common/ISettings.js'
 import { type Texture } from '@src/Texture.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import { type IUsesTextures } from '@scripting/interfaces/IUsesTextures.js'
+import { type FileExports } from '@src/types.js'
 
 export class TweakSkin extends ScriptCommand implements IUsesTextures {
   oldTexture: Texture | string
@@ -32,8 +33,8 @@ export class TweakSkin extends ScriptCommand implements IUsesTextures {
     return `tweak skin "${oldFilename}" "${newFilename}"`
   }
 
-  async exportTextures(settings: ISettings): Promise<Record<string, string>> {
-    const files: Record<string, string> = {}
+  async exportTextures(settings: ISettings): Promise<FileExports> {
+    const files: FileExports = {}
     const { oldTexture, newTexture } = this
 
     if (typeof oldTexture !== 'string' && !oldTexture.isNative) {

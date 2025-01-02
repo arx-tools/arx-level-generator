@@ -24,6 +24,7 @@ import { Vertex } from '@src/Vertex.js'
 import { sum, times } from '@src/faux-ramda.js'
 import { applyTransformations, averageVectors, quotientAndRemainder, roundToNDecimals } from '@src/helpers.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
+import { type FileExports } from '@src/types.js'
 
 export const QUADIFY = 'quadify'
 export const DONT_QUADIFY = "don't quadify"
@@ -62,7 +63,7 @@ export class Polygons extends Array<Polygon> {
     }
   }
 
-  async exportTextures(settings: ISettings): Promise<Record<string, string>> {
+  async exportTextures(settings: ISettings): Promise<FileExports> {
     const texturesToExport: {
       tileable: Record<string, Texture>
       nonTileable: Record<string, Texture>
@@ -84,7 +85,7 @@ export class Polygons extends Array<Polygon> {
       }
     }
 
-    const files: Record<string, string> = {}
+    const files: FileExports = {}
 
     for (const filename in texturesToExport.tileable) {
       const texture = texturesToExport.tileable[filename]

@@ -2,7 +2,8 @@ import path from 'node:path'
 import { type Expand } from 'arx-convert/utils'
 import { type ISettings } from '@platform/common/ISettings.js'
 import { type Locales, toArxLocale } from '@src/Translations.js'
-import { ExportBuiltinAssetError } from './errors.js'
+import { ExportBuiltinAssetError } from '@src/errors.js'
+import { type SingleFileExport } from '@src/types.js'
 
 export type AudioType = `speech/${Locales}` | 'sfx'
 
@@ -27,7 +28,7 @@ type AudioConstructorProps = {
 }
 
 abstract class _Audio {
-  abstract exportSourceAndTarget(settings: ISettings): [source: string, target: string]
+  abstract exportSourceAndTarget(settings: ISettings): SingleFileExport
 }
 
 export class Audio extends _Audio {
@@ -160,7 +161,7 @@ export class Audio extends _Audio {
   /**
    * @throws ExportBuiltinAssetError when trying to export an Audio that's built into the base game
    */
-  exportSourceAndTarget(settings: ISettings): [source: string, target: string] {
+  exportSourceAndTarget(settings: ISettings): SingleFileExport {
     if (this.isNative) {
       throw new ExportBuiltinAssetError()
     }
