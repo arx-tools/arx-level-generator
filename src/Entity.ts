@@ -376,17 +376,17 @@ export class Entity extends _Entity implements IArxComponent {
 
     if (this.hasInventoryIcon()) {
       try {
-        ;[source] = await this.inventoryIcon.exportSourceAndTarget(settings, false, true)
+        source = Object.values(await this.inventoryIcon.exportSourceAndTarget(settings, false, true))[0]
       } catch {
         console.error(
           `[error] Entity: inventory icon not found: "${this.inventoryIcon.filename}", using default fallback icon`,
         )
         this.inventoryIcon = Texture.missingInventoryIcon
-        ;[source] = await this.inventoryIcon.exportSourceAndTarget(settings, false)
+        source = Object.values(await this.inventoryIcon.exportSourceAndTarget(settings, false))[0]
       }
     } else {
       this.inventoryIcon = Texture.missingInventoryIcon
-      ;[source] = await this.inventoryIcon.exportSourceAndTarget(settings, false)
+      source = Object.values(await this.inventoryIcon.exportSourceAndTarget(settings, false))[0]
     }
 
     if (this.src.endsWith('.asl')) {
@@ -401,21 +401,25 @@ export class Entity extends _Entity implements IArxComponent {
   }
 
   async exportOtherDependencies(settings: ISettings): Promise<FileExports> {
-    const files: FileExports = {}
+    let files: FileExports = {}
 
-    for (const stuff of this.otherDependencies) {
-      if (!stuff.isNative) {
-        if (stuff instanceof Texture) {
+    for (const audioOrTexture of this.otherDependencies) {
+      if (!audioOrTexture.isNative) {
+        if (audioOrTexture instanceof Texture) {
           let hasTiledMaterialFlag = false
-          if (stuff instanceof Material) {
-            hasTiledMaterialFlag = isTiled(stuff)
+          if (audioOrTexture instanceof Material) {
+            hasTiledMaterialFlag = isTiled(audioOrTexture)
           }
 
-          const [source, target] = await stuff.exportSourceAndTarget(settings, hasTiledMaterialFlag)
-          files[target] = source
+          files = {
+            ...files,
+            ...(await audioOrTexture.exportSourceAndTarget(settings, hasTiledMaterialFlag)),
+          }
         } else {
-          const [source, target] = stuff.exportSourceAndTarget(settings)
-          files[target] = source
+          files = {
+            ...files,
+            ...audioOrTexture.exportSourceAndTarget(settings),
+          }
         }
       }
     }

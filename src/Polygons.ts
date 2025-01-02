@@ -85,18 +85,22 @@ export class Polygons extends Array<Polygon> {
       }
     }
 
-    const files: FileExports = {}
+    let files: FileExports = {}
 
     for (const filename in texturesToExport.tileable) {
       const texture = texturesToExport.tileable[filename]
-      const [source, target] = await texture.exportSourceAndTarget(settings, true)
-      files[target] = source
+      files = {
+        ...files,
+        ...(await texture.exportSourceAndTarget(settings, true)),
+      }
     }
 
     for (const filename in texturesToExport.nonTileable) {
       const texture = texturesToExport.nonTileable[filename]
-      const [source, target] = await texture.exportSourceAndTarget(settings, false)
-      files[target] = source
+      files = {
+        ...files,
+        ...(await texture.exportSourceAndTarget(settings, false)),
+      }
     }
 
     return files

@@ -46,7 +46,7 @@ import { compile } from '@platform/node/compile.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { groupSequences, times, uniq } from '@src/faux-ramda.js'
 import { latin9ToLatin1, percentOf } from '@src/helpers.js'
-import { type OriginalLevel } from '@src/types.js'
+import { type TextExports, type FileExports, type OriginalLevel } from '@src/types.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { Texture } from '@src/Texture.js'
 import { type Vertex } from '@src/Vertex.js'
@@ -313,20 +313,23 @@ export class ArxMap {
 
     // ------------------------
 
-    let textures = await this.polygons.exportTextures(settings)
+    let textures: FileExports = {
+      ...(await this.polygons.exportTextures(settings)),
+    }
 
     const hudElements = this.hud.exportSourcesAndTargets(settings)
     const uiElements = this.ui.exportSourcesAndTargets(settings)
 
-    const ambienceTracks: Record<string, string> = {}
+    let ambienceTracks: FileExports = {}
     this.zones.forEach((zone) => {
       if (!zone.hasAmbience() || zone.ambience.isNative) {
         return
       }
 
-      zone.ambience.exportSourcesAndTargets(settings).forEach(([source, target]) => {
-        ambienceTracks[target] = source
-      })
+      ambienceTracks = {
+        ...ambienceTracks,
+        ...zone.ambience.exportSourcesAndTargets(settings),
+      }
     })
 
     let customAmbiences: Record<string, ArxAMB> = {}
@@ -341,36 +344,39 @@ export class ArxMap {
       }
     })
 
-    const scripts: Record<string, string> = {}
-    const models: Record<string, string> = {}
-    const otherDependencies: Record<string, string> = {}
+    const scripts: TextExports = {}
+    let models: FileExports = {}
+    let otherDependencies: FileExports = {}
 
     for (const entity of this.entities) {
       if (entity.hasScript()) {
-        scripts[entity.exportScriptTarget(settings)] = entity.script.toArxData()
-        const texturesToExport = await entity.script.exportTextures(settings)
-        for (const target in texturesToExport) {
-          textures[target] = texturesToExport[target]
+        const filename = entity.exportScriptTarget(settings)
+        const content = entity.script.toArxData()
+        scripts[filename] = content
+
+        textures = {
+          ...textures,
+          ...(await entity.script.exportTextures(settings)),
         }
       }
 
       if (entity.hasInventoryIcon()) {
-        const texturesToExport = await entity.exportInventoryIcon(settings)
-        for (const target in texturesToExport) {
-          textures[target] = texturesToExport[target]
+        textures = {
+          ...textures,
+          ...(await entity.exportInventoryIcon(settings)),
         }
       }
 
       if (entity.hasModel()) {
-        const modelToExport = await entity.model.exportSourceAndTarget(settings, entity.src, exportJsonFiles, prettify)
-        for (const target in modelToExport) {
-          models[target] = modelToExport[target]
+        models = {
+          ...models,
+          ...(await entity.model.exportSourceAndTarget(settings, entity.src, exportJsonFiles, prettify)),
         }
       }
 
-      const dependenciesToExport = await entity.exportOtherDependencies(settings)
-      for (const target in dependenciesToExport) {
-        otherDependencies[target] = dependenciesToExport[target]
+      otherDependencies = {
+        ...otherDependencies,
+        ...(await entity.exportOtherDependencies(settings)),
       }
     }
 

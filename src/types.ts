@@ -55,8 +55,3 @@ export type FileExports = Record<string, string>
  * - source = text content
  */
 export type TextExports = Record<string, string>
-
-/**
- * @deprecated
- */
-export type SingleFileExport = [source: string, target: string]

@@ -34,17 +34,21 @@ export class TweakSkin extends ScriptCommand implements IUsesTextures {
   }
 
   async exportTextures(settings: ISettings): Promise<FileExports> {
-    const files: FileExports = {}
+    let files: FileExports = {}
     const { oldTexture, newTexture } = this
 
     if (typeof oldTexture !== 'string' && !oldTexture.isNative) {
-      const [source, target] = await oldTexture.exportSourceAndTarget(settings, false)
-      files[target] = source
+      files = {
+        ...files,
+        ...(await oldTexture.exportSourceAndTarget(settings, false)),
+      }
     }
 
     if (typeof newTexture !== 'string' && !newTexture.isNative) {
-      const [source, target] = await newTexture.exportSourceAndTarget(settings, false)
-      files[target] = source
+      files = {
+        ...files,
+        ...(await newTexture.exportSourceAndTarget(settings, false)),
+      }
     }
 
     return files

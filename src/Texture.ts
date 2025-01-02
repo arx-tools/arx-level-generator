@@ -8,7 +8,7 @@ import { fileExists } from '@platform/node/helpers.js'
 import { createCacheDirIfNotExists, loadHashOf, createHashOfFile, saveHashOf } from '@services/cache.js'
 import { getMetadata, getSharpInstance } from '@services/image.js'
 import { ExportBuiltinAssetError } from '@src/errors.js'
-import { type SingleFileExport } from '@src/types.js'
+import { type FileExports } from '@src/types.js'
 
 export type TextureConstructorProps = {
   filename: string
@@ -331,7 +331,7 @@ export class Texture extends ThreeJsTextue {
     settings: ISettings,
     needsToBeTileable: boolean = false,
     _dontCatchTheError = false,
-  ): Promise<SingleFileExport> {
+  ): Promise<FileExports> {
     if (this.isNative) {
       throw new ExportBuiltinAssetError()
     }
@@ -404,7 +404,7 @@ export class Texture extends ThreeJsTextue {
     return path.resolve(assetsDir, this.sourcePath ?? Texture.targetPath, this.filename)
   }
 
-  private async makeCopy(settings: ISettings): Promise<SingleFileExport> {
+  private async makeCopy(settings: ISettings): Promise<FileExports> {
     const { ext, name } = path.parse(this.filename)
     const hasSupportedFormat = supportedExtensions.has(ext)
 
@@ -427,7 +427,9 @@ export class Texture extends ThreeJsTextue {
       const storedHash = await loadHashOf(originalSource, settings)
 
       if (storedHash === currentHash) {
-        return [convertedSource, convertedTarget]
+        return {
+          [convertedTarget]: convertedSource,
+        }
       }
     }
 
@@ -453,10 +455,12 @@ export class Texture extends ThreeJsTextue {
       }
     }
 
-    return [convertedSource, convertedTarget]
+    return {
+      [convertedTarget]: convertedSource,
+    }
   }
 
-  private async makeTileable(settings: ISettings): Promise<SingleFileExport> {
+  private async makeTileable(settings: ISettings): Promise<FileExports> {
     const { ext, name } = path.parse(this.filename)
     const hasSupportedFormat = supportedExtensions.has(ext)
 
@@ -474,7 +478,9 @@ export class Texture extends ThreeJsTextue {
     const convertedSource = path.join(convertedSourceFolder, newFilename)
 
     if (this.alreadyMadeTileable) {
-      return [convertedSource, convertedTarget]
+      return {
+        [convertedTarget]: convertedSource,
+      }
     }
 
     const currentHash = await createHashOfFile(originalSource, { isTileable: true })
@@ -484,7 +490,9 @@ export class Texture extends ThreeJsTextue {
 
       if (storedHash === currentHash) {
         this.alreadyMadeTileable = true
-        return [convertedSource, convertedTarget]
+        return {
+          [convertedTarget]: convertedSource,
+        }
       }
     }
 
@@ -516,6 +524,8 @@ export class Texture extends ThreeJsTextue {
 
     this.alreadyMadeTileable = true
 
-    return [convertedSource, convertedTarget]
+    return {
+      [convertedTarget]: convertedSource,
+    }
   }
 }
