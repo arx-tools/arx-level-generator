@@ -322,7 +322,7 @@ export class Texture extends ThreeJsTextue {
   }
 
   /**
-   * default value for needsToBeTileable is false
+   * default value for `needsToBeTileable` is false
    */
   async exportSourceAndTarget(
     settings: ISettings,
@@ -361,7 +361,7 @@ export class Texture extends ThreeJsTextue {
 
   /**
    * compares filenames of textures without the extensions
-   * comparision is case insensitive
+   * comparision is case-**insensitive**
    *
    * For example:
    *  - texture.jpg == TEXTURE.JPG
