@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { AMB } from 'arx-convert'
+import { AMB, DLF, FTS, LLF } from 'arx-convert'
 import {
   ArxLightFlags,
   type ArxAMB,
@@ -41,16 +41,14 @@ import { UI } from '@src/UI.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Zone } from '@src/Zone.js'
 import { Zones } from '@src/Zones.js'
-import { compile } from '@platform/node/compile.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
-import { groupSequences, times, uniq } from '@src/faux-ramda.js'
-import { latin9ToLatin1, percentOf } from '@src/helpers.js'
-import { type TextExports, type FileExports, type OriginalLevel } from '@src/types.js'
+import { groupSequences, times } from '@src/faux-ramda.js'
+import { percentOf, exportToJSON, compressAs, encodeText } from '@src/helpers.js'
+import { type FileExports, type OriginalLevel } from '@src/types.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { Texture } from '@src/Texture.js'
 import { type Vertex } from '@src/Vertex.js'
 import { Color } from '@src/Color.js'
-import { Manifest } from '@platform/node/Manifest.js'
 
 type ArxMapConfig = {
   isFinalized: boolean
@@ -97,7 +95,7 @@ export class ArxMap {
 
   private static async getGeneratorId(settings: ISettings): Promise<string> {
     const generator = await settings.getGeneratorPackageJSON()
-    return `${generator.name} - v${generator.version}`
+    return `${generator.name} - version ${generator.version}`
   }
 
   polygons: Polygons
@@ -311,30 +309,96 @@ export class ArxMap {
       await settings.manifest.uninstall()
     }
 
-    const meta = await generateMetadata(settings)
+    // assuming all targets here are relative to `settings.outputDir`
+    //
+    // `{ [target]: buffer }`
+    //
+    const filesToExport: Record<string, ArrayBufferLike> = {
+      ...this.hud.exportSourcesAndTargets(settings),
+    }
 
-    // ------------------------
+    // assuming sources to be relative (not start with /) if they are relative to settings.outputDir
+    // and targets relative to `settings.outputDir`
+    //
+    // `{ [target]: source }`
+    //
+    let filesToCopy: FileExports = {
+      ...this.ui.exportSourcesAndTargets(settings),
+    }
 
-    let textures: FileExports = {
+    filesToCopy = {
+      ...filesToCopy,
       ...(await this.polygons.exportTextures(settings)),
     }
 
-    const hudElements = this.hud.exportSourcesAndTargets(settings)
-    const uiElements = this.ui.exportSourcesAndTargets(settings)
+    /*
+    let otherDependencies: FileExports = {}
+    */
 
-    let ambienceTracks: FileExports = {}
-    this.zones.forEach((zone) => {
-      if (!zone.hasAmbience() || zone.ambience.isNative) {
-        return
+    for (const entity of this.entities) {
+      if (entity.hasScript()) {
+        const filename = entity.exportScriptTarget(settings)
+        const content = entity.script.toArxData().replaceAll('\n', Script.EOL)
+        filesToExport[filename] = encodeText(content, 'latin9')
+
+        filesToCopy = {
+          ...filesToCopy,
+          ...(await entity.script.exportTextures(settings)),
+        }
       }
 
-      ambienceTracks = {
-        ...ambienceTracks,
-        ...zone.ambience.exportSourcesAndTargets(settings),
+      if (entity.hasInventoryIcon()) {
+        filesToCopy = {
+          ...filesToCopy,
+          ...(await entity.exportInventoryIcon(settings)),
+        }
       }
-    })
+
+      if (entity.hasModel()) {
+        filesToCopy = {
+          ...filesToCopy,
+          ...(await entity.model.exportSourceAndTarget(settings, entity.src, exportJsonFiles, prettify)),
+        }
+      }
+
+      filesToCopy = {
+        ...filesToCopy,
+        ...(await entity.exportOtherDependencies(settings)),
+      }
+    }
+
+    if (this.player.hasScript()) {
+      const filename = this.player.exportTarget()
+      const content = this.player.script.toArxData().replaceAll('\n', Script.EOL)
+      filesToExport[filename] = encodeText(content, 'latin9')
+
+      filesToCopy = {
+        ...filesToCopy,
+        ...(await this.player.script.exportTextures(settings)),
+      }
+    }
+
+    filesToCopy = {
+      ...filesToCopy,
+      ...Audio.exportReplacements(settings),
+    }
+
+    // ------------------------
+
+    const translations = this.i18n.exportSourcesAndTargets(settings)
+
+    const generatorId = await ArxMap.getGeneratorId(settings)
+    const meta = await generateMetadata(settings)
+
+    for (const [filename, translation] of Object.entries(translations)) {
+      const content = `// ${meta.name} v.${meta.version} - ${generatorId}\n\n${translation}`
+      filesToExport[filename] = encodeText(content, 'utf8')
+    }
+
+    // ------------------------
 
     let customAmbiences: Record<string, ArxAMB> = {}
+
     this.zones.forEach((zone) => {
       if (!zone.hasAmbience() || zone.ambience.isNative) {
         return
@@ -342,195 +406,82 @@ export class ArxMap {
 
       customAmbiences = {
         ...customAmbiences,
-        ...zone.ambience.toArxData(settings),
+        ...zone.ambience.toArxData(),
+      }
+
+      filesToCopy = {
+        ...filesToCopy,
+        ...zone.ambience.exportSourcesAndTargets(),
       }
     })
-
-    const scripts: TextExports = {}
-    let models: FileExports = {}
-    let otherDependencies: FileExports = {}
-
-    for (const entity of this.entities) {
-      if (entity.hasScript()) {
-        const filename = entity.exportScriptTarget(settings)
-        const content = entity.script.toArxData()
-        scripts[filename] = content
-
-        textures = {
-          ...textures,
-          ...(await entity.script.exportTextures(settings)),
-        }
-      }
-
-      if (entity.hasInventoryIcon()) {
-        textures = {
-          ...textures,
-          ...(await entity.exportInventoryIcon(settings)),
-        }
-      }
-
-      if (entity.hasModel()) {
-        models = {
-          ...models,
-          ...(await entity.model.exportSourceAndTarget(settings, entity.src, exportJsonFiles, prettify)),
-        }
-      }
-
-      otherDependencies = {
-        ...otherDependencies,
-        ...(await entity.exportOtherDependencies(settings)),
-      }
-    }
-
-    const sounds = Audio.exportReplacements(settings)
-
-    // removing root entities while also making sure the entities land in an Entities object and not in an array
-    const nonRootEntities = new Entities()
-    this.entities.forEach((entity) => {
-      if (entity.hasScript() && entity.script.isRoot) {
-        return
-      }
-
-      nonRootEntities.push(entity)
-    })
-
-    this.entities = nonRootEntities
-
-    if (this.player.hasScript()) {
-      const filename = this.player.exportTarget(settings)
-      const content = this.player.script.toArxData()
-      scripts[filename] = content
-
-      textures = {
-        ...textures,
-        ...(await this.player.script.exportTextures(settings)),
-      }
-    }
-
-    const translations = this.i18n.exportSourcesAndTargets(settings)
-
-    const files = {
-      dlf: path.resolve(
-        settings.outputDir,
-        `graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.dlf.json`,
-      ),
-      fts: path.resolve(settings.outputDir, `game/graph/levels/level${settings.levelIdx}/fast.fts.json`),
-      llf: path.resolve(
-        settings.outputDir,
-        `graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.llf.json`,
-      ),
-    }
-
-    const assetList = [
-      ...Object.keys(textures),
-      ...Object.keys(models),
-      ...Object.keys(otherDependencies),
-      ...Object.keys(sounds),
-      ...Object.keys(hudElements),
-      ...Object.keys(uiElements),
-      ...Object.keys(ambienceTracks),
-      ...Object.keys(customAmbiences).map((filename) => {
-        return filename.replace(/\.json$/, '')
-      }),
-      ...Object.keys(scripts),
-      ...Object.keys(translations),
-      ...Object.values(files).map((filename) => {
-        return filename.replace(/\.json$/, '')
-      }),
-    ]
-
-    const dirnames = uniq(
-      assetList.map((filePath) => {
-        return path.dirname(filePath)
-      }),
-    )
-    for (const dirname of dirnames) {
-      await fs.mkdir(dirname, { recursive: true })
-    }
-
-    // ------------------------
-
-    const filesToCopy = [
-      ...Object.entries(textures),
-      ...Object.entries(hudElements),
-      ...Object.entries(uiElements),
-      ...Object.entries(ambienceTracks),
-      ...Object.entries(models),
-      ...Object.entries(otherDependencies),
-      ...Object.entries(sounds),
-    ]
-
-    for (const [target, source] of filesToCopy) {
-      await fs.copyFile(source, target)
-    }
-
-    // ------------------------
-
-    for (const [target, script] of Object.entries(scripts)) {
-      const latin1Script = latin9ToLatin1(script.replaceAll('\n', Script.EOL))
-      await fs.writeFile(target, latin1Script, { encoding: 'latin1' })
-    }
-
-    const generatorId = await ArxMap.getGeneratorId(settings)
-
-    for (const [filename, translation] of Object.entries(translations)) {
-      const content = `// ${meta.name} v.${meta.version} - ${generatorId}
-
-${translation}`
-
-      await fs.writeFile(filename, content, { encoding: 'utf8' })
-    }
 
     // ------------------------
 
     const { dlf, fts, llf } = await this.toArxData(settings)
 
-    if (exportJsonFiles) {
-      let stringifiedDlf: string
-      let stringifiedFts: string
-      let stringifiedLlf: string
+    const binaryFts = FTS.save(fts, settings.uncompressedFTS === false)
+    filesToExport[`game/graph/levels/level${settings.levelIdx}/fast.fts`] = compressAs(binaryFts, 'fts')
 
-      if (prettify) {
-        stringifiedDlf = JSON.stringify(dlf, null, '\t')
-        stringifiedFts = JSON.stringify(fts, null, '\t')
-        stringifiedLlf = JSON.stringify(llf, null, '\t')
-      } else {
-        stringifiedDlf = JSON.stringify(dlf)
-        stringifiedFts = JSON.stringify(fts)
-        stringifiedLlf = JSON.stringify(llf)
-      }
+    const binaryDlf = DLF.save(dlf)
+    filesToExport[`graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.dlf`] = compressAs(binaryDlf, 'dlf')
 
-      await fs.writeFile(files.dlf, stringifiedDlf, { encoding: 'utf8' })
-      await fs.writeFile(files.fts, stringifiedFts, { encoding: 'utf8' })
-      await fs.writeFile(files.llf, stringifiedLlf, { encoding: 'utf8' })
-
-      for (const [target, amb] of Object.entries(customAmbiences)) {
-        let stringifiedAmb: string
-        if (prettify) {
-          stringifiedAmb = JSON.stringify(amb, null, '\t')
-        } else {
-          stringifiedAmb = JSON.stringify(amb)
-        }
-
-        await fs.writeFile(target, stringifiedAmb, { encoding: 'utf8' })
-      }
-
-      assetList.push(...Object.keys(customAmbiences), ...Object.values(files))
-    }
+    const binaryLlf = LLF.save(llf)
+    filesToExport[`graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.llf`] = compressAs(binaryLlf, 'llf')
 
     for (const [target, amb] of Object.entries(customAmbiences)) {
-      const compiledAmb = AMB.save(amb)
-      await fs.writeFile(target.replace(/\.json$/, ''), new Uint8Array(compiledAmb))
+      const binaryAmb = AMB.save(amb)
+      filesToExport[target] = compressAs(binaryAmb, 'amb')
     }
-
-    await compile(settings, { dlf, fts, llf })
 
     // ------------------------
 
-    const manifestData = await settings.manifest.generate(assetList)
+    // save json variants of binaries if needed
+    if (exportJsonFiles) {
+      const jsonFts = exportToJSON(fts, prettify)
+      filesToExport[`game/graph/levels/level${settings.levelIdx}/fast.fts.json`] = jsonFts
 
-    const manifestFilename = path.resolve(settings.outputDir, Manifest.filename)
-    await fs.writeFile(manifestFilename, new Uint8Array(manifestData))
+      const jsonDlf = exportToJSON(dlf, prettify)
+      filesToExport[`graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.dlf.json`] = jsonDlf
+
+      const jsonLlf = exportToJSON(llf, prettify)
+      filesToExport[`graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.llf.json`] = jsonLlf
+
+      for (const [target, amb] of Object.entries(customAmbiences)) {
+        const jsonAmb = exportToJSON(amb, prettify)
+        filesToExport[target + '.json'] = jsonAmb
+      }
+    }
+
+    // ------------------------
+
+    // read contents of filesToCopy entries as ArrayBuffers and add them to filesToExport
+    for (const target in filesToCopy) {
+      let source = filesToCopy[target]
+
+      if (!source.startsWith('/')) {
+        source = path.resolve(settings.assetsDir, source)
+      }
+
+      const file = await fs.readFile(source)
+      filesToExport[target] = file.buffer
+    }
+
+    // ------------------------
+
+    // lastly create a manifest.json file with all the files that the level generator is exporting
+    filesToExport['manifest.json'] = await settings.manifest.generate(Object.keys(filesToExport))
+
+    // write the ArrayBuffers of filesToExport into files
+    for (const target in filesToExport) {
+      const data = filesToExport[target]
+      const fullPath = path.resolve(settings.outputDir, target)
+
+      const dirname = path.dirname(fullPath)
+      await fs.mkdir(dirname, { recursive: true })
+
+      const wrappedData = new Uint8Array(data)
+      await fs.writeFile(fullPath, wrappedData)
+    }
   }
 
   adjustOffsetTo(map: ArxMap): void {
@@ -608,6 +559,13 @@ ${translation}`
     const now = Math.floor(Date.now() / 1000)
     const generatorId = await ArxMap.getGeneratorId(settings)
 
+    const nonRootEntities = new Entities(
+      ...this.entities.filter((entity) => {
+        const isRoot = entity.hasScript() && entity.script.isRoot
+        return !isRoot
+      }),
+    )
+
     const dlf: ArxDLF = {
       header: {
         lastUser: generatorId,
@@ -622,7 +580,7 @@ ${translation}`
       ...this.fogs.toArxData(),
       ...this.paths.toArxData(),
       ...this.zones.toArxData(),
-      ...this.entities.toArxData(),
+      ...nonRootEntities.toArxData(),
     }
 
     const fts: ArxFTS = {
