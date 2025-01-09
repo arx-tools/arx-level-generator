@@ -1,4 +1,3 @@
-import path from 'node:path'
 import { type ISettings } from '@platform/common/ISettings.js'
 import { type FileExports } from '@src/types.js'
 
@@ -11,6 +10,9 @@ export class UI {
     [UiElements.MainMenuBackground]: undefined,
   }
 
+  /**
+   * filename should point to a file relative to `settings.assetsDir`
+   */
   set(element: UiElements, filename: string): void {
     this.customElements[element] = filename
   }
@@ -27,8 +29,8 @@ export class UI {
     const files: FileExports = {}
 
     if (this.customElements[UiElements.MainMenuBackground] !== undefined) {
-      const source = path.resolve(settings.assetsDir, this.customElements[UiElements.MainMenuBackground])
-      const target = path.resolve(settings.outputDir, 'graph/interface/menus/menu_main_background.jpg')
+      const source = this.customElements[UiElements.MainMenuBackground]
+      const target = 'graph/interface/menus/menu_main_background.jpg'
       files[target] = source
     }
 

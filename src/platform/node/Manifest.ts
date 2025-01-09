@@ -5,6 +5,7 @@ import { type MetaData, generateMetadata } from '@platform/node/MetaData.js'
 import { fileExists } from '@platform/node/helpers.js'
 import { type IManifest } from '@platform/common/IManifest.js'
 import { type ISettings } from '@platform/common/ISettings.js'
+import { exportToJSON } from '@src/helpers.js'
 
 export type ManifestData = Expand<
   MetaData & {
@@ -13,8 +14,6 @@ export type ManifestData = Expand<
 >
 
 export class Manifest implements IManifest {
-  static readonly filename: string = 'manifest.json'
-
   readonly settings: ISettings
 
   constructor(settings: ISettings) {
@@ -31,21 +30,11 @@ export class Manifest implements IManifest {
       }),
     }
 
-    let stringifiedData: string
-    if (prettify) {
-      stringifiedData = JSON.stringify(manifest, null, '\t')
-    } else {
-      stringifiedData = JSON.stringify(manifest)
-    }
-
-    const encoder = new TextEncoder()
-    const view = encoder.encode(stringifiedData)
-
-    return view.buffer
+    return exportToJSON(manifest, prettify)
   }
 
   getPathToFilename(): string {
-    return path.resolve(this.settings.outputDir, Manifest.filename)
+    return path.resolve(this.settings.outputDir, 'manifest.json')
   }
 
   async exists(): Promise<boolean> {
@@ -64,7 +53,7 @@ export class Manifest implements IManifest {
       const rawIn = await fs.readFile(filename, { encoding: 'utf8' })
       return JSON.parse(rawIn) as ManifestData
     } catch {
-      console.error(`[error] Manifest: failed to read or parse "${Manifest.filename}" in "${this.settings.outputDir}"`)
+      console.error(`[error] Manifest: failed to read or parse "manifest.json" in "${this.settings.outputDir}"`)
       return undefined
     }
   }

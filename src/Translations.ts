@@ -56,10 +56,7 @@ export class Translations {
     languageDictionaryPairs.forEach(([locale, dictionary]) => {
       const content = this.stringifyDictionary(dictionary)
       if (content.length > 0) {
-        const filename = path.resolve(
-          settings.outputDir,
-          `localisation/xtext_${toArxLocale(locale)}_002_arx-level-generator.ini`,
-        )
+        const filename = `localisation/xtext_${toArxLocale(locale)}_002_arx-level-generator.ini`
         results[filename] = content
       }
     })

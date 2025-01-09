@@ -1,8 +1,6 @@
-import path from 'node:path'
 import { type ArxAMB } from 'arx-convert/types'
 import { AmbienceTrack } from '@src/AmbienceTrack.js'
 import { type Audio } from '@src/Audio.js'
-import { type ISettings } from '@platform/common/ISettings.js'
 import { ExportBuiltinAssetError } from '@src/errors.js'
 import { type FileExports } from '@src/types.js'
 
@@ -14,8 +12,6 @@ type AmbienceConstructorProps = {
 }
 
 export class Ambience {
-  static targetPath = 'sfx/ambiance'
-
   static fromAudio(ambienceName: string, audio: Audio): Ambience {
     return new Ambience({
       name: ambienceName,
@@ -234,9 +230,11 @@ export class Ambience {
   }
 
   /**
+   * Exports the custom sound files used by the Ambience
+   *
    * @throws ExportBuiltinAssetError when trying to export an Audio that's built into the base game
    */
-  exportSourcesAndTargets(settings: ISettings): FileExports {
+  exportSourcesAndTargets(): FileExports {
     if (this.isNative) {
       throw new ExportBuiltinAssetError()
     }
@@ -246,18 +244,19 @@ export class Ambience {
     for (const track of this.tracks) {
       results = {
         ...results,
-        ...track.exportSourceAndTarget(settings),
+        ...track.exportSourceAndTarget(),
       }
     }
 
     return results
   }
 
-  toArxData(settings: ISettings): Record<string, ArxAMB> {
-    const target = path.resolve(settings.outputDir, Ambience.targetPath, `${this.name}.amb.json`)
-
+  /**
+   * Exports the `amb` file that describes which sound files to load and how to play them back
+   */
+  toArxData(): Record<string, ArxAMB> {
     return {
-      [target]: {
+      [`sfx/ambiance/${this.name}.amb`]: {
         tracks: this.tracks.map((track) => {
           return track.toArxData()
         }),

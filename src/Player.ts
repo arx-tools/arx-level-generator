@@ -1,7 +1,5 @@
-import path from 'node:path'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
-import { type ISettings } from '@platform/common/ISettings.js'
 import { Vector3 } from '@src/Vector3.js'
 import { LoadAnim } from '@scripting/commands/LoadAnim.js'
 
@@ -168,11 +166,11 @@ export class Player {
   /**
    * @throws Error when player doesn't have a script
    */
-  exportTarget(settings: ISettings): string {
+  exportTarget(): string {
     if (!this.hasScript()) {
       throw new Error("trying to export a Player which doesn't have a script")
     }
 
-    return path.resolve(settings.outputDir, Script.targetPath, 'player', this.script.filename)
+    return `graph/obj3d/interactive/player/${this.script.filename}`
   }
 }

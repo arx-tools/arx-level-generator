@@ -343,21 +343,10 @@ export class Entity extends _Entity implements IArxComponent {
     }
 
     if (this.script.isRoot) {
-      return path.resolve(
-        settings.outputDir,
-        Script.targetPath,
-        this.src.replace(this.script.filename, ''),
-        this.script.filename,
-      )
+      return path.join(Script.targetPath, this.src.replace(this.script.filename, ''), this.script.filename)
     }
 
-    return path.resolve(
-      settings.outputDir,
-      Script.targetPath,
-      this.src.replace(this.script.filename, ''),
-      this.ref,
-      this.script.filename,
-    )
+    return path.join(Script.targetPath, this.src.replace(this.script.filename, ''), this.ref, this.script.filename)
   }
 
   async exportInventoryIcon(settings: ISettings): Promise<FileExports> {
@@ -390,9 +379,9 @@ export class Entity extends _Entity implements IArxComponent {
     }
 
     if (this.src.endsWith('.asl')) {
-      target = path.resolve(settings.outputDir, 'graph/obj3d/interactive', this.src.replace(/.asl$/, '[icon].bmp'))
+      target = path.join('graph/obj3d/interactive', this.src.replace(/.asl$/, '[icon].bmp'))
     } else {
-      target = path.resolve(settings.outputDir, 'graph/obj3d/interactive', this.src, this.entityName + `[icon].bmp`)
+      target = path.join('graph/obj3d/interactive', this.src, this.entityName + `[icon].bmp`)
     }
 
     files[target] = source

@@ -77,8 +77,7 @@ export class Audio extends _Audio {
 
     for (const key in this.replacements) {
       const source = Object.values(this.replacements[key].exportSourceAndTarget(settings))[0]
-      const target = path.resolve(settings.outputDir, type, key)
-      pairs[target] = source
+      pairs[`${type}/${key}`] = source
     }
 
     return pairs
@@ -177,10 +176,10 @@ export class Audio extends _Audio {
     if (this.isInternalAsset) {
       source = path.resolve(settings.internalAssetsDir, this.sourcePath ?? targetPath, this.filename)
     } else {
-      source = path.resolve(settings.assetsDir, this.sourcePath ?? targetPath, this.filename)
+      source = path.join(this.sourcePath ?? targetPath, this.filename)
     }
 
-    const target = path.resolve(settings.outputDir, targetPath, this.filename)
+    const target = path.join(targetPath, this.filename)
 
     return {
       [target]: source,

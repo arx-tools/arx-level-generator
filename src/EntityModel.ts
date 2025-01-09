@@ -9,7 +9,7 @@ import { type ISettings } from '@platform/common/ISettings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { repeat } from '@src/faux-ramda.js'
-import { arrayPadRight, roundToNDecimals } from '@src/helpers.js'
+import { arrayPadRight, exportToJSON, roundToNDecimals } from '@src/helpers.js'
 import { createHashOfObject, getCacheInfo, saveHashOf } from '@services/cache.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 import { fileExists } from '@platform/node/helpers.js'
@@ -108,17 +108,14 @@ export class EntityModel {
     const files: FileExports = {}
 
     const { name: entityName } = path.parse(targetName)
-    const binaryTarget = path.resolve(settings.outputDir, EntityModel.targetPath, targetName, `${entityName}.ftl`)
+    const binaryTarget = path.join(EntityModel.targetPath, targetName, `${entityName}.ftl`)
     const jsonTarget = `${binaryTarget}.json`
 
     if (this.mesh === undefined) {
       const binarySource = path.resolve(settings.assetsDir, this.sourcePath, this.filename)
       files[binaryTarget] = binarySource
     } else {
-      const cachedBinary = await getCacheInfo(
-        path.join(EntityModel.targetPath, targetName, `${entityName}.ftl`),
-        settings,
-      )
+      const cachedBinary = await getCacheInfo(binaryTarget, settings)
 
       const ftlData = this.generateFtl(entityName)
       const hashOfFtlData = createHashOfObject(ftlData)
@@ -138,14 +135,8 @@ export class EntityModel {
         const cachedJsonExists = await fileExists(cachedJsonTarget)
 
         if (binaryChanged || !cachedJsonExists) {
-          let stringifiedFtl: string
-          if (prettify) {
-            stringifiedFtl = JSON.stringify(ftlData, null, '\t')
-          } else {
-            stringifiedFtl = JSON.stringify(ftlData)
-          }
-
-          await fs.writeFile(cachedJsonTarget, stringifiedFtl, { encoding: 'utf8' })
+          const jsonFtl = exportToJSON(ftlData, prettify)
+          await fs.writeFile(cachedJsonTarget, new Uint8Array(jsonFtl))
         }
 
         files[jsonTarget] = cachedJsonTarget
