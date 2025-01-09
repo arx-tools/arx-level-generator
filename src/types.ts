@@ -9,6 +9,9 @@ export type ArxVertexWithColor = Expand<
   }
 >
 
+/**
+ * 0..8, 10..23
+ */
 export type OriginalLevel =
   | 0
   | 1
