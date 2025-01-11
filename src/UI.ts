@@ -30,8 +30,7 @@ export class UI {
 
     if (this.customElements[UiElements.MainMenuBackground] !== undefined) {
       const source = this.customElements[UiElements.MainMenuBackground]
-      const target = 'graph/interface/menus/menu_main_background.jpg'
-      files[target] = source
+      files['graph/interface/menus/menu_main_background.jpg'] = source
     }
 
     return files
