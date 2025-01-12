@@ -1,12 +1,13 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { joinPath } from '@src/helpers.js'
 
 function pathToPackageJson(): string {
   const filename = fileURLToPath(import.meta.url)
   const dirname = path.dirname(filename)
 
-  return path.resolve(dirname, '../../package.json')
+  return joinPath(dirname, '../../package.json')
 }
 
 export async function getPackageVersion(): Promise<string> {

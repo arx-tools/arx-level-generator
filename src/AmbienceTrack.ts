@@ -1,7 +1,7 @@
-import path from 'node:path'
 import { type ArxKey, ArxSettingFlag, type ArxTrack, ArxTrackFlags } from 'arx-convert/types'
 import { type Audio } from '@src/Audio.js'
 import { type FileExports } from '@src/types.js'
+import { joinPath } from '@src/helpers.js'
 
 type AmbienceTrackConstructorProps = {
   filename: string
@@ -53,7 +53,7 @@ export class AmbienceTrack {
   }
 
   exportSourceAndTarget(): FileExports {
-    const source = path.join(this.sourcePath ?? 'sfx/ambiance', this.filename)
+    const source = joinPath(this.sourcePath ?? 'sfx/ambiance', this.filename)
 
     return {
       [`sfx/ambiance/${this.filename}`]: source,

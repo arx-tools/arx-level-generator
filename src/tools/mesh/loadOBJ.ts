@@ -16,7 +16,7 @@ import { Material } from '@src/Material.js'
 import { type Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
-import { applyTransformations } from '@src/helpers.js'
+import { applyTransformations, joinPath } from '@src/helpers.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
 import { scaleUV as scaleUVTool } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
@@ -176,7 +176,7 @@ async function loadMTL(
 
   const { dir, name: filename } = path.parse(filenameWithoutExtension)
 
-  const mtlSrc = path.resolve('assets/' + dir + '/' + filename + '.mtl')
+  const mtlSrc = joinPath('assets', dir, `${filename}.mtl`)
 
   let fallbackMaterial: Material
   if (fallbackTexture === undefined) {
@@ -289,7 +289,7 @@ export async function loadOBJ(
 
   const { dir, name: filename } = path.parse(filenameWithoutExtension)
 
-  const objSrc = path.resolve('assets/' + dir + '/' + filename + '.obj')
+  const objSrc = joinPath('assets', dir, `${filename}.obj`)
   let rawObj = await fs.readFile(objSrc, { encoding: 'utf8' })
 
   if (!isMeshTriangulated(rawObj)) {

@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
-import path from 'node:path'
 import { type ISettings } from '@platform/common/ISettings.js'
 import { type TextExports } from '@src/types.js'
+import { isAbsolutePath, joinPath } from '@src/helpers.js'
 
 export type Locales =
   | 'chinese'
@@ -83,8 +83,12 @@ string="${value}"
   }
 
   async addFromFile(filename: string, settings: ISettings): Promise<void> {
+    if (!isAbsolutePath(filename)) {
+      filename = joinPath(settings.assetsDir, filename)
+    }
+
     try {
-      const rawIn = await fs.readFile(path.resolve(settings.assetsDir, filename), { encoding: 'utf8' })
+      const rawIn = await fs.readFile(filename, { encoding: 'utf8' })
       const translations = JSON.parse(rawIn) as Record<string, Partial<Record<Locales, string>>>
       this.add(translations)
     } catch (error) {

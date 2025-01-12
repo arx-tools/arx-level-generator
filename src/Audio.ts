@@ -1,9 +1,9 @@
-import path from 'node:path'
 import { type Expand } from 'arx-convert/utils'
 import { type ISettings } from '@platform/common/ISettings.js'
 import { type Locales, toArxLocale } from '@src/Translations.js'
 import { ExportBuiltinAssetError } from '@src/errors.js'
 import { type FileExports } from '@src/types.js'
+import { joinPath } from '@src/helpers.js'
 
 export type AudioType = `speech/${Locales}` | 'sfx'
 
@@ -174,12 +174,12 @@ export class Audio extends _Audio {
 
     let source: string
     if (this.isInternalAsset) {
-      source = path.resolve(settings.internalAssetsDir, this.sourcePath ?? targetPath, this.filename)
+      source = joinPath(settings.internalAssetsDir, this.sourcePath ?? targetPath, this.filename)
     } else {
-      source = path.join(this.sourcePath ?? targetPath, this.filename)
+      source = joinPath(this.sourcePath ?? targetPath, this.filename)
     }
 
-    const target = path.join(targetPath, this.filename)
+    const target = joinPath(targetPath, this.filename)
 
     return {
       [target]: source,

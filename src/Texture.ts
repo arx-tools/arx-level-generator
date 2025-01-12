@@ -9,6 +9,7 @@ import { createCacheDirIfNotExists, loadHashOf, createHashOfFile, saveHashOf } f
 import { getMetadata, getSharpInstance } from '@services/image.js'
 import { ExportBuiltinAssetError } from '@src/errors.js'
 import { type FileExports } from '@src/types.js'
+import { joinPath } from '@src/helpers.js'
 
 export type TextureConstructorProps = {
   filename: string
@@ -403,7 +404,7 @@ export class Texture extends ThreeJsTextue {
       assetsDir = settings.assetsDir
     }
 
-    return path.resolve(assetsDir, this.sourcePath ?? Texture.targetPath, this.filename)
+    return joinPath(assetsDir, this.sourcePath ?? Texture.targetPath, this.filename)
   }
 
   private async makeCopy(settings: ISettings): Promise<FileExports> {
@@ -418,10 +419,10 @@ export class Texture extends ThreeJsTextue {
     }
 
     const originalSource = this.getFilename(settings)
-    const convertedTarget = path.resolve(settings.outputDir, Texture.targetPath, newFilename)
+    const convertedTarget = joinPath(settings.outputDir, Texture.targetPath, newFilename)
 
     const convertedSourceFolder = await createCacheDirIfNotExists(this.sourcePath ?? Texture.targetPath, settings)
-    const convertedSource = path.join(convertedSourceFolder, newFilename)
+    const convertedSource = joinPath(convertedSourceFolder, newFilename)
 
     const currentHash = await createHashOfFile(originalSource, { isTileable: false })
 
@@ -474,10 +475,10 @@ export class Texture extends ThreeJsTextue {
     }
 
     const originalSource = this.getFilename(settings)
-    const convertedTarget = path.resolve(settings.outputDir, Texture.targetPath, newFilename)
+    const convertedTarget = joinPath(settings.outputDir, Texture.targetPath, newFilename)
 
     const convertedSourceFolder = await createCacheDirIfNotExists(this.sourcePath ?? Texture.targetPath, settings)
-    const convertedSource = path.join(convertedSourceFolder, newFilename)
+    const convertedSource = joinPath(convertedSourceFolder, newFilename)
 
     if (this.alreadyMadeTileable) {
       return {

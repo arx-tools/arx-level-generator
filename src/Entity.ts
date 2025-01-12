@@ -12,6 +12,7 @@ import { Vector3 } from '@src/Vector3.js'
 import { type FileExports, type TextureOrMaterial } from '@src/types.js'
 import { type Cube as TypeOfCube } from '@prefabs/entity/Cube.js'
 import { type IArxComponent } from '@src/IArxComponent.js'
+import { joinPath } from '@src/helpers.js'
 
 export type EntityConstructorProps = {
   id?: number
@@ -343,10 +344,10 @@ export class Entity extends _Entity implements IArxComponent {
     }
 
     if (this.script.isRoot) {
-      return path.join(Script.targetPath, this.src.replace(this.script.filename, ''), this.script.filename)
+      return joinPath(Script.targetPath, this.src.replace(this.script.filename, ''), this.script.filename)
     }
 
-    return path.join(Script.targetPath, this.src.replace(this.script.filename, ''), this.ref, this.script.filename)
+    return joinPath(Script.targetPath, this.src.replace(this.script.filename, ''), this.ref, this.script.filename)
   }
 
   async exportInventoryIcon(settings: ISettings): Promise<FileExports> {
@@ -379,9 +380,9 @@ export class Entity extends _Entity implements IArxComponent {
     }
 
     if (this.src.endsWith('.asl')) {
-      target = path.join('graph/obj3d/interactive', this.src.replace(/.asl$/, '[icon].bmp'))
+      target = joinPath('graph/obj3d/interactive', this.src.replace(/.asl$/, '[icon].bmp'))
     } else {
-      target = path.join('graph/obj3d/interactive', this.src, this.entityName + `[icon].bmp`)
+      target = joinPath('graph/obj3d/interactive', this.src, this.entityName + `[icon].bmp`)
     }
 
     files[target] = source

@@ -1,5 +1,4 @@
 import fs from 'node:fs/promises'
-import path from 'node:path'
 import { type QuadrupleOf } from 'arx-convert/utils'
 import { type ISettings } from '@platform/common/ISettings.js'
 import { Texture } from '@src/Texture.js'
@@ -8,6 +7,7 @@ import { Cursor, type CursorDir } from '@prefabs/rooms/Cursor.js'
 import { Rooms } from '@prefabs/rooms/Rooms.js'
 import { type RoomTextures, type RoomProps, type TextureDefinition } from '@prefabs/rooms/room.js'
 import { createLight } from '@tools/createLight.js'
+import { isAbsolutePath, joinPath } from '@src/helpers.js'
 
 type CurrentBlock = {
   type: 'define'
@@ -167,7 +167,7 @@ function getWallIdxFromToken(token: 'wall-north' | 'wall-east' | 'wall-south' | 
 }
 
 // eslint-disable-next-line complexity -- this will get resolved by the new tokenizer/parser
-export async function loadRooms(filename: string, settings: ISettings): Promise<Rooms> {
+export async function loadRooms(source: string, settings: ISettings): Promise<Rooms> {
   const cursor = new Cursor()
   const rooms = new Rooms(cursor)
 
@@ -179,7 +179,11 @@ export async function loadRooms(filename: string, settings: ISettings): Promise<
 
   const variables: Record<string, string> = {}
 
-  const rawInput = await fs.readFile(path.resolve(settings.assetsDir, filename), { encoding: 'utf8' })
+  if (!isAbsolutePath(source)) {
+    source = joinPath(settings.assetsDir, source)
+  }
+
+  const rawInput = await fs.readFile(source, { encoding: 'utf8' })
   const lines = rawInput.split(/\r?\n/)
 
   let currentBlock: CurrentBlock | undefined

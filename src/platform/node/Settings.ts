@@ -13,6 +13,7 @@ import {
 import { type Modes, type PackageJsonProps } from '@platform/common/types.js'
 import { getGeneratorPackageJSON, getProjectPackageJSON } from '@platform/node/helpers.js'
 import { Manifest } from '@platform/node/Manifest.js'
+import { joinPath } from '@src/helpers.js'
 
 dotenvConfig()
 
@@ -103,7 +104,7 @@ export class Settings implements ISettings {
     const filename = fileURLToPath(import.meta.url)
     const dirname = path.dirname(filename)
 
-    this.internalAssetsDir = path.resolve(dirname, '../assets')
+    this.internalAssetsDir = joinPath(dirname, '../assets')
 
     this.assetsDir = props.assetsDir ?? process.env.assetsDir ?? path.resolve('./assets')
     this.originalLevelFiles =

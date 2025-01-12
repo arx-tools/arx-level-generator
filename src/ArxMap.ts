@@ -43,7 +43,7 @@ import { Zone } from '@src/Zone.js'
 import { Zones } from '@src/Zones.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { groupSequences, times } from '@src/faux-ramda.js'
-import { percentOf, exportToJSON, compressAs, encodeText } from '@src/helpers.js'
+import { percentOf, exportToJSON, compressAs, encodeText, joinPath, isAbsolutePath } from '@src/helpers.js'
 import { type FileExports, type OriginalLevel } from '@src/types.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { Texture } from '@src/Texture.js'
@@ -458,8 +458,8 @@ export class ArxMap {
     for (const target in filesToCopy) {
       let source = filesToCopy[target]
 
-      if (!source.startsWith('/')) {
-        source = path.resolve(settings.assetsDir, source)
+      if (!isAbsolutePath(source)) {
+        source = joinPath(settings.assetsDir, source)
       }
 
       const file = await fs.readFile(source)
@@ -474,7 +474,7 @@ export class ArxMap {
     // write the ArrayBuffers of filesToExport into files
     for (const target in filesToExport) {
       const data = filesToExport[target]
-      const fullPath = path.resolve(settings.outputDir, target)
+      const fullPath = joinPath(settings.outputDir, target)
 
       const dirname = path.dirname(fullPath)
       await fs.mkdir(dirname, { recursive: true })

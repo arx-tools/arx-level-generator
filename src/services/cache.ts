@@ -5,6 +5,7 @@ import path from 'node:path'
 import objectHash from 'object-hash'
 import { type ISettings } from '@platform/common/ISettings.js'
 import { fileExists } from '@platform/node/helpers.js'
+import { joinPath } from '@src/helpers.js'
 
 const hashingAlgorithm = 'sha1'
 
@@ -17,7 +18,7 @@ const hashingAlgorithm = 'sha1'
  * @returns the absolute path for the given folder
  */
 export async function createCacheDirIfNotExists(folder: string, settings: ISettings): Promise<string> {
-  const fullFolder = path.resolve(settings.cacheDir, folder)
+  const fullFolder = joinPath(settings.cacheDir, folder)
 
   try {
     await fs.access(fullFolder, fs.constants.R_OK | fs.constants.W_OK)
@@ -35,7 +36,7 @@ export async function createCacheDirIfNotExists(folder: string, settings: ISetti
  * @param filename - full path to a file
  */
 export async function loadHashOf(filename: string, settings: ISettings): Promise<string | undefined> {
-  const hashesFilename = path.resolve(settings.cacheDir, '__hashes.json')
+  const hashesFilename = joinPath(settings.cacheDir, '__hashes.json')
 
   try {
     const hashes = JSON.parse(await fs.readFile(hashesFilename, { encoding: 'utf8' })) as Record<string, string>
@@ -55,7 +56,7 @@ export async function getCacheInfo(
 ): Promise<{ filename: string; exists: boolean; hash: string | undefined }> {
   const { dir, base } = path.parse(filename)
   const cachedFolder = await createCacheDirIfNotExists(dir, settings)
-  const cachedFilename = path.join(cachedFolder, base)
+  const cachedFilename = joinPath(cachedFolder, base)
   const cacheExists = await fileExists(cachedFilename)
 
   const hashOfCachedFilename = await loadHashOf(cachedFilename, settings)
@@ -73,7 +74,7 @@ export async function getCacheInfo(
  * @param filename - full path to a file
  */
 export async function saveHashOf(filename: string, hash: string, settings: ISettings): Promise<void> {
-  const hashesFilename = path.resolve(settings.cacheDir, '__hashes.json')
+  const hashesFilename = joinPath(settings.cacheDir, '__hashes.json')
 
   await createCacheDirIfNotExists('.', settings)
 

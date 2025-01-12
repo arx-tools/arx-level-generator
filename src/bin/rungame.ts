@@ -1,9 +1,9 @@
 import { exec } from 'node:child_process'
 import os from 'node:os'
-import path from 'node:path'
 import { promisify } from 'node:util'
 import { type ISettings } from '@platform/common/ISettings.js'
 import { fileExists } from '@platform/node/helpers.js'
+import { joinPath } from '@src/helpers.js'
 
 export async function rungame(settings: ISettings, otherArgs: string[]): Promise<void> {
   const operatingSystem = os.platform()
@@ -20,13 +20,13 @@ export async function rungame(settings: ISettings, otherArgs: string[]): Promise
   let exeFile: string
   switch (operatingSystem) {
     case 'win32': {
-      exeFile = path.resolve(settings.outputDir, 'arx.exe')
+      exeFile = joinPath(settings.outputDir, 'arx.exe')
       break
     }
 
     case 'darwin':
     case 'linux': {
-      exeFile = path.resolve(settings.outputDir, 'arx')
+      exeFile = joinPath(settings.outputDir, 'arx')
       break
     }
   }

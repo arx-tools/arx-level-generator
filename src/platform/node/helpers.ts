@@ -2,6 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { type PackageJsonProps } from '@platform/common/types.js'
+import { joinPath } from '@src/helpers.js'
 
 export async function fileExists(filename: string): Promise<boolean> {
   try {
@@ -20,7 +21,7 @@ export async function getGeneratorPackageJSON(): Promise<PackageJsonProps> {
     try {
       const filename = fileURLToPath(import.meta.url)
       const dirname = path.dirname(filename)
-      const rawIn = await fs.readFile(path.resolve(dirname, '../package.json'), { encoding: 'utf8' })
+      const rawIn = await fs.readFile(joinPath(dirname, '../package.json'), { encoding: 'utf8' })
       cacheOfGeneratorPackageJSON = JSON.parse(rawIn) as PackageJsonProps
     } catch {
       cacheOfGeneratorPackageJSON = {

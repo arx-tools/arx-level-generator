@@ -226,6 +226,10 @@ export function triangleFitsInto100Square({ a, b, c }: Triangle): boolean {
 
 const textEncoder = new TextEncoder()
 
+/**
+ * latin1 = ISO 8859-1
+ * latin9 = ISO 8859-15
+ */
 export function encodeText(text: string, encoding: 'utf8' | 'latin1' | 'latin9'): ArrayBufferLike {
   if (encoding === 'utf8') {
     return textEncoder.encode(text).buffer
@@ -279,4 +283,88 @@ export function generateBlankBMP(width: number, height: number): ArrayBuffer {
   })
 
   return binary.arrayBuffer()
+}
+
+/**
+ * checks if path starts with / (unix style) or something like C:\ (windows style)
+ */
+export function isAbsolutePath(path: string): boolean {
+  return path.startsWith('/') || /^[a-zA-Z]:\\/.test(path)
+}
+
+function removeStartingSlash(path: string): string {
+  if (path.startsWith('/')) {
+    return path.replace(/^\//, '')
+  }
+
+  if (/^[a-zA-Z]:\\/.test(path)) {
+    return path.replace(/^[a-zA-Z]:\\/, '')
+  }
+
+  return path
+}
+
+/**
+ * A vanilla js alternative to node.js' `path.join()`
+ *
+ * The function outputs unix style path even if the input parameters are using windows style
+ */
+export function joinPath(...paths: string[]): string {
+  // remove empty paths
+  paths = paths.filter((path) => {
+    return path !== ''
+  })
+
+  // if no paths (remained) then return a dot (meaning current folder)
+  if (paths.length === 0) {
+    return '.'
+  }
+
+  // split at / or \ to form segments and remove empty segments and dots
+  let segments = paths
+    .flatMap((path) => {
+      return removeStartingSlash(path).split(/[/\\]/g)
+    })
+    .filter((segment) => {
+      return segment !== '' && segment !== '.'
+    })
+
+  // resolve .. segments with previous non-.. segments: ['aaa', '..', 'bbb'] -> ['bbb']
+  // keep starting .. segments: ['..', 'aaa'] -> ['..', 'aaa']
+  // stack .. segments if cannot be resolved any further: ['aaa', '..', '..', 'bbb'] -> ['..', 'bbb']
+  if (segments.includes('..')) {
+    const normalizedSegments: string[] = []
+
+    segments.forEach((segment) => {
+      if (segment !== '..') {
+        normalizedSegments.push(segment)
+        return
+      }
+
+      const lastSegment = normalizedSegments.at(-1)
+      if (lastSegment === undefined) {
+        normalizedSegments.push('..')
+        return
+      }
+
+      if (lastSegment === '..') {
+        normalizedSegments.push('..')
+        return
+      }
+
+      normalizedSegments.pop()
+    })
+
+    segments = normalizedSegments
+  }
+
+  // join segments with /
+  let path = segments.join('/')
+
+  // restore initial slash
+  if (isAbsolutePath(paths[0])) {
+    path = '/' + path
+  }
+
+  return path
 }
