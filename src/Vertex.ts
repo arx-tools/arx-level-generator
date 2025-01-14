@@ -30,7 +30,7 @@ export class Vertex extends Vector3 {
 
   toArxData(): ArxVertex {
     return {
-      ...this.toArxData(),
+      ...super.toArxData(),
       u: this.uv.x,
       v: this.uv.y,
     }
