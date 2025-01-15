@@ -455,11 +455,19 @@ export class ArxMap {
     // ------------------------
 
     // read contents of filesToCopy entries as ArrayBuffers and add them to filesToExport
-    for (const target in filesToCopy) {
+    for (let target in filesToCopy) {
       let source = filesToCopy[target]
 
       if (!isAbsolutePath(source)) {
         source = joinPath(settings.assetsDir, source)
+      }
+
+      if (isAbsolutePath(target)) {
+        // assuming that if target is absolute than it starts with settings.outputDir
+        target = target.replace(settings.outputDir, '')
+        if (target.startsWith('/')) {
+          target = target.slice(1)
+        }
       }
 
       const file = await fs.readFile(source)
