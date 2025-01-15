@@ -101,10 +101,9 @@ export class Settings implements ISettings {
     this.seed = props.seed ?? process.env.seed ?? randomIntBetween(100_000_000, 999_999_999).toString()
     seedrandom(this.seed, { global: true })
 
-    const filename = fileURLToPath(import.meta.url)
-    const dirname = path.dirname(filename)
-
-    this.internalAssetsDir = joinPath(dirname, '../assets')
+    const pathToThisFile = fileURLToPath(import.meta.url)
+    const dirContainingThisFile = path.dirname(pathToThisFile)
+    this.internalAssetsDir = joinPath(dirContainingThisFile, '../../../assets')
 
     this.assetsDir = props.assetsDir ?? process.env.assetsDir ?? path.resolve('./assets')
     this.originalLevelFiles =
