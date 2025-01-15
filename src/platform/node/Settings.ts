@@ -105,12 +105,13 @@ export class Settings implements ISettings {
     const dirContainingThisFile = path.dirname(pathToThisFile)
     this.internalAssetsDir = joinPath(dirContainingThisFile, '../../../assets')
 
-    this.assetsDir = props.assetsDir ?? process.env.assetsDir ?? path.resolve('./assets')
-    this.originalLevelFiles =
-      props.originalLevelFiles ?? process.env.originalLevelFiles ?? path.resolve('../pkware-test-files')
+    this.assetsDir = path.resolve(props.assetsDir ?? process.env.assetsDir ?? './assets')
+    this.originalLevelFiles = path.resolve(
+      props.originalLevelFiles ?? process.env.originalLevelFiles ?? '../pkware-test-files',
+    )
 
-    this.cacheDir = props.cacheDir ?? process.env.cacheDir ?? path.resolve('./cache')
-    this.outputDir = props.outputDir ?? process.env.outputDir ?? path.resolve('./output')
+    this.cacheDir = path.resolve(props.cacheDir ?? process.env.cacheDir ?? './cache')
+    this.outputDir = path.resolve(props.outputDir ?? process.env.outputDir ?? './output')
 
     // ----------
 
