@@ -2,7 +2,7 @@
 
 ```ts
 import { ArxMap } from 'arx-level-generator'
-import { Settings } from 'arx-level-generator/node'
+import { Settings } from 'arx-level-generator/platform/node'
 
 // reads the contents of the .env file
 const settings = new Settings()
