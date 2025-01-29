@@ -105,6 +105,9 @@ export interface ISettings {
 
   getGeneratorPackageJSON(): Promise<PackageJsonProps>
   getProjectPackageJSON(): Promise<PackageJsonProps>
+
+  // getInternalAsset(filename: string): Promise<ArrayBuffer>
+  // getAsset(filename: string): Promise<ArrayBuffer>
 }
 
 export type SettingsConstructorProps = Expand<
