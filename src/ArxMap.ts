@@ -361,6 +361,18 @@ export class ArxMap {
         }
       }
 
+      for (const [tweakName, tweakModel] of Object.entries(entity.tweaks)) {
+        filesToCopy = {
+          ...filesToCopy,
+          ...(await tweakModel.exportSourceAndTarget(
+            settings,
+            entity.src + '/tweaks/' + tweakName + '.ftl',
+            exportJsonFiles,
+            prettify,
+          )),
+        }
+      }
+
       filesToCopy = {
         ...filesToCopy,
         ...(await entity.exportOtherDependencies(settings)),
