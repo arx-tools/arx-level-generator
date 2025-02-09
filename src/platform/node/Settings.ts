@@ -5,11 +5,11 @@ import { config as dotenvConfig } from 'dotenv'
 import seedrandom from 'seedrandom'
 import { randomIntBetween } from '@src/random.js'
 import {
-  type ISettings,
+  type Settings as ISettings,
   type LightingCalculatorMode,
   isValidLightingCalculatorMode,
   type SettingsConstructorProps,
-} from '@platform/common/ISettings.js'
+} from '@platform/common/Settings.js'
 import { type Modes, type PackageJsonProps } from '@platform/common/types.js'
 import { getGeneratorPackageJSON, getProjectPackageJSON } from '@platform/node/helpers.js'
 import { Manifest } from '@platform/node/Manifest.js'

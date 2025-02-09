@@ -5,7 +5,7 @@ import { type ArxAction, type ArxFTL, ArxFaceType, type ArxFace, type ArxFtlVert
 import { type Expand, type QuadrupleOf, type TripleOf } from 'arx-convert/utils'
 import { type BufferAttribute, MathUtils, type Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { Polygons } from '@src/Polygons.js'
-import { type ISettings } from '@platform/common/ISettings.js'
+import { type Settings } from '@platform/common/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { repeat } from '@src/faux-ramda.js'
@@ -100,7 +100,7 @@ export class EntityModel {
    * @param prettify when set to true the exported json gets indented with spaces, otherwise minified (default false)
    */
   async exportSourceAndTarget(
-    settings: ISettings,
+    settings: Settings,
     targetName: string,
     exportJsonFiles: boolean = false,
     prettify: boolean = false,

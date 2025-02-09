@@ -1,10 +1,10 @@
-import { type IManifest } from '@platform/common/IManifest.js'
-import { type ISettings } from '@platform/common/ISettings.js'
+import { type Manifest as IManifest } from '@platform/common/Manifest.js'
+import { type Settings } from '@platform/common/Settings.js'
 
 export class Manifest implements IManifest {
-  settings: ISettings
+  settings: Settings
 
-  constructor(settings: ISettings) {
+  constructor(settings: Settings) {
     this.settings = settings
   }
 

@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 import { type QuadrupleOf } from 'arx-convert/utils'
-import { type ISettings } from '@platform/common/ISettings.js'
+import { type Settings } from '@platform/common/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Cursor, type CursorDir } from '@prefabs/rooms/Cursor.js'
@@ -167,7 +167,7 @@ function getWallIdxFromToken(token: 'wall-north' | 'wall-east' | 'wall-south' | 
 }
 
 // eslint-disable-next-line complexity -- this will get resolved by the new tokenizer/parser
-export async function loadRooms(source: string, settings: ISettings): Promise<Rooms> {
+export async function loadRooms(source: string, settings: Settings): Promise<Rooms> {
   const cursor = new Cursor()
   const rooms = new Rooms(cursor)
 

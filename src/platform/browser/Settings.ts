@@ -2,10 +2,10 @@ import { type Expand } from 'arx-convert/utils'
 import seedrandom from 'seedrandom'
 import { randomIntBetween } from '@src/random.js'
 import {
-  type ISettings,
+  type Settings as ISettings,
   type LightingCalculatorMode,
   type SettingsConstructorProps,
-} from '@platform/common/ISettings.js'
+} from '@platform/common/Settings.js'
 import { type Modes, type PackageJsonProps } from '@platform/common/types.js'
 import { Manifest } from '@platform/browser/Manifest.js'
 

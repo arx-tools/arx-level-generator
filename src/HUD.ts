@@ -1,4 +1,4 @@
-import { type ISettings } from '@platform/common/ISettings.js'
+import { type Settings } from '@platform/common/Settings.js'
 import { generateBlankBMP } from '@src/helpers.js'
 
 export enum HudElements {
@@ -57,7 +57,7 @@ export class HUD {
     }
   }
 
-  exportSourcesAndTargets(settings: ISettings): Record<string, ArrayBuffer> {
+  exportSourcesAndTargets(settings: Settings): Record<string, ArrayBuffer> {
     const files: Record<string, ArrayBuffer> = {}
 
     if (this.elementVisibility[HudElements.Minimap] === false) {

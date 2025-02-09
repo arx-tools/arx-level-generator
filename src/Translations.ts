@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises'
-import { type ISettings } from '@platform/common/ISettings.js'
+import { type Settings } from '@platform/common/Settings.js'
 import { type TextExports } from '@src/types.js'
 import { isAbsolutePath, joinPath } from '@src/helpers.js'
 
@@ -33,7 +33,7 @@ export function toArxLocale(locale: Locales): string {
 export class Translations {
   translations: Record<string, Partial<Record<Locales, string>>> = {}
 
-  exportSourcesAndTargets(settings: ISettings): TextExports {
+  exportSourcesAndTargets(settings: Settings): TextExports {
     const translations: Partial<Record<Locales, Record<string, string>>> = {}
 
     Object.entries(this.translations).forEach(([key, valuesByLocale]) => {
@@ -82,7 +82,7 @@ string="${value}"
     }
   }
 
-  async addFromFile(filename: string, settings: ISettings): Promise<void> {
+  async addFromFile(filename: string, settings: Settings): Promise<void> {
     if (!isAbsolutePath(filename)) {
       filename = joinPath(settings.assetsDir, filename)
     }

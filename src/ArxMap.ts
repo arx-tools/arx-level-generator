@@ -35,7 +35,7 @@ import { Portal } from '@src/Portal.js'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
 import { $ } from '@src/Selection.js'
-import { type ISettings } from '@platform/common/ISettings.js'
+import { type Settings } from '@platform/common/Settings.js'
 import { Translations } from '@src/Translations.js'
 import { UI } from '@src/UI.js'
 import { Vector3 } from '@src/Vector3.js'
@@ -75,7 +75,7 @@ export class ArxMap {
    * Requires the pkware-test-files repo
    * @see https://github.com/meszaros-lajos-gyorgy/pkware-test-files
    */
-  static async fromOriginalLevel(levelIdx: OriginalLevel, settings: ISettings): Promise<ArxMap> {
+  static async fromOriginalLevel(levelIdx: OriginalLevel, settings: Settings): Promise<ArxMap> {
     const loader = new LevelLoader(levelIdx, settings)
 
     const dlf = await loader.readDlf()
@@ -93,7 +93,7 @@ export class ArxMap {
     return map
   }
 
-  private static async getGeneratorId(settings: ISettings): Promise<string> {
+  private static async getGeneratorId(settings: Settings): Promise<string> {
     const generator = await settings.getGeneratorPackageJSON()
     return `${generator.name} - version ${generator.version}`
   }
@@ -207,7 +207,7 @@ export class ArxMap {
   /**
    * @throws MapFinalizedError when trying to call finalize multiple times on the same ArxMap instance
    */
-  finalize(settings: ISettings): void {
+  finalize(settings: Settings): void {
     if (this.config.isFinalized) {
       throw new MapFinalizedError()
     }
@@ -297,7 +297,7 @@ export class ArxMap {
   /**
    * @throws MapNotFinalizedError when attempting to save an ArxMap which have not yet been finalized
    */
-  async saveToDisk(settings: ISettings, exportJsonFiles: boolean = false, prettify: boolean = false): Promise<void> {
+  async saveToDisk(settings: Settings, exportJsonFiles: boolean = false, prettify: boolean = false): Promise<void> {
     if (!this.config.isFinalized) {
       throw new MapNotFinalizedError()
     }
@@ -570,7 +570,7 @@ export class ArxMap {
     // TODO: adjust fts polygon texture container ids
   }
 
-  async toArxData(settings: ISettings): Promise<{ dlf: ArxDLF; llf: ArxLLF; fts: ArxFTS }> {
+  async toArxData(settings: Settings): Promise<{ dlf: ArxDLF; llf: ArxLLF; fts: ArxFTS }> {
     const now = Math.floor(Date.now() / 1000)
     const generatorId = await ArxMap.getGeneratorId(settings)
 
@@ -844,7 +844,7 @@ export class ArxMap {
     console.error(`[error] ArxMap: realistic lighting mode is not yet implemented`)
   }
 
-  private calculateLighting(settings: ISettings): void {
+  private calculateLighting(settings: Settings): void {
     if (!settings.calculateLighting || this.lights.length === 0) {
       return
     }

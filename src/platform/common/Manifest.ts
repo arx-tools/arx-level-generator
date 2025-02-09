@@ -1,4 +1,4 @@
-export interface IManifest {
+export interface Manifest {
   generate(assetList: string[], prettify?: boolean): Promise<ArrayBufferLike>
 
   /**

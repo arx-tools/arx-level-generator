@@ -1,16 +1,16 @@
 import fs from 'node:fs/promises'
 import { DLF, FTS, LLF } from 'arx-convert'
 import { type ArxDLF, type ArxFTS, type ArxLLF } from 'arx-convert/types'
-import { type ISettings } from '@platform/common/ISettings.js'
+import { type Settings } from '@platform/common/Settings.js'
 import { type OriginalLevel } from '@src/types.js'
 import { createCacheDirIfNotExists } from '@services/cache.js'
 import { joinPath } from '@src/helpers.js'
 
 export class LevelLoader {
   levelIdx: OriginalLevel
-  settings: ISettings
+  settings: Settings
 
-  constructor(levelIdx: OriginalLevel, settings: ISettings) {
+  constructor(levelIdx: OriginalLevel, settings: Settings) {
     this.levelIdx = levelIdx
     this.settings = settings
   }

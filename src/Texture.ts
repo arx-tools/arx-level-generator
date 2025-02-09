@@ -3,7 +3,7 @@ import { type ArxTextureContainer } from 'arx-convert/types'
 import { type Expand } from 'arx-convert/utils'
 import { sharpToBmp } from 'sharp-bmp'
 import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
-import { type ISettings } from '@platform/common/ISettings.js'
+import { type Settings } from '@platform/common/Settings.js'
 import { fileExists } from '@platform/node/helpers.js'
 import { createCacheDirIfNotExists, loadHashOf, createHashOfFile, saveHashOf } from '@services/cache.js'
 import { getMetadata, getSharpInstance } from '@services/image.js'
@@ -296,7 +296,7 @@ export class Texture extends ThreeJsTextue {
     return copy as this
   }
 
-  async getWidth(settings: ISettings): Promise<number> {
+  async getWidth(settings: Settings): Promise<number> {
     if (this._width === SIZE_UNKNOWN) {
       const { width } = await getMetadata(this.getFilename(settings))
       this._width = width ?? SIZE_UNKNOWN
@@ -305,7 +305,7 @@ export class Texture extends ThreeJsTextue {
     return this._width
   }
 
-  async getHeight(settings: ISettings): Promise<number> {
+  async getHeight(settings: Settings): Promise<number> {
     if (this._height === SIZE_UNKNOWN) {
       const { height } = await getMetadata(this.getFilename(settings))
       this._height = height ?? SIZE_UNKNOWN
@@ -318,7 +318,7 @@ export class Texture extends ThreeJsTextue {
    * this also gives value to this._width and this._height
    * if any of them is SIZE_UNKNOWN
    */
-  async isTileable(settings: ISettings): Promise<boolean> {
+  async isTileable(settings: Settings): Promise<boolean> {
     const width = await this.getWidth(settings)
     const height = await this.getHeight(settings)
     return width === height && MathUtils.isPowerOfTwo(width)
@@ -329,7 +329,7 @@ export class Texture extends ThreeJsTextue {
    * @throws ExportBuiltinAssetError when trying to export an Audio that's built into the base game
    */
   async exportSourceAndTarget(
-    settings: ISettings,
+    settings: Settings,
     needsToBeTileable: boolean = false,
     _dontCatchTheError = false,
   ): Promise<FileExports> {
@@ -396,7 +396,7 @@ export class Texture extends ThreeJsTextue {
     })
   }
 
-  private getFilename(settings: ISettings): string {
+  private getFilename(settings: Settings): string {
     let assetsDir: string
     if (this.isInternalAsset) {
       assetsDir = settings.internalAssetsDir
@@ -407,7 +407,7 @@ export class Texture extends ThreeJsTextue {
     return joinPath(assetsDir, this.sourcePath ?? Texture.targetPath, this.filename)
   }
 
-  private async makeCopy(settings: ISettings): Promise<FileExports> {
+  private async makeCopy(settings: Settings): Promise<FileExports> {
     const { ext, name } = path.parse(this.filename)
     const hasSupportedFormat = supportedExtensions.has(ext)
 
@@ -463,7 +463,7 @@ export class Texture extends ThreeJsTextue {
     }
   }
 
-  private async makeTileable(settings: ISettings): Promise<FileExports> {
+  private async makeTileable(settings: Settings): Promise<FileExports> {
     const { ext, name } = path.parse(this.filename)
     const hasSupportedFormat = supportedExtensions.has(ext)
 

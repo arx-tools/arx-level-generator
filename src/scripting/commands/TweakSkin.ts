@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { type ISettings } from '@platform/common/ISettings.js'
+import { type Settings } from '@platform/common/Settings.js'
 import { type Texture } from '@src/Texture.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import { type IUsesTextures } from '@scripting/interfaces/IUsesTextures.js'
@@ -33,7 +33,7 @@ export class TweakSkin extends ScriptCommand implements IUsesTextures {
     return `tweak skin "${oldFilename}" "${newFilename}"`
   }
 
-  async exportTextures(settings: ISettings): Promise<FileExports> {
+  async exportTextures(settings: Settings): Promise<FileExports> {
     let files: FileExports = {}
     const { oldTexture, newTexture } = this
 

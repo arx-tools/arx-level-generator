@@ -1,6 +1,6 @@
 import { type Expand } from 'arx-convert/utils'
 import { type Modes, type PackageJsonProps } from '@platform/common/types.js'
-import { type IManifest } from '@platform/common/IManifest.js'
+import { type Manifest } from '@platform/common/Manifest.js'
 
 const lightingCalculatorModes = ['MaxBrightness', 'CompleteDarkness', 'Arx', 'Realistic'] as const
 
@@ -10,7 +10,7 @@ export function isValidLightingCalculatorMode(input: any): input is LightingCalc
   return typeof input === 'string' && (lightingCalculatorModes as readonly string[]).includes(input)
 }
 
-export interface ISettings {
+export interface Settings {
   /**
    * default value is true
    * if there are no lights, then this gets set to false
@@ -101,7 +101,7 @@ export interface ISettings {
 
   // ------------
 
-  readonly manifest: IManifest
+  readonly manifest: Manifest
 
   getGeneratorPackageJSON(): Promise<PackageJsonProps>
   getProjectPackageJSON(): Promise<PackageJsonProps>
@@ -113,7 +113,7 @@ export interface ISettings {
 export type SettingsConstructorProps = Expand<
   Partial<
     Pick<
-      ISettings,
+      Settings,
       | 'calculateLighting'
       | 'lightingCalculatorMode'
       | 'levelIdx'

@@ -1,4 +1,4 @@
-import { type ISettings } from '@platform/common/ISettings.js'
+import { type Settings } from '@platform/common/Settings.js'
 import { type FileExports } from '@src/types.js'
 
 export enum UiElements {
@@ -25,7 +25,7 @@ export class UI {
     return this.customElements[element]
   }
 
-  exportSourcesAndTargets(settings: ISettings): FileExports {
+  exportSourcesAndTargets(settings: Settings): FileExports {
     const files: FileExports = {}
 
     if (this.customElements[UiElements.MainMenuBackground] !== undefined) {

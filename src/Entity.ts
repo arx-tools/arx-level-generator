@@ -6,7 +6,7 @@ import { type EntityModel } from '@src/EntityModel.js'
 import { Material } from '@src/Material.js'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
-import { type ISettings } from '@platform/common/ISettings.js'
+import { type Settings } from '@platform/common/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { type FileExports, type TextureOrMaterial } from '@src/types.js'
@@ -342,7 +342,7 @@ export class Entity extends _Entity implements IArxComponent {
   /**
    * @throws Error when the entity doesn't have a script
    */
-  exportScriptTarget(settings: ISettings): string {
+  exportScriptTarget(settings: Settings): string {
     if (!this.hasScript()) {
       throw new Error("trying to export an Entity which doesn't have a script")
     }
@@ -354,7 +354,7 @@ export class Entity extends _Entity implements IArxComponent {
     return joinPath(Script.targetPath, this.src.replace(this.script.filename, ''), this.ref, this.script.filename)
   }
 
-  async exportInventoryIcon(settings: ISettings): Promise<FileExports> {
+  async exportInventoryIcon(settings: Settings): Promise<FileExports> {
     const files: FileExports = {}
 
     if (!this.needsInventoryIcon()) {
@@ -394,7 +394,7 @@ export class Entity extends _Entity implements IArxComponent {
     return files
   }
 
-  async exportOtherDependencies(settings: ISettings): Promise<FileExports> {
+  async exportOtherDependencies(settings: Settings): Promise<FileExports> {
     let files: FileExports = {}
 
     for (const audioOrTexture of this.otherDependencies) {

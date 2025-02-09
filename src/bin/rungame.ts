@@ -1,11 +1,11 @@
 import { exec } from 'node:child_process'
 import os from 'node:os'
 import { promisify } from 'node:util'
-import { type ISettings } from '@platform/common/ISettings.js'
+import { type Settings } from '@platform/common/Settings.js'
 import { fileExists } from '@platform/node/helpers.js'
 import { joinPath } from '@src/helpers.js'
 
-export async function rungame(settings: ISettings, otherArgs: string[]): Promise<void> {
+export async function rungame(settings: Settings, otherArgs: string[]): Promise<void> {
   const operatingSystem = os.platform()
 
   if (operatingSystem !== 'win32' && operatingSystem !== 'linux' && operatingSystem !== 'darwin') {
