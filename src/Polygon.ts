@@ -14,7 +14,7 @@ import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
 import { isBetween, percentOf, triangleFitsInto100Square } from '@src/helpers.js'
 import { type ArxVertexWithColor } from '@src/types.js'
-import { type IArxComponent } from '@src/IArxComponent.js'
+import { type ArxComponent } from '@src/ArxComponent.js'
 
 export type TransparencyType = 'multiplicative' | 'additive' | 'blended' | 'subtractive'
 
@@ -43,7 +43,7 @@ type PolygonContructorProps = {
   config?: Partial<PolygonConfig>
 }
 
-export class Polygon implements IArxComponent {
+export class Polygon implements ArxComponent {
   static fromArxPolygon(
     polygon: ArxPolygon,
     colors: ArxColor[],

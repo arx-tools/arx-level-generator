@@ -11,7 +11,7 @@ import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { type FileExports, type TextureOrMaterial } from '@src/types.js'
 import { type Cube as TypeOfCube } from '@prefabs/entity/Cube.js'
-import { type IArxComponent } from '@src/IArxComponent.js'
+import { type ArxComponent } from '@src/ArxComponent.js'
 import { joinPath } from '@src/helpers.js'
 
 export type EntityConstructorProps = {
@@ -50,7 +50,7 @@ export type EntityConstructorPropsWithoutSrc = Expand<Omit<EntityConstructorProp
 
 abstract class _Entity {}
 
-export class Entity extends _Entity implements IArxComponent {
+export class Entity extends _Entity implements ArxComponent {
   static fromArxInteractiveObject(entity: ArxInteractiveObject): Entity {
     return new Entity({
       id: entity.identifier,

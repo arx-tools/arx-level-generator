@@ -1,6 +1,6 @@
 import { type Vector3 } from '@src/Vector3.js'
 
-export interface IArxComponent {
+export interface ArxComponent {
   move(offset: Vector3): void
-  clone(): IArxComponent
+  clone(): ArxComponent
 }

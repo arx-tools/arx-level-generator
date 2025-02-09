@@ -2,7 +2,7 @@ import { type ArxFog } from 'arx-convert/types'
 import { Color } from '@src/Color.js'
 import { Rotation } from '@src/Rotation.js'
 import { Vector3 } from '@src/Vector3.js'
-import { type IArxComponent } from '@src/IArxComponent.js'
+import { type ArxComponent } from '@src/ArxComponent.js'
 
 // TODO: Three JS also has a Fog class
 // https://r105.threejsfundamentals.org/threejs/lessons/threejs-fog.html
@@ -21,7 +21,7 @@ type FogConstructorProps = {
   frequency: number
 }
 
-export class Fog implements IArxComponent {
+export class Fog implements ArxComponent {
   static fromArxFog(fog: ArxFog): Fog {
     return new Fog({
       position: Vector3.fromArxVector3(fog.pos),

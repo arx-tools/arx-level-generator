@@ -2,7 +2,7 @@ import { type Settings } from '@platform/common/Settings.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import { type ScriptProperty } from '@scripting/ScriptProperty.js'
 import { type ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
-import { isUsesTextures } from '@scripting/interfaces/IUsesTextures.js'
+import { isUsesTextures } from '@scripting/interfaces/UsesTextures.js'
 import { type FileExports } from '@src/types.js'
 
 type ScriptHandlerBase = string | string[] | ScriptCommand | ScriptCommand[]

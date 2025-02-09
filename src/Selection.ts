@@ -8,9 +8,9 @@ import { type Texture } from '@src/Texture.js'
 import { type Vector3 } from '@src/Vector3.js'
 import { Zones } from '@src/Zones.js'
 import { groupSequences } from '@src/faux-ramda.js'
-import { type IArxComponent } from '@src/IArxComponent.js'
+import { type ArxComponent } from '@src/ArxComponent.js'
 
-export abstract class Selection<T extends IArxComponent[]> {
+export abstract class Selection<T extends ArxComponent[]> {
   protected selection: number[]
   protected items: T
 
@@ -462,7 +462,7 @@ export function $(items: Lights | LightsSelection): LightsSelection
 export function $(items: Fogs | FogsSelection): FogsSelection
 export function $(items: Paths | PathsSelection): PathsSelection
 export function $(items: Zones | ZonesSelection): ZonesSelection
-export function $<U extends IArxComponent[], T extends Selection<U>>(
+export function $<U extends ArxComponent[], T extends Selection<U>>(
   items: T | ArrayLikeArxTypes,
 ): T | Selection<ArrayLikeArxTypes> {
   if (items instanceof Selection) {
