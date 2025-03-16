@@ -1,9 +1,9 @@
 import { type ArxColor, type ArxVertex } from 'arx-convert/types'
-import { type Expand } from 'arx-convert/utils'
 import { type Material } from '@src/Material.js'
 import { type Texture } from '@src/Texture.js'
+import type { Simplify } from 'type-fest'
 
-export type ArxVertexWithColor = Expand<
+export type ArxVertexWithColor = Simplify<
   ArxVertex & {
     color?: ArxColor
   }

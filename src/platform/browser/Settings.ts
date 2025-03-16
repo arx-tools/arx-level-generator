@@ -1,4 +1,4 @@
-import { type Expand } from 'arx-convert/utils'
+import type { Simplify } from 'type-fest'
 import seedrandom from 'seedrandom'
 import { randomIntBetween } from '@src/random.js'
 import {
@@ -29,7 +29,7 @@ export class Settings implements ISettings {
   // ----------
 
   constructor(
-    props: Expand<
+    props: Simplify<
       Exclude<SettingsConstructorProps, 'assetsDir' | 'originalLevelFiles' | 'cacheDir' | 'outputDir'>
     > = {},
   ) {

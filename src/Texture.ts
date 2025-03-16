@@ -1,6 +1,5 @@
 import path from 'node:path'
 import { type ArxTextureContainer } from 'arx-convert/types'
-import { type Expand } from 'arx-convert/utils'
 import { sharpToBmp } from 'sharp-bmp'
 import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
 import { type Settings } from '@platform/common/Settings.js'
@@ -10,6 +9,7 @@ import { getMetadata, getSharpInstance } from '@services/image.js'
 import { ExportBuiltinAssetError } from '@src/errors.js'
 import { type FileExports } from '@src/types.js'
 import { joinPath } from '@src/helpers.js'
+import type { Simplify } from 'type-fest'
 
 export type TextureConstructorProps = {
   filename: string
@@ -42,7 +42,7 @@ const supportedExtensions = new Set(['.jpg', '.png', '.bmp'])
 export class Texture extends ThreeJsTextue {
   static targetPath = 'graph/obj3d/textures'
 
-  static fromCustomFile(props: Expand<Omit<TextureConstructorProps, 'isNative'>>): Texture {
+  static fromCustomFile(props: Simplify<Omit<TextureConstructorProps, 'isNative'>>): Texture {
     return new Texture({
       ...props,
       isNative: false,

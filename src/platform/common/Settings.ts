@@ -1,4 +1,4 @@
-import { type Expand } from 'arx-convert/utils'
+import type { Simplify } from 'type-fest'
 import { type Modes, type PackageJsonProps } from '@platform/common/types.js'
 import { type Manifest } from '@platform/common/Manifest.js'
 
@@ -110,7 +110,7 @@ export interface Settings {
   // getAsset(filename: string): Promise<ArrayBuffer>
 }
 
-export type SettingsConstructorProps = Expand<
+export type SettingsConstructorProps = Simplify<
   Partial<
     Pick<
       Settings,
