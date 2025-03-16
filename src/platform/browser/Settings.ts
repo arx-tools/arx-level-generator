@@ -43,7 +43,7 @@ export class Settings implements ISettings {
 
     this.uncompressedFTS = props.uncompressedFTS ?? false
 
-    this.seed = props.seed ?? randomIntBetween(100_000_000, 999_999_999).toString()
+    this.seed = props.seed ?? this.createRandomSeed()
     seedrandom(this.seed, { global: true })
 
     this.internalAssetsDir = '/assets'
@@ -75,5 +75,9 @@ export class Settings implements ISettings {
       author: '',
       homepage: '',
     }
+  }
+
+  private createRandomSeed(): string {
+    return randomIntBetween(100_000_000, 999_999_999).toString()
   }
 }

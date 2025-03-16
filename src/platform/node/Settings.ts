@@ -98,7 +98,7 @@ export class Settings implements ISettings {
 
     this.uncompressedFTS = props.uncompressedFTS ?? process.env.uncompressedFTS === 'true'
 
-    this.seed = props.seed ?? process.env.seed ?? randomIntBetween(100_000_000, 999_999_999).toString()
+    this.seed = props.seed ?? process.env.seed ?? this.createRandomSeed()
     seedrandom(this.seed, { global: true })
 
     const pathToThisFile = fileURLToPath(import.meta.url)
@@ -124,5 +124,9 @@ export class Settings implements ISettings {
 
   async getProjectPackageJSON(): Promise<PackageJsonProps> {
     return getProjectPackageJSON()
+  }
+
+  private createRandomSeed(): string {
+    return randomIntBetween(100_000_000, 999_999_999).toString()
   }
 }
