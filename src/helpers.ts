@@ -13,6 +13,7 @@ import {
 } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { mean, repeat } from '@src/faux-ramda.js'
+import { randomIntBetween } from '@src/random.js'
 
 /**
  * @example
@@ -367,4 +368,8 @@ export function joinPath(...paths: string[]): string {
   }
 
   return path
+}
+
+export function createRandomSeed(): string {
+  return randomIntBetween(100_000_000, 999_999_999).toString()
 }

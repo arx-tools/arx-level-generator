@@ -1,6 +1,5 @@
 import type { Simplify } from 'type-fest'
 import seedrandom from 'seedrandom'
-import { randomIntBetween } from '@src/random.js'
 import type {
   Settings as ISettings,
   LightingCalculatorMode,
@@ -8,6 +7,7 @@ import type {
 } from '@platform/common/Settings.js'
 import type { Modes, PackageJsonProps } from '@platform/common/types.js'
 import { Manifest } from '@platform/browser/Manifest.js'
+import { createRandomSeed } from '@src/helpers.js'
 
 export class Settings implements ISettings {
   readonly calculateLighting: boolean
@@ -43,7 +43,7 @@ export class Settings implements ISettings {
 
     this.uncompressedFTS = props.uncompressedFTS ?? false
 
-    this.seed = props.seed ?? this.createRandomSeed()
+    this.seed = props.seed ?? createRandomSeed()
     seedrandom(this.seed, { global: true })
 
     this.internalAssetsDir = '/assets'
@@ -75,9 +75,5 @@ export class Settings implements ISettings {
       author: '',
       homepage: '',
     }
-  }
-
-  private createRandomSeed(): string {
-    return randomIntBetween(100_000_000, 999_999_999).toString()
   }
 }

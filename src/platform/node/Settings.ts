@@ -3,7 +3,6 @@ import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { config as dotenvConfig } from 'dotenv'
 import seedrandom from 'seedrandom'
-import { randomIntBetween } from '@src/random.js'
 import {
   type Settings as ISettings,
   type LightingCalculatorMode,
@@ -13,7 +12,7 @@ import {
 import type { Modes, PackageJsonProps } from '@platform/common/types.js'
 import { getGeneratorPackageJSON, getProjectPackageJSON } from '@platform/node/helpers.js'
 import { Manifest } from '@platform/node/Manifest.js'
-import { joinPath } from '@src/helpers.js'
+import { createRandomSeed, joinPath } from '@src/helpers.js'
 
 dotenvConfig()
 
@@ -98,7 +97,7 @@ export class Settings implements ISettings {
 
     this.uncompressedFTS = props.uncompressedFTS ?? process.env.uncompressedFTS === 'true'
 
-    this.seed = props.seed ?? process.env.seed ?? this.createRandomSeed()
+    this.seed = props.seed ?? process.env.seed ?? createRandomSeed()
     seedrandom(this.seed, { global: true })
 
     const pathToThisFile = fileURLToPath(import.meta.url)
@@ -124,9 +123,5 @@ export class Settings implements ISettings {
 
   async getProjectPackageJSON(): Promise<PackageJsonProps> {
     return getProjectPackageJSON()
-  }
-
-  private createRandomSeed(): string {
-    return randomIntBetween(100_000_000, 999_999_999).toString()
   }
 }
