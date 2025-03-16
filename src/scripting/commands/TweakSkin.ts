@@ -1,9 +1,9 @@
 import path from 'node:path'
-import { type Settings } from '@platform/common/Settings.js'
-import { type Texture } from '@src/Texture.js'
+import type { Settings } from '@platform/common/Settings.js'
+import type { Texture } from '@src/Texture.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
-import { type UsesTextures } from '@scripting/interfaces/UsesTextures.js'
-import { type FileExports } from '@src/types.js'
+import type { UsesTextures } from '@scripting/interfaces/UsesTextures.js'
+import type { FileExports } from '@src/types.js'
 
 export class TweakSkin extends ScriptCommand implements UsesTextures {
   oldTexture: Texture | string

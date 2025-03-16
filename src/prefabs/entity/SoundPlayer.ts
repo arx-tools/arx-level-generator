@@ -1,5 +1,5 @@
-import { type Audio } from '@src/Audio.js'
-import { type EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
+import type { Audio } from '@src/Audio.js'
+import type { EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 import { Marker } from '@prefabs/entity/Marker.js'
 import { Sound, SoundFlags } from '@scripting/classes/Sound.js'
 import type { Simplify } from 'type-fest'

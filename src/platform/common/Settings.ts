@@ -1,6 +1,6 @@
 import type { Simplify } from 'type-fest'
-import { type Modes, type PackageJsonProps } from '@platform/common/types.js'
-import { type Manifest } from '@platform/common/Manifest.js'
+import type { Modes, PackageJsonProps } from '@platform/common/types.js'
+import type { Manifest } from '@platform/common/Manifest.js'
 
 const lightingCalculatorModes = ['MaxBrightness', 'CompleteDarkness', 'Arx', 'Realistic'] as const
 

@@ -1,5 +1,5 @@
-import { type Entity } from '@src/Entity.js'
-import { type ArxInteractiveObject } from 'arx-convert/types'
+import type { Entity } from '@src/Entity.js'
+import type { ArxInteractiveObject } from 'arx-convert/types'
 
 export class Entities extends Array<Entity> {
   toArxData(): { interactiveObjects: ArxInteractiveObject[] } {

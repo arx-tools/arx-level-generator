@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
-import { type Settings } from '@platform/common/Settings.js'
-import { type TextExports } from '@src/types.js'
+import type { Settings } from '@platform/common/Settings.js'
+import type { TextExports } from '@src/types.js'
 import { isAbsolutePath, joinPath } from '@src/helpers.js'
 
 export type Locales =

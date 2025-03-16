@@ -1,6 +1,6 @@
 import { MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry, Vector2 } from 'three'
 import { applyTransformations } from '@src/helpers.js'
-import { type TextureOrMaterial } from '@src/types.js'
+import type { TextureOrMaterial } from '@src/types.js'
 import { scaleUV } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 import { Texture } from '@src/Texture.js'

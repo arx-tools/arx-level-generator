@@ -1,12 +1,12 @@
 import type { Simplify } from 'type-fest'
 import seedrandom from 'seedrandom'
 import { randomIntBetween } from '@src/random.js'
-import {
-  type Settings as ISettings,
-  type LightingCalculatorMode,
-  type SettingsConstructorProps,
+import type {
+  Settings as ISettings,
+  LightingCalculatorMode,
+  SettingsConstructorProps,
 } from '@platform/common/Settings.js'
-import { type Modes, type PackageJsonProps } from '@platform/common/types.js'
+import type { Modes, PackageJsonProps } from '@platform/common/types.js'
 import { Manifest } from '@platform/browser/Manifest.js'
 
 export class Settings implements ISettings {

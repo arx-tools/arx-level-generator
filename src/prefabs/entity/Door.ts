@@ -1,9 +1,9 @@
-import { type Expand } from 'arx-convert/utils'
 import { Entity, type EntityConstructorProps } from '@src/Entity.js'
 import { UseMesh } from '@scripting/commands/UseMesh.js'
 import { Variable } from '@scripting/properties/Variable.js'
+import type { Simplify } from 'type-fest'
 
-export type DoorConstructorProps = Expand<
+export type DoorConstructorProps = Simplify<
   EntityConstructorProps & {
     /**
      * default value is false
@@ -17,7 +17,7 @@ export type DoorConstructorProps = Expand<
   }
 >
 
-export type DoorConstructorPropsWithFixSrc = Expand<Omit<DoorConstructorProps, 'src'>>
+export type DoorConstructorPropsWithFixSrc = Simplify<Omit<DoorConstructorProps, 'src'>>
 
 export abstract class Door extends Entity {
   protected propIsOpen: Variable<boolean>

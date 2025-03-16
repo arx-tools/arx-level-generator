@@ -1,5 +1,5 @@
-import { type ArxPortal, type ArxTextureVertex } from 'arx-convert/types'
-import { type QuadrupleOf } from 'arx-convert/utils'
+import type { ArxPortal, ArxTextureVertex } from 'arx-convert/types'
+import type { QuadrupleOf } from 'arx-convert/utils'
 import { Vector3 } from '@src/Vector3.js'
 
 type TextureVertex = {

@@ -1,7 +1,7 @@
-import { type Settings } from '@platform/common/Settings.js'
+import type { Settings } from '@platform/common/Settings.js'
 import { type Locales, toArxLocale } from '@src/Translations.js'
 import { ExportBuiltinAssetError } from '@src/errors.js'
-import { type FileExports } from '@src/types.js'
+import type { FileExports } from '@src/types.js'
 import { joinPath } from '@src/helpers.js'
 import type { Simplify } from 'type-fest'
 

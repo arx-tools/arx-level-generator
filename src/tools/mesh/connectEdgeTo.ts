@@ -1,4 +1,4 @@
-import { type BufferAttribute, type BufferGeometry } from 'three'
+import type { BufferAttribute, BufferGeometry } from 'three'
 import { categorizeVertices } from '@tools/mesh/categorizeVertices.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
 

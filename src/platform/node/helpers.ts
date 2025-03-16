@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { type PackageJsonProps } from '@platform/common/types.js'
+import type { PackageJsonProps } from '@platform/common/types.js'
 import { joinPath } from '@src/helpers.js'
 
 export async function fileExists(filename: string): Promise<boolean> {

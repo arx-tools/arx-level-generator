@@ -1,4 +1,4 @@
-import { type ArxRotation } from 'arx-convert/types'
+import type { ArxRotation } from 'arx-convert/types'
 import { Euler, type EulerOrder, MathUtils } from 'three'
 
 export class Rotation extends Euler {

@@ -1,6 +1,6 @@
 import { type ArxKey, ArxSettingFlag, type ArxTrack, ArxTrackFlags } from 'arx-convert/types'
-import { type Audio } from '@src/Audio.js'
-import { type FileExports } from '@src/types.js'
+import type { Audio } from '@src/Audio.js'
+import type { FileExports } from '@src/types.js'
 import { joinPath } from '@src/helpers.js'
 
 type AmbienceTrackConstructorProps = {

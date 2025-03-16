@@ -1,8 +1,8 @@
 import fs from 'node:fs/promises'
 import { type MetaData, generateMetadata } from '@platform/node/MetaData.js'
 import { fileExists } from '@platform/node/helpers.js'
-import { type Manifest as IManifest } from '@platform/common/Manifest.js'
-import { type Settings } from '@platform/common/Settings.js'
+import type { Manifest as IManifest } from '@platform/common/Manifest.js'
+import type { Settings } from '@platform/common/Settings.js'
 import { exportToJSON, joinPath } from '@src/helpers.js'
 import type { Simplify } from 'type-fest'
 

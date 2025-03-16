@@ -1,10 +1,10 @@
 import { type ArxZone, ArxZoneAndPathPointType, type ArxZoneAndPathPoint } from 'arx-convert/types'
-import { type BufferGeometry } from 'three'
+import type { BufferGeometry } from 'three'
 import { Ambience } from '@src/Ambience.js'
 import { Color } from '@src/Color.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Vectors } from '@src/Vectors.js'
-import { type ArxComponent } from '@src/ArxComponent.js'
+import type { ArxComponent } from '@src/ArxComponent.js'
 
 export type ZonePoint = {
   position: Vector3

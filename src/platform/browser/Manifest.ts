@@ -1,5 +1,5 @@
-import { type Manifest as IManifest } from '@platform/common/Manifest.js'
-import { type Settings } from '@platform/common/Settings.js'
+import type { Manifest as IManifest } from '@platform/common/Manifest.js'
+import type { Settings } from '@platform/common/Settings.js'
 
 export class Manifest implements IManifest {
   settings: Settings

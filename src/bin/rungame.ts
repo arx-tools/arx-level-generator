@@ -1,7 +1,7 @@
 import { exec } from 'node:child_process'
 import os from 'node:os'
 import { promisify } from 'node:util'
-import { type Settings } from '@platform/common/Settings.js'
+import type { Settings } from '@platform/common/Settings.js'
 import { fileExists } from '@platform/node/helpers.js'
 import { joinPath } from '@src/helpers.js'
 

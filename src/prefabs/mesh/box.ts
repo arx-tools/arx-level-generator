@@ -1,6 +1,6 @@
 import { BoxGeometry, MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { Vector3 } from '@src/Vector3.js'
-import { type TextureOrMaterial } from '@src/types.js'
+import type { TextureOrMaterial } from '@src/types.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 import { Texture } from '@src/Texture.js'
 

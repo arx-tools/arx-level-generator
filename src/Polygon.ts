@@ -8,13 +8,13 @@ import {
 } from 'arx-convert/types'
 import { MAP_DEPTH_IN_CELLS, MAP_WIDTH_IN_CELLS, type QuadrupleOf, isQuad } from 'arx-convert/utils'
 import { Box3, Triangle } from 'three'
-import { type Color } from '@src/Color.js'
+import type { Color } from '@src/Color.js'
 import { NO_TEXTURE_CONTAINER, Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
 import { isBetween, percentOf, triangleFitsInto100Square } from '@src/helpers.js'
-import { type ArxVertexWithColor } from '@src/types.js'
-import { type ArxComponent } from '@src/ArxComponent.js'
+import type { ArxVertexWithColor } from '@src/types.js'
+import type { ArxComponent } from '@src/ArxComponent.js'
 
 export type TransparencyType = 'multiplicative' | 'additive' | 'blended' | 'subtractive'
 

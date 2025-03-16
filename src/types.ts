@@ -1,6 +1,6 @@
-import { type ArxColor, type ArxVertex } from 'arx-convert/types'
-import { type Material } from '@src/Material.js'
-import { type Texture } from '@src/Texture.js'
+import type { ArxColor, ArxVertex } from 'arx-convert/types'
+import type { Material } from '@src/Material.js'
+import type { Texture } from '@src/Texture.js'
 import type { Simplify } from 'type-fest'
 
 export type ArxVertexWithColor = Simplify<

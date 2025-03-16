@@ -13,14 +13,14 @@ import {
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader.js'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import { Material } from '@src/Material.js'
-import { type Rotation } from '@src/Rotation.js'
+import type { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations, joinPath } from '@src/helpers.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
 import { scaleUV as scaleUVTool } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
-import { type VerticalAlign } from '@src/types.js'
+import type { VerticalAlign } from '@src/types.js'
 import { fileExists } from '@platform/node/helpers.js'
 
 type loadOBJProperties = {

@@ -1,8 +1,8 @@
-import { type ArxMap } from '@src/ArxMap.js'
-import { type DONT_QUADIFY, type QUADIFY } from '@src/Polygons.js'
+import type { ArxMap } from '@src/ArxMap.js'
+import type { DONT_QUADIFY, QUADIFY } from '@src/Polygons.js'
 import { $ } from '@src/Selection.js'
-import { type Vector3 } from '@src/Vector3.js'
-import { type Cursor, type CursorDir } from '@prefabs/rooms/Cursor.js'
+import type { Vector3 } from '@src/Vector3.js'
+import type { Cursor, CursorDir } from '@prefabs/rooms/Cursor.js'
 import { createRoom, type RoomProps } from '@prefabs/rooms/room.js'
 
 // only works when everything is aligned to the same grid with the same tileSize

@@ -17,14 +17,14 @@ import { Mesh, MeshBasicMaterial, type Object3D, type BufferAttribute, Box3, typ
 import { Color } from '@src/Color.js'
 import { Material } from '@src/Material.js'
 import { Polygon, type TransparencyType } from '@src/Polygon.js'
-import { type Settings } from '@platform/common/Settings.js'
+import type { Settings } from '@platform/common/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
 import { sum, times } from '@src/faux-ramda.js'
 import { applyTransformations, averageVectors, quotientAndRemainder, roundToNDecimals } from '@src/helpers.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
-import { type FileExports } from '@src/types.js'
+import type { FileExports } from '@src/types.js'
 
 export const QUADIFY = 'quadify'
 export const DONT_QUADIFY = "don't quadify"

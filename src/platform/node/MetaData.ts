@@ -1,4 +1,4 @@
-import { type Settings } from '@platform/common/Settings.js'
+import type { Settings } from '@platform/common/Settings.js'
 
 export type MetaData = {
   seed: string

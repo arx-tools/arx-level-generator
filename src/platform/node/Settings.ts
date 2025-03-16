@@ -10,7 +10,7 @@ import {
   isValidLightingCalculatorMode,
   type SettingsConstructorProps,
 } from '@platform/common/Settings.js'
-import { type Modes, type PackageJsonProps } from '@platform/common/types.js'
+import type { Modes, PackageJsonProps } from '@platform/common/types.js'
 import { getGeneratorPackageJSON, getProjectPackageJSON } from '@platform/node/helpers.js'
 import { Manifest } from '@platform/node/Manifest.js'
 import { joinPath } from '@src/helpers.js'

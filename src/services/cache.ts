@@ -3,7 +3,7 @@ import { createReadStream } from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import objectHash from 'object-hash'
-import { type Settings } from '@platform/common/Settings.js'
+import type { Settings } from '@platform/common/Settings.js'
 import { fileExists } from '@platform/node/helpers.js'
 import { joinPath } from '@src/helpers.js'
 

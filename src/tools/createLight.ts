@@ -1,6 +1,6 @@
 import { Color } from '@src/Color.js'
 import { Light } from '@src/Light.js'
-import { type Vector3 } from '@src/Vector3.js'
+import type { Vector3 } from '@src/Vector3.js'
 
 type createLightProps = {
   position: Vector3

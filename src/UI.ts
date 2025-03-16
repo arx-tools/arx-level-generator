@@ -1,5 +1,5 @@
-import { type Settings } from '@platform/common/Settings.js'
-import { type FileExports } from '@src/types.js'
+import type { Settings } from '@platform/common/Settings.js'
+import type { FileExports } from '@src/types.js'
 
 export enum UiElements {
   MainMenuBackground = 'main-menu-background',
