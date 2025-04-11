@@ -9,6 +9,12 @@ export class Player {
   orientation: Rotation
   position: Vector3
   script?: Script
+  /**
+   * For maps created from scratch the player's position needs to be adjusted
+   * as the player's position is to be at around eye level (around 180cm).
+   *
+   * Existing Arx levels already have the player's position tweaked.
+   */
   positionAlreadyAdjusted: boolean
 
   constructor() {
