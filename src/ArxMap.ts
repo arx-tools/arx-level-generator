@@ -792,6 +792,17 @@ ${translation}`
     })
   }
 
+  private calculateCompleteDarknessLighting(): void {
+    this.polygons.forEach((polygon) => {
+      polygon.vertices[0].color = Color.black
+      polygon.vertices[1].color = Color.black
+      polygon.vertices[2].color = Color.black
+      if (polygon.isQuad()) {
+        polygon.vertices[3].color = Color.black
+      }
+    })
+  }
+
   private calculateArxLighting(): void {
     const lights = this.lights
       .filter((light) => {
@@ -832,6 +843,11 @@ ${translation}`
     switch (settings.lightingCalculatorMode) {
       case 'MaxBrightness': {
         this.calculateMaxBrightnessLighting()
+        break
+      }
+
+      case 'CompleteDarkness': {
+        this.calculateCompleteDarknessLighting()
         break
       }
 
