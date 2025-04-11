@@ -239,7 +239,9 @@ export class PolygonSelection extends Selection<Polygons> {
   /**
    * Selects polygons that have a specific texture or matches any of the specified textures.
    *
-   * Texture comparision is done by comparing filenames without extension case insensitively
+   * Texture comparision is done by comparing filenames without extension.
+   * Comparision is case-**insensitive**.
+   *
    * (see `Texture.equals()` and `Texture.equalsAny()`)
    *
    * This method pre-selects all polygons if none have been selected before.
