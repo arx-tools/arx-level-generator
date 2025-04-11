@@ -101,16 +101,16 @@ export class Polygons extends Array<Polygon> {
     return files
   }
 
-  async toArxData(): Promise<{
+  toArxData(): {
     polygons: ArxPolygon[]
     textureContainers: ArxTextureContainer[]
-  }> {
+  } {
     const textureContainers = this.getTextureContainers()
 
     // watch out, we're mutating textureContainers!
     const arxPolygons: ArxPolygon[] = []
     for (const polygon of this) {
-      arxPolygons.push(await polygon.toArxPolygon(textureContainers))
+      arxPolygons.push(polygon.toArxPolygon(textureContainers))
     }
 
     const arxTextureContainers = textureContainers
