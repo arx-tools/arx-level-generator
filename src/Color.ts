@@ -51,31 +51,31 @@ export class Color {
   // ----------------
 
   static get red(): Color {
-    return Color.fromCSS('red')
+    return new Color(255, 0, 0)
   }
 
   static get green(): Color {
-    return Color.fromCSS('green')
+    return new Color(0, 255, 0)
   }
 
   static get blue(): Color {
-    return Color.fromCSS('blue')
+    return new Color(0, 0, 255)
   }
 
   static get white(): Color {
-    return Color.fromCSS('white')
+    return new Color(255, 255, 255)
   }
 
   static get black(): Color {
-    return Color.fromCSS('black')
+    return new Color(0, 0, 0)
   }
 
   static get yellow(): Color {
-    return Color.fromCSS('yellow')
+    return new Color(255, 255, 0)
   }
 
   static get transparent(): Color {
-    return Color.fromCSS('transparent')
+    return new Color(0, 0, 0, Alpha.Transparent)
   }
 
   // ----------------
@@ -118,7 +118,7 @@ export class Color {
    * @param r red channel, a positive integer between `0` and `255` (inclusive)
    * @param g green channel, a positive integer between `0` and `255` (inclusive)
    * @param b blue channel, a positive integer between `0` and `255` (inclusive)
-   * @param a alpha channel, a floating point number between `0` (fully transparent) and `1` (fully opaque)
+   * @param a alpha channel, a floating point number between `0.0` (fully transparent) and `1.0` (fully opaque) - default value is `1.0`
    */
   constructor(r: number, g: number, b: number, a: number = Alpha.Opaque) {
     this.r = r
