@@ -7,6 +7,7 @@ import { type Settings } from '@src/Settings.js'
 import { fileExists } from '@src/node.js'
 import { createCacheFolderIfNotExists, loadHashOf, createHashOfFile, saveHashOf } from '@services/cache.js'
 import { getMetadata, getSharpInstance } from '@services/image.js'
+import { ExportBuiltinAssetError } from '@src/errors.js'
 
 export type TextureConstructorProps = {
   filename: string
@@ -323,6 +324,7 @@ export class Texture extends ThreeJsTextue {
 
   /**
    * default value for `needsToBeTileable` is false
+   * @throws ExportBuiltinAssetError when trying to export an Audio that's built into the base game
    */
   async exportSourceAndTarget(
     settings: Settings,
@@ -330,7 +332,7 @@ export class Texture extends ThreeJsTextue {
     _dontCatchTheError = false,
   ): Promise<[source: string, target: string]> {
     if (this.isNative) {
-      throw new Error('trying to export a native Texture')
+      throw new ExportBuiltinAssetError()
     }
 
     try {

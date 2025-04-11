@@ -17,6 +17,7 @@ export class Color {
    * For starters, everything that is available in CSS is supported.
    *
    * @see https://github.com/colorjs/color-parse
+   * @throws Error when parsing fails
    */
   static fromCSS(color: string): Color {
     const channels = rgba(color)
@@ -42,7 +43,10 @@ export class Color {
   /**
    * Creates a Color instance from three.js' Color class
    *
-   * Extra info: three.js' Color doesn't support transparency/alpha channel
+   * Extra infos of three.js' Color class:
+   *
+   * - it doesn't support transparency/alpha channel
+   * - every channel is a float with values ranging between 0.0 and 1.0
    */
   static fromThreeJsColor({ r, g, b }: ThreeJsColor): Color {
     return new Color(r * 255, g * 255, b * 255)

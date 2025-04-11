@@ -205,6 +205,9 @@ export class ArxMap {
     this.todo.roomDistances = fts.roomDistances
   }
 
+  /**
+   * @throws MapFinalizedError when trying to call finalize multiple times on the same ArxMap instance
+   */
   finalize(settings: Settings): void {
     if (this.config.isFinalized) {
       throw new MapFinalizedError()
@@ -253,6 +256,9 @@ export class ArxMap {
     this.config.isFinalized = true
   }
 
+  /**
+   * @throws MapFinalizedError when attempting to call the method on an already finalized map
+   */
   removePortals(): void {
     if (this.config.isFinalized) {
       throw new MapFinalizedError()
@@ -289,6 +295,9 @@ export class ArxMap {
     this.movePolygonsToSameRoom()
   }
 
+  /**
+   * @throws MapNotFinalizedError when attempting to save an ArxMap which have not yet been finalized
+   */
   async saveToDisk(settings: Settings, exportJsonFiles: boolean = false, prettify: boolean = false): Promise<void> {
     if (!this.config.isFinalized) {
       throw new MapNotFinalizedError()
@@ -510,6 +519,9 @@ ${translation}`
     $(this.polygons).selectAll().move(offsetDifference)
   }
 
+  /**
+   * @throws MapFinalizedError when attempting to call the method on an already finalized map
+   */
   move(offset: Vector3): void {
     if (this.config.isFinalized) {
       throw new MapFinalizedError()
@@ -530,6 +542,9 @@ ${translation}`
     })
   }
 
+  /**
+   * @throws MapFinalizedError when attempting to call the method on an already finalized map
+   */
   add(map: ArxMap, alignPolygons: boolean = false): void {
     if (this.config.isFinalized) {
       throw new MapFinalizedError()
