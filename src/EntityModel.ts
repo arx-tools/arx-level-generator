@@ -1,5 +1,4 @@
 import fs from 'node:fs/promises'
-import path from 'node:path'
 import { FTL } from 'arx-convert'
 import { type ArxAction, type ArxFTL, ArxFaceType, type ArxFace, type ArxFtlVertex } from 'arx-convert/types'
 import type { QuadrupleOf, TripleOf } from 'arx-convert/utils'
@@ -15,6 +14,7 @@ import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 import { fileExists } from '@platform/node/helpers.js'
 import type { FileExports } from '@src/types.js'
 import type { Simplify } from 'type-fest'
+import parsePath from 'path-parse'
 
 type EntityModelConstructorProps = {
   filename: string
@@ -108,7 +108,7 @@ export class EntityModel {
   ): Promise<FileExports> {
     const files: FileExports = {}
 
-    const { name: entityName, ext, dir } = path.parse(targetName)
+    const { name: entityName, ext } = parsePath(targetName)
     let binaryTarget: string
     if (ext === '') {
       // "items/quest_item/mirror" -> "game/graph/obj3d/interactive/items/quest_item/mirror/mirror.ftl"

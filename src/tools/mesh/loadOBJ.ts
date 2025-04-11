@@ -1,5 +1,4 @@
 import fs from 'node:fs/promises'
-import path from 'node:path'
 import { ArxPolygonFlags } from 'arx-convert/types'
 import {
   type Box3,
@@ -22,6 +21,7 @@ import { scaleUV as scaleUVTool } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 import type { VerticalAlign } from '@src/types.js'
 import { fileExists } from '@platform/node/helpers.js'
+import parsePath from 'path-parse'
 
 type loadOBJProperties = {
   /**
@@ -174,7 +174,7 @@ async function loadMTL(
 }> {
   const mtlLoader = new MTLLoader()
 
-  const { dir, name: filename } = path.parse(filenameWithoutExtension)
+  const { dir, name: filename } = parsePath(filenameWithoutExtension)
 
   const mtlSrc = joinPath('assets', dir, `${filename}.mtl`)
 
@@ -209,8 +209,8 @@ async function loadMTL(
           material = fallbackMaterial
         } else {
           const textureFromFile = Texture.fromCustomFile({
-            filename: path.parse(materialInfo.map_kd).base,
-            sourcePath: [dir, path.parse(materialInfo.map_kd).dir]
+            filename: parsePath(materialInfo.map_kd).base,
+            sourcePath: [dir, parsePath(materialInfo.map_kd).dir]
               .filter((row) => {
                 return row !== ''
               })
@@ -287,7 +287,7 @@ export async function loadOBJ(
 
   const objLoader = new OBJLoader()
 
-  const { dir, name: filename } = path.parse(filenameWithoutExtension)
+  const { dir, name: filename } = parsePath(filenameWithoutExtension)
 
   const objSrc = joinPath('assets', dir, `${filename}.obj`)
   let rawObj = await fs.readFile(objSrc, { encoding: 'utf8' })

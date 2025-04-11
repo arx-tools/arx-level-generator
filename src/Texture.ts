@@ -1,4 +1,3 @@
-import path from 'node:path'
 import type { ArxTextureContainer } from 'arx-convert/types'
 import { sharpToBmp } from 'sharp-bmp'
 import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
@@ -10,6 +9,7 @@ import { ExportBuiltinAssetError } from '@src/errors.js'
 import type { FileExports } from '@src/types.js'
 import { joinPath } from '@src/helpers.js'
 import type { Simplify } from 'type-fest'
+import parsePath from 'path-parse'
 
 export type TextureConstructorProps = {
   filename: string
@@ -380,8 +380,8 @@ export class Texture extends ThreeJsTextue {
       bPath = texture.filename.toLowerCase()
     }
 
-    const { name: aFilename } = path.parse(aPath)
-    const { name: bFilename } = path.parse(bPath)
+    const { name: aFilename } = parsePath(aPath)
+    const { name: bFilename } = parsePath(bPath)
 
     return aFilename === bFilename
   }
@@ -408,7 +408,7 @@ export class Texture extends ThreeJsTextue {
   }
 
   private async makeCopy(settings: Settings): Promise<FileExports> {
-    const { ext, name } = path.parse(this.filename)
+    const { ext, name } = parsePath(this.filename)
     const hasSupportedFormat = supportedExtensions.has(ext)
 
     let newFilename: string
@@ -464,7 +464,7 @@ export class Texture extends ThreeJsTextue {
   }
 
   private async makeTileable(settings: Settings): Promise<FileExports> {
-    const { ext, name } = path.parse(this.filename)
+    const { ext, name } = parsePath(this.filename)
     const hasSupportedFormat = supportedExtensions.has(ext)
 
     let newFilename: string

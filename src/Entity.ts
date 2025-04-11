@@ -1,4 +1,3 @@
-import path from 'node:path'
 import type { ArxInteractiveObject } from 'arx-convert/types'
 import { isTiled } from 'arx-convert/utils'
 import type { Audio } from '@src/Audio.js'
@@ -14,6 +13,7 @@ import type { Cube as TypeOfCube } from '@prefabs/entity/Cube.js'
 import type { ArxComponent } from '@src/ArxComponent.js'
 import { joinPath } from '@src/helpers.js'
 import type { Simplify } from 'type-fest'
+import parsePath from 'path-parse'
 
 export type EntityConstructorProps = {
   id?: number
@@ -255,7 +255,7 @@ export class Entity extends _Entity implements ArxComponent {
    * returns the name of the entity without any id, for example "marker"
    */
   get entityName(): string {
-    return path.parse(this.src).name
+    return parsePath(this.src).name
   }
 
   hasScript(): this is { script: Script } {

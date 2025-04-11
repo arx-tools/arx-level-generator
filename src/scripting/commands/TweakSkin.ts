@@ -1,9 +1,9 @@
-import path from 'node:path'
 import type { Settings } from '@platform/common/Settings.js'
 import type { Texture } from '@src/Texture.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import type { UsesTextures } from '@scripting/interfaces/UsesTextures.js'
 import type { FileExports } from '@src/types.js'
+import parsePath from 'path-parse'
 
 export class TweakSkin extends ScriptCommand implements UsesTextures {
   oldTexture: Texture | string
@@ -20,14 +20,14 @@ export class TweakSkin extends ScriptCommand implements UsesTextures {
     if (typeof this.oldTexture === 'string') {
       oldFilename = this.oldTexture
     } else {
-      oldFilename = path.parse(this.oldTexture.filename).name
+      oldFilename = parsePath(this.oldTexture.filename).name
     }
 
     let newFilename: string
     if (typeof this.newTexture === 'string') {
       newFilename = this.newTexture
     } else {
-      newFilename = path.parse(this.newTexture.filename).name
+      newFilename = parsePath(this.newTexture.filename).name
     }
 
     return `tweak skin "${oldFilename}" "${newFilename}"`
