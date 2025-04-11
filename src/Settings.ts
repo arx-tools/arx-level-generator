@@ -28,11 +28,11 @@ export type SettingsConstructorProps = {
    */
   originalLevelFiles?: string
   /**
-   * can also be set via `process.env.cacheFolder`
+   * can also be set via `process.env.cacheDir`
    *
    * default value is "./cache" relative to the project root
    */
-  cacheFolder?: string
+  cacheDir?: string
   /**
    * can also be set via `process.env.outputDir`
    *
@@ -112,11 +112,11 @@ export class Settings {
    */
   readonly originalLevelFiles: string
   /**
-   * can also be set via `process.env.cacheFolder`
+   * can also be set via `process.env.cacheDir`
    *
    * default value is "./cache" relative to the project root
    */
-  readonly cacheFolder: string
+  readonly cacheDir: string
   /**
    * can also be set via `process.env.outputDir`
    *
@@ -187,7 +187,7 @@ export class Settings {
     this.originalLevelFiles =
       props.originalLevelFiles ?? process.env.originalLevelFiles ?? path.resolve('../pkware-test-files')
 
-    this.cacheFolder = props.cacheFolder ?? process.env.cacheFolder ?? path.resolve('./cache')
+    this.cacheDir = props.cacheDir ?? process.env.cacheDir ?? path.resolve('./cache')
     this.outputDir = props.outputDir ?? process.env.outputDir ?? path.resolve('./output')
     this.levelIdx = props.levelIdx ?? Number.parseInt(process.env.levelIdx ?? '1', 10)
     this.assetsDir = props.assetsDir ?? process.env.assetsDir ?? path.resolve('./assets')
