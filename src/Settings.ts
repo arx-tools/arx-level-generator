@@ -7,7 +7,7 @@ import { randomIntBetween } from '@src/random.js'
 
 dotenvConfig()
 
-const lightingCalculatorModes = ['NoLighting', 'Danae', 'Realistic'] as const
+const lightingCalculatorModes = ['MaxBrightness', 'Arx', 'Realistic'] as const
 
 type LightingCalculatorMode = (typeof lightingCalculatorModes)[number]
 
@@ -67,11 +67,11 @@ export type SettingsConstructorProps = {
    *
    * potential values:
    *
-   * - "NoLighting" - sets everyting to the maximum brightness, useful for checking edits to a mesh
-   * - "Danae" - the default look of Arx: shadows are not cast by polygons, everything is lit evenly
+   * - "MaxBrightness" - sets everyting to the maximum brightness, useful for checking edits to a mesh
+   * - "Arx" - the default look of Arx: shadows are not cast by polygons, everything is lit evenly
    * - "Realistic" - polygons cast shadows if obstructing the lights
    *
-   * default value is "Danae"
+   * default value is "Arx"
    */
   lightingCalculatorMode?: LightingCalculatorMode
   /**
@@ -148,7 +148,7 @@ export class Settings {
   /**
    * can also be set via `process.env.lightingCalculatorMode`
    *
-   * default value is "Danae"
+   * default value is "Arx"
    */
   readonly lightingCalculatorMode: LightingCalculatorMode
   /**
@@ -197,7 +197,7 @@ export class Settings {
     if (isValidLightingCalculatorMode(process.env.lightingCalculatorMode)) {
       fallbackLCM = process.env.lightingCalculatorMode
     } else {
-      fallbackLCM = 'Danae'
+      fallbackLCM = 'Arx'
     }
 
     this.lightingCalculatorMode = props.lightingCalculatorMode ?? fallbackLCM

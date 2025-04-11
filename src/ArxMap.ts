@@ -781,7 +781,7 @@ ${translation}`
     })
   }
 
-  private calculateNoLightingLighting(): void {
+  private calculateMaxBrightnessLighting(): void {
     this.polygons.forEach((polygon) => {
       polygon.vertices[0].color = Color.white
       polygon.vertices[1].color = Color.white
@@ -792,7 +792,7 @@ ${translation}`
     })
   }
 
-  private calculateDanaeLighting(): void {
+  private calculateArxLighting(): void {
     const lights = this.lights
       .filter((light) => {
         // https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/EERIE/EERIELight.cpp#L826
@@ -820,7 +820,8 @@ ${translation}`
   }
 
   private calculateRealisticLighting(): void {
-    // TODO
+    // TODO: implement this
+    console.error(`[error] ArxMap: realistic lighting mode is not yet implemented`)
   }
 
   private calculateLighting(settings: Settings): void {
@@ -829,13 +830,13 @@ ${translation}`
     }
 
     switch (settings.lightingCalculatorMode) {
-      case 'NoLighting': {
-        this.calculateNoLightingLighting()
+      case 'MaxBrightness': {
+        this.calculateMaxBrightnessLighting()
         break
       }
 
-      case 'Danae': {
-        this.calculateDanaeLighting()
+      case 'Arx': {
+        this.calculateArxLighting()
         break
       }
 
