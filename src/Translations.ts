@@ -87,8 +87,9 @@ string="${value}"
 
   async addFromFile(filename: string, settings: Settings): Promise<void> {
     try {
-      const rawIn = await fs.readFile(path.resolve(settings.assetsDir, filename), { encoding: 'utf8' })
-      const translations = JSON.parse(rawIn) as Record<string, Partial<Record<Locales, string>>>
+      const source = path.resolve(settings.assetsDir, filename)
+      const rawInput = await fs.readFile(source, { encoding: 'utf8' })
+      const translations = JSON.parse(rawInput) as Record<string, Partial<Record<Locales, string>>>
       this.add(translations)
     } catch (error) {
       console.error(error)
