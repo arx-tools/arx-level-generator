@@ -1,6 +1,7 @@
 import path from 'node:path'
 import { type Settings } from '@src/Settings.js'
-import { type FileExports } from '@src/types.js'
+import { generateBlankBMP } from '@src/helpers.js'
+import { type ArrayBufferExports } from '@src/types.js'
 
 export enum HudElements {
   Minimap = 'minimap',
@@ -14,6 +15,11 @@ export enum HudElements {
   PurseIcon = 'purse-icon',
   HerosayIcon = 'herosay-icon',
 }
+
+const blank360x532 = generateBlankBMP(360, 532)
+const blank330x800 = generateBlankBMP(330, 800)
+const blank128x128 = generateBlankBMP(128, 128)
+const blank32x32 = generateBlankBMP(32, 32)
 
 export class HUD {
   elementVisibility: Record<HudElements, boolean>
@@ -53,75 +59,63 @@ export class HUD {
     }
   }
 
-  exportSourcesAndTargets(settings: Settings): FileExports {
-    const files: FileExports = {}
+  exportSourcesAndTargets(settings: Settings): ArrayBufferExports {
+    const files: ArrayBufferExports = {}
 
     if (this.elementVisibility[HudElements.Minimap] === false) {
-      const source = path.resolve(settings.internalAssetsDir, 'reset/blank-360x532.bmp')
       const target = path.resolve(settings.outputDir, `graph/levels/level${settings.levelIdx}/map.bmp`)
-      files[target] = source
+      files[target] = blank360x532
     }
 
     if (this.elementVisibility[HudElements.Healthbar] === false) {
-      const source1 = path.resolve(settings.internalAssetsDir, 'reset/blank-330x800.bmp')
       const target1 = path.resolve(settings.outputDir, 'graph/interface/bars/empty_gauge_red.bmp')
-      files[target1] = source1
+      files[target1] = blank330x800
 
-      const source2 = path.resolve(settings.internalAssetsDir, 'reset/blank-330x800.bmp')
       const target2 = path.resolve(settings.outputDir, 'graph/interface/bars/filled_gauge_red.bmp')
-      files[target2] = source2
+      files[target2] = blank330x800
     }
 
     if (this.elementVisibility[HudElements.Manabar] === false) {
-      const source1 = path.resolve(settings.internalAssetsDir, 'reset/blank-330x800.bmp')
       const target1 = path.resolve(settings.outputDir, 'graph/interface/bars/empty_gauge_blue.bmp')
-      files[target1] = source1
+      files[target1] = blank330x800
 
-      const source2 = path.resolve(settings.internalAssetsDir, 'reset/blank-330x800.bmp')
       const target2 = path.resolve(settings.outputDir, 'graph/interface/bars/filled_gauge_blue.bmp')
-      files[target2] = source2
+      files[target2] = blank330x800
     }
 
     if (this.elementVisibility[HudElements.StealthIndicator] === false) {
-      const source = path.resolve(settings.internalAssetsDir, 'reset/blank-32x32.bmp')
       const target = path.resolve(settings.outputDir, 'graph/interface/icons/stealth_gauge.bmp')
-      files[target] = source
+      files[target] = blank32x32
     }
 
     if (this.elementVisibility[HudElements.StealingIcon] === false) {
-      const source = path.resolve(settings.internalAssetsDir, 'reset/blank-128x128.bmp')
       const target = path.resolve(settings.outputDir, 'graph/interface/icons/steal.bmp')
-      files[target] = source
+      files[target] = blank128x128
     }
 
     if (this.elementVisibility[HudElements.LevelUpIcon] === false) {
-      const source = path.resolve(settings.internalAssetsDir, 'reset/blank-32x32.bmp')
       const target = path.resolve(settings.outputDir, 'graph/interface/icons/lvl_up.bmp')
-      files[target] = source
+      files[target] = blank32x32
     }
 
     if (this.elementVisibility[HudElements.BookIcon] === false) {
-      const source = path.resolve(settings.internalAssetsDir, 'reset/blank-32x32.bmp')
       const target = path.resolve(settings.outputDir, 'graph/interface/icons/book.bmp')
-      files[target] = source
+      files[target] = blank32x32
     }
 
     if (this.elementVisibility[HudElements.BackpackIcon] === false) {
-      const source = path.resolve(settings.internalAssetsDir, 'reset/blank-32x32.bmp')
       const target = path.resolve(settings.outputDir, 'graph/interface/icons/backpack.bmp')
-      files[target] = source
+      files[target] = blank32x32
     }
 
     if (this.elementVisibility[HudElements.PurseIcon] === false) {
-      const source = path.resolve(settings.internalAssetsDir, 'reset/blank-32x32.bmp')
       const target = path.resolve(settings.outputDir, 'graph/interface/inventory/gold.bmp')
-      files[target] = source
+      files[target] = blank32x32
     }
 
     if (this.elementVisibility[HudElements.HerosayIcon] === false) {
-      const source = path.resolve(settings.internalAssetsDir, 'reset/blank-32x32.bmp')
       const target = path.resolve(settings.outputDir, 'graph/interface/icons/arx_logo_32.bmp')
-      files[target] = source
+      files[target] = blank32x32
     }
 
     return files

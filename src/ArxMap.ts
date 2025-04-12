@@ -46,7 +46,7 @@ import { compile } from '@src/compile.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { groupSequences, times, uniq } from '@src/faux-ramda.js'
 import { latin9ToLatin1, percentOf } from '@src/helpers.js'
-import { type FileExports, type TextExports, type OriginalLevel } from '@src/types.js'
+import { type FileExports, type TextExports, type OriginalLevel, type ArrayBufferExports } from '@src/types.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { Texture } from '@src/Texture.js'
 import { type Vertex } from '@src/Vertex.js'
@@ -448,7 +448,6 @@ export class ArxMap {
 
     const filesToCopy = [
       ...Object.entries(textures),
-      ...Object.entries(hudElements),
       ...Object.entries(uiElements),
       ...Object.entries(ambienceTracks),
       ...Object.entries(models),
@@ -458,6 +457,21 @@ export class ArxMap {
 
     for (const [target, source] of filesToCopy) {
       await fs.copyFile(source, target)
+    }
+
+    const filesToExport: ArrayBufferExports = {
+      ...this.hud.exportSourcesAndTargets(settings),
+    }
+
+    // TODO: move this lower in the file closest to the manifest generation
+    for (const target in filesToExport) {
+      const data = filesToExport[target]
+
+      const dirname = path.dirname(target)
+      await fs.mkdir(dirname, { recursive: true })
+
+      const wrappedData = new Uint8Array(data)
+      await fs.writeFile(target, wrappedData)
     }
 
     // ------------------------
