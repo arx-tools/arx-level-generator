@@ -39,7 +39,7 @@ export class Manifest {
     }
   }
 
-  static async write(settings: Settings, files: string[], prettify: boolean = false): Promise<void> {
+  static async generate(settings: Settings, files: string[], prettify: boolean = false): Promise<ArrayBufferLike> {
     const metaData = await generateMetadata(settings)
 
     const manifest: ManifestData = {
@@ -51,12 +51,15 @@ export class Manifest {
 
     let stringifiedData: string
     if (prettify) {
-      stringifiedData = JSON.stringify(manifest, null, 2)
+      stringifiedData = JSON.stringify(manifest, null, '\t')
     } else {
       stringifiedData = JSON.stringify(manifest)
     }
 
-    await fs.writeFile(Manifest.getPathToFilename(settings), stringifiedData, { encoding: 'utf8' })
+    const encoder = new TextEncoder()
+    const view = encoder.encode(stringifiedData)
+
+    return view.buffer
   }
 
   static async uninstall(settings: Settings): Promise<void> {

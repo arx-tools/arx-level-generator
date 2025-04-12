@@ -416,7 +416,7 @@ export class ArxMap {
       ),
     }
 
-    const pathsOfTheFiles = [
+    const assetList = [
       ...Object.keys(textures),
       ...Object.keys(models),
       ...Object.keys(otherDependencies),
@@ -435,7 +435,7 @@ export class ArxMap {
     ]
 
     const dirnames = uniq(
-      pathsOfTheFiles.map((filePath) => {
+      assetList.map((filePath) => {
         return path.dirname(filePath)
       }),
     )
@@ -486,9 +486,9 @@ ${translation}`
       let stringifiedLlf: string
 
       if (prettify) {
-        stringifiedDlf = JSON.stringify(dlf, null, 2)
-        stringifiedFts = JSON.stringify(fts, null, 2)
-        stringifiedLlf = JSON.stringify(llf, null, 2)
+        stringifiedDlf = JSON.stringify(dlf, null, '\t')
+        stringifiedFts = JSON.stringify(fts, null, '\t')
+        stringifiedLlf = JSON.stringify(llf, null, '\t')
       } else {
         stringifiedDlf = JSON.stringify(dlf)
         stringifiedFts = JSON.stringify(fts)
@@ -502,7 +502,7 @@ ${translation}`
       for (const [target, amb] of Object.entries(customAmbiences)) {
         let stringifiedAmb: string
         if (prettify) {
-          stringifiedAmb = JSON.stringify(amb, null, 2)
+          stringifiedAmb = JSON.stringify(amb, null, '\t')
         } else {
           stringifiedAmb = JSON.stringify(amb)
         }
@@ -510,7 +510,7 @@ ${translation}`
         await fs.writeFile(target, stringifiedAmb, { encoding: 'utf8' })
       }
 
-      pathsOfTheFiles.push(...Object.keys(customAmbiences), ...Object.values(files))
+      assetList.push(...Object.keys(customAmbiences), ...Object.values(files))
     }
 
     for (const [target, amb] of Object.entries(customAmbiences)) {
@@ -522,7 +522,10 @@ ${translation}`
 
     // ------------------------
 
-    await Manifest.write(settings, pathsOfTheFiles)
+    const manifestData = await Manifest.generate(settings, assetList)
+
+    const manifestFilename = path.resolve(settings.outputDir, Manifest.filename)
+    await fs.writeFile(manifestFilename, new Uint8Array(manifestData))
   }
 
   adjustOffsetTo(map: ArxMap): void {
