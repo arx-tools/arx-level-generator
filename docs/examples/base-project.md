@@ -4,6 +4,7 @@
 import { ArxMap, Settings } from 'arx-level-generator'
 
 // reads the contents of the .env file
+// also: the presence of settings in method call arguments indicate file io happening inside (delayed as much as possible)
 const settings = new Settings()
 
 // create a blank map
