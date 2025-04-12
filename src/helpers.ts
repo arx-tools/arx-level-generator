@@ -1,3 +1,6 @@
+import { getHeaderSize } from 'arx-header-size'
+import { Bitmap, Bits } from 'binary-bmp'
+import { concatArrayBuffers, implode, sliceArrayBufferAt } from 'node-pkware/simple'
 import {
   Box3,
   type BufferGeometry,
@@ -219,4 +222,61 @@ export function triangleFitsInto100Square({ a, b, c }: Triangle): boolean {
   // TODO: more checks
 
   return true
+}
+
+const textEncoder = new TextEncoder()
+
+export function encodeText(text: string, encoding: 'utf8' | 'latin1' | 'latin9'): ArrayBufferLike {
+  if (encoding === 'utf8') {
+    return textEncoder.encode(text).buffer
+  }
+
+  if (encoding === 'latin9') {
+    return encodeText(latin9ToLatin1(text), 'latin1')
+  }
+
+  const charcodes = [...text].map((char) => {
+    return char.codePointAt(0)
+  }) as number[]
+
+  return new Uint8Array(charcodes).buffer
+}
+
+export function exportToJSON(data: any, prettify: boolean = false): ArrayBufferLike {
+  let json: string
+  if (prettify) {
+    json = JSON.stringify(data, null, '\t')
+  } else {
+    json = JSON.stringify(data)
+  }
+
+  return encodeText(json, 'utf8')
+}
+
+export function compressAs(data: ArrayBuffer, format: Parameters<typeof getHeaderSize>[1]): ArrayBuffer {
+  const { compression, total: totalHeaderSize } = getHeaderSize(data, format)
+
+  if (compression === 'none') {
+    return data
+  }
+
+  if (compression === 'full') {
+    return implode(data, 'binary', 'large')
+  }
+
+  const [header, body] = sliceArrayBufferAt(data, totalHeaderSize)
+  const compressedBody = implode(body, 'binary', 'large')
+
+  return concatArrayBuffers([header, compressedBody])
+}
+
+export function generateBlankBMP(width: number, height: number): ArrayBuffer {
+  const binary = new Bitmap({
+    bits: Bits.RGB,
+    width,
+    height,
+    data: repeat(0, width * height),
+  })
+
+  return binary.arrayBuffer()
 }
