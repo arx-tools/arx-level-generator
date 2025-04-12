@@ -8,8 +8,10 @@ import { fileExists } from '@src/node.js'
 export async function rungame(settings: Settings, otherArgs: string[]): Promise<void> {
   const operatingSystem = os.platform()
 
-  if (operatingSystem !== 'win32' && operatingSystem !== 'linux') {
-    console.error(`[error] rungame: unsupported platform (expected "win32" or "linux", but got "${operatingSystem}")`)
+  if (operatingSystem !== 'win32' && operatingSystem !== 'linux' && operatingSystem !== 'darwin') {
+    console.error(
+      `[error] rungame: unsupported platform (expected "win32", "darwin" or "linux" but got "${operatingSystem}")`,
+    )
     return
   }
 
@@ -22,6 +24,7 @@ export async function rungame(settings: Settings, otherArgs: string[]): Promise<
       break
     }
 
+    case 'darwin':
     case 'linux': {
       exeFile = path.resolve(settings.outputDir, 'arx')
       break
