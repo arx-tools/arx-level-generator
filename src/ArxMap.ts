@@ -454,12 +454,7 @@ export class ArxMap {
     // read contents of filesToCopy entries as ArrayBuffers and add them to filesToExport
 
     for (const target in filesToCopy) {
-      let source = filesToCopy[target]
-
-      if (!source.startsWith('/')) {
-        source = path.resolve(settings.assetsDir, source)
-      }
-
+      const source = filesToCopy[target]
       const file = await fs.readFile(source)
       buffersToExport[target] = file.buffer
     }
