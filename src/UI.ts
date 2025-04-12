@@ -1,5 +1,6 @@
 import path from 'node:path'
 import { type Settings } from '@src/Settings.js'
+import { type FileExports } from '@src/types.js'
 
 export enum UiElements {
   MainMenuBackground = 'main-menu-background',
@@ -22,8 +23,8 @@ export class UI {
     return this.customElements[element]
   }
 
-  exportSourcesAndTargets(settings: Settings): Record<string, string> {
-    const files: Record<string, string> = {}
+  exportSourcesAndTargets(settings: Settings): FileExports {
+    const files: FileExports = {}
 
     if (this.customElements[UiElements.MainMenuBackground] !== undefined) {
       const source = path.resolve(settings.assetsDir, this.customElements[UiElements.MainMenuBackground])

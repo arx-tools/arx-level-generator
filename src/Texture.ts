@@ -8,6 +8,7 @@ import { fileExists } from '@src/node.js'
 import { createCacheFolderIfNotExists, loadHashOf, createHashOfFile, saveHashOf } from '@services/cache.js'
 import { getMetadata, getSharpInstance } from '@services/image.js'
 import { ExportBuiltinAssetError } from '@src/errors.js'
+import { type SingleFileExport } from '@src/types.js'
 
 export type TextureConstructorProps = {
   filename: string
@@ -330,7 +331,7 @@ export class Texture extends ThreeJsTextue {
     settings: Settings,
     needsToBeTileable: boolean = false,
     _dontCatchTheError = false,
-  ): Promise<[source: string, target: string]> {
+  ): Promise<SingleFileExport> {
     if (this.isNative) {
       throw new ExportBuiltinAssetError()
     }
@@ -403,7 +404,7 @@ export class Texture extends ThreeJsTextue {
     return path.resolve(assetsDir, this.sourcePath ?? Texture.targetPath, this.filename)
   }
 
-  private async makeCopy(settings: Settings): Promise<[source: string, target: string]> {
+  private async makeCopy(settings: Settings): Promise<SingleFileExport> {
     const { ext, name } = path.parse(this.filename)
     const hasSupportedFormat = supportedExtensions.has(ext)
 
@@ -445,6 +446,7 @@ export class Texture extends ThreeJsTextue {
         break
       }
 
+      // .jpg
       default: {
         await image.jpeg({ quality: 100, progressive: false }).toFile(convertedSource)
         break
@@ -454,7 +456,7 @@ export class Texture extends ThreeJsTextue {
     return [convertedSource, convertedTarget]
   }
 
-  private async makeTileable(settings: Settings): Promise<[source: string, target: string]> {
+  private async makeTileable(settings: Settings): Promise<SingleFileExport> {
     const { ext, name } = path.parse(this.filename)
     const hasSupportedFormat = supportedExtensions.has(ext)
 
@@ -505,6 +507,7 @@ export class Texture extends ThreeJsTextue {
         break
       }
 
+      // .jpg
       default: {
         await image.jpeg({ quality: 100, progressive: false }).toFile(convertedSource)
         break

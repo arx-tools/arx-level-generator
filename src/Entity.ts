@@ -9,7 +9,7 @@ import { Script } from '@src/Script.js'
 import { type Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
-import { type TextureOrMaterial } from '@src/types.js'
+import { type FileExports, type TextureOrMaterial } from '@src/types.js'
 import { type Cube as TypeOfCube } from '@prefabs/entity/Cube.js'
 import { type ArxComponent } from '@src/ArxComponent.js'
 
@@ -360,8 +360,8 @@ export class Entity extends _Entity implements ArxComponent {
     )
   }
 
-  async exportInventoryIcon(settings: Settings): Promise<Record<string, string>> {
-    const files: Record<string, string> = {}
+  async exportInventoryIcon(settings: Settings): Promise<FileExports> {
+    const files: FileExports = {}
 
     if (!this.needsInventoryIcon()) {
       return files
@@ -400,21 +400,21 @@ export class Entity extends _Entity implements ArxComponent {
     return files
   }
 
-  async exportOtherDependencies(settings: Settings): Promise<Record<string, string>> {
-    const files: Record<string, string> = {}
+  async exportOtherDependencies(settings: Settings): Promise<FileExports> {
+    const files: FileExports = {}
 
-    for (const stuff of this.otherDependencies) {
-      if (!stuff.isNative) {
-        if (stuff instanceof Texture) {
+    for (const audioOrTexture of this.otherDependencies) {
+      if (!audioOrTexture.isNative) {
+        if (audioOrTexture instanceof Texture) {
           let hasTiledMaterialFlag = false
-          if (stuff instanceof Material) {
-            hasTiledMaterialFlag = isTiled(stuff)
+          if (audioOrTexture instanceof Material) {
+            hasTiledMaterialFlag = isTiled(audioOrTexture)
           }
 
-          const [source, target] = await stuff.exportSourceAndTarget(settings, hasTiledMaterialFlag)
+          const [source, target] = await audioOrTexture.exportSourceAndTarget(settings, hasTiledMaterialFlag)
           files[target] = source
         } else {
-          const [source, target] = stuff.exportSourceAndTarget(settings)
+          const [source, target] = audioOrTexture.exportSourceAndTarget(settings)
           files[target] = source
         }
       }

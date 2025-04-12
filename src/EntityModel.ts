@@ -13,6 +13,7 @@ import { arrayPadRight, roundToNDecimals } from '@src/helpers.js'
 import { createHashOfObject, getCacheInfo, saveHashOf } from '@services/cache.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 import { fileExists } from '@src/node.js'
+import { type FileExports } from '@src/types.js'
 
 type EntityModelConstructorProps = {
   filename: string
@@ -93,16 +94,18 @@ export class EntityModel {
   }
 
   /**
-   * targetName is the folder relative to EntityModel.targetPath without the filename,
-   * for example `items/quest_item/mirror`
+   * @param settings Settings instance (either browser or node version)
+   * @param targetName the folder relative to EntityModel.targetPath without the filename, for example `items/quest_item/mirror`
+   * @param exportJsonFiles when set to true the json version of an ftl file also gets exported (default false)
+   * @param prettify when set to true the exported json gets indented with spaces, otherwise minified (default false)
    */
   async exportSourceAndTarget(
     settings: Settings,
     targetName: string,
     exportJsonFiles: boolean = false,
     prettify: boolean = false,
-  ): Promise<Record<string, string>> {
-    const files: Record<string, string> = {}
+  ): Promise<FileExports> {
+    const files: FileExports = {}
 
     const { name: entityName } = path.parse(targetName)
     const binaryTarget = path.resolve(settings.outputDir, EntityModel.targetPath, targetName, `${entityName}.ftl`)

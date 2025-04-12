@@ -1,5 +1,6 @@
 import path from 'node:path'
 import { type Settings } from '@src/Settings.js'
+import { type FileExports } from '@src/types.js'
 
 export enum HudElements {
   Minimap = 'minimap',
@@ -52,8 +53,8 @@ export class HUD {
     }
   }
 
-  exportSourcesAndTargets(settings: Settings): Record<string, string> {
-    const files: Record<string, string> = {}
+  exportSourcesAndTargets(settings: Settings): FileExports {
+    const files: FileExports = {}
 
     if (this.elementVisibility[HudElements.Minimap] === false) {
       const source = path.resolve(settings.internalAssetsDir, 'reset/blank-360x532.bmp')

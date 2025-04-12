@@ -4,6 +4,7 @@ import { AmbienceTrack } from '@src/AmbienceTrack.js'
 import { type Audio } from '@src/Audio.js'
 import { type Settings } from '@src/Settings.js'
 import { ExportBuiltinAssetError } from '@src/errors.js'
+import { type FileExports } from '@src/types.js'
 
 type AmbienceConstructorProps = {
   name: string
@@ -235,15 +236,16 @@ export class Ambience {
   /**
    * @throws ExportBuiltinAssetError when trying to export an Audio that's built into the base game
    */
-  exportSourcesAndTargets(settings: Settings): [source: string, target: string][] {
+  exportSourcesAndTargets(settings: Settings): FileExports {
     if (this.isNative) {
       throw new ExportBuiltinAssetError()
     }
 
-    const results: [source: string, target: string][] = []
+    const results: FileExports = {}
 
     for (const track of this.tracks) {
-      results.push(track.exportSourceAndTarget(settings))
+      const [source, target] = track.exportSourceAndTarget(settings)
+      results[source] = target
     }
 
     return results

@@ -37,3 +37,23 @@ export type OriginalLevel =
 export type TextureOrMaterial = Texture | Material
 
 export type VerticalAlign = 'top' | 'middle' | 'bottom'
+
+/**
+ * `{ [target]: source }`
+ *
+ * where:
+ * - target = filename
+ * - source = filename
+ */
+export type FileExports = Record<string, string>
+
+/**
+ * `{ [target]: source }`
+ *
+ * where:
+ * - target = filename
+ * - source = text content
+ */
+export type TextExports = Record<string, string>
+
+export type SingleFileExport = [source: string, target: string]
