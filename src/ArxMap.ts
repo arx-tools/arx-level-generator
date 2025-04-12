@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { AMB } from 'arx-convert'
+import { AMB, DLF, FTS, LLF } from 'arx-convert'
 import {
   ArxLightFlags,
   type ArxAMB,
@@ -42,11 +42,10 @@ import { UI } from '@src/UI.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Zone } from '@src/Zone.js'
 import { Zones } from '@src/Zones.js'
-import { compile } from '@src/compile.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
-import { groupSequences, times, uniq } from '@src/faux-ramda.js'
-import { latin9ToLatin1, percentOf } from '@src/helpers.js'
-import { type FileExports, type TextExports, type OriginalLevel, type ArrayBufferExports } from '@src/types.js'
+import { groupSequences, times } from '@src/faux-ramda.js'
+import { percentOf, encodeJSON, compressAs, encodeText } from '@src/helpers.js'
+import { type FileExports, type OriginalLevel, type ArrayBufferExports } from '@src/types.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 import { Texture } from '@src/Texture.js'
 import { type Vertex } from '@src/Vertex.js'
@@ -98,7 +97,7 @@ export class ArxMap {
 
   private static async getGeneratorId(): Promise<string> {
     const generator = await getGeneratorPackageJSON()
-    return `${generator.name} - v${generator.version}`
+    return `${generator.name} - version ${generator.version}`
   }
 
   polygons: Polygons
@@ -307,30 +306,76 @@ export class ArxMap {
     console.log(`[info] ArxMap: output directory = "${settings.outputDir}"`)
 
     const manifest = new Manifest(settings)
+
     await manifest.uninstall()
 
-    const meta = await generateMetadata(settings)
+    const buffersToExport: ArrayBufferExports = {
+      ...this.hud.exportSourcesAndTargets(settings),
+    }
+
+    let filesToCopy: FileExports = {
+      ...this.ui.exportSourcesAndTargets(settings),
+      ...(await this.polygons.exportTextures(settings)),
+      ...Audio.exportReplacements(settings),
+    }
+
+    for (const entity of this.entities) {
+      if (entity.hasScript()) {
+        const filename = entity.exportScriptTarget(settings)
+        const content = entity.script.toArxData().replaceAll('\n', Script.EOL)
+        buffersToExport[filename] = encodeText(content, 'latin9')
+
+        filesToCopy = {
+          ...filesToCopy,
+          ...(await entity.script.exportTextures(settings)),
+        }
+      }
+
+      if (entity.hasInventoryIcon()) {
+        filesToCopy = {
+          ...filesToCopy,
+          ...(await entity.exportInventoryIcon(settings)),
+        }
+      }
+
+      if (entity.hasModel()) {
+        filesToCopy = {
+          ...filesToCopy,
+          ...(await entity.model.exportSourceAndTarget(settings, entity.src, exportJsonFiles, prettify)),
+        }
+      }
+
+      filesToCopy = {
+        ...filesToCopy,
+        ...(await entity.exportOtherDependencies(settings)),
+      }
+    }
+
+    if (this.player.hasScript()) {
+      const filename = this.player.exportTarget(settings)
+      const content = this.player.script.toArxData().replaceAll('\n', Script.EOL)
+      buffersToExport[filename] = encodeText(content, 'latin9')
+
+      filesToCopy = {
+        ...filesToCopy,
+        ...(await this.player.script.exportTextures(settings)),
+      }
+    }
 
     // ------------------------
 
-    let textures = await this.polygons.exportTextures(settings)
+    const generatorId = await ArxMap.getGeneratorId()
+    const meta = await generateMetadata(settings)
 
-    const hudElements = this.hud.exportSourcesAndTargets(settings)
-    const uiElements = this.ui.exportSourcesAndTargets(settings)
+    const translations = this.i18n.exportSourcesAndTargets(settings)
 
-    let ambienceTracks: FileExports = {}
-    this.zones.forEach((zone) => {
-      if (!zone.hasAmbience() || zone.ambience.isNative) {
-        return
-      }
-
-      ambienceTracks = {
-        ...ambienceTracks,
-        ...zone.ambience.exportSourcesAndTargets(settings),
-      }
-    })
+    for (const [filename, translation] of Object.entries(translations)) {
+      const content = `// ${meta.name} v.${meta.version} - ${generatorId}\n\n${translation}`
+      buffersToExport[filename] = encodeText(content, 'utf8')
+    }
 
     let customAmbiences: Record<string, ArxAMB> = {}
+
     this.zones.forEach((zone) => {
       if (!zone.hasAmbience() || zone.ambience.isNative) {
         return
@@ -340,132 +385,93 @@ export class ArxMap {
         ...customAmbiences,
         ...zone.ambience.toArxData(settings),
       }
+
+      filesToCopy = {
+        ...filesToCopy,
+        ...zone.ambience.exportSourcesAndTargets(settings),
+      }
     })
-
-    const scripts: TextExports = {}
-    let models: FileExports = {}
-    let otherDependencies: FileExports = {}
-
-    for (const entity of this.entities) {
-      if (entity.hasScript()) {
-        const filename = entity.exportScriptTarget(settings)
-        const content = entity.script.toArxData()
-        scripts[filename] = content
-
-        textures = {
-          ...textures,
-          ...(await entity.script.exportTextures(settings)),
-        }
-      }
-
-      if (entity.hasInventoryIcon()) {
-        textures = {
-          ...textures,
-          ...(await entity.exportInventoryIcon(settings)),
-        }
-      }
-
-      if (entity.hasModel()) {
-        models = {
-          ...models,
-          ...(await entity.model.exportSourceAndTarget(settings, entity.src, exportJsonFiles, prettify)),
-        }
-      }
-
-      otherDependencies = {
-        ...otherDependencies,
-        ...(await entity.exportOtherDependencies(settings)),
-      }
-    }
-
-    const sounds = Audio.exportReplacements(settings)
-
-    // removing root entities while also making sure the entities land in an Entities object and not in an array
-    const nonRootEntities = new Entities()
-    this.entities.forEach((entity) => {
-      if (entity.hasScript() && entity.script.isRoot) {
-        return
-      }
-
-      nonRootEntities.push(entity)
-    })
-
-    this.entities = nonRootEntities
-
-    if (this.player.hasScript()) {
-      const filename = this.player.exportTarget(settings)
-      const content = this.player.script.toArxData()
-      scripts[filename] = content
-
-      textures = {
-        ...textures,
-        ...(await this.player.script.exportTextures(settings)),
-      }
-    }
-
-    const translations = this.i18n.exportSourcesAndTargets(settings)
-
-    const files = {
-      dlf: path.resolve(
-        settings.outputDir,
-        `graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.dlf.json`,
-      ),
-      fts: path.resolve(settings.outputDir, `game/graph/levels/level${settings.levelIdx}/fast.fts.json`),
-      llf: path.resolve(
-        settings.outputDir,
-        `graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.llf.json`,
-      ),
-    }
-
-    const assetList = [
-      ...Object.keys(textures),
-      ...Object.keys(models),
-      ...Object.keys(otherDependencies),
-      ...Object.keys(sounds),
-      ...Object.keys(hudElements),
-      ...Object.keys(uiElements),
-      ...Object.keys(ambienceTracks),
-      ...Object.keys(customAmbiences).map((filename) => {
-        return filename.replace(/\.json$/, '')
-      }),
-      ...Object.keys(scripts),
-      ...Object.keys(translations),
-      ...Object.values(files).map((filename) => {
-        return filename.replace(/\.json$/, '')
-      }),
-    ]
-
-    const dirnames = uniq(
-      assetList.map((filePath) => {
-        return path.dirname(filePath)
-      }),
-    )
-    for (const dirname of dirnames) {
-      await fs.mkdir(dirname, { recursive: true })
-    }
 
     // ------------------------
 
-    const filesToCopy = [
-      ...Object.entries(textures),
-      ...Object.entries(uiElements),
-      ...Object.entries(ambienceTracks),
-      ...Object.entries(models),
-      ...Object.entries(otherDependencies),
-      ...Object.entries(sounds),
-    ]
+    const { dlf, fts, llf } = await this.toArxData(settings)
 
-    for (const [target, source] of filesToCopy) {
-      await fs.copyFile(source, target)
+    const binaryFts = FTS.save(fts, settings.uncompressedFTS === false)
+    const binaryFtsFilename = path.resolve(settings.outputDir, `game/graph/levels/level${settings.levelIdx}/fast.fts`)
+    buffersToExport[binaryFtsFilename] = compressAs(binaryFts, 'fts')
+
+    const binaryDlf = DLF.save(dlf)
+    const binaryDlfFilename = path.resolve(
+      settings.outputDir,
+      `graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.dlf`,
+    )
+    buffersToExport[binaryDlfFilename] = compressAs(binaryDlf, 'dlf')
+
+    const binaryLlf = LLF.save(llf)
+    const binaryLlfFilename = path.resolve(
+      settings.outputDir,
+      `graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.llf`,
+    )
+    buffersToExport[binaryLlfFilename] = compressAs(binaryLlf, 'llf')
+
+    for (const [target, amb] of Object.entries(customAmbiences)) {
+      const binaryAmb = AMB.save(amb)
+      buffersToExport[target] = compressAs(binaryAmb, 'amb')
     }
 
-    const filesToExport: ArrayBufferExports = {
-      ...this.hud.exportSourcesAndTargets(settings),
+    // ------------------------
+    // save variants of binaries as json if needed
+
+    if (exportJsonFiles) {
+      const jsonFts = encodeJSON(fts, prettify)
+      const jsonFtsFilename = path.resolve(
+        settings.outputDir,
+        `game/graph/levels/level${settings.levelIdx}/fast.fts.json`,
+      )
+      buffersToExport[jsonFtsFilename] = jsonFts
+
+      const jsonDlf = encodeJSON(dlf, prettify)
+      const jsonDlfFilename = path.resolve(
+        settings.outputDir,
+        `graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.dlf.json`,
+      )
+      buffersToExport[jsonDlfFilename] = jsonDlf
+
+      const jsonLlf = encodeJSON(llf, prettify)
+      const jsonLlfFilename = path.resolve(
+        settings.outputDir,
+        `graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.llf.json`,
+      )
+      buffersToExport[jsonLlfFilename] = jsonLlf
+
+      for (const [target, amb] of Object.entries(customAmbiences)) {
+        const jsonAmb = encodeJSON(amb, prettify)
+        buffersToExport[target + '.json'] = jsonAmb
+      }
     }
 
-    // TODO: move this lower in the file closest to the manifest generation
-    for (const target in filesToExport) {
-      const data = filesToExport[target]
+    // ------------------------
+    // read contents of filesToCopy entries as ArrayBuffers and add them to filesToExport
+
+    for (const target in filesToCopy) {
+      let source = filesToCopy[target]
+
+      if (!source.startsWith('/')) {
+        source = path.resolve(settings.assetsDir, source)
+      }
+
+      const file = await fs.readFile(source)
+      buffersToExport[target] = file.buffer
+    }
+
+    // ------------------------
+    // lastly create a manifest.json file with all the files that the level generator is exporting
+
+    buffersToExport['manifest.json'] = await manifest.generate(Object.keys(buffersToExport))
+
+    // write the ArrayBuffers of buffersToExport into files
+    for (const target in buffersToExport) {
+      const data = buffersToExport[target]
 
       const dirname = path.dirname(target)
       await fs.mkdir(dirname, { recursive: true })
@@ -473,73 +479,6 @@ export class ArxMap {
       const wrappedData = new Uint8Array(data)
       await fs.writeFile(target, wrappedData)
     }
-
-    // ------------------------
-
-    for (const [target, script] of Object.entries(scripts)) {
-      const latin1Script = latin9ToLatin1(script.replaceAll('\n', Script.EOL))
-      await fs.writeFile(target, latin1Script, { encoding: 'latin1' })
-    }
-
-    const generatorId = await ArxMap.getGeneratorId()
-
-    for (const [filename, translation] of Object.entries(translations)) {
-      const content = `// ${meta.name} v.${meta.version} - ${generatorId}
-
-${translation}`
-
-      await fs.writeFile(filename, content, { encoding: 'utf8' })
-    }
-
-    // ------------------------
-
-    const { dlf, fts, llf } = await this.toArxData(settings)
-
-    if (exportJsonFiles) {
-      let stringifiedDlf: string
-      let stringifiedFts: string
-      let stringifiedLlf: string
-
-      if (prettify) {
-        stringifiedDlf = JSON.stringify(dlf, null, '\t')
-        stringifiedFts = JSON.stringify(fts, null, '\t')
-        stringifiedLlf = JSON.stringify(llf, null, '\t')
-      } else {
-        stringifiedDlf = JSON.stringify(dlf)
-        stringifiedFts = JSON.stringify(fts)
-        stringifiedLlf = JSON.stringify(llf)
-      }
-
-      await fs.writeFile(files.dlf, stringifiedDlf, { encoding: 'utf8' })
-      await fs.writeFile(files.fts, stringifiedFts, { encoding: 'utf8' })
-      await fs.writeFile(files.llf, stringifiedLlf, { encoding: 'utf8' })
-
-      for (const [target, amb] of Object.entries(customAmbiences)) {
-        let stringifiedAmb: string
-        if (prettify) {
-          stringifiedAmb = JSON.stringify(amb, null, '\t')
-        } else {
-          stringifiedAmb = JSON.stringify(amb)
-        }
-
-        await fs.writeFile(target, stringifiedAmb, { encoding: 'utf8' })
-      }
-
-      assetList.push(...Object.keys(customAmbiences), ...Object.values(files))
-    }
-
-    for (const [target, amb] of Object.entries(customAmbiences)) {
-      const compiledAmb = AMB.save(amb)
-      await fs.writeFile(target.replace(/\.json$/, ''), new Uint8Array(compiledAmb))
-    }
-
-    await compile(settings, { dlf, fts, llf })
-
-    // ------------------------
-
-    const manifestData = await manifest.generate(assetList)
-    const manifestFilename = path.resolve(settings.outputDir, Manifest.filename)
-    await fs.writeFile(manifestFilename, new Uint8Array(manifestData))
   }
 
   adjustOffsetTo(map: ArxMap): void {
@@ -617,6 +556,13 @@ ${translation}`
     const now = Math.floor(Date.now() / 1000)
     const generatorId = await ArxMap.getGeneratorId()
 
+    const nonRootEntities = new Entities(
+      ...this.entities.filter((entity) => {
+        const isRoot = entity.hasScript() && entity.script.isRoot
+        return !isRoot
+      }),
+    )
+
     const dlf: ArxDLF = {
       header: {
         lastUser: generatorId,
@@ -632,6 +578,7 @@ ${translation}`
       ...this.paths.toArxData(),
       ...this.zones.toArxData(),
       ...this.entities.toArxData(),
+      ...nonRootEntities.toArxData(),
     }
 
     const fts: ArxFTS = {

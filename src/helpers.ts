@@ -242,7 +242,7 @@ export function encodeText(text: string, encoding: 'utf8' | 'latin1' | 'latin9')
   return new Uint8Array(charcodes).buffer
 }
 
-export function exportToJSON(data: any, prettify: boolean = false): ArrayBufferLike {
+export function encodeJSON(data: any, prettify: boolean = false): ArrayBufferLike {
   let json: string
   if (prettify) {
     json = JSON.stringify(data, null, '\t')

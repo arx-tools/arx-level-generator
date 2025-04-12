@@ -64,7 +64,7 @@ export type SingleFileExport = [source: string, target: string]
  * - target = output filename
  * - source = input ArrayBuffer
  */
-export type ArrayBufferExports = Record<string, ArrayBuffer>
+export type ArrayBufferExports = Record<string, ArrayBufferLike>
 
 /**
  * `{ [target]: source }`
