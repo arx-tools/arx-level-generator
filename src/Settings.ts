@@ -185,13 +185,8 @@ export class Settings {
   readonly uncompressedFTS: boolean
 
   constructor(props: SettingsConstructorProps = {}) {
-    this.originalLevelFiles =
-      props.originalLevelFiles ?? process.env.originalLevelFiles ?? path.resolve('../pkware-test-files')
-
-    this.cacheDir = props.cacheDir ?? process.env.cacheDir ?? path.resolve('./cache')
-    this.outputDir = props.outputDir ?? process.env.outputDir ?? path.resolve('./output')
     this.levelIdx = props.levelIdx ?? Number.parseInt(process.env.levelIdx ?? '1', 10)
-    this.assetsDir = props.assetsDir ?? process.env.assetsDir ?? path.resolve('./assets')
+
     this.calculateLighting = props.calculateLighting ?? process.env.calculateLighting !== 'false'
 
     let fallbackLCM: LightingCalculatorMode
@@ -202,8 +197,6 @@ export class Settings {
     }
 
     this.lightingCalculatorMode = props.lightingCalculatorMode ?? fallbackLCM
-
-    this.seed = props.seed ?? process.env.seed ?? randomIntBetween(100_000_000, 999_999_999).toString()
 
     let fallbackMode: Modes
     if (process.env.mode === 'development') {
@@ -216,11 +209,19 @@ export class Settings {
 
     this.uncompressedFTS = props.uncompressedFTS ?? process.env.uncompressedFTS === 'true'
 
+    this.seed = props.seed ?? process.env.seed ?? randomIntBetween(100_000_000, 999_999_999).toString()
     seedrandom(this.seed, { global: true })
 
-    const filename = fileURLToPath(import.meta.url)
-    const dirname = path.dirname(filename)
+    const pathToThisFile = fileURLToPath(import.meta.url)
+    const dirContainingThisFile = path.dirname(pathToThisFile)
+    this.internalAssetsDir = path.resolve(dirContainingThisFile, '../assets')
 
-    this.internalAssetsDir = path.resolve(dirname, '../assets')
+    this.assetsDir = props.assetsDir ?? process.env.assetsDir ?? path.resolve('./assets')
+
+    this.originalLevelFiles =
+      props.originalLevelFiles ?? process.env.originalLevelFiles ?? path.resolve('../pkware-test-files')
+
+    this.cacheDir = props.cacheDir ?? process.env.cacheDir ?? path.resolve('./cache')
+    this.outputDir = props.outputDir ?? process.env.outputDir ?? path.resolve('./output')
   }
 }
