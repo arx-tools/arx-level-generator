@@ -390,7 +390,9 @@ export class Texture extends ThreeJsTextue {
       return false
     }
 
-    return textures.some(this.equals.bind(this))
+    return textures.some((texture) => {
+      return this.equals(texture)
+    })
   }
 
   private getFilename(settings: Settings): string {
