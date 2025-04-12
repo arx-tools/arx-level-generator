@@ -226,6 +226,10 @@ export function triangleFitsInto100Square({ a, b, c }: Triangle): boolean {
 
 const textEncoder = new TextEncoder()
 
+/**
+ * latin1 = ISO 8859-1
+ * latin9 = ISO 8859-15
+ */
 export function encodeText(text: string, encoding: 'utf8' | 'latin1' | 'latin9'): ArrayBufferLike {
   if (encoding === 'utf8') {
     return textEncoder.encode(text).buffer
