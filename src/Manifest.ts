@@ -14,38 +14,33 @@ export type ManifestData = Expand<
 export class Manifest {
   static filename: string = 'manifest.json'
 
-  static getPathToFilename(settings: Settings): string {
-    return path.resolve(settings.outputDir, Manifest.filename)
+  settings: Settings
+
+  constructor(settings: Settings) {
+    this.settings = settings
   }
 
-  static async exists(settings: Settings): Promise<boolean> {
-    const filename = Manifest.getPathToFilename(settings)
-    return fileExists(filename)
-  }
+  async uninstall(): Promise<void> {
+    const manifest = (await this.read()) ?? { files: [] }
 
-  static async read(settings: Settings): Promise<ManifestData | undefined> {
-    const filename = Manifest.getPathToFilename(settings)
-
-    if ((await Manifest.exists(settings)) === false) {
-      return undefined
+    for (const file of manifest.files) {
+      try {
+        await fs.rm(path.resolve(this.settings.outputDir, file))
+      } catch {}
     }
 
     try {
-      const rawIn = await fs.readFile(filename, { encoding: 'utf8' })
-      return JSON.parse(rawIn) as ManifestData
-    } catch {
-      console.error(`[error] Manifest: failed to read or parse "${Manifest.filename}" in "${settings.outputDir}"`)
-      return undefined
-    }
+      await fs.rm(this.getPathToFilename())
+    } catch {}
   }
 
-  static async generate(settings: Settings, files: string[], prettify: boolean = false): Promise<ArrayBufferLike> {
-    const metaData = await generateMetadata(settings)
+  async generate(files: string[], prettify: boolean = false): Promise<ArrayBufferLike> {
+    const metaData = await generateMetadata(this.settings)
 
     const manifest: ManifestData = {
       ...metaData,
       files: files.map((file) => {
-        return file.replace(settings.outputDir, '')
+        return file.replace(this.settings.outputDir, '')
       }),
     }
 
@@ -62,21 +57,28 @@ export class Manifest {
     return view.buffer
   }
 
-  static async uninstall(settings: Settings): Promise<void> {
-    if ((await Manifest.exists(settings)) === false) {
-      return
-    }
+  private getPathToFilename(): string {
+    return path.resolve(this.settings.outputDir, Manifest.filename)
+  }
 
-    const manifest = (await Manifest.read(settings)) ?? { files: [] }
+  private async exists(): Promise<boolean> {
+    const filename = this.getPathToFilename()
+    return fileExists(filename)
+  }
 
-    for (const file of manifest.files) {
-      try {
-        await fs.rm(path.resolve(settings.outputDir, file))
-      } catch {}
+  private async read(): Promise<ManifestData | undefined> {
+    const filename = this.getPathToFilename()
+
+    if ((await this.exists()) === false) {
+      return undefined
     }
 
     try {
-      await fs.rm(Manifest.getPathToFilename(settings))
-    } catch {}
+      const rawIn = await fs.readFile(filename, { encoding: 'utf8' })
+      return JSON.parse(rawIn) as ManifestData
+    } catch {
+      console.error(`[error] Manifest: failed to read or parse "${Manifest.filename}" in "${this.settings.outputDir}"`)
+      return undefined
+    }
   }
 }

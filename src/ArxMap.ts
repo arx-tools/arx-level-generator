@@ -306,7 +306,8 @@ export class ArxMap {
     console.log(`[info] ArxMap: seed = "${settings.seed}"`)
     console.log(`[info] ArxMap: output directory = "${settings.outputDir}"`)
 
-    await Manifest.uninstall(settings)
+    const manifest = new Manifest(settings)
+    await manifest.uninstall()
 
     const meta = await generateMetadata(settings)
 
@@ -522,8 +523,7 @@ ${translation}`
 
     // ------------------------
 
-    const manifestData = await Manifest.generate(settings, assetList)
-
+    const manifestData = await manifest.generate(assetList)
     const manifestFilename = path.resolve(settings.outputDir, Manifest.filename)
     await fs.writeFile(manifestFilename, new Uint8Array(manifestData))
   }
