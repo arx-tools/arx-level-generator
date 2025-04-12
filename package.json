@@ -93,10 +93,11 @@
   "homepage": "https://github.com/arx-tools/arx-level-generator#readme",
   "dependencies": {
     "arx-header-size": "^3.2.0",
+    "binary-bmp": "^1.2.2",
     "color-rgba": "^3.0.0",
     "dotenv": "^16.4.7",
     "minimist-lite": "^2.2.1",
-    "node-pkware": "^5.0.1",
+    "node-pkware": "^5.1.0",
     "object-hash": "^3.0.0",
     "seedrandom": "^3.0.5",
     "sharp": "^0.33.5",
