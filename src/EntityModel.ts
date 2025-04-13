@@ -95,7 +95,7 @@ export class EntityModel {
 
   /**
    * @param settings Settings instance (either browser or node version)
-   * @param targetName the folder relative to EntityModel.targetPath without the filename, for example `items/quest_item/mirror`
+   * @param targetName full path if extension exists at the end of the string or the folder relative to EntityModel.targetPath without the filename, for example `items/quest_item/mirror`
    * @param exportJsonFiles when set to true the json version of an ftl file also gets exported (default false)
    * @param prettify when set to true the exported json gets indented with spaces, otherwise minified (default false)
    */
@@ -107,8 +107,16 @@ export class EntityModel {
   ): Promise<FileExports> {
     const files: FileExports = {}
 
-    const { name: entityName } = path.parse(targetName)
-    const binaryTarget = path.resolve(settings.outputDir, EntityModel.targetPath, targetName, `${entityName}.ftl`)
+    const { name: entityName, ext } = path.parse(targetName)
+    let binaryTarget: string
+    if (ext === '') {
+      // "items/quest_item/mirror" -> "game/graph/obj3d/interactive/items/quest_item/mirror/mirror.ftl"
+      binaryTarget = path.resolve(settings.outputDir, EntityModel.targetPath, targetName, `${entityName}.ftl`)
+    } else {
+      // "items/quest_item/mirror/mirror.xyz" -> "game/graph/obj3d/interactive/items/quest_item/mirror/mirror.xyz"
+      binaryTarget = path.resolve(settings.outputDir, EntityModel.targetPath, targetName)
+    }
+
     const jsonTarget = `${binaryTarget}.json`
 
     if (this.mesh === undefined) {

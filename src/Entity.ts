@@ -42,6 +42,7 @@ export type EntityConstructorProps = {
    * stuff that I can't put elsewhere, but needs to get exported
    */
   otherDependencies?: (Audio | TextureOrMaterial)[]
+  tweaks?: Record<string, EntityModel>
 }
 
 export type EntityConstructorPropsWithoutSrc = Expand<Omit<EntityConstructorProps, 'src'>>
@@ -222,6 +223,7 @@ export class Entity extends _Entity implements ArxComponent {
    * stuff that I can't put elsewhere, but needs to get exported
    */
   otherDependencies: (Audio | TextureOrMaterial)[]
+  tweaks: Record<string, EntityModel>
 
   constructor(props: EntityConstructorProps) {
     super()
@@ -243,6 +245,8 @@ export class Entity extends _Entity implements ArxComponent {
     this.model = props.model
 
     this.otherDependencies = props.otherDependencies ?? []
+
+    this.tweaks = props.tweaks ?? {}
   }
 
   /**

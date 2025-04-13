@@ -345,6 +345,13 @@ export class ArxMap {
         }
       }
 
+      for (const [tweakName, tweakModel] of Object.entries(entity.tweaks)) {
+        filesToCopy = {
+          ...filesToCopy,
+          ...(await tweakModel.exportSourceAndTarget(settings, tweakName, exportJsonFiles, prettify)),
+        }
+      }
+
       filesToCopy = {
         ...filesToCopy,
         ...(await entity.exportOtherDependencies(settings)),
