@@ -209,7 +209,7 @@ export class Settings {
 
     this.uncompressedFTS = props.uncompressedFTS ?? process.env.uncompressedFTS === 'true'
 
-    this.seed = props.seed ?? process.env.seed ?? randomIntBetween(100_000_000, 999_999_999).toString()
+    this.seed = props.seed ?? process.env.seed ?? this.createRandomSeed()
     seedrandom(this.seed, { global: true })
 
     const pathToThisFile = fileURLToPath(import.meta.url)
@@ -223,5 +223,9 @@ export class Settings {
 
     this.cacheDir = props.cacheDir ?? process.env.cacheDir ?? path.resolve('./cache')
     this.outputDir = props.outputDir ?? process.env.outputDir ?? path.resolve('./output')
+  }
+
+  private createRandomSeed(): string {
+    return randomIntBetween(100_000_000, 999_999_999).toString()
   }
 }
