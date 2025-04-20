@@ -4,12 +4,12 @@ A node.js library for creating maps for the video game [Arx Fatalis](https://en.
 
 ## Dependencies
 
-**three.js version 0.167.0**
+**three.js version 0.175.0**
 
 The package uses a specific version of three.js and so it is marked as a peer dependency.
 Always check the currently used version to avoid warnings and errors in your project
 
-**arx-convert version 10.1.1**
+**arx-convert version 10.3.2**
 
 Another peer dependency with data types and conversion tools for arx related formats.
 
