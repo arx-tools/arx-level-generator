@@ -4,8 +4,8 @@ declare global {
       originalLevelFiles?: string
       cacheDir?: string
       outputDir?: string
-      levelIdx?: string
       assetsDir?: string
+      levelIdx?: string
       calculateLighting?: string
       lightingCalculatorMode?: string
       seed?: string

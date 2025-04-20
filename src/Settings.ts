@@ -27,30 +27,35 @@ export type SettingsConstructorProps = {
    * default value is "../pkware-test-files" relative to the project root
    */
   originalLevelFiles?: string
+
   /**
    * can also be set via `process.env.cacheDir`
    *
    * default value is "./cache" relative to the project root
    */
   cacheDir?: string
+
   /**
    * can also be set via `process.env.outputDir`
    *
    * default value is "./output" relative to the project root
    */
   outputDir?: string
-  /**
-   * can also be set via `process.env{calculateLighting: Settings[calculateLighting]}.levelIdx`
-   *
-   * default value is 1
-   */
-  levelIdx?: number
+
   /**
    * can also be set via `process.env.assetsDir`
    *
    * default value is "./assets" relative to the project root
    */
   assetsDir?: string
+
+  /**
+   * can also be set via `process.env.levelIdx`
+   *
+   * default value is 1
+   */
+  levelIdx?: number
+
   /**
    * can also be set via `process.env.calculateLighting`
    *
@@ -62,6 +67,7 @@ export type SettingsConstructorProps = {
    * an existing arx level) then the lighting information is kept as is
    */
   calculateLighting?: boolean
+
   /**
    * can also be set via `process.env.lightingCalculatorMode`
    *
@@ -75,6 +81,7 @@ export type SettingsConstructorProps = {
    * default value is "Arx"
    */
   lightingCalculatorMode?: LightingCalculatorMode
+
   /**
    * can also be set via `process.env.seed`
    *
@@ -82,6 +89,7 @@ export type SettingsConstructorProps = {
    * between 100.000.000 and 999.999.999
    */
   seed?: string
+
   /**
    * This field allows branching the code based on what phase the project
    * is in. For example a cutscene in the beginning of a map can be turned
@@ -93,6 +101,7 @@ export type SettingsConstructorProps = {
    * default value is "production"
    */
   mode?: Modes
+
   /**
    * When this is set to true FTS files will not get compressed with pkware
    * after compiling. This is an Arx Libertatis 1.3+ feature!
@@ -112,30 +121,35 @@ export class Settings {
    * default value is "../pkware-test-files" relative to the project root
    */
   readonly originalLevelFiles: string
+
   /**
    * can also be set via `process.env.cacheDir`
    *
    * default value is "./cache" relative to the project root
    */
   readonly cacheDir: string
+
   /**
    * can also be set via `process.env.outputDir`
    *
    * default value is "./output" relative to the project root
    */
   readonly outputDir: string
-  /**
-   * can also be set via `process.env.levelIdx`
-   *
-   * default value is 1
-   */
-  readonly levelIdx: number
+
   /**
    * can also be set via `process.env.assetsDir`
    *
    * default value is "./assets" relative to the project root
    */
   readonly assetsDir: string
+
+  /**
+   * can also be set via `process.env.levelIdx`
+   *
+   * default value is 1
+   */
+  readonly levelIdx: number
+
   /**
    * can also be set via `process.env.calculateLighting`
    *
@@ -146,12 +160,14 @@ export class Settings {
    * an existing arx level) then the lighting information is kept as is
    */
   readonly calculateLighting: boolean
+
   /**
    * can also be set via `process.env.lightingCalculatorMode`
    *
    * default value is "Arx"
    */
   readonly lightingCalculatorMode: LightingCalculatorMode
+
   /**
    * can also be set via `process.env.seed`
    *
@@ -159,6 +175,7 @@ export class Settings {
    * between 100.000.000 and 999.999.999
    */
   readonly seed: string
+
   /**
    * This field allows branching the code based on what phase the project
    * is in. For example a cutscene in the beginning of a map can be turned
