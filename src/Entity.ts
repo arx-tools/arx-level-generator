@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { type ArxInteractiveObject } from 'arx-convert/types'
-import { type Expand, isTiled } from 'arx-convert/utils'
+import { isTiled } from 'arx-convert/utils'
 import { type Audio } from '@src/Audio.js'
 import { type EntityModel } from '@src/EntityModel.js'
 import { Material } from '@src/Material.js'
@@ -12,6 +12,7 @@ import { Vector3 } from '@src/Vector3.js'
 import { type FileExports, type TextureOrMaterial } from '@src/types.js'
 import { type Cube as TypeOfCube } from '@prefabs/entity/Cube.js'
 import { type ArxComponent } from '@src/ArxComponent.js'
+import type { Simplify } from 'type-fest'
 
 export type EntityConstructorProps = {
   id?: number
@@ -45,7 +46,7 @@ export type EntityConstructorProps = {
   tweaks?: Record<string, EntityModel>
 }
 
-export type EntityConstructorPropsWithoutSrc = Expand<Omit<EntityConstructorProps, 'src'>>
+export type EntityConstructorPropsWithoutSrc = Simplify<Omit<EntityConstructorProps, 'src'>>
 
 abstract class _Entity {}
 

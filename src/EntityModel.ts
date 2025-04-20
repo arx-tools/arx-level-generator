@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { FTL } from 'arx-convert'
 import { type ArxAction, type ArxFTL, ArxFaceType, type ArxFace, type ArxFtlVertex } from 'arx-convert/types'
-import { type Expand, type QuadrupleOf, type TripleOf } from 'arx-convert/utils'
+import { type QuadrupleOf, type TripleOf } from 'arx-convert/utils'
 import { type BufferAttribute, MathUtils, type Mesh, MeshBasicMaterial, Vector2 } from 'three'
 import { Polygons } from '@src/Polygons.js'
 import { type Settings } from '@src/Settings.js'
@@ -14,6 +14,7 @@ import { createHashOfObject, getCacheInfo, saveHashOf } from '@services/cache.js
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 import { fileExists } from '@src/node.js'
 import { type FileExports } from '@src/types.js'
+import type { Simplify } from 'type-fest'
 
 type EntityModelConstructorProps = {
   filename: string
@@ -42,7 +43,7 @@ export class EntityModel {
    */
   static fromThreeJsObj(
     threeJsObj: Mesh,
-    props: Expand<EntityModelConstructorProps & { originIdx?: number }>,
+    props: Simplify<EntityModelConstructorProps & { originIdx?: number }>,
   ): EntityModel {
     const model = new EntityModel(props)
 
@@ -59,7 +60,7 @@ export class EntityModel {
    */
   static fromPolygons(
     polygons: Polygons,
-    props: Expand<EntityModelConstructorProps & { originIdx?: number }>,
+    props: Simplify<EntityModelConstructorProps & { originIdx?: number }>,
   ): EntityModel {
     const model = new EntityModel(props)
 

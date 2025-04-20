@@ -1,4 +1,3 @@
-import { type Expand } from 'arx-convert/utils'
 import { Audio } from '@src/Audio.js'
 import { Entity, type EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 import { LoadAnim } from '@scripting/commands/LoadAnim.js'
@@ -6,8 +5,9 @@ import { Interactivity } from '@scripting/properties/Interactivity.js'
 import { Scale } from '@scripting/properties/Scale.js'
 import { Speed } from '@scripting/properties/Speed.js'
 import { Variable } from '@scripting/properties/Variable.js'
+import type { Simplify } from 'type-fest'
 
-type LeverConstructorProps = Expand<
+type LeverConstructorProps = Simplify<
   EntityConstructorPropsWithoutSrc & {
     isSilent?: boolean
   }

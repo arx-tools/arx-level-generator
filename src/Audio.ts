@@ -1,9 +1,9 @@
 import path from 'node:path'
-import { type Expand } from 'arx-convert/utils'
 import { type Settings } from '@src/Settings.js'
 import { type Locales, toArxLocale } from '@src/Translations.js'
 import { ExportBuiltinAssetError } from '@src/errors.js'
 import { type FileExports, type SingleFileExport } from '@src/types.js'
+import type { Simplify } from 'type-fest'
 
 export type AudioType = `speech/${Locales}` | 'sfx'
 
@@ -34,7 +34,7 @@ abstract class _Audio {
 export class Audio extends _Audio {
   static replacements: Record<string, _Audio> = {}
 
-  static fromCustomFile(props: Expand<Omit<AudioConstructorProps, 'isNative'>>): Audio {
+  static fromCustomFile(props: Simplify<Omit<AudioConstructorProps, 'isNative'>>): Audio {
     return new Audio({
       ...props,
       isNative: false,
