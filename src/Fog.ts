@@ -1,5 +1,5 @@
-import { type ArxFog } from 'arx-convert/types'
-import { type ArxComponent } from '@src/ArxComponent.js'
+import type { ArxFog } from 'arx-convert/types'
+import type { ArxComponent } from '@src/ArxComponent.js'
 import { Color } from '@src/Color.js'
 import { Rotation } from '@src/Rotation.js'
 import { Vector3 } from '@src/Vector3.js'

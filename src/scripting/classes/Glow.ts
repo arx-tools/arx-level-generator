@@ -1,4 +1,4 @@
-import { type Color } from '@src/Color.js'
+import type { Color } from '@src/Color.js'
 
 enum GlowFlags {
   Inactive = 0,

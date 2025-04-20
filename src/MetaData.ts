@@ -1,4 +1,4 @@
-import { type Settings } from '@src/Settings.js'
+import type { Settings } from '@src/Settings.js'
 import { getGeneratorPackageJSON, getProjectPackageJSON } from '@src/node.js'
 
 export type MetaData = {

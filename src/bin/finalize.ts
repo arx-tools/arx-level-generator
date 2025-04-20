@@ -1,5 +1,5 @@
 import fs from 'node:fs/promises'
-import { type ArxFTS, type ArxDLF, type ArxLLF } from 'arx-convert/types'
+import type { ArxFTS, ArxDLF, ArxLLF } from 'arx-convert/types'
 import { ArxMap } from '@src/ArxMap.js'
 import { Settings, type SettingsConstructorProps } from '@src/Settings.js'
 import { stringifyJSON } from '@bin/helpers.js'

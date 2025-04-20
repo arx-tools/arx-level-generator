@@ -1,9 +1,9 @@
 import path from 'node:path'
 import type { Simplify } from 'type-fest'
-import { type Settings } from '@src/Settings.js'
+import type { Settings } from '@src/Settings.js'
 import { type Locales, toArxLocale } from '@src/Translations.js'
 import { ExportBuiltinAssetError } from '@src/errors.js'
-import { type FileExports, type SingleFileExport } from '@src/types.js'
+import type { FileExports, SingleFileExport } from '@src/types.js'
 
 export type AudioType = `speech/${Locales}` | 'sfx'
 

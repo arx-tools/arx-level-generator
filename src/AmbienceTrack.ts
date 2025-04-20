@@ -1,8 +1,8 @@
 import path from 'node:path'
 import { type ArxKey, ArxSettingFlag, type ArxTrack, ArxTrackFlags } from 'arx-convert/types'
-import { type Audio } from '@src/Audio.js'
-import { type Settings } from '@src/Settings.js'
-import { type SingleFileExport } from '@src/types.js'
+import type { Audio } from '@src/Audio.js'
+import type { Settings } from '@src/Settings.js'
+import type { SingleFileExport } from '@src/types.js'
 
 type AmbienceTrackConstructorProps = {
   filename: string

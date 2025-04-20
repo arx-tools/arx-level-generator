@@ -1,10 +1,10 @@
 import path from 'node:path'
-import { type ArxAMB } from 'arx-convert/types'
+import type { ArxAMB } from 'arx-convert/types'
 import { AmbienceTrack } from '@src/AmbienceTrack.js'
-import { type Audio } from '@src/Audio.js'
-import { type Settings } from '@src/Settings.js'
+import type { Audio } from '@src/Audio.js'
+import type { Settings } from '@src/Settings.js'
 import { ExportBuiltinAssetError } from '@src/errors.js'
-import { type FileExports } from '@src/types.js'
+import type { FileExports } from '@src/types.js'
 
 type AmbienceConstructorProps = {
   name: string

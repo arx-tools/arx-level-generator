@@ -1,8 +1,8 @@
-import { type Settings } from '@src/Settings.js'
-import { type FileExports } from '@src/types.js'
+import type { Settings } from '@src/Settings.js'
+import type { FileExports } from '@src/types.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
-import { type ScriptProperty } from '@scripting/ScriptProperty.js'
-import { type ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
+import type { ScriptProperty } from '@scripting/ScriptProperty.js'
+import type { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
 import { isUsesTextures } from '@scripting/interfaces/UsesTextures.js'
 
 type ScriptHandlerBase = string | string[] | ScriptCommand | ScriptCommand[]

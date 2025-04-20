@@ -1,5 +1,5 @@
-import { type BufferAttribute, type Mesh } from 'three'
-import { type Vector3 } from '@src/Vector3.js'
+import type { BufferAttribute, Mesh } from 'three'
+import type { Vector3 } from '@src/Vector3.js'
 import { categorizeVertices } from '@tools/mesh/categorizeVertices.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
 

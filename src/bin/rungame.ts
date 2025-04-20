@@ -2,7 +2,7 @@ import { exec } from 'node:child_process'
 import os from 'node:os'
 import path from 'node:path'
 import { promisify } from 'node:util'
-import { type Settings } from '@src/Settings.js'
+import type { Settings } from '@src/Settings.js'
 import { fileExists } from '@src/node.js'
 
 export async function rungame(settings: Settings, otherArgs: string[]): Promise<void> {

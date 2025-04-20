@@ -2,7 +2,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { Simplify } from 'type-fest'
 import { type MetaData, generateMetadata } from '@src/MetaData.js'
-import { type Settings } from '@src/Settings.js'
+import type { Settings } from '@src/Settings.js'
 import { fileExists } from '@src/node.js'
 
 export type ManifestData = Simplify<

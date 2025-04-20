@@ -3,7 +3,7 @@ import { createReadStream } from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import objectHash from 'object-hash'
-import { type Settings } from '@src/Settings.js'
+import type { Settings } from '@src/Settings.js'
 import { fileExists } from '@src/node.js'
 
 const hashingAlgorithm = 'sha1'

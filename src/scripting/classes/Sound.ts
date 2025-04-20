@@ -1,4 +1,4 @@
-import { type Variable } from '@scripting/properties/Variable.js'
+import type { Variable } from '@scripting/properties/Variable.js'
 
 export enum SoundFlags {
   None = 0,

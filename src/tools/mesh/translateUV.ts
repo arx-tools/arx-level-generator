@@ -1,4 +1,4 @@
-import { type BufferAttribute, type BufferGeometry, type Vector2 } from 'three'
+import type { BufferAttribute, BufferGeometry, Vector2 } from 'three'
 
 /**
  * @param offset Vector2 with the 2 values representing X and Y axis.

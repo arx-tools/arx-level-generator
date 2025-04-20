@@ -1,4 +1,4 @@
-import { type Zone } from '@src/Zone.js'
+import type { Zone } from '@src/Zone.js'
 import { ScriptProperty } from '@scripting/ScriptProperty.js'
 
 /**

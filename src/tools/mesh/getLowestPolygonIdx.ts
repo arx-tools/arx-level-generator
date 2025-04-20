@@ -1,4 +1,4 @@
-import { type BufferGeometry } from 'three'
+import type { BufferGeometry } from 'three'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 
 export function getLowestPolygonIdx(geometry: BufferGeometry): number {

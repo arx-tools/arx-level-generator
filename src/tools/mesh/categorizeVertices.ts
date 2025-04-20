@@ -1,4 +1,4 @@
-import { type BufferGeometry } from 'three'
+import type { BufferGeometry } from 'three'
 import { Vector3 } from '@src/Vector3.js'
 import { countBy, partition } from '@src/faux-ramda.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'

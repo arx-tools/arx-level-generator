@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { type Settings } from '@src/Settings.js'
-import { type TextExports } from '@src/types.js'
+import type { Settings } from '@src/Settings.js'
+import type { TextExports } from '@src/types.js'
 
 export type Locales =
   | 'chinese'

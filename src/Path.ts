@@ -1,5 +1,5 @@
-import { type ArxPath, type ArxZoneAndPathPointType, type ArxZoneAndPathPoint } from 'arx-convert/types'
-import { type ArxComponent } from '@src/ArxComponent.js'
+import type { ArxPath, ArxZoneAndPathPointType, ArxZoneAndPathPoint } from 'arx-convert/types'
+import type { ArxComponent } from '@src/ArxComponent.js'
 import { Vector3 } from '@src/Vector3.js'
 
 export type PathPoint = {

@@ -1,5 +1,5 @@
 import { type BufferAttribute, type BufferGeometry, MathUtils } from 'three'
-import { type Vector3 } from '@src/Vector3.js'
+import type { Vector3 } from '@src/Vector3.js'
 import { sum } from '@src/faux-ramda.js'
 import { randomBetween, randomIntBetween } from '@src/random.js'
 import { getVertices } from '@tools/mesh/getVertices.js'

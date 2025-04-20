@@ -1,4 +1,4 @@
-import { type ArxVector3 } from 'arx-convert/types'
+import type { ArxVector3 } from 'arx-convert/types'
 import { Vector3 as ThreeJsVector3 } from 'three'
 
 // calculated mostly by trial and error

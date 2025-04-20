@@ -1,9 +1,9 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { DLF, FTS, LLF } from 'arx-convert'
-import { type ArxDLF, type ArxFTS, type ArxLLF } from 'arx-convert/types'
-import { type Settings } from '@src/Settings.js'
-import { type OriginalLevel } from '@src/types.js'
+import type { ArxDLF, ArxFTS, ArxLLF } from 'arx-convert/types'
+import type { Settings } from '@src/Settings.js'
+import type { OriginalLevel } from '@src/types.js'
 import { createCacheFolderIfNotExists } from '@services/cache.js'
 
 export class LevelLoader {

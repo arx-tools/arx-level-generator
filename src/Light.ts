@@ -1,6 +1,6 @@
 import { type ArxLight, ArxLightFlags } from 'arx-convert/types'
-import { type Box3 } from 'three'
-import { type ArxComponent } from '@src/ArxComponent.js'
+import type { Box3 } from 'three'
+import type { ArxComponent } from '@src/ArxComponent.js'
 import { Color } from '@src/Color.js'
 import { Vector3 } from '@src/Vector3.js'
 
