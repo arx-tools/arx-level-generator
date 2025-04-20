@@ -23,8 +23,8 @@ import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
 import { sum, times } from '@src/faux-ramda.js'
 import { applyTransformations, averageVectors, quotientAndRemainder, roundToNDecimals } from '@src/helpers.js'
-import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 import { type FileExports } from '@src/types.js'
+import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 
 export const QUADIFY = 'quadify'
 export const DONT_QUADIFY = "don't quadify"

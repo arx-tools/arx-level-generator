@@ -2,13 +2,13 @@ import path from 'node:path'
 import { type ArxTextureContainer } from 'arx-convert/types'
 import { sharpToBmp } from 'sharp-bmp'
 import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
+import type { Simplify } from 'type-fest'
 import { type Settings } from '@src/Settings.js'
+import { ExportBuiltinAssetError } from '@src/errors.js'
 import { fileExists } from '@src/node.js'
+import { type SingleFileExport } from '@src/types.js'
 import { createCacheFolderIfNotExists, loadHashOf, createHashOfFile, saveHashOf } from '@services/cache.js'
 import { getMetadata, getSharpInstance } from '@services/image.js'
-import { ExportBuiltinAssetError } from '@src/errors.js'
-import { type SingleFileExport } from '@src/types.js'
-import type { Simplify } from 'type-fest'
 
 export type TextureConstructorProps = {
   filename: string

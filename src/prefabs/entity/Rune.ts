@@ -1,3 +1,4 @@
+import type { Simplify } from 'type-fest'
 import { Audio } from '@src/Audio.js'
 import { Entity, type EntityConstructorPropsWithoutSrc } from '@src/Entity.js'
 import { Script, type ScriptHandler } from '@src/Script.js'
@@ -8,7 +9,6 @@ import { TweakSkin } from '@scripting/commands/TweakSkin.js'
 import { Label } from '@scripting/properties/Label.js'
 import { Material } from '@scripting/properties/Material.js'
 import { Variable } from '@scripting/properties/Variable.js'
-import type { Simplify } from 'type-fest'
 
 /**
  * @see https://wiki.arx-libertatis.org/Category:Runes

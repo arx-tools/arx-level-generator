@@ -1,7 +1,7 @@
+import type { Simplify } from 'type-fest'
 import { Entity, type EntityConstructorProps } from '@src/Entity.js'
 import { UseMesh } from '@scripting/commands/UseMesh.js'
 import { Variable } from '@scripting/properties/Variable.js'
-import type { Simplify } from 'type-fest'
 
 export type DoorConstructorProps = Simplify<
   EntityConstructorProps & {

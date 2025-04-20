@@ -1,5 +1,5 @@
-import { type Light } from '@src/Light.js'
 import { type ArxLight } from 'arx-convert/types'
+import { type Light } from '@src/Light.js'
 
 export class Lights extends Array<Light> {
   toArxData(): { lights: ArxLight[] } {

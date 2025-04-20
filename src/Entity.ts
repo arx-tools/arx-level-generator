@@ -1,6 +1,8 @@
 import path from 'node:path'
 import { type ArxInteractiveObject } from 'arx-convert/types'
 import { isTiled } from 'arx-convert/utils'
+import type { Simplify } from 'type-fest'
+import { type ArxComponent } from '@src/ArxComponent.js'
 import { type Audio } from '@src/Audio.js'
 import { type EntityModel } from '@src/EntityModel.js'
 import { Material } from '@src/Material.js'
@@ -11,8 +13,6 @@ import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { type FileExports, type TextureOrMaterial } from '@src/types.js'
 import { type Cube as TypeOfCube } from '@prefabs/entity/Cube.js'
-import { type ArxComponent } from '@src/ArxComponent.js'
-import type { Simplify } from 'type-fest'
 
 export type EntityConstructorProps = {
   id?: number

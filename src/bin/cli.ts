@@ -1,5 +1,4 @@
 #!/usr/bin/env -S node --enable-source-maps
-
 import process from 'node:process'
 import minimist from 'minimist-lite'
 import { Settings, type SettingsConstructorProps } from '@src/Settings.js'

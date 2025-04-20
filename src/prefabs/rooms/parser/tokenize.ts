@@ -35,7 +35,6 @@
  * percentage       - "300%"
  * string           - string without whitespace
  */
-
 import { SyntaxError } from '@src/errors.js'
 
 type TokenMatcher = {

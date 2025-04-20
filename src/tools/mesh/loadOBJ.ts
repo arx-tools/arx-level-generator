@@ -17,11 +17,11 @@ import { type Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations } from '@src/helpers.js'
+import { fileExists } from '@src/node.js'
+import { type VerticalAlign } from '@src/types.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
 import { scaleUV as scaleUVTool } from '@tools/mesh/scaleUV.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
-import { type VerticalAlign } from '@src/types.js'
-import { fileExists } from '@src/node.js'
 
 type loadOBJProperties = {
   /**

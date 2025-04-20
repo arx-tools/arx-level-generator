@@ -1,7 +1,7 @@
 import { EdgesGeometry, MathUtils, Shape, ShapeGeometry } from 'three'
+import type { Simplify } from 'type-fest'
 import { Vector3 } from '@src/Vector3.js'
 import { Zone, type ZoneConstructorProps } from '@src/Zone.js'
-import type { Simplify } from 'type-fest'
 
 export function createZone(
   props: Simplify<Omit<ZoneConstructorProps, 'points' | 'height'> & { position?: Vector3; size?: Vector3 }>,

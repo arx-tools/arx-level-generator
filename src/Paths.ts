@@ -1,5 +1,5 @@
-import { type Path } from '@src/Path.js'
 import { type ArxPath } from 'arx-convert/types'
+import { type Path } from '@src/Path.js'
 
 export class Paths extends Array<Path> {
   toArxData(): { paths: ArxPath[] } {
