@@ -296,7 +296,7 @@ export class Texture extends ThreeJsTextue {
   }
 
   async getWidth(settings: Settings): Promise<number> {
-    if (this._width === SIZE_UNKNOWN) {
+    if (this.isNative === false && this._width === SIZE_UNKNOWN) {
       const { width } = await getMetadata(this.getFilename(settings))
       this._width = width ?? SIZE_UNKNOWN
     }
@@ -305,7 +305,7 @@ export class Texture extends ThreeJsTextue {
   }
 
   async getHeight(settings: Settings): Promise<number> {
-    if (this._height === SIZE_UNKNOWN) {
+    if (this.isNative === false && this._height === SIZE_UNKNOWN) {
       const { height } = await getMetadata(this.getFilename(settings))
       this._height = height ?? SIZE_UNKNOWN
     }
@@ -314,17 +314,24 @@ export class Texture extends ThreeJsTextue {
   }
 
   /**
-   * this also gives value to this._width and this._height
-   * if any of them is SIZE_UNKNOWN
+   * calling this also tries to set the values of `this._width` and `this._height` if any of them is `SIZE_UNKNOWN`
+   *
+   * if `SIZE_UNKNOWN` prevails after the setters, then the return value is `undefined`
    */
-  async isTileable(settings: Settings): Promise<boolean> {
+  async isTileable(settings: Settings): Promise<boolean | undefined> {
     const width = await this.getWidth(settings)
     const height = await this.getHeight(settings)
+
+    if (width === SIZE_UNKNOWN || height === SIZE_UNKNOWN) {
+      return undefined
+    }
+
     return width === height && MathUtils.isPowerOfTwo(width)
   }
 
   /**
    * default value for `needsToBeTileable` is false
+   *
    * @throws ExportBuiltinAssetError when trying to export an Audio that's built into the base game
    */
   async exportSourceAndTarget(
@@ -337,10 +344,11 @@ export class Texture extends ThreeJsTextue {
     }
 
     try {
-      const isTileable = await this.isTileable(settings)
-
-      if (needsToBeTileable && !isTileable) {
-        return await this.makeTileable(settings)
+      if (needsToBeTileable) {
+        const isTileable = await this.isTileable(settings)
+        if (isTileable !== true) {
+          return await this.makeTileable(settings)
+        }
       }
 
       return await this.makeCopy(settings)
@@ -372,6 +380,7 @@ export class Texture extends ThreeJsTextue {
    */
   equals(texture: Texture | string): boolean {
     const aPath = this.filename.toLowerCase()
+
     let bPath: string
     if (typeof texture === 'string') {
       bPath = texture.toLowerCase()
