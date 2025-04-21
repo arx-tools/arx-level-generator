@@ -1,8 +1,8 @@
-import fs from 'node:fs/promises'
 import path from 'node:path'
 import { DLF, FTS, LLF } from 'arx-convert'
 import type { ArxDLF, ArxFTS, ArxLLF } from 'arx-convert/types'
 import type { Settings } from '@src/Settings.js'
+import { fileOrFolderExists, readBinaryFile, readTextFile, writeTextFile } from '@src/platform/node/io.js'
 import type { OriginalLevel } from '@src/types.js'
 import { createCacheFolderIfNotExists } from '@services/cache.js'
 
@@ -53,21 +53,19 @@ export class LevelLoader {
         const parser = this.getParser(format)
 
         try {
-          const jsonData = await fs.readFile(jsonFilename, { encoding: 'utf8' })
+          const jsonData = await readTextFile(jsonFilename)
           data = JSON.parse(jsonData) as ArxDLF
         } catch {
           const binaryFolder = this.getBinaryFolder()
           const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename(format) + '.unpacked')
 
-          try {
-            await fs.access(binaryFolder, fs.constants.R_OK | fs.constants.W_OK)
-          } catch {
+          if (!(await fileOrFolderExists(binaryFolder))) {
             throw new Error(`Attempted to read folder containing binary level data at "${binaryFolder}"`)
           }
 
-          const binaryData = await fs.readFile(binaryFilename)
-          data = parser.load(binaryData.buffer)
-          await fs.writeFile(jsonFilename, JSON.stringify(data), { encoding: 'utf8' })
+          const binaryData = await readBinaryFile(binaryFilename)
+          data = parser.load(binaryData)
+          await writeTextFile(jsonFilename, JSON.stringify(data))
         }
 
         break
@@ -77,21 +75,19 @@ export class LevelLoader {
         const parser = this.getParser(format)
 
         try {
-          const jsonData = await fs.readFile(jsonFilename, { encoding: 'utf8' })
+          const jsonData = await readTextFile(jsonFilename)
           data = JSON.parse(jsonData) as ArxFTS
         } catch {
           const binaryFolder = this.getBinaryFolder()
           const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename(format) + '.unpacked')
 
-          try {
-            await fs.access(binaryFolder, fs.constants.R_OK | fs.constants.W_OK)
-          } catch {
+          if (!(await fileOrFolderExists(binaryFolder))) {
             throw new Error(`Attempted to read folder containing binary level data at "${binaryFolder}"`)
           }
 
-          const binaryData = await fs.readFile(binaryFilename)
-          data = parser.load(binaryData.buffer)
-          await fs.writeFile(jsonFilename, JSON.stringify(data), { encoding: 'utf8' })
+          const binaryData = await readBinaryFile(binaryFilename)
+          data = parser.load(binaryData)
+          await writeTextFile(jsonFilename, JSON.stringify(data))
         }
 
         break
@@ -101,21 +97,19 @@ export class LevelLoader {
         const parser = this.getParser(format)
 
         try {
-          const jsonData = await fs.readFile(jsonFilename, { encoding: 'utf8' })
+          const jsonData = await readTextFile(jsonFilename)
           data = JSON.parse(jsonData) as ArxLLF
         } catch {
           const binaryFolder = this.getBinaryFolder()
           const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename(format) + '.unpacked')
 
-          try {
-            await fs.access(binaryFolder, fs.constants.R_OK | fs.constants.W_OK)
-          } catch {
+          if (!(await fileOrFolderExists(binaryFolder))) {
             throw new Error(`Attempted to read folder containing binary level data at "${binaryFolder}"`)
           }
 
-          const binaryData = await fs.readFile(binaryFilename)
-          data = parser.load(binaryData.buffer)
-          await fs.writeFile(jsonFilename, JSON.stringify(data), { encoding: 'utf8' })
+          const binaryData = await readBinaryFile(binaryFilename)
+          data = parser.load(binaryData)
+          await writeTextFile(jsonFilename, JSON.stringify(data))
         }
 
         break
@@ -148,6 +142,9 @@ export class LevelLoader {
     return `level${this.levelIdx}.${format}`
   }
 
+  /**
+   * returned path is relative to `settings.cacheDir`
+   */
   private getCachedJsonFolder(): string {
     return `./levels/level${this.levelIdx}`
   }

@@ -3,7 +3,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { promisify } from 'node:util'
 import type { Settings } from '@src/Settings.js'
-import { fileExists } from '@src/node.js'
+import { fileOrFolderExists } from '@src/platform/node/io.js'
 
 export async function rungame(settings: Settings, otherArgs: string[]): Promise<void> {
   const operatingSystem = os.platform()
@@ -31,7 +31,7 @@ export async function rungame(settings: Settings, otherArgs: string[]): Promise<
     }
   }
 
-  if (!(await fileExists(exeFile))) {
+  if (!(await fileOrFolderExists(exeFile))) {
     console.error(`[error] rungame: executable not found at "${exeFile}"`)
     return
   }

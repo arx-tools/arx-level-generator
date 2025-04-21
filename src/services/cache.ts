@@ -4,7 +4,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import objectHash from 'object-hash'
 import type { Settings } from '@src/Settings.js'
-import { fileExists } from '@src/node.js'
+import { fileOrFolderExists, readTextFile, writeTextFile } from '@src/platform/node/io.js'
 
 const hashingAlgorithm = 'sha1'
 
@@ -19,9 +19,7 @@ const hashingAlgorithm = 'sha1'
 export async function createCacheFolderIfNotExists(folder: string, settings: Settings): Promise<string> {
   const fullFolder = path.resolve(settings.cacheDir, folder)
 
-  try {
-    await fs.access(fullFolder, fs.constants.R_OK | fs.constants.W_OK)
-  } catch {
+  if (!(await fileOrFolderExists(fullFolder))) {
     await fs.mkdir(fullFolder, { recursive: true })
   }
 
@@ -38,7 +36,7 @@ export async function loadHashOf(filename: string, settings: Settings): Promise<
   const hashesFilename = path.resolve(settings.cacheDir, '__hashes.json')
 
   try {
-    const hashes = JSON.parse(await fs.readFile(hashesFilename, { encoding: 'utf8' })) as Record<string, string>
+    const hashes = JSON.parse(await readTextFile(hashesFilename)) as Record<string, string>
     return hashes[filename]
   } catch {
     return undefined
@@ -56,7 +54,7 @@ export async function getCacheInfo(
   const { dir, base } = path.parse(filename)
   const cachedFolder = await createCacheFolderIfNotExists(dir, settings)
   const cachedFilename = path.join(cachedFolder, base)
-  const cacheExists = await fileExists(cachedFilename)
+  const cacheExists = await fileOrFolderExists(cachedFilename)
 
   const hashOfCachedFilename = await loadHashOf(cachedFilename, settings)
 
@@ -80,12 +78,12 @@ export async function saveHashOf(filename: string, hash: string, settings: Setti
   let hashes: Record<string, string> = {}
 
   try {
-    hashes = JSON.parse(await fs.readFile(hashesFilename, { encoding: 'utf8' })) as Record<string, string>
+    hashes = JSON.parse(await readTextFile(hashesFilename)) as Record<string, string>
   } catch {}
 
   hashes[filename] = hash
 
-  await fs.writeFile(hashesFilename, JSON.stringify(hashes), { encoding: 'utf8' })
+  await writeTextFile(hashesFilename, JSON.stringify(hashes))
 }
 
 export function createHashOfObject(data: any, metadata?: Record<string, any>): string {

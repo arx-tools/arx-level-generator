@@ -1,15 +1,6 @@
-import fs from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-
-export async function fileExists(filename: string): Promise<boolean> {
-  try {
-    await fs.access(filename, fs.constants.R_OK | fs.constants.W_OK)
-    return true
-  } catch {
-    return false
-  }
-}
+import { readTextFile } from '@src/platform/node/io.js'
 
 type PackageJsonProps = {
   name: string
@@ -27,7 +18,7 @@ export async function getGeneratorPackageJSON(): Promise<PackageJsonProps> {
     try {
       const filename = fileURLToPath(import.meta.url)
       const dirname = path.dirname(filename)
-      const rawIn = await fs.readFile(path.resolve(dirname, '../package.json'), { encoding: 'utf8' })
+      const rawIn = await readTextFile(path.resolve(dirname, '../package.json'))
       cacheOfGeneratorPackageJSON = JSON.parse(rawIn) as PackageJsonProps
     } catch {
       cacheOfGeneratorPackageJSON = {
@@ -46,7 +37,7 @@ export async function getGeneratorPackageJSON(): Promise<PackageJsonProps> {
 export async function getProjectPackageJSON(): Promise<PackageJsonProps> {
   if (cacheOfProjectPackageJSON === undefined) {
     try {
-      const rawIn = await fs.readFile(path.resolve('./package.json'), { encoding: 'utf8' })
+      const rawIn = await readTextFile(path.resolve('./package.json'))
       cacheOfProjectPackageJSON = JSON.parse(rawIn) as PackageJsonProps
     } catch {
       cacheOfProjectPackageJSON = {

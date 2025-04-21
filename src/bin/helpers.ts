@@ -1,6 +1,6 @@
-import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { readTextFile } from '@src/platform/node/io.js'
 
 function pathToPackageJson(): string {
   const filename = fileURLToPath(import.meta.url)
@@ -11,7 +11,7 @@ function pathToPackageJson(): string {
 
 export async function getPackageVersion(): Promise<string> {
   try {
-    const rawIn = await fs.promises.readFile(pathToPackageJson(), { encoding: 'utf8' })
+    const rawIn = await readTextFile(pathToPackageJson())
     const { version } = JSON.parse(rawIn) as { version: string }
     return version
   } catch {

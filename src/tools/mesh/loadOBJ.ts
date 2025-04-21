@@ -1,4 +1,3 @@
-import fs from 'node:fs/promises'
 import path from 'node:path'
 import { ArxPolygonFlags } from 'arx-convert/types'
 import {
@@ -17,7 +16,7 @@ import type { Rotation } from '@src/Rotation.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { applyTransformations } from '@src/helpers.js'
-import { fileExists } from '@src/node.js'
+import { fileOrFolderExists, readTextFile } from '@src/platform/node/io.js'
 import type { VerticalAlign } from '@src/types.js'
 import { getVertices } from '@tools/mesh/getVertices.js'
 import { scaleUV as scaleUVTool } from '@tools/mesh/scaleUV.js'
@@ -191,9 +190,9 @@ async function loadMTL(
 
   let materials: MeshBasicMaterial | Record<string, MeshBasicMaterial>
 
-  if (await fileExists(mtlSrc)) {
+  if (await fileOrFolderExists(mtlSrc)) {
     try {
-      const rawMtl = await fs.readFile(mtlSrc, { encoding: 'utf8' })
+      const rawMtl = await readTextFile(mtlSrc)
       const mtl = mtlLoader.parse(rawMtl, '')
 
       const entriesOfMaterials = Object.entries(mtl.materialsInfo)
@@ -290,7 +289,7 @@ export async function loadOBJ(
   const { dir, name: filename } = path.parse(filenameWithoutExtension)
 
   const objSrc = path.resolve('assets/' + dir + '/' + filename + '.obj')
-  let rawObj = await fs.readFile(objSrc, { encoding: 'utf8' })
+  let rawObj = await readTextFile(objSrc)
 
   if (!isMeshTriangulated(rawObj)) {
     console.warn(`[warning] loadOBJ: ${filename}.obj is not triangulated`)

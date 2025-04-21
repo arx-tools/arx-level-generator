@@ -3,7 +3,7 @@ import path from 'node:path'
 import type { Simplify } from 'type-fest'
 import { type MetaData, generateMetadata } from '@src/MetaData.js'
 import type { Settings } from '@src/Settings.js'
-import { fileExists } from '@src/node.js'
+import { fileOrFolderExists, readTextFile } from '@src/platform/node/io.js'
 
 export type ManifestData = Simplify<
   MetaData & {
@@ -63,7 +63,7 @@ export class Manifest {
 
   private async exists(): Promise<boolean> {
     const filename = this.getPathToFilename()
-    return fileExists(filename)
+    return fileOrFolderExists(filename)
   }
 
   private async read(): Promise<ManifestData | undefined> {
@@ -74,7 +74,7 @@ export class Manifest {
     }
 
     try {
-      const rawIn = await fs.readFile(filename, { encoding: 'utf8' })
+      const rawIn = await readTextFile(filename)
       return JSON.parse(rawIn) as ManifestData
     } catch {
       console.error(`[error] Manifest: failed to read or parse "${Manifest.filename}" in "${this.settings.outputDir}"`)

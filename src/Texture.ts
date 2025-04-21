@@ -5,7 +5,7 @@ import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } f
 import type { Simplify } from 'type-fest'
 import type { Settings } from '@src/Settings.js'
 import { ExportBuiltinAssetError } from '@src/errors.js'
-import { fileExists } from '@src/node.js'
+import { fileOrFolderExists } from '@src/platform/node/io.js'
 import type { SingleFileExport } from '@src/types.js'
 import { createCacheFolderIfNotExists, loadHashOf, createHashOfFile, saveHashOf } from '@services/cache.js'
 import { getMetadata, getSharpInstance } from '@services/image.js'
@@ -425,7 +425,7 @@ export class Texture extends ThreeJsTextue {
 
     const currentHash = await createHashOfFile(originalSource, { isTileable: false })
 
-    if (await fileExists(convertedSource)) {
+    if (await fileOrFolderExists(convertedSource)) {
       const storedHash = await loadHashOf(originalSource, settings)
 
       if (storedHash === currentHash) {
@@ -481,7 +481,7 @@ export class Texture extends ThreeJsTextue {
 
     const currentHash = await createHashOfFile(originalSource, { isTileable: true })
 
-    if (await fileExists(convertedSource)) {
+    if (await fileOrFolderExists(convertedSource)) {
       const storedHash = await loadHashOf(originalSource, settings)
 
       if (storedHash === currentHash) {

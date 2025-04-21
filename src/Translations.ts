@@ -1,6 +1,6 @@
-import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { Settings } from '@src/Settings.js'
+import { readTextFile } from '@src/platform/node/io.js'
 import type { TextExports } from '@src/types.js'
 
 export type Locales =
@@ -88,7 +88,7 @@ string="${value}"
   async addFromFile(filename: string, settings: Settings): Promise<void> {
     try {
       const source = path.resolve(settings.assetsDir, filename)
-      const rawInput = await fs.readFile(source, { encoding: 'utf8' })
+      const rawInput = await readTextFile(source)
       const translations = JSON.parse(rawInput) as Record<string, Partial<Record<Locales, string>>>
       this.add(translations)
     } catch (error) {

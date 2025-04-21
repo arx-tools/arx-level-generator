@@ -1,9 +1,9 @@
-import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { QuadrupleOf } from 'arx-convert/utils'
 import type { Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
+import { readTextFile } from '@src/platform/node/io.js'
 import { Cursor, type CursorDir } from '@prefabs/rooms/Cursor.js'
 import { Rooms } from '@prefabs/rooms/Rooms.js'
 import type { RoomTextures, RoomProps, TextureDefinition } from '@prefabs/rooms/room.js'
@@ -180,7 +180,7 @@ export async function loadRooms(filename: string, settings: Settings): Promise<R
   const variables: Record<string, string> = {}
 
   const source = path.resolve(settings.assetsDir, filename)
-  const rawInput = await fs.readFile(source, { encoding: 'utf8' })
+  const rawInput = await readTextFile(source)
   const lines = rawInput.split(/\r?\n/)
 
   let currentBlock: CurrentBlock | undefined

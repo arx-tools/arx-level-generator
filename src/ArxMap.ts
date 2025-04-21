@@ -49,6 +49,7 @@ import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { groupSequences, times } from '@src/faux-ramda.js'
 import { percentOf, encodeJSON, compressAs, encodeText } from '@src/helpers.js'
 import { getGeneratorPackageJSON } from '@src/node.js'
+import { readBinaryFile, writeBinaryFile } from '@src/platform/node/io.js'
 import type { FileExports, OriginalLevel, ArrayBufferExports } from '@src/types.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 
@@ -462,8 +463,7 @@ export class ArxMap {
 
     for (const target in filesToCopy) {
       const source = filesToCopy[target]
-      const file = await fs.readFile(source)
-      buffersToExport[target] = file.buffer
+      buffersToExport[target] = await readBinaryFile(source)
     }
 
     // ------------------------
@@ -478,8 +478,7 @@ export class ArxMap {
       const dirname = path.dirname(target)
       await fs.mkdir(dirname, { recursive: true })
 
-      const wrappedData = new Uint8Array(data)
-      await fs.writeFile(target, wrappedData)
+      await writeBinaryFile(target, data)
     }
   }
 

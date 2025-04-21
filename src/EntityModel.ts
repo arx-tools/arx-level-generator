@@ -1,4 +1,3 @@
-import fs from 'node:fs/promises'
 import path from 'node:path'
 import { FTL } from 'arx-convert'
 import { type ArxAction, type ArxFTL, ArxFaceType, type ArxFace, type ArxFtlVertex } from 'arx-convert/types'
@@ -11,7 +10,7 @@ import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { repeat } from '@src/faux-ramda.js'
 import { arrayPadRight, roundToNDecimals } from '@src/helpers.js'
-import { fileExists } from '@src/node.js'
+import { fileOrFolderExists, writeBinaryFile, writeTextFile } from '@src/platform/node/io.js'
 import type { FileExports } from '@src/types.js'
 import { createHashOfObject, getCacheInfo, saveHashOf } from '@services/cache.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
@@ -135,7 +134,7 @@ export class EntityModel {
       let binaryChanged = false
       if (hashOfFtlData !== cachedBinary.hash || !cachedBinary.exists) {
         const ftl = FTL.save(ftlData)
-        await fs.writeFile(cachedBinary.filename, new Uint8Array(ftl))
+        await writeBinaryFile(cachedBinary.filename, ftl)
         await saveHashOf(cachedBinary.filename, hashOfFtlData, settings)
         binaryChanged = true
       }
@@ -144,7 +143,7 @@ export class EntityModel {
 
       if (exportJsonFiles) {
         const cachedJsonTarget = `${cachedBinary.filename}.json`
-        const cachedJsonExists = await fileExists(cachedJsonTarget)
+        const cachedJsonExists = await fileOrFolderExists(cachedJsonTarget)
 
         if (binaryChanged || !cachedJsonExists) {
           let stringifiedFtl: string
@@ -154,7 +153,7 @@ export class EntityModel {
             stringifiedFtl = JSON.stringify(ftlData)
           }
 
-          await fs.writeFile(cachedJsonTarget, stringifiedFtl, { encoding: 'utf8' })
+          await writeTextFile(cachedJsonTarget, stringifiedFtl)
         }
 
         files[jsonTarget] = cachedJsonTarget
