@@ -1,8 +1,8 @@
 import type { ArxFTS, ArxDLF, ArxLLF } from 'arx-convert/types'
 import { ArxMap } from '@src/ArxMap.js'
 import { Settings, type SettingsConstructorProps } from '@src/Settings.js'
-import { readTextFile, writeTextFile } from '@src/platform/node/io.js'
 import { stringifyJSON } from '@bin/helpers.js'
+import { readTextFile, writeTextFile } from '@platform/node/io.js'
 
 export async function finalize(
   inputs: { dlf: string; fts: string; llf: string },

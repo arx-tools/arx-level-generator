@@ -5,8 +5,8 @@ import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } f
 import type { Simplify } from 'type-fest'
 import type { Settings } from '@src/Settings.js'
 import { ExportBuiltinAssetError } from '@src/errors.js'
-import { fileOrFolderExists } from '@src/platform/node/io.js'
 import type { SingleFileExport } from '@src/types.js'
+import { fileOrFolderExists } from '@platform/node/io.js'
 import { createCacheFolderIfNotExists, loadHashOf, createHashOfFile, saveHashOf } from '@services/cache.js'
 import { getMetadata, getSharpInstance } from '@services/image.js'
 

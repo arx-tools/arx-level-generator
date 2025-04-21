@@ -3,7 +3,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { promisify } from 'node:util'
 import type { Settings } from '@src/Settings.js'
-import { fileOrFolderExists } from '@src/platform/node/io.js'
+import { fileOrFolderExists } from '@platform/node/io.js'
 
 export async function rungame(settings: Settings, otherArgs: string[]): Promise<void> {
   const operatingSystem = os.platform()

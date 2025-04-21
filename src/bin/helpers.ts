@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { readTextFile } from '@src/platform/node/io.js'
+import { readTextFile } from '@platform/node/io.js'
 
 function pathToPackageJson(): string {
   const filename = fileURLToPath(import.meta.url)

@@ -1,7 +1,7 @@
 import path from 'node:path'
 import type { Settings } from '@src/Settings.js'
-import { readTextFile } from '@src/platform/node/io.js'
 import type { TextExports } from '@src/types.js'
+import { readTextFile } from '@platform/node/io.js'
 
 export type Locales =
   | 'chinese'

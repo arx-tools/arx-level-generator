@@ -49,8 +49,8 @@ import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { groupSequences, times } from '@src/faux-ramda.js'
 import { percentOf, encodeJSON, compressAs, encodeText } from '@src/helpers.js'
 import { getGeneratorPackageJSON } from '@src/node.js'
-import { readBinaryFile, writeBinaryFile } from '@src/platform/node/io.js'
 import type { FileExports, OriginalLevel, ArrayBufferExports } from '@src/types.js'
+import { readBinaryFile, writeBinaryFile } from '@platform/node/io.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 
 type ArxMapConfig = {

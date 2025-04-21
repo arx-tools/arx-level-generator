@@ -4,7 +4,7 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import objectHash from 'object-hash'
 import type { Settings } from '@src/Settings.js'
-import { fileOrFolderExists, readTextFile, writeTextFile } from '@src/platform/node/io.js'
+import { fileOrFolderExists, readTextFile, writeTextFile } from '@platform/node/io.js'
 
 const hashingAlgorithm = 'sha1'
 
