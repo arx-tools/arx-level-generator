@@ -12,6 +12,7 @@ import { getMetadata, getSharpInstance } from '@services/image.js'
 
 export type TextureConstructorProps = {
   filename: string
+
   /**
    * whether the texture is from the main game or a custom added file
    *
@@ -21,12 +22,14 @@ export type TextureConstructorProps = {
   width?: number
   height?: number
   size?: number
+
   /**
    * this path is relative to the project's "assets" folder
    *
    * default value is "graph/obj3d/texture"
    */
   sourcePath?: string
+
   /**
    * default value is false
    */
@@ -296,19 +299,13 @@ export class Texture extends ThreeJsTextue {
   }
 
   async getWidth(settings: Settings): Promise<number> {
-    if (this.isNative === false && this._width === SIZE_UNKNOWN) {
-      const { width } = await getMetadata(this.getFilename(settings))
-      this._width = width ?? SIZE_UNKNOWN
-    }
+    await this.setSizeFromFile(settings)
 
     return this._width
   }
 
   async getHeight(settings: Settings): Promise<number> {
-    if (this.isNative === false && this._height === SIZE_UNKNOWN) {
-      const { height } = await getMetadata(this.getFilename(settings))
-      this._height = height ?? SIZE_UNKNOWN
-    }
+    await this.setSizeFromFile(settings)
 
     return this._height
   }
@@ -413,6 +410,18 @@ export class Texture extends ThreeJsTextue {
     }
 
     return path.resolve(assetsDir, this.sourcePath ?? Texture.targetPath, this.filename)
+  }
+
+  private async setSizeFromFile(settings: Settings): Promise<void> {
+    if (this.isNative === true) {
+      return
+    }
+
+    if (this._width === SIZE_UNKNOWN || this._height === SIZE_UNKNOWN) {
+      const { width, height } = await getMetadata(this.getFilename(settings))
+      this._width = width ?? SIZE_UNKNOWN
+      this._height = height ?? SIZE_UNKNOWN
+    }
   }
 
   private async makeCopy(settings: Settings): Promise<SingleFileExport> {
