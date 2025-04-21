@@ -44,7 +44,6 @@ export async function loadHashOf(filename: string, settings: Settings): Promise<
 }
 
 /**
- *
  * @param filename - a pathname of a file relative to the project's root directory
  */
 export async function getCacheInfo(

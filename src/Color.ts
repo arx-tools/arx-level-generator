@@ -92,6 +92,7 @@ export class Color {
    * `255` = maximum value, as much red as possible
    */
   r: number
+
   /**
    * green channel, a positive integer between `0` and `255` (inclusive)
    *
@@ -100,6 +101,7 @@ export class Color {
    * `255` = maximum value, as much green as possible
    */
   g: number
+
   /**
    * blue channel, a positive integer between `0` and `255` (inclusive)
    *
@@ -108,6 +110,7 @@ export class Color {
    * `255` = maximum value, as much blue as possible
    */
   b: number
+
   /**
    * alpha channel, a floating point number between `0` and `1`
    *
@@ -118,7 +121,6 @@ export class Color {
   a: number
 
   /**
-   *
    * @param r red channel, a positive integer between `0` and `255` (inclusive)
    * @param g green channel, a positive integer between `0` and `255` (inclusive)
    * @param b blue channel, a positive integer between `0` and `255` (inclusive)
