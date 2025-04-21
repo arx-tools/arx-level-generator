@@ -104,7 +104,7 @@
     "sharp-bmp": "^0.1.5"
   },
   "peerDependencies": {
-    "arx-convert": "10.3.2",
+    "arx-convert": "10.4.0",
     "three": "0.175.0"
   },
   "devDependencies": {
