@@ -11,7 +11,7 @@ type AmbienceTrackConstructorProps = {
 }
 
 export class AmbienceTrack {
-  static targetPath = 'sfx/ambiance'
+  static readonly targetPath = 'sfx/ambiance'
 
   /**
    * @throws Error when `audio` is not a custom sound file
@@ -57,14 +57,14 @@ export class AmbienceTrack {
 
   exportSourceAndTarget(settings: Settings): SingleFileExport {
     const source = path.resolve(settings.assetsDir, this.sourcePath ?? AmbienceTrack.targetPath, this.filename)
-    const target = path.resolve(settings.outputDir, AmbienceTrack.targetPath, this.filename)
+    const target = path.resolve(settings.outputDir, `${AmbienceTrack.targetPath}/${this.filename}`)
 
     return [source, target]
   }
 
   toArxTrack(): ArxTrack {
     return {
-      filename: AmbienceTrack.targetPath + '/' + this.filename,
+      filename: `${AmbienceTrack.targetPath}/${this.filename}`,
       flags: this.flags,
       keys: this.keys,
     }

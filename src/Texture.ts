@@ -42,7 +42,7 @@ export const NO_TEXTURE_CONTAINER = 0
 const supportedExtensions = new Set(['.jpg', '.png', '.bmp'])
 
 export class Texture extends ThreeJsTextue {
-  static targetPath = 'graph/obj3d/textures'
+  static readonly targetPath = 'graph/obj3d/textures'
 
   static fromCustomFile(props: Simplify<Omit<TextureConstructorProps, 'isNative'>>): Texture {
     return new Texture({

@@ -22,7 +22,7 @@ type ReturnOfWhenRoot = {
 export class Script {
   static readonly EOL = '\r\n'
 
-  static targetPath = 'graph/obj3d/interactive'
+  static readonly targetPath = 'graph/obj3d/interactive'
 
   static handlerToString(handler: ScriptHandler): string {
     const isHandlerNotAFunction =

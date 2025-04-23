@@ -14,8 +14,6 @@ type AmbienceConstructorProps = {
 }
 
 export class Ambience {
-  static targetPath = 'sfx/ambiance'
-
   static fromAudio(ambienceName: string, audio: Audio): Ambience {
     return new Ambience({
       name: ambienceName,
@@ -252,7 +250,7 @@ export class Ambience {
   }
 
   toArxData(settings: Settings): Record<string, ArxAMB> {
-    const target = path.resolve(settings.outputDir, Ambience.targetPath, `${this.name}.amb.json`)
+    const target = path.resolve(settings.outputDir, `sfx/ambiance/${this.name}.amb.json`)
 
     return {
       [target]: {

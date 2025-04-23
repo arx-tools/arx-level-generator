@@ -33,7 +33,7 @@ function getFaceNormal(a: Vector3, b: Vector3, c: Vector3): Vector3 {
 }
 
 export class EntityModel {
-  static targetPath = 'game/graph/obj3d/interactive'
+  static readonly targetPath = 'game/graph/obj3d/interactive'
 
   /**
    * props.originIdx is optional, its default value is 0
