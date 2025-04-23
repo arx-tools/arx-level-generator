@@ -39,7 +39,13 @@ export type TextureConstructorProps = {
 export const SIZE_UNKNOWN = -1
 export const NO_TEXTURE_CONTAINER = 0
 
-const supportedExtensions = new Set(['.jpg', '.png', '.bmp'])
+const supportedExtensions = ['.jpg', '.png', '.bmp'] as const
+
+type SupportedExtension = (typeof supportedExtensions)[number]
+
+function isSupportedExtension(input: any): input is SupportedExtension {
+  return typeof input === 'string' && (supportedExtensions as readonly string[]).includes(input)
+}
 
 export class Texture extends ThreeJsTextue {
   static readonly targetPath = 'graph/obj3d/textures'
@@ -424,22 +430,34 @@ export class Texture extends ThreeJsTextue {
     }
   }
 
-  private async makeCopy(settings: Settings): Promise<SingleFileExport> {
+  private getFilenameAndExtension(): { filename: string; extension: SupportedExtension } {
     const { ext, name } = path.parse(this.filename)
-    const hasSupportedFormat = supportedExtensions.has(ext)
 
-    let newFilename: string
-    if (hasSupportedFormat) {
-      newFilename = this.filename
+    let filename: string
+    let extension: SupportedExtension
+
+    if (isSupportedExtension(ext)) {
+      filename = this.filename
+      extension = ext
     } else {
-      newFilename = `${name}.jpg`
+      filename = `${name}.jpg`
+      extension = '.jpg'
     }
 
+    return {
+      filename,
+      extension,
+    }
+  }
+
+  private async makeCopy(settings: Settings): Promise<SingleFileExport> {
+    const { filename, extension } = this.getFilenameAndExtension()
+
     const originalSource = this.getFilename(settings)
-    const convertedTarget = path.resolve(settings.outputDir, Texture.targetPath, newFilename)
+    const convertedTarget = path.resolve(settings.outputDir, Texture.targetPath, filename)
 
     const convertedSourceFolder = await createCacheFolderIfNotExists(this.sourcePath ?? Texture.targetPath, settings)
-    const convertedSource = path.join(convertedSourceFolder, newFilename)
+    const convertedSource = path.join(convertedSourceFolder, filename)
 
     const currentHash = await createHashOfFile(originalSource, { isTileable: false })
 
@@ -455,7 +473,7 @@ export class Texture extends ThreeJsTextue {
 
     const image = await getSharpInstance(originalSource)
 
-    switch (ext) {
+    switch (extension) {
       case '.bmp': {
         await sharpToBmp(image, convertedSource)
         break
@@ -466,8 +484,7 @@ export class Texture extends ThreeJsTextue {
         break
       }
 
-      // .jpg
-      default: {
+      case '.jpg': {
         await image.jpeg({ quality: 100, progressive: false }).toFile(convertedSource)
         break
       }
@@ -477,21 +494,13 @@ export class Texture extends ThreeJsTextue {
   }
 
   private async makeTileable(settings: Settings): Promise<SingleFileExport> {
-    const { ext, name } = path.parse(this.filename)
-    const hasSupportedFormat = supportedExtensions.has(ext)
-
-    let newFilename: string
-    if (hasSupportedFormat) {
-      newFilename = this.filename
-    } else {
-      newFilename = `${name}.jpg`
-    }
+    const { filename, extension } = this.getFilenameAndExtension()
 
     const originalSource = this.getFilename(settings)
-    const convertedTarget = path.resolve(settings.outputDir, Texture.targetPath, newFilename)
+    const convertedTarget = path.resolve(settings.outputDir, Texture.targetPath, filename)
 
     const convertedSourceFolder = await createCacheFolderIfNotExists(this.sourcePath ?? Texture.targetPath, settings)
-    const convertedSource = path.join(convertedSourceFolder, newFilename)
+    const convertedSource = path.join(convertedSourceFolder, filename)
 
     if (this.alreadyMadeTileable) {
       return [convertedSource, convertedTarget]
@@ -516,7 +525,7 @@ export class Texture extends ThreeJsTextue {
 
     image.resize(powerOfTwo, powerOfTwo, { fit: 'cover' })
 
-    switch (ext) {
+    switch (extension) {
       case '.bmp': {
         await sharpToBmp(image, convertedSource)
         break
@@ -527,8 +536,7 @@ export class Texture extends ThreeJsTextue {
         break
       }
 
-      // .jpg
-      default: {
+      case '.jpg': {
         await image.jpeg({ quality: 100, progressive: false }).toFile(convertedSource)
         break
       }
