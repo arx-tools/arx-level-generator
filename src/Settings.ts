@@ -15,6 +15,10 @@ function isValidLightingCalculatorMode(input: any): input is LightingCalculatorM
   return typeof input === 'string' && (lightingCalculatorModes as readonly string[]).includes(input)
 }
 
+function isValidMode(input: any): input is 'development' | 'production' {
+  return input === 'development' || input === 'production'
+}
+
 type Modes = 'development' | 'production'
 
 export type SettingsConstructorProps = {
@@ -216,7 +220,7 @@ export class Settings {
     this.lightingCalculatorMode = props.lightingCalculatorMode ?? fallbackLCM
 
     let fallbackMode: Modes
-    if (process.env.mode === 'development') {
+    if (isValidMode(process.env.mode)) {
       fallbackMode = process.env.mode
     } else {
       fallbackMode = 'production'
