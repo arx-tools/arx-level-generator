@@ -1,6 +1,7 @@
 #!/usr/bin/env -S node --enable-source-maps
 import process from 'node:process'
 import minimist from 'minimist-lite'
+import type { Simplify } from 'type-fest'
 import { Settings, type SettingsConstructorProps } from '@src/Settings.js'
 import { finalize } from '@bin/finalize.js'
 import { getPackageVersion } from '@bin/helpers.js'
@@ -51,7 +52,7 @@ if (args.finalize) {
     fts: '',
     llf: '',
   }
-  const config: Pick<SettingsConstructorProps, 'calculateLighting' | 'lightingCalculatorMode'> = {
+  const config: Simplify<Pick<SettingsConstructorProps, 'calculateLighting' | 'lightingCalculatorMode'>> = {
     calculateLighting: true,
     lightingCalculatorMode: 'Arx',
   }
