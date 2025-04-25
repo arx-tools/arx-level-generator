@@ -1,4 +1,3 @@
-import fs from 'node:fs/promises'
 import path from 'node:path'
 import { AMB, DLF, FTS, LLF } from 'arx-convert'
 import {
@@ -50,7 +49,7 @@ import { groupSequences, times } from '@src/faux-ramda.js'
 import { percentOf, encodeJSON, compressAs, encodeText } from '@src/helpers.js'
 import { getGeneratorPackageJSON } from '@src/node.js'
 import type { FileExports, OriginalLevel, ArrayBufferExports } from '@src/types.js'
-import { readBinaryFile, writeBinaryFile } from '@platform/node/io.js'
+import { readBinaryFile } from '@platform/node/io.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 
 type ArxMapConfig = {
@@ -206,6 +205,21 @@ export class ArxMap {
   }
 
   /**
+   * Make necessary optimizations and cleanups before the map data can be considered ready to be exported.
+   * The optimizations make irreversible changes to the polygons and other parts of the code, so this method
+   * should be called at the very end.
+   *
+   * The following optimizations are made:
+   *
+   * 1. removes polygons that are out of bounds (outside the 0..16000 boundary on either or both the X or Z axis)
+   * 1. adds a quad below the player's feet if the map has 0 polygons
+   * 1. subdivides large polygons -- TODO: implement this
+   * 1. calculates normals and "area" of polygons
+   * 1. calculates which cells polygons belong into
+   * 1. sorts polygons based on what "room" they are in
+   * 1. bakes lighting information from static lights into polygons (calculate vertex lighting)
+   * 1. fixes the issue of player sinking into ground (more info in `Vector3.adjustToPlayerHeight()`)
+   *
    * @throws MapFinalizedError when trying to call finalize multiple times on the same ArxMap instance
    */
   finalize(settings: Settings): void {
@@ -218,11 +232,11 @@ export class ArxMap {
     if (removedPolygons.length > 0) {
       if (removedPolygons.length === 1) {
         console.warn(
-          `[warning] ArxMap: Removed ${removedPolygons.length} polygon outside the 0..16000 boundary on the X or Z axis`,
+          `[warning] ArxMap: Removed ${removedPolygons.length} polygon outside the 0..16000 boundary on either or both the X or Z axis`,
         )
       } else {
         console.warn(
-          `[warning] ArxMap: Removed ${removedPolygons.length} polygons outside the 0..16000 boundary on the X or Z axis`,
+          `[warning] ArxMap: Removed ${removedPolygons.length} polygons outside the 0..16000 boundary on either or both the X or Z axis`,
         )
       }
     }
@@ -298,7 +312,11 @@ export class ArxMap {
   /**
    * @throws MapNotFinalizedError when attempting to save an ArxMap which have not yet been finalized
    */
-  async saveToDisk(settings: Settings, exportJsonFiles: boolean = false, prettify: boolean = false): Promise<void> {
+  async export(
+    settings: Settings,
+    exportJsonFiles: boolean = false,
+    prettify: boolean = false,
+  ): Promise<ArrayBufferExports> {
     if (!this.config.isFinalized) {
       throw new MapNotFinalizedError()
     }
@@ -471,15 +489,7 @@ export class ArxMap {
 
     buffersToExport['manifest.json'] = await manifest.generate(Object.keys(buffersToExport))
 
-    // write the ArrayBuffers of buffersToExport into files
-    for (const target in buffersToExport) {
-      const data = buffersToExport[target]
-
-      const dirname = path.dirname(target)
-      await fs.mkdir(dirname, { recursive: true })
-
-      await writeBinaryFile(target, data)
-    }
+    return buffersToExport
   }
 
   adjustOffsetTo(map: ArxMap): void {
@@ -553,6 +563,9 @@ export class ArxMap {
     // TODO: adjust fts polygon texture container ids
   }
 
+  /**
+   * Generates the DLF, LLF and FTS data in a format that can be given to `arx-convert`
+   */
   async toArxData(settings: Settings): Promise<{ dlf: ArxDLF; llf: ArxLLF; fts: ArxFTS }> {
     const now = Math.floor(Date.now() / 1000)
     const generatorId = await ArxMap.getGeneratorId()
@@ -720,6 +733,7 @@ export class ArxMap {
   }
 
   // -----------------------------------
+  // Lighting calculation methods - Work in progress, it should go eventually into a separate file or files
 
   /**
    * @see https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/DANAE/Danae.cpp#L1035
@@ -827,6 +841,11 @@ export class ArxMap {
     throw new Error(`realistic lighting mode is not yet implemented`)
   }
 
+  /**
+   * Bakes lighting information from static lights into polygons (calculates vertex lighting)
+   *
+   * @see http://www.hourences.com/tutorials-vtx-lighting/
+   */
   private calculateLighting(settings: Settings): void {
     if (!settings.calculateLighting || this.lights.length === 0) {
       return
