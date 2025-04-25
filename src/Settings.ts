@@ -13,7 +13,7 @@ const lightingCalculatorModes = ['MaxBrightness', 'CompleteDarkness', 'Arx', 'Re
 
 type LightingCalculatorMode = (typeof lightingCalculatorModes)[number]
 
-const defaultLightingCalculatorMode = 'Arx'
+export const defaultLightingCalculatorMode = 'Arx'
 
 function isValidLightingCalculatorMode(input: any): input is LightingCalculatorMode {
   return typeof input === 'string' && (lightingCalculatorModes as readonly string[]).includes(input)
@@ -25,7 +25,7 @@ const modes = ['development', 'production'] as const
 
 type Mode = (typeof modes)[number]
 
-const defaultMode: Mode = 'production'
+export const defaultMode: Mode = 'production'
 
 function isValidMode(input: any): input is 'development' | 'production' {
   return typeof input === 'string' && (modes as readonly string[]).includes(input)
