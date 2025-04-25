@@ -2,7 +2,7 @@
 import process from 'node:process'
 import minimist from 'minimist-lite'
 import type { Simplify } from 'type-fest'
-import { Settings, type SettingsConstructorProps } from '@src/Settings.js'
+import { defaultLightingCalculatorMode, Settings, type SettingsConstructorProps } from '@src/Settings.js'
 import { finalize } from '@bin/finalize.js'
 import { getPackageVersion } from '@bin/helpers.js'
 import { rungame } from '@bin/rungame.js'
@@ -34,7 +34,9 @@ if (args.rungame) {
   const otherArgs = process.argv.slice(2).filter((param) => {
     return !param.trim().startsWith('--rungame')
   })
+
   await rungame(settings, otherArgs)
+
   process.exit(0)
 }
 
@@ -52,9 +54,10 @@ if (args.finalize) {
     fts: '',
     llf: '',
   }
+
   const config: Simplify<Pick<SettingsConstructorProps, 'calculateLighting' | 'lightingCalculatorMode'>> = {
     calculateLighting: true,
-    lightingCalculatorMode: 'Arx',
+    lightingCalculatorMode: defaultLightingCalculatorMode,
   }
 
   const prettify = true
