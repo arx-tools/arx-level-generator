@@ -823,7 +823,8 @@ export class ArxMap {
 
   private calculateRealisticLighting(): void {
     // TODO: implement this
-    console.error(`[error] ArxMap: realistic lighting mode is not yet implemented`)
+
+    throw new Error(`realistic lighting mode is not yet implemented`)
   }
 
   private calculateLighting(settings: Settings): void {
