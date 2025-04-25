@@ -51,6 +51,8 @@ export type VerticalAlign = 'top' | 'middle' | 'bottom'
 export type FileExports = Record<string, string>
 
 /**
+ * `[ source, target ]`
+ *
  * where:
  * - target = output filename
  * - source = input filename
@@ -58,19 +60,19 @@ export type FileExports = Record<string, string>
 export type SingleFileExport = [source: string, target: string]
 
 /**
- * `{ [target]: source }`
+ * `{ [target]: data }`
  *
  * where:
  * - target = output filename
- * - source = input ArrayBuffer
+ * - data = input ArrayBuffer
  */
 export type ArrayBufferExports = Record<string, ArrayBufferLike>
 
 /**
- * `{ [target]: source }`
+ * `{ [target]: data }`
  *
  * where:
  * - target = filename
- * - source = text content
+ * - data = input text content
  */
 export type TextExports = Record<string, string>
