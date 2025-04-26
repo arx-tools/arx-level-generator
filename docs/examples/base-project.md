@@ -3,8 +3,8 @@
 ## node.js version
 
 ```ts
-import { ArxMap, Settings } from 'arx-level-generator'
-import { Platform } from 'arx-level-generator/platform/node'
+import { ArxMap } from 'arx-level-generator'
+import { Platform, Settings } from 'arx-level-generator/platform/node'
 
 // reads the contents of the .env file
 // also: the presence of settings in method call arguments indicate file io happening inside (delayed as much as possible)
@@ -45,8 +45,8 @@ amount of code that can produce a working Arx Fatalis map.
 ## browser version - coming soon
 
 ```ts
-import { ArxMap, Settings } from 'arx-level-generator'
-import { Platform } from 'arx-level-generator/platform/browser'
+import { ArxMap } from 'arx-level-generator'
+import { Platform, Settings } from 'arx-level-generator/platform/browser'
 
 // reads the contents of the .env file
 // also: the presence of settings in method call arguments indicate file io happening inside (delayed as much as possible)

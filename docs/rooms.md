@@ -67,16 +67,14 @@ with light
 import { ArxMap } from '@src/ArxMap.js'
 import { loadRooms } from '@prefabs/rooms/loadRooms.js'
 
-export default async () => {
-  const map = new ArxMap()
+const map = new ArxMap()
 
-  // ...
+// ...
 
-  const rooms = await loadRooms('projects/example/example.rooms')
-  rooms.forEach((room) => {
-    map.add(room, true)
-  })
+const rooms = await loadRooms('projects/example/example.rooms')
+rooms.forEach((room) => {
+  map.add(room, true)
+})
 
-  // ...
-}
+// ...
 ```
