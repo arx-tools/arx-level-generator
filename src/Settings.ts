@@ -3,7 +3,7 @@ import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { config as dotenvConfig } from 'dotenv'
 import seedrandom from 'seedrandom'
-import { randomIntBetween } from '@src/random.js'
+import { createRandomSeed } from '@src/random.js'
 
 dotenvConfig()
 
@@ -228,7 +228,7 @@ export class Settings {
 
     this.uncompressedFTS = props.uncompressedFTS ?? process.env.uncompressedFTS === 'true'
 
-    this.seed = props.seed ?? process.env.seed ?? this.createRandomSeed()
+    this.seed = props.seed ?? process.env.seed ?? createRandomSeed()
 
     this.internalAssetsDir = this.getInternalAssetsDir()
 
@@ -242,10 +242,6 @@ export class Settings {
     this.outputDir = props.outputDir ?? process.env.outputDir ?? path.resolve('./output')
 
     seedrandom(this.seed, { global: true })
-  }
-
-  private createRandomSeed(): string {
-    return randomIntBetween(100_000_000, 999_999_999).toString()
   }
 
   private parseLightingCalculatorMode(

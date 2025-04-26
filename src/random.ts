@@ -112,3 +112,7 @@ export function pickWeightedRandoms<T extends Record<string, any>>(
 
   return randomSort(weightedSet)
 }
+
+export function createRandomSeed(): string {
+  return randomIntBetween(100_000_000, 999_999_999).toString()
+}
