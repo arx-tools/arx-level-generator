@@ -165,3 +165,11 @@ export function groupSequences(numbers: number[]): [smallestNumber: number, leng
 
   return acc
 }
+
+export function ensureArray<T>(value: T | T[]): T[] {
+  if (Array.isArray(value)) {
+    return value
+  }
+
+  return [value]
+}

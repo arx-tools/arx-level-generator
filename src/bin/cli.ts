@@ -2,10 +2,11 @@
 import process from 'node:process'
 import minimist from 'minimist-lite'
 import type { Simplify } from 'type-fest'
-import { defaultLightingCalculatorMode, Settings, type SettingsConstructorProps } from '@src/Settings.js'
 import { finalize } from '@bin/finalize.js'
 import { getPackageVersion } from '@bin/helpers.js'
 import { rungame } from '@bin/rungame.js'
+import { defaultLightingCalculatorMode, type SettingsConstructorProps } from '@platform/common/Settings.js'
+import { Settings } from '@platform/node/Settings.js'
 
 type AppArgs = {
   _: string[]

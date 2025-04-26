@@ -1,7 +1,7 @@
 import path from 'node:path'
-import type { Settings } from '@src/Settings.js'
 import { generateBlankBMP } from '@src/helpers.js'
 import type { ArrayBufferExports } from '@src/types.js'
+import type { Settings } from '@platform/common/Settings.js'
 
 export enum HudElements {
   Minimap = 'minimap',

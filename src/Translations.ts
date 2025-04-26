@@ -1,6 +1,6 @@
 import path from 'node:path'
-import type { Settings } from '@src/Settings.js'
 import type { TextExports } from '@src/types.js'
+import type { Settings } from '@platform/common/Settings.js'
 import { readTextFile } from '@platform/node/io.js'
 
 export type Locales =

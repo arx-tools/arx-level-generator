@@ -1,8 +1,9 @@
 import type { ArxFTS, ArxDLF, ArxLLF } from 'arx-convert/types'
 import type { Simplify } from 'type-fest'
 import { ArxMap } from '@src/ArxMap.js'
-import { Settings, type SettingsConstructorProps } from '@src/Settings.js'
 import { stringifyJSON } from '@bin/helpers.js'
+import type { SettingsConstructorProps } from '@platform/common/Settings.js'
+import { Settings } from '@platform/node/Settings.js'
 import { readTextFile, writeTextFile } from '@platform/node/io.js'
 
 export async function finalize(

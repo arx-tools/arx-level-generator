@@ -1,5 +1,5 @@
-import type { Settings } from '@src/Settings.js'
 import type { FileExports } from '@src/types.js'
+import type { Settings } from '@platform/common/Settings.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import type { ScriptProperty } from '@scripting/ScriptProperty.js'
 import type { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'

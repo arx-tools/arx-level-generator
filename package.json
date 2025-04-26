@@ -102,6 +102,7 @@
   "dependencies": {
     "arx-header-size": "^3.2.0",
     "binary-bmp": "^1.2.2",
+    "cache-manager": "^6.4.2",
     "color-rgba": "^3.0.0",
     "dotenv": "^16.5.0",
     "minimist-lite": "^2.3.0",

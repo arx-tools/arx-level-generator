@@ -26,7 +26,6 @@ import { LevelLoader } from '@src/LevelLoader.js'
 import { Light } from '@src/Light.js'
 import { Lights } from '@src/Lights.js'
 import { Manifest } from '@src/Manifest.js'
-import { generateMetadata } from '@src/MetaData.js'
 import { Path } from '@src/Path.js'
 import { Paths } from '@src/Paths.js'
 import { Player } from '@src/Player.js'
@@ -36,7 +35,6 @@ import { Portal } from '@src/Portal.js'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
 import { $ } from '@src/Selection.js'
-import type { Settings } from '@src/Settings.js'
 import { Texture } from '@src/Texture.js'
 import { Translations } from '@src/Translations.js'
 import { UI } from '@src/UI.js'
@@ -47,9 +45,11 @@ import { Zones } from '@src/Zones.js'
 import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { groupSequences, times } from '@src/faux-ramda.js'
 import { percentOf, encodeJSON, compressAs, encodeText } from '@src/helpers.js'
-import { getGeneratorPackageJSON } from '@src/node.js'
 import type { OriginalLevel } from '@src/types.js'
 import type { IODiff } from '@platform/common/Platform.js'
+import type { Settings } from '@platform/common/Settings.js'
+import { generateMetadata } from '@platform/node/metadata.js'
+import { getGeneratorPackageJSON } from '@platform/node/package.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 
 type ArxMapConfig = {
@@ -65,6 +65,7 @@ type ToBeSortedLater = {
   roomDistances: ArxRoomDistance[]
 }
 
+// used by lighting calculation - TODO: move this with the rest of the lighting calculation code to a separate file
 /**
  * @see https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/DANAE/Danae.cpp#L402
  */

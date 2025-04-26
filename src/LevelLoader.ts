@@ -1,10 +1,10 @@
 import path from 'node:path'
 import { DLF, FTS, LLF } from 'arx-convert'
 import type { ArxDLF, ArxFTS, ArxLLF } from 'arx-convert/types'
-import type { Settings } from '@src/Settings.js'
 import type { OriginalLevel } from '@src/types.js'
+import type { Settings } from '@platform/common/Settings.js'
 import { fileOrFolderExists, readBinaryFile, readTextFile, writeTextFile } from '@platform/node/io.js'
-import { createCacheFolderIfNotExists } from '@services/cache.js'
+import { createCacheFolderIfNotExists } from '@platform/node/services/cache.js'
 
 export class LevelLoader {
   levelIdx: OriginalLevel

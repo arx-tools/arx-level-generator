@@ -31,7 +31,6 @@ export {
   PathsSelection,
   ZonesSelection,
 } from '@src/Selection.js'
-export { Settings } from '@src/Settings.js'
 export { Texture, SIZE_UNKNOWN, NO_TEXTURE_CONTAINER } from '@src/Texture.js'
 export { Translations } from '@src/Translations.js'
 export { UI, UiElements } from '@src/UI.js'
