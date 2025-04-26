@@ -47,6 +47,8 @@ export type VerticalAlign = 'top' | 'middle' | 'bottom'
  * where:
  * - target = output filename
  * - source = input filename
+ *
+ * methods using this type expect target and source to be absolute paths
  */
 export type FileExports = Record<string, string>
 
@@ -56,6 +58,8 @@ export type FileExports = Record<string, string>
  * where:
  * - target = output filename
  * - source = input filename
+ *
+ * methods using this type expect target and source to be absolute paths
  */
 export type SingleFileExport = [source: string, target: string]
 
@@ -65,6 +69,8 @@ export type SingleFileExport = [source: string, target: string]
  * where:
  * - target = output filename
  * - data = input ArrayBuffer
+ *
+ * methods using this type expect target to be an absolute path
  */
 export type ArrayBufferExports = Record<string, ArrayBufferLike>
 
@@ -74,5 +80,7 @@ export type ArrayBufferExports = Record<string, ArrayBufferLike>
  * where:
  * - target = filename
  * - data = input text content
+ *
+ * methods using this type expect target to be an absolute path
  */
 export type TextExports = Record<string, string>

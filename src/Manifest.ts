@@ -1,4 +1,3 @@
-import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { Simplify } from 'type-fest'
 import { type MetaData, generateMetadata } from '@src/MetaData.js'
@@ -7,12 +6,15 @@ import { fileOrFolderExists, readTextFile } from '@platform/node/io.js'
 
 export type ManifestData = Simplify<
   MetaData & {
+    /**
+     * A list of paths relative to the output directory
+     */
     files: string[]
   }
 >
 
 export class Manifest {
-  static filename: string = 'manifest.json'
+  static readonly filename: string = 'manifest.json'
 
   settings: Settings
 
@@ -20,18 +22,17 @@ export class Manifest {
     this.settings = settings
   }
 
-  async uninstall(): Promise<void> {
-    const manifest = (await this.read()) ?? { files: [] }
+  async getFilesFromManifestJSON(): Promise<string[]> {
+    const filesToDelete: string[] = []
 
+    const manifest = (await this.read()) ?? { files: [] }
     for (const file of manifest.files) {
-      try {
-        await fs.rm(path.resolve(this.settings.outputDir, file))
-      } catch {}
+      filesToDelete.push(path.resolve(this.settings.outputDir, file))
     }
 
-    try {
-      await fs.rm(this.getPathToFilename())
-    } catch {}
+    filesToDelete.push(this.getPathToFilename())
+
+    return filesToDelete
   }
 
   async generate(files: string[], prettify: boolean = false): Promise<ArrayBufferLike> {

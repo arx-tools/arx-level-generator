@@ -48,8 +48,8 @@ import { MapFinalizedError, MapNotFinalizedError } from '@src/errors.js'
 import { groupSequences, times } from '@src/faux-ramda.js'
 import { percentOf, encodeJSON, compressAs, encodeText } from '@src/helpers.js'
 import { getGeneratorPackageJSON } from '@src/node.js'
-import type { FileExports, OriginalLevel, ArrayBufferExports } from '@src/types.js'
-import { readBinaryFile } from '@platform/node/io.js'
+import type { OriginalLevel } from '@src/types.js'
+import type { IODiff } from '@platform/common/Platform.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
 
 type ArxMapConfig = {
@@ -312,27 +312,29 @@ export class ArxMap {
   /**
    * @throws MapNotFinalizedError when attempting to save an ArxMap which have not yet been finalized
    */
-  async export(
-    settings: Settings,
-    exportJsonFiles: boolean = false,
-    prettify: boolean = false,
-  ): Promise<ArrayBufferExports> {
+  async export(settings: Settings, exportJsonFiles: boolean = false, prettify: boolean = false): Promise<IODiff> {
     if (!this.config.isFinalized) {
       throw new MapNotFinalizedError()
+    }
+
+    const files: IODiff = {
+      toAdd: {},
+      toCopy: {},
+      toRemove: [],
     }
 
     console.log(`[info] ArxMap: seed = "${settings.seed}"`)
     console.log(`[info] ArxMap: output directory = "${settings.outputDir}"`)
 
     const manifest = new Manifest(settings)
+    files.toRemove = await manifest.getFilesFromManifestJSON()
 
-    await manifest.uninstall()
-
-    const buffersToExport: ArrayBufferExports = {
+    files.toAdd = {
+      ...files.toAdd,
       ...this.hud.exportSourcesAndTargets(settings),
     }
 
-    let filesToCopy: FileExports = {
+    files.toCopy = {
       ...this.ui.exportSourcesAndTargets(settings),
       ...(await this.polygons.exportTextures(settings)),
       ...Audio.exportReplacements(settings),
@@ -342,37 +344,37 @@ export class ArxMap {
       if (entity.hasScript()) {
         const filename = entity.exportScriptTarget(settings)
         const content = entity.script.toArxData().replaceAll('\n', Script.EOL)
-        buffersToExport[filename] = encodeText(content, 'latin9')
+        files.toAdd[filename] = encodeText(content, 'latin9')
 
-        filesToCopy = {
-          ...filesToCopy,
+        files.toCopy = {
+          ...files.toCopy,
           ...(await entity.script.exportTextures(settings)),
         }
       }
 
       if (entity.hasInventoryIcon()) {
-        filesToCopy = {
-          ...filesToCopy,
+        files.toCopy = {
+          ...files.toCopy,
           ...(await entity.exportInventoryIcon(settings)),
         }
       }
 
       if (entity.hasModel()) {
-        filesToCopy = {
-          ...filesToCopy,
+        files.toCopy = {
+          ...files.toCopy,
           ...(await entity.model.exportSourceAndTarget(settings, entity.src, exportJsonFiles, prettify)),
         }
       }
 
       for (const [tweakName, tweakModel] of Object.entries(entity.tweaks)) {
-        filesToCopy = {
-          ...filesToCopy,
+        files.toCopy = {
+          ...files.toCopy,
           ...(await tweakModel.exportSourceAndTarget(settings, tweakName, exportJsonFiles, prettify)),
         }
       }
 
-      filesToCopy = {
-        ...filesToCopy,
+      files.toCopy = {
+        ...files.toCopy,
         ...(await entity.exportOtherDependencies(settings)),
       }
     }
@@ -380,10 +382,10 @@ export class ArxMap {
     if (this.player.hasScript()) {
       const filename = this.player.exportTarget(settings)
       const content = this.player.script.toArxData().replaceAll('\n', Script.EOL)
-      buffersToExport[filename] = encodeText(content, 'latin9')
+      files.toAdd[filename] = encodeText(content, 'latin9')
 
-      filesToCopy = {
-        ...filesToCopy,
+      files.toCopy = {
+        ...files.toCopy,
         ...(await this.player.script.exportTextures(settings)),
       }
     }
@@ -397,7 +399,7 @@ export class ArxMap {
 
     for (const [filename, translation] of Object.entries(translations)) {
       const content = `// ${meta.name} v.${meta.version} - ${generatorId}\n\n${translation}`
-      buffersToExport[filename] = encodeText(content, 'utf8')
+      files.toAdd[filename] = encodeText(content, 'utf8')
     }
 
     let customAmbiences: Record<string, ArxAMB> = {}
@@ -412,8 +414,8 @@ export class ArxMap {
         ...zone.ambience.toArxData(settings),
       }
 
-      filesToCopy = {
-        ...filesToCopy,
+      files.toCopy = {
+        ...files.toCopy,
         ...zone.ambience.exportSourcesAndTargets(settings),
       }
     })
@@ -424,25 +426,25 @@ export class ArxMap {
 
     const binaryFts = FTS.save(fts, settings.uncompressedFTS === false)
     const binaryFtsFilename = path.resolve(settings.outputDir, `game/graph/levels/level${settings.levelIdx}/fast.fts`)
-    buffersToExport[binaryFtsFilename] = compressAs(binaryFts, 'fts')
+    files.toAdd[binaryFtsFilename] = compressAs(binaryFts, 'fts')
 
     const binaryDlf = DLF.save(dlf)
     const binaryDlfFilename = path.resolve(
       settings.outputDir,
       `graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.dlf`,
     )
-    buffersToExport[binaryDlfFilename] = compressAs(binaryDlf, 'dlf')
+    files.toAdd[binaryDlfFilename] = compressAs(binaryDlf, 'dlf')
 
     const binaryLlf = LLF.save(llf)
     const binaryLlfFilename = path.resolve(
       settings.outputDir,
       `graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.llf`,
     )
-    buffersToExport[binaryLlfFilename] = compressAs(binaryLlf, 'llf')
+    files.toAdd[binaryLlfFilename] = compressAs(binaryLlf, 'llf')
 
     for (const [target, amb] of Object.entries(customAmbiences)) {
       const binaryAmb = AMB.save(amb)
-      buffersToExport[target] = compressAs(binaryAmb, 'amb')
+      files.toAdd[target] = compressAs(binaryAmb, 'amb')
     }
 
     // ------------------------
@@ -454,42 +456,37 @@ export class ArxMap {
         settings.outputDir,
         `game/graph/levels/level${settings.levelIdx}/fast.fts.json`,
       )
-      buffersToExport[jsonFtsFilename] = jsonFts
+      files.toAdd[jsonFtsFilename] = jsonFts
 
       const jsonDlf = encodeJSON(dlf, prettify)
       const jsonDlfFilename = path.resolve(
         settings.outputDir,
         `graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.dlf.json`,
       )
-      buffersToExport[jsonDlfFilename] = jsonDlf
+      files.toAdd[jsonDlfFilename] = jsonDlf
 
       const jsonLlf = encodeJSON(llf, prettify)
       const jsonLlfFilename = path.resolve(
         settings.outputDir,
         `graph/levels/level${settings.levelIdx}/level${settings.levelIdx}.llf.json`,
       )
-      buffersToExport[jsonLlfFilename] = jsonLlf
+      files.toAdd[jsonLlfFilename] = jsonLlf
 
       for (const [target, amb] of Object.entries(customAmbiences)) {
         const jsonAmb = encodeJSON(amb, prettify)
-        buffersToExport[target + '.json'] = jsonAmb
+        files.toAdd[target + '.json'] = jsonAmb
       }
     }
 
     // ------------------------
-    // read contents of filesToCopy entries as ArrayBuffers and add them to filesToExport
+    // lastly create manifest.json
 
-    for (const target in filesToCopy) {
-      const source = filesToCopy[target]
-      buffersToExport[target] = await readBinaryFile(source)
-    }
+    const sortedFileList = [...Object.keys(files.toCopy), ...Object.keys(files.toAdd)]
+    sortedFileList.sort()
 
-    // ------------------------
-    // lastly create a manifest.json file with all the files that the level generator is exporting
+    files.toAdd['manifest.json'] = await manifest.generate(sortedFileList)
 
-    buffersToExport['manifest.json'] = await manifest.generate(Object.keys(buffersToExport))
-
-    return buffersToExport
+    return files
   }
 
   adjustOffsetTo(map: ArxMap): void {
