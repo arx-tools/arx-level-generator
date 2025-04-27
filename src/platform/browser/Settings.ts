@@ -68,7 +68,7 @@ export class Settings implements ISettings {
 
     // const pathToThisFile = fileURLToPath(import.meta.url)
     // const dirContainingThisFile = path.dirname(pathToThisFile)
-    // return path.resolve(dirContainingThisFile, '../assets')
+    // return path.resolve(dirContainingThisFile, '../../../assets')
 
     return ''
   }
