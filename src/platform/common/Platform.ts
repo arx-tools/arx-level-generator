@@ -1,4 +1,6 @@
+import type { ArxMap } from '@src/ArxMap.js'
 import type { ArrayBufferExports, FileExports } from '@src/types.js'
+import type { Settings } from '@platform/common/Settings.js'
 
 export type IODiff = {
   toAdd: ArrayBufferExports
@@ -6,7 +8,7 @@ export type IODiff = {
   toRemove: string[]
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface -- the API is not yet clear to me
 export interface Platform {
-  // TODO
+  from(map: ArxMap | ArxMap[]): this
+  save(settings: Settings, exportJsonFiles: boolean, prettify: boolean): Promise<void>
 }

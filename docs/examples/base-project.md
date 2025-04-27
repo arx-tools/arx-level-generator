@@ -23,17 +23,8 @@ map.config.offset = new Vector3(6000, 0, 6000)
 // are needed to be made before exporting the files
 map.finalize(settings)
 
-const assets = await map.export(settings)
-
 const platform = new Platform()
-
-const files = {
-  ...(await platform.readAll(assets.toCopy)),
-  ...assets.toAdd,
-}
-
-await platform.readAllFromDisk(assets.toRemove)
-await platform.saveToDisk(files)
+await platform.from(map).save(settings)
 ```
 
 This will create a blank map with a single 100x100 tile below the player's feet.
@@ -65,14 +56,6 @@ map.config.offset = new Vector3(6000, 0, 6000)
 // are needed to be made before exporting the files
 map.finalize(settings)
 
-const assets = await map.export(settings)
-
 const platform = new Platform()
-
-const files = {
-  ...(await platform.readAll(assets.toCopy)),
-  ...assets.toAdd,
-}
-
-await platform.downloadAsZip(files)
+await platform.from(map).save(settings)
 ```
