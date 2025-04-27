@@ -16,7 +16,7 @@ export async function getGeneratorPackageJSON(): Promise<PackageJsonProps> {
     try {
       const filename = fileURLToPath(import.meta.url)
       const dirname = path.dirname(filename)
-      const rawIn = await readTextFile(path.resolve(dirname, '../package.json'))
+      const rawIn = await readTextFile(path.resolve(dirname, '../../../package.json'))
       return JSON.parse(rawIn) as PackageJsonProps
     } catch {
       return {
