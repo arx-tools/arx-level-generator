@@ -2,9 +2,7 @@ import crypto from 'node:crypto'
 import { createReadStream } from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { type Cache, createCache } from 'cache-manager'
 import objectHash from 'object-hash'
-import { ensureArray } from '@src/faux-ramda.js'
 import type { Settings } from '@platform/common/Settings.js'
 import { fileOrFolderExists, readTextFile, writeTextFile } from '@platform/node/io.js'
 
@@ -121,61 +119,3 @@ export async function createHashOfFile(filename: string, metadata?: Record<strin
     })
   })
 }
-
-// ---------------------------
-// memory cache
-
-class CacheService {
-  cache: Cache
-  verbose: boolean
-  ttlInMilliseconds: number
-
-  constructor() {
-    this.verbose = false
-    this.ttlInMilliseconds = 3600 * 1000
-
-    this.cache = createCache()
-  }
-
-  async get<T = unknown>(key: string, storeFunction: () => Promise<T>): Promise<T> {
-    const value = this.cache.get(key)
-
-    if (value !== undefined) {
-      if (this.verbose) {
-        console.log(`[CacheService] get from cache: key=${key}, ttl=${this.ttlInMilliseconds}`)
-      }
-
-      return value as T
-    }
-
-    const result = await storeFunction()
-
-    if (this.verbose) {
-      console.log(`[CacheService] get from store: key=${key}, ttl=${this.ttlInMilliseconds}`)
-    }
-
-    await this.cache.set(key, result, this.ttlInMilliseconds)
-
-    return result
-  }
-
-  async set(key: string, value: any): Promise<void> {
-    await this.cache.set(key, value, this.ttlInMilliseconds)
-  }
-
-  async del(keys: string | string[]): Promise<void> {
-    const result = await this.cache.mdel(ensureArray(keys))
-    if (this.verbose) {
-      console.log('[CacheService] del from cache:', keys, result)
-    }
-  }
-
-  async flush(): Promise<void> {
-    await this.cache.clear()
-    if (this.verbose) {
-      console.info('[CacheService] all data flushed')
-    }
-  }
-}
-
-export const cacheService = new CacheService()
