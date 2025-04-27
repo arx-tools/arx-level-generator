@@ -1,5 +1,6 @@
 import path from 'node:path'
 import type { Simplify } from 'type-fest'
+import type { SingleArrayBufferExport } from '@src/types.js'
 import type { Settings } from '@platform/common/Settings.js'
 import { fileOrFolderExists, readTextFile } from '@platform/node/io.js'
 import { type MetaData, generateMetadata } from '@platform/node/metadata.js'
@@ -35,7 +36,7 @@ export class Manifest {
     return filesToDelete
   }
 
-  async generate(files: string[], prettify: boolean = false): Promise<ArrayBufferLike> {
+  async generate(files: string[], prettify: boolean = false): Promise<SingleArrayBufferExport> {
     const metaData = await generateMetadata(this.settings)
 
     const manifest: ManifestData = {
@@ -55,7 +56,9 @@ export class Manifest {
     const encoder = new TextEncoder()
     const view = encoder.encode(stringifiedData)
 
-    return view.buffer
+    const target = this.getPathToFilename()
+
+    return [view.buffer, target]
   }
 
   private getPathToFilename(): string {

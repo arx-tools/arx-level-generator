@@ -328,7 +328,8 @@ export class ArxMap {
     console.log(`[info] ArxMap: output directory = "${settings.outputDir}"`)
 
     const manifest = new Manifest(settings)
-    files.toRemove = await manifest.getFilesFromManifestJSON()
+
+    files.toRemove.push(...(await manifest.getFilesFromManifestJSON()))
 
     files.toAdd = {
       ...files.toAdd,
@@ -484,8 +485,8 @@ export class ArxMap {
 
     const sortedFileList = [...Object.keys(files.toCopy), ...Object.keys(files.toAdd)]
     sortedFileList.sort()
-
-    files.toAdd['manifest.json'] = await manifest.generate(sortedFileList)
+    const [manifestData, manifestTarget] = await manifest.generate(sortedFileList)
+    files.toAdd[manifestTarget] = manifestData
 
     return files
   }
