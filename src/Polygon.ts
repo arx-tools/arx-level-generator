@@ -21,20 +21,28 @@ export type TransparencyType = 'multiplicative' | 'additive' | 'blended' | 'subt
 const DEFAULT_ROOM_ID = 1
 
 type PolygonConfig = {
-  /** setting this to true will prevent calculation of norm, norm2 and normals properties */
+  /**
+   * setting this to true will prevent calculation of norm, norm2 and normals properties
+   */
   areNormalsCalculated: boolean
 }
 
 type PolygonContructorProps = {
   isQuad?: boolean
   vertices: QuadrupleOf<Vertex>
-  /** face normal for the 1st half of the polygon enclosed by vertices a, b and c */
+  /**
+   * face normal for the 1st half of the polygon enclosed by vertices a, b and c
+   */
   norm?: Vector3
-  /** face normal for the 2nd half of the polygon enclosed by vertices d, b and c when polygon is a quad */
+  /**
+   * face normal for the 2nd half of the polygon enclosed by vertices d, b and c when polygon is a quad
+   */
   norm2?: Vector3
   texture?: Texture
   flags?: ArxPolygonFlags
-  /** vertex normals */
+  /**
+   * vertex normals
+   */
   normals?: QuadrupleOf<Vector3>
   transval?: number
   area?: number
@@ -93,13 +101,19 @@ export class Polygon implements ArxComponent {
   }
 
   vertices: QuadrupleOf<Vertex>
-  /** face normal for the 1st half of the polygon enclosed by vertices a, b and c */
+  /**
+   * face normal for the 1st half of the polygon enclosed by vertices a, b and c
+   */
   norm: Vector3
-  /** face normal for the 2nd half of the polygon enclosed by vertices d, b and c when polygon is a quad */
+  /**
+   * face normal for the 2nd half of the polygon enclosed by vertices d, b and c when polygon is a quad
+   */
   norm2: Vector3
   texture?: Texture
   flags: ArxPolygonFlags
-  /** vertex normals */
+  /**
+   * vertex normals
+   */
   normals?: QuadrupleOf<Vector3>
   transval: number
   area: number

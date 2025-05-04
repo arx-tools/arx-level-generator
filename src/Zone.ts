@@ -14,13 +14,19 @@ export type ZonePoint = {
 
 export type ZoneConstructorProps = {
   name: string
-  /** default value: `Number.POSITIVE_INFINITY` */
+  /**
+   * default value is `Number.POSITIVE_INFINITY`
+   */
   height?: number
   points: ZonePoint[]
   backgroundColor?: Color
-  /** default value: 5600 ? */
+  /**
+   * default value is `5600` (source ?)
+   */
   drawDistance?: number
-  /** default value: Ambience.none */
+  /**
+   * default value is `Ambience.none`
+   */
   ambience?: Ambience
 }
 

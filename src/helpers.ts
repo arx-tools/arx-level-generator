@@ -92,7 +92,9 @@ export function averageVectors(vectors: ThreeJsVector3[]): Vector3 {
   return new Vector3(mean(xs), mean(ys), mean(zs))
 }
 
-/** inclusive */
+/**
+ * inclusive
+ */
 export function isBetween(min: number, max: number, n: number): boolean {
   if (min > max) {
     ;[max, min] = [min, max]
