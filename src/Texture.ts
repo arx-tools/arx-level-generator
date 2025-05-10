@@ -44,7 +44,10 @@ export type TextureConstructorProps = {
 export const SIZE_UNKNOWN = -1
 export const NO_TEXTURE_CONTAINER = 0
 
-const supportedExtensions = ['.jpg', '.png', '.bmp'] as const
+/**
+ * @see https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/EERIE/EERIETexture.cpp#L749
+ */
+const supportedExtensions = ['.png', '.jpg', '.jpeg', '.bmp' /* , '.tga' */] as const
 
 type SupportedExtension = (typeof supportedExtensions)[number]
 
@@ -379,12 +382,17 @@ export class Texture extends ThreeJsTextue {
   }
 
   /**
-   * Compares filenames of textures without the extensions.
-   * Comparision is case-**insensitive**
+   * Compares filenames of textures.
    *
-   * For example:
-   *  - texture.jpg == TEXTURE.JPG
-   *  - texture.bmp == texture.jpg
+   * Comparision is case-**insensitive** and ignores file extensions!
+   *
+   * @example
+   * `texture.jpg` == `TEXTURE.JPG`
+   *
+   * @example
+   * `texture.bmp` == `texture.jpg`
+   *
+   * @see https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/EERIE/EERIETexture.cpp#L749
    */
   equals(texture: Texture | string): boolean {
     const aPath = this.filename.toLowerCase()
@@ -489,10 +497,18 @@ export class Texture extends ThreeJsTextue {
         break
       }
 
+      case '.jpeg':
       case '.jpg': {
         await image.jpeg({ quality: 100, progressive: false }).toFile(convertedSource)
         break
       }
+
+      /*
+      case '.tga': {
+        // TODO
+        break
+      }
+      */
     }
 
     return [convertedSource, convertedTarget]
@@ -541,10 +557,18 @@ export class Texture extends ThreeJsTextue {
         break
       }
 
+      case '.jpeg':
       case '.jpg': {
         await image.jpeg({ quality: 100, progressive: false }).toFile(convertedSource)
         break
       }
+
+      /*
+      case '.tga': {
+        // TODO
+        break
+      }
+      */
     }
 
     this.alreadyMadeTileable = true

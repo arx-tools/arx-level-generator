@@ -28,7 +28,7 @@ relative to where you have installed the `arx-level-generator`) If you are not l
 
 make sure that all assets are lowercase
 
-`jpg` - files should be saved without progressive option (the level generator CAN handle this)
+`jpg` or `jpeg` - files should be saved without progressive option (the level generator CAN handle this)
 
 `bmp` - files should only contain 3x8bit channels, alpha channel should be removed (24 bit, not
 32 bit). When using GIMP make sure to check the "do not write color space information" checkbox in
