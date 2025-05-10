@@ -14,7 +14,7 @@ type AudioConstructorProps = {
    */
   isNative?: boolean
   /**
-   * default values is based on the value of the type property: if type not defined, then sourcePath defaults to "sfx"
+   * default value is based on the value of the type property, if type is not defined either, then "sfx" will be substituted
    */
   sourcePath?: string
   /**
