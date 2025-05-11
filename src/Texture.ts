@@ -28,19 +28,29 @@ export type TextureConstructorProps = {
   /**
    * If you already know the size of the texture file, then you can make the class skip some checks
    * when loading custom texture files.
+   *
+   * If `width` is the same as `height` you can specify just one number via the `size` property.
    */
   width?: number
 
   /**
    * If you already know the size of the texture file, then you can make the class skip some checks
    * when loading custom texture files.
+   *
+   * If `width` is the same as `height` you can specify just one number via the `size` property.
    */
   height?: number
 
+  /**
+   * If you already know the size of the texture file, then you can make the class skip some checks
+   * when loading custom texture files.
+   *
+   * If `width` is the same as `height` you can specify just one number via the `size` property.
+   */
   size?: number
 
   /**
-   * This path is relative to "assets" folder in the project using arx-level-generator
+   * This path is relative to the "assets" folder in the project that uses the arx-level-generator
    *
    * default value is `"graph/obj3d/texture"`
    */
