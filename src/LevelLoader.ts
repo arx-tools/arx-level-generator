@@ -7,8 +7,8 @@ import { fileOrFolderExists, readBinaryFile, readTextFile, writeTextFile } from 
 import { createCacheFolderIfNotExists } from '@platform/node/services/cache.js'
 
 export class LevelLoader {
-  levelIdx: OriginalLevel
-  settings: Settings
+  private readonly levelIdx: OriginalLevel
+  private readonly settings: Settings
 
   constructor(levelIdx: OriginalLevel, settings: Settings) {
     this.levelIdx = levelIdx
@@ -19,119 +19,75 @@ export class LevelLoader {
    * @throws Error when binary dlf file doesn't exist
    */
   async readDlf(): Promise<ArxDLF> {
-    return this.readData('dlf')
+    const jsonFolder = await createCacheFolderIfNotExists(this.getCachedJsonFolder(), this.settings)
+    const jsonFilename = path.resolve(jsonFolder, './' + this.getFilename('dlf') + '.json')
+
+    try {
+      const jsonData = await readTextFile(jsonFilename)
+      return JSON.parse(jsonData) as ArxDLF
+    } catch {
+      const binaryFolder = this.getBinaryFolder()
+      const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename('dlf') + '.unpacked')
+
+      if (!(await fileOrFolderExists(binaryFolder))) {
+        throw new Error(`Attempted to read folder containing binary level data at "${binaryFolder}"`)
+      }
+
+      const binaryData = await readBinaryFile(binaryFilename)
+      const data = DLF.load(binaryData)
+      await writeTextFile(jsonFilename, JSON.stringify(data))
+      return data
+    }
   }
 
   /**
    * @throws Error when binary fts file doesn't exist
    */
   async readFts(): Promise<ArxFTS> {
-    return this.readData('fts')
+    const jsonFolder = await createCacheFolderIfNotExists(this.getCachedJsonFolder(), this.settings)
+    const jsonFilename = path.resolve(jsonFolder, './' + this.getFilename('fts') + '.json')
+
+    try {
+      const jsonData = await readTextFile(jsonFilename)
+      return JSON.parse(jsonData) as ArxFTS
+    } catch {
+      const binaryFolder = this.getBinaryFolder()
+      const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename('fts') + '.unpacked')
+
+      if (!(await fileOrFolderExists(binaryFolder))) {
+        throw new Error(`Attempted to read folder containing binary level data at "${binaryFolder}"`)
+      }
+
+      const binaryData = await readBinaryFile(binaryFilename)
+      const data = FTS.load(binaryData)
+      await writeTextFile(jsonFilename, JSON.stringify(data))
+      return data
+    }
   }
 
   /**
    * @throws Error when binary llf file doesn't exist
    */
   async readLlf(): Promise<ArxLLF> {
-    return this.readData('llf')
-  }
-
-  /**
-   * @throws Error when binary dlf, llf or fts files don't exist
-   */
-  async readData(format: 'dlf'): Promise<ArxDLF>
-  async readData(format: 'fts'): Promise<ArxFTS>
-  async readData(format: 'llf'): Promise<ArxLLF>
-  async readData(format: 'dlf' | 'fts' | 'llf'): Promise<ArxDLF | ArxFTS | ArxLLF> {
     const jsonFolder = await createCacheFolderIfNotExists(this.getCachedJsonFolder(), this.settings)
-    const jsonFilename = path.resolve(jsonFolder, './' + this.getFilename(format) + '.json')
+    const jsonFilename = path.resolve(jsonFolder, './' + this.getFilename('llf') + '.json')
 
-    let data: ArxDLF | ArxFTS | ArxLLF
+    try {
+      const jsonData = await readTextFile(jsonFilename)
+      return JSON.parse(jsonData) as ArxLLF
+    } catch {
+      const binaryFolder = this.getBinaryFolder()
+      const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename('llf') + '.unpacked')
 
-    switch (format) {
-      case 'dlf': {
-        const parser = this.getParser(format)
-
-        try {
-          const jsonData = await readTextFile(jsonFilename)
-          data = JSON.parse(jsonData) as ArxDLF
-        } catch {
-          const binaryFolder = this.getBinaryFolder()
-          const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename(format) + '.unpacked')
-
-          if (!(await fileOrFolderExists(binaryFolder))) {
-            throw new Error(`Attempted to read folder containing binary level data at "${binaryFolder}"`)
-          }
-
-          const binaryData = await readBinaryFile(binaryFilename)
-          data = parser.load(binaryData)
-          await writeTextFile(jsonFilename, JSON.stringify(data))
-        }
-
-        break
+      if (!(await fileOrFolderExists(binaryFolder))) {
+        throw new Error(`Attempted to read folder containing binary level data at "${binaryFolder}"`)
       }
 
-      case 'fts': {
-        const parser = this.getParser(format)
-
-        try {
-          const jsonData = await readTextFile(jsonFilename)
-          data = JSON.parse(jsonData) as ArxFTS
-        } catch {
-          const binaryFolder = this.getBinaryFolder()
-          const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename(format) + '.unpacked')
-
-          if (!(await fileOrFolderExists(binaryFolder))) {
-            throw new Error(`Attempted to read folder containing binary level data at "${binaryFolder}"`)
-          }
-
-          const binaryData = await readBinaryFile(binaryFilename)
-          data = parser.load(binaryData)
-          await writeTextFile(jsonFilename, JSON.stringify(data))
-        }
-
-        break
-      }
-
-      case 'llf': {
-        const parser = this.getParser(format)
-
-        try {
-          const jsonData = await readTextFile(jsonFilename)
-          data = JSON.parse(jsonData) as ArxLLF
-        } catch {
-          const binaryFolder = this.getBinaryFolder()
-          const binaryFilename = path.resolve(binaryFolder, './' + this.getFilename(format) + '.unpacked')
-
-          if (!(await fileOrFolderExists(binaryFolder))) {
-            throw new Error(`Attempted to read folder containing binary level data at "${binaryFolder}"`)
-          }
-
-          const binaryData = await readBinaryFile(binaryFilename)
-          data = parser.load(binaryData)
-          await writeTextFile(jsonFilename, JSON.stringify(data))
-        }
-
-        break
-      }
+      const binaryData = await readBinaryFile(binaryFilename)
+      const data = LLF.load(binaryData)
+      await writeTextFile(jsonFilename, JSON.stringify(data))
+      return data
     }
-
-    return data
-  }
-
-  private getParser(format: 'dlf'): typeof DLF
-  private getParser(format: 'fts'): typeof FTS
-  private getParser(format: 'llf'): typeof LLF
-  private getParser(format: 'dlf' | 'fts' | 'llf'): typeof DLF | typeof FTS | typeof LLF {
-    if (format === 'dlf') {
-      return DLF
-    }
-
-    if (format === 'fts') {
-      return FTS
-    }
-
-    return LLF
   }
 
   private getFilename(format: 'dlf' | 'fts' | 'llf'): string {
