@@ -21,22 +21,35 @@ export type TextureConstructorProps = {
   /**
    * whether the texture is from the main game or a custom added file
    *
-   * default value is true (meaning that the texture is from the game)
+   * default value is `true` (meaning that the texture is from the game)
    */
   isNative?: boolean
+
+  /**
+   * If you already know the size of the texture file, then you can make the class skip some checks
+   * when loading custom texture files.
+   */
   width?: number
+
+  /**
+   * If you already know the size of the texture file, then you can make the class skip some checks
+   * when loading custom texture files.
+   */
   height?: number
+
   size?: number
 
   /**
-   * this path is relative to the project's "assets" folder
+   * This path is relative to "assets" folder in the project using arx-level-generator
    *
-   * default value is "graph/obj3d/texture"
+   * default value is `"graph/obj3d/texture"`
    */
   sourcePath?: string
 
   /**
-   * default value is false
+   * Whether the asset is provided by the arx-level-generator
+   *
+   * default value is `false`
    */
   isInternalAsset?: boolean
 }
@@ -278,13 +291,24 @@ export class Texture extends ThreeJsTextue {
 
   // ----------------
 
-  alreadyMadeTileable: boolean
   filename: string
   isNative: boolean
-  _width: number
-  _height: number
   sourcePath?: string
   isInternalAsset: boolean
+
+  private alreadyMadeTileable: boolean
+  /**
+   * The width of the image where the values is taken from the props given to the constructor.
+   * If no width is specified there, then the value will remain `SIZE_UNKNOWN` until `exportSourceAndTarget` is called
+   * to delay file IO operations as much as possible (and keeping other methods from becoming async)
+   */
+  private width: number
+  /**
+   * The height of the image where the values is taken from the props given to the constructor.
+   * If no height is specified there, then the value will remain `SIZE_UNKNOWN` until `exportSourceAndTarget` is called
+   * to delay file IO operations as much as possible (and keeping other methods from becoming async)
+   */
+  private height: number
 
   constructor(props: TextureConstructorProps) {
     super(undefined, UVMapping, ClampToEdgeWrapping, ClampToEdgeWrapping)
@@ -295,49 +319,24 @@ export class Texture extends ThreeJsTextue {
     this.sourcePath = props.sourcePath
     this.isInternalAsset = props.isInternalAsset ?? false
 
-    this._width = props.size ?? props.width ?? SIZE_UNKNOWN
-    this._height = props.size ?? props.height ?? SIZE_UNKNOWN
+    this.width = props.size ?? props.width ?? SIZE_UNKNOWN
+    this.height = props.size ?? props.height ?? SIZE_UNKNOWN
+  }
+
+  exportState(): TextureConstructorProps {
+    return {
+      filename: this.filename,
+      isNative: this.isNative,
+      width: this.width,
+      height: this.height,
+      sourcePath: this.sourcePath,
+      isInternalAsset: this.isInternalAsset,
+    }
   }
 
   clone(): this {
-    const copy = new Texture({
-      filename: this.filename,
-      isNative: this.isNative,
-      width: this._width,
-      height: this._height,
-      sourcePath: this.sourcePath,
-      isInternalAsset: this.isInternalAsset,
-    })
-
+    const copy = new Texture(this.exportState())
     return copy as this
-  }
-
-  async getWidth(settings: Settings): Promise<number> {
-    await this.setSizeFromFile(settings)
-
-    return this._width
-  }
-
-  async getHeight(settings: Settings): Promise<number> {
-    await this.setSizeFromFile(settings)
-
-    return this._height
-  }
-
-  /**
-   * calling this also tries to set the values of `this._width` and `this._height` if any of them is `SIZE_UNKNOWN`
-   *
-   * if `SIZE_UNKNOWN` prevails after the setters, then the return value is `undefined`
-   */
-  async isTileable(settings: Settings): Promise<boolean | undefined> {
-    const width = await this.getWidth(settings)
-    const height = await this.getHeight(settings)
-
-    if (width === SIZE_UNKNOWN || height === SIZE_UNKNOWN) {
-      return undefined
-    }
-
-    return width === height && MathUtils.isPowerOfTwo(width)
   }
 
   /**
@@ -373,8 +372,8 @@ export class Texture extends ThreeJsTextue {
 
       this.filename = fallbackTexture.filename
       this.sourcePath = fallbackTexture.sourcePath
-      this._width = fallbackTexture._width
-      this._height = fallbackTexture._height
+      this.width = fallbackTexture.width
+      this.height = fallbackTexture.height
       this.isInternalAsset = fallbackTexture.isInternalAsset
 
       return this.makeCopy(settings)
@@ -436,11 +435,26 @@ export class Texture extends ThreeJsTextue {
       return
     }
 
-    if (this._width === SIZE_UNKNOWN || this._height === SIZE_UNKNOWN) {
+    if (this.width === SIZE_UNKNOWN || this.height === SIZE_UNKNOWN) {
       const { width, height } = await getMetadata(this.getFilename(settings))
-      this._width = width ?? SIZE_UNKNOWN
-      this._height = height ?? SIZE_UNKNOWN
+      this.width = width ?? SIZE_UNKNOWN
+      this.height = height ?? SIZE_UNKNOWN
     }
+  }
+
+  /**
+   * calling this also tries to set the values of `this.width` and `this.height` if any of them is `SIZE_UNKNOWN`
+   *
+   * if `SIZE_UNKNOWN` prevails after the setters, then the return value is `undefined`
+   */
+  private async isTileable(settings: Settings): Promise<boolean | undefined> {
+    await this.setSizeFromFile(settings)
+
+    if (this.width === SIZE_UNKNOWN || this.height === SIZE_UNKNOWN) {
+      return undefined
+    }
+
+    return this.width === this.height && MathUtils.isPowerOfTwo(this.width)
   }
 
   private getFilenameAndExtension(): { filename: string; extension: SupportedExtension } {
@@ -542,7 +556,7 @@ export class Texture extends ThreeJsTextue {
 
     const image = await getSharpInstance(originalSource)
 
-    const powerOfTwo = MathUtils.floorPowerOfTwo(this._width)
+    const powerOfTwo = MathUtils.floorPowerOfTwo(this.width)
 
     image.resize(powerOfTwo, powerOfTwo, { fit: 'cover' })
 

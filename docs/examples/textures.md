@@ -49,8 +49,8 @@ const texture = new Texture({
 
 ## Custom texture
 
-Place a jpg/png/bmp image into the assets folder and add a material in its filename between square brackets.
-You can use the following materials:
+Place a `.jpg`, `.jpeg`, `.png` or `.bmp` image into the `assets` folder and add a material in its filename
+between square brackets. You can use the following materials:
 
 - stone
 - marble
@@ -61,7 +61,7 @@ You can use the following materials:
 - blood
 - bone
 - flesh
-- shit <-- yes, this is an official Arx Fatalis material
+- shit <-- _yes, this is an [official Arx Fatalis material](https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/DANAE/ARX_NPC.cpp#L4151)_
 - soil
 - gravel
 - earth
@@ -76,8 +76,6 @@ You can use the following materials:
 - fabric
 - moss
 
-[source for how materials being parsed by Arx](https://github.com/arx/ArxLibertatis/blob/1.2.1/src/scene/Interactive.cpp#L2337)
-
 ### Non-square textures
 
 If a texture does not have the same width and height then it cannot be tiled, but still can be stretched to fit a plane mesh for example:
@@ -87,7 +85,7 @@ I've created the `assets/textures/` folders and placed `hamster-[stone].jpg` int
 ```ts
 const texture = new Texture({
   filename: 'hamster-[stone].jpg',
-  isNative: false, // native textures are the ones coming from arx
+  isNative: false, // native textures are the ones coming from the original game
   width: 1280,
   height: 853,
   sourcePath: './textures/', // relative to the "assets" folder
@@ -153,6 +151,12 @@ const texture = new Texture({
 ## Supported formats
 
 See ["notes on formats" section in readme](https://github.com/arx-tools/arx-level-generator?tab=readme-ov-file#notes-on-formats)
+
+## Limitations
+
+Note that tilable textures cannot be used on `EntityModels` as nor the Arx Fatalis nor the Arx Libertatis engine supports it.
+There's a pull request being stuck that aims to remedy this, but it's yet to be merged: https://github.com/arx/ArxLibertatis/pull/294. This can be fixed by calling `normalizeUV(geometry)` which ensures all UV coordinates are between `0.0` and `1.0`.
+(Can also be used for non-entity meshes)
 
 ## Resources
 

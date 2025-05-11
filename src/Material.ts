@@ -1,4 +1,5 @@
 import { ArxPolygonFlags } from 'arx-convert/types'
+import type { Simplify } from 'type-fest'
 import type { TransparencyType } from '@src/Polygon.js'
 import { Texture, type TextureConstructorProps } from '@src/Texture.js'
 
@@ -16,17 +17,12 @@ type MaterialExtraProps = {
   opacityMode?: TransparencyType
 }
 
-type MaterialConstructorProps = TextureConstructorProps & MaterialExtraProps
+type MaterialConstructorProps = Simplify<TextureConstructorProps & MaterialExtraProps>
 
 export class Material extends Texture {
   static fromTexture(texture: Texture, props: MaterialExtraProps = {}): Material {
     return new Material({
-      filename: texture.filename,
-      isNative: texture.isNative,
-      width: texture._width,
-      height: texture._height,
-      sourcePath: texture.sourcePath,
-      isInternalAsset: texture.isInternalAsset,
+      ...texture.exportState(),
       ...props,
     })
   }
