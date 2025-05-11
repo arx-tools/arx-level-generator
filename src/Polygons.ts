@@ -37,7 +37,9 @@ export type MeshImportProps = {
   shading?: typeof SHADING_FLAT | typeof SHADING_SMOOTH
   flags?: ArxPolygonFlags
   /**
-   * room id - used when a map has portals, default value is undefined (the Polygon constructor will handle it)
+   * room id - used on maps which have portals
+   *
+   * default value is `undefined` (the Polygon constructor will handle it)
    */
   room?: number
 }
@@ -64,10 +66,7 @@ export class Polygons extends Array<Polygon> {
   }
 
   async exportTextures(settings: Settings): Promise<FileExports> {
-    const texturesToExport: {
-      tileable: Record<string, Texture>
-      nonTileable: Record<string, Texture>
-    } = {
+    const texturesToExport: Record<'tileable' | 'nonTileable', Record<string, Texture>> = {
       tileable: {},
       nonTileable: {},
     }
@@ -136,8 +135,11 @@ export class Polygons extends Array<Polygon> {
         return
       }
 
-      if (!(polygon.texture.filename in nindices)) {
-        nindices[polygon.texture.filename] = {
+      const { filename } = polygon.texture
+      const transparencyType = polygon.getTransparencyType()
+
+      if (!(filename in nindices)) {
+        nindices[filename] = {
           additive: 0,
           blended: 0,
           multiplicative: 0,
@@ -146,8 +148,7 @@ export class Polygons extends Array<Polygon> {
         }
       }
 
-      nindices[polygon.texture.filename][polygon.getTransparencyType()] =
-        nindices[polygon.texture.filename][polygon.getTransparencyType()] + polygon.getNindices()
+      nindices[filename][transparencyType] = nindices[filename][transparencyType] + polygon.getNindices()
     })
 
     return nindices
