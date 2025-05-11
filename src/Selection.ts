@@ -213,7 +213,7 @@ export class PolygonSelection extends Selection<Polygons> {
   }
 
   /**
-   * Selects polygons which go outside the 0-16000 boundary on the horizontal axis (x and z).
+   * Selects polygons which go outside the 0(inclusive)..16000(exclusive) boundary on the horizontal axis' (x and z).
    *
    * This method pre-selects all polygons if none have been selected before.
    */

@@ -426,6 +426,9 @@ export class Polygon implements ArxComponent {
     return true
   }
 
+  /**
+   * A polygon is considered out of bounds when any of its vertices are not 0 <= vertex < 16000 on their x and z axis
+   */
   isOutOfBounds(): boolean {
     let numberOfPolygons = 3
     if (this.isQuad()) {

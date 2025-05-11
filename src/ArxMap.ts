@@ -233,23 +233,29 @@ export class ArxMap {
     if (removedPolygons.length > 0) {
       if (removedPolygons.length === 1) {
         console.warn(
-          `[warning] ArxMap: Removed ${removedPolygons.length} polygon outside the 0..16000 boundary on either or both the X or Z axis`,
+          `[warning] ArxMap: Removed ${removedPolygons.length} polygon that is partially or fully outside the 0(inclusive)..16000(exclusive) boundary on either or both the X or Z axis.`,
         )
       } else {
         console.warn(
-          `[warning] ArxMap: Removed ${removedPolygons.length} polygons outside the 0..16000 boundary on either or both the X or Z axis`,
+          `[warning] ArxMap: Removed ${removedPolygons.length} polygons that is partially or fully outside the 0(inclusive)..16000(exclusive) boundary on either or both the X or Z axis.`,
         )
       }
     }
 
+    // prettier-ignore
     if (this.polygons.length === 0) {
-      console.warn(`[warning] ArxMap: The map has no polygons, adding a quad below the player's feet`)
+      const playerRealPos = this.getPlayerRealPos()
+
+      console.warn(`[warning] ArxMap: The map has no polygons, adding a 100x100 polygon quad below the player's feet...`)
+      console.warn(`   [info] ArxMap: Current player position is at:`)
+      console.warn(`   [info] ArxMap: X = ${playerRealPos.x} = ${this.config.offset.x} (map.config.offset.x) + ${this.player.position.x} (map.player.position.x)`)
+      console.warn(`   [info] ArxMap: Z = ${playerRealPos.z} = ${this.config.offset.z} (map.config.offset.z) + ${this.player.position.z} (map.player.position.z)`)
+
       this.addTileUnderThePlayersFeet()
       $(this.polygons).clearSelection().selectOutOfBounds().delete()
       if (this.polygons.length === 0) {
-        console.warn(
-          `[warning] ArxMap: Failed to add polygon below the player's feet as it was partially or fully outside the 0..16000 boundary on the X or Z axis. Try moving the player by adjusting map.player.position!`,
-        )
+        console.warn(`[warning] ArxMap: Failed to add a 100x100 polygon quad below the player's feet at ${playerRealPos.x - 50}/${playerRealPos.z - 50} as it was partially or fully outside the 0(inclusive)..16000(exclusive) boundary on the X or Z axis.`)
+        console.warn(`   [info] ArxMap: Try moving the player by adjusting map.player.position relative to map.config.offset so that the player is within the 50(inclusive)..15950(exclusive) range accounting the offset of the quad that is placed from -50/-50 to 50/50 relative to the player's position.`)
       }
     }
 
@@ -284,30 +290,8 @@ export class ArxMap {
     this.todo.rooms.forEach((room) => {
       room.portals = []
     })
-    this.todo.roomDistances = [
-      {
-        distance: -1,
-        startPosition: { x: 0, y: 0, z: 0 },
-        endPosition: { x: 1, y: 0, z: 0 },
-      },
-      {
-        distance: -1,
-        startPosition: { x: 0, y: 0, z: 0 },
-        endPosition: { x: 0, y: 1, z: 0 },
-      },
-      {
-        distance: -1,
-        startPosition: { x: 0.984_375, y: 0.984_375, z: 0 },
-        endPosition: { x: 0, y: 0, z: 0 },
-      },
-      {
-        distance: -1,
-        startPosition: { x: 0, y: 0, z: 0 },
-        endPosition: { x: 0, y: 0, z: 0 },
-      },
-    ]
 
-    this.movePolygonsToSameRoom()
+    this.movePolygonsToTheSameRoom()
   }
 
   /**
@@ -493,6 +477,7 @@ export class ArxMap {
 
   adjustOffsetTo(map: ArxMap): void {
     const offsetDifference = map.config.offset.clone().sub(this.config.offset)
+
     $(this.polygons).selectAll().move(offsetDifference)
   }
 
@@ -563,7 +548,7 @@ export class ArxMap {
   }
 
   /**
-   * Generates the DLF, LLF and FTS data in a format that can be given to `arx-convert`
+   * Generates DLF, LLF and FTS datas in a formats that can be given to `arx-convert`
    */
   async toArxData(settings: Settings): Promise<{ dlf: ArxDLF; llf: ArxLLF; fts: ArxFTS }> {
     const now = Math.floor(Date.now() / 1000)
@@ -629,8 +614,12 @@ export class ArxMap {
     }
   }
 
+  private getPlayerRealPos(): Vector3 {
+    return this.config.offset.clone().add(this.player.position)
+  }
+
   private addTileUnderThePlayersFeet(): void {
-    const playerRealPos = this.config.offset.clone().add(this.player.position)
+    const playerRealPos = this.getPlayerRealPos()
 
     if (this.player.positionAlreadyAdjusted) {
       playerRealPos.sub(new Vector3(0, 0, 0).adjustToPlayerHeight())
@@ -646,7 +635,7 @@ export class ArxMap {
     this.polygons.addThreeJsMesh(plane)
   }
 
-  private movePolygonsToSameRoom(): void {
+  private movePolygonsToTheSameRoom(): void {
     $(this.polygons).selectAll().moveToRoom1()
 
     this.todo.rooms = this.todo.rooms.slice(0, 2)
@@ -732,7 +721,7 @@ export class ArxMap {
   }
 
   // -----------------------------------
-  // Lighting calculation methods - Work in progress, it should go eventually into a separate file or files
+  // Lighting calculation methods - Work in progress, it should eventually go into a separate file or files
 
   /**
    * @see https://github.com/arx/ArxLibertatis/blob/ArxFatalis-1.21/Sources/DANAE/Danae.cpp#L1035
