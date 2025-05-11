@@ -52,14 +52,14 @@ type VertexWithMaterialIndex = {
 }
 
 export class Polygons extends Array<Polygon> {
-  cashedBBox: {
+  cachedBBox: {
     numberOfPolygons: number
     value: Box3
   }
 
   constructor(...items: Polygon[]) {
     super(...items)
-    this.cashedBBox = {
+    this.cachedBBox = {
       numberOfPolygons: 0,
       value: new Box3(),
     }
@@ -539,8 +539,8 @@ export class Polygons extends Array<Polygon> {
 
   getBoundingBox(): Box3 {
     // TODO: this isn't ideal when only a vertex gets changed, but not the number of polygons
-    if (this.cashedBBox.numberOfPolygons === this.length) {
-      return this.cashedBBox.value
+    if (this.cachedBBox.numberOfPolygons === this.length) {
+      return this.cachedBBox.value
     }
 
     const bbox = new Box3()
@@ -551,8 +551,8 @@ export class Polygons extends Array<Polygon> {
       bbox.expandByPoint(max)
     }
 
-    this.cashedBBox.numberOfPolygons = this.length
-    this.cashedBBox.value = bbox
+    this.cachedBBox.numberOfPolygons = this.length
+    this.cachedBBox.value = bbox
 
     return bbox
   }
