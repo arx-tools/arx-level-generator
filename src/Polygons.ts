@@ -204,7 +204,13 @@ export class Polygons extends Array<Polygon> {
       applyTransformations(threeJsObj)
     }
 
-    const { tryToQuadify = QUADIFY, shading = SHADING_FLAT, flags = ArxPolygonFlags.None, room } = meshImportProps
+    const {
+      tryToQuadify = QUADIFY,
+      shading = SHADING_FLAT,
+      flags: meshImportFlags = ArxPolygonFlags.None,
+      room,
+    } = meshImportProps
+
     const polygons = new Polygons()
 
     if (threeJsObj instanceof Mesh) {
@@ -286,12 +292,11 @@ export class Polygons extends Array<Polygon> {
             const [a, b, c] = previousPolygon
             const d = currentPolygon[1]
 
-            // TODO: add a proper name for this variable
-            let ccc: ArxPolygonFlags
+            let flags: ArxPolygonFlags
             if (currentTexture instanceof Material) {
-              ccc = currentTexture.flags | flags
+              flags = currentTexture.flags | meshImportFlags
             } else {
-              ccc = flags
+              flags = meshImportFlags
             }
 
             const polygon = new Polygon({
@@ -299,7 +304,7 @@ export class Polygons extends Array<Polygon> {
                 return vertex
               }) as QuadrupleOf<Vertex>,
               texture: currentTexture,
-              flags: ccc,
+              flags,
               isQuad: true,
               room,
             })
@@ -313,12 +318,11 @@ export class Polygons extends Array<Polygon> {
             continue
           }
 
-          // TODO: add a proper name for this variable
-          let ccc: ArxPolygonFlags
+          let flags: ArxPolygonFlags
           if (currentTexture instanceof Material) {
-            ccc = currentTexture.flags | flags
+            flags = currentTexture.flags | meshImportFlags
           } else {
-            ccc = flags
+            flags = meshImportFlags
           }
 
           const polygon = new Polygon({
@@ -329,7 +333,7 @@ export class Polygons extends Array<Polygon> {
               new Vertex(0, 0, 0),
             ] as QuadrupleOf<Vertex>,
             texture: currentTexture,
-            flags: ccc,
+            flags,
             room,
           })
 
@@ -356,12 +360,11 @@ export class Polygons extends Array<Polygon> {
             currentTexture.flags = currentTexture.flags & ~ArxPolygonFlags.Transparent
           }
 
-          // TODO: add a proper name for this variable
-          let ccc: ArxPolygonFlags
+          let flags: ArxPolygonFlags
           if (currentTexture instanceof Material) {
-            ccc = currentTexture.flags | flags
+            flags = currentTexture.flags | meshImportFlags
           } else {
-            ccc = flags
+            flags = meshImportFlags
           }
 
           const polygon = new Polygon({
@@ -372,7 +375,7 @@ export class Polygons extends Array<Polygon> {
               new Vertex(0, 0, 0),
             ] as QuadrupleOf<Vertex>,
             texture: currentTexture,
-            flags: ccc,
+            flags,
             room,
           })
 
@@ -399,14 +402,14 @@ export class Polygons extends Array<Polygon> {
             currentTexture.flags = currentTexture.flags & ~ArxPolygonFlags.Transparent
           }
 
-          let ccc2
+          let flags: ArxPolygonFlags
           if (currentTexture instanceof Material) {
-            ccc2 = currentTexture.flags | flags
+            flags = currentTexture.flags | meshImportFlags
           } else {
-            ccc2 = flags
+            flags = meshImportFlags
           }
 
-          ccc2 = ccc2 & ~ArxPolygonFlags.Quad
+          flags = flags & ~ArxPolygonFlags.Quad
 
           const polygon = new Polygon({
             vertices: [
@@ -416,7 +419,7 @@ export class Polygons extends Array<Polygon> {
               new Vertex(0, 0, 0),
             ] as QuadrupleOf<Vertex>,
             texture: currentTexture,
-            flags: ccc2,
+            flags,
             room,
           })
 
