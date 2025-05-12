@@ -247,15 +247,15 @@ export class ArxMap {
       const playerRealPos = this.getPlayerRealPos()
 
       console.warn(`[warning] ArxMap: The map has no polygons, adding a 100x100 polygon quad below the player's feet...`)
-      console.warn(`   [info] ArxMap: Current player position is at:`)
-      console.warn(`   [info] ArxMap: X = ${playerRealPos.x} = ${this.config.offset.x} (map.config.offset.x) + ${this.player.position.x} (map.player.position.x)`)
-      console.warn(`   [info] ArxMap: Z = ${playerRealPos.z} = ${this.config.offset.z} (map.config.offset.z) + ${this.player.position.z} (map.player.position.z)`)
+      console.info(`   [info] ArxMap: Current player position is at:`)
+      console.info(`   [info] ArxMap: X = ${playerRealPos.x} = ${this.config.offset.x} (map.config.offset.x) + ${this.player.position.x} (map.player.position.x)`)
+      console.info(`   [info] ArxMap: Z = ${playerRealPos.z} = ${this.config.offset.z} (map.config.offset.z) + ${this.player.position.z} (map.player.position.z)`)
 
       this.addTileUnderThePlayersFeet()
       $(this.polygons).clearSelection().selectOutOfBounds().delete()
       if (this.polygons.length === 0) {
         console.warn(`[warning] ArxMap: Failed to add a 100x100 polygon quad below the player's feet at ${playerRealPos.x - 50}/${playerRealPos.z - 50} as it was partially or fully outside the 0(inclusive)..16000(exclusive) boundary on the X or Z axis.`)
-        console.warn(`   [info] ArxMap: Try moving the player by adjusting map.player.position relative to map.config.offset so that the player is within the 50(inclusive)..15950(exclusive) range accounting the offset of the quad that is placed from -50/-50 to 50/50 relative to the player's position.`)
+        console.info(`   [info] ArxMap: Try moving the player by adjusting map.player.position relative to map.config.offset so that the player is within the 50(inclusive)..15950(exclusive) range accounting the offset of the quad that is placed from -50/-50 to 50/50 relative to the player's position.`)
       }
     }
 
