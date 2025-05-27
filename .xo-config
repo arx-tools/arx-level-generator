@@ -14,7 +14,18 @@
     "no-warning-comments": "off",
     "@typescript-eslint/no-extraneous-class": "off",
     "@typescript-eslint/ban-types": "off",
-    "unicorn/filename-case": "off",
+    "unicorn/filename-case": [
+      "error",
+      {
+        "cases": {
+          "camelCase": true,
+          "pascalCase": true
+        },
+        "ignore": [
+          "loadOBJ.ts"
+        ]
+      }
+    ],
     "unicorn/no-array-callback-reference": "off",
     "unicorn/no-array-for-each": "off",
     "unicorn/no-static-only-class": "off",

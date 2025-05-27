@@ -128,7 +128,7 @@
     "tsc-alias": "^1.8.15",
     "type-fest": "^4.40.0",
     "typescript": "^5.8.3",
-    "xo": "^0.60.0"
+    "xo": "^1.0.0"
   },
   "keywords": [
     "arx-fatalis"
