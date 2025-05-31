@@ -8,7 +8,7 @@ const xoConfig: FlatXoConfig = {
   plugins: {
     'unused-imports': unusedImports,
   },
-  files: '**/*.ts',
+  files: ['xo.config.ts', 'src/**/*.ts'],
   rules: {
     'capitalized-comments': 'off',
     'no-bitwise': 'off',
