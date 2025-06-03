@@ -43,7 +43,7 @@ generator CAN handle this)
 
 ## Other documentation
 
-- [the custom 'rooms' format](docs/rooms.md)
+- [the custom 'rooms' format](docs/rooms/01-readme.md)
 - [code for the base project](docs/examples/base-project.md)
 - [adding a three.js mesh to the level](docs/examples/adding-a-threejs-mesh.md)
 - [working with textures](docs/examples/textures.md)

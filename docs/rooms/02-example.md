@@ -1,6 +1,14 @@
-# "Rooms" custom format
+# Example
 
-[back to the main readme](../readme.md)
+[back to the main readme](../01-readme.md)
+
+## Table of contents
+
+- [01 - rooms index page](./01-readme.md)
+- [02 - example code showcasing every feature of the syntax](./02-example.md)
+- [03 - explaining room alignments](./03-aligning-rooms.md)
+- [04 - more fine grained alignments with offsets using phantom rooms](./04-offsets.md)
+- [05 - explaining variables](./05-variables.md)
 
 ## Example rooms file
 
