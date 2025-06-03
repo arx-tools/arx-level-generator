@@ -16,7 +16,7 @@ Rooms are cubical shapes which you can align to one another on 3 axis:
 - y is the vertical axis going from down to up
 - z is the depth axis going from back to front
 
-Every axis has 5 alignments: `--`, `-`, `<empty>`, `+` and `++`
+Every axis has 5 alignments going from the negative end to the positive: `--`, `-`, `<empty>`, `+` and `++`
 
 Let's look at the alignments on the `x` axis as an example:
 
@@ -127,3 +127,13 @@ definition, so writing only `room add 400 250 400` is the same as writing `room 
 
 The order of axis when writing a room definition doesn't matter, they can be mixed up however you like. Writing `z++ x-`
 is the same as writing `x- z++`.
+
+## Similarities to CSS on the web
+
+This alignment model was inspired by the [`justify-content`](https://developer.mozilla.org/en-US/docs/Web/CSS/justify-content) CSS property of [`flexbox`](https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/CSS_layout/Flexbox) layouts.
+
+- `x<empty>` is the same as `justify-content: center;` on the x axis
+- `x-` is the same as `justify-content: flex-start;` on the x axis
+- `x+` is the same as `justify-content: flex-end;` on the x axis
+- `x--` has no corresponding css equivalent
+- `x++` has no corresponding css equivalent
