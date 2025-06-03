@@ -4,10 +4,10 @@
 
 ## Example rooms file
 
-`assets/example/example.rooms`
+Place the contents of the code block below into `assets/example/example.rooms`
 
 ```sh
-# use shellscript for syntax highlighting
+# use shellscript for syntax highlighting to get the best results
 
 # This is a comment
 
@@ -61,7 +61,7 @@ room add 400 $roomHeight 1000 default y- z-- # a long corridor towards the south
 with light
 ```
 
-`projects/example/index.ts`
+Place the following code block into `projects/example/index.ts`
 
 ```ts
 import { ArxMap } from '@src/ArxMap.js'
