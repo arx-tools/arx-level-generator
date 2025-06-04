@@ -117,6 +117,8 @@ const xoConfig: FlatXoConfig = {
       },
     ],
     '@typescript-eslint/no-import-type-side-effects': 'error',
+    'require-await': 'off',
+    '@typescript-eslint/require-await': 'error',
   },
 }
 
