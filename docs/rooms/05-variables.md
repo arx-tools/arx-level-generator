@@ -2,6 +2,15 @@
 
 [back to main rooms readme](./01-readme.md)
 
+## Table of contents
+
+- [01 - rooms index page](./01-readme.md)
+- [02 - example code showcasing every feature of the syntax](./02-example.md)
+- [03 - explaining room alignments](./03-aligning-rooms.md)
+- [04 - more fine grained alignments with offsets using phantom rooms](./04-offsets.md)
+- [05 - explaining variables](./05-variables.md)
+- [06 - branching with "cursor save/restore"](./06-branching.md)
+
 Let's say you have 3 rooms connected by 2 corridors:
 
 ```sh

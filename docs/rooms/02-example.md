@@ -9,6 +9,7 @@
 - [03 - explaining room alignments](./03-aligning-rooms.md)
 - [04 - more fine grained alignments with offsets using phantom rooms](./04-offsets.md)
 - [05 - explaining variables](./05-variables.md)
+- [06 - branching with "cursor save/restore"](./06-branching.md)
 
 ## Example rooms file
 
