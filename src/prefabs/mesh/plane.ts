@@ -21,7 +21,7 @@ type createPlaneMeshProps = {
    */
   tileSize?: number
   /**
-   * default value is Texture.defaultTexture
+   * default value is `Texture.missingTexture`
    */
   texture?: TextureOrMaterial
   /**
