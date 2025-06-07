@@ -1,6 +1,8 @@
 import unusedImports from 'eslint-plugin-unused-imports'
 import type { FlatXoConfig } from 'xo'
 
+// https://github.com/xojs/xo/issues/811 - this is the cause of the @typescript-eslint/no-unsafe-* errors
+
 const xoConfig: FlatXoConfig = {
   space: true,
   semicolon: false,
@@ -102,14 +104,8 @@ const xoConfig: FlatXoConfig = {
     'arrow-body-style': ['error', 'always'],
     '@typescript-eslint/unified-signatures': 'off',
     'unicorn/no-for-loop': 'off',
-    // it's impossible to decypher what the real issue is, so I'm disabling every no-unsafe-* messages
-    // https://github.com/typescript-eslint/typescript-eslint/issues/9591
-    // the case is usually that a lib far away in the list of denendencies has an any somewhere
-    // and that causes everything to become unsafe.
-    // unsafe arguments being an issue is especially wrong in user-defined type guards, like `isValidMode()`
+    // any as an argument type is very useful when creating type guards:
     '@typescript-eslint/no-unsafe-argument': 'off',
-    '@typescript-eslint/no-unsafe-assignment': 'off',
-    '@typescript-eslint/no-unsafe-call': 'off',
     'object-shorthand': [
       'error',
       'always',
