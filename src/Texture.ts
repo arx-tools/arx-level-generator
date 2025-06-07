@@ -357,7 +357,7 @@ export class Texture extends ThreeJsTexture {
   async exportSourceAndTarget(
     settings: Settings,
     needsToBeTileable: boolean = false,
-    _dontCatchTheError = false,
+    _dontCatchTheError: boolean = false,
   ): Promise<SingleFileExport> {
     if (this.isNative) {
       throw new ExportBuiltinAssetError()
