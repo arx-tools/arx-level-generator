@@ -1,7 +1,7 @@
 import path from 'node:path'
 import type { ArxTextureContainer } from 'arx-convert/types'
 import { sharpToBmp } from 'sharp-bmp'
-import { ClampToEdgeWrapping, Texture as ThreeJsTextue, UVMapping, MathUtils } from 'three'
+import { ClampToEdgeWrapping, Texture as ThreeJsTexture, UVMapping, MathUtils } from 'three'
 import type { Simplify } from 'type-fest'
 import { ExportBuiltinAssetError } from '@src/errors.js'
 import type { SingleFileExport } from '@src/types.js'
@@ -78,7 +78,7 @@ function isSupportedExtension(input: any): input is SupportedExtension {
   return typeof input === 'string' && (supportedExtensions as readonly string[]).includes(input)
 }
 
-export class Texture extends ThreeJsTextue {
+export class Texture extends ThreeJsTexture {
   static readonly targetPath = 'graph/obj3d/textures'
 
   static fromCustomFile(props: Simplify<Omit<TextureConstructorProps, 'isNative'>>): Texture {
