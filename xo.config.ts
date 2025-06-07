@@ -1,8 +1,6 @@
 import unusedImports from 'eslint-plugin-unused-imports'
 import type { FlatXoConfig } from 'xo'
 
-// https://github.com/xojs/xo/issues/811 - this is the cause of the @typescript-eslint/no-unsafe-* errors
-
 const xoConfig: FlatXoConfig = {
   space: true,
   semicolon: false,
@@ -106,6 +104,12 @@ const xoConfig: FlatXoConfig = {
     'unicorn/no-for-loop': 'off',
     // any as an argument type is very useful when creating type guards:
     '@typescript-eslint/no-unsafe-argument': 'off',
+
+    // TODO: a xo bug is causing all the @typescript-eslint/no-unsafe-* errors: https://github.com/xojs/xo/issues/811
+    '@typescript-eslint/no-unsafe-call': 'off',
+    '@typescript-eslint/no-unsafe-assignment': 'off',
+    '@typescript-eslint/no-unsafe-return': 'off',
+
     'object-shorthand': [
       'error',
       'always',
