@@ -13,6 +13,7 @@ import { Vector3 } from '@src/Vector3.js'
 import type { FileExports, TextureOrMaterial } from '@src/types.js'
 import type { Settings } from '@platform/common/Settings.js'
 import type { Cube as TypeOfCube } from '@prefabs/entity/Cube.js'
+import { getFilenameFromPath } from './helpers.js'
 
 export type EntityConstructorProps = {
   id?: number
@@ -254,7 +255,7 @@ export class Entity extends _Entity implements ArxComponent {
    * returns the name of the entity without any id, for example "marker"
    */
   get entityName(): string {
-    return path.parse(this.src).name
+    return getFilenameFromPath(this.src)
   }
 
   hasScript(): this is { script: Script } {

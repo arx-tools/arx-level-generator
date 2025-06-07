@@ -286,3 +286,10 @@ export function generateBlankBMP(width: number, height: number): ArrayBuffer {
 
   return binary.arrayBuffer()
 }
+
+/**
+ * a naïve replacement for `path.parse(pathToFile).name` to work outside node.js
+ */
+export function getFilenameFromPath(pathToFile: string): string {
+  return pathToFile.split(/[\\/]/).at(-1) ?? ''
+}
