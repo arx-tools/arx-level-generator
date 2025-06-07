@@ -1,7 +1,7 @@
-import type { Texture } from '@src/Texture.js'
 import { getFilenameFromPath } from '@src/helpers.js'
 import type { FileExports } from '@src/types.js'
 import type { Settings } from '@platform/common/Settings.js'
+import type { Texture } from '@platform/node/Texture.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import type { UsesTextures } from '@scripting/interfaces/UsesTextures.js'
 

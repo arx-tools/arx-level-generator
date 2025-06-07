@@ -2,8 +2,8 @@
 
 ```ts
 import { ArxPolygonFlags } from 'arx-convert/types'
-import { ArxMap, Material, QUADIFY, SHADING_SMOOTH, Texture, Vector3 } from 'arx-level-generator'
-import { Settings } from 'arx-level-generator/platform/node'
+import { ArxMap, Material, QUADIFY, SHADING_SMOOTH, Vector3 } from 'arx-level-generator'
+import { Settings, Texture } from 'arx-level-generator/platform/node'
 import { scaleUV, toArxCoordinateSystem } from 'arx-level-generator/tools/mesh'
 import { applyTransformations } from 'arx-level-generator/utils'
 import { MathUtils, Mesh, MeshBasicMaterial, PlaneGeometry } from 'three'
@@ -59,8 +59,8 @@ map.polygons.addThreeJsMesh(mesh, { tryToQuadify: QUADIFY, shading: SHADING_SMOO
 
 ```ts
 import { ArxPolygonFlags } from 'arx-convert/types'
-import { ArxMap, Material, QUADIFY, SHADING_SMOOTH, Texture, Vector3 } from 'arx-level-generator'
-import { Settings } from 'arx-level-generator/platform/node'
+import { ArxMap, Material, QUADIFY, SHADING_SMOOTH, Vector3 } from 'arx-level-generator'
+import { Settings, Texture } from 'arx-level-generator/platform/node'
 import { createPlaneMesh } from 'arx-level-generator/prefabs/mesh'
 import { applyTransformations } from 'arx-level-generator/utils'
 import { Vector2 } from 'three'

@@ -1,7 +1,7 @@
 import { BoxGeometry, MathUtils, Mesh, MeshBasicMaterial, Vector2 } from 'three'
-import { Texture } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import type { TextureOrMaterial } from '@src/types.js'
+import { Texture } from '@platform/node/Texture.js'
 import { toArxCoordinateSystem } from '@tools/mesh/toArxCoordinateSystem.js'
 
 type createBoxProps = {

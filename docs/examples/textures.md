@@ -3,7 +3,7 @@
 ## Using debug textures
 
 ```ts
-import { Texture } from 'arx-level-generator'
+import { Texture } from 'arx-level-generator/platform/node'
 
 const texture = Texture.missingTexture
 ```

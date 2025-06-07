@@ -31,7 +31,7 @@ export {
   PathsSelection,
   ZonesSelection,
 } from '@src/Selection.js'
-export { Texture, SIZE_UNKNOWN, NO_TEXTURE_CONTAINER } from '@src/Texture.js'
+export { Texture, SIZE_UNKNOWN, NO_TEXTURE_CONTAINER } from '@platform/common/Texture.js'
 export { Translations } from '@src/Translations.js'
 export { UI, UiElements } from '@src/UI.js'
 export { Vectors } from '@src/Vectors.js'
