@@ -156,7 +156,7 @@ export class Script {
   async exportTextures(settings: Settings): Promise<FileExports> {
     let files: FileExports = {}
 
-    const handlers = Object.values(this.eventHandlers).flat(1).filter(isUsesTextures)
+    const handlers = Object.values(this.eventHandlers).flat().filter(isUsesTextures)
 
     for (const handler of handlers) {
       files = {

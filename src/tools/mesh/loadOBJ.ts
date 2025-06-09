@@ -439,11 +439,15 @@ export async function loadOBJ(
 
   const materialList = tmp
     .map(({ map }) => {
+      if (map === null) {
+        return undefined
+      }
+
       // changing type from three.js' Texture to our own Texture
-      return map as Texture | null
+      return map as Texture
     })
     .filter((texture) => {
-      return texture !== null
+      return texture !== undefined
     })
 
   return { meshes, materials: materialList }
