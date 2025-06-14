@@ -1,7 +1,5 @@
+import type { Texture, TextureExportData } from '@src/Texture.js'
 import { getFilenameFromPath } from '@src/helpers.js'
-import type { FileExports } from '@src/types.js'
-import type { Settings } from '@platform/common/Settings.js'
-import type { Texture } from '@platform/node/Texture.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import type { UsesTextures } from '@scripting/interfaces/UsesTextures.js'
 
@@ -33,20 +31,18 @@ export class TweakSkin extends ScriptCommand implements UsesTextures {
     return `tweak skin "${oldFilename}" "${newFilename}"`
   }
 
-  async exportTextures(settings: Settings): Promise<FileExports> {
-    const files: FileExports = {}
+  exportTextures(): TextureExportData[] {
+    const textureExportDatas: TextureExportData[] = []
     const { oldTexture, newTexture } = this
 
     if (typeof oldTexture !== 'string' && !oldTexture.isNative) {
-      const [source, target] = await oldTexture.exportSourceAndTarget(settings, false)
-      files[target] = source
+      textureExportDatas.push(oldTexture.getExportData(false))
     }
 
     if (typeof newTexture !== 'string' && !newTexture.isNative) {
-      const [source, target] = await newTexture.exportSourceAndTarget(settings, false)
-      files[target] = source
+      textureExportDatas.push(newTexture.getExportData(false))
     }
 
-    return files
+    return textureExportDatas
   }
 }

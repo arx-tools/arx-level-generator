@@ -1,8 +1,7 @@
-import type { FileExports } from '@src/types.js'
-import type { Settings } from '@platform/common/Settings.js'
+import type { TextureExportData } from '@src/Texture.js'
 
 export interface UsesTextures {
-  exportTextures(settings: Settings): Promise<FileExports>
+  exportTextures(): TextureExportData[]
 }
 
 export function isUsesTextures(obj: any): obj is UsesTextures {

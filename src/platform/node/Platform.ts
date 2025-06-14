@@ -5,6 +5,7 @@ import { ensureArray, uniq } from '@src/faux-ramda.js'
 import type { ArrayBufferExports } from '@src/types.js'
 import type { IODiff, Platform as IPlatform } from '@platform/common/Platform.js'
 import type { Settings } from '@platform/common/Settings.js'
+import { TextureExporter } from '@platform/node/exporters/TextureExporter.js'
 import { readBinaryFile, writeBinaryFile } from '@platform/node/io.js'
 
 export class Platform implements IPlatform {
@@ -24,15 +25,26 @@ export class Platform implements IPlatform {
       toAdd: {},
       toCopy: {},
       toRemove: [],
+      toExport: [],
     }
 
     const maps = uniq(this.maps)
 
     for (const map of maps) {
-      const { toAdd, toCopy, toRemove } = await map.export(settings, exportJsonFiles, prettify)
+      const { toAdd, toCopy, toRemove, toExport } = await map.export(settings, exportJsonFiles, prettify)
       files.toAdd = { ...files.toAdd, ...toAdd }
       files.toCopy = { ...files.toCopy, ...toCopy }
       files.toRemove = [...files.toRemove, ...toRemove]
+      files.toExport = [...files.toExport, ...toExport]
+    }
+
+    const textureExporter = new TextureExporter(settings)
+
+    for (const exportData of files.toExport) {
+      if (exportData.type === 'Texture') {
+        const [source, target] = textureExporter.exportSourceAndTarget(exportData)
+        files.toCopy[target] = source
+      }
     }
 
     await this.removeFromDisk(files.toRemove)

@@ -59,6 +59,8 @@ const xoConfig: FlatXoConfig = {
     '@typescript-eslint/no-import-type-side-effects': 'error',
     'unicorn/prefer-string-raw': 'off',
     '@typescript-eslint/prefer-nullish-coalescing': 'off',
+    'require-await': 'off',
+    '@typescript-eslint/require-await': 'error',
   },
 }
 

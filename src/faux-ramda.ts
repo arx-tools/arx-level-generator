@@ -166,6 +166,7 @@ export function groupSequences(numbers: number[]): [smallestNumber: number, leng
   return acc
 }
 
+// from ramda-adjunct
 export function ensureArray<T>(value: T | T[]): T[] {
   if (Array.isArray(value)) {
     return value

@@ -3,7 +3,7 @@
 ## Using debug textures
 
 ```ts
-import { Texture } from 'arx-level-generator/platform/node'
+import { Texture } from 'arx-level-generator'
 
 const texture = Texture.missingTexture
 ```
@@ -75,6 +75,9 @@ between square brackets. You can use the following materials:
 - ice
 - fabric
 - moss
+
+You can speed up the process of handling custom textures with specifying the `width` and `height` of the file in the
+Texture's constructor props.
 
 ### Non-square textures
 

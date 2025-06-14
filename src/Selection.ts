@@ -5,10 +5,10 @@ import { Fogs } from '@src/Fogs.js'
 import { Lights } from '@src/Lights.js'
 import { Paths } from '@src/Paths.js'
 import { Polygons } from '@src/Polygons.js'
+import type { Texture } from '@src/Texture.js'
 import type { Vector3 } from '@src/Vector3.js'
 import { Zones } from '@src/Zones.js'
 import { groupSequences } from '@src/faux-ramda.js'
-import type { Texture } from '@platform/node/Texture.js'
 
 export abstract class Selection<T extends ArxComponent[]> {
   protected selection: number[]

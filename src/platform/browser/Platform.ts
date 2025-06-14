@@ -20,15 +20,29 @@ export class Platform implements IPlatform {
       toAdd: {},
       toCopy: {},
       toRemove: [],
+      toExport: [],
     }
 
     const maps = uniq(this.maps)
 
     for (const map of maps) {
-      const { toAdd, toCopy } = await map.export(settings, exportJsonFiles, prettify)
+      const { toAdd, toCopy, toExport } = await map.export(settings, exportJsonFiles, prettify)
       files.toAdd = { ...files.toAdd, ...toAdd }
       files.toCopy = { ...files.toCopy, ...toCopy }
+      files.toExport = [...files.toExport, ...toExport]
     }
+
+    /*
+    // TODO: implement browser version of TextureExporter
+    const textureExporter = new TextureExporter(settings)
+
+    for (const exportData of files.toExport) {
+      if (exportData.type === 'Texture') {
+        const [source, target] = textureExporter.exportSourceAndTarget(exportData)
+        files.toCopy[target] = source
+      }
+    }
+    */
 
     // TODO: combine contents of files.toCopy and files.toAdd and put them into a zip file
   }

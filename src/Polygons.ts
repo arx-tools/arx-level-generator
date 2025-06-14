@@ -17,13 +17,11 @@ import { Mesh, MeshBasicMaterial, type Object3D, type BufferAttribute, Box3, typ
 import { Color } from '@src/Color.js'
 import { Material } from '@src/Material.js'
 import { Polygon, type TransparencyType } from '@src/Polygon.js'
+import { Texture, type TextureExportData } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
 import { Vertex } from '@src/Vertex.js'
 import { sum, times } from '@src/faux-ramda.js'
 import { applyTransformations, averageVectors, quotientAndRemainder, roundToNDecimals } from '@src/helpers.js'
-import type { FileExports } from '@src/types.js'
-import type { Settings } from '@platform/common/Settings.js'
-import { Texture } from '@platform/node/Texture.js'
 import { getNonIndexedVertices } from '@tools/mesh/getVertices.js'
 
 export const QUADIFY = 'quadify'
@@ -65,11 +63,8 @@ export class Polygons extends Array<Polygon> {
     }
   }
 
-  async exportTextures(settings: Settings): Promise<FileExports> {
-    const texturesToExport: Record<'tileable' | 'nonTileable', Record<string, Texture>> = {
-      tileable: {},
-      nonTileable: {},
-    }
+  exportTextures(): TextureExportData[] {
+    const textureExportDatas: TextureExportData[] = []
 
     for (const polygon of this) {
       if (polygon.texture === undefined || polygon.texture.isNative) {
@@ -77,28 +72,12 @@ export class Polygons extends Array<Polygon> {
       }
 
       const needsToBeTileable = isTiled(polygon)
-      if (needsToBeTileable) {
-        texturesToExport.tileable[polygon.texture.filename] = polygon.texture
-      } else {
-        texturesToExport.nonTileable[polygon.texture.filename] = polygon.texture
-      }
+      const textureExportData = polygon.texture.getExportData(needsToBeTileable)
+
+      textureExportDatas.push(textureExportData)
     }
 
-    const files: FileExports = {}
-
-    for (const filename in texturesToExport.tileable) {
-      const texture = texturesToExport.tileable[filename]
-      const [source, target] = await texture.exportSourceAndTarget(settings, true)
-      files[target] = source
-    }
-
-    for (const filename in texturesToExport.nonTileable) {
-      const texture = texturesToExport.nonTileable[filename]
-      const [source, target] = await texture.exportSourceAndTarget(settings, false)
-      files[target] = source
-    }
-
-    return files
+    return textureExportDatas
   }
 
   toArxData(): {

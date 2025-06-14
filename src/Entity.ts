@@ -8,19 +8,19 @@ import type { EntityModel } from '@src/EntityModel.js'
 import { Material } from '@src/Material.js'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
+import { Texture, type TextureExportData } from '@src/Texture.js'
 import { Vector3 } from '@src/Vector3.js'
+import { getFilenameFromPath } from '@src/helpers.js'
 import type { FileExports, TextureOrMaterial } from '@src/types.js'
 import type { Settings } from '@platform/common/Settings.js'
-import { Texture } from '@platform/node/Texture.js'
 import type { Cube as TypeOfCube } from '@prefabs/entity/Cube.js'
-import { getFilenameFromPath } from './helpers.js'
 
 export type EntityConstructorProps = {
   id?: number
   /**
    * specify the script file for the entity with `.asl` extension
    *
-   * if the ASL file for the entity has the same name as it's container folder
+   * if the ASL file for the entity has the same name as its container folder
    * like `items/magic/fern/fern.asl` then you can shorten it to `items/magic/fern`
    */
   src: string
@@ -366,67 +366,67 @@ export class Entity extends _Entity implements ArxComponent {
     )
   }
 
-  async exportInventoryIcon(settings: Settings): Promise<FileExports> {
-    const files: FileExports = {}
-
+  exportInventoryIcon(): TextureExportData | undefined {
     if (!this.needsInventoryIcon()) {
-      return files
+      return undefined
     }
 
     if (this.hasInventoryIcon() && this.inventoryIcon.isNative) {
-      return files
+      return undefined
     }
 
-    let source: string
-    let target: string
+    let exportData: TextureExportData
 
     if (this.hasInventoryIcon()) {
-      try {
-        ;[source] = await this.inventoryIcon.exportSourceAndTarget(settings, false, true)
-      } catch {
-        console.error(
-          `[error] Entity: inventory icon not found: "${this.inventoryIcon.filename}", using default fallback icon`,
-        )
-        this.inventoryIcon = Texture.missingInventoryIcon
-        ;[source] = await this.inventoryIcon.exportSourceAndTarget(settings, false)
-      }
+      exportData = this.inventoryIcon.getExportData()
     } else {
-      this.inventoryIcon = Texture.missingInventoryIcon
-      ;[source] = await this.inventoryIcon.exportSourceAndTarget(settings, false)
+      exportData = Texture.missingInventoryIcon.getExportData()
     }
 
     if (this.src.endsWith('.asl')) {
-      target = path.resolve(settings.outputDir, 'graph/obj3d/interactive', this.src.replace(/.asl$/, '[icon].bmp'))
+      const fullPath = `graph/obj3d/interactive/${this.src.replace(/.asl$/, '[icon].bmp')}`
+      const pathElements = fullPath.split('/')
+      exportData.data.target = {
+        filename: pathElements.at(-1) as string,
+        path: pathElements.slice(0, -1).join('/'),
+      }
     } else {
-      target = path.resolve(settings.outputDir, 'graph/obj3d/interactive', this.src, this.entityName + `[icon].bmp`)
-    }
-
-    files[target] = source
-
-    return files
-  }
-
-  async exportOtherDependencies(settings: Settings): Promise<FileExports> {
-    const files: FileExports = {}
-
-    for (const audioOrTexture of this.otherDependencies) {
-      if (!audioOrTexture.isNative) {
-        if (audioOrTexture instanceof Texture) {
-          let hasTiledMaterialFlag = false
-          if (audioOrTexture instanceof Material) {
-            hasTiledMaterialFlag = isTiled(audioOrTexture)
-          }
-
-          const [source, target] = await audioOrTexture.exportSourceAndTarget(settings, hasTiledMaterialFlag)
-          files[target] = source
-        } else {
-          const [source, target] = audioOrTexture.exportSourceAndTarget(settings)
-          files[target] = source
-        }
+      exportData.data.target = {
+        filename: this.entityName + `[icon].bmp`,
+        path: `graph/obj3d/interactive/${this.src}`,
       }
     }
 
-    return files
+    return exportData
+  }
+
+  exportOtherDependencies(settings: Settings): { files: FileExports; textureExportDatas: TextureExportData[] } {
+    const files: FileExports = {}
+    const textureExportDatas: TextureExportData[] = []
+
+    for (const audioOrTexture of this.otherDependencies) {
+      if (audioOrTexture.isNative) {
+        continue
+      }
+
+      if (audioOrTexture instanceof Texture) {
+        const texture = audioOrTexture
+        const needsToBeTileable = texture instanceof Material && isTiled(texture)
+
+        const textureExportData = texture.getExportData(needsToBeTileable)
+        textureExportDatas.push(textureExportData)
+      } else {
+        const audio = audioOrTexture
+
+        const [source, target] = audio.exportSourceAndTarget(settings)
+        files[target] = source
+      }
+    }
+
+    return {
+      files,
+      textureExportDatas,
+    }
   }
 
   move(offset: Vector3): void {

@@ -1,5 +1,4 @@
-import type { FileExports } from '@src/types.js'
-import type { Settings } from '@platform/common/Settings.js'
+import type { TextureExportData } from '@src/Texture.js'
 import { ScriptCommand } from '@scripting/ScriptCommand.js'
 import type { ScriptProperty } from '@scripting/ScriptProperty.js'
 import type { ScriptSubroutine } from '@scripting/ScriptSubroutine.js'
@@ -153,19 +152,16 @@ export class Script {
     return this
   }
 
-  async exportTextures(settings: Settings): Promise<FileExports> {
-    let files: FileExports = {}
+  exportTextures(): TextureExportData[] {
+    const textureExportData: TextureExportData[] = []
 
     const handlers = Object.values(this.eventHandlers).flat().filter(isUsesTextures)
 
     for (const handler of handlers) {
-      files = {
-        ...files,
-        ...(await handler.exportTextures(settings)),
-      }
+      textureExportData.push(...handler.exportTextures())
     }
 
-    return files
+    return textureExportData
   }
 
   makeIntoRoot(): this {

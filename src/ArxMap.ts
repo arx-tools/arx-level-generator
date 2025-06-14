@@ -35,6 +35,7 @@ import { Portal } from '@src/Portal.js'
 import { Rotation } from '@src/Rotation.js'
 import { Script } from '@src/Script.js'
 import { $ } from '@src/Selection.js'
+import { Texture } from '@src/Texture.js'
 import { Translations } from '@src/Translations.js'
 import { UI } from '@src/UI.js'
 import { Vector3 } from '@src/Vector3.js'
@@ -47,7 +48,6 @@ import { percentOf, encodeJSON, compressAs, encodeText } from '@src/helpers.js'
 import type { OriginalLevel } from '@src/types.js'
 import type { IODiff } from '@platform/common/Platform.js'
 import type { Settings } from '@platform/common/Settings.js'
-import { Texture } from '@platform/node/Texture.js'
 import { generateMetadata } from '@platform/node/metadata.js'
 import { getGeneratorPackageJSON } from '@platform/node/package.js'
 import { createPlaneMesh } from '@prefabs/mesh/plane.js'
@@ -306,6 +306,7 @@ export class ArxMap {
       toAdd: {},
       toCopy: {},
       toRemove: [],
+      toExport: [],
     }
 
     console.log(`[info] ArxMap: seed = "${settings.seed}"`)
@@ -322,9 +323,10 @@ export class ArxMap {
 
     files.toCopy = {
       ...this.ui.exportSourcesAndTargets(settings),
-      ...(await this.polygons.exportTextures(settings)),
       ...Audio.exportReplacements(settings),
     }
+
+    files.toExport.push(...this.polygons.exportTextures())
 
     for (const entity of this.entities) {
       if (entity.hasScript()) {
@@ -332,16 +334,13 @@ export class ArxMap {
         const content = entity.script.toArxData().replaceAll('\n', Script.EOL)
         files.toAdd[filename] = encodeText(content, 'latin9')
 
-        files.toCopy = {
-          ...files.toCopy,
-          ...(await entity.script.exportTextures(settings)),
-        }
+        files.toExport.push(...entity.script.exportTextures())
       }
 
       if (entity.hasInventoryIcon()) {
-        files.toCopy = {
-          ...files.toCopy,
-          ...(await entity.exportInventoryIcon(settings)),
+        const inventoryIconExportData = entity.exportInventoryIcon()
+        if (inventoryIconExportData !== undefined) {
+          files.toExport.push(inventoryIconExportData)
         }
       }
 
@@ -359,10 +358,14 @@ export class ArxMap {
         }
       }
 
+      const otherDependencies = entity.exportOtherDependencies(settings)
+
       files.toCopy = {
         ...files.toCopy,
-        ...(await entity.exportOtherDependencies(settings)),
+        ...otherDependencies.files,
       }
+
+      files.toExport.push(...otherDependencies.textureExportDatas)
     }
 
     if (this.player.hasScript()) {
@@ -370,10 +373,7 @@ export class ArxMap {
       const content = this.player.script.toArxData().replaceAll('\n', Script.EOL)
       files.toAdd[filename] = encodeText(content, 'latin9')
 
-      files.toCopy = {
-        ...files.toCopy,
-        ...(await this.player.script.exportTextures(settings)),
-      }
+      files.toExport.push(...this.player.script.exportTextures())
     }
 
     // ------------------------

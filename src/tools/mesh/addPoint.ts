@@ -1,6 +1,6 @@
 import { BufferAttribute, BufferGeometry, type Material, Mesh, MeshBasicMaterial, type Vector3 } from 'three'
+import { Texture } from '@src/Texture.js'
 import { circleOfVectors } from '@src/helpers.js'
-import { Texture } from '@platform/node/Texture.js'
 
 /**
  * Adds a point to the mesh by turning the point into a triangle with the given radius
