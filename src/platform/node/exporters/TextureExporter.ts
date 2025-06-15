@@ -1,9 +1,12 @@
 import path from 'node:path'
+import { sharpToBmp } from 'sharp-bmp'
 import { MathUtils } from 'three'
-import { Texture, type TextureExportData } from '@src/Texture.js'
+import { type SupportedExtension, Texture, type TextureExportData } from '@src/Texture.js'
 import type { SingleFileExport } from '@src/types.js'
 import type { Settings } from '@platform/common/Settings.js'
-import { getMetadata } from '../services/image.js'
+import { fileOrFolderExists } from '@platform/node/io.js'
+import { createHashOfFile, loadHashOf, saveHashOf } from '@platform/node/services/cache.js'
+import { getMetadata, getSharpInstance } from '@platform/node/services/image.js'
 
 export class TextureExporter {
   private readonly settings: Settings
@@ -17,23 +20,16 @@ export class TextureExporter {
   async exportSourceAndTarget(textureExportData: TextureExportData): Promise<SingleFileExport> {
     const { needsToBeTileable, dontCatchErrors, isInternalAsset, source, target } = textureExportData.data
 
-    let inputFile: string
-    if (isInternalAsset) {
-      inputFile = path.resolve(this.settings.assetsDir, source.path, source.filename)
-    } else {
-      inputFile = path.resolve(this.settings.internalAssetsDir, source.path, source.filename)
-    }
-
     try {
       if (needsToBeTileable) {
-        const { width, height } = await getMetadata(inputFile)
+        const { width, height } = await getMetadata(this.getPathToSource(textureExportData.data))
         const isTileable = this.isTileable(width, height)
         if (!isTileable) {
-          return await this.makeTileable(/* TODO */)
+          return await this.makeTileable(textureExportData.data)
         }
       }
 
-      return await this.makeCopy(/* TODO */)
+      return await this.makeCopy(textureExportData.data)
     } catch (error: unknown) {
       if (dontCatchErrors) {
         throw error
@@ -52,47 +48,114 @@ export class TextureExporter {
     }
   }
 
+  private getPathToSource({ isInternalAsset, source }: TextureExportData['data']): string {
+    let pathToSource: string
+    if (isInternalAsset) {
+      pathToSource = path.resolve(this.settings.assetsDir, source.path, source.filename)
+    } else {
+      pathToSource = path.resolve(this.settings.internalAssetsDir, source.path, source.filename)
+    }
+
+    return pathToSource
+  }
+
+  private getPathToCache({}: TextureExportData['data']): string {
+    let pathToCache: string
+
+    // TODO: implement method - make sure to change the extension to jpg if source is not ending in a supported format
+
+    return pathToCache
+  }
+
+  private getPathToTarget({}: TextureExportData['data']): string {
+    let pathToTarget: string
+
+    // TODO: implement method - make sure to override target filename extension to jpg if not ending in a supported format
+
+    return pathToTarget
+  }
+
+  /*
+  const { filename, extension } = this.getFilenameAndExtension()
+
+  const originalSource = this.getFilename(settings)
+  const convertedTarget = path.resolve(settings.outputDir, BaseTexture.targetPath, filename)
+
+  const convertedSourceFolder = await createCacheFolderIfNotExists(
+    this.sourcePath ?? BaseTexture.targetPath,
+    settings,
+  )
+  const convertedSource = path.join(convertedSourceFolder, filename)
+  */
+
   private isTileable(width: number, height: number): boolean {
     return width === height && MathUtils.isPowerOfTwo(width)
   }
 
-  private async makeTileable(): Promise<SingleFileExport> {
-    const wait = Promise.resolve()
-    await wait
-
+  private async makeTileable(exportData: TextureExportData['data']): Promise<SingleFileExport> {
     // TODO
 
     return ['todo', 'todo']
   }
 
-  private async makeCopy(): Promise<SingleFileExport> {
-    const wait = Promise.resolve()
-    await wait
+  private async makeCopy(exportData: TextureExportData['data']): Promise<SingleFileExport> {
+    const pathToSource = this.getPathToSource(exportData)
+    const pathToCache = this.getPathToCache(exportData)
+    const pathToTarget = this.getPathToTarget(exportData)
 
-    // TODO
+    const currentHash = await createHashOfFile(pathToSource, { isTileable: false })
 
-    return ['todo', 'todo']
+    if (await fileOrFolderExists(pathToCache)) {
+      const storedHash = await loadHashOf(pathToSource, this.settings)
+
+      if (storedHash === currentHash) {
+        return [pathToSource, pathToTarget]
+      }
+    }
+
+    await saveHashOf(pathToSource, currentHash, this.settings)
+
+    const image = await getSharpInstance(pathToSource)
+
+    const extension = path.parse(pathToCache).ext as SupportedExtension
+    switch (extension) {
+      case '.bmp': {
+        await sharpToBmp(image, pathToCache)
+        break
+      }
+
+      case '.png': {
+        await image.png({ quality: 100 }).toFile(pathToCache)
+        break
+      }
+
+      case '.jpeg':
+      case '.jpg': {
+        await image.jpeg({ quality: 100, progressive: false }).toFile(pathToCache)
+        break
+      }
+    }
+
+    return [pathToSource, pathToTarget]
   }
 
-  // private getFilenameAndExtension(): { filename: string; extension: SupportedExtension } {
-  //   const { ext, name } = path.parse(this.filename)
+  /*
+  private getFilenameAndExtension(pathToFile: string): { filename: string; extension: SupportedExtension } {
+    const { ext, name } = path.parse(pathToFile)
 
-  //   let filename: string
-  //   let extension: SupportedExtension
+    if (isSupportedExtension(ext)) {
+      return {
+        filename: `${name}${ext}`,
+        extension: ext,
+      }
+    }
 
-  //   if (isSupportedExtension(ext)) {
-  //     filename = this.filename
-  //     extension = ext
-  //   } else {
-  //     filename = `${name}.jpg`
-  //     extension = '.jpg'
-  //   }
-
-  //   return {
-  //     filename,
-  //     extension,
-  //   }
-  // }
+    return {
+      filename: `${name}.jpg`,
+      extension: '.jpg',
+    }
+  }
+  */
 
   // private async makeCopy(settings: Settings): Promise<SingleFileExport> {
   //   const { filename, extension } = this.getFilenameAndExtension()
@@ -107,46 +170,6 @@ export class TextureExporter {
   //   const convertedSource = path.join(convertedSourceFolder, filename)
 
   //   const currentHash = await createHashOfFile(originalSource, { isTileable: false })
-
-  //   if (await fileOrFolderExists(convertedSource)) {
-  //     const storedHash = await loadHashOf(originalSource, settings)
-
-  //     if (storedHash === currentHash) {
-  //       return [convertedSource, convertedTarget]
-  //     }
-  //   }
-
-  //   await saveHashOf(originalSource, currentHash, settings)
-
-  //   const image = await getSharpInstance(originalSource)
-
-  //   switch (extension) {
-  //     case '.bmp': {
-  //       await sharpToBmp(image, convertedSource)
-  //       break
-  //     }
-
-  //     case '.png': {
-  //       await image.png({ quality: 100 }).toFile(convertedSource)
-  //       break
-  //     }
-
-  //     case '.jpeg':
-  //     case '.jpg': {
-  //       await image.jpeg({ quality: 100, progressive: false }).toFile(convertedSource)
-  //       break
-  //     }
-
-  //     /*
-  //     case '.tga': {
-  //       // TODO
-  //       break
-  //     }
-  //     */
-  //   }
-
-  //   return [convertedSource, convertedTarget]
-  // }
 
   // private async makeTileable(settings: Settings): Promise<SingleFileExport> {
   //   const { filename, extension } = this.getFilenameAndExtension()

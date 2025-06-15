@@ -22,6 +22,9 @@ export type TextureExportData = {
 }
 
 export type TextureConstructorProps = {
+  /**
+   * the filename of the texture without the path, like `"ALICIAROOM_FAKE_WINDOW.jpg"`
+   */
   filename: string
 
   /**
@@ -34,12 +37,12 @@ export type TextureConstructorProps = {
   /**
    * This path is relative to the "assets" folder in the project that uses the arx-level-generator
    *
-   * default value is `"graph/obj3d/texture"`
+   * default value is `Texture.targetPath` (`"graph/obj3d/texture"`)
    */
   sourcePath?: string
 
   /**
-   * Whether the asset is provided by the arx-level-generator
+   * Whether the asset is provided by the `arx-level-generator` library
    *
    * default value is `false`
    */
