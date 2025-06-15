@@ -55,6 +55,14 @@ export function uniq<T>(values: T[]): T[] {
   })
 }
 
+export function uniqBy<T>(fn: (value: T) => any, values: T[]): T[] {
+  return values.filter((value, index, self) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- type isn't important here
+    const tmp = fn(value)
+    return self.findIndex((curr) => fn(curr) === tmp) === index
+  })
+}
+
 /**
  * The average of all given values by summing values then divide by the amount of values
  *

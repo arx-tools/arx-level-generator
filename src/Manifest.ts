@@ -67,7 +67,7 @@ export class Manifest {
 
   private async exists(): Promise<boolean> {
     const filename = this.getPathToFilename()
-    return fileOrFolderExists(filename)
+    return await fileOrFolderExists(filename)
   }
 
   private async read(): Promise<ManifestData | undefined> {

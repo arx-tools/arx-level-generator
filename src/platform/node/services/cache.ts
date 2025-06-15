@@ -105,7 +105,7 @@ export async function createHashOfFile(filename: string, metadata?: Record<strin
     hash.update(base64String, 'base64')
   })
 
-  return new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     stream.on('error', (err) => {
       reject(err)
     })

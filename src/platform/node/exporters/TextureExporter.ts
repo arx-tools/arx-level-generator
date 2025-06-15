@@ -1,6 +1,9 @@
-import type { TextureExportData } from '@src/Texture.js'
+import path from 'node:path'
+import { MathUtils } from 'three'
+import { Texture, type TextureExportData } from '@src/Texture.js'
 import type { SingleFileExport } from '@src/types.js'
 import type { Settings } from '@platform/common/Settings.js'
+import { getMetadata } from '../services/image.js'
 
 export class TextureExporter {
   private readonly settings: Settings
@@ -11,69 +14,65 @@ export class TextureExporter {
     this.settings = settings
   }
 
-  exportSourceAndTarget(textureExportData: TextureExportData): SingleFileExport {
+  async exportSourceAndTarget(textureExportData: TextureExportData): Promise<SingleFileExport> {
     const { needsToBeTileable, dontCatchErrors, isInternalAsset, source, target } = textureExportData.data
 
-    // try {
-    //   if (needsToBeTileable) {
-    //     const isTileable = await this.isTileable(settings)
-    //     if (isTileable !== true) {
-    //       return await this.makeTileable(settings)
-    //     }
-    //   }
-    //   return await this.makeCopy(settings)
-    // } catch (error: unknown) {
-    //   if (dontCatchErrors) {
-    //     throw error
-    //   }
-    //   console.error(`[error] Texture: file not found: "${this.filename}", using fallback texture`)
-    //   const fallbackTexture = Texture.missingTexture
-    //   this.filename = fallbackTexture.filename
-    //   this.sourcePath = fallbackTexture.sourcePath
-    //   this.width = fallbackTexture.width
-    //   this.height = fallbackTexture.height
-    //   this.isInternalAsset = fallbackTexture.isInternalAsset
-    //   return this.makeCopy(settings)
-    // }
+    let inputFile: string
+    if (isInternalAsset) {
+      inputFile = path.resolve(this.settings.assetsDir, source.path, source.filename)
+    } else {
+      inputFile = path.resolve(this.settings.internalAssetsDir, source.path, source.filename)
+    }
+
+    try {
+      if (needsToBeTileable) {
+        const { width, height } = await getMetadata(inputFile)
+        const isTileable = this.isTileable(width, height)
+        if (!isTileable) {
+          return await this.makeTileable(/* TODO */)
+        }
+      }
+
+      return await this.makeCopy(/* TODO */)
+    } catch (error: unknown) {
+      if (dontCatchErrors) {
+        throw error
+      }
+
+      let fallbackTexture: Texture
+      if (target.filename.endsWith('[icon].bmp')) {
+        fallbackTexture = Texture.missingInventoryIcon
+      } else {
+        fallbackTexture = Texture.missingTexture
+      }
+
+      console.error(`[error] TextureExporter: file not found: "${source.filename}", using fallback texture`)
+
+      return await this.makeCopy(/* TODO */)
+    }
+  }
+
+  private isTileable(width: number, height: number): boolean {
+    return width === height && MathUtils.isPowerOfTwo(width)
+  }
+
+  private async makeTileable(): Promise<SingleFileExport> {
+    const wait = Promise.resolve()
+    await wait
+
+    // TODO
 
     return ['todo', 'todo']
   }
 
-  // TODO: we no longer store the width and height, needs to be always calculated
+  private async makeCopy(): Promise<SingleFileExport> {
+    const wait = Promise.resolve()
+    await wait
 
-  // private async setSizeFromFile(settings: Settings): Promise<void> {
-  //   if (this.width === SIZE_UNKNOWN || this.height === SIZE_UNKNOWN) {
-  //     const { width, height } = await getMetadata(this.getFilename(settings))
-  //     this.width = width ?? SIZE_UNKNOWN
-  //     this.height = height ?? SIZE_UNKNOWN
-  //   }
-  // }
+    // TODO
 
-  // /**
-  //  * calling this also tries to set the values of `this.width` and `this.height` if any of them is `SIZE_UNKNOWN`
-  //  *
-  //  * if `SIZE_UNKNOWN` prevails after the setters, then the return value is `undefined`
-  //  */
-  // private async isTileable(settings: Settings): Promise<boolean | undefined> {
-  //   await this.setSizeFromFile(settings)
-
-  //   if (this.width === SIZE_UNKNOWN || this.height === SIZE_UNKNOWN) {
-  //     return undefined
-  //   }
-
-  //   return this.width === this.height && MathUtils.isPowerOfTwo(this.width)
-  // }
-
-  // private getFilename(settings: Settings): string {
-  //   let assetsDir: string
-  //   if (this.isInternalAsset) {
-  //     assetsDir = settings.internalAssetsDir
-  //   } else {
-  //     assetsDir = settings.assetsDir
-  //   }
-
-  //   return path.resolve(assetsDir, this.sourcePath ?? BaseTexture.targetPath, this.filename)
-  // }
+    return ['todo', 'todo']
+  }
 
   // private getFilenameAndExtension(): { filename: string; extension: SupportedExtension } {
   //   const { ext, name } = path.parse(this.filename)

@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import type { ArxMap } from '@src/ArxMap.js'
-import { ensureArray, uniq } from '@src/faux-ramda.js'
+import { ensureArray, uniq, uniqBy } from '@src/faux-ramda.js'
 import type { ArrayBufferExports } from '@src/types.js'
 import type { IODiff, Platform as IPlatform } from '@platform/common/Platform.js'
 import type { Settings } from '@platform/common/Settings.js'
@@ -39,15 +39,14 @@ export class Platform implements IPlatform {
     }
 
     const textureExporter = new TextureExporter(settings)
-
-    for (const exportData of files.toExport) {
+    for (const exportData of uniqBy((exportData) => exportData.data.target.filename, files.toExport)) {
       if (exportData.type === 'Texture') {
-        const [source, target] = textureExporter.exportSourceAndTarget(exportData)
+        const [source, target] = await textureExporter.exportSourceAndTarget(exportData)
         files.toCopy[target] = source
       }
     }
 
-    await this.removeFromDisk(files.toRemove)
+    await this.removeFromDisk(uniq(files.toRemove))
     await this.copyToDisk(files.toCopy)
     await this.saveToDisk(files.toAdd)
   }

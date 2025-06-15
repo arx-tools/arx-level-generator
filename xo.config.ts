@@ -61,6 +61,8 @@ const xoConfig: FlatXoConfig = {
     '@typescript-eslint/prefer-nullish-coalescing': 'off',
     'require-await': 'off',
     '@typescript-eslint/require-await': 'error',
+    'no-return-await': 'off',
+    '@typescript-eslint/return-await': ['error', 'always'],
   },
 }
 

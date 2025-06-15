@@ -10,7 +10,7 @@ export async function fileOrFolderExists(pathToFileOrFolder: string): Promise<bo
 }
 
 export async function readTextFile(pathToFile: string): Promise<string> {
-  return fs.readFile(pathToFile, { encoding: 'utf8' })
+  return await fs.readFile(pathToFile, { encoding: 'utf8' })
 }
 
 export async function readBinaryFile(pathToFile: string): Promise<ArrayBufferLike> {
